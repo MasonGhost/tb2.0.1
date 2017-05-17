@@ -5,19 +5,12 @@ import android.graphics.Bitmap;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
-import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoWebBean;
 
 import java.util.List;
 
-import retrofit2.http.Field;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 import rx.Observable;
 
 /**

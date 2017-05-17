@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.infosearch;
 
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
@@ -20,8 +20,8 @@ import rx.Subscription;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoSearchPresenter extends BaseListPresenter<SearchContract.Repository, SearchContract
-        .View,InfoListDataBean> implements SearchContract.Presenter {
+public class InfoSearchPresenter extends AppBasePresenter<SearchContract.Repository, SearchContract
+        .View> implements SearchContract.Presenter {
 
     @Inject
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;

@@ -17,7 +17,7 @@ import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
@@ -68,7 +68,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_NOTICES
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessagePresenter extends BaseListPresenter<MessageContract.Repository, MessageContract.View,MessageItemBean> implements MessageContract.Presenter {
+public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
     public static final int DEFAULT_TS_HLEPER_CONVERSATION_ID = -100; // TS 助手默认的会话 id
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;

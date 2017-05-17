@@ -22,7 +22,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -66,7 +66,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class DynamicPresenter extends BaseListPresenter<DynamicContract.Repository, DynamicContract.View,DynamicBean>
+public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repository, DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
     @Inject

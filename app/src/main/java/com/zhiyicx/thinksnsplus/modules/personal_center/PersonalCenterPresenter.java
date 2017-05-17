@@ -23,7 +23,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -71,7 +71,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class PersonalCenterPresenter extends BaseListPresenter<PersonalCenterContract.Repository, PersonalCenterContract.View,DynamicBean> implements PersonalCenterContract.Presenter, OnShareCallbackListener {
+public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterContract.Repository, PersonalCenterContract.View> implements PersonalCenterContract.Presenter, OnShareCallbackListener {
     private static final int NEED_INTERFACE_NUM = 3;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;

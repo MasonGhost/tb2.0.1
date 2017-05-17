@@ -1,10 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.information.infosearch;
 
-import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 
 import java.util.List;

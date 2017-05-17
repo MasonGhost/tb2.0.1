@@ -5,7 +5,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -33,8 +33,8 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class FollowFansListPresenter extends BaseListPresenter<FollowFansListContract.Repository,
-        FollowFansListContract.View,FollowFansBean> implements FollowFansListContract.Presenter {
+public class FollowFansListPresenter extends AppBasePresenter<FollowFansListContract.Repository,
+        FollowFansListContract.View> implements FollowFansListContract.Presenter {
     private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
     @Inject

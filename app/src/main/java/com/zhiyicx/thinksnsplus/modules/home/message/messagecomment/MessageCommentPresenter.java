@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
@@ -27,7 +27,7 @@ import rx.functions.Action0;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessageCommentPresenter extends BaseListPresenter<MessageCommentContract.Repository, MessageCommentContract.View,CommentedBean> implements MessageCommentContract.Presenter {
+public class MessageCommentPresenter extends AppBasePresenter<MessageCommentContract.Repository, MessageCommentContract.View> implements MessageCommentContract.Presenter {
     @Inject
     CommentRepository mCommentRepository;
     @Inject

@@ -2,10 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -17,7 +17,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,7 +34,7 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class LoginPresenter extends BasePresenter<LoginContract.Repository, LoginContract.View> implements LoginContract.Presenter {
+public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, LoginContract.View> implements LoginContract.Presenter {
 
     @Inject
     public LoginPresenter(LoginContract.Repository repository, LoginContract.View rootView) {
@@ -117,8 +116,4 @@ public class LoginPresenter extends BasePresenter<LoginContract.Repository, Logi
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
     }
 
-    @Override
-    public boolean istourist() {
-        return mAuthRepository.isTourist();
-    }
 }

@@ -116,6 +116,7 @@ public class FindFragment extends TSFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
+
                 startActivity(new Intent(getActivity(), InfoActivity.class));
                 break;
             case R.id.find_chanel:

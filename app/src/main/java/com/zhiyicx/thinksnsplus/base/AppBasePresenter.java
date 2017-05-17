@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.base;
 
-import com.zhiyicx.baseproject.base.BaseListBean;
-import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 
 import javax.inject.Inject;
 
@@ -16,13 +15,17 @@ import javax.inject.Inject;
  * @Contact master.jungle68@gmail.com
  */
 
-public abstract class BaseListPresenter<R, V extends IBaseView, T extends BaseListBean> extends BasePresenter<R, V> implements ITSListPresenter<T> {
+public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePresenter<R, V> implements IBaseTouristPresenter {
 
     @Inject
     protected AuthRepository mAuthRepository;
 
-    public BaseListPresenter(R repository, V rootView) {
+    public AppBasePresenter(R repository, V rootView) {
         super(repository, rootView);
+    }
+
+    public boolean istourist(){
+        return mAuthRepository.isTourist();
     }
 
     @Override
