@@ -2,17 +2,13 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
 import android.graphics.Bitmap;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 
-import java.util.List;
-import java.util.Map;
-
-import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -37,7 +33,7 @@ public interface MusicDetailContract {
         MusicAlbumListBean getmMusicAlbumListBean();
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends IBaseTouristPresenter {
         void getMusicAblum(String id);
 
         void shareMusicAlbum(Bitmap bitmap);
