@@ -644,4 +644,8 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
     public int getCurrentItem() {
         return toRealPosition(currentItem);
     }
+
+    public int getItemCount() {
+        return imageUrls.size();
+    }
 }

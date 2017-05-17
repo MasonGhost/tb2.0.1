@@ -99,7 +99,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (mGuideBanner == null)
             return;
         mPosition = mGuideBanner.getCurrentItem();
-        if (mPosition == 3) {
+        if (mPosition == mGuideBanner.getItemCount() - 1) {
             mGuideBanner.stopAutoPlay();
         }
         if (mPosition > 0) {
@@ -109,7 +109,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                     .buildTimeCount(position * 2000)
                     .buildCanUseOntick(true)
                     .buildDurText("跳过")
-                    .buildCanUseListener(mPosition == 3)
+                    .buildCanUseListener(mPosition == mGuideBanner.getItemCount() - 1)
                     .buildOnTimeListener(this)
                     .build()
                     .start();
