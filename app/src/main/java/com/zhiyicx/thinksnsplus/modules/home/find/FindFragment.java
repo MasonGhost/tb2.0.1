@@ -131,25 +131,28 @@ public class FindFragment extends TSFragment {
             case R.id.find_active:
                 break;
             case R.id.find_music:
-                ActivityManager activityManager = (ActivityManager) getActivity()
-                        .getSystemService(Context.ACTIVITY_SERVICE);
-                List<ActivityManager.RunningAppProcessInfo> infos = activityManager
-                        .getRunningAppProcesses();
+                if (TouristConfig.MUSIC_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
 
-                for (ActivityManager.RunningAppProcessInfo info : infos) {
-                    String name = info.processName;
-                    LogUtils.d(name);
+                    ActivityManager activityManager = (ActivityManager) getActivity()
+                            .getSystemService(Context.ACTIVITY_SERVICE);
+                    List<ActivityManager.RunningAppProcessInfo> infos = activityManager
+                            .getRunningAppProcesses();
 
-                }
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (Settings.canDrawOverlays(getContext())) {
-                        startActivity(new Intent(getActivity(), MusicListActivity.class));
-                    } else {
-                        initPermissionPopUpWindow();
-                        mActionPopupWindow.show();
+                    for (ActivityManager.RunningAppProcessInfo info : infos) {
+                        String name = info.processName;
+                        LogUtils.d(name);
+
                     }
-                } else {
-                    startActivity(new Intent(getActivity(), MusicListActivity.class));
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        if (Settings.canDrawOverlays(getContext())) {
+                            startActivity(new Intent(getActivity(), MusicListActivity.class));
+                        } else {
+                            initPermissionPopUpWindow();
+                            mActionPopupWindow.show();
+                        }
+                    } else {
+                        startActivity(new Intent(getActivity(), MusicListActivity.class));
+                    }
                 }
                 break;
             case R.id.find_buy:
