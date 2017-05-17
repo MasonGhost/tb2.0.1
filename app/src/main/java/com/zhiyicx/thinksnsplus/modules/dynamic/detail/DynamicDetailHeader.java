@@ -54,6 +54,8 @@ public class DynamicDetailHeader {
     private int screenWidth;
     private int picWidth;
 
+    private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
+
     public View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
     }
@@ -64,6 +66,8 @@ public class DynamicDetailHeader {
         mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
+        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader.findViewById(R.id.ll_advert));
+        mDynamicDetailAdvertHeader.hideAdvert();
         fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id.fl_comment_count_container);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
         screenWidth = UIUtils.getWindowWidth(context);

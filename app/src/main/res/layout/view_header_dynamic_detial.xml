@@ -12,6 +12,10 @@
         layout="@layout/item_dynamic_detail_dig"
         />
 
+    <include
+        layout="@layout/advert_details"
+        />
+
     <FrameLayout
         android:id="@+id/fl_comment_count_container"
         android:layout_width="match_parent"
