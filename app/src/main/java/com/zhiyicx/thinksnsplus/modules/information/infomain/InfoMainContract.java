@@ -9,8 +9,6 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 
-import java.util.List;
-
 import rx.Observable;
 
 /**

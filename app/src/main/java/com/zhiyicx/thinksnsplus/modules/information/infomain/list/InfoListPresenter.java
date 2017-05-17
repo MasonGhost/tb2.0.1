@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
@@ -34,8 +34,8 @@ import rx.schedulers.Schedulers;
  * @Description
  */
 @FragmentScoped
-public class InfoListPresenter extends BaseListPresenter<InfoMainContract.Reppsitory
-        , InfoMainContract.InfoListView,BaseListBean> implements InfoMainContract.InfoListPresenter {
+public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reppsitory
+        , InfoMainContract.InfoListView> implements InfoMainContract.InfoListPresenter {
 
     @Inject
     InfoMainRepository mInfoMainRepository;

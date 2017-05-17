@@ -134,7 +134,7 @@ public class AppApplication extends TSApplication {
                 LogUtils.i("baseJson-->" + httpResult);
                 BaseJson baseJson = null;
                 try {
-                     baseJson = new Gson().fromJson(httpResult, BaseJson.class);
+                    baseJson = new Gson().fromJson(httpResult, BaseJson.class);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -315,6 +315,21 @@ public class AppApplication extends TSApplication {
             return sAppComponent;
         }
 
+    }
+
+    /**
+     * 获取我的用户 id ，default = -1;
+     * @return
+     */
+    public static int getMyUserIdWithdefault() {
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        int userId;
+        if (authBean == null) {
+            userId = -1;
+        } else {
+            userId = authBean.getUser_id();
+        }
+        return userId;
     }
 
     /**

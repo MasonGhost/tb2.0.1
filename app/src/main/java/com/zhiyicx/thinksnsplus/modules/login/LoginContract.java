@@ -5,7 +5,7 @@ import android.content.Context;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.i.IBaseTouristPresenter;
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 
 import rx.Observable;
 

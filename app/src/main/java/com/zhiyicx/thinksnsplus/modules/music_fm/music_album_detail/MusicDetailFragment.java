@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
@@ -431,40 +432,42 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (TouristConfig.MUSIC_CAN_PLAY || mPresenter.handleTouristControl()) {
 
-                MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
-                Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
-                intent.putExtra(MUSIC_INFO, bundle);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                WindowUtils.setMusicAlbumDetailsBean(bundle);
-                MediaControllerCompat controller = getActivity().getSupportMediaController();
-                MediaMetadataCompat metadata = controller.getMetadata();
-                if (metadata != null) {
-                    intent.putExtra(MusicDetailActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION,
-                            metadata.getDescription());
+                    MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
+                    Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
+                    intent.putExtra(MUSIC_INFO, bundle);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    WindowUtils.setMusicAlbumDetailsBean(bundle);
+                    MediaControllerCompat controller = getActivity().getSupportMediaController();
+                    MediaMetadataCompat metadata = controller.getMetadata();
+                    if (metadata != null) {
+                        intent.putExtra(MusicDetailActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION,
+                                metadata.getDescription());
+                    }
+                    startActivity(intent);
+                    MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
+                    if (mCurrentMusic != null) {
+                        mMediaId = mCurrentMusic.getDescription().getMediaId();
+                    }
+
+                    if (item.isPlayable()) {
+                        MediaControllerCompat controllerCompat = getActivity()
+                                .getSupportMediaController();
+
+                        controllerCompat.getTransportControls()
+                                .playFromMediaId(item.getMediaId(), null);
+                        mMediaId = item.getMediaId();
+
+                    } else if (item.isBrowsable()) {
+                        mCompatProvider.getMediaBrowser().unsubscribe(item.getMediaId());
+                        mCompatProvider.getMediaBrowser().subscribe(item.getMediaId(),
+                                mSubscriptionCallback);
+                    }
+
                 }
-                startActivity(intent);
-                MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
-                if (mCurrentMusic != null) {
-                    mMediaId = mCurrentMusic.getDescription().getMediaId();
-                }
-
-                if (item.isPlayable()) {
-                    MediaControllerCompat controllerCompat = getActivity()
-                            .getSupportMediaController();
-
-                    controllerCompat.getTransportControls()
-                            .playFromMediaId(item.getMediaId(), null);
-                    mMediaId = item.getMediaId();
-
-                } else if (item.isBrowsable()) {
-                    mCompatProvider.getMediaBrowser().unsubscribe(item.getMediaId());
-                    mCompatProvider.getMediaBrowser().subscribe(item.getMediaId(),
-                            mSubscriptionCallback);
-                }
-
             }
 
             @Override

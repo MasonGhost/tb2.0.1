@@ -216,7 +216,6 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public boolean handleTouristControl() {
-        LogUtils.d("handleTouristControl::" + isLogin());
         if (isLogin()) {
             return false;
         } else {

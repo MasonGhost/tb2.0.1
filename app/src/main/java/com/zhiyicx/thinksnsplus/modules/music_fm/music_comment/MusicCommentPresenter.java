@@ -6,7 +6,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.comment.CommonMetadataBean;
 import com.zhiyicx.thinksnsplus.comment.TCommonMetadataProvider;
@@ -44,8 +44,8 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicComme
  * @Description
  */
 @FragmentScoped
-public class MusicCommentPresenter extends BaseListPresenter<MusicCommentContract.Repository,
-        MusicCommentContract.View,MusicCommentListBean> implements MusicCommentContract.Presenter {
+public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract.Repository,
+        MusicCommentContract.View> implements MusicCommentContract.Presenter {
 
     @Inject
     MusicCommentRepositroty mMusicCommentRepositroty;

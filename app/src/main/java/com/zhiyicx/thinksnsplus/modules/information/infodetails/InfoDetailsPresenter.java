@@ -17,7 +17,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -55,8 +55,8 @@ import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
  * @Description
  */
 @FragmentScoped
-public class InfoDetailsPresenter extends BaseListPresenter<InfoDetailsConstract.Repository,
-        InfoDetailsConstract.View,InfoCommentListBean> implements InfoDetailsConstract.Presenter, OnShareCallbackListener {
+public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.Repository,
+        InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter, OnShareCallbackListener {
 
     @Inject
     public SharePolicy mSharePolicy;

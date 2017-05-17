@@ -128,7 +128,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
-        return mUserInfoClient.getUserInfoV2("33333")
+        return mUserInfoClient.getUserInfoV2(userids)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<List<UserInfoBean>, BaseJson<List<UserInfoBean>>>() {
                     @Override

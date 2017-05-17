@@ -1,7 +1,5 @@
 package com.zhiyicx.baseproject.base;
 
-import com.zhiyicx.common.mvp.i.IBasePresenter;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -12,7 +10,7 @@ import java.util.List;
  * @Date 2017/2/8
  * @Contact master.jungle68@gmail.com
  */
-public interface ITSListPresenter<T extends BaseListBean> extends IBasePresenter {
+public interface ITSListPresenter<T extends BaseListBean> extends IBaseTouristPresenter {
     /**
      * 请求列表数据
      *
@@ -35,17 +33,4 @@ public interface ITSListPresenter<T extends BaseListBean> extends IBasePresenter
      */
     boolean insertOrUpdateData(@NotNull List<T> data, boolean isLoadMore);
 
-    /**
-     * 判断是否登录
-     *
-     * @return true  is login
-     */
-    boolean isLogin();
-
-    /**
-     * 处理游客点击事件
-     *
-     * @return
-     */
-    boolean handleTouristControl();
 }

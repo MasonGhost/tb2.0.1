@@ -4,10 +4,9 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
@@ -32,7 +31,7 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class ChannelListPresenter extends BaseListPresenter<ChannelListContract.Repository, ChannelListContract.View,ChannelSubscripBean>
+public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.Repository, ChannelListContract.View>
         implements ChannelListContract.Presenter {
     @Inject
     ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
@@ -73,14 +72,13 @@ public class ChannelListPresenter extends BaseListPresenter<ChannelListContract.
     @Override
     public List<ChannelSubscripBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         int pageType = mRootView.getPageType();
-        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         List<ChannelSubscripBean> channelSubscripBeanList = null;
         switch (pageType) {
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
-                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getSomeOneSubscribChannelList(authBean.getUser_id());
+                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getSomeOneSubscribChannelList(AppApplication.getMyUserIdWithdefault());
                 break;
             case ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST:
-                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getAllChannelList(authBean.getUser_id());
+                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getAllChannelList(AppApplication.getMyUserIdWithdefault());
                 break;
             default:
         }
