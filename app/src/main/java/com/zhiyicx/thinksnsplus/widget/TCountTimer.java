@@ -19,7 +19,7 @@ public class TCountTimer extends CountDownTimer {
     private int mNormalColor, mTimingColor;
     private String mDurStr;
     private boolean canUseOntick;
-    private boolean canUseListener;
+    private boolean canUseListener = true;
     private boolean durStrBehindTime;
     private OnTimeListener mOnTimeListener;
 
@@ -31,7 +31,7 @@ public class TCountTimer extends CountDownTimer {
         private int normalColor, timingColor;
         private String durStr;
         private boolean canUseOntick;
-        private boolean canUseListener;
+        private boolean canUseListener = true;
         private boolean durStrBehindTime;
         private OnTimeListener onTimeListener;
 
@@ -144,7 +144,9 @@ public class TCountTimer extends CountDownTimer {
         if (mNormalColor > 0) {
             mBtn.setTextColor(mNormalColor);
         }
-        mBtn.setText(mEndStr);
+        if (!TextUtils.isEmpty(mEndStr)) {
+            mBtn.setText(mEndStr);
+        }
         mBtn.setEnabled(true);
         if (mOnTimeListener != null && canUseListener) {
             mOnTimeListener.onFinish();
@@ -162,16 +164,18 @@ public class TCountTimer extends CountDownTimer {
             mBtn.setTextColor(mTimingColor);
         }
         mBtn.setEnabled(canUseOntick);
+
+        String str;
         if (!TextUtils.isEmpty(mDurStr)) {
-            String str = mDurStr + " " + millisUntilFinished / 1000 + "s";
             if (durStrBehindTime) {
                 str = millisUntilFinished / 1000 + "s" + " " + mDurStr;
+            } else {
+                str = mDurStr + " " + millisUntilFinished / 1000 + "s";
             }
-            mBtn.setText(str);
         } else {
-            mBtn.setText(millisUntilFinished / 1000 + "s");
+            str = millisUntilFinished / 1000 + "s";
         }
-
+        mBtn.setText(str);
         if (mOnTimeListener != null && canUseListener) {
             mOnTimeListener.onTick();
         }
@@ -187,7 +191,7 @@ public class TCountTimer extends CountDownTimer {
         mBtn.setEnabled(true);
     }
 
-    private void replease() {
+    public void replease() {
         cancel();
     }
 

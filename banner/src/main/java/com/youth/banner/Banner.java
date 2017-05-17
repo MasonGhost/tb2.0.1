@@ -43,6 +43,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
     private int scrollTime = BannerConfig.DURATION;
     private boolean isAutoPlay = BannerConfig.IS_AUTO_PLAY;
     private boolean isScroll = BannerConfig.IS_SCROLL;
+    private boolean isEnableScroll = BannerConfig.IS_ENABLE_SCROLL;
     private int mIndicatorSelectedResId = R.drawable.gray_radius;
     private int mIndicatorUnselectedResId = R.drawable.white_radius;
     private int titleHeight;
@@ -106,6 +107,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         delayTime = typedArray.getInt(R.styleable.Banner_delay_time, BannerConfig.TIME);
         scrollTime = typedArray.getInt(R.styleable.Banner_scroll_time, BannerConfig.DURATION);
         isAutoPlay = typedArray.getBoolean(R.styleable.Banner_is_auto_play, BannerConfig.IS_AUTO_PLAY);
+        isEnableScroll = typedArray.getBoolean(R.styleable.Banner_is_enable_scroll, BannerConfig.IS_ENABLE_SCROLL);
         titleBackground = typedArray.getColor(R.styleable.Banner_title_background, BannerConfig.TITLE_BACKGROUND);
         titleHeight = typedArray.getDimensionPixelSize(R.styleable.Banner_title_height, BannerConfig.TITLE_HEIGHT);
         titleTextColor = typedArray.getColor(R.styleable.Banner_title_textcolor, BannerConfig.TITLE_TEXT_COLOR);
@@ -641,5 +643,9 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
     public int getCurrentItem() {
         return toRealPosition(currentItem);
+    }
+
+    public int getItemCount() {
+        return imageUrls.size();
     }
 }

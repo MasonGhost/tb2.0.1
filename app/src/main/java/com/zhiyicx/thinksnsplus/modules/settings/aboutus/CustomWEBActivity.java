@@ -24,6 +24,12 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
         return CustomWEBFragment.newInstance(getIntent().getExtras());
     }
 
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
+
     /**
      * 覆盖系统的回退键
      *
