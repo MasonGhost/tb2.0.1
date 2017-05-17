@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,7 @@ import rx.Subscription;
  * @Description
  */
 @FragmentScoped
-public class MusicPresenter extends BasePresenter<MusicContract.Repository, MusicContract.View>
+public class MusicPresenter extends BaseListPresenter<MusicContract.Repository, MusicContract.View,MusicAlbumListBean>
         implements MusicContract.Presenter {
 
     @Inject

@@ -1,8 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.base.BaseListPresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -26,7 +26,7 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class DigListPresenter extends BasePresenter<DigListContract.Repository, DigListContract.View> implements DigListContract.Presenter {
+public class DigListPresenter extends BaseListPresenter<DigListContract.Repository, DigListContract.View,FollowFansBean> implements DigListContract.Presenter {
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject

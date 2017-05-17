@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -43,7 +44,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -119,12 +119,29 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids) {
-        HashMap<String, Object> datas = new HashMap<>();
-        datas.put("user_ids", user_ids);
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-        return mUserInfoClient.getUserInfo(body)
-                .subscribeOn(Schedulers.io()).
-                        observeOn(AndroidSchedulers.mainThread());
+//        HashMap<String, Object> datas = new HashMap<>();
+//        datas.put("user_ids", user_ids);
+//        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
+//        return mUserInfoClient.getUserInfo(body)
+//                .subscribeOn(Schedulers.io()).
+//                        observeOn(AndroidSchedulers.mainThread());
+        String userids = user_ids.toString();
+        userids = userids.replace("[", "");
+        userids = userids.replace("]", "");
+        return mUserInfoClient.getUserInfoV2("33333")
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<List<UserInfoBean>, BaseJson<List<UserInfoBean>>>() {
+                    @Override
+                    public BaseJson<List<UserInfoBean>> call(List<UserInfoBean> userInfoBeen) {
+                        LogUtils.d("-----userInfo----------"+userInfoBeen.toString());
+                        BaseJson<List<UserInfoBean>> baseJson = new BaseJson<List<UserInfoBean>>();
+                        baseJson.setStatus(true);
+                        baseJson.setData(userInfoBeen);
+                        return baseJson;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
 
     /**
@@ -144,24 +161,41 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         }
         List<Object> user_ids = new ArrayList<>();
         user_ids.add(user_id);
-        HashMap<String, Object> datas = new HashMap<>();
-        datas.put("user_ids", user_ids);
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-        return mUserInfoClient.getUserInfo(body)
-                .subscribeOn(Schedulers.io()).
-                        observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<UserInfoBean>>() {
+//        HashMap<String, Object> datas = new HashMap<>();
+//        datas.put("user_ids", user_ids);
+//        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
+//        return mUserInfoClient.getUserInfo(body)
+//                .subscribeOn(Schedulers.io()).
+//                        observeOn(AndroidSchedulers.mainThread())
+//                .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<UserInfoBean>>() {
+//                    @Override
+//                    public BaseJson<UserInfoBean> call(BaseJson<List<UserInfoBean>> listBaseJson) {
+//                        beanBaseJson.setCode(listBaseJson.getCode());
+//                        beanBaseJson.setMessage(listBaseJson.getMessage());
+//                        beanBaseJson.setStatus(listBaseJson.isStatus());
+//                        if (listBaseJson.isStatus()) {
+//                            beanBaseJson.setData(listBaseJson.getData().get(0));
+//                        }
+//                        return beanBaseJson;
+//                    }
+//                });
+
+        String userids = user_ids.toString();
+        userids = userids.replace("[", "");
+        userids = userids.replace("]", "");
+
+        return mUserInfoClient.getUserInfoV2(userids)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<List<UserInfoBean>, BaseJson<UserInfoBean>>() {
                     @Override
-                    public BaseJson<UserInfoBean> call(BaseJson<List<UserInfoBean>> listBaseJson) {
-                        beanBaseJson.setCode(listBaseJson.getCode());
-                        beanBaseJson.setMessage(listBaseJson.getMessage());
-                        beanBaseJson.setStatus(listBaseJson.isStatus());
-                        if (listBaseJson.isStatus()) {
-                            beanBaseJson.setData(listBaseJson.getData().get(0));
-                        }
+                    public BaseJson<UserInfoBean> call(List<UserInfoBean> listBaseJson) {
+                        beanBaseJson.setStatus(true);
+                        beanBaseJson.setData(listBaseJson.get(0));
                         return beanBaseJson;
                     }
                 });
+
     }
 
     /**

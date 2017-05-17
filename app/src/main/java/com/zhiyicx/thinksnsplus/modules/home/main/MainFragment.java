@@ -8,10 +8,12 @@ import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
@@ -34,6 +36,8 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     @BindView(R.id.v_shadow)
     View mVShadow;
     List<Fragment> fragments = new ArrayList<>();
+
+    private IAuthRepository mIAuthRepository;
 
     public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -61,9 +65,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected void initView(View rootView) {
+        mIAuthRepository = AppApplication.AppComponentHolder.getAppComponent().authRepository();
         super.initView(rootView);
         initToolBar();
-
     }
 
     private void initToolBar() {
@@ -78,6 +82,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected void initData() {
+
         mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -86,7 +91,10 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
             @Override
             public void onPageSelected(int position) {
-
+                if (!TouristConfig.FOLLOW_CAN_LOOK && position == mVpFragment.getChildCount() - 1 && !mIAuthRepository.isLogin()) { // 游客处理
+                    showLoginPop();
+                    mVpFragment.setCurrentItem(1);// 转回热门
+                }
             }
 
             @Override
@@ -116,7 +124,11 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     protected List<Fragment> initFragments() {
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));
         fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_HOTS, this));
-        fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+        if (TouristConfig.FOLLOW_CAN_LOOK || mIAuthRepository.isLogin()) { // 游客处理
+            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_FOLLOWS, this));
+        } else {
+            fragments.add(DynamicFragment.newInstance(ApiConfig.DYNAMIC_TYPE_NEW, this));// 用于viewpager 占位
+        }
         return fragments;
     }
 

@@ -126,5 +126,6 @@ public interface DynamicContract {
          * 动态分享
          */
         void shareDynamic(DynamicBean dynamicBean, Bitmap bitmap);
+
     }
 }
