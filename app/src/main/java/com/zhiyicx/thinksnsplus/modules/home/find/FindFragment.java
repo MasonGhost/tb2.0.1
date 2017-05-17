@@ -126,7 +126,9 @@ public class FindFragment extends TSFragment {
                 }
                 break;
             case R.id.find_chanel:
-                startActivity(new Intent(getActivity(), ChannelListActivity.class));
+                if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
+                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
+                }
                 break;
             case R.id.find_active:
                 break;
