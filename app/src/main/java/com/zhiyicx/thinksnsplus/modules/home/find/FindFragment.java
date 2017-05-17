@@ -123,11 +123,15 @@ public class FindFragment extends TSFragment {
             case R.id.find_info:
                 if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     startActivity(new Intent(getActivity(), InfoActivity.class));
+                }else {
+                    showLoginPop();
                 }
                 break;
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     startActivity(new Intent(getActivity(), ChannelListActivity.class));
+                }else {
+                    showLoginPop();
                 }
                 break;
             case R.id.find_active:
@@ -155,6 +159,8 @@ public class FindFragment extends TSFragment {
                     } else {
                         startActivity(new Intent(getActivity(), MusicListActivity.class));
                     }
+                }else {
+                    showLoginPop();
                 }
                 break;
             case R.id.find_buy:
@@ -164,6 +170,8 @@ public class FindFragment extends TSFragment {
                     bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                }else {
+                    showLoginPop();
                 }
                 break;
             case R.id.find_person:

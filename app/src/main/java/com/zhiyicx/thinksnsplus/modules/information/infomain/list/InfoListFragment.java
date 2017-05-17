@@ -7,13 +7,13 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
@@ -28,8 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.container
-        .InfoContainerFragment.RECOMMEND_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment.RECOMMEND_INFO;
 
 /**
  * @Author Jliuer
@@ -66,19 +65,22 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         adapter.addItemViewDelegate(new InfoListItem() {
             @Override
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
-                if (!AppApplication.sOverRead.contains(position + "")) {
-                    AppApplication.sOverRead.add(position + "");
+
+                if (TouristConfig.INFO_DETAIL_CAN_LOOK || mPresenter.handleTouristControl()) {
+                    if (!AppApplication.sOverRead.contains(position + "")) {
+                        AppApplication.sOverRead.add(position + "");
+                    }
+                    FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
+                            , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
+                    title.setTextColor(getResources()
+                            .getColor(R.color.normal_for_assist_text));
+                    Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_INFO, realData);
+                    bundle.putString(BUNDLE_INFO_TYPE, mInfoType);
+                    intent.putExtra(BUNDLE_INFO, bundle);
+                    startActivity(intent);
                 }
-                FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
-                        ,imageView.getDrawable(),R.mipmap.icon_256),"info_share");
-                title.setTextColor(getResources()
-                        .getColor(R.color.normal_for_assist_text));
-                Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(BUNDLE_INFO, realData);
-                bundle.putString(BUNDLE_INFO_TYPE, mInfoType);
-                intent.putExtra(BUNDLE_INFO, bundle);
-                startActivity(intent);
             }
         });
 
