@@ -10,12 +10,15 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
@@ -52,6 +55,8 @@ public class FindFragment extends TSFragment {
 
     private ActionPopupWindow mActionPopupWindow;
 
+    private AuthRepository mAuthRepository;
+
     public FindFragment() {
     }
 
@@ -78,7 +83,7 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initData() {
-
+        mAuthRepository = AppApplication.AppComponentHolder.getAppComponent().authRepository();
     }
 
     @Override
@@ -116,8 +121,9 @@ public class FindFragment extends TSFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
-
-                startActivity(new Intent(getActivity(), InfoActivity.class));
+                if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
+                    startActivity(new Intent(getActivity(), InfoActivity.class));
+                }
                 break;
             case R.id.find_chanel:
                 startActivity(new Intent(getActivity(), ChannelListActivity.class));
