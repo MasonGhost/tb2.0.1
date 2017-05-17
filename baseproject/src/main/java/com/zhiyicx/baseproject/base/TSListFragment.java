@@ -20,6 +20,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.wcy.overscroll.OverScrollCheckListener;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -516,7 +517,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
 
     @Override
     public void onLoadMore() {
-        if (mPresenter.handleTouristControl()) { // 游客加载跟多处理
+        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.handleTouristControl()) { // 游客加载跟多处理
             return;
         }
         mPage++;

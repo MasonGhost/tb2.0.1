@@ -103,7 +103,7 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        if (TouristConfig.CHEENAL_CAN_SUBSCRIB || mPresenter.handleTouristControl()) {
+                        if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
                             mPresenter.handleChannelSubscrib(position, channelSubscripBean);
                         }
                     }
@@ -114,7 +114,7 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        if (TouristConfig.CHENNEL_DETAIL_CAN_LOOK || mPresenter.handleTouristControl()) {
+                        if (TouristConfig.CHENNEL_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
                             toChannelDetailPage(getContext(), channelSubscripBean);
                         }
                     }

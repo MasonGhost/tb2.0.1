@@ -432,7 +432,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                if (TouristConfig.MUSIC_CAN_PLAY || mPresenter.handleTouristControl()) {
+                if (TouristConfig.MUSIC_CAN_PLAY || !mPresenter.handleTouristControl()) {
 
                     MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
                     Intent intent = new Intent(getActivity(), MusicPlayActivity.class);

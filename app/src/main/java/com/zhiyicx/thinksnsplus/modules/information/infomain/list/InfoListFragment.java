@@ -66,7 +66,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
             @Override
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
 
-                if (TouristConfig.INFO_DETAIL_CAN_LOOK || mPresenter.handleTouristControl()) {
+                if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     if (!AppApplication.sOverRead.contains(position + "")) {
                         AppApplication.sOverRead.add(position + "");
                     }
