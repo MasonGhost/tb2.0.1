@@ -86,8 +86,9 @@
 
     <!-- 中间弹窗 -->
     <string name="buy_pay">购买支付</string>
-    <string name="buy_pay_desc">您只需￥%.2f元就可查看图片\n会员可免费查看，</string>
+    <string name="buy_pay_desc">您只需¥%.2f元就可查看图片\n会员可免费查看，</string>
     <string name="buy_pay_member">成为会员？</string>
+    <string name="buy_pay_money">¥%.2f</string>
     <string name="buy_pay_in">购买</string>
     <string name="buy_pay_out">返回</string>
 

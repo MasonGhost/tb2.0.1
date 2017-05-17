@@ -3,14 +3,16 @@ package com.zhiyicx.baseproject.widget.popwindow;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
 import android.widget.TextView;
 
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class CenterPopWindow extends CustomPopupWindow {
+public class PayPopWindow extends CustomPopupWindow {
 
     private CenterPopWindowItem1ClickListener mCenterPopWindowItem1ClickListener;
     private CenterPopWindowItem2ClickListener mCenterPopWindowItem2ClickListener;
@@ -35,18 +37,20 @@ public class CenterPopWindow extends CustomPopupWindow {
     private String item2Str;
     private String linksStr;
 
+    private float moneyCount;
     private int titleColor;
     private int moneyColor;
     private int descrColor;
     private int item1Color;
     private int item2Color;
-    private int linksColor;
+    private int linksColor1;
+    private int linksColor2;
 
     public static CBuilder builder() {
         return new CBuilder();
     }
 
-    private CenterPopWindow(CBuilder builder) {
+    private PayPopWindow(CBuilder builder) {
         super(builder);
         this.titleStr = builder.titleStr;
         this.moneyStr = builder.moneyStr;
@@ -60,7 +64,8 @@ public class CenterPopWindow extends CustomPopupWindow {
         this.descrColor = builder.descrColor;
         this.item1Color = builder.item1Color;
         this.item2Color = builder.item2Color;
-        this.linksColor = builder.linksColor;
+        this.linksColor1 = builder.linksColor1;
+        this.linksColor2 = builder.linksColor2;
 
         this.mCenterPopWindowItem1ClickListener = builder.mCenterPopWindowItem1ClickListener;
         this.mCenterPopWindowItem2ClickListener = builder.mCenterPopWindowItem2ClickListener;
@@ -71,10 +76,11 @@ public class CenterPopWindow extends CustomPopupWindow {
 
     protected void initView() {
         initTextView(titleStr, titleColor, R.id.ppw_center_title, null);
-        initTextView(moneyStr, moneyColor, R.id.ppw_center_money, null);
         initTextView(descrStr, descrColor, R.id.ppw_center_description, mCenterPopWindowLinkClickListener);
         initTextView(item1Str, item1Color, R.id.ppw_center_item1, mCenterPopWindowItem1ClickListener);
         initTextView(item2Str, item2Color, R.id.ppw_center_item2, mCenterPopWindowItem2ClickListener);
+
+        initMoneyTextView(moneyStr, moneyColor, R.id.ppw_center_money);
     }
 
     protected void initTextView(String text, int colorId, int resId, final CenterPopWindowItemClickListener clickListener) {
@@ -101,11 +107,26 @@ public class CenterPopWindow extends CustomPopupWindow {
 
     }
 
+    protected void initMoneyTextView(String moneyStr, int colorId, int resId) {
+        Spannable moneySpan = new SpannableString(moneyStr);
+        moneySpan.setSpan(new AbsoluteSizeSpan(20), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        moneySpan.setSpan(new AbsoluteSizeSpan(14), 2, moneyStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (!TextUtils.isEmpty(moneyStr)) {
+            TextView textView = (TextView) mContentView.findViewById(resId);
+            textView.setVisibility(View.VISIBLE);
+            textView.setText(moneySpan);
+            if (colorId != 0) {
+                textView.setTextColor(ContextCompat.getColor(mActivity, colorId));
+            }
+        }
+    }
+
     protected List<Link> setLinks(String link) {
         List<Link> links = new ArrayList<>();
         Link replyNameLink = new Link(link)
-                .setTextColor(ContextCompat.getColor(mActivity, R.color.themeColor))                  // optional, defaults to holo blue
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(mActivity, R.color.important_for_content)) // optional, defaults to holo blue
+                .setTextColor(ContextCompat.getColor(mActivity, linksColor1))                  // optional, defaults to holo blue
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(mActivity, linksColor2)) // optional, defaults to holo blue
                 .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                 .setUnderlined(false)                                       // optional, defaults to true
                 .setOnLongClickListener(new Link.OnLongClickListener() {
@@ -146,7 +167,8 @@ public class CenterPopWindow extends CustomPopupWindow {
         private int descrColor;
         private int item1Color;
         private int item2Color;
-        private int linksColor;
+        private int linksColor1;
+        private int linksColor2;
 
         public CBuilder buildCenterPopWindowLinkClickListener(CenterPopWindowLinkClickListener mCenterPopWindowLinkClickListener) {
             this.mCenterPopWindowLinkClickListener = mCenterPopWindowLinkClickListener;
@@ -181,8 +203,13 @@ public class CenterPopWindow extends CustomPopupWindow {
             return this;
         }
 
-        public CBuilder buildLinksColor(int linksColor) {
-            this.linksColor = linksColor;
+        public CBuilder buildLinksColor1(int linksColor1) {
+            this.linksColor1 = linksColor1;
+            return this;
+        }
+
+        public CBuilder buildLinksColor2(int linksColor2) {
+            this.linksColor2 = linksColor2;
             return this;
         }
 
@@ -297,9 +324,9 @@ public class CenterPopWindow extends CustomPopupWindow {
         }
 
         @Override
-        public CenterPopWindow build() {
+        public PayPopWindow build() {
             super.build();
-            return new CenterPopWindow(this);
+            return new PayPopWindow(this);
         }
     }
 

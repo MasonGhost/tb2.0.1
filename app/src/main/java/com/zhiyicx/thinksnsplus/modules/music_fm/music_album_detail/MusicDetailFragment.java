@@ -188,7 +188,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
 
-
     @Override
     protected boolean useEventBus() {
         return true;
