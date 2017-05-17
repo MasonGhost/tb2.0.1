@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,10 +15,9 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -66,12 +64,28 @@ public class DynamicDetailHeader {
         mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
-        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader.findViewById(R.id.ll_advert));
-        mDynamicDetailAdvertHeader.hideAdvert();
+        initAdvert(context);
         fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id.fl_comment_count_container);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
         screenWidth = UIUtils.getWindowWidth(context);
         picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
+    }
+
+    private void initAdvert(Context context) {
+        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader.findViewById(R.id.ll_advert));
+        List<String> testAdverts = new ArrayList<>();
+        testAdverts.add("");
+        testAdverts.add("");
+        testAdverts.add("");
+        mDynamicDetailAdvertHeader.setTitle("tym");
+        mDynamicDetailAdvertHeader.setAdverts(testAdverts);
+        mDynamicDetailAdvertHeader.setOnItemClickListener(new DynamicDetailAdvertHeader.OnItemClickListener() {
+            @Override
+            public void onItemClik(View v, int position, String url) {
+                ToastUtils.showToast(position + "");
+            }
+        });
+//        mDynamicDetailAdvertHeader.hideAdvert();
     }
 
     /**
