@@ -76,7 +76,6 @@ public class DynamicDetailHeader {
         List<String> testAdverts = new ArrayList<>();
         testAdverts.add("");
         testAdverts.add("");
-        testAdverts.add("");
         mDynamicDetailAdvertHeader.setTitle("tym");
         mDynamicDetailAdvertHeader.setAdverts(testAdverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener(new DynamicDetailAdvertHeader.OnItemClickListener() {

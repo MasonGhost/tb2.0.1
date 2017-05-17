@@ -44,10 +44,11 @@ public class DynamicDetailAdvertHeader {
     }
 
     public void setAdverts(List<String> adverts) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup
+                .LayoutParams.WRAP_CONTENT);
         params.weight = 1;
-        adverts = adverts.subList(0, 3);
-        for (int i = 0; i < 3; i++) {
+        adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
+        for (int i = 0; i < adverts.size(); i++) {
             FilterImageView imageView = new FilterImageView(mContext);
             imageView.setImageResource(R.mipmap.icon_256);
             imageView.setLayoutParams(params);
