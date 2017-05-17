@@ -3,11 +3,11 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-public class GuideActivity extends TSActivity<GuidePresenter, GuideFragment_v2> {
+public class GuideActivity extends TSActivity<GuidePresenter, GuideFragment> {
 
     @Override
-    protected GuideFragment_v2 getFragment() {
-        return new GuideFragment_v2();
+    protected GuideFragment getFragment() {
+        return new GuideFragment();
     }
 
     @Override

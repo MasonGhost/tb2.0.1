@@ -247,7 +247,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mMediaPlayer.pause();
                 mCurrentPosition = mMediaPlayer.getCurrentPosition();
             }
-
             relaxResources(false);
         }
         mState = PlaybackStateCompat.STATE_PAUSED;
@@ -388,6 +387,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
+        if (mState == PlaybackStateCompat.STATE_PAUSED) {
+            return;
+        }
         EventBus.getDefault().post(player.getDuration() / 1000,
                 EVENT_SEND_MUSIC_LOAD);
         configMediaPlayerState();

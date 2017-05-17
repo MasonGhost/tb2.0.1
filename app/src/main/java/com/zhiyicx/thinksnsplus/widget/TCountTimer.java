@@ -4,6 +4,8 @@ import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.widget.TextView;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 /**
  * @Author Jliuer
  * @Date 2017/5/16/14:18
@@ -53,7 +55,7 @@ public class TCountTimer extends CountDownTimer {
         }
 
         public Builder buildTimeCount(int time_count) {
-            this.time_count = time_count;
+            this.time_count = time_count + 1000;
             return this;
         }
 
@@ -146,6 +148,18 @@ public class TCountTimer extends CountDownTimer {
         }
         if (!TextUtils.isEmpty(mEndStr)) {
             mBtn.setText(mEndStr);
+        } else {
+            String str;
+            if (!TextUtils.isEmpty(mDurStr)) {
+                if (durStrBehindTime) {
+                    str = 0 + "s" + " " + mDurStr;
+                } else {
+                    str = mDurStr + " " + 0 + "s";
+                }
+            } else {
+                str = 0 + "s";
+            }
+            mBtn.setText(str);
         }
         mBtn.setEnabled(true);
         if (mOnTimeListener != null && canUseListener) {
@@ -156,6 +170,7 @@ public class TCountTimer extends CountDownTimer {
     // 计时过程显示
     @Override
     public void onTick(long millisUntilFinished) {
+        LogUtils.d("onTick::" + millisUntilFinished / 1000);
         if (mBtn == null) {
             replease();
             return;

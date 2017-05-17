@@ -126,6 +126,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (mDynamicBannerHeader != null)
+            mDynamicBannerHeader.startBanner();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mDynamicBannerHeader != null)
+            mDynamicBannerHeader.stopBanner();
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
@@ -143,7 +157,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        initTestAdvert();
+        //initTestAdvert();
         initInputView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 针对部分手机进入首页状态栏颜色修改无效
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
