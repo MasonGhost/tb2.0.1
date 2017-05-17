@@ -32,7 +32,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/17
  * @Contact master.jungle68@gmail.com
  */
-public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter, CommentedBean> implements MessageCommentContract.View, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter,
+        CommentedBean> implements MessageCommentContract.View, InputLimitView
+        .OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_toolbar_center)
@@ -85,7 +87,9 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen.divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable.shape_recyclerview_divider));
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
+                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
+                .shape_recyclerview_divider));
 
     }
 
@@ -98,7 +102,8 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     protected CommonAdapter<CommentedBean> getAdapter() {
-        CommonAdapter commonAdapter = new MessageCommentAdapter(getActivity(), R.layout.item_message_comment_list, mListDatas);
+        CommonAdapter commonAdapter = new MessageCommentAdapter(getActivity(), R.layout
+                .item_message_comment_list, mListDatas);
         commonAdapter.setOnItemClickListener(this);
         return commonAdapter;
     }
@@ -111,9 +116,11 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     private void initToolbar() {
         mToolbar.setBackgroundResource(R.color.white);
-        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
+        mToolbar.setPadding(0, setUseStatusView() ? 0 : DeviceUtils.getStatuBarHeight(getContext
+                        ()), 0,0);
         mTvToolBarCenter.setText(R.string.comment);
-        mTvToolBarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg()), null, null, null);
+        mTvToolBarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg
+                ()), null, null, null);
         mTvToolBarLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,13 +176,15 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {// 过滤自己的
+        if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
+                .getUser_id()) {// 过滤自己的
 
         } else {
             mReplyUserId = mListDatas.get(position).getUser_id();
             mCurrentPostion = position;
             showCommentView();
-            String contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUserInfo().getName());
+            String contentHint = getString(R.string.reply, mListDatas.get(position)
+                    .getCommentUserInfo().getName());
             mIlvComment.setEtContentHint(contentHint);
         }
     }
