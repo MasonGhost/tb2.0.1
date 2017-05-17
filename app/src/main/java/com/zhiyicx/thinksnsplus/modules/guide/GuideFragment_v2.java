@@ -10,7 +10,6 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
@@ -104,6 +103,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
             mGuideBanner.stopAutoPlay();
         }
         if (mPosition > 0) {
+            mTimer.replease();
             mTimer.newBuilder()
                     .buildCanUseOntick(true)
                     .buildDurText("跳过")
@@ -116,6 +116,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void onPageScrollStateChanged(int state) {
+
     }
 
     @Override
@@ -132,10 +133,16 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     public void OnBannerClick(int position) {
         Intent intent = new Intent(getActivity(), CustomWEBActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, "http://www.baidu.con");
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, "http://www.baidu.com");
         bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, "lalalla");
-        intent.putExtra("", bundle);
-        startActivity(intent);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.checkLogin();
     }
 
     private void initAdvert() {
@@ -145,7 +152,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                 .buildCanUseOntick(false)
                 .build();
 
-        mGuideBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+        mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
         mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
         List<String> urls = new ArrayList<>();
         urls.add("");
@@ -153,6 +160,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         urls.add("");
         urls.add("");
         mGuideBanner.setImages(urls);
+        mGuideBanner.setViewPagerIsScroll(false);
         mGuideBanner.setDelayTime(5000);
         mGuideBanner.setOnBannerListener(this);
         mGuideBanner.setOnPageChangeListener(this);

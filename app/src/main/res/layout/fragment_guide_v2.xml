@@ -8,18 +8,19 @@
     <com.youth.banner.Banner
         android:id="@+id/guide_banner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <TextView
-        android:clickable="false"
         android:id="@+id/guide_text"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/launch_advert_width60dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|right"
         android:layout_marginBottom="@dimen/spacing_large"
-        android:gravity="right"
-        android:text="@string/copyright"
+        android:layout_marginRight="@dimen/spacing_large"
+        android:background="@drawable/shape_button_corner_advert_big"
+        android:clickable="false"
+        android:gravity="center"
+        android:minWidth="@dimen/info_channel_20dp"
         android:textColor="@color/copy_right_color"
-        android:textSize="@dimen/copyright_text_size"
-        />
+        android:textSize="@dimen/size_content"/>
 </FrameLayout>

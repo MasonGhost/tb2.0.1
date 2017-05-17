@@ -2,6 +2,7 @@
 <resources>
     <!--  圆角  -->
     <dimen name="button_corner_big">6dp</dimen>
+    <dimen name="button_corner_large">10dp</dimen>
     <dimen name="button_corner_small">4dp</dimen>
     <!-- 文字大小  -->
     <dimen name="button_text_size_big">@dimen/size_sub_title</dimen>
