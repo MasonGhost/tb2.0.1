@@ -247,7 +247,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mMediaPlayer.pause();
                 mCurrentPosition = mMediaPlayer.getCurrentPosition();
             }
-
             relaxResources(false);
         }
         mState = PlaybackStateCompat.STATE_PAUSED;
@@ -327,15 +326,17 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             }
 
             if (mPlayOnFocusGain) {
-                if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
+                if (mMediaPlayer != null && !mMediaPlayer.isPlaying()
+                        && mState != PlaybackStateCompat.STATE_PAUSED) {
                     if (mCurrentPosition == mMediaPlayer.getCurrentPosition()) {
                         mMediaPlayer.start(); // 进入界面后是否自动播放
                         mState = PlaybackStateCompat.STATE_PLAYING;
                         LogUtils.d("mCurrentPosition == mMediaPlayer.start()");
                     } else {
                         LogUtils.d("mCurrentPosition == mMediaPlayer.seekTo");
-                        mMediaPlayer.seekTo(mCurrentPosition);
                         mState = PlaybackStateCompat.STATE_BUFFERING;
+                        mMediaPlayer.seekTo(mCurrentPosition);
+
                     }
                 }
                 mPlayOnFocusGain = false;

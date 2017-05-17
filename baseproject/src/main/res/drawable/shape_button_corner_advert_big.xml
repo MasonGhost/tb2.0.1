@@ -7,6 +7,6 @@
         android:left="@dimen/spacing_tiny"
         android:right="@dimen/spacing_tiny"
         android:top="@dimen/spacing_tiny"/>
-    <solid android:color="@color/bt_disable"/>
+    <solid android:color="@color/general_for_hint_alpha"/>
     <corners android:radius="@dimen/button_corner_large"/>
 </shape>
