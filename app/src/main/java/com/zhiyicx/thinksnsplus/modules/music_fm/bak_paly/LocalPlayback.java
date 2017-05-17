@@ -326,17 +326,15 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
             }
 
             if (mPlayOnFocusGain) {
-                if (mMediaPlayer != null && !mMediaPlayer.isPlaying()
-                        && mState != PlaybackStateCompat.STATE_PAUSED) {
+                if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
                     if (mCurrentPosition == mMediaPlayer.getCurrentPosition()) {
                         mMediaPlayer.start(); // 进入界面后是否自动播放
                         mState = PlaybackStateCompat.STATE_PLAYING;
                         LogUtils.d("mCurrentPosition == mMediaPlayer.start()");
                     } else {
                         LogUtils.d("mCurrentPosition == mMediaPlayer.seekTo");
-                        mState = PlaybackStateCompat.STATE_BUFFERING;
                         mMediaPlayer.seekTo(mCurrentPosition);
-
+                        mState = PlaybackStateCompat.STATE_BUFFERING;
                     }
                 }
                 mPlayOnFocusGain = false;
@@ -389,6 +387,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
+        if (mState == PlaybackStateCompat.STATE_PAUSED) {
+            return;
+        }
         EventBus.getDefault().post(player.getDuration() / 1000,
                 EVENT_SEND_MUSIC_LOAD);
         configMediaPlayerState();
