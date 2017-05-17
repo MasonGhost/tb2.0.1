@@ -18,7 +18,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.baseproject.widget.popwindow.CenterPopWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -98,7 +98,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private ActionPopupWindow mMyDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
     private ActionPopupWindow mReSendDynamicPopWindow;
-    private CenterPopWindow mCenterPopWindow;
+    private PayPopWindow mPayPopWindow;
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
 
@@ -396,6 +396,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, shareBitMap);
+//                    initCenterPopWindow();
+//                    mPayPopWindow.show();
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
@@ -662,11 +664,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     private void initCenterPopWindow() {
-        mCenterPopWindow = CenterPopWindow.builder()
+        mPayPopWindow = PayPopWindow.builder()
                 .with(getActivity())
                 .isWrap(true)
                 .isFocus(true)
                 .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R.string.buy_pay_member), 4.4))
@@ -674,20 +678,20 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr("4.4")
-                .buildCenterPopWindowItem1ClickListener(new CenterPopWindow.CenterPopWindowItem1ClickListener() {
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), 4.4))
+                .buildCenterPopWindowItem1ClickListener(new PayPopWindow.CenterPopWindowItem1ClickListener() {
                     @Override
                     public void onClicked() {
-                        mCenterPopWindow.hide();
+                        mPayPopWindow.hide();
                     }
                 })
-                .buildCenterPopWindowItem2ClickListener(new CenterPopWindow.CenterPopWindowItem2ClickListener() {
+                .buildCenterPopWindowItem2ClickListener(new PayPopWindow.CenterPopWindowItem2ClickListener() {
                     @Override
                     public void onClicked() {
-                        mCenterPopWindow.hide();
+                        mPayPopWindow.hide();
                     }
                 })
-                .buildCenterPopWindowLinkClickListener(new CenterPopWindow.CenterPopWindowLinkClickListener() {
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow.CenterPopWindowLinkClickListener() {
                     @Override
                     public void onLongClick() {
 
