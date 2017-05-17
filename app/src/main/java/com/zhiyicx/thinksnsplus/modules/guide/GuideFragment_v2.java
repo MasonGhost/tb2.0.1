@@ -104,7 +104,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         }
         if (mPosition > 0) {
             mTimer.replease();
+            mGuideBanner.setDelayTime(position * 2000);
             mTimer.newBuilder()
+                    .buildTimeCount(position * 2000)
                     .buildCanUseOntick(true)
                     .buildDurText("跳过")
                     .buildCanUseListener(mPosition == 3)
