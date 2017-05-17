@@ -1,10 +1,9 @@
 package com.zhiyicx.thinksnsplus.base;
 
-import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 
 import javax.inject.Inject;
 
@@ -35,7 +34,7 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
 
     @Override
     public boolean handleTouristControl() {
-        if (isLogin() || TouristConfig.LIST_CAN_LOAD_MORE) {
+        if (isLogin()) {
             return false;
         } else {
             mRootView.showLoginPop();
