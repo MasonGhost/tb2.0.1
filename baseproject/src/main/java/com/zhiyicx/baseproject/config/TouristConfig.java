@@ -19,7 +19,7 @@ public class TouristConfig {
     /**
      * 发现页是否可以查看
      */
-    public static final boolean FIND_CAN_LOOK = false;
+    public static final boolean FIND_CAN_LOOK = true;
     /**
      * 动态详情是否可以查看
      */

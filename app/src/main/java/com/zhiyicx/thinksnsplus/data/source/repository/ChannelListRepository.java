@@ -22,19 +22,21 @@ import rx.Observable;
  */
 
 public class ChannelListRepository extends BaseChannelRepository implements ChannelListContract.Repository {
+
     public ChannelListRepository(ServiceManager serviceManager, Application context) {
         super(serviceManager, context);
     }
 
     @Override
     public Observable<BaseJson<List<ChannelSubscripBean>>> getMySubscribChannelList() {
-        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        return getChannelList(ApiConfig.CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL, authBean.getUser_id());
+        return getChannelList(ApiConfig.CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL, AppApplication.getMyUserIdWithdefault());
     }
+
 
     @Override
     public Observable<BaseJson<List<ChannelSubscripBean>>> getAllChannelList() {
-        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        return getChannelList(ApiConfig.CHANNEL_TYPE_ALL_CHANNEL, authBean.getUser_id());
+        return getChannelList(ApiConfig.CHANNEL_TYPE_ALL_CHANNEL, AppApplication.getMyUserIdWithdefault());
     }
+
+
 }
