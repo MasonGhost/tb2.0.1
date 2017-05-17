@@ -175,7 +175,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 break;
             // 点击发现
             case R.id.ll_find:
-                mVpHome.setCurrentItem(PAGE_FIND, false);
+                if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                    mVpHome.setCurrentItem(PAGE_FIND, false);
+                }
                 break;
             // 添加动态
             case R.id.fl_add:
