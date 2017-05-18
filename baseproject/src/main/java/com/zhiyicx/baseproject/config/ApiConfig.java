@@ -44,8 +44,8 @@ public class ApiConfig {
     // 图片地址
     public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/" + API_VERSION + "/storages/%s";// 不带质量压缩
 
-    /*******************************************  接口 Path
-     * *********************************************/
+    /*******************************************  接口 Path  *********************************************/
+
     /**
      * 登录 Login
      */
@@ -265,4 +265,9 @@ public class ApiConfig {
     public static final String APP_COMPONENT_SOURCE_TABLE_MUSICS = "musics";
     public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_specials";
     public static final String APP_COMPONENT_SOURCE_TABLE_NEWS = "news";
+
+
+    /*******************************************  API V2  *********************************************/
+    // 获取启动信息
+    public static final String APP_PATH_GET_BOOTSTRAPERS_INFO = "api/" + API_VERSION_2 + "/bootstrappers";
 }

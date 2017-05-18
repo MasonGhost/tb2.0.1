@@ -432,7 +432,7 @@ public class BackgroundTaskHandler {
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getComponentConfigLocal().get(0).getValue());
+                        imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
                         mAuthRepository.saveIMConfig(imConfig);
                         mAuthRepository.loginIM();
                     }

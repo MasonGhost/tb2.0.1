@@ -14,6 +14,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -139,6 +140,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                     }
                 });
         mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
+        AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     @Override

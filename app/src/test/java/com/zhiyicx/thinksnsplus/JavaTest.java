@@ -1,10 +1,10 @@
 package com.zhiyicx.thinksnsplus;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.junit.Assert;
@@ -139,30 +139,39 @@ public class JavaTest {
 
     @Test
     public void jsonObject2map() {
-        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
-
-        Map<String, Object> retMap = new Gson().fromJson(jsonstr,
-                new TypeToken<Map<String, Object>>() {
-                }.getType());
-        for (Map.Entry<String, Object> entry : retMap.entrySet()) {
-            System.out.println( "Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        }
-        String jsonstr2 = "{\n" +
-                "    \"phone\": [\n" +
-                "        \"手机号码错误\"\n" +
-                "    ],\n" +
-                "    \"password\": [\n" +
-                "        \"用户密码错误\"\n" +
+//        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
+//
+//        Map<String, Object> retMap = new Gson().fromJson(jsonstr,
+//                new TypeToken<Map<String, Object>>() {
+//                }.getType());
+//        for (Map.Entry<String, Object> entry : retMap.entrySet()) {
+//            System.out.println( "Key = " + entry.getKey() + ", Value = " + entry.getValue());
+//        }
+//        String jsonstr2 = "{\n" +
+//                "    \"phone\": [\n" +
+//                "        \"手机号码错误\"\n" +
+//                "    ],\n" +
+//                "    \"password\": [\n" +
+//                "        \"用户密码错误\"\n" +
+//                "    ]\n" +
+//                "}";
+//
+//        Map<String, String[]> retMap2 = new Gson().fromJson(jsonstr2,
+//                new TypeToken<Map<String, String[]>>() {
+//                }.getType());
+//        for (Map.Entry<String, String[]> entry : retMap2.entrySet()) {
+//            System.out.println("Key2 = " + entry.getKey() + ", Value2 = " + entry.getValue()[0]);
+//        }
+        String test="{\n" +
+                "    \"im:serve\": \"127.0.0.1:9900\", \n" +
+                "    \"im:helper\": [ \n" +
+                "        {\n" +
+                "            \"uid\": \"1\", \n" +
+                "            \"url\": \"https://plus.io/users/1\"\n" +
+                "        }\n" +
                 "    ]\n" +
                 "}";
-
-        Map<String, String[]> retMap2 = new Gson().fromJson(jsonstr2,
-                new TypeToken<Map<String, String[]>>() {
-                }.getType());
-        for (Map.Entry<String, String[]> entry : retMap2.entrySet()) {
-            System.out.println("Key2 = " + entry.getKey() + ", Value2 = " + entry.getValue()[0]);
-        }
-
+        System.out.println("---- = " + new Gson().fromJson(test, SystemConfigBean.class).toString());
 
     }
 

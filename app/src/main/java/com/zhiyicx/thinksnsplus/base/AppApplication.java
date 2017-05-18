@@ -89,7 +89,7 @@ public class AppApplication extends TSApplication {
         FreelineCore.init(this);
         initComponent();
         // IM
-        if (!mAuthRepository.isTourist() && mSystemRepository.getComponentStatusLocal().isIm()) { // 不是游客并且安装了 IM
+        if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
             ZBIMSDK.init(getContext());
         }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
@@ -318,6 +318,7 @@ public class AppApplication extends TSApplication {
 
     /**
      * 获取我的用户 id ，default = -1;
+     *
      * @return
      */
     public static int getMyUserIdWithdefault() {

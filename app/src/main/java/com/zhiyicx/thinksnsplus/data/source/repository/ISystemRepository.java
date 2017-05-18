@@ -1,8 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 
 import java.util.List;
@@ -19,48 +18,58 @@ import rx.Observable;
 public interface ISystemRepository {
 
     /**
-     * 获取扩展组件状态
-     *
-     * @return
+     * 去获取服务器启动信息
      */
-    ComponentStatusBean getComponentStatusLocal();
+    void getBootstrappersInfoFromServer();
 
     /**
-     * 保存扩张组件状态
-     *
-     * @param componentStatusBean
-     * @return
+     * 获取本地启动信息
      */
-    boolean saveComponentStatus(ComponentStatusBean componentStatusBean);
+    SystemConfigBean getBootstrappersInfoFromLocal();
 
-    /**
-     * 获取扩展组件配置
-     *
-     * @return
-     */
-    List<ComponentConfigBean> getComponentConfigLocal();
-
-    /**
-     * 保存扩展组件
-     *
-     * @param componentConfigBeens
-     * @return
-     */
-
-    boolean saveComponentConfig(List<ComponentConfigBean> componentConfigBeens);
-
-    /**
-     * 从服务器获取组件状态
-     */
-    void getComponentStatusFromServer();
-
-    /**
-     * 从服务器获取组件配置
-     *
-     * @param component
-     */
-    void getComponentConfigFromServer(String component);
-
+//    /**
+//     * 获取扩展组件状态
+//     *
+//     * @return
+//     */
+//    ComponentStatusBean getComponentStatusLocal();
+//
+//    /**
+//     * 保存扩张组件状态
+//     *
+//     * @param componentStatusBean
+//     * @return
+//     */
+//    boolean saveComponentStatus(ComponentStatusBean componentStatusBean);
+//
+//    /**
+//     * 获取扩展组件配置
+//     *
+//     * @return
+//     */
+//    List<ComponentConfigBean> getComponentConfigLocal();
+//
+//    /**
+//     * 保存扩展组件
+//     *
+//     * @param componentConfigBeens
+//     * @return
+//     */
+//
+//    boolean saveComponentConfig(List<ComponentConfigBean> componentConfigBeens);
+//
+//    /**
+//     * 从服务器获取组件状态
+//     */
+//    void getComponentStatusFromServer();
+//
+//    /**
+//     * 从服务器获取组件配置
+//     *
+//     * @param component
+//     */
+//    void getComponentConfigFromServer(String component);
+//
 
     /**
      * 意见反馈
@@ -68,7 +77,7 @@ public interface ISystemRepository {
      * @param content 反馈内容
      * @return
      */
-    Observable<BaseJson<Object>> systemFeedback(String content,long system_mark);
+    Observable<BaseJson<Object>> systemFeedback(String content, long system_mark);
 
     /**
      * 获取系统会话列表

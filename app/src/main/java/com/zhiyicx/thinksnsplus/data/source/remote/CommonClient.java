@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_STATUS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVERSATIONS;
@@ -59,9 +61,9 @@ public interface CommonClient {
      * change: 修改,找回密码
      */
 
-     String VERTIFY_CODE_TYPE_REGISTER = "register";
-     String VERTIFY_CODE_TYPE_LOGIN = "login";
-     String VERTIFY_CODE_TYPE_CHANGE = "change";
+    String VERTIFY_CODE_TYPE_REGISTER = "register";
+    String VERTIFY_CODE_TYPE_LOGIN = "login";
+    String VERTIFY_CODE_TYPE_CHANGE = "change";
 
 
     /*******************************************  系统相关  *********************************************/
@@ -108,6 +110,14 @@ public interface CommonClient {
     Observable<BaseJson<List<ComponentConfigBean>>> getComponentConfigs(@Query("component") String component);
 
     /**
+     * 启动信息
+     *
+     * @return
+     */
+    @GET(APP_PATH_GET_BOOTSTRAPERS_INFO)
+    Observable<SystemConfigBean> getBootstrappersInfo();
+
+    /**
      * 意见反馈
      *
      * @param content
@@ -150,7 +160,7 @@ public interface CommonClient {
      */
     @Multipart
     @POST
-    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers, @Part  List<MultipartBody.Part> params);
+    Observable<String> upLoadFileByPost(@Url String url, @HeaderMap HashMap<String, String> headers, @Part List<MultipartBody.Part> params);
 
     /**
      * 通过Put方法上传文件

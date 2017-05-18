@@ -3,16 +3,16 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
+import com.google.gson.Gson;
+import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
@@ -20,7 +20,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -63,58 +62,15 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
-     * @return
-     */
-    public ComponentStatusBean getComponentStatusLocal() {
-        ComponentStatusBean componentStatusBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_STATUS);
-        if (componentStatusBean == null) { //默认开启 IM
-            componentStatusBean = new ComponentStatusBean();
-            componentStatusBean.setIm(true);
-        }
-        return componentStatusBean;
-    }
-
-    /**
-     * @param componentStatusBean
-     * @return
-     */
-    public boolean saveComponentStatus(ComponentStatusBean componentStatusBean) {
-        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_STATUS, componentStatusBean);
-    }
-
-    /**
-     * @return
-     */
-    public List<ComponentConfigBean> getComponentConfigLocal() {
-        List<ComponentConfigBean> result = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_CONFIG);
-        if (result == null || result.size() == 0) { //本地默认地址
-            result = new ArrayList<>();
-            ComponentConfigBean componentConfigBean = new ComponentConfigBean();
-            componentConfigBean.setName("serverurl");
-            componentConfigBean.setValue(ApiConfig.APP_IM_DOMAIN);
-            result.add(componentConfigBean);
-        }
-        return result;
-    }
-
-    /**
-     * @param componentConfigBeens
-     * @return
-     */
-    public boolean saveComponentConfig(List<ComponentConfigBean> componentConfigBeens) {
-        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_COMPONENT_CONFIG, componentConfigBeens);
-    }
-
-    /**
-     * 从服务器获取组件状态信息
+     * 去获取服务器启动信息
      */
     @Override
-    public void getComponentStatusFromServer() {
-        mCommonClient.getComponentStatus()
+    public void getBootstrappersInfoFromServer() {
+        mCommonClient.getBootstrappersInfo()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new BaseSubscribe<ComponentStatusBean>() {
+                .subscribe(new BaseSubscribeForV2<SystemConfigBean>() {
                     @Override
-                    protected void onSuccess(ComponentStatusBean data) {
+                    protected void onSuccess(SystemConfigBean data) {
                         saveComponentStatus(data);
                     }
 
@@ -131,32 +87,29 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
-     * 通过组件查看配置信息
+     * 去获取本地启动信息
      *
-     * @param component 组件
+     * @return
      */
     @Override
-    public void getComponentConfigFromServer(String component) {
-        mCommonClient.getComponentConfigs(component)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new BaseSubscribe<List<ComponentConfigBean>>() {
-                    @Override
-                    protected void onSuccess(List<ComponentConfigBean> data) {
-                        saveComponentConfig(data);
-
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
-                    }
-                });
+    public SystemConfigBean getBootstrappersInfoFromLocal() {
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        if (systemConfigBean == null) { // 读取本地默认配置
+            systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
+        }
+        return systemConfigBean;
     }
+
+    /**
+     * 保存启动信息
+     *
+     * @param systemConfigBean
+     * @return
+     */
+    private boolean saveComponentStatus(SystemConfigBean systemConfigBean) {
+        return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS, systemConfigBean);
+    }
+
 
     /**
      * 系统反馈

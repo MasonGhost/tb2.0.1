@@ -8,11 +8,10 @@ package com.zhiyicx.thinksnsplus.config;
  */
 
 public class SharePreferenceTagConfig {
-    public static final String SHAREPREFERENCE_TAG_AUTHBEAN = "authBean";
-    public static final String SHAREPREFERENCE_TAG_IMCONFIG = "imConfig";
+    public static final String SHAREPREFERENCE_TAG_AUTHBEAN = "authBean"; // 认证信息
+    public static final String SHAREPREFERENCE_TAG_IMCONFIG = "imConfig"; // im 配置
     public static final String SHAREPREFERENCE_TAG_MUSIC = "music";
-    public static final String SHAREPREFERENCE_TAG_COMPONENT_STATUS = "component_status";
-    public static final String SHAREPREFERENCE_TAG_COMPONENT_CONFIG = "component_config";
+    public static final String SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS = "system_bootstrappers"; // 系统启动配置信息
 
     public static final String SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME = "last_flushmessage_time";
 

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.thinksnsplus.R;
@@ -38,6 +39,11 @@ public class SystemConversationFragment extends BaseChatFragment<SystemConversat
         return getString(R.string.ts_helper);
     }
 
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        AndroidBug5497Workaround.assistActivity(getActivity());
+    }
 
     @Override
     protected void initData() {
