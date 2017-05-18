@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -98,7 +99,9 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     protected void initView(View rootView) {
+        AndroidBug5497Workaround.assistActivity(getActivity());
         super.initView(rootView);
+//        AndroidBug5497Workaround.assistActivity(getActivity());
         mIlvComment.setSendButtonVisiable(true);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mMusicCommentHeader = new MusicCommentHeader(getActivity());
@@ -174,6 +177,12 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public void onReSendClick(MusicCommentListBean musicCommentListBean) {
         initReSendCommentPopupWindow(musicCommentListBean);
         mReSendCommentPopWindow.show();
+    }
+
+    @Override
+    public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        super.onResponseError(throwable, isLoadMore);
+        mMusicCommentHeader.hide();
     }
 
     @Override
