@@ -170,7 +170,6 @@ public class TCountTimer extends CountDownTimer {
     // 计时过程显示
     @Override
     public void onTick(long millisUntilFinished) {
-        LogUtils.d("onTick::" + millisUntilFinished / 1000);
         if (mBtn == null) {
             replease();
             return;
