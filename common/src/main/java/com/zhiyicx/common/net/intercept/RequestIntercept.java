@@ -3,16 +3,14 @@ package com.zhiyicx.common.net.intercept;
 import android.support.annotation.NonNull;
 
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
-import com.zhiyicx.common.utils.ZipHelper;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -77,21 +75,7 @@ public class RequestIntercept implements Interceptor {
                 .get("Content-Encoding");
 
         Buffer clone = buffer.clone();
-        String bodyString;
-
-        //解析response content
-        if (encoding != null && encoding.equalsIgnoreCase("gzip")) {//content使用gzip压缩
-            bodyString = ZipHelper.decompressForGzip(clone.readByteArray());//解压
-        } else if (encoding != null && encoding.equalsIgnoreCase("zlib")) {//content使用zlib压缩
-            bodyString = ZipHelper.decompressToStringForZlib(clone.readByteArray());//解压
-        } else {//content没有被压缩
-            Charset charset = Charset.forName("UTF-8");
-            MediaType contentType = responseBody.contentType();
-            if (contentType != null) {
-                charset = contentType.charset(charset);
-            }
-            bodyString = clone.readString(charset);
-        }
+        String bodyString = ConvertUtils.praseBodyString(responseBody, encoding, clone);
         // 打印返回的json结果
         LogUtils.json(TAG, bodyString);
 
