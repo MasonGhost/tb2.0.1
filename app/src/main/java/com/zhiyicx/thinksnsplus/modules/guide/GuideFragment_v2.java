@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
@@ -21,14 +22,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implements GuideContract.View,
         OnBannerListener, ViewPager.OnPageChangeListener, TCountTimer.OnTimeListener {
-    public static final int DEFAULT_DELAY_TIME = 1000;
 
     @BindView(R.id.guide_banner)
     Banner mGuideBanner;
@@ -46,6 +45,14 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     protected void initView(View rootView) {
         initAdvert();
+        RxView.clicks(mGuideText).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mPresenter.checkLogin();
+                    }
+                });
     }
 
     @Override
@@ -65,28 +72,10 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-//                        mPresenter.checkLogin();
-                    }
-                });
-    }
-
-    @Override
     public void startActivity(Class aClass) {
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
-    }
-
-    @OnClick(R.id.guide_text)
-    public void onViewClicked() {
-        mPresenter.checkLogin();
     }
 
     @Override
