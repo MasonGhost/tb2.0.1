@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implements GuideContract.View,
@@ -99,7 +100,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
             mTimer.newBuilder()
                     .buildTimeCount(position * 2000)
                     .buildCanUseOntick(true)
-                    .buildDurText("跳过")
+                    .buildDurText(getString(R.string.skip))
                     .buildCanUseListener(mPosition == mGuideBanner.getItemCount() - 1)
                     .buildOnTimeListener(this)
                     .build()
@@ -126,7 +127,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     public void OnBannerClick(int position) {
         Intent intent = new Intent(getActivity(), CustomWEBActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, "http://www.baidu.com");
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, URL_ABOUT_US);
         bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, "lalalla");
         intent.putExtras(bundle);
         startActivityForResult(intent, 0);

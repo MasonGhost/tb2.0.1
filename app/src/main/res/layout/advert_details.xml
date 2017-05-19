@@ -44,7 +44,7 @@
     <LinearLayout
         android:id="@+id/fl_advert_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
+        android:layout_height="@dimen/channel_advert_height82_dp"
         android:layout_margin="@dimen/spacing_normal"
         android:divider="@drawable/advert_space"
         android:orientation="horizontal"

@@ -39,6 +39,7 @@
     <string name="change_bg_cover">更换封面</string>
     <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
+    <string name="skip">跳过</string>
     <string name="intro_default">这家伙很懒,什么都没有留下</string>
     <!-- 注册 -->
     <string name="regist">注册</string>

@@ -44,8 +44,7 @@ public class DynamicDetailAdvertHeader {
     }
 
     public void setAdverts(List<String> adverts) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup
-                .LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, mContext.getResources().getDimensionPixelSize(R.dimen.channel_advert_height82_dp));
         params.weight = 1;
         adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
         for (int i = 0; i < adverts.size(); i++) {
