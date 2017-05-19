@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ public class PayPopWindow extends CustomPopupWindow {
     private String item2Str;
     private String linksStr;
 
-    private float moneyCount;
     private int titleColor;
     private int moneyColor;
     private int descrColor;
@@ -108,9 +108,10 @@ public class PayPopWindow extends CustomPopupWindow {
     }
 
     protected void initMoneyTextView(String moneyStr, int colorId, int resId) {
+
         Spannable moneySpan = new SpannableString(moneyStr);
-        moneySpan.setSpan(new AbsoluteSizeSpan(20), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        moneySpan.setSpan(new AbsoluteSizeSpan(30), 1, moneyStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,20)), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,40)), 1, moneyStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (!TextUtils.isEmpty(moneyStr)) {
             TextView textView = (TextView) mContentView.findViewById(resId);

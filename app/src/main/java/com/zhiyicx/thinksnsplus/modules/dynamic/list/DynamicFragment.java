@@ -410,9 +410,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, shareBitMap);
-//                    initCenterPopWindow();
-//                    mPayPopWindow.show();
-                    mMyDynamicPopWindow.show();
+                    initCenterPopWindow();
+                    mPayPopWindow.show();
+//                    mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, shareBitMap);

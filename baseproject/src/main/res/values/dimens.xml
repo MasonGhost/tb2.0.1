@@ -58,6 +58,6 @@
 
     <!--#########################################      ppw_center尺寸       ################################-->
     <dimen name="margin_tb">25dp</dimen>
-    <dimen name="width">250dp</dimen>
-    <dimen name="margin_lr">35dp</dimen>
+    <dimen name="ppw_center_width">333dp</dimen>
+    <dimen name="margin_lr">32dp</dimen>
 </resources>
