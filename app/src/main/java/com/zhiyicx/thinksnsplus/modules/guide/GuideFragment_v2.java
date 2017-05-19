@@ -11,6 +11,7 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
@@ -45,6 +46,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     protected void initView(View rootView) {
         initAdvert();
+
         RxView.clicks(mGuideText).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {

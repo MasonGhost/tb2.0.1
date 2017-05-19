@@ -23,4 +23,15 @@
         android:minWidth="@dimen/info_channel_20dp"
         android:textColor="@color/copy_right_color"
         android:textSize="@dimen/size_content"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:gravity="center"
+        android:text="@string/copyright"
+        android:textColor="@color/copy_right_color"
+        android:textSize="@dimen/copyright_text_size"
+        />
 </FrameLayout>
