@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tool="http://schemas.android.com/tools"
     android:id="@+id/ll_advert"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -45,9 +44,11 @@
     <LinearLayout
         android:id="@+id/fl_advert_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
+        android:layout_height="@dimen/channel_advert_height82_dp"
         android:layout_margin="@dimen/spacing_normal"
-        android:orientation="horizontal">
+        android:divider="@drawable/advert_space"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
     </LinearLayout>
 

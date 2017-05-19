@@ -35,6 +35,7 @@ public class DynamicBannerHeader {
         mDynamicBannerHeader = LayoutInflater.from(context).inflate(R.layout.item_banner, null);
         mDynamicBannerHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        mDynamicBannerHeader.setPadding(0, 10, 0, 0);
         mBanner = (Banner) mDynamicBannerHeader.findViewById(R.id.item_banner);
         mBanner.setOnBannerListener(new OnBannerListener() {
             @Override
@@ -67,7 +68,7 @@ public class DynamicBannerHeader {
         mBanner.setDelayTime(headInfo.getDelay());
         mBanner.setImageLoader(new BannerImageLoaderUtil());
         mBanner.setImages(headInfo.getUrls());
-        mBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+        mBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
         mBanner.setBannerTitles(headInfo.getTitles());
         mBanner.start();
     }

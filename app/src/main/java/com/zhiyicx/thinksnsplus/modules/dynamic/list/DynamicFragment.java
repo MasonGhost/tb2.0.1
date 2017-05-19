@@ -167,10 +167,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     private void initTestAdvert() {
         List<String> test = new ArrayList<>();
-        test.add("one");
-        test.add("two");
-        test.add("three");
-        test.add("four");
+        test.add("oneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone");
+        test.add("twotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwo");
+        test.add("threethreethreethreethreethreethreethreethreethreethreethreethreethreethreethree");
+        test.add("fourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfour");
         mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
         DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new DynamicBannerHeaderInfo();
         headerInfo.setTitles(test);

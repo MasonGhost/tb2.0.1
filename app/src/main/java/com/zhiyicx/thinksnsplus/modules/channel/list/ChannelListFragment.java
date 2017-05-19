@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,6 +49,17 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
                 .channelListPresenterModule(new ChannelListPresenterModule(this))
                 .build().inject(this);
         super.initView(rootView);
+        //initAdvert();
+    }
+
+    private void initAdvert() {
+        List<String> test = new ArrayList<>();
+        test.add("");
+        test.add("");
+        test.add("");
+        test.add("");
+        ChannelAdvertHeader advertHeader = new ChannelAdvertHeader(getActivity(), test);
+        mHeaderAndFooterWrapper.addHeaderView(advertHeader.getRootView());
     }
 
     /**

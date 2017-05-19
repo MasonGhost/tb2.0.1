@@ -76,7 +76,8 @@ public class DynamicDetailHeader {
         List<String> testAdverts = new ArrayList<>();
         testAdverts.add("");
         testAdverts.add("");
-        mDynamicDetailAdvertHeader.setTitle("tym");
+        testAdverts.add("");
+        mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(testAdverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener(new DynamicDetailAdvertHeader.OnItemClickListener() {
             @Override
@@ -84,7 +85,7 @@ public class DynamicDetailHeader {
                 ToastUtils.showToast(position + "");
             }
         });
-//        mDynamicDetailAdvertHeader.hideAdvert();
+        mDynamicDetailAdvertHeader.hideAdvert();
     }
 
     /**

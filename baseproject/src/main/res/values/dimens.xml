@@ -51,14 +51,13 @@
     <dimen name="textview_spacing_offset_height">-1.5dp</dimen>
     <!-- 加载更多 -->
     <dimen name="load_more_height">35dp</dimen>
-    <!-- 启动广告宽度 -->
-    <dimen name="launch_advert_width60dp">60dp</dimen>
+
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->
     <dimen name="hintview_corner">5dp</dimen>
 
     <!--#########################################      ppw_center尺寸       ################################-->
     <dimen name="margin_tb">25dp</dimen>
-    <dimen name="width">250dp</dimen>
-    <dimen name="margin_lr">35dp</dimen>
+    <dimen name="ppw_center_width">333dp</dimen>
+    <dimen name="margin_lr">32dp</dimen>
 </resources>

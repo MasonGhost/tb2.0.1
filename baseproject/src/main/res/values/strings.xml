@@ -11,6 +11,7 @@
     <string name="im_not_work">聊天当前不可用</string>
     <!-- 通用 -->
     <string name="statistical_unit_million">万</string>
+    <string name="statistical_unit_second">秒</string>
     <string name="empty">""</string>
     <string name="cancel">取消</string>
     <string name="delete">删除</string>
@@ -39,6 +40,7 @@
     <string name="change_bg_cover">更换封面</string>
     <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
+    <string name="skip">跳过</string>
     <string name="intro_default">这家伙很懒,什么都没有留下</string>
     <!-- 注册 -->
     <string name="regist">注册</string>
