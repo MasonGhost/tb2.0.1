@@ -40,10 +40,6 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.MessagePresenter.DEF
  * @Contact master.jungle68@gmail.com
  */
 public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MessageAdapter.OnSwipItemClickListener {
-
-    private static final int ITEM_TYPE_COMMNETED = 0;
-    private static final int ITEM_TYPE_LIKED = 1;
-
     private View mHeaderView;
 
     @Inject
@@ -55,7 +51,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     protected int setLeftImg() {
