@@ -157,7 +157,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        //initTestAdvert();
+        initTestAdvert();
         initInputView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 针对部分手机进入首页状态栏颜色修改无效
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -167,10 +167,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     private void initTestAdvert() {
         List<String> test = new ArrayList<>();
-        test.add("one");
-        test.add("two");
-        test.add("three");
-        test.add("four");
+        test.add("oneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone");
+        test.add("twotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwo");
+        test.add("threethreethreethreethreethreethreethreethreethreethreethreethreethreethreethree");
+        test.add("fourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfour");
         mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
         DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new DynamicBannerHeaderInfo();
         headerInfo.setTitles(test);

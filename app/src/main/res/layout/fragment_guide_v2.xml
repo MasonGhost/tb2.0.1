@@ -12,11 +12,11 @@
 
     <TextView
         android:id="@+id/guide_text"
-        android:layout_width="@dimen/launch_advert_width60dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="@dimen/spacing_large"
+        android:layout_width="@dimen/launch_advert_width84_dp"
+        android:layout_height="@dimen/launch_advert_height28_dp"
+        android:layout_gravity="top|right"
         android:layout_marginRight="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_large"
         android:background="@drawable/shape_button_corner_advert_big"
         android:clickable="false"
         android:gravity="center"

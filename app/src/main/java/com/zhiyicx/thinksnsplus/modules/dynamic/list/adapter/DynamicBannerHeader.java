@@ -67,7 +67,7 @@ public class DynamicBannerHeader {
         mBanner.setDelayTime(headInfo.getDelay());
         mBanner.setImageLoader(new BannerImageLoaderUtil());
         mBanner.setImages(headInfo.getUrls());
-        mBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+        mBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
         mBanner.setBannerTitles(headInfo.getTitles());
         mBanner.start();
     }
