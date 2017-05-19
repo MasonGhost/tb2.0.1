@@ -80,7 +80,7 @@ public interface MessageContract {
 
         MessageItemBean updateLikeItemData();
 
-        MessageItemBean updateNoticesItemData();
+//        MessageItemBean updateNoticesItemData();
 
         /**
          * 刷新是否显示底部红点
@@ -118,6 +118,6 @@ public interface MessageContract {
         /**
          * ts 助手配置
          */
-        void configTSHelper();
+        String checkTShelper(long user_id);
     }
 }

@@ -90,16 +90,9 @@ public class MessageRepository implements MessageContract.Repository {
                                 ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
                                 String[] uidsTmp = tmp.getUsids().split(",");
                                 UserInfoBean userInfoBean = new UserInfoBean();
-                                for (int i = 0; i < uidsTmp.length; i++) {
-                                    long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
-                                    integers.add(toChatUser_id);
-                                }
-                                try {
-                                    userInfoBean.setUser_id((Long) integers.get(0) == AppApplication.getmCurrentLoginAuth().getUser_id() ? (Long) integers.get(1) : (Long) integers.get(0));//保存聊天对象的 user_id ，如果是群聊暂不处理
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
+                                userInfoBean.setUser_id(toChatUser_id);
+                                integers.add(toChatUser_id);
                                 messageItemBean.setUserInfo(userInfoBean);
                                 // 获取未读消息数量
                                 int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());

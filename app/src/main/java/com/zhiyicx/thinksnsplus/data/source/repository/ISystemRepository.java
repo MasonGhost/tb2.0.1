@@ -27,50 +27,10 @@ public interface ISystemRepository {
      */
     SystemConfigBean getBootstrappersInfoFromLocal();
 
-//    /**
-//     * 获取扩展组件状态
-//     *
-//     * @return
-//     */
-//    ComponentStatusBean getComponentStatusLocal();
-//
-//    /**
-//     * 保存扩张组件状态
-//     *
-//     * @param componentStatusBean
-//     * @return
-//     */
-//    boolean saveComponentStatus(ComponentStatusBean componentStatusBean);
-//
-//    /**
-//     * 获取扩展组件配置
-//     *
-//     * @return
-//     */
-//    List<ComponentConfigBean> getComponentConfigLocal();
-//
-//    /**
-//     * 保存扩展组件
-//     *
-//     * @param componentConfigBeens
-//     * @return
-//     */
-//
-//    boolean saveComponentConfig(List<ComponentConfigBean> componentConfigBeens);
-//
-//    /**
-//     * 从服务器获取组件状态
-//     */
-//    void getComponentStatusFromServer();
-//
-//    /**
-//     * 从服务器获取组件配置
-//     *
-//     * @param component
-//     */
-//    void getComponentConfigFromServer(String component);
-//
-
+    /**
+     * ts 助手配置
+     */
+    String checkTShelper(long user_id);
     /**
      * 意见反馈
      *
@@ -95,4 +55,9 @@ public interface ISystemRepository {
      * @return
      */
     List<SystemConversationBean> requestCacheData(long max_Id);
+
+    /**
+     * 创建ts helper 对话
+     */
+    void creatTsHelperConversation();
 }

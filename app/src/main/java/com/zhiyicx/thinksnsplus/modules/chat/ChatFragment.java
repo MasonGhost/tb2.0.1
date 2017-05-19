@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -229,8 +228,9 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        if (chatItemBean==null||chatItemBean.getUserInfo()==null||chatItemBean.getUserInfo().getName().equals(getString(R.string.ts_helper))) { // ts 助手;
-            toTSHelper();
+        String result = mPresenter.checkTShelper(chatItemBean.getUserInfo().getUser_id());
+        if (!TextUtils.isEmpty(result)) { // ts 助手;
+            toTSHelper(result);
         } else { // 普通用户
             PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
         }
@@ -239,10 +239,10 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
     /**
      * 前往ts助手开发
      */
-    private void toTSHelper() {
+    private void toTSHelper(String tshelperUrl) {
         Intent intent = new Intent(getContext(), CustomWEBActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, tshelperUrl);
         intent.putExtras(bundle);
         getContext().startActivity(intent);
     }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -17,11 +18,15 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
-import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.concurrent.TimeUnit;
@@ -39,7 +44,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.MessagePresenter.DEF
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MessageAdapter.OnSwipItemClickListener {
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MessageAdapter.OnSwipItemClickListener, OnUserInfoClickListener {
     private View mHeaderView;
 
     @Inject
@@ -78,6 +83,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mToolbarRight.setVisibility(View.GONE);
@@ -107,8 +117,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .messagePresenterModule(new MessagePresenterModule(this))
                 .build()
                 .inject(this);
-        // 配置 TS 助手
-        mPresenter.configTSHelper();
         super.initData();// 需要在 dagger 注入后
         mPresenter.handleFlushMessage();
     }
@@ -127,6 +135,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 //        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
         MessageAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mListDatas);
         commonAdapter.setOnSwipItemClickListener(this);
+        commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;
     }
 
@@ -315,13 +324,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void onLeftClick(int position) {
         position = position - 1;// 减去 header
-        if (mListDatas.get(position).getConversation().getCid() == DEFAULT_TS_HLEPER_CONVERSATION_ID) { // TS 助手
-            startActivity(new Intent(getActivity(), SystemConversationActivity.class));
-            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_NOTICES);
-            mPresenter.updateNoticesItemData().setUnReadMessageNums(0);
-        } else { // 进入聊天详情
-            toChat(mListDatas.get(position), position);
-        }
+        toChat(mListDatas.get(position), position);
     }
 
     @Override
@@ -330,5 +333,26 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         mPresenter.deletConversation(mListDatas.get(position));
         mListDatas.remove(position);
         refreshData();
+    }
+
+    @Override
+    public void onUserInfoClick(UserInfoBean userInfoBean) {
+        String result = mPresenter.checkTShelper(userInfoBean.getUser_id());
+        if (!TextUtils.isEmpty(result)) { // ts 助手;
+            toTSHelper(result);
+        } else { // 普通用户
+            PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+        }
+    }
+
+    /**
+     * 前往ts助手开发
+     */
+    private void toTSHelper(String tsHelperUrl) {
+        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, tsHelperUrl);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 }

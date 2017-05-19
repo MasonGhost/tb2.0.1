@@ -17,14 +17,13 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoConta
  */
 public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContainerFragment> {
 
-    InfoContainerFragment mInfoContainerFragment;
 
     @Override
     protected InfoContainerFragment getFragment() {
-        if (mInfoContainerFragment == null) {
-            mInfoContainerFragment = new InfoContainerFragment();
+        if (mContanierFragment == null) {
+            mContanierFragment = new InfoContainerFragment();
         }
-        return mInfoContainerFragment;
+        return mContanierFragment;
     }
 
     @Override
@@ -32,7 +31,7 @@ public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContain
         DaggerInfoContainerComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .infoContainerPresenterModule(
-                        new InfoContainerPresenterModule(mInfoContainerFragment))
+                        new InfoContainerPresenterModule(mContanierFragment))
                 .build()
                 .inject(this);
     }

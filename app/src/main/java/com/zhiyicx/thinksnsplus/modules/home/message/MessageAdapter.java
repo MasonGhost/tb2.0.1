@@ -29,7 +29,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -52,11 +52,18 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class MessageAdapter extends CommonAdapter<MessageItemBean> implements SwipeItemMangerInterface, SwipeAdapterInterface {
     private SwipeItemMangerImpl mItemManger;
 
+
     public void setOnSwipItemClickListener(OnSwipItemClickListener onSwipItemClickListener) {
         mOnSwipItemClickListener = onSwipItemClickListener;
     }
 
     private OnSwipItemClickListener mOnSwipItemClickListener;
+
+    private OnUserInfoClickListener mOnUserInfoClickListener;
+
+    public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
+        mOnUserInfoClickListener = onUserInfoClickListener;
+    }
 
     public MessageAdapter(Context context, int layoutId, List<MessageItemBean> datas) {
         super(context, layoutId, datas);
@@ -100,11 +107,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 swipeLayout.setSwipeEnabled(true);
                 break;
             default:
-                setTSHelperClick(holder.getView(R.id.tv_name));
-                setTSHelperClick(holder.getView(R.id.iv_headpic));
-                holder.setImageResource(R.id.iv_headpic, R.mipmap.ico_ts_assistant);
-                holder.setText(R.id.tv_name, holder.getConvertView().getResources().getString(R.string.ts_helper));
-                swipeLayout.setSwipeEnabled(false);
+
                 break;
         }
         if (messageItemBean.getConversation().getLast_message() == null) {
@@ -167,7 +170,9 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toUserCenter(userInfoBean);
+                        if (mOnUserInfoClickListener != null) {
+                            mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
+                        }
                     }
                 });
     }
@@ -192,13 +197,6 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
         bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
         intent.putExtras(bundle);
         getContext().startActivity(intent);
-    }
-
-    /**
-     * 前往用户个人中心
-     */
-    private void toUserCenter(UserInfoBean userInfoBean) {
-        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     @Override

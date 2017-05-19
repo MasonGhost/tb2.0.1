@@ -139,13 +139,13 @@ public abstract class BaseSubscribe<T> extends Subscriber<BaseJson<T>> {
      * @param message 错误信息
      * @param code
      */
-    protected abstract void onFailure(String message, int code);
+    protected  void onFailure(String message, int code){}
 
     /**
      * 系统级错误，网络错误，系统内核错误等
      *
      * @param throwable
      */
-    protected abstract void onException(Throwable throwable);
+    protected  void onException(Throwable throwable){}
 
 }

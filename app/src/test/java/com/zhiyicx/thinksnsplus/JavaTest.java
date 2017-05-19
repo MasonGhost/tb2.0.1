@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import rx.Observable;
+import rx.functions.FuncN;
 
 /**
  * @Describe
@@ -162,7 +165,7 @@ public class JavaTest {
 //        for (Map.Entry<String, String[]> entry : retMap2.entrySet()) {
 //            System.out.println("Key2 = " + entry.getKey() + ", Value2 = " + entry.getValue()[0]);
 //        }
-        String test="{\n" +
+        String test = "{\n" +
                 "    \"im:serve\": \"127.0.0.1:9900\", \n" +
                 "    \"im:helper\": [ \n" +
                 "        {\n" +
@@ -183,6 +186,32 @@ public class JavaTest {
                 "            \"x:resource\":\"MjAxNy8wNC8yOC8wNzAxLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw==\"\n" +
                 "        }";
         LogUtils.d(TAG, "object = " + object.toString());
+    }
+
+    @Test
+    public void rxZipTest() {
+        List<Observable<String>> datas = new ArrayList<>();
+        datas.add(Observable.just("123"));
+        datas.add(Observable.just("456"));
+        datas.add(Observable.just("789"));
+
+        Observable.zip(datas, new FuncN<String>() {
+            @Override
+            public String call(Object... args) {
+                for (Object arg : args) {
+                    System.out.println("args = " + arg.toString());
+                }
+
+                return "12123";
+            }
+        })
+                .subscribe(new BaseSubscribeForV2<String>() {
+                    @Override
+                    protected void onSuccess(String data) {
+                        System.out.println(" hello world : " + data);
+                    }
+                })
+        ;
     }
 
 }

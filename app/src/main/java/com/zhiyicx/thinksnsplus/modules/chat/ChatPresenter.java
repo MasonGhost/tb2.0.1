@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -45,7 +46,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVE
 public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter {
 
     private SparseArray<UserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();// 把用户信息存入内存，方便下次使用
-
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public ChatPresenter(ChatContract.Repository repository, ChatContract.View rootView) {
@@ -155,6 +157,14 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
+    }
+
+    /**
+     * 检测 ts helper 是否是当前用户
+     */
+    @Override
+    public String checkTShelper(long user_id) {
+        return mSystemRepository.checkTShelper(user_id);
     }
 
     /**

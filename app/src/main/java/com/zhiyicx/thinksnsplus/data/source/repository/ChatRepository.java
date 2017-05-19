@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -41,16 +43,19 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.RET
 
 public class ChatRepository implements ChatContract.Repository {
     private static final String TAG = "ChatRepository";
-    private final UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     private ChatInfoClient mChatInfoClient;
     private Context mContext;
 
+    @Inject
     public ChatRepository(ServiceManager serviceManager, Application context) {
-        super();
         mContext = context;
         mChatInfoClient = serviceManager.getChatInfoClient();
-        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
-                .userInfoBeanGreenDao();
+        if (mUserInfoBeanGreenDao == null) {
+            mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
+                    .userInfoBeanGreenDao();
+        }
     }
 
     /**
@@ -146,7 +151,7 @@ public class ChatRepository implements ChatContract.Repository {
         Collections.sort(messageItemBeens, new Comparator<MessageItemBean>() { // 按最新消息排序
             @Override
             public int compare(MessageItemBean o1, MessageItemBean o2) {
-                return (int) (o2.getConversation().getLast_message().getCreate_time()-o1.getConversation().getLast_message().getCreate_time());
+                return (int) (o2.getConversation().getLast_message().getCreate_time() - o1.getConversation().getLast_message().getCreate_time());
             }
         });
         return messageItemBeens;

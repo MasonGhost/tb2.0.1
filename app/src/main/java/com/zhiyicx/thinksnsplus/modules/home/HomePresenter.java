@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.home;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.appprocess.BackgroundUtil;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.ChatRoomContainer;
@@ -53,15 +52,8 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
-
     public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
         super(repository, rootView);
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
     @Override
@@ -71,10 +63,12 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void initIM() {
-        mAuthRepository.loginIM();
-        ChatClient.getInstance(mContext).setImMsgReceveListener(this);
-        ChatClient.getInstance(mContext).setImStatusListener(this);
-        ChatClient.getInstance(mContext).setImTimeoutListener(this);
+        if (isLogin()) {
+            mAuthRepository.loginIM();
+            ChatClient.getInstance(mContext).setImMsgReceveListener(this);
+            ChatClient.getInstance(mContext).setImStatusListener(this);
+            ChatClient.getInstance(mContext).setImTimeoutListener(this);
+        }
     }
 
     /*******************************************

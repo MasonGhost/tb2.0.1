@@ -4,21 +4,26 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.AuthData;
 import com.zhiyicx.imsdk.entity.Conversation;
 import com.zhiyicx.imsdk.entity.Message;
+import com.zhiyicx.imsdk.entity.MessageStatus;
+import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
@@ -27,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
@@ -57,6 +63,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_NOTICES;
@@ -93,6 +100,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Inject
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
+
     @Inject
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
 
@@ -101,7 +109,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     private MessageItemBean mItemBeanComment; // 评论的
     private MessageItemBean mItemBeanDigg;    // 点赞的
-    private MessageItemBean mItemBeanNotices; // ts 助手
+//    private MessageItemBean mItemBeanNotices; // ts 助手
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -118,6 +126,53 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void requestNetData(Long maxId, boolean isLoadMore) {
         if (AppApplication.getmCurrentLoginAuth() == null)
             return;
+        creatTsHelperConversation();
+    }
+
+    /**
+     * 创建 ts 助手对话
+     */
+    public void creatTsHelperConversation() {
+        List<Observable<BaseJson<Conversation>>> datas = new ArrayList<>();
+        final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
+        // 新版 ts 助手
+        for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
+            final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
+            datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr));
+
+        }
+        Observable.zip(datas, new FuncN<Object>() {
+            @Override
+            public Object call(Object... args) {
+                for (int i = 0; i < args.length; i++) {  // 为 ts 助手添加提示语
+                    Conversation data = ((BaseJson<Conversation>) args[i]).getData();
+                    // 写入 ts helper 默认提示语句
+                    Message message = new Message();
+                    message.setId((int) System.currentTimeMillis());
+                    message.setType(MessageType.MESSAGE_TYPE_TEXT);
+                    message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
+                    message.setSend_status(MessageStatus.SEND_SUCCESS);
+                    message.setIs_read(false);
+                    message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
+                    message.setCid(data.getCid());
+                    MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
+                }
+                return args;
+            }
+        }).subscribe(new BaseSubscribeForV2<Object>() {
+            @Override
+            protected void onSuccess(Object data) {
+
+                getCoversationList();
+            }
+        });
+
+    }
+
+    /**
+     * 获取对话列表
+     */
+    private void getCoversationList() {
         mRepository.getConversationList(AppApplication.getmCurrentLoginAuth().getUser_id())
                 .doAfterTerminate(new Action0() {
                     @Override
@@ -128,10 +183,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
                     @Override
                     protected void onSuccess(final List<MessageItemBean> data) {
-                        if (mItemBeanNotices != null && mItemBeanNotices.getConversation().getCid() != 0) {
-                            data.add(mItemBeanNotices);
-                        }
                         mRootView.onNetResponseSuccess(data, false);
+                        refreshConversationReadMessage();
                     }
 
                     @Override
@@ -141,7 +194,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        throwable.printStackTrace();
                         mRootView.showMessage(mContext.getResources().getString(R.string.err_net_not_work));
                     }
                 });
@@ -163,9 +215,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         handleFlushMessageForItem(mFlushMessageBeanGreenDao.getMultiDataFromCache()); // 处理本地消息
         mRootView.updateLikeItemData(mItemBeanDigg);
         List<MessageItemBean> cacheData = mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
-        if (!isLoadMore && mItemBeanNotices != null && mItemBeanNotices.getConversation().getCid() != 0) {
-            cacheData.add(mItemBeanNotices);
-        }
         return cacheData;
     }
 
@@ -175,27 +224,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     }
 
     /**
-     * 配置 TS 助手；如果本地没有 ts 助手，说明是第一次使用，添加一个 ts 助手
+     * 检测 ts helper 是否是当前用户
      */
     @Override
-    public void configTSHelper() {
-        SystemConversationBean tsHelper;
-        tsHelper = mSystemConversationBeanGreenDao.getSystemConversationById(SystemConversationBean.DEFAULT_TSHELPER_SYSTEMCONVERSATION_ID);
-        if (tsHelper == null) {
-            tsHelper = new SystemConversationBean();
-            tsHelper.setId(SystemConversationBean.DEFAULT_TSHELPER_SYSTEMCONVERSATION_ID);
-            tsHelper.setType(ApiConfig.SYSTEM_CONVERSATIONS_TYPE_SYSTEM);
-            tsHelper.setContent(mContext.getString(R.string.ts_helper_default_tip));
-            tsHelper.setUser_id(0L);
-            tsHelper.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-            mSystemConversationBeanGreenDao.insertOrReplace(tsHelper);
-            FlushMessages noticeFlushMessage = new FlushMessages();
-            noticeFlushMessage.setTime(tsHelper.getCreated_at());
-            noticeFlushMessage.setCount(1);
-            noticeFlushMessage.setKey(ApiConfig.FLUSHMESSAGES_KEY_NOTICES);
-            mFlushMessageBeanGreenDao.insertOrReplace(noticeFlushMessage);
-        }
+    public String checkTShelper(long user_id) {
+        return mSystemRepository.checkTShelper(user_id);
     }
+
 
     @Override
     public MessageItemBean updateCommnetItemData() {
@@ -205,11 +240,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Override
     public MessageItemBean updateLikeItemData() {
         return mItemBeanDigg;
-    }
-
-    @Override
-    public MessageItemBean updateNoticesItemData() {
-        return mItemBeanNotices;
     }
 
     /**
@@ -549,7 +579,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
                     break;
                 case FLUSHMESSAGES_KEY_NOTICES:
-                    handleItemBean(mItemBeanNotices, flushMessage);
                     break;
                 default:
                     break;
@@ -649,7 +678,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         if (flushMessage.getKey().equals(FLUSHMESSAGES_KEY_NOTICES)) {
             messageItemBean.getConversation().getLast_message().setTxt(
                     textEndTip);
-            mRootView.updateTSHelper(mItemBeanNotices);
         } else {
             messageItemBean.getConversation().getLast_message().setTxt(text
                     + textEndTip);
@@ -701,18 +729,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         mItemBeanDigg.setConversation(diggConveration);
         mItemBeanDigg.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
                 + mContext.getString(R.string.like_me));
-
-        mItemBeanNotices = new MessageItemBean();
-        Conversation noticeConveration = new Conversation();
-        noticeConveration.setCid(DEFAULT_TS_HLEPER_CONVERSATION_ID);
-        Message noticemessage = new Message();
-        noticeConveration.setLast_message(noticemessage);
-        mItemBeanNotices.setConversation(noticeConveration);
-        mItemBeanNotices.getConversation().getLast_message().setTxt(mContext.getString(R.string.ts_helper_default_tip));
-        UserInfoBean tsHelperUserInfo = new UserInfoBean();
-        tsHelperUserInfo.setName(mContext.getString(R.string.ts_helper));
-        mItemBeanNotices.setUserInfo(tsHelperUserInfo);
-
     }
 
 
@@ -722,8 +738,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     private void checkBottomMessageTip() {
         // 是否显示底部红点
         boolean isShowMessgeTip;
-        if (mItemBeanNotices != null && mItemBeanDigg != null && mItemBeanComment != null
-                && mItemBeanNotices.getUnReadMessageNums() == 0
+        if (mItemBeanDigg != null && mItemBeanComment != null
                 && mItemBeanDigg.getUnReadMessageNums() == 0
                 && mItemBeanComment.getUnReadMessageNums() == 0) {
             isShowMessgeTip = false;

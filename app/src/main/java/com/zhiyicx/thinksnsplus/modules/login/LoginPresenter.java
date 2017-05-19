@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.login;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -48,14 +47,6 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-
-    /**
-     * 将Presenter从传入fragment
-     */
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
 
     @Override
     public void login(String phone, String password) {
@@ -105,7 +96,6 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        LogUtils.e(throwable, "login_error" + throwable.getMessage());
                         mRootView.showErrorTips(mContext.getString(R.string.err_net_not_work));
                         mRootView.setLoginState(false);
                     }
