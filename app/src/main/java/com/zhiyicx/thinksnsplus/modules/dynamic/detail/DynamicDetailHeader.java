@@ -85,7 +85,7 @@ public class DynamicDetailHeader {
                 ToastUtils.showToast(position + "");
             }
         });
-//        mDynamicDetailAdvertHeader.hideAdvert();
+        mDynamicDetailAdvertHeader.hideAdvert();
     }
 
     /**
