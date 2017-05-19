@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
+package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,7 +41,7 @@ public class ChannelAdvertHeader implements MultiItemTypeAdapter.OnItemClickList
 
         GridLayoutManager layoutManager = new GridLayoutManager(context, urls.size() <= 3 ? urls.size() : 2);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new TGridDecoration(10, 10, false));
+        mRecyclerView.addItemDecoration(new TGridDecoration(20, 20, false));
         CommonAdapter adapter = new CommonAdapter<String>(context, R.layout.item_advert, urls) {
             @Override
             protected void convert(ViewHolder holder, String s, int position) {
