@@ -11,6 +11,7 @@
         android:layout_height="match_parent"/>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/guide_text"
         android:layout_width="@dimen/launch_advert_width84_dp"
         android:layout_height="@dimen/launch_advert_height28_dp"

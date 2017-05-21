@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
+import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
@@ -45,6 +46,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_T
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SYSTEM_FEEDBACK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOKEN_EXPIERD;
+import static com.zhiyicx.baseproject.config.ApiConfig.SYSTEM_LAUNCH_ADVERT;
 
 /**
  * @Describe
@@ -137,6 +139,12 @@ public interface CommonClient {
     @GET(APP_PATH_GET_SYSTEM_CONVERSATIONS)
     Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(@Query("max_id") long max_id, @Query("limit") int limit);
 
+
+    /**
+     * 获取广告列表
+     */
+    @GET(SYSTEM_LAUNCH_ADVERT)
+    Observable<BaseJson<List<LaunchAdvertBean>>> getLaunchAdvert();
 
     /*******************************************  文件上传  *********************************************/
 

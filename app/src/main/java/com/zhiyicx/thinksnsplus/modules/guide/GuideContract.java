@@ -2,8 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.guide;
 
 import android.content.Context;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -36,11 +40,15 @@ public interface GuideContract {
          */
         Observable<String> getDirCacheSize(Context context);
 
+        Observable<BaseJson<List<LaunchAdvertBean>>> getLaunchAdverts();
+
     }
 
     interface Presenter extends IBasePresenter {
 
         void checkLogin();
+
+        void getLaunchAdverts();
     }
 
 }
