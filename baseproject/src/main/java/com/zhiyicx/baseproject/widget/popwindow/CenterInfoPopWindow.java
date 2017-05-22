@@ -75,7 +75,6 @@ public class CenterInfoPopWindow extends CustomPopupWindow {
     public static final class CBuilder extends Builder {
 
         private CenterPopWindowItem1ClickListener mCenterPopWindowItem1ClickListener;
-
         private String titleStr;
         private String desStr;
         private String item1Str;
@@ -168,10 +167,15 @@ public class CenterInfoPopWindow extends CustomPopupWindow {
             return this;
         }
 
+        public CBuilder parentView(View parentView) {
+            super.parentView(parentView);
+            return this;
+        }
+
         @Override
         public CenterInfoPopWindow build() {
-            super.build();
             contentViewId = R.layout.ppw_for_center_info;
+            isWrap = true;
             return new CenterInfoPopWindow(this);
         }
     }

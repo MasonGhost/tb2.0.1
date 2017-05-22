@@ -1,13 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.wallet;
 
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.concurrent.TimeUnit;
@@ -35,8 +35,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     TextView mTvChargeAndWithdrawRule;
 
 
-    private ActionPopupWindow mLoginoutPopupWindow;// 退出登录选择弹框
-    private ActionPopupWindow mCleanCachePopupWindow;// 清理缓存选择弹框
+    private CenterInfoPopWindow mRulePop;// 充值提示规则选择弹框
 
     public static WalletFragment newInstance() {
         return new WalletFragment();
@@ -113,71 +112,38 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackSuccessMessage("mTvChargeAndWithdrawRule");
+                        showRulePopupWindow();
                     }
                 });
-    }
-
-
-    /**
-     * 初始化清理缓存选择弹框
-     */
-    private void initCleanCachePopupWindow() {
-        if (mCleanCachePopupWindow != null) {
-            return;
-        }
-        mCleanCachePopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.is_sure_clean_cache))
-                .item2Str(getString(R.string.sure))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(0.8f)
-                .with(getActivity())
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItem2Clicked() {
-                        mCleanCachePopupWindow.hide();
-                    }
-                })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onBottomClicked() {
-                        mCleanCachePopupWindow.hide();
-                    }
-                }).build();
-
     }
 
     /**
      * 初始化登录选择弹框
      */
-    private void initLoginOutPopupWindow() {
-        if (mLoginoutPopupWindow != null) {
+    private void showRulePopupWindow() {
+        if (mRulePop != null) {
+            mRulePop.show();
             return;
         }
-        mLoginoutPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.is_sure_login_out))
-                .item2Str(getString(R.string.login_out_sure))
-                .item2StrColor(ContextCompat.getColor(getContext(), R.color.important_for_note))
-                .bottomStr(getString(R.string.cancel))
+        mRulePop = CenterInfoPopWindow.builder()
+                .titleStr(getString(R.string.charge_and_withdraw_rule))
+                .desStr(getString(R.string.charge_and_withdraw_rule_detail))
+                .item1Str(getString(R.string.get_it))
+                .item1Color(R.color.themeColor)
                 .isOutsideTouch(true)
                 .isFocus(true)
-                .backgroundAlpha(0.8f)
+                .animationStyle(R.style.style_actionPopupAnimation)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                .buildCenterPopWindowItem1ClickListener(new CenterInfoPopWindow.CenterPopWindowItem1ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
-                        mLoginoutPopupWindow.hide();
+                    public void onClicked() {
+                        mRulePop.hide();
                     }
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onBottomClicked() {
-                        mLoginoutPopupWindow.hide();
-                    }
-                }).build();
-
+                .parentView(getView())
+                .build();
+        mRulePop.show();
     }
 
 }
