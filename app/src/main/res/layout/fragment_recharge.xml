@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/totop_money"
             android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_select_day_20sp"
+            android:textSize="@dimen/size_content"
             tools:text="自定义金额"/>
 
         <EditText
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="@string/yuan"
             android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_select_day_20sp"
+            android:textSize="@dimen/size_content"
             tools:text="元"/>
     </LinearLayout>
     <!--选择充值方式-->
@@ -50,7 +50,7 @@
         app:leftText="@string/withdraw"
         app:leftTextLeftPadding="@dimen/spacing_mid"
         app:rightImage="@mipmap/ic_arrow_smallgrey"
-        app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+        app:showLine="false"/>
 
 
     <TextView
