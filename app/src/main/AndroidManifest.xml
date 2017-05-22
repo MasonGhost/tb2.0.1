@@ -20,7 +20,8 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-    <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全-->
+
+    <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全 -->
     <application
         android:name=".base.AppApplication"
         android:allowBackup="false"
@@ -79,7 +80,9 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="zhiyicx.intent.action.LOGIN"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
+
                 <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
@@ -246,7 +249,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <!--微信分享结果类-->
+        <!-- 微信分享结果类 -->
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
@@ -258,7 +261,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <!--微信支付结果类-->
+        <!-- 微信支付结果类 -->
         <activity
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
@@ -270,11 +273,12 @@
         <activity
             android:name=".modules.channel.detail.ChannelDetailActivity"
             android:screenOrientation="portrait">
-
         </activity>
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".modules.dynamic.top.DynamicTopActivity">
+        </activity>
     </application>
 
 </manifest>
