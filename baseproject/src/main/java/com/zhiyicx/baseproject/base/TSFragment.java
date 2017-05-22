@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -570,6 +571,15 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
 
         }
+    }
+
+    /**
+     * 设置 title 的文字颜色
+     *
+     * @param resId  color  resource id
+     */
+    protected void setCenterTextColor(@ColorRes int resId) {
+        mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), resId));
     }
 
     /**

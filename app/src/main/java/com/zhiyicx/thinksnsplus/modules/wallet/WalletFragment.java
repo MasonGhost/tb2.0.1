@@ -53,18 +53,36 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     }
 
     @Override
+    protected int setLeftImg() {
+        return R.mipmap.topbar_back_white;
+    }
+
+    @Override
+    protected boolean setStatusbarGrey() {
+        return false;
+    }
+
+    @Override
     protected int setToolBarBackgroud() {
         return R.color.themeColor;
     }
 
     @Override
     protected void initView(View rootView) {
+        setCenterTextColor(R.color.white);
+        setRightText(getString(R.string.detail));
         initListener();
     }
 
     @Override
     protected void initData() {
         mTvMineMoney.setText("182000.00");
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        showSnackSuccessMessage("setRightClick");
     }
 
     private void initListener() {
