@@ -108,6 +108,8 @@
     <string name="dynamic_list_share_dynamic">分享</string>
     <string name="dynamic_list_collect_dynamic">收藏</string>
     <string name="dynamic_list_uncollect_dynamic">取消收藏</string>
+    <string name="dynamic_list_comment_toll">设置评论收费</string>
+    <string name="dynamic_list_top_dynamic">申请置顶动态</string>
     <string name="dynamic_list_report_dynamic">举报</string>
     <string name="dynamic_list_delete_comment">删除评论</string>
     <string name="dynamic_list_resend_comment">重发评论</string>

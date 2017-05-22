@@ -44,6 +44,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForS
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.top.DynamicTopActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
@@ -430,7 +431,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                         .getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
                             mListDatas.get(dataPosition)
-                            .getTool().getIs_collection_feed() == DynamicToolBean
+                                    .getTool().getIs_collection_feed() == DynamicToolBean
                                     .STATUS_COLLECT_FEED_CHECKED, shareBitMap);
 //                    initCenterPopWindow();
 //                    mPayPopWindow.show();
@@ -438,7 +439,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
                             mListDatas.get(dataPosition)
-                            .getTool().getIs_collection_feed() == DynamicToolBean
+                                    .getTool().getIs_collection_feed() == DynamicToolBean
                                     .STATUS_COLLECT_FEED_CHECKED, shareBitMap);
                     mOtherDynamicPopWindow.show();
                 }
@@ -570,7 +571,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     public void onItem1Clicked() {
                         mDeletCommentPopWindow.hide();
                         mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean
-                                .getComments().get(commentPosition).getComment_id(),
+                                        .getComments().get(commentPosition).getComment_id(),
                                 commentPosition);
                         showBottomView(true);
                     }
@@ -645,12 +646,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
 
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(feedIdIsNull ? R.string.empty :
+                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string
+                        .dynamic_list_share_dynamic))
+                .item2Str(getString(feedIdIsNull ? R.string.empty :
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
-                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item3Str(getString(feedIdIsNull ? R.string.empty : R.string
-                        .dynamic_list_share_dynamic))
+                .item3Str(getString(R.string.dynamic_list_top_dynamic))
+                .item4Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -658,25 +660,34 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {// 收藏
+                    public void onItem1Clicked() {// 分享
+                        mPresenter.shareDynamic(dynamicBean, shareBitMap);
+                        mMyDynamicPopWindow.hide();
+
+
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {// 收藏
                         mPresenter.handleCollect(dynamicBean);
                         mMyDynamicPopWindow.hide();
                         showBottomView(true);
                     }
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
-                    public void onItem2Clicked() {// 删除
+                    public void onItem3Clicked() {// 申请置顶
+                        startActivity(new Intent(getActivity(), DynamicTopActivity.class));
+                        mMyDynamicPopWindow.hide();
+                    }
+                })
+                .item4ClickListener(new ActionPopupWindow.ActionPopupWindowItem4ClickListener() {
+                    @Override
+                    public void onItem4Clicked() {// 删除
                         mMyDynamicPopWindow.hide();
                         mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
-                    }
-                })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItem3Clicked() {// 分享
-                        mPresenter.shareDynamic(dynamicBean, shareBitMap);
-                        mMyDynamicPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

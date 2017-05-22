@@ -32,6 +32,8 @@ public class ActionPopupWindow extends PopupWindow {
     private String mItem1Str;
     private String mItem2Str;
     private String mItem3Str;
+    private String mItem4Str;
+    private String mItem5Str;
     private String mBottomStr;
     private int mItem1Color;
     private int mItem2Color;
@@ -42,6 +44,10 @@ public class ActionPopupWindow extends PopupWindow {
     private ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
     private ActionPopupWindowItem2ClickListener mActionPopupWindowItem2ClickListener;
     private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
+
+    private ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
+    private ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
+
     private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
     public ActionPopupWindow(Builder builder) {
@@ -50,6 +56,8 @@ public class ActionPopupWindow extends PopupWindow {
         this.mItem1Str = builder.mItem1Str;
         this.mItem2Str = builder.mItem2Str;
         this.mItem3Str = builder.mItem3Str;
+        this.mItem4Str = builder.mItem4Str;
+        this.mItem5Str = builder.mItem5Str;
         this.mItem1Color = builder.mItem1Color;
         this.mItem2Color = builder.mItem2Color;
         this.mBottomStr = builder.mBottomStr;
@@ -59,6 +67,8 @@ public class ActionPopupWindow extends PopupWindow {
         this.mActionPopupWindowItem1ClickListener = builder.mActionPopupWindowItem1ClickListener;
         this.mActionPopupWindowItem2ClickListener = builder.mActionPopupWindowItem2ClickListener;
         this.mActionPopupWindowItem3ClickListener = builder.mActionPopupWindowItem3ClickListener;
+        this.mActionPopupWindowItem4ClickListener = builder.mActionPopupWindowItem4ClickListener;
+        this.mActionPopupWindowItem5ClickListener = builder.mActionPopupWindowItem5ClickListener;
         this.mActionPopupWindowBottomClickListener = builder.mActionPopupWindowBottomClickListener;
         if (canInitView()) {
             initView();
@@ -144,6 +154,32 @@ public class ActionPopupWindow extends PopupWindow {
                 }
             });
         }
+        if (!TextUtils.isEmpty(mItem4Str)) {
+            TextView item3View = (TextView) mContentView.findViewById(R.id.tv_pop_item4);
+            item3View.setVisibility(View.VISIBLE);
+            item3View.setText(mItem4Str);
+            item3View.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mActionPopupWindowItem4ClickListener != null) {
+                        mActionPopupWindowItem4ClickListener.onItem4Clicked();
+                    }
+                }
+            });
+        }
+        if (!TextUtils.isEmpty(mItem5Str)) {
+            TextView item3View = (TextView) mContentView.findViewById(R.id.tv_pop_item5);
+            item3View.setVisibility(View.VISIBLE);
+            item3View.setText(mItem5Str);
+            item3View.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mActionPopupWindowItem5ClickListener != null) {
+                        mActionPopupWindowItem5ClickListener.onItem5Clicked();
+                    }
+                }
+            });
+        }
 
         if (!TextUtils.isEmpty(mBottomStr)) {
             TextView bottomView = (TextView) mContentView.findViewById(R.id.tv_pop_bottom);
@@ -209,6 +245,8 @@ public class ActionPopupWindow extends PopupWindow {
         private String mItem1Str;
         private String mItem2Str;
         private String mItem3Str;
+        private String mItem4Str;
+        private String mItem5Str;
         private String mBottomStr;
         private int mItem1Color;
         private int mItem2Color;
@@ -218,6 +256,8 @@ public class ActionPopupWindow extends PopupWindow {
         private ActionPopupWindowItem1ClickListener mActionPopupWindowItem1ClickListener;
         private ActionPopupWindowItem2ClickListener mActionPopupWindowItem2ClickListener;
         private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
+        private ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
+        private ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
         private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
         protected Builder() {
@@ -248,6 +288,16 @@ public class ActionPopupWindow extends PopupWindow {
             return this;
         }
 
+        public ActionPopupWindow.Builder item4Str(String item4Str) {
+            this.mItem4Str = item4Str;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item5Str(String item5Str) {
+            this.mItem5Str = item5Str;
+            return this;
+        }
+
         public ActionPopupWindow.Builder bottomStr(String bottomStr) {
             this.mBottomStr = bottomStr;
             return this;
@@ -275,6 +325,16 @@ public class ActionPopupWindow extends PopupWindow {
 
         public ActionPopupWindow.Builder item3ClickListener(ActionPopupWindowItem3ClickListener actionPopupWindowItem3ClickListener) {
             this.mActionPopupWindowItem3ClickListener = actionPopupWindowItem3ClickListener;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item4ClickListener(ActionPopupWindowItem4ClickListener actionPopupWindowItem4ClickListener) {
+            this.mActionPopupWindowItem4ClickListener = actionPopupWindowItem4ClickListener;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item5ClickListener(ActionPopupWindowItem5ClickListener actionPopupWindowItem5ClickListener) {
+            this.mActionPopupWindowItem5ClickListener = actionPopupWindowItem5ClickListener;
             return this;
         }
 
@@ -313,6 +373,14 @@ public class ActionPopupWindow extends PopupWindow {
 
     public interface ActionPopupWindowItem3ClickListener {
         void onItem3Clicked();
+    }
+
+    public interface ActionPopupWindowItem4ClickListener {
+        void onItem4Clicked();
+    }
+
+    public interface ActionPopupWindowItem5ClickListener {
+        void onItem5Clicked();
     }
 
     public interface ActionPopupWindowBottomClickListener {

@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -39,6 +42,7 @@ public class DynamicTopFragment extends TSFragment {
     @BindView(R.id.rb_days_group)
     RadioGroup mRbDaysGroup;
 
+    private List<Integer> mSelectDays;
 
     @Override
     public void setPresenter(Object presenter) {
@@ -57,13 +61,24 @@ public class DynamicTopFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        mSelectDays = new ArrayList<>();
+        mSelectDays.add(1);
+        mSelectDays.add(5);
+        mSelectDays.add(10);
+        initSelectDays(mSelectDays);
         mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, 33f));
         mRbDaysGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-
+                dealDaysChecked();
             }
         });
+    }
+
+    private void initSelectDays(List<Integer> mSelectDays) {
+        mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
+        mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
+        mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
     }
 
     @Override
