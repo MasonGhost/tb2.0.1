@@ -33,6 +33,7 @@
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
     <string name="setting">设置</string>
+    <string name="wallet">钱包</string>
     <string name="follow">关注</string>
     <string name="fans">粉丝</string>
 
@@ -174,4 +175,13 @@
     <!-- WXPayEntryActivity -->
     <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
     <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
+
+    <!--钱包-->
+    <string name="account_balance">账户余额(元)</string>
+    <string name="recharge">充值</string>
+    <string name="withdraw">提现</string>
+    <string name="recharge_and_withdraw_rule">充值提现规则</string>
+    <string name="recharge_and_withdraw_rule_detail">充值提现规则:發的卡jfk領導就仨個鏈接東方斯卡拉國家的放大鏡看撒結果來看的啥規律的時間啊趕緊發的司空見慣了肯定撒法結果來看發動機法國警方的思考了趕緊離開范德薩結果來看薩拉看過絕對瘋狂了時間過來看房考慮發過價格浮動考慮時間管理開發的價格</string>
+    <string name="detail">明细</string>
+    <string name="get_it">知道了</string>
 </resources>

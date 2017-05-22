@@ -24,6 +24,7 @@ public class CommonTest {
     @Test
     public void getConvertMid() throws Exception {
         long mid = 302553698851094665L;
+        System.out.println("mid>>23 = " +( mid >> 23));
         long result = (mid >> 23) + TIME_DEFAULT_ADD;
         System.out.println("result = " + result);
 
