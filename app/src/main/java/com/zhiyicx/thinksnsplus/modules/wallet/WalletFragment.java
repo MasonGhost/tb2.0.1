@@ -52,10 +52,10 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         return getString(R.string.wallet);
     }
 
-//    @Override
-//    protected int setToolBarBackgroud() {
-//        return R.color.white;
-//    }
+    @Override
+    protected int setToolBarBackgroud() {
+        return R.color.themeColor;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -64,6 +64,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @Override
     protected void initData() {
+        mTvMineMoney.setText("182000.00");
     }
 
     private void initListener() {

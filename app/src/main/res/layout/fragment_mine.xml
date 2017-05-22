@@ -203,6 +203,18 @@
                 app:leftImage="@mipmap/ico_me_collect"
                 app:leftText="@string/mine_collect"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="true"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+            <!--收藏-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:visibility="visible"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/ico_me_collect"
+                app:leftText="@string/wallet"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
             <!--意见反馈-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
@@ -210,7 +222,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:layout_marginTop="@dimen/spacing_mid"
-                android:visibility="gone"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_advance"
@@ -232,7 +243,6 @@
                 android:id="@+id/bt_setting"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
-                android:layout_marginTop="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_setting"
                 app:leftText="@string/setting"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
