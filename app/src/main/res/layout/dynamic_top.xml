@@ -9,8 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -33,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/totop_money"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_select_day_20sp"
+                android:textSize="@dimen/size_content"
                 tools:text="置顶金额"/>
 
             <EditText
@@ -47,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/yuan"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_select_day_20sp"
+                android:textSize="@dimen/size_content"
                 tools:text="元"/>
         </LinearLayout>
 
@@ -67,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/et_top_total"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_select_day_20sp"
+                android:textSize="@dimen/size_content"
                 tools:text="总金额"/>
 
             <EditText
@@ -82,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/yuan"
                 android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_select_day_20sp"
+                android:textSize="@dimen/size_content"
                 tools:text="元"/>
         </LinearLayout>
 
@@ -100,7 +98,7 @@
                 android:paddingLeft="@dimen/spacing_mid"
                 android:paddingRight="@dimen/spacing_mid"
                 android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_sub_title_17sp"
+                android:textSize="@dimen/size_content_comment"
                 tools:text="当前lskfjeojfis"/>
 
             <Button

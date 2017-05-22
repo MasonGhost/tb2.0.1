@@ -160,6 +160,7 @@
     <string name="et_top_input">输入金额</string>
     <string name="et_top_total">总金额</string>
     <string name="to_top">申请置顶</string>
+    <string name="to_recharge">余额不足，去充值</string>
     <string name="to_top_description">当前置顶金额¥%1$.2f元/天，钱包余额¥%2$.2f元</string>
 
     <!--代码中的string-->

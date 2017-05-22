@@ -13,10 +13,6 @@
     音乐专辑标题；音乐播放页面顶部操作栏歌曲名称；
     -->
     <dimen name="size_sub_title">16sp</dimen>
-
-    <!--动态置顶-->
-    <dimen name="size_sub_title_17sp">17sp</dimen>
-    <dimen name="size_select_day_20sp">20sp</dimen>
     <!--
     设置/修改资料/修改密码/意见反馈页面文字；
     动态详情页正文/聊天详情页聊天内容

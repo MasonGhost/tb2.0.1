@@ -18,8 +18,4 @@
     <!--图片查看器，查看原图按钮-->
     <dimen name="origin_btn_width">76dp</dimen>
     <dimen name="origin_btn_height">26dp</dimen>
-
-    <!--动态置顶选择天数-->
-    <dimen name="dynamice_top_select_day_height">46dp</dimen>
-    <dimen name="dynamice_top_input_height">66dp</dimen>
 </resources>
