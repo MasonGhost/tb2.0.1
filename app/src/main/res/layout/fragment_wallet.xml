@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/themeColor"
+        android:paddingBottom="@dimen/spacing_big_large"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingStart="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_big_large"
+        android:text="@string/account_balance"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_icon_assist"
+        />
+
+    <TextView
+        android:id="@+id/tv_mine_money"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/themeColor"
+        android:gravity="left"
+        android:includeFontPadding="false"
+        android:paddingBottom="@dimen/spacing_large"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        tools:text="1288.00"/>
+    <!--充值-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_charge"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:leftText="@string/charge"
+        app:leftTextLeftPadding="@dimen/spacing_mid"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+    <!--提现-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+        android:id="@+id/bt_withdraw"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        app:leftText="@string/withdraw"
+        app:leftTextLeftPadding="@dimen/spacing_mid"
+        app:rightImage="@mipmap/ic_arrow_smallgrey"
+        app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_charge_and_withdraw_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:paddingBottom="@dimen/spacing_large"
+            android:paddingTop="@dimen/spacing_large"
+            android:text="@string/charge_and_withdraw_rule"
+            />
+    </FrameLayout>
+</LinearLayout>
+

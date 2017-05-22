@@ -169,6 +169,31 @@
             android:name=".modules.rank.RankActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".modules.wallet.WalletActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".modules.dynamic.detail.DynamicDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".modules.dynamic.detail.dig_list.DigListActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".modules.personal_center.PersonalCenterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".modules.music_fm.music_comment.MusicCommentActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+
 
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
@@ -216,25 +241,7 @@
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
 
-        <activity
-            android:name=".modules.dynamic.detail.DynamicDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-        <activity
-            android:name=".modules.dynamic.detail.dig_list.DigListActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".modules.personal_center.PersonalCenterActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-        <activity
-            android:name=".modules.music_fm.music_comment.MusicCommentActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
+
         <!-- 新浪分享 -->
         <activity
             android:name=".WBShareActivity"
