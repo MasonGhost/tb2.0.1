@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 
 import android.support.annotation.IdRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,6 +9,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -16,6 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 /**
  * @Author Jliuer
@@ -43,6 +46,7 @@ public class DynamicTopFragment extends TSFragment {
     RadioGroup mRbDaysGroup;
 
     private List<Integer> mSelectDays;
+    private int mCurrentDays;
 
     @Override
     public void setPresenter(Object presenter) {
@@ -70,15 +74,40 @@ public class DynamicTopFragment extends TSFragment {
         mRbDaysGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                dealDaysChecked();
+                switch (checkedId) {
+                    case R.id.rb_one:
+                        mCurrentDays = mSelectDays.get(0);
+                        break;
+                    case R.id.rb_two:
+                        mCurrentDays = mSelectDays.get(1);
+                        break;
+                    case R.id.rb_three:
+                        mCurrentDays = mSelectDays.get(2);
+                        break;
+                }
             }
         });
+
+        RxTextView.textChanges(mEtTopInput)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        if (!TextUtils.isEmpty(charSequence)) {
+                            setConfirmEnable(Integer.parseInt(charSequence.toString()));
+                        }
+                    }
+                });
     }
 
     private void initSelectDays(List<Integer> mSelectDays) {
         mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
         mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
         mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
+    }
+
+    private void setConfirmEnable(int totalMoney) {
+        mBtTop.setEnabled(mCurrentDays > 0 && totalMoney > 0);
     }
 
     @Override

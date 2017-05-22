@@ -20,6 +20,33 @@
 
     <style name="GalleryTheme" parent="@style/TransParentTheme">
         <item name="android:windowFullscreen">true</item><!---->
+    </style>
 
+    <!--#########################################      动态置顶       ################################-->
+    <!--动态置顶选择天数-->
+    <style name="style_dynamic_radiobutton">
+        <item name="android:button">@null</item>
+        <item name="android:padding">1dp</item>
+        <item name="android:textColor">@color/selector_topdynamictext_color</item>
+        <item name="android:textSize">@dimen/size_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/selector_radiobutton_cornaer_dynamic_top</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:width">0dp</item>
+        <item name="android:height">@dimen/dynamice_top_select_day_height</item>
+    </style>
+
+    <!--动态置顶输入金额-->
+    <style name="style_dynamic_editext" parent="style_edit_cursor">
+        <item name="android:layout_marginLeft">@dimen/spacing_small</item>
+        <item name="android:inputType">number</item>
+        <item name="android:layout_marginRight">@dimen/spacing_small</item>
+        <item name="android:textSize">@dimen/size_content</item>
+        <item name="android:gravity">right</item>
+        <item name="android:textColor">@color/themeColor</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@null</item>
     </style>
 </resources>
