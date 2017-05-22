@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,6 +10,7 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -92,7 +94,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackSuccessMessage("mBtReCharge");
+                        startActivity(new Intent(getActivity(), RechargeActivity.class));
                     }
                 });
         // 提现
