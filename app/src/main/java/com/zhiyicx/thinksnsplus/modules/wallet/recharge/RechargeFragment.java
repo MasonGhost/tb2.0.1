@@ -1,21 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
-import rx.functions.Action1;
-
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe
@@ -26,6 +21,15 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class RechargeFragment extends TSFragment<RechargeContract.Presenter> implements RechargeContract.View {
 
 
+
+    @BindView(R.id.tv_choose_tip)
+    TextView mTvChooseTip;
+    @BindView(R.id.et_input)
+    EditText mEtInput;
+    @BindView(R.id.bt_recharge_style)
+    CombinationButton mBtRechargeStyle;
+    @BindView(R.id.bt_top)
+    TextView mBtTop;
     private CenterInfoPopWindow mRulePop;// 充值提示规则选择弹框
 
     public static RechargeFragment newInstance() {
@@ -44,7 +48,9 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
+        mTvChooseTip.setText(R.string.choose_recharge_money);
         initListener();
+
     }
 
     @Override
@@ -52,11 +58,6 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     }
 
-    @Override
-    protected void setRightClick() {
-        super.setRightClick();
-        showSnackSuccessMessage("setRightClick");
-    }
 
     private void initListener() {
 //        // 充值

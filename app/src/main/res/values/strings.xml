@@ -186,4 +186,8 @@
     <string name="recharge_and_withdraw_rule_detail">充值提现规则:發的卡jfk領導就仨個鏈接東方斯卡拉國家的放大鏡看撒結果來看的啥規律的時間啊趕緊發的司空見慣了肯定撒法結果來看發動機法國警方的思考了趕緊離開范德薩結果來看薩拉看過絕對瘋狂了時間過來看房考慮發過價格浮動考慮時間管理開發的價格</string>
     <string name="detail">明细</string>
     <string name="get_it">知道了</string>
+    <string name="choose_recharge_money">选择充值金额</string>
+    <string name="custom_recharge_money">自定义金额</string>
+    <string name="choose_recharge_style">选择充值方式</string>
+    <string name="choose_recharge_style_formart">%s充值</string>
 </resources>
