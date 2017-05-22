@@ -11,7 +11,7 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
@@ -23,12 +23,17 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.guide.GuideFragment.DEFAULT_DELAY_TIME;
 
-public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implements GuideContract.View,
+public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implements
+        GuideContract.View,
         OnBannerListener, ViewPager.OnPageChangeListener, TCountTimer.OnTimeListener {
 
     @BindView(R.id.guide_banner)
@@ -46,14 +51,36 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     protected void initView(View rootView) {
-        initAdvert();
-
         RxView.clicks(mGuideText).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         mPresenter.checkLogin();
+                    }
+                });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long aLong) {
+                        //find advert in Db
+                        return true;
+                    }
+                })
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (aBoolean.booleanValue() && com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+                            initAdvert();
+                        } else {
+                            mPresenter.checkLogin();
+                        }
                     }
                 });
     }
@@ -140,7 +167,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     private void initAdvert() {
-
+        mGuideText.setVisibility(View.VISIBLE);
         mTimer = TCountTimer.builder()
                 .buildBtn(mGuideText)
                 .buildCanUseOntick(false)

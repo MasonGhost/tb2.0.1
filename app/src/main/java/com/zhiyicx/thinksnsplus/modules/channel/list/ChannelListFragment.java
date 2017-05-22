@@ -49,10 +49,12 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
                 .channelListPresenterModule(new ChannelListPresenterModule(this))
                 .build().inject(this);
         super.initView(rootView);
-        //initAdvert();
+        initAdvert();
     }
 
     private void initAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
+            return;
         List<String> test = new ArrayList<>();
         test.add("");
         test.add("");

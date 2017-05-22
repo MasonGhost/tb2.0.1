@@ -60,32 +60,42 @@ public class DynamicDetailHeader {
 
     public DynamicDetailHeader(Context context) {
         this.mContext = context;
-        mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout.view_header_dynamic_detial, null);
-        mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
+                .view_header_dynamic_detial, null);
+        mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
+                .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
         initAdvert(context);
-        fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id.fl_comment_count_container);
-        mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id.ll_dynamic_photos_container);
+        fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id
+                .fl_comment_count_container);
+        mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id
+                .ll_dynamic_photos_container);
         screenWidth = UIUtils.getWindowWidth(context);
-        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.spacing_normal) * 2;
+        picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
+                (R.dimen.spacing_normal) * 2;
     }
 
     private void initAdvert(Context context) {
-        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader.findViewById(R.id.ll_advert));
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+            mDynamicDetailHeader.setVisibility(View.GONE);
+            return;
+        }
+        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
+                .findViewById(R.id.ll_advert));
         List<String> testAdverts = new ArrayList<>();
         testAdverts.add("");
         testAdverts.add("");
         testAdverts.add("");
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(testAdverts);
-        mDynamicDetailAdvertHeader.setOnItemClickListener(new DynamicDetailAdvertHeader.OnItemClickListener() {
+        mDynamicDetailAdvertHeader.setOnItemClickListener(new DynamicDetailAdvertHeader
+                .OnItemClickListener() {
             @Override
             public void onItemClik(View v, int position, String url) {
                 ToastUtils.showToast(position + "");
             }
         });
-        mDynamicDetailAdvertHeader.hideAdvert();
     }
 
     /**
@@ -129,7 +139,9 @@ public class DynamicDetailHeader {
      */
     public void updateHeaderViewData(final DynamicBean dynamicBean) {
 
-        DynamicHorizontalStackIconView dynamicHorizontalStackIconView = (DynamicHorizontalStackIconView) mDynamicDetailHeader.findViewById(R.id.detail_dig_view);
+        DynamicHorizontalStackIconView dynamicHorizontalStackIconView =
+                (DynamicHorizontalStackIconView) mDynamicDetailHeader.findViewById(R.id
+                        .detail_dig_view);
         DynamicToolBean dynamicToolBean = dynamicBean.getTool();
         if (dynamicToolBean == null) {
             return;
@@ -144,7 +156,9 @@ public class DynamicDetailHeader {
             imageBeanList = new ArrayList<>();
             for (int i = userInfoList.size() - 1; i >= 0; i--) {
                 ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getTargetUserInfo().getAvatar()) ? 0 : Integer.parseInt(userInfoList.get(i).getTargetUserInfo().getAvatar()));
+                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getTargetUserInfo()
+                        .getAvatar()) ? 0 : Integer.parseInt(userInfoList.get(i)
+                        .getTargetUserInfo().getAvatar()));
                 imageBeanList.add(imageBean);
             }
         }
@@ -156,7 +170,8 @@ public class DynamicDetailHeader {
             public void digContainerClick(View digContainer) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(DigListFragment.DIG_LIST_DATA, dynamicBean);
-                Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity.class);
+                Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity
+                        .class);
                 intent.putExtras(bundle);
                 mDynamicDetailHeader.getContext().startActivity(intent);
             }
@@ -164,12 +179,16 @@ public class DynamicDetailHeader {
         if (dynamicBean.getTool().getFeed_comment_count() <= 0) {
             fl_comment_count_container.setVisibility(View.GONE);
         } else {
-            ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText(mDynamicDetailHeader.getResources().getString(R.string.dynamic_comment_count, ConvertUtils.numberConvert(dynamicBean.getTool().getFeed_comment_count())));
+            ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
+                    (mDynamicDetailHeader.getResources().getString(R.string
+                            .dynamic_comment_count, ConvertUtils.numberConvert(dynamicBean
+                            .getTool().getFeed_comment_count())));
             fl_comment_count_container.setVisibility(View.VISIBLE);
         }
     }
 
-    private void showContentImage(Context context, List<ImageBean> photoList, final int position, boolean lastImg, LinearLayout photoContainer) {
+    private void showContentImage(Context context, List<ImageBean> photoList, final int position,
+                                  boolean lastImg, LinearLayout photoContainer) {
         ImageBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
         FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
@@ -223,11 +242,13 @@ public class DynamicDetailHeader {
                     animationRectBeanArrayList.clear();
                     for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
                         View photoView = mPhotoContainer.getChildAt(i);
-                        ImageView imageView = (ImageView) photoView.findViewById(R.id.dynamic_content_img);
+                        ImageView imageView = (ImageView) photoView.findViewById(R.id
+                                .dynamic_content_img);
                         AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
                         animationRectBeanArrayList.add(rect);
                     }
-                    GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild(photoView), photoList, animationRectBeanArrayList);
+                    GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild
+                            (photoView), photoList, animationRectBeanArrayList);
                 }
             });
         }

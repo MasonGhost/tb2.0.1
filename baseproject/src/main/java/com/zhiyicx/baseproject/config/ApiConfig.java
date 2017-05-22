@@ -224,6 +224,8 @@ public class ApiConfig {
     // 会话类型
     public static final String SYSTEM_CONVERSATIONS_TYPE_FEEDBACK = "feedback";// 用户意见反馈
     public static final String SYSTEM_CONVERSATIONS_TYPE_SYSTEM = "system";// 系统通知
+    // 启动广告
+    public static final String SYSTEM_LAUNCH_ADVERT = "system_launch_advert";// 系统启动广告
 
     /**
      * 分享相关
