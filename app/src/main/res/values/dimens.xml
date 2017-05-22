@@ -36,7 +36,7 @@
     <!---->
     <dimen name="infocontainer_right_image_with">50dp</dimen>
     <!--咨询中的 banner hight-->
-    <dimen name="info_banner_hight">200dp</dimen>
+    <dimen name="info_banner_hight">250dp</dimen>
     <!--滑动删除按钮的宽度-->
     <dimen name="slide_button_with">80dp</dimen>
 

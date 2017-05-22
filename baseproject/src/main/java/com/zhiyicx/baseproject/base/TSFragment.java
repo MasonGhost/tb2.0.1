@@ -634,4 +634,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             startActivity(intent);
         }
     }
+
+    protected int getColor(int resId) {
+        return getResources().getColor(resId);
+    }
 }

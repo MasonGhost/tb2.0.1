@@ -1,15 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 
-import android.app.Activity;
-import android.os.Bundle;
+import com.zhiyicx.baseproject.base.TSActivity;
 
-import com.zhiyicx.thinksnsplus.R;
-
-public class DynamicTopActivity extends Activity {
+public class DynamicTopActivity extends TSActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dynamic_top);
+    protected DynamicTopFragment getFragment() {
+        return new DynamicTopFragment();
+    }
+
+    @Override
+    protected void componentInject() {
+
     }
 }

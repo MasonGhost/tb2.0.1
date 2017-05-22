@@ -28,13 +28,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListItemForOneImage extends DynamicListBaseItem {
+public class DynamicListItemForAdvert extends DynamicListBaseItem {
 
 
     private static final int IMAGE_COUNTS = 1;// 动态列表图片数量
     private static final int CURREN_CLOUMS = 1; // 当前列数
 
-    public DynamicListItemForOneImage(Context context) {
+    public DynamicListItemForAdvert(Context context) {
         super(context);
     }
 

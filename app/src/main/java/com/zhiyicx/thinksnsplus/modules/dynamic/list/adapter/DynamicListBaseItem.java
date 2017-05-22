@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -44,7 +45,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FE
  */
 
 public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
-    protected   final String TAG = this.getClass().getSimpleName();
+    protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
     private final int mWidthPixels; // 屏幕宽度
     private final int mMargin; // 图片容器的边距
@@ -166,14 +167,15 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 holder.setText(R.id.tv_title, title);
             }
             String content = dynamicBean.getFeed().getContent();
+            TextView contentView = holder.getView(R.id.tv_content);
             if (TextUtils.isEmpty(content)) {
-                holder.setVisible(R.id.tv_content, View.GONE);
+                contentView.setVisibility(View.GONE);
             } else {
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
-                holder.setText(R.id.tv_content, content);
-                holder.setVisible(R.id.tv_content, View.VISIBLE);
+                contentView.setText(content);
+                contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
             setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
