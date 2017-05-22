@@ -168,10 +168,10 @@
 
     <!--钱包-->
     <string name="account_balance">账户余额(元)</string>
-    <string name="charge">充值</string>
+    <string name="recharge">充值</string>
     <string name="withdraw">提现</string>
-    <string name="charge_and_withdraw_rule">充值提现规则</string>
-    <string name="charge_and_withdraw_rule_detail">充值提现规的價格充值提现规的價格充值提现规的價格充值提现规的價格充值提现规的價格充值提现规的價格</string>
+    <string name="recharge_and_withdraw_rule">充值提现规则</string>
+    <string name="recharge_and_withdraw_rule_detail">充值提现规的價格充值提现规的價格充值提现规的價格充值提现规的價格充值提现规的價格充值提现规的價格</string>
     <string name="detail">明细</string>
     <string name="get_it">知道了</string>
 </resources>

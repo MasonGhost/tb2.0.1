@@ -27,12 +27,12 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @BindView(R.id.tv_mine_money)
     TextView mTvMineMoney;
-    @BindView(R.id.bt_charge)
-    CombinationButton mBtCharge;
+    @BindView(R.id.bt_recharge)
+    CombinationButton mBtReCharge;
     @BindView(R.id.bt_withdraw)
     CombinationButton mBtWithdraw;
-    @BindView(R.id.tv_charge_and_withdraw_rule)
-    TextView mTvChargeAndWithdrawRule;
+    @BindView(R.id.tv_recharge_and_withdraw_rule)
+    TextView mTvReChargeAndWithdrawRule;
 
 
     private CenterInfoPopWindow mRulePop;// 充值提示规则选择弹框
@@ -86,13 +86,13 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     private void initListener() {
         // 充值
-        RxView.clicks(mBtCharge)
+        RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackSuccessMessage("mBtCharge");
+                        showSnackSuccessMessage("mBtReCharge");
                     }
                 });
         // 提现
@@ -106,7 +106,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                     }
                 });
         // 充值提现规则
-        RxView.clicks(mTvChargeAndWithdrawRule)
+        RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(new Action1<Void>() {
@@ -126,8 +126,8 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
             return;
         }
         mRulePop = CenterInfoPopWindow.builder()
-                .titleStr(getString(R.string.charge_and_withdraw_rule))
-                .desStr(getString(R.string.charge_and_withdraw_rule_detail))
+                .titleStr(getString(R.string.recharge_and_withdraw_rule))
+                .desStr(getString(R.string.recharge_and_withdraw_rule_detail))
                 .item1Str(getString(R.string.get_it))
                 .item1Color(R.color.themeColor)
                 .isOutsideTouch(true)

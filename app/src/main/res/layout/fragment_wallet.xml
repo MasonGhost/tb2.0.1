@@ -34,10 +34,10 @@
         tools:text="1288.00"/>
     <!--充值-->
     <com.zhiyicx.baseproject.widget.button.CombinationButton
-        android:id="@+id/bt_charge"
+        android:id="@+id/bt_recharge"
         android:layout_width="match_parent"
         android:layout_height="@dimen/full_button_height"
-        app:leftText="@string/charge"
+        app:leftText="@string/recharge"
         app:leftTextLeftPadding="@dimen/spacing_mid"
         app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
     <!--提现-->
@@ -55,13 +55,13 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_charge_and_withdraw_rule"
+            android:id="@+id/tv_recharge_and_withdraw_rule"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:paddingBottom="@dimen/spacing_large"
             android:paddingTop="@dimen/spacing_large"
-            android:text="@string/charge_and_withdraw_rule"
+            android:text="@string/recharge_and_withdraw_rule"
             />
     </FrameLayout>
 </LinearLayout>

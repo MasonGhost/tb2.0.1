@@ -192,7 +192,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
-
+        <activity
+            android:name=".modules.wallet.recharge.RechargeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
 
 
         <service

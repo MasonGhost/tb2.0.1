@@ -23,7 +23,7 @@ public abstract class AppBasePresenter<R, V extends IBaseView> extends BasePrese
         super(repository, rootView);
     }
 
-    public boolean istourist(){
+    public boolean istourist() {
         return mAuthRepository.isTourist();
     }
 
