@@ -103,6 +103,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void startActivity(Class aClass) {
+        mTimer.replease();
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
