@@ -162,7 +162,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected int setLeftImg() {
-        return mIsToourist ? R.mipmap.topbar_back : 0;
+        return 0;
+    }
+
+    @Override
+    protected String setLeftTitle() {
+        return mIsToourist ? getString(R.string.cancel) : "";
     }
 
     @Override

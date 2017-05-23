@@ -150,6 +150,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/no_login"
                     android:paddingTop="@dimen/spacing_mid"
+                    android:visibility="gone"
                     android:paddingBottom="@dimen/spacing_mid"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_content_comment"
