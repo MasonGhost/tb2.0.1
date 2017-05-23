@@ -190,4 +190,7 @@
     <string name="custom_recharge_money">自定义金额</string>
     <string name="choose_recharge_style">选择充值方式</string>
     <string name="choose_recharge_style_formart">%s充值</string>
+    <string name="choose_pay_style_formart">%s支付</string>
+    <string name="alipay">支付宝</string>
+    <string name="wxpay">微信</string>
 </resources>
