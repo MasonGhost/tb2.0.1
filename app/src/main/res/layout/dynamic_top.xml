@@ -101,10 +101,11 @@
                 android:textSize="@dimen/size_content_comment"
                 tools:text="当前lskfjeojfis"/>
 
-            <Button
+            <TextView
                 android:id="@+id/bt_top"
                 style="@style/style_login_button"
                 android:layout_marginTop="@dimen/button_login_margin_top"
+                android:enabled="false"
                 android:text="@string/to_top"
                 tools:text="申请置顶"/>
         </LinearLayout>

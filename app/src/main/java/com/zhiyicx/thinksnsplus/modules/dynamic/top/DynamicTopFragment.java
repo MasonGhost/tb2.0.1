@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -39,7 +38,7 @@ public class DynamicTopFragment extends TSFragment {
     @BindView(R.id.et_top_total)
     EditText mEtTopTotal;
     @BindView(R.id.bt_top)
-    Button mBtTop;
+    TextView mBtTop;
     @BindView(R.id.tv_dynamic_top_dec)
     TextView mTvDynamicTopDec;
     @BindView(R.id.rb_days_group)
@@ -47,6 +46,7 @@ public class DynamicTopFragment extends TSFragment {
 
     private List<Integer> mSelectDays;
     private int mCurrentDays;
+    private float mInputMoney;
 
     @Override
     public void setPresenter(Object presenter) {
@@ -85,6 +85,7 @@ public class DynamicTopFragment extends TSFragment {
                         mCurrentDays = mSelectDays.get(2);
                         break;
                 }
+                setConfirmEnable();
             }
         });
 
@@ -94,8 +95,14 @@ public class DynamicTopFragment extends TSFragment {
                     @Override
                     public void call(CharSequence charSequence) {
                         if (!TextUtils.isEmpty(charSequence)) {
-                            setConfirmEnable(Integer.parseInt(charSequence.toString()));
+                            if (charSequence.toString().contains(".")) {
+                                mEtTopInput.setError("只能充值整数");
+                            }
+                            mInputMoney = Float.parseFloat(charSequence.toString());
+                        } else {
+                            mInputMoney = 0f;
                         }
+                        setConfirmEnable();
                     }
                 });
     }
@@ -106,8 +113,9 @@ public class DynamicTopFragment extends TSFragment {
         mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
     }
 
-    private void setConfirmEnable(int totalMoney) {
-        mBtTop.setEnabled(mCurrentDays > 0 && totalMoney > 0);
+    private void setConfirmEnable() {
+        mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
+        mBtTop.setEnabled(mCurrentDays > 0 && mInputMoney > 0);
     }
 
     @Override

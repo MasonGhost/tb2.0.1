@@ -1,4 +1,5 @@
 <resources>
+
     <style name="activity_topin_bottomout" parent="TSTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -39,7 +40,7 @@
     <!--动态置顶输入金额-->
     <style name="style_dynamic_editext" parent="style_edit_cursor">
         <item name="android:layout_marginLeft">@dimen/spacing_small</item>
-        <item name="android:inputType">number</item>
+        <item name="android:inputType">numberDecimal</item>
         <item name="android:layout_marginRight">@dimen/spacing_small</item>
         <item name="android:textSize">@dimen/size_content</item>
         <item name="android:gravity">right</item>

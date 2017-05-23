@@ -162,7 +162,7 @@
     <string name="to_top">申请置顶</string>
     <string name="to_recharge">余额不足，去充值</string>
     <string name="dynamic_list_top_dynamic">申请动态置顶</string>
-    <string name="to_top_description">当前置顶金额¥%1$.2f元&amp;/&amp;天，钱包余额¥%2$.2f元</string>
+    <string name="to_top_description">当前置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
 
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>

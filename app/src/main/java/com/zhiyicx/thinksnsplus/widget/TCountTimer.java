@@ -206,6 +206,7 @@ public class TCountTimer extends CountDownTimer {
     }
 
     public void replease() {
+        canUseListener = false;
         cancel();
     }
 

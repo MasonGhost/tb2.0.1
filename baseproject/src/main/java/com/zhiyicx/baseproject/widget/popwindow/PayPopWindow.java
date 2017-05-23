@@ -110,8 +110,8 @@ public class PayPopWindow extends CustomPopupWindow {
     protected void initMoneyTextView(String moneyStr, int colorId, int resId) {
 
         Spannable moneySpan = new SpannableString(moneyStr);
-        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,20)), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,40)), 1, moneyStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,15)), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        moneySpan.setSpan(new AbsoluteSizeSpan(ConvertUtils.sp2px(mActivity,30)), 1, moneyStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (!TextUtils.isEmpty(moneyStr)) {
             TextView textView = (TextView) mContentView.findViewById(resId);
