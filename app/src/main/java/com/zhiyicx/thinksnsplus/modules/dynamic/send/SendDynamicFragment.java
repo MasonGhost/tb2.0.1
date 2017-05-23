@@ -168,7 +168,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         ArrayList<String> photos = new ArrayList<String>();
                         // 最后一张是占位图
                         for (int i = 0; i < selectedPhotos.size(); i++) {
@@ -183,7 +183,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         ArrayList<String> photos = new ArrayList<String>();
                         // 最后一张是占位图
                         for (int i = 0; i < selectedPhotos.size(); i++) {
@@ -199,7 +199,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mPhotoPopupWindow.hide();
                     }
                 }).build();
@@ -222,14 +222,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .with(getActivity())
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         mCanclePopupWindow.hide();
                         getActivity().finish();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mCanclePopupWindow.hide();
                     }
                 }).build();

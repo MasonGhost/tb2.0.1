@@ -527,28 +527,28 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         setGender(UserInfoBean.MALE);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         setGender(UserInfoBean.FEMALE);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
-                    public void onItem3Clicked() {
+                    public void onItemClicked() {
                         setGender(UserInfoBean.SECRET);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mGenderPopupWindow.hide();
                     }
                 })
@@ -572,7 +572,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         // 选择相册，单张
                         mPhotoSelector.getPhotoListFromSelector(1, null);
                         mPhotoPopupWindow.hide();
@@ -580,7 +580,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         // 选择相机，拍照
                         mPhotoSelector.getPhotoFromCamera(null);
                         mPhotoPopupWindow.hide();
@@ -588,7 +588,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mPhotoPopupWindow.hide();
                     }
                 }).build();

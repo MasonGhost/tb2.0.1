@@ -158,14 +158,14 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .with(getActivity())
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         mPresenter.cleanCache();
                         mCleanCachePopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mCleanCachePopupWindow.hide();
                     }
                 }).build();
@@ -182,7 +182,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         mLoginoutPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.is_sure_login_out))
                 .item2Str(getString(R.string.login_out_sure))
-                .item2StrColor(ContextCompat.getColor(getContext(), R.color.important_for_note))
+                .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -190,7 +190,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .with(getActivity())
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         if (mPresenter.loginOut()) {
                             startActivity(new Intent(getActivity(), LoginActivity.class));
                         }
@@ -199,7 +199,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mLoginoutPopupWindow.hide();
                     }
                 }).build();

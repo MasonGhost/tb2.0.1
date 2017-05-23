@@ -500,7 +500,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -508,14 +508,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mDeletDynamicPopWindow.hide();
                         mPresenter.deleteDynamic(dynamicBean, position);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletDynamicPopWindow.hide();
                     }
                 })
@@ -528,7 +528,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long feed_id) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -536,14 +536,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                         mPresenter.reSendComment(commentBean, feed_id);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                     }
                 })
@@ -556,7 +556,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initReSendDynamicPopupWindow(final int position) {
         mReSendDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.resend))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -564,7 +564,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mReSendDynamicPopWindow.hide();
                         mListDatas.get(position).setState(DynamicBean.SEND_ING);
                         refreshData();
@@ -573,7 +573,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendDynamicPopWindow.hide();
                     }
                 })
@@ -590,7 +590,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initDeletCommentPopWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -598,14 +598,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                         mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                     }
                 })
@@ -745,7 +745,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_share_dynamic))
-//                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+//                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -753,7 +753,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {// 收藏
+                    public void onItemClicked() {// 收藏
                         mPresenter.handleCollect(dynamicBean);
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
@@ -761,7 +761,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {// 分享
+                    public void onItemClicked() {// 分享
                         mPresenter.shareDynamic(dynamicBean,shareBitmap);
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
@@ -769,7 +769,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
                     }
@@ -797,14 +797,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {// 收藏
+                    public void onItemClicked() {// 收藏
                         mMyDynamicPopWindow.hide();
                         showBottomView(true);
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {// 删除
+                    public void onItemClicked() {// 删除
                         mMyDynamicPopWindow.hide();
                         mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
@@ -812,13 +812,13 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
-                    public void onItem3Clicked() {// 分享
+                    public void onItemClicked() {// 分享
                         mMyDynamicPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {//取消
+                    public void onItemClicked() {//取消
                         mMyDynamicPopWindow.hide();
                         showBottomView(true);
                     }

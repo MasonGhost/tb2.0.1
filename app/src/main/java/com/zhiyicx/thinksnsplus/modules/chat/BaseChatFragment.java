@@ -261,7 +261,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         onResendClick(chatItemBean);
                         mDeletCommentPopWindow.hide();
 
@@ -269,7 +269,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                     }
                 })

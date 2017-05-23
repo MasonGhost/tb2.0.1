@@ -109,7 +109,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     private MessageItemBean mItemBeanComment; // 评论的
     private MessageItemBean mItemBeanDigg;    // 点赞的
-//    private MessageItemBean mItemBeanNotices; // ts 助手
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -277,7 +276,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribe(new Action1<List<MessageItemBean>>() {
                     @Override
                     public void call(List<MessageItemBean> data) {
-//                        mRootView.onCacheResponseSuccess(data, false);
                         mRootView.refreshData();
                         checkBottomMessageTip();
                     }

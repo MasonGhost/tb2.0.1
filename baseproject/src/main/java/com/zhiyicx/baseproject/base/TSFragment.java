@@ -535,6 +535,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return "";
     }
 
+    protected void setLeftTextColor(@ColorRes int resId) {
+        mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), resId));
+    }
+
     /**
      * 设置右边的标题
      */
@@ -589,7 +593,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 设置 title 的文字颜色
      *
-     * @param resId  color  resource id
+     * @param resId color  resource id
      */
     protected void setCenterTextColor(@ColorRes int resId) {
         mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), resId));

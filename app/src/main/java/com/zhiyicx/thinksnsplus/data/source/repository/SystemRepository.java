@@ -113,6 +113,31 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
+     * 静态检测用户是否是 ts 助手
+     *
+     * @param context  context
+     * @param user_id  user  id
+     * @return
+     */
+    public static String checkHelperUrl(Context context, long user_id) {
+        String tsHelperUrl = null;
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(context, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+        if (systemConfigBean == null) { // 读取本地默认配置
+            systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
+        }
+        if (systemConfigBean != null && systemConfigBean.getIm_helper() != null) {
+            List<SystemConfigBean.ImHelperBean> tshleprs = systemConfigBean.getIm_helper();
+            for (SystemConfigBean.ImHelperBean tshlepr : tshleprs) {
+                if (Integer.parseInt(tshlepr.getUid()) == user_id) {
+                    tsHelperUrl = tshlepr.getUrl();
+                    break;
+                }
+            }
+        }
+        return tsHelperUrl;
+    }
+
+    /**
      * 保存启动信息
      *
      * @param systemConfigBean
