@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:background="@color/white"
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_big_large"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingTop="@dimen/spacing_big_large"
+            android:text="@string/account_balance"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content"/>
+
+        <TextView
+            android:background="@color/white"
+            android:id="@+id/tv_mine_money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/spacing_large"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/withdrawal_detail_textsize"
+            android:text="@string/account_balance"
+            tools:text="-1288.00"/>
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:gravity="left|center"
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:text="@string/account_form_name"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/account_form_name"/>
+
+            <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@mipmap/pic_default_portrait1"
+                android:drawablePadding="@dimen/spacing_small"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/account_to_name"
+                android:paddingLeft="@dimen/spacing_large"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                app:compoundDrawableHeight="@dimen/headpic_for_assist"
+                app:compoundDrawableWidth="@dimen/headpic_for_assist"
+                tools:text="@string/account_to_name" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:text="@string/transaction_account"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_account"/>
+
+            <TextView
+                android:paddingLeft="@dimen/spacing_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transaction_account"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_account"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:text="@string/transaction_description"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_description"/>
+
+            <TextView
+                android:paddingLeft="@dimen/spacing_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transaction_description"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_description"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:text="@string/transaction_time"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_time"/>
+
+            <TextView
+                android:paddingLeft="@dimen/spacing_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yuan"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/yuan"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</com.wcy.overscroll.OverScrollLayout>
+
+

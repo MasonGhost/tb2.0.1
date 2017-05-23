@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.wcy.overscroll.OverScrollLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bgColor"
     android:orientation="vertical">
 
     <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="vertical">
-
-        <include layout="@layout/view_choose_item"/>
-
-        <View
-            style="@style/style_divider_horizontal"
-            android:layout_height="@dimen/spacing_normal"/>
+        android:divider="@drawable/light_linear_driver"
+        android:orientation="vertical"
+        android:showDividers="middle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,13 +27,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/totop_money"
+                android:text="@string/withdraw_count"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"
-                tools:text="@string/totop_money"/>
+                tools:text="@string/withdraw_count"/>
 
             <EditText
-                android:id="@+id/et_top_input"
+                android:id="@+id/et_withdraw_input"
                 style="@style/style_dynamic_editext"
                 android:hint="@string/et_top_input"
                 tools:hint="@string/et_top_input"/>
@@ -49,8 +47,36 @@
                 tools:text="@string/yuan"/>
         </LinearLayout>
 
-        <View
-            style="@style/style_divider_horizontal"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/withdraw_ways"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/withdraw_ways"/>
+
+            <EditText
+                android:id="@+id/et_withdraw_ways"
+                style="@style/style_dynamic_editext"
+                android:enabled="false"
+                android:hint="@string/et_top_input"
+                tools:hint="@string/et_top_input"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_arrow_smallgrey"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,25 +89,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/et_top_total"
+                android:text="@string/withdraw_account"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"
-                tools:text="@string/et_top_total"/>
+                tools:text="@string/withdraw_account"/>
 
             <EditText
-                android:id="@+id/et_top_total"
+                android:id="@+id/et_withdraw_account_input"
                 style="@style/style_dynamic_editext"
-                android:enabled="false"
-                android:hint="@string/et_top_total"
-                tools:hint="@string/et_top_total"/>
+                android:hint="@string/withdraw_account_input"
+                android:inputType="text"
+                tools:hint="@string/withdraw_account_input"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/yuan"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"
-                tools:text="@string/yuan"/>
         </LinearLayout>
 
         <LinearLayout
@@ -92,23 +111,12 @@
             android:paddingTop="@dimen/spacing_mid">
 
             <TextView
-                android:id="@+id/tv_dynamic_top_dec"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/spacing_mid"
-                android:paddingRight="@dimen/spacing_mid"
-                android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_content_comment"/>
-
-            <TextView
-                android:id="@+id/bt_top"
+                android:id="@+id/bt_sure"
                 style="@style/style_login_button"
-                android:layout_marginTop="@dimen/button_login_margin_top"
                 android:enabled="false"
-                android:text="@string/to_top"
-                tools:text="@string/to_top"/>
+                android:text="@string/sure"
+                tools:text="@string/sure"/>
         </LinearLayout>
-
     </LinearLayout>
 
-</LinearLayout>
+</com.wcy.overscroll.OverScrollLayout>

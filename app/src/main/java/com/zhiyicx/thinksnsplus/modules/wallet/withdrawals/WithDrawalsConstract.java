@@ -1,15 +1,15 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.top;
+package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 
 /**
  * @Author Jliuer
- * @Date 2017/05/22/16:10
+ * @Date 2017/05/23/14:04
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public interface DynamicTopContract {
+public interface WithDrawalsConstract {
 
     interface View extends IBaseView<Presenter>{
 
@@ -19,7 +19,7 @@ public interface DynamicTopContract {
 
     }
 
-    interface Repository {
+    interface Repository{
 
     }
 }

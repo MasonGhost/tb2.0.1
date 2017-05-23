@@ -25,7 +25,7 @@ import rx.functions.Action1;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicTopFragment extends TSFragment {
+public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter> implements DynamicTopContract.View{
 
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
@@ -48,9 +48,8 @@ public class DynamicTopFragment extends TSFragment {
     private int mCurrentDays;
     private float mInputMoney;
 
-    @Override
-    public void setPresenter(Object presenter) {
-
+    public static DynamicTopFragment newInstance(){
+        return new DynamicTopFragment();
     }
 
     @Override

@@ -45,6 +45,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -120,12 +121,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids) {
+        //V1
 //        HashMap<String, Object> datas = new HashMap<>();
 //        datas.put("user_ids", user_ids);
 //        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
 //        return mUserInfoClient.getUserInfo(body)
 //                .subscribeOn(Schedulers.io()).
 //                        observeOn(AndroidSchedulers.mainThread());
+
+        // V2
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
@@ -161,6 +165,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         }
         List<Object> user_ids = new ArrayList<>();
         user_ids.add(user_id);
+
+        //V1
 //        HashMap<String, Object> datas = new HashMap<>();
 //        datas.put("user_ids", user_ids);
 //        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
@@ -180,6 +186,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 //                    }
 //                });
 
+        // V2
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");

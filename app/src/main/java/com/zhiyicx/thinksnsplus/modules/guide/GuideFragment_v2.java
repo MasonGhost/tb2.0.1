@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -41,6 +42,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     TextView mGuideText;
 
     TCountTimer mTimer;
+    Subscription subscription;
     int mPosition;
 
     @Override
@@ -63,7 +65,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     public void onResume() {
         super.onResume();
-        Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
+        subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Long, Boolean>() {
                     @Override
@@ -102,10 +104,17 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void startActivity(Class aClass) {
-        mTimer.replease();
+        repleaseAdvert();
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+    }
+
+    private void repleaseAdvert() {
+        mGuideBanner.setOnPageChangeListener(null);
+        mGuideBanner.stopAutoPlay();
+        mTimer.replease();
+        subscription.unsubscribe();
     }
 
     @Override
@@ -124,14 +133,14 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (mPosition > 0) {
             mTimer.replease();
             mGuideBanner.setDelayTime(position * 2000);
-            mTimer.newBuilder()
+            mTimer = mTimer.newBuilder()
                     .buildTimeCount(position * 2000)
                     .buildCanUseOntick(true)
                     .buildDurText(getString(R.string.skip))
                     .buildCanUseListener(mPosition == mGuideBanner.getItemCount() - 1)
                     .buildOnTimeListener(this)
-                    .build()
-                    .start();
+                    .build();
+            mTimer.start();
         }
     }
 

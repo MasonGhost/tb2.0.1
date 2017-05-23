@@ -201,7 +201,6 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
 
-
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"
@@ -248,7 +247,6 @@
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
 
-
         <!-- 新浪分享 -->
         <activity
             android:name=".WBShareActivity"
@@ -289,6 +287,12 @@
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".modules.dynamic.top.DynamicTopActivity">
+        </activity>
+        <activity android:name=".modules.wallet.withdrawals.WithdrawalsActivity">
+        </activity>
+        <activity android:name=".modules.wallet.withdrawals.detail.WithdrawalsDetailActivity">
+        </activity>
+        <activity android:name=".modules.wallet.account.AccountActivity">
         </activity>
     </application>
 
