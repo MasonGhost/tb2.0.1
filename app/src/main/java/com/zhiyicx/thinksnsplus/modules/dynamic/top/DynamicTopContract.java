@@ -11,7 +11,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
  */
 public interface DynamicTopContract {
 
-    interface View extends IBaseView{
+    interface View extends IBaseView<Presenter>{
 
     }
 

@@ -188,6 +188,7 @@
     <string name="get_it">知道了</string>
     <!--钱包 之 提现-->
     <string name="withdraw_count">提现金额</string>
+    <string name="withdraw_details">提现明细</string>
     <string name="withdraw_ways">选择提现方式</string>
     <string name="withdraw_account">提现账户</string>
     <string name="withdraw_account_input">输入提现账户</string>

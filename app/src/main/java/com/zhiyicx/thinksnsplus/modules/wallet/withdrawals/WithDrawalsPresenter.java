@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 
-import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithDrawalsConstact.Presenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -8,5 +10,11 @@ import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithDrawalsConstact.P
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class WithDrawalsPresenter implements Presenter {
+public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.Repository,WithDrawalsConstract.View>
+        implements WithDrawalsConstract.Presenter {
+
+    @Inject
+    public WithDrawalsPresenter(WithDrawalsConstract.Repository repository, WithDrawalsConstract.View rootView) {
+        super(repository, rootView);
+    }
 }

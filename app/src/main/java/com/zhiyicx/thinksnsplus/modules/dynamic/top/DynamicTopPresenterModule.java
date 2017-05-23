@@ -13,20 +13,21 @@ import dagger.Provides;
  * @Description
  */
 @Module
-public class DynamicPresenterModule {
+public class DynamicTopPresenterModule {
+
     DynamicTopContract.View mView;
 
-    public DynamicPresenterModule(DynamicTopContract.View view) {
+    public DynamicTopPresenterModule(DynamicTopContract.View view) {
         this.mView = view;
     }
 
     @Provides
-    public DynamicTopContract.View provideDynamicTopContractView() {
+    DynamicTopContract.View provideDynamicTopContractView() {
         return mView;
     }
 
     @Provides
-    public DynamicTopContract.Repository provideDynamicTopContractRepository(ServiceManager serviceManager) {
+    DynamicTopContract.Repository provideDynamicTopContractRepository(ServiceManager serviceManager) {
         return new DynamicTopRepsotory(serviceManager);
     }
 }

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithDrawalsConstract;
 
 /**
@@ -9,4 +10,6 @@ import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithDrawalsConstract;
  * @Description
  */
 public class WithDrawalsRepository implements WithDrawalsConstract.Repository {
+    public WithDrawalsRepository(ServiceManager serviceManager) {
+    }
 }
