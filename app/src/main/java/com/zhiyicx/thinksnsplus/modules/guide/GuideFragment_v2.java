@@ -11,7 +11,6 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
@@ -105,12 +104,17 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void startActivity(Class aClass) {
-        mGuideBanner.stopAutoPlay();
-        mTimer.replease();
-        subscription.unsubscribe();
+        repleaseAdvert();
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+    }
+
+    private void repleaseAdvert() {
+        mGuideBanner.setOnPageChangeListener(null);
+        mGuideBanner.stopAutoPlay();
+        mTimer.replease();
+        subscription.unsubscribe();
     }
 
     @Override
@@ -129,14 +133,14 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (mPosition > 0) {
             mTimer.replease();
             mGuideBanner.setDelayTime(position * 2000);
-            mTimer.newBuilder()
+            mTimer = mTimer.newBuilder()
                     .buildTimeCount(position * 2000)
                     .buildCanUseOntick(true)
                     .buildDurText(getString(R.string.skip))
                     .buildCanUseListener(mPosition == mGuideBanner.getItemCount() - 1)
                     .buildOnTimeListener(this)
-                    .build()
-                    .start();
+                    .build();
+            mTimer.start();
         }
     }
 
