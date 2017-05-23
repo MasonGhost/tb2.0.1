@@ -663,7 +663,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private void initDeletCommentPopWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -671,14 +671,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                         mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                     }
                 })
@@ -706,14 +706,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mPresenter.handleCollect(dynamicBean);
                         mDeletDynamicPopWindow.hide();
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         mDeletDynamicPopWindow.hide();
                         updateDynamicCounts(-1);
                         mPresenter.deleteDynamic(dynamicBean, position);
@@ -722,14 +722,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
-                    public void onItem3Clicked() {
+                    public void onItemClicked() {
                         mPresenter.shareDynamic(dynamicBean, shareBitmap);
                         mDeletDynamicPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletDynamicPopWindow.hide();
                     }
                 })
@@ -766,7 +766,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long feed_id) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -774,14 +774,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                         mPresenter.reSendComment(commentBean, feed_id);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                     }
                 })
@@ -794,7 +794,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private void initReSendDynamicPopupWindow(final int position) {
         mReSendDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.resend))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -802,7 +802,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mReSendDynamicPopWindow.hide();
                         mListDatas.get(position).setState(DynamicBean.SEND_ING);
                         refreshData();
@@ -811,7 +811,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendDynamicPopWindow.hide();
                     }
                 })

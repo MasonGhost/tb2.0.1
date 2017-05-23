@@ -363,7 +363,7 @@ public class PersonalCenterHeaderViewItem {
                 .with(mActivity)
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         // 选择相册，单张
                         mPhotoSelector.getPhotoListFromSelector(1, null);
                         mPhotoPopupWindow.hide();
@@ -371,7 +371,7 @@ public class PersonalCenterHeaderViewItem {
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         // 选择相机，拍照
                         mPhotoSelector.getPhotoFromCamera(null);
                         mPhotoPopupWindow.hide();
@@ -379,7 +379,7 @@ public class PersonalCenterHeaderViewItem {
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mPhotoPopupWindow.hide();
                     }
                 }).build();

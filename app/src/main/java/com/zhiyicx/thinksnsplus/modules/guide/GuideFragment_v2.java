@@ -11,7 +11,6 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;

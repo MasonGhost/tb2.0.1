@@ -332,14 +332,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 .item2Str(mFragment.getString(R.string.setting_permission))
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         DeviceUtils.openAppDetail(mFragment.getContext());
                         mActionPopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mActionPopupWindow.hide();
                     }
                 })

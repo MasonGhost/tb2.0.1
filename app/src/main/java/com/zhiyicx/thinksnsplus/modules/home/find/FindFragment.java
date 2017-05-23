@@ -200,7 +200,7 @@ public class FindFragment extends TSFragment {
                 .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         mActionPopupWindow.hide();
                         if (isOppoR9s) {
                             DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
@@ -211,7 +211,7 @@ public class FindFragment extends TSFragment {
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mActionPopupWindow.hide();
                     }
                 })

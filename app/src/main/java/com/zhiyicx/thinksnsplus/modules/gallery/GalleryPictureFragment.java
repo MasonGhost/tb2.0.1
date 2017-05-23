@@ -179,14 +179,14 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .with((Activity) context)
                     .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                         @Override
-                        public void onItem1Clicked() {
+                        public void onItemClicked() {
                             mActionPopupWindow.hide();
                             saveImage();
                         }
                     })
                     .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                         @Override
-                        public void onBottomClicked() {
+                        public void onItemClicked() {
                             mActionPopupWindow.hide();
                         }
                     })

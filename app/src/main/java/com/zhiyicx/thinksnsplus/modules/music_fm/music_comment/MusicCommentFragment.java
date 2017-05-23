@@ -329,7 +329,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     private void initDeleteCommentPopupWindow(final MusicCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -337,7 +337,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
                         setHeaderInfo(mHeaderInfo);
                         if (WindowUtils.getAblumHeadInfo() != null) {
@@ -350,7 +350,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                     }
                 })
@@ -360,7 +360,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     private void initReSendCommentPopupWindow(final MusicCommentListBean commentBean) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -368,14 +368,14 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mPresenter.reSendComment(commentBean);
                         mReSendCommentPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                     }
                 })
