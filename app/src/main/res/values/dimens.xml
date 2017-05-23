@@ -48,4 +48,7 @@
 
     <!--提现明细-->
     <dimen name="withdrawal_detail_item_height">55dp</dimen>
+    <!--账单详情-->
+    <dimen name="withdrawal_detail_textsize">50sp</dimen>
+    <dimen name="withdrawal_detail_width">60dp</dimen>
 </resources>

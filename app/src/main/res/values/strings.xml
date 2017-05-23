@@ -192,4 +192,11 @@
     <string name="withdraw_ways">选择提现方式</string>
     <string name="withdraw_account">提现账户</string>
     <string name="withdraw_account_input">输入提现账户</string>
+    <!--钱包 之 账户详情-->
+    <string name="account_form_name">付款人</string>
+    <string name="account_detail">账户详情</string>
+    <string name="account_to_name">收款人</string>
+    <string name="transaction_description">交易说明</string>
+    <string name="transaction_account">交易账户</string>
+    <string name="transaction_time">交易时间</string>
 </resources>

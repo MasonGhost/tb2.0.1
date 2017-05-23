@@ -1,12 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.account;
 
-import android.app.Activity;
-import android.os.Bundle;
+import com.zhiyicx.baseproject.base.TSActivity;
 
-public class AccountActivity extends Activity {
+public class AccountActivity extends TSActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected AccountFragment getFragment() {
+        return new AccountFragment();
+    }
+
+    @Override
+    protected void componentInject() {
+
     }
 }

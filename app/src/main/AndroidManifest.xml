@@ -292,6 +292,8 @@
         </activity>
         <activity android:name=".modules.wallet.withdrawals.detail.WithdrawalsDetailActivity">
         </activity>
+        <activity android:name=".modules.wallet.account.AccountActivity">
+        </activity>
     </application>
 
 </manifest>

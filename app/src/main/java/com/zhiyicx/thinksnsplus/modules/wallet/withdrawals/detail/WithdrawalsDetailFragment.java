@@ -1,13 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail;
 
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.wallet.account.AccountActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
@@ -31,6 +35,12 @@ public class WithdrawalsDetailFragment extends TSListFragment {
     }
 
     @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+
+    }
+
+    @Override
     protected void initData() {
         super.initData();
         mListDatas.add("");
@@ -45,7 +55,7 @@ public class WithdrawalsDetailFragment extends TSListFragment {
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return new CommonAdapter<String>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
+        CommonAdapter adapter = new CommonAdapter<String>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, String s, int position) {
                 TextView desc = holder.getView(R.id.withdrawals_desc);
@@ -54,6 +64,18 @@ public class WithdrawalsDetailFragment extends TSListFragment {
                 }
             }
         };
+        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                startActivity(new Intent(getActivity(), AccountActivity.class));
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
+        return adapter;
     }
 
     @Override

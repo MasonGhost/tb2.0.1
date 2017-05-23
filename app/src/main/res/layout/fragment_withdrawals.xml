@@ -66,6 +66,7 @@
             <EditText
                 android:id="@+id/et_withdraw_ways"
                 style="@style/style_dynamic_editext"
+                android:enabled="false"
                 android:hint="@string/et_top_input"
                 tools:hint="@string/et_top_input"/>
 
@@ -97,6 +98,7 @@
                 android:id="@+id/et_withdraw_account_input"
                 style="@style/style_dynamic_editext"
                 android:hint="@string/withdraw_account_input"
+                android:inputType="text"
                 tools:hint="@string/withdraw_account_input"/>
 
         </LinearLayout>
