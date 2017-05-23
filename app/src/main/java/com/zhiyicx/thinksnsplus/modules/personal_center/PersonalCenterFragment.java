@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -56,6 +57,8 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForThreeImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -74,6 +77,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository.checkHelperUrl;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
@@ -577,11 +581,21 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 跳转到当前的个人中心页面
      */
     public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
-        Intent intent = new Intent(context, PersonalCenterActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+        String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
+        if (TextUtils.isEmpty(tsHelperUrl)) {
+            Intent intent = new Intent(context, CustomWEBActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, tsHelperUrl);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        } else {
+            Intent intent = new Intent(context, PersonalCenterActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, userInfoBean);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        }
+
     }
 
     /**
