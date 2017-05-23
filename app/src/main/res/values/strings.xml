@@ -196,6 +196,9 @@
 
     <!--钱包 之 提现-->
     <string name="withdraw_count">提现金额</string>
+    <string name="withdraw_all">全部</string>
+    <string name="withdraw_out">支出</string>
+    <string name="withdraw_in">收入</string>
     <string name="withdraw_details">提现明细</string>
     <string name="withdraw_ways">选择提现方式</string>
     <string name="withdraw_account">提现账户</string>

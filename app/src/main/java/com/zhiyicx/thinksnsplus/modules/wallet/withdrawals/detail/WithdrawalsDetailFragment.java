@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.wallet.account.AccountActivity;
@@ -16,6 +17,8 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 
+import butterknife.BindView;
+
 /**
  * @Author Jliuer
  * @Date 2017/05/23/10:56
@@ -24,9 +27,24 @@ import java.util.List;
  */
 public class WithdrawalsDetailFragment extends TSListFragment {
 
+    @BindView(R.id.v_shadow)
+    View mVshadow;
+
+    private ActionPopupWindow mActionPopupWindow;
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_withdrawals_detail;
+    }
+
     @Override
     protected String setCenterTitle() {
         return getString(R.string.withdraw_details);
+    }
+
+    @Override
+    protected void setCenterClick() {
+        mActionPopupWindow.showTop();
     }
 
     @Override
@@ -37,7 +55,46 @@ public class WithdrawalsDetailFragment extends TSListFragment {
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+//        mToolbarCenter.setCompoundDrawables(null,null,getResources().getDrawable(R.mipmap.arr),null);
+        mActionPopupWindow = ActionPopupWindow.builder()
+                .with(getActivity())
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .parentView(mDriver)
+                .animationStyle(R.style.style_actionPopupAnimation_revert)
+                .item1Str(getString(R.string.withdraw_all))
+                .item2Str(getString(R.string.withdraw_out))
+                .item3Str(getString(R.string.withdraw_in))
+                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
+                    @Override
+                    public void onItem1Clicked() {
+                        mActionPopupWindow.hide();
+                    }
+                })
+                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
+                    @Override
+                    public void onItem2Clicked() {
+                        mActionPopupWindow.hide();
+                    }
+                })
+                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
+                    @Override
+                    public void onItem3Clicked() {
+                        mActionPopupWindow.hide();
+                    }
+                })
+                .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
+                    @Override
+                    public void onShow() {
+                        mVshadow.setVisibility(View.VISIBLE);
+                    }
 
+                    @Override
+                    public void onDismiss() {
+                        mVshadow.setVisibility(View.GONE);
+                    }
+                })
+                .build();
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;// 默认的toolbar左边的图片，一般是返回键
 
     protected TextView mToolbarLeft;
+    protected View mDriver;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
@@ -93,10 +95,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             linearLayout.addView(toolBarContainer);
         }
         if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
-            View divider = new View(getContext());
-            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.divider_line)));
-            divider.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
-            linearLayout.addView(divider);
+            mDriver = new View(getContext());
+            mDriver.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.divider_line)));
+            mDriver.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
+            linearLayout.addView(mDriver);
         }
         if (setUseSatusbar()) {
             // 状态栏顶上去
@@ -491,6 +493,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                         setRightClick();
                     }
                 });
+        RxView.clicks(mToolbarCenter)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        setCenterClick();
+                    }
+                });
     }
 
     /**
@@ -557,6 +567,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 设置右边的点击时间，有必要重写该方法
      */
     protected void setRightClick() {
+    }
+
+    protected void setCenterClick() {
     }
 
     /**

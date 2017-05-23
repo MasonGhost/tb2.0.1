@@ -37,6 +37,7 @@ public class ActionPopupWindow extends PopupWindow {
     private String mBottomStr;
     private int mItem1Color;
     private int mItem2Color;
+    private int mAnimationStyle;
     private boolean mIsOutsideTouch;
     private boolean mIsFocus;
     private float mAlpha;
@@ -47,6 +48,7 @@ public class ActionPopupWindow extends PopupWindow {
 
     private ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
     private ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
+    private ActionPopupWindowShowOrDismissListener mActionPopupWindowDismissListener;
 
     private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
@@ -58,6 +60,7 @@ public class ActionPopupWindow extends PopupWindow {
         this.mItem3Str = builder.mItem3Str;
         this.mItem4Str = builder.mItem4Str;
         this.mItem5Str = builder.mItem5Str;
+        this.mAnimationStyle = builder.mAnimationStyle;
         this.mItem1Color = builder.mItem1Color;
         this.mItem2Color = builder.mItem2Color;
         this.mBottomStr = builder.mBottomStr;
@@ -70,6 +73,7 @@ public class ActionPopupWindow extends PopupWindow {
         this.mActionPopupWindowItem4ClickListener = builder.mActionPopupWindowItem4ClickListener;
         this.mActionPopupWindowItem5ClickListener = builder.mActionPopupWindowItem5ClickListener;
         this.mActionPopupWindowBottomClickListener = builder.mActionPopupWindowBottomClickListener;
+        this.mActionPopupWindowDismissListener = builder.mActionPopupWindowDismissListener;
         if (canInitView()) {
             initView();
         }
@@ -91,7 +95,7 @@ public class ActionPopupWindow extends PopupWindow {
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
         setBackgroundDrawable(mBackgroundDrawable);
-        setAnimationStyle(R.style.style_actionPopupAnimation);
+        setAnimationStyle(mAnimationStyle > 0 ? mAnimationStyle : R.style.style_actionPopupAnimation);
         setContentView(mContentView);
     }
 
@@ -232,6 +236,35 @@ public class ActionPopupWindow extends PopupWindow {
         }
     }
 
+    public void showTop() {
+        if (mParentView == null) {
+            showAtLocation(mContentView, Gravity.TOP, 0, 0);
+        } else {
+            showAsDropDown(mParentView, 0, 0);
+        }
+    }
+
+    @Override
+    public void showAtLocation(View parent, int gravity, int x, int y) {
+        super.showAtLocation(parent, gravity, x, y);
+        if (mActionPopupWindowDismissListener != null)
+            mActionPopupWindowDismissListener.onShow();
+    }
+
+    @Override
+    public void showAsDropDown(View anchor, int xoff, int yoff, int gravity) {
+        super.showAsDropDown(anchor, xoff, yoff, gravity);
+        if (mActionPopupWindowDismissListener != null)
+            mActionPopupWindowDismissListener.onShow();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (mActionPopupWindowDismissListener != null)
+            mActionPopupWindowDismissListener.onDismiss();
+    }
+
     /**
      * 隐藏popupwindow
      */
@@ -250,6 +283,7 @@ public class ActionPopupWindow extends PopupWindow {
         private String mBottomStr;
         private int mItem1Color;
         private int mItem2Color;
+        private int mAnimationStyle;
         private float mAlpha;
         private boolean mIsOutsideTouch = true;// 默认为true
         private boolean mIsFocus = true;// 默认为true
@@ -258,6 +292,7 @@ public class ActionPopupWindow extends PopupWindow {
         private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
         private ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
         private ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
+        private ActionPopupWindowShowOrDismissListener mActionPopupWindowDismissListener;
         private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
         protected Builder() {
@@ -308,6 +343,11 @@ public class ActionPopupWindow extends PopupWindow {
             return this;
         }
 
+        public ActionPopupWindow.Builder animationStyle(int animationStyle) {
+            this.mAnimationStyle = animationStyle;
+            return this;
+        }
+
         public ActionPopupWindow.Builder item2StrColor(int color) {
             this.mItem2Color = color;
             return this;
@@ -335,6 +375,11 @@ public class ActionPopupWindow extends PopupWindow {
 
         public ActionPopupWindow.Builder item5ClickListener(ActionPopupWindowItem5ClickListener actionPopupWindowItem5ClickListener) {
             this.mActionPopupWindowItem5ClickListener = actionPopupWindowItem5ClickListener;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder dismissListener(ActionPopupWindowShowOrDismissListener actionPopupWindowDismissListener) {
+            this.mActionPopupWindowDismissListener = actionPopupWindowDismissListener;
             return this;
         }
 
@@ -385,6 +430,12 @@ public class ActionPopupWindow extends PopupWindow {
 
     public interface ActionPopupWindowBottomClickListener {
         void onBottomClicked();
+    }
+
+    public interface ActionPopupWindowShowOrDismissListener {
+        void onDismiss();
+
+        void onShow();
     }
 
 }

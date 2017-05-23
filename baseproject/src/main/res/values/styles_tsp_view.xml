@@ -110,6 +110,11 @@
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
 
+    <style name="style_actionPopupAnimation_revert" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/slide_from_top_enter</item>
+        <item name="android:windowExitAnimation">@anim/slide_from_top_quit</item>
+    </style>
+
 
     <!--#########################################      加载样式       ################################-->
 
