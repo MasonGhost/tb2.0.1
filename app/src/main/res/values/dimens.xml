@@ -43,7 +43,9 @@
     <!--动态置顶-->
     <dimen name="select_days_margin_bottom">18dp</dimen>
     <dimen name="select_days_margin_top">13dp</dimen>
-
     <dimen name="dynamice_top_select_day_height">35dp</dimen>
     <dimen name="dynamice_top_input_height">50dp</dimen>
+
+    <!--提现明细-->
+    <dimen name="withdrawal_detail_item_height">55dp</dimen>
 </resources>
