@@ -77,6 +77,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         initListenter();
         // 游客判断
         mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
+        if (mIsToourist || !mPresenter.istourist()) {
+            setLeftTextColor(R.color.themeColor);
+        }
     }
 
     private void initListenter() {
@@ -169,6 +172,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     protected String setLeftTitle() {
         return mIsToourist ? getString(R.string.cancel) : "";
     }
+
 
     @Override
     public void setLogining() {

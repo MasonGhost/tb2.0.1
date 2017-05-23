@@ -514,6 +514,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     public void onRefresh() {
         if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.istourist() && !mListDatas.isEmpty()) { // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
             showLoginPop();
+            hideLoading();
             return;
         }
         mMaxId = DEFAULT_PAGE_MAX_ID;
@@ -527,6 +528,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void onLoadMore() {
         if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.handleTouristControl()) { // 游客加载跟多处理
+            hideLoading();
             return;
         }
         mPage++;
