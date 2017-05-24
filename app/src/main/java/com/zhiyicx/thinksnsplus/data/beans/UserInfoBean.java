@@ -60,6 +60,8 @@ public class UserInfoBean implements Parcelable, Serializable {
     private String followed_count;// 粉丝数量
     private String feeds_count;// 动态数量
     private String cover;// 封面
+    @Transient
+    private WalletBean wallet;
 
     /**
      * id : 9
@@ -308,6 +310,14 @@ public class UserInfoBean implements Parcelable, Serializable {
         this.deleted_at = deleted_at;
     }
 
+    public WalletBean getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(WalletBean wallet) {
+        this.wallet = wallet;
+    }
+
     public List<DatasBean> getDatas() {
         datas = datas == null ? new ArrayList<DatasBean>() : datas;
         return datas;
@@ -390,6 +400,7 @@ public class UserInfoBean implements Parcelable, Serializable {
         public void setPivot(PivotBean pivot) {
             this.pivot = pivot;
         }
+
 
         public static class PivotBean implements Parcelable, Serializable {
             private static final long serialVersionUID = 536871009L;
@@ -617,30 +628,6 @@ public class UserInfoBean implements Parcelable, Serializable {
     }
 
 
-    @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", sex='" + sex + '\'' +
-                ", sexString='" + sexString + '\'' +
-                ", name='" + name + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", intro='" + intro + '\'' +
-                ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", education='" + education + '\'' +
-                ", created_at=" + created_at +
-                ", updated_at=" + updated_at +
-                ", deleted_at=" + deleted_at +
-                ", datas=" + datas +
-                ", counts=" + counts +
-                '}';
-    }
-
     private String avoidNull(String data) {
         return data == null ? "" : data;
     }
@@ -733,6 +720,7 @@ public class UserInfoBean implements Parcelable, Serializable {
         return result == null ? "" : result;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -756,6 +744,12 @@ public class UserInfoBean implements Parcelable, Serializable {
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeString(this.deleted_at);
+        dest.writeString(this.diggs_count);
+        dest.writeString(this.following_count);
+        dest.writeString(this.followed_count);
+        dest.writeString(this.feeds_count);
+        dest.writeString(this.cover);
+        dest.writeParcelable(this.wallet, flags);
         dest.writeTypedList(this.datas);
         dest.writeTypedList(this.counts);
     }
@@ -780,14 +774,20 @@ public class UserInfoBean implements Parcelable, Serializable {
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.deleted_at = in.readString();
+        this.diggs_count = in.readString();
+        this.following_count = in.readString();
+        this.followed_count = in.readString();
+        this.feeds_count = in.readString();
+        this.cover = in.readString();
+        this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
         this.datas = in.createTypedArrayList(DatasBean.CREATOR);
         this.counts = in.createTypedArrayList(CountsBean.CREATOR);
     }
 
     @Generated(hash = 1124713812)
-    public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province, String city,
-                        String area, String education, String created_at, String updated_at, String deleted_at, String diggs_count, String following_count, String followed_count,
-                        String feeds_count, String cover, List<DatasBean> datas, List<CountsBean> counts) {
+    public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province,
+            String city, String area, String education, String created_at, String updated_at, String deleted_at, String diggs_count, String following_count,
+            String followed_count, String feeds_count, String cover, List<DatasBean> datas, List<CountsBean> counts) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
@@ -823,4 +823,34 @@ public class UserInfoBean implements Parcelable, Serializable {
             return new UserInfoBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "user_id=" + user_id +
+                ", sex='" + sex + '\'' +
+                ", sexString='" + sexString + '\'' +
+                ", name='" + name + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", intro='" + intro + '\'' +
+                ", location='" + location + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", area='" + area + '\'' +
+                ", education='" + education + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", deleted_at='" + deleted_at + '\'' +
+                ", diggs_count='" + diggs_count + '\'' +
+                ", following_count='" + following_count + '\'' +
+                ", followed_count='" + followed_count + '\'' +
+                ", feeds_count='" + feeds_count + '\'' +
+                ", cover='" + cover + '\'' +
+                ", wallet=" + wallet +
+                ", datas=" + datas +
+                ", counts=" + counts +
+                '}';
+    }
 }
