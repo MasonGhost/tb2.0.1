@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -44,6 +45,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Override
     public void login(String phone, String password) {
@@ -72,6 +75,9 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                     @Override
                     protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
+                        if (data.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(data.getWallet());
+                        }
                         mRootView.setLoginState(true);
                     }
 
