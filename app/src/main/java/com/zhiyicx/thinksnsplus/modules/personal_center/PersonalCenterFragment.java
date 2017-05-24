@@ -582,7 +582,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
         String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
-        if (TextUtils.isEmpty(tsHelperUrl)) {
+        if (!TextUtils.isEmpty(tsHelperUrl)) {
             Intent intent = new Intent(context, CustomWEBActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, tsHelperUrl);

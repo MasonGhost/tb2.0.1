@@ -67,6 +67,7 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_NOTICES;
+import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
  * @Describe
@@ -76,7 +77,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_NOTICES
  */
 @FragmentScoped
 public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
-    public static final int DEFAULT_TS_HLEPER_CONVERSATION_ID = -100; // TS 助手默认的会话 id
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
 
@@ -136,35 +136,44 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
         // 新版 ts 助手
         for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
+            if (imHelperBean.isDelete()) {
+                continue;
+            }
             final String uidsstr = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
             datas.add(mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uidsstr));
-
         }
-        Observable.zip(datas, new FuncN<Object>() {
-            @Override
-            public Object call(Object... args) {
-                for (int i = 0; i < args.length; i++) {  // 为 ts 助手添加提示语
-                    Conversation data = ((BaseJson<Conversation>) args[i]).getData();
-                    // 写入 ts helper 默认提示语句
-                    Message message = new Message();
-                    message.setId((int) System.currentTimeMillis());
-                    message.setType(MessageType.MESSAGE_TYPE_TEXT);
-                    message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
-                    message.setSend_status(MessageStatus.SEND_SUCCESS);
-                    message.setIs_read(false);
-                    message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
-                    message.setCid(data.getCid());
-                    MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
+        if (datas.isEmpty()) {
+            getCoversationList();
+        } else {
+            Observable.zip(datas, new FuncN<Object>() {
+                @Override
+                public Object call(Object... args) {
+                    for (int i = 0; i < args.length; i++) {  // 为 ts 助手添加提示语
+                        Conversation data = ((BaseJson<Conversation>) args[i]).getData();
+                        // 写入 ts helper 默认提示语句
+                        long currentTime = System.currentTimeMillis();
+                        Message message = new Message();
+                        message.setId((int) currentTime);
+                        message.setType(MessageType.MESSAGE_TYPE_TEXT);
+                        message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
+                        message.setSend_status(MessageStatus.SEND_SUCCESS);
+                        message.setIs_read(false);
+                        message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
+                        message.setCid(data.getCid());
+                        message.setCreate_time(currentTime);
+//                    public static final long TIME_DEFAULT_ADD = 1451577600000L; //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
+                        message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
+                        MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
+                    }
+                    return args;
                 }
-                return args;
-            }
-        }).subscribe(new BaseSubscribeForV2<Object>() {
-            @Override
-            protected void onSuccess(Object data) {
-
-                getCoversationList();
-            }
-        });
+            }).subscribe(new BaseSubscribeForV2<Object>() {
+                @Override
+                protected void onSuccess(Object data) {
+                    getCoversationList();
+                }
+            });
+        }
 
     }
 
@@ -255,19 +264,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     public List<MessageItemBean> call(String s) {
                         int size = mRootView.getListDatas().size();
                         for (int i = 0; i < size; i++) {
-                            if (mRootView.getListDatas().get(i).getConversation().getCid() != DEFAULT_TS_HLEPER_CONVERSATION_ID) { // 聊天消息
-                                Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation().getCid());
-                                mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                                mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                                mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView.getListDatas().get(i).getConversation().getCid()));
-                            } else { // Ts 助手
-                                SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getLastData();
-                                if (systemConversationBean != null) {
-                                    mRootView.getListDatas().get(i).getConversation().getLast_message().setTxt(systemConversationBean.getContent());
-                                    mRootView.getListDatas().get(i).getConversation().getLast_message().setCreate_time(TimeUtils.utc2LocalLong(systemConversationBean.getCreated_at()));
-                                    mRootView.getListDatas().get(i).getConversation().setLast_message_time(TimeUtils.utc2LocalLong(systemConversationBean.getCreated_at()));
-                                }
-                            }
+                            Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation().getCid());
+                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
+                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                            mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView.getListDatas().get(i).getConversation().getCid()));
                         }
 
                         return mRootView.getListDatas();
@@ -288,9 +288,40 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         addSubscrebe(represhSu);
     }
 
+    /**
+     * 删除对话信息
+     *
+     * @param position
+     */
     @Override
-    public void deletConversation(MessageItemBean messageItemBean) {
+    public void deletConversation(int position ) {
+        final MessageItemBean messageItemBean =mRootView.getListDatas().get(position);
+        // ts 助手标记为已删除
+        Observable.empty()
+                .observeOn(Schedulers.newThread())
+                .subscribe(new rx.Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        String[] uidsTmp = messageItemBean.getConversation().getUsids().split(",");
+                        long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
+                        SystemRepository.updateTsHelperDeletStatus(mContext, toChatUser_id, true);
+                        MessageDao.getInstance(mContext).delEverMessageByCid(messageItemBean.getConversation().getCid());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+                });
+        // 删除对话信息
         ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType());
+        mRootView.getListDatas().remove(position);
+        checkBottomMessageTip();
     }
 
     @Override

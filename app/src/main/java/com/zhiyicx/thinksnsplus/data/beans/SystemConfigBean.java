@@ -47,6 +47,7 @@ public class SystemConfigBean implements Serializable {
     public static class ImHelperBean implements Serializable {
         private String uid;
         private String url;
+        private boolean isDelete;
 
         public String getUid() {
             return uid;
@@ -64,11 +65,20 @@ public class SystemConfigBean implements Serializable {
             this.url = url;
         }
 
+        public boolean isDelete() {
+            return isDelete;
+        }
+
+        public void setDelete(boolean delete) {
+            isDelete = delete;
+        }
+
         @Override
         public String toString() {
             return "ImHelperBean{" +
                     "uid='" + uid + '\'' +
                     ", url='" + url + '\'' +
+                    ", isDelete=" + isDelete +
                     '}';
         }
     }

@@ -505,6 +505,63 @@ public class MessageDao extends BaseDao implements MessageDaoSoupport {
             return false;
     }
 
+    /**
+     * 标记该消息已删除
+     *
+     * @param cid conversation id
+     * @return
+     */
+    @Override
+    public boolean delMessageByCid(int cid) {
+        int rows = 0;
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_NAME_MESSAGE_IS_DEL, isDel(true));
+            rows = database.update(TABLE_NAME,
+                    cv,
+                    "cid = ?",
+                    new String[]{cid + ""});
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+        }
+        if (rows > 0)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * 标记该消息已删除
+     *
+     * @param cid conversation id
+     * @return
+     */
+    @Override
+    public boolean delEverMessageByCid(int cid) {
+        int rows = 0;
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.beginTransaction();
+        try {
+            rows = database.delete(TABLE_NAME,
+                    "cid = ?",
+                    new String[]{cid + ""});
+            database.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            database.endTransaction();
+        }
+        if (rows > 0)
+            return true;
+        else
+            return false;
+    }
+
 
     private int isRead(boolean isRead) {
         if (isRead) return 1;
