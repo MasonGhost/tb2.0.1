@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -25,8 +24,6 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.concurrent.TimeUnit;
@@ -36,7 +33,6 @@ import javax.inject.Inject;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.home.message.MessagePresenter.DEFAULT_TS_HLEPER_CONVERSATION_ID;
 
 /**
  * @Describe 消息页面
@@ -261,28 +257,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     }
 
-    @Override
-    public void updateTSHelper(MessageItemBean itemBeanNotices) {
-        if (mListDatas.isEmpty()) {
-            mListDatas.add(itemBeanNotices);
-            refreshData();
-        } else {
-            int size = mListDatas.size();
-            int position = -1;
-            for (int i = 0; i < size; i++) {
-                if (mListDatas.get(i).getConversation().getCid() == DEFAULT_TS_HLEPER_CONVERSATION_ID) {
-                    position = i;
-                    break;
-                }
-            }
-            mListDatas.add(0, itemBeanNotices);
-            if (position != -1) {
-                mListDatas.remove(position + 1);
-            }
-
-        }
-
-    }
 
     @Override
     public void refreshData() {
@@ -330,29 +304,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void onRightClick(int position) {
         position = position - 1;// 减去 header
-        mPresenter.deletConversation(mListDatas.get(position));
-        mListDatas.remove(position);
+        mPresenter.deletConversation(position);
         refreshData();
     }
 
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
-        String result = mPresenter.checkTShelper(userInfoBean.getUser_id());
-        if (!TextUtils.isEmpty(result)) { // ts 助手;
-            toTSHelper(result);
-        } else { // 普通用户
-            PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
-        }
-    }
-
-    /**
-     * 前往ts助手开发
-     */
-    private void toTSHelper(String tsHelperUrl) {
-        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, tsHelperUrl);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 }

@@ -100,11 +100,12 @@ public interface MessageDaoSoupport {
 
     /**
      * 修改消息状态
-     * @param mid 消息 mid
-     * @param sendStatus   发送状态 0,发送中，1发成功，2发送失败,
+     *
+     * @param mid        消息 mid
+     * @param sendStatus 发送状态 0,发送中，1发成功，2发送失败,
      * @return
      */
-    boolean changeMessageSendStausByMid(long mid,int sendStatus);
+    boolean changeMessageSendStausByMid(long mid, int sendStatus);
 
     /**
      * 标记该消息已删除
@@ -113,4 +114,19 @@ public interface MessageDaoSoupport {
      * @return
      */
     boolean delMessage(long mid);
+
+    /**
+     * 标记该消息已删除
+     *
+     * @param cid  conversation id
+     * @return
+     */
+    boolean delMessageByCid(int cid);
+    /**
+     * 永久删除该消息
+     *
+     * @param cid  conversation id
+     * @return
+     */
+    boolean delEverMessageByCid(int cid);
 }

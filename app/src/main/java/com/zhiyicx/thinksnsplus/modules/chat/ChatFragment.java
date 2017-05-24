@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,8 +25,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
 import org.jetbrains.annotations.NotNull;
@@ -228,23 +225,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        String result = mPresenter.checkTShelper(chatItemBean.getUserInfo().getUser_id());
-        if (!TextUtils.isEmpty(result)) { // ts 助手;
-            toTSHelper(result);
-        } else { // 普通用户
-            PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
-        }
-    }
-
-    /**
-     * 前往ts助手开发
-     */
-    private void toTSHelper(String tshelperUrl) {
-        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, tshelperUrl);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);
+        PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
     }
 
     /**
