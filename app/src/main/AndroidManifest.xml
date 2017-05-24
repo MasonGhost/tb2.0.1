@@ -23,6 +23,7 @@
 
     <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全 -->
     <application
+        android:hardwareAccelerated="false"
         android:name=".base.AppApplication"
         android:allowBackup="false"
         android:icon="@mipmap/icon_256"
