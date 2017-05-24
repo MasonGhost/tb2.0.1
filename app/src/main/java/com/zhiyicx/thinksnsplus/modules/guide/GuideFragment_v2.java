@@ -111,6 +111,8 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     private void repleaseAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
+            return;
         mGuideBanner.setOnPageChangeListener(null);
         mGuideBanner.stopAutoPlay();
         mTimer.replease();

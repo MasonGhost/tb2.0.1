@@ -223,6 +223,7 @@ public class ActionPopupWindow extends PopupWindow {
     @Override
     public void dismiss() {
         if (mAnimationStyle == NO_ANIMATION)
+            mContentView.clearAnimation();
             mContentView.startAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_from_top_quit));
         super.dismiss();
         if (mActionPopupWindowDismissListener != null)

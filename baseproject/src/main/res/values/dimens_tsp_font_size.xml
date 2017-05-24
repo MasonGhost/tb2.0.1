@@ -52,4 +52,7 @@
     -->
     <dimen name="size_note_assist">10sp</dimen>
 
+    <!--启动广告字体大小-->
+    <dimen name="size_advert_launche">11sp</dimen>
+
 </resources>

@@ -29,20 +29,18 @@ public class TextViewUtils {
 
     private int mEndPos;
 
+    private int mAlpha;
+
     private Integer mSpanTextColor;
 
-    private Integer mCharNum;
+    public static TextViewUtils newInstance(TextView textView, String oriMsg) {
+        return new TextViewUtils(textView, oriMsg);
+    }
 
-    public TextViewUtils(TextView textView, String oriMsg) {
+    private TextViewUtils(TextView textView, String oriMsg) {
         mTextView = textView;
         mOriMsg = oriMsg;
         textView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
-        textView.setText(part());
-    }
-
-    public TextViewUtils setPartCharNum(int charNum) {
-        mCharNum = charNum;
-        return this;
     }
 
     public TextViewUtils setSpanTextColor(int spanTextColor) {
@@ -55,9 +53,30 @@ public class TextViewUtils {
         return this;
     }
 
-    public TextViewUtils setPos(int startPos, int endPos) {
+    public TextViewUtils setPosition(int startPos, int endPos) {
         mStartPos = startPos;
         mEndPos = endPos;
+        return this;
+    }
+
+    public TextViewUtils setAlpha(int alpha) {
+        mAlpha = alpha;
+        return this;
+    }
+
+    /**
+     * 设置文字
+     * @param canRead  是否可见
+     * @return
+     */
+    public TextViewUtils disPlayText(boolean canRead) {
+        if (mTextView == null)
+            return null;
+        if (canRead) {
+            mTextView.setText(mOriMsg);
+        } else {
+            mTextView.setText(getSpannableString(mOriMsg));
+        }
         return this;
     }
 
@@ -65,19 +84,21 @@ public class TextViewUtils {
     class SpanTextClickable extends ClickableSpan implements View.OnClickListener {
         @Override
         public void onClick(View widget) {
-            mSpanTextClickListener.setSpanText(mTextView, canNotRead);
+            if (mSpanTextClickListener != null)
+                mSpanTextClickListener.setSpanText(mTextView, canNotRead);
         }
 
         @Override
         public void updateDrawState(TextPaint ds) {
             if (mSpanTextColor == null) {
-                ds.setColor(Color.BLUE);
+                ds.setColor(Color.BLACK);
             } else {
-                ds.setColor(ds.linkColor);
+                ds.setColor(mSpanTextColor);
             }
+            ds.setAlpha(mAlpha > 0 ? mAlpha : 0xff);
             ds.setUnderlineText(false);    //去除超链接的下划线
             if (canNotRead) {
-                BlurMaskFilter blurMaskFilter = new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL);
+                BlurMaskFilter blurMaskFilter = new BlurMaskFilter(mTextView.getTextSize() / 3, BlurMaskFilter.Blur.NORMAL);
                 ds.setMaskFilter(blurMaskFilter);
             } else {
                 ds.setMaskFilter(null);
@@ -85,25 +106,9 @@ public class TextViewUtils {
         }
     }
 
-    private SpannableString part() {
-        String temp = "";
-        if (mCharNum != null) {
-            temp = mOriMsg.substring(0, mCharNum) + "...展开";
-        } else {
-            temp = mOriMsg.substring(0, mOriMsg.length() / 2) + "...展开";
-        }
-        return getSpannableString(temp);
-    }
-
-    private SpannableString open() {
-        String temp = mOriMsg + "收起";
-        return getSpannableString(temp);
-    }
-
     private SpannableString getSpannableString(CharSequence temp) {
         SpannableString spanableInfo = new SpannableString(temp);
-        spanableInfo.setSpan(new SpanTextClickable(), mStartPos == 0 ? temp.length() - 2 : mStartPos, mEndPos == 0 ? temp.length() : mEndPos,
-                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spanableInfo.setSpan(new SpanTextClickable(), mStartPos, mEndPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return spanableInfo;
     }
 
