@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDetailActivity;
 
@@ -18,6 +19,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     public static WithdrawalsFragment newInstance() {
         return new WithdrawalsFragment();
     }
+
+    private ActionPopupWindow mActionPopupWindow;
 
     @Override
     protected boolean showToolBarDivider() {
@@ -47,7 +50,6 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     @Override
     protected void initData() {
-
     }
 
     @Override
