@@ -5,18 +5,16 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -47,6 +45,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Override
     public void login(String phone, String password) {
@@ -60,30 +60,24 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         Subscription subscription = mRepository.login(mContext, phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<AuthBean>, Observable<BaseJson<List<UserInfoBean>>>>() {
+                .flatMap(new Func1<BaseJson<AuthBean>, Observable<UserInfoBean>>() {
                     @Override
-                    public Observable<BaseJson<List<UserInfoBean>>> call(BaseJson<AuthBean> authBeanBaseJson) {
-                        if (authBeanBaseJson.isStatus()) {
-                            // 登录成功跳转
-                            mAuthRepository.saveAuthBean(authBeanBaseJson.getData());// 保存auth信息
-                            // IM 登录 需要 token ,所以需要先保存登录信息
-                            handleIMLogin();
-                            // 获取用户信息
-                            List<Object> userids = new ArrayList<>();
-                            userids.add(Long.valueOf(authBeanBaseJson.getData().getUser_id()));
-                            return mUserInfoRepository.getUserInfo(userids);
-                        }
-                        BaseJson<List<UserInfoBean>> userInfobean = new BaseJson<>();
-                        userInfobean.setStatus(authBeanBaseJson.isStatus());
-                        userInfobean.setCode(authBeanBaseJson.getCode());
-                        userInfobean.setMessage(authBeanBaseJson.getMessage());
-                        return Observable.just(userInfobean);
+                    public Observable<UserInfoBean> call(BaseJson<AuthBean> authBeanBaseJson) {
+                        // 登录成功跳转
+                        mAuthRepository.saveAuthBean(authBeanBaseJson.getData());// 保存auth信息
+                        // IM 登录 需要 token ,所以需要先保存登录信息
+                        handleIMLogin();
+                        // 获取用户信息
+                        return mUserInfoRepository.getCurrentLoginUserInfo();
                     }
                 })
-                .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
-                    protected void onSuccess(List<UserInfoBean> data) {
+                    protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
+                        if (data.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(data.getWallet());
+                        }
                         mRootView.setLoginState(true);
                     }
 

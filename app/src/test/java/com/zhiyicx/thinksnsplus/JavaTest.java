@@ -19,7 +19,9 @@ import java.util.Map;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.FuncN;
+import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -191,9 +193,9 @@ public class JavaTest {
     @Test
     public void rxZipTest() {
         List<Observable<String>> datas = new ArrayList<>();
-        datas.add(Observable.just("123"));
-        datas.add(Observable.just("456"));
-        datas.add(Observable.just("789"));
+//        datas.add(Observable.just("123"));
+//        datas.add(Observable.just("456"));
+//        datas.add(Observable.just("789"));
 
         Observable.zip(datas, new FuncN<String>() {
             @Override
@@ -201,7 +203,7 @@ public class JavaTest {
                 for (Object arg : args) {
                     System.out.println("args = " + arg.toString());
                 }
-
+                System.out.println("args = -----------------------");
                 return "12123";
             }
         })
@@ -212,6 +214,30 @@ public class JavaTest {
                     }
                 })
         ;
+    }
+
+    @Test
+    public void rxEmptyTest() {
+        Observable.empty()
+                .observeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("Sys -----1-------= " + Thread.currentThread().getName());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println("Sys = -----2-------" + Thread.currentThread().getName());
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        System.out.println("o = -----1-------" + o);
+                        System.out.println("Sys = -----3-------" + Thread.currentThread().getName());
+                    }
+                });
+        System.out.println("Sys = " + Thread.currentThread().getName());
     }
 
 }

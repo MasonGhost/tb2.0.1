@@ -5,4 +5,6 @@
     <color name="home_bottom_navigate_text_normal">#707c81</color>
     <!--频道详情，带透明度的白色-->
     <color name="channel_detail_white_alpha">#b3ffffff</color>
+    <!--提现明细操作成功-->
+    <color name="withdrawals_item_enable">#ff9400</color>
 </resources>

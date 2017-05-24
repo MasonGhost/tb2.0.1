@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -83,6 +84,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        startActivity(new Intent(getActivity(), WithdrawalsActivity.class));
         showSnackSuccessMessage("setRightClick");
     }
 

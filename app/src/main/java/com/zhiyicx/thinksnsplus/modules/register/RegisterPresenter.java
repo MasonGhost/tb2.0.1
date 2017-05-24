@@ -146,12 +146,9 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
                         registerUserInfo.setName(name);
                         registerUserInfo.setPhone(phone);
                         mUserInfoBeanGreenDao.insertOrReplace(registerUserInfo);
-                        // 获取用户信息
-                        getUserInfo(data);
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
                         mRootView.goHome();
-
                     }
 
                     @Override
@@ -175,13 +172,6 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
     private void handleIMLogin() {
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
     }
-
-    private void getUserInfo(AuthBean data) {
-        HashMap<String, Object> userInfoParams = new HashMap<>();
-        userInfoParams.put("user_id", data.getUser_id());
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_USER_INFO, userInfoParams));
-    }
-
 
     /**
      * 错误处理

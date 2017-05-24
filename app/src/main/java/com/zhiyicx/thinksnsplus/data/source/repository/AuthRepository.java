@@ -38,8 +38,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.umeng.socialize.utils.DeviceConfig.context;
-
 /**
  * @Describe
  * @Author Jungle68
@@ -180,8 +178,10 @@ public class AuthRepository implements IAuthRepository {
         mCommentedBeanGreenDao.clearTable();
         mFlushMessageBeanGreenDao.clearTable();
         mSystemConversationBeanGreenDao.clearTable();
-        MessageDao.getInstance(context).delDataBase();
+        MessageDao.getInstance(mContext).delDataBase();
         AppApplication.setmCurrentLoginAuth(null);
+        //处理 Ts 助手
+        SystemRepository.resetTSHelper(mContext);
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
     }

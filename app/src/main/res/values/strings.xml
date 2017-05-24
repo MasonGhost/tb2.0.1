@@ -183,7 +183,33 @@
     <string name="recharge">充值</string>
     <string name="withdraw">提现</string>
     <string name="recharge_and_withdraw_rule">充值提现规则</string>
+    <string name="recharge_instructions">充值说明</string>
+    <string name="recharge_instructions_detail">充值金额必须是整数，不能出现小数</string>
     <string name="recharge_and_withdraw_rule_detail">充值提现规则:發的卡jfk領導就仨個鏈接東方斯卡拉國家的放大鏡看撒結果來看的啥規律的時間啊趕緊發的司空見慣了肯定撒法結果來看發動機法國警方的思考了趕緊離開范德薩結果來看薩拉看過絕對瘋狂了時間過來看房考慮發過價格浮動考慮時間管理開發的價格</string>
     <string name="detail">明细</string>
     <string name="get_it">知道了</string>
+    <string name="choose_recharge_money">选择充值金额</string>
+    <string name="custom_recharge_money">自定义金额</string>
+    <string name="choose_recharge_style">选择充值方式</string>
+    <string name="choose_recharge_style_formart">%s充值</string>
+    <string name="choose_pay_style_formart">%s支付</string>
+    <string name="alipay">支付宝</string>
+    <string name="wxpay">微信</string>
+
+    <!--钱包 之 提现-->
+    <string name="withdraw_count">提现金额</string>
+    <string name="withdraw_all">全部</string>
+    <string name="withdraw_out">支出</string>
+    <string name="withdraw_in">收入</string>
+    <string name="withdraw_details">提现明细</string>
+    <string name="withdraw_ways">选择提现方式</string>
+    <string name="withdraw_account">提现账户</string>
+    <string name="withdraw_account_input">输入提现账户</string>
+    <!--钱包 之 账户详情-->
+    <string name="account_form_name">付款人</string>
+    <string name="account_detail">账户详情</string>
+    <string name="account_to_name">收款人</string>
+    <string name="transaction_description">交易说明</string>
+    <string name="transaction_account">交易账户</string>
+    <string name="transaction_time">交易时间</string>
 </resources>

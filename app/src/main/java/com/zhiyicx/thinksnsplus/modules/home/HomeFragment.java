@@ -410,14 +410,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         clickSendPhotoTextDynamic();
                         mPhotoPopupWindow.hide();
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         // 选择相机，拍照
                         mPhotoSelector.getPhotoFromCamera(null);
                         mPhotoPopupWindow.hide();
@@ -425,7 +425,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mPhotoPopupWindow.hide();
                     }
                 }).build();

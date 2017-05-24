@@ -63,7 +63,6 @@ public class ApiConfig {
      * 用户 UserInfoClient
      */
     public static final String APP_PATH_GET_USER_INFO = "api/" + API_VERSION + "/users";// 获取用户信息
-    public static final String APP_PATH_GET_USER_INFO_2 = "api/" + API_VERSION_2 + "/users";// 获取用户信息
     public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION + "/users";// 修改用户信息
     public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION + "/im/users";// 获取 IM 帐号信息
     public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION + "/users/mydiggs"; // 获取用户收到的点赞
@@ -270,6 +269,21 @@ public class ApiConfig {
 
 
     /*******************************************  API V2  *********************************************/
+
+    /**
+     * 系统相关
+     */
     // 获取启动信息
     public static final String APP_PATH_GET_BOOTSTRAPERS_INFO = "api/" + API_VERSION_2 + "/bootstrappers";
+
+
+    /**
+     * 用户相关
+     */
+    // 获取当前用户
+    public static final String APP_PATH_GET_CURRENT_USER_INFO = "api/" + API_VERSION_2 + "/user";
+    // 获取指定用户
+    public static final String APP_PATH_GET_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users/{user_id}";
+    // 批量获取指定用户
+    public static final String APP_PATH_GET_BATCH_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users";
 }

@@ -57,7 +57,11 @@
     <dimen name="hintview_corner">5dp</dimen>
 
     <!--#########################################      ppw_center尺寸       ################################-->
-    <dimen name="margin_tb">25dp</dimen>
-    <dimen name="ppw_center_width">333dp</dimen>
-    <dimen name="margin_lr">32dp</dimen>
+    <dimen name="margin_18">18dp</dimen>
+    <dimen name="margin_9">9dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="ppw_center_width">250dp</dimen>
+    <dimen name="ppw_center_scroll_height">220dp</dimen>
+    <dimen name="margin_25">25dp</dimen>
+    <dimen name="margin_34">34dp</dimen>
 </resources>

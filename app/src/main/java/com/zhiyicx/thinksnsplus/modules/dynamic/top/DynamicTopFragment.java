@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,7 +25,7 @@ import rx.functions.Action1;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicTopFragment extends TSFragment {
+public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter> implements DynamicTopContract.View{
 
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
@@ -49,9 +48,8 @@ public class DynamicTopFragment extends TSFragment {
     private int mCurrentDays;
     private float mInputMoney;
 
-    @Override
-    public void setPresenter(Object presenter) {
-
+    public static DynamicTopFragment newInstance(){
+        return new DynamicTopFragment();
     }
 
     @Override
@@ -86,7 +84,7 @@ public class DynamicTopFragment extends TSFragment {
                         mCurrentDays = mSelectDays.get(2);
                         break;
                 }
-                setConfirmEnable(mInputMoney);
+                setConfirmEnable();
             }
         });
 
@@ -103,7 +101,7 @@ public class DynamicTopFragment extends TSFragment {
                         } else {
                             mInputMoney = 0f;
                         }
-                        setConfirmEnable(mInputMoney);
+                        setConfirmEnable();
                     }
                 });
     }
@@ -114,8 +112,9 @@ public class DynamicTopFragment extends TSFragment {
         mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
     }
 
-    private void setConfirmEnable(float totalMoney) {
-        mBtTop.setEnabled(mCurrentDays > 0 && totalMoney > 0);
+    private void setConfirmEnable() {
+        mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
+        mBtTop.setEnabled(mCurrentDays > 0 && mInputMoney > 0);
     }
 
     @Override

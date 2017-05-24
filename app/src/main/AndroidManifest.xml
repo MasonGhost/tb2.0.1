@@ -23,6 +23,7 @@
 
     <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全 -->
     <application
+        android:hardwareAccelerated="false"
         android:name=".base.AppApplication"
         android:allowBackup="false"
         android:icon="@mipmap/icon_256"
@@ -198,9 +199,8 @@
         <activity
             android:name=".modules.wallet.recharge.RechargeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
-
 
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
@@ -248,7 +248,6 @@
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
 
-
         <!-- 新浪分享 -->
         <activity
             android:name=".WBShareActivity"
@@ -289,6 +288,12 @@
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".modules.dynamic.top.DynamicTopActivity">
+        </activity>
+        <activity android:name=".modules.wallet.withdrawals.WithdrawalsActivity">
+        </activity>
+        <activity android:name=".modules.wallet.withdrawals.detail.WithdrawalsDetailActivity">
+        </activity>
+        <activity android:name=".modules.wallet.account.AccountActivity">
         </activity>
     </application>
 

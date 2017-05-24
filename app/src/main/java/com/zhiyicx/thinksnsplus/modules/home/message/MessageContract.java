@@ -46,12 +46,6 @@ public interface MessageContract {
          */
         void closeTopRightLoading();
 
-        /**
-         * 更新 TS 助手
-         *
-         * @param itemBeanNotices
-         */
-        void updateTSHelper(MessageItemBean itemBeanNotices);
     }
 
     /**
@@ -91,9 +85,9 @@ public interface MessageContract {
         /**
          * 删除本地对话
          *
-         * @param messageItemBean
+         * @param position
          */
-        void deletConversation(MessageItemBean messageItemBean);
+        void deletConversation(int position);
 
         /**
          * 通过 对话 id 获取对话信息

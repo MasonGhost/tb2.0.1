@@ -11,7 +11,6 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.thinksnsplus.BuildConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
@@ -24,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -42,6 +42,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     TextView mGuideText;
 
     TCountTimer mTimer;
+    Subscription subscription;
     int mPosition;
 
     @Override
@@ -64,7 +65,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     public void onResume() {
         super.onResume();
-        Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
+        subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Long, Boolean>() {
                     @Override
@@ -103,9 +104,19 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void startActivity(Class aClass) {
+        repleaseAdvert();
         startActivity(new Intent(getActivity(), aClass));
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+    }
+
+    private void repleaseAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
+            return;
+        mGuideBanner.setOnPageChangeListener(null);
+        mGuideBanner.stopAutoPlay();
+        mTimer.replease();
+        subscription.unsubscribe();
     }
 
     @Override
@@ -124,14 +135,14 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (mPosition > 0) {
             mTimer.replease();
             mGuideBanner.setDelayTime(position * 2000);
-            mTimer.newBuilder()
+            mTimer = mTimer.newBuilder()
                     .buildTimeCount(position * 2000)
                     .buildCanUseOntick(true)
                     .buildDurText(getString(R.string.skip))
                     .buildCanUseListener(mPosition == mGuideBanner.getItemCount() - 1)
                     .buildOnTimeListener(this)
-                    .build()
-                    .start();
+                    .build();
+            mTimer.start();
         }
     }
 

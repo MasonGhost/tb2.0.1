@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bgColor"
+    android:orientation="vertical">
+
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:divider="@drawable/light_linear_driver"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/withdraw_count"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/withdraw_count"/>
+
+            <EditText
+                android:id="@+id/et_withdraw_input"
+                style="@style/style_dynamic_editext"
+                android:hint="@string/et_top_input"
+                tools:hint="@string/et_top_input"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yuan"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/yuan"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/withdraw_ways"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/withdraw_ways"/>
+
+            <EditText
+                android:id="@+id/et_withdraw_ways"
+                style="@style/style_dynamic_editext"
+                android:enabled="false"
+                android:hint="@string/withdraw_ways"
+                tools:hint="@string/withdraw_ways"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_arrow_smallgrey"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/withdraw_account"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/withdraw_account"/>
+
+            <EditText
+                android:id="@+id/et_withdraw_account_input"
+                style="@style/style_dynamic_editext"
+                android:hint="@string/withdraw_account_input"
+                android:inputType="text"
+                tools:hint="@string/withdraw_account_input"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bgColor"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/spacing_mid">
+
+            <TextView
+                android:id="@+id/bt_sure"
+                style="@style/style_login_button"
+                android:enabled="false"
+                android:text="@string/sure"
+                tools:text="@string/sure"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</com.wcy.overscroll.OverScrollLayout>

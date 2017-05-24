@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,7 +12,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
-import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -26,8 +24,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
 import org.jetbrains.annotations.NotNull;
@@ -139,7 +135,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                     }
                 });
         mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
-        AndroidBug5497Workaround.assistActivity(getActivity());
+        // 软键盘异常解决方案： 1： 使用      android:fitsSystemWindows="true"  2:        AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     @Override
@@ -228,23 +224,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        String result = mPresenter.checkTShelper(chatItemBean.getUserInfo().getUser_id());
-        if (!TextUtils.isEmpty(result)) { // ts 助手;
-            toTSHelper(result);
-        } else { // 普通用户
-            PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
-        }
-    }
-
-    /**
-     * 前往ts助手开发
-     */
-    private void toTSHelper(String tshelperUrl) {
-        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, tshelperUrl);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);
+        PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
     }
 
     /**
@@ -341,7 +321,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         onResendClick(chatItemBean);
                         mDeletCommentPopWindow.hide();
 
@@ -349,7 +329,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                     }
                 })

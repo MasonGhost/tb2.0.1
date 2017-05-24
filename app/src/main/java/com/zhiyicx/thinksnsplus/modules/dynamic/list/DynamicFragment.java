@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -64,14 +63,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .DYNAMIC_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .DYNAMIC_DETAIL_DATA_POSITION;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .DYNAMIC_DETAIL_DATA_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
-        .LOOK_COMMENT_MORE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 
 /**
  * @Describe 动态列表
@@ -167,10 +162,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.initView(rootView);
         initTestAdvert();
         initInputView();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 针对部分手机进入首页状态栏颜色修改无效
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View
-                    .SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 针对部分手机进入首页状态栏颜色修改无效
+//            getActivity().getWindow().getDecorView().setSystemUiVisibility(View
+//                    .SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//        }
         AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
@@ -372,6 +367,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        position -= mHeaderAndFooterWrapper.getHeadersCount();
         if (!TouristConfig.DYNAMIC_DETAIL_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
             return;
         }
@@ -387,7 +383,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-
+        dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
@@ -433,15 +429,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                             mListDatas.get(dataPosition)
                                     .getTool().getIs_collection_feed() == DynamicToolBean
                                     .STATUS_COLLECT_FEED_CHECKED, shareBitMap);
-//                    initCenterPopWindow();
-//                    mPayPopWindow.show();
                     mMyDynamicPopWindow.show();
                 } else {
-                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
-                            mListDatas.get(dataPosition)
-                                    .getTool().getIs_collection_feed() == DynamicToolBean
-                                    .STATUS_COLLECT_FEED_CHECKED, shareBitMap);
-                    mOtherDynamicPopWindow.show();
+                    initCenterPopWindow();
+                    mPayPopWindow.show();
+
+//                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
+//                            mListDatas.get(dataPosition)
+//                                    .getTool().getIs_collection_feed() == DynamicToolBean
+//                                    .STATUS_COLLECT_FEED_CHECKED, shareBitMap);
+//                    mOtherDynamicPopWindow.show();
                 }
 
                 break;
@@ -560,7 +557,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -568,7 +565,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                         mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean
                                         .getComments().get(commentPosition).getComment_id(),
@@ -578,7 +575,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                         showBottomView(true);
                     }
@@ -605,7 +602,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {// 收藏
+                    public void onItemClicked() {// 收藏
                         if (!TouristConfig.DYNAMIC_CAN_COLLECT && mPresenter.handleTouristControl
                                 ()) {
                             return;
@@ -617,7 +614,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {// 分享
+                    public void onItemClicked() {// 分享
                         mPresenter.shareDynamic(dynamicBean, shareBitmap);
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
@@ -625,7 +622,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
                     }
@@ -660,7 +657,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {// 分享
+                    public void onItemClicked() {// 分享
                         mPresenter.shareDynamic(dynamicBean, shareBitMap);
                         mMyDynamicPopWindow.hide();
 
@@ -669,7 +666,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {// 收藏
+                    public void onItemClicked() {// 收藏
                         mPresenter.handleCollect(dynamicBean);
                         mMyDynamicPopWindow.hide();
                         showBottomView(true);
@@ -677,14 +674,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
-                    public void onItem3Clicked() {// 申请置顶
+                    public void onItemClicked() {// 申请置顶
                         startActivity(new Intent(getActivity(), DynamicTopActivity.class));
                         mMyDynamicPopWindow.hide();
                     }
                 })
                 .item4ClickListener(new ActionPopupWindow.ActionPopupWindowItem4ClickListener() {
                     @Override
-                    public void onItem4Clicked() {// 删除
+                    public void onItemClicked() {// 删除
                         mMyDynamicPopWindow.hide();
                         mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
@@ -692,7 +689,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {//取消
+                    public void onItemClicked() {//取消
                         mMyDynamicPopWindow.hide();
                         showBottomView(true);
                     }
@@ -706,7 +703,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void initReSendDynamicPopupWindow(final int position) {
         mReSendDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.resend))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -714,7 +711,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mReSendDynamicPopWindow.hide();
                         mListDatas.get(position).setState(DynamicBean.SEND_ING);
                         refreshData();
@@ -723,7 +720,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendDynamicPopWindow.hide();
                     }
                 })
@@ -784,7 +781,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             feed_id) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -792,7 +789,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                         mPresenter.reSendComment(commentBean, feed_id);
                         showBottomView(true);
@@ -800,7 +797,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                         showBottomView(true);
                     }

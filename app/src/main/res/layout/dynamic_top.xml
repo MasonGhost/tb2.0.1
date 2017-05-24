@@ -32,13 +32,13 @@
                 android:text="@string/totop_money"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"
-                tools:text="置顶金额"/>
+                tools:text="@string/totop_money"/>
 
             <EditText
                 android:id="@+id/et_top_input"
                 style="@style/style_dynamic_editext"
                 android:hint="@string/et_top_input"
-                tools:hint="输入金额"/>
+                tools:hint="@string/et_top_input"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
                 android:text="@string/yuan"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"
-                tools:text="元"/>
+                tools:text="@string/yuan"/>
         </LinearLayout>
 
         <View
@@ -66,14 +66,14 @@
                 android:text="@string/et_top_total"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"
-                tools:text="总金额"/>
+                tools:text="@string/et_top_total"/>
 
             <EditText
                 android:id="@+id/et_top_total"
                 style="@style/style_dynamic_editext"
                 android:enabled="false"
                 android:hint="@string/et_top_total"
-                tools:hint="总金额"/>
+                tools:hint="@string/et_top_total"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
                 android:text="@string/yuan"
                 android:textColor="@color/important_for_content"
                 android:textSize="@dimen/size_content"
-                tools:text="元"/>
+                tools:text="@string/yuan"/>
         </LinearLayout>
 
         <LinearLayout
@@ -98,8 +98,7 @@
                 android:paddingLeft="@dimen/spacing_mid"
                 android:paddingRight="@dimen/spacing_mid"
                 android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_content_comment"
-                tools:text="当前lskfjeojfis"/>
+                android:textSize="@dimen/size_content_comment"/>
 
             <TextView
                 android:id="@+id/bt_top"
@@ -107,7 +106,7 @@
                 android:layout_marginTop="@dimen/button_login_margin_top"
                 android:enabled="false"
                 android:text="@string/to_top"
-                tools:text="申请置顶"/>
+                tools:text="@string/to_top"/>
         </LinearLayout>
 
     </LinearLayout>

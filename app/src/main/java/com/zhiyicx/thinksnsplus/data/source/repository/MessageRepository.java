@@ -74,6 +74,9 @@ public class MessageRepository implements MessageContract.Repository {
                                 if (message != null) {
                                     tmp.setLast_message(message);
                                     tmp.setLast_message_time(message.getCreate_time());
+                                }else {
+                                    // 去除没有聊天消息的
+                                    continue;
                                 }
                                 tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
                                 if (tmp.getType() == Conversation.CONVERSATION_TYPE_PRIVATE) { // 单聊
