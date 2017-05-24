@@ -170,10 +170,12 @@ public class AppApplication extends TSApplication {
 
             @Override
             public Request onHttpRequestBefore(Interceptor.Chain chain, Request request) {
-                //如果需要再请求服务器之前做一些操作,则重新返回一个做过操作的的requeat如增加header,不做操作则返回request
+                //如果需要再请求服务器之前做一些操作,则重新返回一个做过操作的的 requeat 如增加 header,不做操作则返回 request
                 AuthBean authBean = mAuthRepository.getAuthBean();
                 if (authBean != null) {
-                    return chain.request().newBuilder().header("ACCESS-TOKEN", authBean.getToken())
+
+                    return chain.request().newBuilder()
+                            .header((request.url() + "").contains("v1") ? "ACCESS-TOKEN" : "Authorization", (request.url() + "").contains("v1") ? authBean.getToken():" Bearer " + authBean.getToken())
                             .build();
                 }
 

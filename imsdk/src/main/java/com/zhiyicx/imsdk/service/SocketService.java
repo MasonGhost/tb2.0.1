@@ -347,10 +347,11 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private boolean login(IMConfig imConfig) {
-        if(mService==null){
+        if (mService == null || imConfig == null) {
             return false;
         }
         mIMConfig = imConfig;
+        System.out.println("imConfig = " + imConfig.toString());
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
                 imConfig.getSerial(), imConfig.getComprs());
@@ -1357,7 +1358,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         eventContainer.mConversations = conversations;
         if (conversations != null && conversations.size() > 0) {
             Conversation tmp = conversations.get(0);
-            if (mEventContainerCache.get(tmp.getCid())!=null) {
+            if (mEventContainerCache.get(tmp.getCid()) != null) {
                 eventContainer = mEventContainerCache.get(tmp.getCid());
                 tmp.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + BaseDao.TIME_DEFAULT_ADD);
                 tmp.setIm_uid(mIMConfig.getImUid());
@@ -1396,7 +1397,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private EventContainer parseMsgpackDataMessageErrACK(byte[] data, EventContainer eventContainer) {
         List<Value> dst1 = null;
-        LogUtils.debugInfo(TAG,"data ----------= " + new String(data));
+        LogUtils.debugInfo(TAG, "data ----------= " + new String(data));
         try {
             dst1 = new MessagePack().read(MessageHelper.getRecievedBodyByte(data), Templates.tList(Templates.TValue));
             LogUtils.debugInfo(TAG, "------value----" + dst1.toString());

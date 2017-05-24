@@ -12,9 +12,7 @@ import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
@@ -45,7 +43,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -133,7 +130,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
-        return mUserInfoClient.getUserInfoV2(userids)
+        return getBatchSpecifiedUserInfo(userids)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<List<UserInfoBean>, BaseJson<List<UserInfoBean>>>() {
                     @Override
@@ -146,6 +143,46 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 })
                 .observeOn(AndroidSchedulers.mainThread());
 
+    }
+
+    /**
+     * 获取当前登录用户信息 V2
+     *
+     * @return
+     */
+    @Override
+    public Observable<UserInfoBean> getCurrentLoginUserInfo() {
+        return mUserInfoClient.getCurrentLoginUserInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 获取指定用户信息  其中 following、follower 是可选参数，null 代表不传，验证用户我是否关注以及是否关注我的用户 id ，默认为当前登陆用户。V2
+     *
+     * @param userId          the specified user id
+     * @param followingUserId following user id
+     * @param followerUserId  follow user id
+     * @return
+     */
+    @Override
+    public Observable<UserInfoBean> getSpecifiedUserInfo(long userId, Long followingUserId, Long followerUserId) {
+        return mUserInfoClient.getSpecifiedUserInfo(userId, followingUserId, followerUserId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 批量获取指定用户的用户信息 V2
+     *
+     * @param user_ids user 可以是一个值，或者多个值，多个值的时候用英文半角 , 分割。
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(String user_ids) {
+        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
@@ -191,7 +228,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
 
-        return mUserInfoClient.getUserInfoV2(userids)
+        return mUserInfoClient.getBatchSpecifiedUserInfo(userids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<List<UserInfoBean>, BaseJson<UserInfoBean>>() {
