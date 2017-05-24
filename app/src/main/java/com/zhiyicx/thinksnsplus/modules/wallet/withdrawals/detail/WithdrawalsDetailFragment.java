@@ -10,6 +10,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsDetailBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.account.AccountActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -25,12 +26,17 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class WithdrawalsDetailFragment extends TSListFragment {
+public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailConstract.Presenter, WithdrawalsDetailBean>
+        implements WithdrawalsDetailConstract.View {
 
     @BindView(R.id.v_shadow)
     View mVshadow;
 
     private ActionPopupWindow mActionPopupWindow;
+
+    public static WithdrawalsDetailFragment newInstance() {
+        return new WithdrawalsDetailFragment();
+    }
 
     @Override
     protected int getBodyLayoutId() {
@@ -61,7 +67,7 @@ public class WithdrawalsDetailFragment extends TSListFragment {
                 .isFocus(true)
                 .isOutsideTouch(true)
                 .parentView(mDriver)
-                .animationStyle(R.style.style_actionPopupAnimation_revert)
+                .animationStyle(ActionPopupWindow.NO_ANIMATION)
                 .item1Str(getString(R.string.withdraw_all))
                 .item2Str(getString(R.string.withdraw_out))
                 .item3Str(getString(R.string.withdraw_in))
@@ -100,21 +106,27 @@ public class WithdrawalsDetailFragment extends TSListFragment {
     @Override
     protected void initData() {
         super.initData();
-        mListDatas.add("");
-        mListDatas.add("");
-        mListDatas.add("");
-        mListDatas.add("");
-        mListDatas.add("");
-        mListDatas.add("");
-        mListDatas.add("");
-        mListDatas.add("");
+        WithdrawalsDetailBean test = new WithdrawalsDetailBean();
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
+        mListDatas.add(test);
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        CommonAdapter adapter = new CommonAdapter<String>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
+        CommonAdapter adapter = new CommonAdapter<WithdrawalsDetailBean>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, String s, int position) {
+            protected void convert(ViewHolder holder, WithdrawalsDetailBean s, int position) {
                 TextView desc = holder.getView(R.id.withdrawals_desc);
                 if (position % 2 == 0) {
                     desc.setEnabled(false);

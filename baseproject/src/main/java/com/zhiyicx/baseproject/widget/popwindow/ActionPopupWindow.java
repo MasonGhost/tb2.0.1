@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import com.zhiyicx.baseproject.R;
 
 public class ActionPopupWindow extends PopupWindow {
     public static final float POPUPWINDOW_ALPHA = .8f;
+    public static final int NO_ANIMATION = -1;
 
     private Activity mActivity;
     private View mParentView;
@@ -113,8 +115,10 @@ public class ActionPopupWindow extends PopupWindow {
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
         setBackgroundDrawable(mBackgroundDrawable);
-        setAnimationStyle(mAnimationStyle > 0 ? mAnimationStyle : R.style.style_actionPopupAnimation);
         setContentView(mContentView);
+        if (mAnimationStyle == NO_ANIMATION)
+            return;
+        setAnimationStyle(mAnimationStyle > 0 ? mAnimationStyle : R.style.style_actionPopupAnimation);
     }
 
     public void setItem1Str(String item1Str) {
@@ -197,6 +201,7 @@ public class ActionPopupWindow extends PopupWindow {
         if (mParentView == null) {
             showAtLocation(mContentView, Gravity.TOP, 0, 0);
         } else {
+            mContentView.startAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_from_top_enter));
             showAsDropDown(mParentView, 0, 0);
         }
     }
@@ -217,6 +222,9 @@ public class ActionPopupWindow extends PopupWindow {
 
     @Override
     public void dismiss() {
+        if (mAnimationStyle == NO_ANIMATION)
+            mContentView.clearAnimation();
+            mContentView.startAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_from_top_quit));
         super.dismiss();
         if (mActionPopupWindowDismissListener != null)
             mActionPopupWindowDismissListener.onDismiss();

@@ -67,8 +67,8 @@
                 android:id="@+id/et_withdraw_ways"
                 style="@style/style_dynamic_editext"
                 android:enabled="false"
-                android:hint="@string/et_top_input"
-                tools:hint="@string/et_top_input"/>
+                android:hint="@string/withdraw_ways"
+                tools:hint="@string/withdraw_ways"/>
 
             <TextView
                 android:layout_width="wrap_content"

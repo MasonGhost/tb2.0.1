@@ -530,7 +530,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     private void handleItemClick(int position) {
-        position = position - 1;// 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (mListDatas.get(position).getComment_id() != null) {
                 initLoginOutPopupWindow(mListDatas.get(position).getComment_id(), position);

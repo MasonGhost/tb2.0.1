@@ -152,6 +152,16 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         return this;
     }
 
+    public Banner setTitleTextColor(int titleTextColor) {
+        this.titleTextColor = titleTextColor;
+        return this;
+    }
+
+    public Banner setTitleTextSize(int titleTextSize) {
+        this.titleTextSize = titleTextSize;
+        return this;
+    }
+
     public Banner setDelayTime(int delayTime) {
         this.delayTime = delayTime;
         return this;
