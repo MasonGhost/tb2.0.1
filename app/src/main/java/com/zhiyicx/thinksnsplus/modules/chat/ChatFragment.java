@@ -12,7 +12,6 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
-import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -136,7 +135,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                     }
                 });
         mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
-        AndroidBug5497Workaround.assistActivity(getActivity());
+        // 软键盘异常解决方案： 1： 使用      android:fitsSystemWindows="true"  2:        AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     @Override

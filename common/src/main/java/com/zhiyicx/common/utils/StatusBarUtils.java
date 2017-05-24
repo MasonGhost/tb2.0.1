@@ -184,7 +184,6 @@ public class StatusBarUtils {
                 window.setAttributes(lp);
                 result = true;
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return result;
@@ -239,7 +238,6 @@ public class StatusBarUtils {
                 if (layoutParams != null)
                     return STATUS_TYPE_MIUUI;
             } catch (Exception e) {
-                e.printStackTrace();
             }
 
         }

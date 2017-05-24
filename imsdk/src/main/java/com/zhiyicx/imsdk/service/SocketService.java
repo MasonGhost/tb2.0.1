@@ -347,11 +347,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private boolean login(IMConfig imConfig) {
-        if (mService == null || imConfig == null) {
-            return false;
-        }
         mIMConfig = imConfig;
-        System.out.println("imConfig = " + imConfig.toString());
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
                 imConfig.getSerial(), imConfig.getComprs());
