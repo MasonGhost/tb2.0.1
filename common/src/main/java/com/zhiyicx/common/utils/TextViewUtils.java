@@ -1,4 +1,4 @@
-package com.jungle68.shrinktextviewdemo.utils;
+package com.zhiyicx.common.utils;
 
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
@@ -12,32 +12,10 @@ import android.widget.TextView;
 
 /**
  * @Describe
- *
- * ----------Dragon be here!----------/
- * 　　　┏┓　　　┏┓
- * 　　┏┛┻━━━┛┻┓
- * 　　┃　　　　　　　┃
- * 　　┃　　　━　　　┃
- * 　　┃　┳┛　┗┳　┃
- * 　　┃　　　　　　　┃
- * 　　┃　　　┻　　　┃
- * 　　┃　　　　　　　┃
- * 　　┗━┓　　　┏━┛
- * 　　　　┃　　　┃神兽保佑
- * 　　　　┃　　　┃代码无BUG！
- * 　　　　┃　　　┗━━━┓
- * 　　　　┃　　　　　　　┣┓
- * 　　　　┃　　　　　　　┏┛
- * 　　　　┗┓┓┏━┳┓┏┛
- * 　　　　　┃┫┫　┃┫┫
- * 　　　　　┗┻┛　┗┻┛
- *
- * ━━━━━━神兽出没━━━━━━
  * @Author Jungle68
  * @Date 2015/5/12
  * @Contact master.jungle68@gmail.com
  */
-
 public class TextViewUtils {
 
     private OnSpanTextClickListener mSpanTextClickListener;
@@ -45,10 +23,14 @@ public class TextViewUtils {
     private TextView mTextView;//显示富文本的控件
     private String mOriMsg;//全部文本信息
 
-    private boolean spread = true;
+    private boolean canNotRead = true;// 未付费状态
+
     private int mStartPos;
+
     private int mEndPos;
+
     private Integer mSpanTextColor;
+
     private Integer mCharNum;
 
     public TextViewUtils(TextView textView, String oriMsg) {
@@ -83,23 +65,7 @@ public class TextViewUtils {
     class SpanTextClickable extends ClickableSpan implements View.OnClickListener {
         @Override
         public void onClick(View widget) {
-            if (spread) {//调用展开的方法
-                spread = false;
-                if (mSpanTextClickListener == null) {
-                    mTextView.setText(open());
-                } else {
-                    mSpanTextClickListener.setSpanText(mTextView, open());
-                }
-
-            } else {
-                spread = true;
-                if (mSpanTextClickListener == null) {
-                    mTextView.setText(part());
-                } else {
-                    mSpanTextClickListener.setSpanText(mTextView, part());
-                }
-
-            }
+            mSpanTextClickListener.setSpanText(mTextView, canNotRead);
         }
 
         @Override
@@ -110,7 +76,7 @@ public class TextViewUtils {
                 ds.setColor(ds.linkColor);
             }
             ds.setUnderlineText(false);    //去除超链接的下划线
-            if (spread) {
+            if (canNotRead) {
                 BlurMaskFilter blurMaskFilter = new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL);
                 ds.setMaskFilter(blurMaskFilter);
             } else {
@@ -142,6 +108,6 @@ public class TextViewUtils {
     }
 
     public interface OnSpanTextClickListener {
-        void setSpanText(TextView view, SpannableString s);
+        void setSpanText(TextView view, boolean canNotRead);
     }
 }
