@@ -204,16 +204,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
 
     @Override
-    protected boolean isLoadingMoreEnable() {
-        return true;
-    }
-
-    @Override
-    protected boolean isRefreshEnable() {
-        return true;
-    }
-
-    @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));

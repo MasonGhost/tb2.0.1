@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.List;
@@ -69,12 +70,22 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     }
 
     /**
-     * 更新粉丝数量
+     * 更新粉丝数量、系統消息
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE)
     public void setMineTipVisable(boolean isVisiable) {
-        FlushMessages flushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
-        mRootView.setNewFollowTip(flushMessages != null ? flushMessages.getCount() : 0);
+        // 关注消息
+        FlushMessages followFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
+        mRootView.setNewFollowTip(followFlushMessages != null ? followFlushMessages.getCount() : 0);
+        // 系统消息
+        FlushMessages systemInfoFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.FLUSHMESSAGES_KEY_NOTICES);
+        mRootView.setNewSystemInfo(systemInfoFlushMessages != null && systemInfoFlushMessages.getCount() > 0);
+        //更新底部红点
+        EventBus.getDefault().post((followFlushMessages != null && followFlushMessages.getCount() > 0) || (systemInfoFlushMessages != null && systemInfoFlushMessages.getCount() > 0), EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
     }
 
+    @Override
+    public void readMessageByKey(String key) {
+        mFlushMessageBeanGreenDao.readMessageByKey(key);
+    }
 }

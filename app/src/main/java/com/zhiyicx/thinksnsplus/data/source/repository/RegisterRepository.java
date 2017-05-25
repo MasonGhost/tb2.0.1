@@ -1,12 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Application;
-import android.content.Context;
-
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
@@ -28,8 +24,8 @@ public class RegisterRepository extends VertifyCodeRepository implements Registe
     private RegisterClient mRegisterClient;
 
     @Inject
-    public RegisterRepository(ServiceManager serviceManager, Application context) {
-        super(serviceManager,context);
+    public RegisterRepository(ServiceManager serviceManager) {
+        super(serviceManager);
         mCommonClient = serviceManager.getCommonClient();
         mRegisterClient = serviceManager.getRegisterClient();
     }

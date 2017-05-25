@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -44,18 +43,15 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository.RET
 public class ChatRepository implements ChatContract.Repository {
     private static final String TAG = "ChatRepository";
     @Inject
+    protected Application mContext;
+    @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
     private ChatInfoClient mChatInfoClient;
-    private Context mContext;
 
     @Inject
-    public ChatRepository(ServiceManager serviceManager, Application context) {
-        mContext = context;
+    public ChatRepository(ServiceManager serviceManager) {
         mChatInfoClient = serviceManager.getChatInfoClient();
-        if (mUserInfoBeanGreenDao == null) {
-            mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
-                    .userInfoBeanGreenDao();
-        }
     }
 
     /**

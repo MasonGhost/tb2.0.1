@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatContract;
@@ -31,12 +28,12 @@ public class MessagePresenterModule {
 
 
     @Provides
-    MessageContract.Repository provideMessageContractRepository(ServiceManager serviceManager, Application application) {
-        return new MessageRepository(serviceManager, application);
+    MessageContract.Repository provideMessageContractRepository(MessageRepository messageRepository) {
+        return messageRepository;
     }
 
     @Provides
-    ChatContract.Repository provideChatContractRepository(ServiceManager serviceManager, Application application) {
-        return new ChatRepository(serviceManager, application);
+    ChatContract.Repository provideChatContractRepository(ChatRepository chatRepository) {
+        return chatRepository;
     }
 }

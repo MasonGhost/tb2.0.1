@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.system_conversation;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
-import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.ISystemRepository;
 
@@ -14,7 +14,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.ISystemRepository;
 
 public interface SystemConversationContract {
 
-    interface View extends IBaseView<Presenter> {
+    interface View extends ITSListView<SystemConversationBean, Presenter> {
 
     }
 

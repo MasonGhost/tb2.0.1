@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SettingsRepository;
 
 import dagger.Module;
@@ -29,7 +26,7 @@ public class SettingsPresenterModule {
 
 
     @Provides
-    SettingsContract.Repository provideRegisterContractRepository(ServiceManager serviceManager) {
-        return new SettingsRepository(serviceManager);
+    SettingsContract.Repository provideRegisterContractRepository(SettingsRepository serviceManager) {
+        return serviceManager;
     }
 }

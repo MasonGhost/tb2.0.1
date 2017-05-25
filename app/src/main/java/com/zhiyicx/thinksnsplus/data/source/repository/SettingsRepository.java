@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsContract;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -17,8 +19,10 @@ import rx.Subscriber;
  */
 
 public class SettingsRepository implements SettingsContract.Repository {
+    @Inject
+    Application mContext;
 
-
+    @Inject
     public SettingsRepository(ServiceManager serviceManager) {
 
     }
@@ -26,16 +30,15 @@ public class SettingsRepository implements SettingsContract.Repository {
     /**
      * 当前只计算了系统缓存文件夹的大小
      *
-     * @param context
      * @return
      */
     @Override
-    public Observable<String> getDirCacheSize(final Context context) {
+    public Observable<String> getDirCacheSize() {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 try {
-                    String dirSize = FileUtils.getDirSize(FileUtils.getCacheFile(context, false));
+                    String dirSize = FileUtils.getDirSize(FileUtils.getCacheFile(mContext, false));
 
                     subscriber.onNext(dirSize);//将数据传给观察者
                     subscriber.onCompleted();//通知观察者完成
@@ -48,12 +51,12 @@ public class SettingsRepository implements SettingsContract.Repository {
     }
 
     @Override
-    public Observable<Boolean> cleanCache(final Context context) {
+    public Observable<Boolean> cleanCache() {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean isDelete = FileUtils.deleteDir(FileUtils.getCacheFile(context, false));
+                    boolean isDelete = FileUtils.deleteDir(FileUtils.getCacheFile(mContext, false));
                     subscriber.onNext(isDelete);//将数据传给观察者
                     subscriber.onCompleted();//完成
                 } catch (Exception e) {

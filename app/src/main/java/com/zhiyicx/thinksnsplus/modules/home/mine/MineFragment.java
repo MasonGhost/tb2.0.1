@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -20,7 +21,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
@@ -31,14 +31,16 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
+import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
-
-import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
+import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
 
 /**
  * @Describe 我的页面
@@ -133,7 +135,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected int setRightImg() {
-        return R.mipmap.ico_me_message_normal;
+        return ico_me_message_normal;
     }
 
     @Override
@@ -159,6 +161,13 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        startActivity(new Intent(getActivity(), SystemConversationActivity.class));
+        mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_NOTICES);
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
@@ -272,7 +281,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void setNewFollowTip(int count) {
         mVvFansNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
-        EventBus.getDefault().post(count > 0, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
+    }
+
+    @Override
+    public void setNewSystemInfo(boolean isShow) {
+        setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
     }
 
 }

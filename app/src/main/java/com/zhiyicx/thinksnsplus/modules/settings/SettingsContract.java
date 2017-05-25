@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
-import android.content.Context;
-
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 
@@ -33,12 +31,12 @@ public interface SettingsContract {
         /**
          * 获取缓存大小
          */
-        Observable<String> getDirCacheSize(Context context);
+        Observable<String> getDirCacheSize();
 
         /**
          * 清理缓存
          */
-        Observable<Boolean> cleanCache(Context context);
+        Observable<Boolean> cleanCache();
     }
 
     interface Presenter extends IBasePresenter {

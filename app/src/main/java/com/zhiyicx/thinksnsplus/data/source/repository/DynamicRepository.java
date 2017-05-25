@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Application;
-
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -24,8 +22,8 @@ import rx.Observable;
 public class DynamicRepository extends BaseDynamicRepository implements DynamicContract.Repository {
 
     @Inject
-    public DynamicRepository(ServiceManager serviceManager, Application context) {
-        super(serviceManager,context);
+    public DynamicRepository(ServiceManager serviceManager) {
+        super(serviceManager);
     }
 
     @Override

@@ -16,6 +16,12 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
  */
 public class RankFragment extends TSListFragment<RankContract.Presenter, DigRankBean> implements RankContract.View {
 
+    public static RankFragment newInstance(Bundle bundle) {
+        RankFragment rankFragment = new RankFragment();
+        rankFragment.setArguments(bundle);
+        return rankFragment;
+    }
+
 
     @Override
     protected CommonAdapter<DigRankBean> getAdapter() {
@@ -47,12 +53,6 @@ public class RankFragment extends TSListFragment<RankContract.Presenter, DigRank
         return R.mipmap.img_default_nobody;
     }
 
-    public static RankFragment newInstance(Bundle bundle) {
-        RankFragment rankFragment = new RankFragment();
-        rankFragment.setArguments(bundle);
-        return rankFragment;
-    }
-
     @Override
     public void upDateFollowFansState(int index) {
         refreshData(index);
@@ -62,7 +62,5 @@ public class RankFragment extends TSListFragment<RankContract.Presenter, DigRank
     public void upDateFollowFansState() {
         refreshData();
     }
-
-
 
 }

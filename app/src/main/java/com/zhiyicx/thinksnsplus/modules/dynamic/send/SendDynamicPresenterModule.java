@@ -30,8 +30,8 @@ public class SendDynamicPresenterModule {
     }
 
     @Provides
-    SendDynamicContract.Repository provideSendDynamicPresenterRepository(ServiceManager serviceManager, Application application) {
-        return new SendDynamicRepository(serviceManager,application);
+    SendDynamicContract.Repository provideSendDynamicPresenterRepository(ServiceManager serviceManager) {
+        return new SendDynamicRepository(serviceManager);
     }
 
     @Provides

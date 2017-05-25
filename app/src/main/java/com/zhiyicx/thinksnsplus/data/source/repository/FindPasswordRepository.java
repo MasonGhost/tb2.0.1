@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Application;
-
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
@@ -25,8 +23,8 @@ public class FindPasswordRepository extends VertifyCodeRepository implements Fin
 
     private PasswordClient mPasswordClient;
     @Inject
-    public FindPasswordRepository(ServiceManager serviceManager, Application application) {
-        super(serviceManager,application);
+    public FindPasswordRepository(ServiceManager serviceManager) {
+        super(serviceManager);
         mPasswordClient = serviceManager.getPasswordClient();
     }
 

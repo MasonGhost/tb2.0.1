@@ -1,9 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.GuideRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,8 +27,8 @@ public class GuidePresenterModule {
 
 
     @Provides
-    GuideContract.Repository provideGuideContractRepository(ServiceManager serviceManager){
-        return new GuideRepository(serviceManager);
+    GuideContract.Repository provideGuideContractRepository(GuideRepository guideRepository){
+        return guideRepository;
     }
 
 }

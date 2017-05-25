@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.DynamicDetailRepository;
 
 import dagger.Module;
@@ -28,7 +25,7 @@ public class DynamicDetailPresenterModule {
     }
 
     @Provides
-    public DynamicDetailContract.Repository provideDynamicDetailContractRepository(ServiceManager serviceManager, Application application) {
-        return new DynamicDetailRepository(serviceManager, application);
+    public DynamicDetailContract.Repository provideDynamicDetailContractRepository(DynamicDetailRepository dynamicDetailRepository) {
+        return dynamicDetailRepository;
     }
 }

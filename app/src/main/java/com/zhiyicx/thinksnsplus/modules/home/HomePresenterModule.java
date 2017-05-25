@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.HomeRepository;
 
 import dagger.Module;
@@ -27,8 +26,8 @@ public class HomePresenterModule {
 
 
     @Provides
-    HomeContract.Repository provideMessageContractRepository(ServiceManager serviceManager) {
-        return new HomeRepository(serviceManager);
+    HomeContract.Repository provideMessageContractRepository(HomeRepository homeRepository) {
+        return homeRepository;
     }
 
 }

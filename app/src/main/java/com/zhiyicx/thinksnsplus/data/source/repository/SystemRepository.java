@@ -265,7 +265,7 @@ public class SystemRepository implements ISystemRepository {
                     @Override
                     public BaseJson<List<SystemConversationBean>> call(BaseJson<List<SystemConversationBean>> listBaseJson) {
                         if (listBaseJson.isStatus()) {
-                            descNetSystemConversation(listBaseJson.getData());
+//                            descNetSystemConversation(listBaseJson.getData());
                             mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
                             handleTsHelperUserInfo(listBaseJson.getData());
                         }

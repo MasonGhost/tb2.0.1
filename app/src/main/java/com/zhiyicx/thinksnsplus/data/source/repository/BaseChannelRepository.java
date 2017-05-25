@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -19,7 +18,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,6 +26,8 @@ import retrofit2.http.Path;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+
+import static com.umeng.socialize.utils.DeviceConfig.context;
 
 /**
  * @author LiuChao
@@ -38,15 +38,13 @@ import rx.functions.Func1;
 
 public class BaseChannelRepository extends BaseDynamicRepository implements IBaseChannelRepository {
     protected ChannelClient mChannelClient;
-    protected Context mContext;
     protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
     protected ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
 
     @Inject
-    public BaseChannelRepository(ServiceManager serviceManager, Application context) {
-        super(serviceManager, context);
+    public BaseChannelRepository(ServiceManager serviceManager) {
+        super(serviceManager);
         mChannelClient = serviceManager.getChannelClient();
-        this.mContext = context;
         mChannelSubscripBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelSubscripBeanGreenDaoImpl();
         mChannelInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelInfoBeanGreenDaoImpl();
     }

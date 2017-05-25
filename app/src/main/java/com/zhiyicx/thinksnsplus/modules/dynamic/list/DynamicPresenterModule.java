@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.DynamicRepository;
 
 import dagger.Module;
@@ -29,8 +26,8 @@ public class DynamicPresenterModule {
 
 
     @Provides
-    DynamicContract.Repository provideDynamicContractRepository(ServiceManager serviceManager, Application application) {
-        return new DynamicRepository(serviceManager,application);
+    DynamicContract.Repository provideDynamicContractRepository(DynamicRepository dynamicRepository) {
+        return dynamicRepository;
     }
 
 }

@@ -17,8 +17,8 @@ import javax.inject.Inject;
 public class SendDynamicRepository extends BaseDynamicRepository implements SendDynamicContract.Repository {
 
     @Inject
-    public SendDynamicRepository(ServiceManager serviceManager, Application context) {
-        super(serviceManager,context);
+    public SendDynamicRepository(ServiceManager serviceManager) {
+        super(serviceManager);
     }
 
 }

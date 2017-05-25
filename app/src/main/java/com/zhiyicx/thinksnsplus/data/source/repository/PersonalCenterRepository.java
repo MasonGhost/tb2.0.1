@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Application;
-
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -12,6 +10,8 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterContract;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -24,13 +24,10 @@ import rx.functions.Func1;
  */
 
 public class PersonalCenterRepository extends BaseDynamicRepository implements PersonalCenterContract.Repository {
-    private UserInfoRepository mUserInfoRepository;
-    private BaseDynamicRepository mBaseDynamicRepository;
 
-    public PersonalCenterRepository(ServiceManager serviceManager, Application application) {
-        super(serviceManager, application);
-        mUserInfoRepository = new UserInfoRepository(serviceManager,application);
-        mBaseDynamicRepository = new BaseDynamicRepository(serviceManager, application);
+    @Inject
+    public PersonalCenterRepository(ServiceManager serviceManager) {
+        super(serviceManager);
     }
 
     @Override
@@ -61,7 +58,7 @@ public class PersonalCenterRepository extends BaseDynamicRepository implements P
     @Override
     public Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id) {
         String type = String.format(ApiConfig.DYNAMIC_TYPE_SOMEONE, user_id);
-        return mBaseDynamicRepository.getDynamicList(type, max_id, 0,"",false);
+        return getDynamicList(type, max_id, 0, "", false);
     }
 
     @Override

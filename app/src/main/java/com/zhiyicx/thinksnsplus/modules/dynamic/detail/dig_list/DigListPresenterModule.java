@@ -29,6 +29,6 @@ public class DigListPresenterModule {
 
     @Provides
     DigListContract.Repository provideDigListContractRepository(ServiceManager serviceManager, Application application) {
-        return new DigListRepository(serviceManager, application);
+        return new DigListRepository(serviceManager);
     }
 }

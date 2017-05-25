@@ -8,7 +8,6 @@ import android.util.SparseArray;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -16,7 +15,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
@@ -27,7 +25,6 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
@@ -58,8 +55,6 @@ import rx.schedulers.Schedulers;
 
 public class UserInfoRepository implements UserInfoContract.Repository {
     private UserInfoClient mUserInfoClient;
-    private CommonClient mCommonClient;
-    private CacheImp<AuthBean> cacheImp;
     private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     private DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
@@ -69,7 +64,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public UserInfoRepository(ServiceManager serviceManager, Application application) {
         this.mContext = application;
         mUserInfoClient = serviceManager.getUserInfoClient();
-        mCommonClient = serviceManager.getCommonClient();
         mFollowFansBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().followFansBeanGreenDao();
         mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
         mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
