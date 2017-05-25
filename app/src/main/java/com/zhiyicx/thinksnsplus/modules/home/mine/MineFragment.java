@@ -41,6 +41,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
+import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
+
 /**
  * @Describe 我的页面
  * @Author Jungle68
@@ -134,7 +137,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected int setRightImg() {
-        return R.mipmap.ico_me_message_normal;
+        return ico_me_message_normal;
     }
 
     @Override
@@ -280,6 +283,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void setNewFollowTip(int count) {
         mVvFansNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
         EventBus.getDefault().post(count > 0, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
+    }
+
+    @Override
+    public void setNewSystemInfo(boolean isShow) {
+        setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
     }
 
 }

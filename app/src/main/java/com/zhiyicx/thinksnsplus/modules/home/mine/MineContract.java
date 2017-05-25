@@ -21,10 +21,15 @@ public interface MineContract {
         void setUserInfo(UserInfoBean userInfoBean);
 
         /**
-         *
+         * 新的关注
          * @param count
          */
         void setNewFollowTip(int count);
+
+        /**
+         * 是否有新系统消息
+         */
+        void setNewSystemInfo(boolean isShow);
 
     }
 
