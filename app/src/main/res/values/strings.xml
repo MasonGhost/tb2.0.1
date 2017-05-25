@@ -126,9 +126,11 @@
     <string name="dynamic_send_toll">是否收费</string>
     <string name="dynamic_send_toll_way">选择图片收费方式</string>
     <string name="dynamic_send_toll_count">选择图片收费金额</string>
+    <string name="dynamic_send_toll_words_count">选择文字收费金额</string>
     <string name="dynamic_send_toll_money">自定义金额</string>
     <string name="dynamic_send_toll_look">查看收费</string>
     <string name="dynamic_send_toll_download">下载收费</string>
+    <string name="dynamic_send_toll_notes">注：超过50字部分内容收费</string>
     <string name="dynamic_send_toll_select_money">¥%1$.2f</string>
 
 
