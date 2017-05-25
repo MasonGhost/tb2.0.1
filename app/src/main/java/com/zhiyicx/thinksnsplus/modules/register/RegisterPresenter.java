@@ -2,22 +2,19 @@ package com.zhiyicx.thinksnsplus.modules.register;
 
 import android.os.CountDownTimer;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
-
-import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -83,10 +80,10 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
         }
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoadin(true);
-        Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
-                .subscribe(new BaseSubscribe<CacheBean>() {
+        Subscription getVertifySub = mRepository.getNonMemberVertifyCode(phone)
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
+                    protected void onSuccess(Object data) {
                         mRootView.hideLoading();//隐藏loading
                         timer.start();//开始倒计时
                         mRootView.setVertifyCodeLoadin(false);

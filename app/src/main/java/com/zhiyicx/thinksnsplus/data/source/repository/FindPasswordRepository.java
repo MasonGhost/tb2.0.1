@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
+
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordContract;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -18,18 +21,13 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class FindPasswordRepository implements FindPasswordContract.Repository {
-    private CommonClient mCommonClient;
-    private PasswordClient mPasswordClient;
+public class FindPasswordRepository extends VertifyCodeRepository implements FindPasswordContract.Repository {
 
-    public FindPasswordRepository(ServiceManager serviceManager) {
-        mCommonClient = serviceManager.getCommonClient();
+    private PasswordClient mPasswordClient;
+    @Inject
+    public FindPasswordRepository(ServiceManager serviceManager, Application application) {
+        super(serviceManager,application);
         mPasswordClient = serviceManager.getPasswordClient();
-    }
-    @Override
-    public Observable<BaseJson<CacheBean>> getVertifyCode(String phone, String type) {
-        return mCommonClient.getVertifyCode("success", phone, type)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

@@ -39,6 +39,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_T
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_STATUS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MEMBER_VERTIFYCODE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NON_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVERSATIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
@@ -84,6 +86,26 @@ public interface CommonClient {
     Observable<BaseJson<CacheBean>> getVertifyCode(@Query("requestState") String requestState, @Field("phone") String phone
             , @Field("type") String type);
 
+
+    /**
+     * 获取会员验证码 ：使用场景如登陆、找回密码，其他用户行为验证等。
+     *
+     * @param phone 需要被发送验证码的手机号
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_GET_MEMBER_VERTIFYCODE)
+    Observable<Object> getMemberVertifyCode(@Field("phone") String phone);
+
+    /**
+     * 获取非会员验证码 ：用于发送不存在于系统中的用户短信，使用场景如注册等。
+     *
+     * @param phone 需要被发送验证码的手机号
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_GET_NON_MEMBER_VERTIFYCODE)
+    Observable<Object> getNonMemberVertifyCode(@Field("phone") String phone);
     /**
      * 刷新 token
      *

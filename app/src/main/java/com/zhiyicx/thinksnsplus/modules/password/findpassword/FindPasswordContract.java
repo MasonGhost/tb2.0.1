@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.source.repository.IVertifyCodeRepository;
 
 import rx.Observable;
 
@@ -51,14 +52,8 @@ public interface FindPasswordContract {
     /**
      * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
      */
-    interface Repository {
-        /**
-         * 获取验证码
-         *
-         * @param phone 注册的手机号码
-         * @return
-         */
-        Observable<BaseJson<CacheBean>> getVertifyCode(String phone, String type);
+    interface Repository extends IVertifyCodeRepository{
+
 
         /**
          * 找回密码
