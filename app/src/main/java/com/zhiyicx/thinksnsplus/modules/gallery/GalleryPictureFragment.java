@@ -12,7 +12,9 @@ import android.os.Message;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -39,6 +41,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoad
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -51,6 +54,7 @@ import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,6 +62,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 
@@ -77,6 +82,12 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     ProgressBar mPbProgress;
     @BindView(R.id.tv_origin_photo)
     TextView mTvOriginPhoto;
+    @BindView(R.id.tv_to_pay)
+    TextView mTvToPay;
+    @BindView(R.id.tv_to_vip)
+    TextView mTvToVip;
+    @BindView(R.id.ll_toll)
+    LinearLayout mLlToll;
 
     private PhotoViewAttacher mPhotoViewAttacherOrigin;
     private PhotoViewAttacher mPhotoViewAttacherNormal;
@@ -88,6 +99,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     private int screenW, screenH;
 
     private boolean hasAnim = false;
+
+    private PayPopWindow mPayPopWindow;
 
     public static GalleryPictureFragment newInstance(ImageBean imageUrl) {
         final GalleryPictureFragment f = new GalleryPictureFragment();
@@ -205,7 +218,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     }
 
-    private static final android.view.animation.Interpolator INTERPOLATOR =
+    private static final Interpolator INTERPOLATOR =
             new FastOutSlowInInterpolator();
 
     /**
@@ -256,7 +269,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
-        LogUtils.e("imageBean = " + imageBean.toString()+"------"+animationIn);
+        LogUtils.e("imageBean = " + imageBean.toString() + "------" + animationIn);
 
         if (imageBean.getImgUrl() != null) {
             int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
@@ -501,6 +514,19 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 });
     }
 
+    @OnClick({R.id.tv_to_pay, R.id.tv_to_vip})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_to_pay:
+                initCenterPopWindow();
+                mPayPopWindow.show();
+                break;
+            case R.id.tv_to_vip:
+
+                break;
+        }
+    }
+
     private class GallarySimpleTarget extends SimpleTarget<GlideDrawable> {
         private AnimationRectBean rect;
 
@@ -558,12 +584,56 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     };
 
-
     @Override
     public void onDestroy() {
         DeviceUtils.gc();
         super.onDestroy();
     }
 
+    private void initCenterPopWindow() {
+        mPayPopWindow = PayPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R
+                        .string.buy_pay_member), 4.4))
+                .buildLinksStr(getString(R.string.buy_pay_member))
+                .buildTitleStr(getString(R.string.buy_pay))
+                .buildItem1Str(getString(R.string.buy_pay_in))
+                .buildItem2Str(getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), 4.4))
+                .buildCenterPopWindowItem1ClickListener(new PayPopWindow
+                        .CenterPopWindowItem1ClickListener() {
+                    @Override
+                    public void onClicked() {
+                        mPayPopWindow.hide();
+                    }
+                })
+                .buildCenterPopWindowItem2ClickListener(new PayPopWindow
+                        .CenterPopWindowItem2ClickListener() {
+                    @Override
+                    public void onClicked() {
+                        mPayPopWindow.hide();
+                    }
+                })
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
 
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+
+    }
 }
