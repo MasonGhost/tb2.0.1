@@ -57,7 +57,7 @@ public class PictureTollFragment extends TSFragment {
     @BindView(R.id.bt_top)
     TextView mBtTop;
 
-    private ArrayList<Integer> mSelectDays;
+    private ArrayList<Float> mSelectDays;
 
     private int mPayType;
 
@@ -77,13 +77,13 @@ public class PictureTollFragment extends TSFragment {
     @Override
     protected void initData() {
         mSelectDays = new ArrayList<>();
-        mSelectDays.add(1);
-        mSelectDays.add(5);
-        mSelectDays.add(10);
+        mSelectDays.add(1f);
+        mSelectDays.add(5f);
+        mSelectDays.add(10f);
         initSelectDays(mSelectDays);
     }
 
-    private void initSelectDays(List<Integer> mSelectDays) {
+    private void initSelectDays(List<Float> mSelectDays) {
         mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(0)));
         mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(1)));
         mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(2)));

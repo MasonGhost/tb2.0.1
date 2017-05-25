@@ -295,10 +295,7 @@
         </activity>
         <activity android:name=".modules.wallet.account.AccountActivity">
         </activity>
-        <activity
-            android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity"
-            android:backgroundDimEnabled="true"
-            android:windowBackground="@color/themeColor">
+        <activity android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity">
         </activity>
         <activity android:name=".modules.dynamic.send.picture_toll.PictureTollActivity">
         </activity>

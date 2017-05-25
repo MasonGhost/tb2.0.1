@@ -100,7 +100,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
     private boolean isToll;
-    private ArrayList<Integer> mSelectDays;
+    private ArrayList<Float> mSelectDays;
 
     private int mPayType;
 
@@ -187,13 +187,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     protected void initData() {
         mSelectDays = new ArrayList<>();
-        mSelectDays.add(1);
-        mSelectDays.add(5);
-        mSelectDays.add(10);
+        mSelectDays.add(1f);
+        mSelectDays.add(5f);
+        mSelectDays.add(10f);
         initSelectDays(mSelectDays);
     }
 
-    private void initSelectDays(List<Integer> mSelectDays) {
+    private void initSelectDays(List<Float> mSelectDays) {
         mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(0)));
         mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(1)));
         mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(2)));
