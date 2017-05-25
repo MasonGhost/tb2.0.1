@@ -14,7 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
  * @Date 2017/04/26
  * @Contact master.jungle68@gmail.com
  */
-public class SystemConversationFragment extends TSListFragment<SystemConversationContract.Presenter,SystemConversationBean> implements SystemConversationContract.View {
+public class SystemConversationFragment extends TSListFragment<SystemConversationContract.Presenter, SystemConversationBean> implements SystemConversationContract.View {
 
     public static SystemConversationFragment newInstance() {
         Bundle args = new Bundle();
@@ -25,22 +25,28 @@ public class SystemConversationFragment extends TSListFragment<SystemConversatio
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.ts_helper);
+        return getString(R.string.system_info);
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
     }
 
     @Override
     protected void initView(View rootView) {
-
+        super.initView(rootView);
     }
 
     @Override
     protected void initData() {
-
+        super.initData();
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return null;
+        SystemConversationAdapter adapter = new SystemConversationAdapter(getContext(), R.layout.item_system_info, mListDatas);
+        return adapter;
     }
 
 }

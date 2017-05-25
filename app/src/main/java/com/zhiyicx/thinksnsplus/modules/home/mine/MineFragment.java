@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
+import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import org.simple.eventbus.EventBus;
@@ -159,6 +160,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        startActivity(new Intent(getActivity(), SystemConversationActivity.class));
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
