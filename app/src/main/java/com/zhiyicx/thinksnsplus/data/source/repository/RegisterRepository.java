@@ -1,8 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
 import android.content.Context;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -10,6 +10,8 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterContract;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -22,21 +24,14 @@ import rx.schedulers.Schedulers;
  * @Contact master.jungle68@gmail.com
  */
 
-public class RegisterRepository  implements RegisterContract.Repository {
-    private CommonClient mCommonClient;
+public class RegisterRepository extends VertifyCodeRepository implements RegisterContract.Repository {
     private RegisterClient mRegisterClient;
-    private Context mContext;
 
-    public RegisterRepository(ServiceManager serviceManager, Context context) {
+    @Inject
+    public RegisterRepository(ServiceManager serviceManager, Application context) {
+        super(serviceManager,context);
         mCommonClient = serviceManager.getCommonClient();
         mRegisterClient = serviceManager.getRegisterClient();
-        mContext = context;
-    }
-
-    @Override
-    public Observable<BaseJson<CacheBean>> getVertifyCode(String phone, String type) {
-        return mCommonClient.getVertifyCode("success", phone, type)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

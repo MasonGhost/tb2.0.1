@@ -276,6 +276,13 @@ public class ApiConfig {
     // 获取启动信息
     public static final String APP_PATH_GET_BOOTSTRAPERS_INFO = "api/" + API_VERSION_2 + "/bootstrappers";
 
+    /**
+     * 通用 CommonClient
+     */
+    // 非会员短信 ，用于发送不存在于系统中的用户短信，使用场景如注册等。
+    public static final String APP_PATH_GET_NON_MEMBER_VERTIFYCODE = "api/" + API_VERSION_2 + "/verifycodes/register";
+    // 获取会员短信验证码，使用场景如登陆、找回密码，其他用户行为验证等。
+    public static final String APP_PATH_GET_MEMBER_VERTIFYCODE = "api/" + API_VERSION_2 + "/verifycodes";
 
     /**
      * 用户相关
