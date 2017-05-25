@@ -240,30 +240,17 @@ public class GalleryFragment extends TSFragment {
     }
 
     public void backPress() {
-
         // 退出隐藏圆点指示器，防止显示在透明背景上
-        //mMiIndicator.setVisibility(View.INVISIBLE);
+        mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.BLACK);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-            bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    LogUtils.e("onAnimationUpdate");
-//                    DeviceUtils.gc();
-//                    mVpPhotos.setBackground(backgroundColor);
-                    //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
-                }
-            });
             bgAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    LogUtils.e("onAnimationEnd");
                     getActivity().finish();
                     getActivity().overridePendingTransition(-1, -1);
-
                 }
             });
             fragment.animationExit(bgAnim);
@@ -292,7 +279,6 @@ public class GalleryFragment extends TSFragment {
         });
         mMiIndicator.setNavigator(circleNavigator);
         ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
-
     }
 
     public void setIndiactorVisible(boolean visible) {

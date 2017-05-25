@@ -241,6 +241,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         .start();
             }
         }
+
     }
 
     public void saveImage() {
