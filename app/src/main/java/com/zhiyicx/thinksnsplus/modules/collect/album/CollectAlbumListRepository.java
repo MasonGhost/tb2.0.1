@@ -8,6 +8,8 @@ import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -18,6 +20,7 @@ import rx.Observable;
  */
 
 public class CollectAlbumListRepository extends MusicRepository {
+    @Inject
     public CollectAlbumListRepository(ServiceManager serviceManager) {
         super(serviceManager);
     }

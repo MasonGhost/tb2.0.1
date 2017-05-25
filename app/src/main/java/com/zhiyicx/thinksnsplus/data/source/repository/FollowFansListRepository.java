@@ -16,6 +16,8 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -28,11 +30,12 @@ import rx.functions.Func1;
 
 public class FollowFansListRepository implements FollowFansListContract.Repository {
     private FollowFansClient mFollowFansClient;
+    @Inject
     protected UserInfoRepository mUserInfoRepository;
 
+    @Inject
     public FollowFansListRepository(ServiceManager serviceManager, Application context) {
         mFollowFansClient = serviceManager.getFollowFansClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager, context);
     }
 
     @Override

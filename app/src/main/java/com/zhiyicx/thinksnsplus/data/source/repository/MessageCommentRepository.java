@@ -5,6 +5,8 @@ import android.app.Application;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentContract;
 
+import javax.inject.Inject;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -14,7 +16,7 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageComme
 
 public class MessageCommentRepository extends UserInfoRepository implements MessageCommentContract.Repository {
 
-
+    @Inject
     public MessageCommentRepository(ServiceManager serviceManager, Application application) {
         super(serviceManager, application);
     }

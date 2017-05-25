@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineContract;
 
+import javax.inject.Inject;
+
 /**
  * @author LiuChao
  * @describe
@@ -10,4 +12,7 @@ import com.zhiyicx.thinksnsplus.modules.home.mine.MineContract;
  */
 
 public class MineRepository implements MineContract.Repository {
+    @Inject
+    public MineRepository() {
+    }
 }

@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.content.Context;
+import android.app.Application;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -21,6 +21,8 @@ import com.zhiyicx.thinksnsplus.modules.home.message.MessageContract;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -37,16 +39,16 @@ public class MessageRepository implements MessageContract.Repository {
     public static final int MAX_RETRY_COUNTS = 3;//重试次数
     public static final int RETRY_DELAY_TIME = 5;// 重试间隔时间,单位 s
     private ChatInfoClient mChatInfoClient;
-    private Context mContext;
-    private UserInfoRepository mUserInfoRepository;
-    private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    Application mContext;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
-    public MessageRepository(ServiceManager serviceManager, Context context) {
-        super();
-        this.mContext = context;
+    @Inject
+    public MessageRepository(ServiceManager serviceManager) {
         mChatInfoClient = serviceManager.getChatInfoClient();
-        mUserInfoRepository = AppApplication.AppComponentHolder.getAppComponent().userInfoRepository();
-        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
     }
 
     /**
@@ -74,7 +76,7 @@ public class MessageRepository implements MessageContract.Repository {
                                 if (message != null) {
                                     tmp.setLast_message(message);
                                     tmp.setLast_message_time(message.getCreate_time());
-                                }else {
+                                } else {
                                     // 去除没有聊天消息的
                                     continue;
                                 }
