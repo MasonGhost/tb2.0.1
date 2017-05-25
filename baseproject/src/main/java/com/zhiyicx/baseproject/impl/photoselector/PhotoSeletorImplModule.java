@@ -1,7 +1,5 @@
 package com.zhiyicx.baseproject.impl.photoselector;
 
-import android.support.v4.app.Fragment;
-
 import com.zhiyicx.common.base.BaseFragment;
 
 import dagger.Module;

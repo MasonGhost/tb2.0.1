@@ -5,14 +5,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -183,7 +181,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 添加动态
             case R.id.fl_add:
                 if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
-                    startActivity(new Intent(getActivity(),SelectDynamicTypeActivity.class));
+                    startActivity(new Intent(getActivity(), SelectDynamicTypeActivity.class));
 //                    initPhotoPopupWindow();
 //                    mPhotoPopupWindow.show();
                 }

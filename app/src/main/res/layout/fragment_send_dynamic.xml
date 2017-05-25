@@ -23,7 +23,7 @@
             android:layout_marginTop="@dimen/spacing_large"
             app:hintContent="@string/dynamic_title_hint"
             app:limitSize="@integer/dynamic_title_max_size"
-            app:showLimitSize="@integer/dynamic_title_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
+            app:showLimitSize="@integer/dynamic_title_input_size"/>
 
         <include
             layout="@layout/include_horizontal_divider_light"
@@ -31,7 +31,7 @@
             android:layout_height="@dimen/divider_line"
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_large"
-            ></include>
+            />
 
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
             android:id="@+id/et_dynamic_content"
@@ -45,7 +45,7 @@
             app:hintContent="@string/dynamic_content_hint"
             app:limitSize="@integer/dynamic_content_max_size"
             app:showLimitSize="@integer/dynamic_content_input_size"
-            app:showLines="@integer/dynamic_content_show_lines"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
+            app:showLines="@integer/dynamic_content_show_lines"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_photo_list"
@@ -54,8 +54,16 @@
             android:layout_marginBottom="@dimen/spacing_large"
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_large"
-            android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
+            android:overScrollMode="never"/>
 
-        <include layout="@layout/include_horizontal_divider_light"></include>
+        <include layout="@layout/include_horizontal_divider_light"/>
+
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+            android:id="@+id/tv_toll"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            app:leftText="@string/dynamic_send_toll"
+            app:rightImage="@mipmap/btn_close"/>
     </LinearLayout>
 </ScrollView>

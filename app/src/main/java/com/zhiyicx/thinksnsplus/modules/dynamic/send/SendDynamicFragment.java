@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
@@ -33,7 +34,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -51,7 +51,6 @@ import butterknife.BindView;
  * @contact email:450127106@qq.com
  * @See
  */
-
 public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> implements SendDynamicContract.View, PhotoSelectorImpl.IPhotoBackListener {
     private static final int ITEM_COLUM = 4;// recyclerView的每行item个数
     private static final int MAX_PHOTOS = 9;// 一共可选的图片数量
@@ -61,6 +60,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     UserInfoInroduceInputView mEtDynamicTitle;
     @BindView(R.id.et_dynamic_content)
     UserInfoInroduceInputView mEtDynamicContent;
+    @BindView(R.id.tv_toll)
+    CombinationButton mTvToll;
 
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
@@ -69,6 +70,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private PhotoSelectorImpl mPhotoSelector;
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
+    private boolean isToll;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -169,7 +171,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        ArrayList<String> photos = new ArrayList<String>();
+                        ArrayList<String> photos = new ArrayList<>();
                         // 最后一张是占位图
                         for (int i = 0; i < selectedPhotos.size(); i++) {
                             ImageBean imageBean = selectedPhotos.get(i);
@@ -336,6 +338,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 setSendDynamicState();
             }
         });
+        mTvToll.setRightImageClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isToll = !isToll;
+                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+            }
+        });
 
     }
 
@@ -359,7 +368,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0;
         String feedMarkString = userId + "" + System.currentTimeMillis();
         long feedMark = Long.parseLong(feedMarkString);
-        DynamicToolBean toolBean=new DynamicToolBean();
+        DynamicToolBean toolBean = new DynamicToolBean();
         toolBean.setFeed_mark(feedMark);
         toolBean.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
         DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
