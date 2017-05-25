@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.FindPasswordRepository;
 
 import dagger.Module;
@@ -29,7 +26,7 @@ public class FindPasswordPresenterModule {
 
 
     @Provides
-    FindPasswordContract.Repository provideFindPasswordContractRepository(ServiceManager serviceManager, Application application) {
-        return new FindPasswordRepository(serviceManager,application);
+    FindPasswordContract.Repository provideFindPasswordContractRepository(FindPasswordRepository findPasswordRepository) {
+        return findPasswordRepository;
     }
 }

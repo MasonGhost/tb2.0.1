@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -21,12 +20,12 @@ import rx.schedulers.Schedulers;
 
 public class VertifyCodeRepository implements IVertifyCodeRepository {
     protected CommonClient mCommonClient;
-    protected Context mContext;
+    @Inject
+    protected Application mContext;
 
     @Inject
-    public VertifyCodeRepository(ServiceManager serviceManager, Application context) {
+    public VertifyCodeRepository(ServiceManager serviceManager) {
         this.mCommonClient = serviceManager.getCommonClient();
-        this.mContext=context;
     }
 
     @Override

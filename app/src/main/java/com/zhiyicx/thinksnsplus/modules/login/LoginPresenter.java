@@ -5,7 +5,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -71,7 +71,16 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                         return mUserInfoRepository.getCurrentLoginUserInfo();
                     }
                 })
-                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                .flatMap(new Func1<UserInfoBean, Observable<BaseJson<UserInfoBean>>>() {
+                    @Override
+                    public Observable<BaseJson<UserInfoBean>> call(UserInfoBean userInfoBean) {
+                        BaseJson<UserInfoBean> userInfoBeanBaseJson=new BaseJson<>();
+                        userInfoBeanBaseJson.setData(userInfoBean);
+                        userInfoBeanBaseJson.setStatus(true);
+                        return Observable.just(userInfoBeanBaseJson);
+                    }
+                })
+                .subscribe(new BaseSubscribe<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
