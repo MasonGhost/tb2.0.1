@@ -179,8 +179,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 }
                 TextViewUtils.newInstance(contentView, content)
                         .setSpanTextColor(BaseApplication.getContext().getResources().getColor(R.color.normal_for_assist_text))
-                        .setPosition(1, content.length())
-                        .disPlayText(false);
+                        .setPosition(0, content.length())
+                        .disPlayText(true);
 //              contentView.setText(content);
                 contentView.setVisibility(View.VISIBLE);
             }

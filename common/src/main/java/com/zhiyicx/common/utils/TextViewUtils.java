@@ -23,7 +23,7 @@ public class TextViewUtils {
     private TextView mTextView;//显示富文本的控件
     private String mOriMsg;//全部文本信息
 
-    private boolean canNotRead = true;// 未付费状态
+    private boolean canRead = true;// 未付费状态
 
     private int mStartPos;
 
@@ -66,17 +66,15 @@ public class TextViewUtils {
 
     /**
      * 设置文字
-     * @param canRead  是否可见
+     *
+     * @param canRead 是否可见
      * @return
      */
     public TextViewUtils disPlayText(boolean canRead) {
         if (mTextView == null)
             return null;
-        if (canRead) {
-            mTextView.setText(mOriMsg);
-        } else {
-            mTextView.setText(getSpannableString(mOriMsg));
-        }
+        this.canRead = canRead;
+        mTextView.setText(getSpannableString(mOriMsg));
         return this;
     }
 
@@ -85,19 +83,17 @@ public class TextViewUtils {
         @Override
         public void onClick(View widget) {
             if (mSpanTextClickListener != null)
-                mSpanTextClickListener.setSpanText(mTextView, canNotRead);
+                mSpanTextClickListener.setSpanText(mTextView, canRead);
         }
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            if (mSpanTextColor == null) {
-                ds.setColor(Color.BLACK);
-            } else {
+            if (mSpanTextColor != null) {
                 ds.setColor(mSpanTextColor);
             }
             ds.setAlpha(mAlpha > 0 ? mAlpha : 0xff);
             ds.setUnderlineText(false);    //去除超链接的下划线
-            if (canNotRead) {
+            if (!canRead) {
                 BlurMaskFilter blurMaskFilter = new BlurMaskFilter(mTextView.getTextSize() / 3, BlurMaskFilter.Blur.NORMAL);
                 ds.setMaskFilter(blurMaskFilter);
             } else {
