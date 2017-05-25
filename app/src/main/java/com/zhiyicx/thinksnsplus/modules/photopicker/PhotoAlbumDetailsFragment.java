@@ -47,7 +47,6 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
  * @date 2017/2/6
  * @contact email:450127106@qq.com
  */
-
 public class PhotoAlbumDetailsFragment extends TSFragment {
     public static final int COMPLETE_REQUEST_CODE = 1000;
     public static final int TO_ALBUM_LIST_REQUEST_CODE = 2000;

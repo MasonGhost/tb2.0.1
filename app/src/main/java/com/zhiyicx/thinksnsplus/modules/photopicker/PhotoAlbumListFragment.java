@@ -33,7 +33,6 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
  * @date 2017/2/6
  * @contact email:450127106@qq.com
  */
-
 public class PhotoAlbumListFragment extends TSFragment {
     // 相册列表被选中的位置
     public static final String SELECTED_DIRECTORY_NUMBER = "selected_directory_number";

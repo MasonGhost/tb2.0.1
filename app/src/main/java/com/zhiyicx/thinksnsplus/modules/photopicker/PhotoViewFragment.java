@@ -78,6 +78,17 @@ public class PhotoViewFragment extends TSFragment {
     private int currentItem = 0;// 点击第几张图片进入的预览界面
 
     @Override
+    protected String setRightTitle() {
+        mToolbarRight.setTextColor(getColor(R.color.themeColor));
+        return getString(R.string.toll_setting);
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_photo_view;
     }
@@ -133,7 +144,7 @@ public class PhotoViewFragment extends TSFragment {
                     seletedPaths.remove(path);
                 }
                 // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
-                 mBtComplete.setEnabled(seletedPaths.size() > 0);
+                mBtComplete.setEnabled(seletedPaths.size() > 0);
                 // 重置当前的选择数量
                 mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
                 // 通知图片列表进行刷新

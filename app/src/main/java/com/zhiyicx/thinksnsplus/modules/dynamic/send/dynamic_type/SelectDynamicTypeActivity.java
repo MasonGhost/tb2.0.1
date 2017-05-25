@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.send.selectDynamicType;
+package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
 import android.support.v4.app.Fragment;
 
