@@ -25,6 +25,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicCommentBean> {
+
     @Inject
     public DynamicCommentBeanGreenDaoImpl(Application context) {
         super(context);

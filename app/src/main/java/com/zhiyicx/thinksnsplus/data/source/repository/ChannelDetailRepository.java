@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 public class ChannelDetailRepository extends BaseChannelRepository implements ChannelDetailContract.Repository {
     @Inject
-    public ChannelDetailRepository(ServiceManager serviceManager, Application context) {
-        super(serviceManager, context);
+    public ChannelDetailRepository(ServiceManager serviceManager) {
+        super(serviceManager);
     }
 }

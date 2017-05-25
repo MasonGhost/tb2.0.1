@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChatRepository;
 
 import dagger.Module;
@@ -28,7 +25,7 @@ public class ChatPresenterModule {
     }
 
     @Provides
-    ChatContract.Repository provideChatContractRepository(ServiceManager serviceManager, Application application){
-        return new ChatRepository(serviceManager,application);
+    ChatContract.Repository provideChatContractRepository(ChatRepository chatRepository){
+        return chatRepository;
     }
 }

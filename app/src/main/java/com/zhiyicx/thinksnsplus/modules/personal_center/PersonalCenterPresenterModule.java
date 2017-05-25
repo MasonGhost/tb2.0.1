@@ -30,8 +30,8 @@ public class PersonalCenterPresenterModule {
     }
 
     @Provides
-    public PersonalCenterContract.Repository providePersonalCenterContractRepository(ServiceManager serviceManager, Application application) {
-        return new PersonalCenterRepository(serviceManager, application);
+    public PersonalCenterContract.Repository providePersonalCenterContractRepository(PersonalCenterRepository personalCenterRepository) {
+        return personalCenterRepository;
     }
 
     @Provides

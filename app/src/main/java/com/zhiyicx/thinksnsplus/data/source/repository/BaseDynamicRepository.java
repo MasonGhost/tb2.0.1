@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
@@ -56,9 +55,11 @@ import rx.schedulers.Schedulers;
 public class BaseDynamicRepository implements IDynamicReppsitory {
 
     protected DynamicClient mDynamicClient;
-    protected UserInfoRepository mUserInfoRepository;
-    protected Context mContext;
 
+    @Inject
+    protected UserInfoRepository mUserInfoRepository;
+    @Inject
+    protected Application mContext;
 
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
@@ -71,15 +72,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
 
     @Inject
-    public BaseDynamicRepository(ServiceManager serviceManager, Application context) {
-        mContext = context;
+    public BaseDynamicRepository(ServiceManager serviceManager) {
         mDynamicClient = serviceManager.getDynamicClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager, context);
-        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
-        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
-        mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
-        mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
-
     }
 
     /**
