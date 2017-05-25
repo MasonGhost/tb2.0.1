@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -501,10 +500,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Override
     public void handleFlushMessage() {
         Long last_request_time = SharePreferenceUtils.getLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
-        if (last_request_time == 0) {
-            last_request_time = System.currentTimeMillis() / 1000 - ConstantConfig.HOUR / 1000;
+        if (last_request_time != 0) { // 当等于 0 时 ，服务器返回历史的用户信息
+            last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         }
-        last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         mUserInfoRepository.getMyFlushMessage(last_request_time, "")
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -549,9 +547,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                 }
                             }
                             for (FlushMessages flushMessage : data) {
-                                if (flushMessage.getCount() == 0) {
-                                    continue;
-                                }
+//                                if (flushMessage.getCount() == 0) {
+//                                    continue;
+//                                }
                                 switch (flushMessage.getKey()) {
                                     case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, commentFlushMessage);
@@ -594,9 +592,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     private void handleFlushMessageForItem(List<FlushMessages> flushMessages) {
         for (FlushMessages flushMessage : flushMessages) {
-            if (flushMessage.getCount() == 0) {
-                continue;
-            }
+//            if (flushMessage.getCount() == 0) {
+//                continue;
+//            }
             mFlushMessageBeanGreenDao.insertOrReplace(flushMessage);
             switch (flushMessage.getKey()) {
                 case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
