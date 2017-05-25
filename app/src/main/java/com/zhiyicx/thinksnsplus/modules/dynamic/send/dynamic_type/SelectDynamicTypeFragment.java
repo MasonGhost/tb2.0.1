@@ -1,0 +1,80 @@
+package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
+
+import android.view.View;
+import android.widget.ImageView;
+
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.widget.IconTextView;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+/**
+ * @Author Jliuer
+ * @Date 2017/05/25/14:47
+ * @Email Jliuer@aliyun.com
+ * @Description
+ */
+public class SelectDynamicTypeFragment extends TSFragment {
+
+    @BindView(R.id.send_words_dynamic)
+    IconTextView mSendWordsDynamic;
+    @BindView(R.id.send_image_dynamic)
+    IconTextView mSendImageDynamic;
+    @BindView(R.id.im_close_dynamic)
+    ImageView mImCloseDynamic;
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    public void setPresenter(Object presenter) {
+
+    }
+
+    @Override
+    protected void initView(View rootView) {
+
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_dynamic_type;
+    }
+
+    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.im_close_dynamic})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.send_words_dynamic:
+                SendDynamicDataBean sendWordsDynamicDataBean = new SendDynamicDataBean();
+                sendWordsDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+                sendWordsDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendWordsDynamicDataBean);
+                break;
+            case R.id.send_image_dynamic:
+                SendDynamicDataBean sendImageDynamicDataBean = new SendDynamicDataBean();
+                sendImageDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+                sendImageDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendImageDynamicDataBean);
+                break;
+            case R.id.im_close_dynamic:
+                getActivity().finish();
+                break;
+        }
+    }
+}

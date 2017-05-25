@@ -16,8 +16,6 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.List;
-
 import butterknife.BindView;
 
 /**
@@ -153,14 +151,5 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
                 .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
                 .shape_recyclerview_grey_divider));
 
-    }
-
-    @Override
-    protected List requestCacheData(Long maxId, boolean isLoadMore) {
-        return null;
-    }
-
-    @Override
-    protected void requestNetData(Long maxId, boolean isLoadMore) {
     }
 }

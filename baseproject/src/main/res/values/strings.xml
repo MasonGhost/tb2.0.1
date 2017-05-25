@@ -85,6 +85,9 @@
     <string name="more">更多</string>
     <string name="send_fail">发送失败</string>
     <string name="see_origin_photo">查看原图</string>
+    <string name="see_origin_photo_vip">会员可免费查看，成为会员？</string>
+    <string name="see_origin_photo_pay">购买查看</string>
+    <string name="dynamic_top_flag">置顶</string>
 
     <!-- 中间弹窗 -->
     <string name="buy_pay">购买支付</string>

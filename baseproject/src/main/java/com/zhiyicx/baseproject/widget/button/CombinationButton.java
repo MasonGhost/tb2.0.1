@@ -49,7 +49,7 @@ public class CombinationButton extends FrameLayout {
         boolean showLine = array.getBoolean(R.styleable.combinationBtn_showLine, true);
         int dividerLeftMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerLeftMargin, 0);
         int dividerRightMargin = array.getDimensionPixelSize(R.styleable.combinationBtn_dividerRightMargin, 0);
-        int leftTextLeftPadding = array.getDimensionPixelOffset(R.styleable.combinationBtn_leftTextLeftPadding, ConvertUtils.dp2px(context,10));
+        int leftTextLeftPadding = array.getDimensionPixelOffset(R.styleable.combinationBtn_leftTextLeftPadding, ConvertUtils.dp2px(context, 10));
         array.recycle();
         if (!TextUtils.isEmpty(leftText)) {
             mCombinedButtonLeftText.setText(leftText);
@@ -92,5 +92,13 @@ public class CombinationButton extends FrameLayout {
      */
     public void setRightText(String rightText) {
         mCombinedButtonRightText.setText(rightText);
+    }
+
+    public void setRightImageClickListener(OnClickListener listener) {
+        mCombinedButtonImgRight.setOnClickListener(listener);
+    }
+
+    public void setRightImage(int res) {
+        mCombinedButtonImgRight.setImageResource(res);
     }
 }

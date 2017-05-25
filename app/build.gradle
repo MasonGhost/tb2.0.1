@@ -193,5 +193,6 @@ dependencies {
 
     compile dataDependences.greendaoSqlcipher
     compile(name: 'lint-library-release', ext: 'aar')
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
 }
 

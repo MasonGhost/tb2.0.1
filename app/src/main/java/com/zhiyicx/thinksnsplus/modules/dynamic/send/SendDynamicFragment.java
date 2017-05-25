@@ -7,10 +7,21 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxRadioGroup;
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -18,6 +29,7 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
@@ -33,7 +45,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -41,8 +52,12 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -51,7 +66,6 @@ import butterknife.BindView;
  * @contact email:450127106@qq.com
  * @See
  */
-
 public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> implements SendDynamicContract.View, PhotoSelectorImpl.IPhotoBackListener {
     private static final int ITEM_COLUM = 4;// recyclerView的每行item个数
     private static final int MAX_PHOTOS = 9;// 一共可选的图片数量
@@ -61,6 +75,22 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     UserInfoInroduceInputView mEtDynamicTitle;
     @BindView(R.id.et_dynamic_content)
     UserInfoInroduceInputView mEtDynamicContent;
+    @BindView(R.id.tv_toll)
+    CombinationButton mTvToll;
+    @BindView(R.id.ll_toll)
+    LinearLayout mLLToll;
+    @BindView(R.id.tv_choose_tip)
+    TextView mTvChooseTip;
+    @BindView(R.id.rb_one)
+    RadioButton mRbOne;
+    @BindView(R.id.rb_two)
+    RadioButton mRbTwo;
+    @BindView(R.id.rb_three)
+    RadioButton mRbThree;
+    @BindView(R.id.rb_days_group)
+    RadioGroup mRbDaysGroup;
+    @BindView(R.id.et_input)
+    EditText mEtInput;
 
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
@@ -69,6 +99,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private PhotoSelectorImpl mPhotoSelector;
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
+    private boolean isToll;
+    private ArrayList<Integer> mSelectDays;
+
+    private int mPayType;
+
+    private double mRechargeMoney;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -144,11 +180,81 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         setLeftTextColor();// 设置左边取消文字的颜色为主题色
         initDynamicType();
         setSendDynamicState();
+        initWordsToll();
+
     }
 
     @Override
     protected void initData() {
+        mSelectDays = new ArrayList<>();
+        mSelectDays.add(1);
+        mSelectDays.add(5);
+        mSelectDays.add(10);
+        initSelectDays(mSelectDays);
+    }
 
+    private void initSelectDays(List<Integer> mSelectDays) {
+        mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(0)));
+        mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(1)));
+        mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(2)));
+    }
+
+    private void initWordsToll() {
+        mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
+        RxTextView.afterTextChangeEvents(mEtInput)
+                .subscribe(new Action1<TextViewAfterTextChangeEvent>() {
+                    @Override
+                    public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
+                        if (TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
+                            return;
+                        }
+
+                        if (textViewAfterTextChangeEvent.editable().toString().contains(".")) {
+                            setCustomMoneyDefault();
+                            com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
+                        } else {
+                            mRbDaysGroup.clearCheck();
+                            try {
+                                mRechargeMoney = Double.parseDouble(textViewAfterTextChangeEvent.editable().toString());
+                            } catch (NumberFormatException ne) {
+
+                            }
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        setCustomMoneyDefault();
+                        mRechargeMoney = 0;
+                    }
+                });
+        RxRadioGroup.checkedChanges(mRbDaysGroup)
+                .compose(this.<Integer>bindToLifecycle())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer checkedId) {
+                        switch (checkedId) {
+                            case R.id.rb_one:
+                                mRechargeMoney = mSelectDays.get(0);
+                                break;
+                            case R.id.rb_two:
+                                mRechargeMoney = mSelectDays.get(1);
+                                break;
+                            case R.id.rb_three:
+                                mRechargeMoney = mSelectDays.get(2);
+                                break;
+                        }
+                        setCustomMoneyDefault();
+                    }
+                });
+    }
+
+    /**
+     * 设置自定义金额数量
+     */
+    private void setCustomMoneyDefault() {
+        mEtInput.setText("");
     }
 
     /**
@@ -169,7 +275,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        ArrayList<String> photos = new ArrayList<String>();
+                        ArrayList<String> photos = new ArrayList<>();
                         // 最后一张是占位图
                         for (int i = 0; i < selectedPhotos.size(); i++) {
                             ImageBean imageBean = selectedPhotos.get(i);
@@ -336,6 +442,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 setSendDynamicState();
             }
         });
+        mTvToll.setRightImageClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isToll = !isToll;
+                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+                mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+            }
+        });
 
     }
 
@@ -359,7 +473,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0;
         String feedMarkString = userId + "" + System.currentTimeMillis();
         long feedMark = Long.parseLong(feedMarkString);
-        DynamicToolBean toolBean=new DynamicToolBean();
+        DynamicToolBean toolBean = new DynamicToolBean();
         toolBean.setFeed_mark(feedMark);
         toolBean.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
         DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
@@ -497,6 +611,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 // 没有图片就初始化这些
                 initPhotoSelector();
                 initPhotoList(bundle);
+
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
@@ -540,4 +655,5 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
         }
     }
+
 }

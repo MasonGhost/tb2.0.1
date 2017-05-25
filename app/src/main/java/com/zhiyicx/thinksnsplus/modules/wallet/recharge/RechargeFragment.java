@@ -83,7 +83,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-        mTvChooseTip.setText(R.string.choose_recharge_money);
+        mTvChooseTip.setText(R.string.dynamic_send_toll_count);
         initListener();
 
     }

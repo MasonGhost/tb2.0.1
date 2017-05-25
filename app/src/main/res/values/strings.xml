@@ -95,6 +95,7 @@
     <string name="save_failure1">图片保存失败</string>
     <string name="save_failure2">sd卡不存在</string>
     <string name="all_photos">所有图片</string>
+    <string name="toll_setting">收费选项</string>
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
@@ -117,10 +118,23 @@
     <string name="reply">回复%s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
+    <string name="send_words_dynamic">文字</string>
+    <string name="send_image_dynamic">图片</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <string name="dynamic_content_no_pic_hint">输入要说的话</string>
     <string name="dynamic_send_cancel_hint">你还有没有发布的内容，是否放弃发布？</string>
+    <string name="dynamic_send_toll">是否收费</string>
+    <string name="dynamic_send_toll_way">选择图片收费方式</string>
+    <string name="dynamic_send_toll_count">选择图片收费金额</string>
+    <string name="dynamic_send_toll_words_count">选择文字收费金额</string>
+    <string name="dynamic_send_toll_money">自定义金额</string>
+    <string name="dynamic_send_toll_look">查看收费</string>
+    <string name="dynamic_send_toll_download">下载收费</string>
+    <string name="dynamic_send_toll_notes">注：超过50字部分内容收费</string>
+    <string name="dynamic_send_toll_select_money">¥%1$.2f</string>
+
+
     <!--动态详情-->
     <string name="dynamic_dig_count">%1$s人点赞</string>
     <string name="dynamic_comment_count">%1$s条评论</string>

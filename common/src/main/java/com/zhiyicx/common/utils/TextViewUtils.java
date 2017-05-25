@@ -88,12 +88,12 @@ public class TextViewUtils {
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            if (mSpanTextColor != null) {
-                ds.setColor(mSpanTextColor);
-            }
             ds.setAlpha(mAlpha > 0 ? mAlpha : 0xff);
             ds.setUnderlineText(false);    //去除超链接的下划线
             if (!canRead) {
+                if (mSpanTextColor != null) {
+                    ds.setColor(mSpanTextColor);
+                }
                 BlurMaskFilter blurMaskFilter = new BlurMaskFilter(mTextView.getTextSize() / 3, BlurMaskFilter.Blur.NORMAL);
                 ds.setMaskFilter(blurMaskFilter);
             } else {
