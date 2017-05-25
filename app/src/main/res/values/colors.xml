@@ -7,4 +7,6 @@
     <color name="channel_detail_white_alpha">#b3ffffff</color>
     <!--提现明细操作成功-->
     <color name="withdrawals_item_enable">#ff9400</color>
+    <!--动态置顶标识-->
+    <color name="dyanmic_top_flag">#4bb893</color>
 </resources>

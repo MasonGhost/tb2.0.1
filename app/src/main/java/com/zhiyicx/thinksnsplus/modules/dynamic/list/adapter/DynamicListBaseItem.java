@@ -170,7 +170,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             }
             String content = dynamicBean.getFeed().getContent();
             TextView contentView = holder.getView(R.id.tv_content);
-
+            TextView topFlagView = holder.getView(R.id.tv_top_flag);
+            topFlagView.setVisibility(View.GONE);
             if (TextUtils.isEmpty(content)) {
                 contentView.setVisibility(View.GONE);
             } else {
