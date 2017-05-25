@@ -23,9 +23,9 @@
 
     <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全 -->
     <application
-        android:hardwareAccelerated="false"
         android:name=".base.AppApplication"
         android:allowBackup="false"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/icon_256"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -294,6 +294,11 @@
         <activity android:name=".modules.wallet.withdrawals.detail.WithdrawalsDetailActivity">
         </activity>
         <activity android:name=".modules.wallet.account.AccountActivity">
+        </activity>
+        <activity
+            android:name=".modules.dynamic.send.selectDynamicType.SelectDynamicTypeActivity"
+            android:backgroundDimEnabled="true"
+            android:windowBackground="@color/themeColor">
         </activity>
     </application>
 

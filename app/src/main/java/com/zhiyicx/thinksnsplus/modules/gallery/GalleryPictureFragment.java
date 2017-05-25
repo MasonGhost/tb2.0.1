@@ -151,7 +151,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
         // 显示图片
         if (mImageBean == null) {
-            mIvPager.setImageResource(R.drawable.shape_default_image);
+            mIvPager.setImageResource(R.mipmap.pic_locked);
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {

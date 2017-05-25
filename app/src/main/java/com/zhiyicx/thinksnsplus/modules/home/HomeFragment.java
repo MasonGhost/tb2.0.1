@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.selectDynamicType.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
@@ -182,8 +183,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 添加动态
             case R.id.fl_add:
                 if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
-                    initPhotoPopupWindow();
-                    mPhotoPopupWindow.show();
+                    startActivity(new Intent(getActivity(),SelectDynamicTypeActivity.class));
+//                    initPhotoPopupWindow();
+//                    mPhotoPopupWindow.show();
                 }
                 break;
             // 点击消息

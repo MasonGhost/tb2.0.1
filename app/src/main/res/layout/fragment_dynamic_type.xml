@@ -1,7 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:zhiyi="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <com.zhiyicx.thinksnsplus.widget.IconTextView
+            android:id="@+id/send_words_dynamic"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            zhiyi:itv_icon="@mipmap/ico_words"
+            zhiyi:itv_direction="TOP"
+            zhiyi:itv_gap="@dimen/spacing_normal"
+            zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+            zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+            zhiyi:itv_text="@string/send_words_dynamic"
+            zhiyi:itv_textColor="@color/dyanmic_send"
+            zhiyi:itv_textSize="@dimen/size_content_assist"/>
+
+        <com.zhiyicx.thinksnsplus.widget.IconTextView
+            android:id="@+id/send_image_dynamic"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            zhiyi:itv_direction="TOP"
+            zhiyi:itv_gap="@dimen/spacing_normal"
+            zhiyi:itv_icon="@mipmap/ico_potoablum"
+            zhiyi:itv_iconHeight="@dimen/send_dynamic_send_button_img"
+            zhiyi:itv_iconWidth="@dimen/send_dynamic_send_button_img"
+            zhiyi:itv_text="@string/send_image_dynamic"
+            zhiyi:itv_textColor="@color/dyanmic_send"
+            zhiyi:itv_textSize="@dimen/size_content_assist"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/im_close_dynamic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/send_dynamic_close_button_img"
+        android:layout_gravity="bottom"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ico_close"/>
 
 </LinearLayout>
