@@ -112,7 +112,7 @@ public class ZBIMClient implements IMSoupport {
      */
     @Override
     public void login(IMConfig imConfig) {
-        LogUtils.debugInfo(TAG, "-----login-----imConfig--------" + imConfig.toString());
+        LogUtils.debugInfo(TAG, "-----login-----imConfig--------" + (imConfig==null?"":imConfig.toString()));
         Bundle bundle = new Bundle();
         bundle.putInt(SocketService.EVENT_SOCKET_TAG, SocketService.TAG_IM_LOGIN);
         bundle.putSerializable(SocketService.BUNDLE_IMCONFIG, imConfig);

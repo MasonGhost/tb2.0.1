@@ -64,9 +64,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void initIM() {
-        LogUtils.debugInfo(TAG,"------------------initIM---------------");
         if (isLogin()) {
-            LogUtils.debugInfo(TAG,"------------------initIM----doing-----------");
             mAuthRepository.loginIM();
             ChatClient.getInstance(mContext).setImMsgReceveListener(this);
             ChatClient.getInstance(mContext).setImStatusListener(this);

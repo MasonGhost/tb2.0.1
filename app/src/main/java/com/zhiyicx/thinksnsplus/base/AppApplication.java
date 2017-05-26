@@ -89,8 +89,6 @@ public class AppApplication extends TSApplication {
         FreelineCore.init(this);
         initComponent();
         // IM
-        LogUtils.d(TAG, "---------------start IM---------------------" + !mAuthRepository.isTourist());
-        LogUtils.d(TAG, "---------------start IM---------------------" + !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve()));
         if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
             LogUtils.d(TAG, "---------------start IM---------------------");
             ZBIMSDK.init(getContext());
