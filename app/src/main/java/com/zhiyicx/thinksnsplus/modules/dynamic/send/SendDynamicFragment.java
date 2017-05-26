@@ -34,6 +34,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -358,6 +359,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
             mCommonAdapter.notifyDataSetChanged();
         }
+
     }
 
     private void addPlaceHolder() {
@@ -380,6 +382,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (mPhotoSelector != null) {
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
         }
+
     }
 
     @Override
@@ -494,7 +497,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     photos.add(imageBean);
                 }
             }
-
             dynamicDetailBean.setStorages(photos);
         }
         dynamicDetailBean.setFeed_from(ApiConfig.ANDROID_PLATFORM);
@@ -533,10 +535,20 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 convertView.getLayoutParams().width = width / ITEM_COLUM;
                 convertView.getLayoutParams().height = width / ITEM_COLUM;
                 final ImageView imageView = holder.getView(R.id.iv_dynamic_img);
+                final ImageView paintView = holder.getView(R.id.iv_dynamic_img_paint);
+                final View filterView = holder.getView(R.id.iv_dynamic_img_filter);
                 if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                     // 最后一项作为占位图
                     imageView.setImageResource(R.mipmap.img_edit_photo_frame);
                 } else {
+//                    paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                    LogUtils.e("imageBean.getToll_type::" + imageBean.getToll_type());
+                    if (imageBean.getToll_type() > 0) {
+                        filterView.setVisibility(View.VISIBLE);
+                        paintView.setImageResource(R.mipmap.ico_lock);
+                    } else {
+                        filterView.setVisibility(View.GONE);
+                    }
                     ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
                     imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                             .imagerView(imageView)
@@ -561,7 +573,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 //                            mPhotoPopupWindow.show();
                         } else {
                             // 预览图片
-                            ArrayList<String> photos = new ArrayList<String>();
+                            ArrayList<String> photos = new ArrayList<>();
                             // 最后一张是占位图
                             for (int i = 0; i < selectedPhotos.size(); i++) {
                                 ImageBean imageBean = selectedPhotos.get(i);
@@ -570,7 +582,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                 }
                             }
                             ArrayList<AnimationRectBean> animationRectBeanArrayList
-                                    = new ArrayList<AnimationRectBean>();
+                                    = new ArrayList<>();
                             for (int i = 0; i < photos.size(); i++) {
 
                                 if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
@@ -590,7 +602,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                     animationRectBeanArrayList.add(rect);
                                 }
                             }
-                            PhotoViewActivity.startToPhotoView(SendDynamicFragment.this, photos, photos, animationRectBeanArrayList, MAX_PHOTOS, position);
+                            PhotoViewActivity.startToPhotoView(SendDynamicFragment.this, photos, photos,
+                                    animationRectBeanArrayList, MAX_PHOTOS, position, isToll);
                         }
                     }
                 });
@@ -656,7 +669,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 for (int i = 0; i < newList.size(); i++) {
                     ImageBean newImageBean = newList.get(i);
                     ImageBean oldImageBean = oldList.get(i);
-                    if (!newImageBean.getImgUrl().equals(oldImageBean.getImgUrl())) {
+                    if ((!newImageBean.getImgUrl().equals(oldImageBean.getImgUrl()))
+                            || newImageBean.getToll_type() != oldImageBean.getToll_type()) {
                         return true;
                     }
                 }

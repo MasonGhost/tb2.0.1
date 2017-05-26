@@ -83,7 +83,9 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
     @Override
     public void updateSingleData(InfoTypeBean newData) {
         clearTable();
-        mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(newData.getMy_cates());
+        if (!newData.getMy_cates().isEmpty()){
+            mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(newData.getMy_cates());
+        }
         mTypeMoreCatesBeanDao.insertOrReplaceInTx(newData.getMore_cates());
     }
 

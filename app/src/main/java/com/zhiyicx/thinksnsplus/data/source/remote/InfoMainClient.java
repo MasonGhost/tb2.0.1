@@ -39,7 +39,8 @@ public interface InfoMainClient {
 
     // 获取资讯分类
     @GET(APP_PATH_INFO_TYPE)
-    Observable<BaseJson<InfoTypeBean>> getInfoType();
+    Observable<InfoTypeBean> getInfoType();
+//    Observable<BaseJson<InfoTypeBean>> getInfoType();
 
     // 获取资讯分类
     @GET(APP_PATH_INFO_DETAILS)

@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -29,6 +30,7 @@ import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL;
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_MONEY;
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_BACK_HERE;
 
 
@@ -52,6 +57,7 @@ public class PhotoViewFragment extends TSFragment {
     public final static String ARG_SELCTED_PATH = "ARG_SELECTED_PATHS";// 传进来的已经被选择的图片
     public final static String ARG_ALL_PATH = "ARG_ALL_PATHS";// 传进来的所有的图片路径
     public final static String ARG_CURRENT_ITEM = "ARG_CURRENT_ITEM";
+    public final static int REQUEST_CODE = 100;
 
     @BindView(R.id.vp_photos)
     ViewPager mViewPager;
@@ -69,17 +75,27 @@ public class PhotoViewFragment extends TSFragment {
     private SectionsPagerAdapter mPagerAdapter;
 
     public final static String ARG_MAX_COUNT = "MAX_COUNT";
+    public final static String RIGHTTITLE = "righttitle";
 
     private int maxCount = 0;
 
     private boolean hasAnim = false;
+    private boolean hasRightTitle = false;
 
     private final ColorMatrix colorizerMatrix = new ColorMatrix();
 
     private int currentItem = 0;// 点击第几张图片进入的预览界面
 
+    private int toll_type;
+    private float toll_money;
+
+
+    private SparseArray<Toll> tolls = new SparseArray<>();
+
     @Override
     protected String setRightTitle() {
+        if (!hasRightTitle)
+            return "";
         mToolbarRight.setTextColor(getColor(R.color.themeColor));
         return getString(R.string.toll_setting);
     }
@@ -87,7 +103,17 @@ public class PhotoViewFragment extends TSFragment {
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), PictureTollActivity.class));
+        startActivityForResult(new Intent(getActivity(), PictureTollActivity.class), REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            toll_type = data.getIntExtra(TOLL_TYPE, 0);
+            toll_money = data.getFloatExtra(TOLL_MONEY, 0f);
+            tolls.put(currentItem, new Toll(toll_type, toll_money));
+        }
     }
 
     @Override
@@ -192,6 +218,7 @@ public class PhotoViewFragment extends TSFragment {
             seletedPaths = (ArrayList<String>) seletedPaths.clone();// 克隆一份，防止改变数据源
             allPaths = bundle.getStringArrayList(ARG_ALL_PATH);
             currentItem = bundle.getInt(ARG_CURRENT_ITEM);
+            hasRightTitle = bundle.getBoolean(RIGHTTITLE);
             rectList = bundle.getParcelableArrayList("rect");
             maxCount = bundle.getInt(ARG_MAX_COUNT);
         }
@@ -220,7 +247,8 @@ public class PhotoViewFragment extends TSFragment {
         }
     }
 
-    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos, ArrayList<AnimationRectBean> animationRectBeen, int currentItem, int maxCount) {
+    public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos,
+                                                ArrayList<AnimationRectBean> animationRectBeen, int currentItem, int maxCount, boolean isToll) {
 
         PhotoViewFragment f = new PhotoViewFragment();
         Bundle args = new Bundle();
@@ -228,6 +256,7 @@ public class PhotoViewFragment extends TSFragment {
         args.putStringArrayList(ARG_ALL_PATH, (ArrayList<String>) allPhotos);
         args.putInt(ARG_CURRENT_ITEM, currentItem);
         args.putInt(ARG_MAX_COUNT, maxCount);
+        args.putBoolean(RIGHTTITLE, isToll);
         args.putParcelableArrayList("rect", animationRectBeen);
         f.setArguments(args);
         return f;
@@ -331,6 +360,9 @@ public class PhotoViewFragment extends TSFragment {
         // 完成图片选择，处理图片返回结果
         Intent it = new Intent();
         it.putStringArrayListExtra("photos", seletedPaths);
+        Bundle bundle = new Bundle();
+        bundle.putSparseParcelableArray(TOLL, tolls);
+        it.putExtra(TOLL, bundle);
         it.putExtra(EXTRA_BACK_HERE, backToPhotoAlbum);
         getActivity().setResult(Activity.RESULT_OK, it);
         getActivity().finish();

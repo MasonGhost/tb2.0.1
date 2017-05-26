@@ -2,9 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
@@ -30,23 +28,12 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
         , InfoMainContract.InfoContainerView> implements InfoMainContract.InfoContainerPresenter {
 
     @Inject
-    InfoMainRepository mInfoMainRepository;
-
-    @Inject
     InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
 
     @Inject
     public InfoContainerPresenter(InfoMainContract.Reppsitory repository,
                                   InfoMainContract.InfoContainerView rootContainerView) {
         super(repository, rootContainerView);
-    }
-
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
-
-    public InfoContainerPresenter() {
     }
 
     @Override
@@ -70,24 +57,14 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
             }
         });
 
-        Subscription subscription = mInfoMainRepository.getInfoType()
+        Subscription subscription = mRepository.getInfoType()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<InfoTypeBean>() {
+                .subscribe(new BaseSubscribeForV2<InfoTypeBean>() {
                     @Override
                     protected void onSuccess(InfoTypeBean infoTypeBean) {
                         mInfoTypeBeanGreenDao.updateSingleData(infoTypeBean);
                         mRootView.setInfoType(infoTypeBean);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
                     }
                 });
         addSubscrebe(subscription);

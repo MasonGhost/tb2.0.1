@@ -14,6 +14,9 @@ import java.io.Serializable;
 
 public class ImageBean implements Parcelable, Serializable {  //Serializable 用于 DynamicDetailBean中 Convert base64
 
+    public static final int LOOK_TOLL = 1000;// 查看收费
+    public static final int DOWNLOAD_TOLL = 2000;// 下载收费
+
     /**
      * storage_id : 2
      * width : 1152.0
@@ -21,10 +24,28 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
      */
     private String imgUrl;// 图片的地址
     private int storage_id;
+    private int toll_type;
+    private float toll_monye;
     private double width;
     private double height;
     private int part;// 图片压缩比例
     private String imgMimeType;// 图片类型
+
+    public int getToll_type() {
+        return toll_type;
+    }
+
+    public void setToll_type(int toll_way) {
+        this.toll_type = toll_way;
+    }
+
+    public float getToll_monye() {
+        return toll_monye;
+    }
+
+    public void setToll_monye(float toll_monye) {
+        this.toll_monye = toll_monye;
+    }
 
     public int getPart() {
         return part;
@@ -93,6 +114,7 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
     public ImageBean() {
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -102,6 +124,8 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.imgUrl);
         dest.writeInt(this.storage_id);
+        dest.writeInt(this.toll_type);
+        dest.writeFloat(this.toll_monye);
         dest.writeDouble(this.width);
         dest.writeDouble(this.height);
         dest.writeInt(this.part);
@@ -111,6 +135,8 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
     protected ImageBean(Parcel in) {
         this.imgUrl = in.readString();
         this.storage_id = in.readInt();
+        this.toll_type = in.readInt();
+        this.toll_monye = in.readFloat();
         this.width = in.readDouble();
         this.height = in.readDouble();
         this.part = in.readInt();

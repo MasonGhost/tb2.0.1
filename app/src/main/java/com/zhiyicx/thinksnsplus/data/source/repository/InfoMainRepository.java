@@ -25,7 +25,8 @@ import rx.functions.Func1;
  */
 public class InfoMainRepository implements InfoMainContract.Reppsitory {
 
-    private InfoMainClient mInfoMainClient;
+    //    @Inject
+    InfoMainClient mInfoMainClient;
 
     @Inject
     public InfoMainRepository(ServiceManager serviceManager) {
@@ -33,7 +34,7 @@ public class InfoMainRepository implements InfoMainContract.Reppsitory {
     }
 
     @Override
-    public Observable<BaseJson<InfoTypeBean>> getInfoType() {
+    public Observable<InfoTypeBean> getInfoType() {
         return mInfoMainClient.getInfoType();
     }
 

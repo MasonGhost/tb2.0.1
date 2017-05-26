@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -23,6 +25,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.impl.photoselector.ImageBean.DOWNLOAD_TOLL;
+import static com.zhiyicx.baseproject.impl.photoselector.ImageBean.LOOK_TOLL;
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_MONEY;
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -63,18 +69,13 @@ public class PictureTollFragment extends TSFragment {
 
     private double mRechargeMoney;
 
-    public static PictureTollFragment newInstance(){
+    public static PictureTollFragment newInstance() {
         return new PictureTollFragment();
     }
 
     @Override
     protected String setCenterTitle() {
         return getString(R.string.dynamic_send_toll_title);
-    }
-
-    @Override
-    public void setPresenter(Object presenter) {
-
     }
 
     @Override
@@ -106,7 +107,11 @@ public class PictureTollFragment extends TSFragment {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackSuccessMessage("mBtReCharge");
+                        Intent intent = new Intent();
+                        intent.putExtra(TOLL_TYPE, mPayType);
+                        intent.putExtra(TOLL_MONEY, Double.valueOf(mRechargeMoney).floatValue());
+                        getActivity().setResult(Activity.RESULT_OK, intent);
+                        getActivity().finish();
                     }
                 });
         //
@@ -126,7 +131,7 @@ public class PictureTollFragment extends TSFragment {
                             try {
                                 mRechargeMoney = Double.parseDouble(textViewAfterTextChangeEvent.editable().toString());
                             } catch (NumberFormatException ne) {
-
+                                mRechargeMoney = 0;
                             }
                         }
                     }
@@ -155,6 +160,22 @@ public class PictureTollFragment extends TSFragment {
                                 break;
                         }
                         setCustomMoneyDefault();
+                    }
+                });
+
+        RxRadioGroup.checkedChanges(mRbDaysGroupTollWays)
+                .compose(this.<Integer>bindToLifecycle())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer checkedId) {
+                        switch (checkedId) {
+                            case R.id.rb_ways_one:
+                                mPayType = LOOK_TOLL;
+                                break;
+                            case R.id.rb_ways_two:
+                                mPayType = DOWNLOAD_TOLL;
+                                break;
+                        }
                     }
                 });
     }

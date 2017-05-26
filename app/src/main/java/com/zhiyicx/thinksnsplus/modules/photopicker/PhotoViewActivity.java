@@ -15,6 +15,7 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFrag
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_INDEX;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_VIEW_SELECTED_PHOTOS;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.COMPLETE_REQUEST_CODE;
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment.RIGHTTITLE;
 
 /**
  * @author LiuChao
@@ -46,8 +47,9 @@ public class PhotoViewActivity extends TSActivity {
         List<String> selectedPhotos = bundle.getStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS);
         int index = bundle.getInt(EXTRA_VIEW_INDEX);
         int maxCount = bundle.getInt(EXTRA_MAX_COUNT);
+        boolean isToll=bundle.getBoolean(RIGHTTITLE,false);
         ArrayList<AnimationRectBean> animationRectBeen = bundle.getParcelableArrayList("rect");
-        return PhotoViewFragment.newInstance(selectedPhotos, allPhotos, animationRectBeen, index, maxCount);
+        return PhotoViewFragment.newInstance(selectedPhotos, allPhotos, animationRectBeen, index, maxCount,isToll);
     }
 
     @Override
@@ -66,12 +68,14 @@ public class PhotoViewActivity extends TSActivity {
      * @param animationRectBeanArrayList 图片的rect属性，用于转场的缩放动画
      * @param maxCount                   能够选择的最大数量
      * @param currentPosition            进入预览时，需要显示第几张图片
+     * @param isToll                     是否有收费选项
      */
     public static void startToPhotoView(Fragment fragment, ArrayList<String> allPhotos, ArrayList<String> selectedPhoto
-            , ArrayList<AnimationRectBean> animationRectBeanArrayList, int maxCount, int currentPosition) {
+            , ArrayList<AnimationRectBean> animationRectBeanArrayList, int maxCount, int currentPosition,boolean isToll) {
         Intent it = new Intent(fragment.getContext(), PhotoViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(EXTRA_VIEW_INDEX, currentPosition);
+        bundle.putBoolean(RIGHTTITLE,isToll);
         bundle.putStringArrayList(EXTRA_VIEW_ALL_PHOTOS, allPhotos);
         bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
         bundle.putParcelableArrayList("rect", animationRectBeanArrayList);

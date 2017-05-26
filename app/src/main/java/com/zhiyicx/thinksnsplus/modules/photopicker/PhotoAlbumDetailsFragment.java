@@ -258,7 +258,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                     }
                 }
                 PhotoViewActivity.startToPhotoView(PhotoAlbumDetailsFragment.this, (ArrayList<String>) allPhotos
-                        , selectedPhotos, animationRectBeanArrayList, maxCount, index);
+                        , selectedPhotos, animationRectBeanArrayList, maxCount, index,false);
             }
         });
     }
@@ -303,7 +303,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                 for (String path : selectedPhoto) {
                     animationRectBeanArrayList.add(null);
                 }
-                PhotoViewActivity.startToPhotoView(this, allPhotos, selectedPhoto, animationRectBeanArrayList, maxCount, 0);
+                PhotoViewActivity.startToPhotoView(this, allPhotos, selectedPhoto, animationRectBeanArrayList, maxCount, 0,false);
                 break;
             case R.id.bt_complete:
                 Intent it = new Intent();

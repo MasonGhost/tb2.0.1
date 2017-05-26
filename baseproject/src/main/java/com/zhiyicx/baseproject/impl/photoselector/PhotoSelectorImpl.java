@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.tbruyelle.rxpermissions.Permission;
 import com.yalantis.ucrop.UCrop;
@@ -54,6 +55,9 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private static final int SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
     private static final int CAMERA_PHOTO_CODE = 8888;
 
+    public static final String TOLL_TYPE = "toll_type";
+    public static final String TOLL = "toll";
+    public static final String TOLL_MONEY = "toll_money";
 
     private IPhotoBackListener mTIPhotoBackListener;
     private BaseFragment mFragment;
@@ -230,6 +234,12 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
             // 从本地相册获取图片
             if (requestCode == 1000) {
                 photosList.clear();// 清空之前的图片，重新装载
+                SparseArray<Toll> tolls = new SparseArray<>();
+                try {
+                    tolls = data.getBundleExtra(TOLL).getSparseParcelableArray(TOLL);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 ArrayList<String> photos = data.getStringArrayListExtra("photos");
                 String craftPath = "";
                 if (photos == null || photos.isEmpty()) {
@@ -240,11 +250,23 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 if (isNeededCraft(craftPath)) {
                     startToCraft(craftPath);
                 } else {
-                    for (String imgUrl : photos) {
+                    for (int i = 0; i < photos.size(); i++) {
                         ImageBean imageBean = new ImageBean();
-                        imageBean.setImgUrl(imgUrl);
+                        Toll toll = tolls.get(i);
+                        if (toll != null) {
+                            imageBean.setToll_type(toll.toll_type);
+                            imageBean.setToll_monye(toll.toll_money);
+                        }
+                        imageBean.setImgUrl(photos.get(i));
                         photosList.add(imageBean);
                     }
+//                    for (String imgUrl : photos) {
+//                        ImageBean imageBean = new ImageBean();
+//                        imageBean.setToll_type(type);
+//                        imageBean.setToll_monye(money);
+//                        imageBean.setImgUrl(imgUrl);
+//                        photosList.add(imageBean);
+//                    }
                     // 需要注意的是：用户有可能清空之前选择的所有图片，然后返回，这样就没有图片了
                     // 需要注意有可能造成的数组越界
                     mTIPhotoBackListener.getPhotoSuccess(photosList);
