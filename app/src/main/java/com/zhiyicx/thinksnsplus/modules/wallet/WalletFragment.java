@@ -12,6 +12,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDetailActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -84,8 +85,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), WithdrawalsActivity.class));
-        showSnackSuccessMessage("setRightClick");
+        startActivity(new Intent(getActivity(), WithdrawalsDetailActivity.class));
     }
 
     private void initListener() {
@@ -106,7 +106,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackSuccessMessage("mBtWithdraw");
+                        startActivity(new Intent(getActivity(), WithdrawalsActivity.class));
                     }
                 });
         // 充值提现规则

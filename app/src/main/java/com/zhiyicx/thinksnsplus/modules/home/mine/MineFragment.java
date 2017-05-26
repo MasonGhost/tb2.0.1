@@ -273,7 +273,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         // 设置关注数
         String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
-        double myMoney = 0.00;
+        double myMoney = 0;
         if (userInfoBean.getWallet() != null) {
             myMoney = userInfoBean.getWallet().getBalance();
         }
