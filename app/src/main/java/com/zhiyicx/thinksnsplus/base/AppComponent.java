@@ -11,10 +11,7 @@ import com.zhiyicx.thinksnsplus.comment.DeleteComment;
 import com.zhiyicx.thinksnsplus.comment.SendComment;
 import com.zhiyicx.thinksnsplus.data.source.local.CacheManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
@@ -34,11 +31,18 @@ import okhttp3.OkHttpClient;
 @Component(modules = {AppModule.class, HttpClientModule.class, ServiceModule.class, CacheModule.class, ImageModule.class})
 public interface AppComponent extends InjectComponent<AppApplication> {
     void inject(BackgroundTaskHandler backgroundTaskHandler);
+
     void inject(MainFragment mainFragment);
+
+    void inject(FindFragment findFragment);
 
     void inject(DeleteComment deleteComment);
 
     void inject(SendComment sendComment);
+
+    /**
+     * 以下是想往外提供的东西
+     */
 
     Application Application();
 
@@ -58,41 +62,4 @@ public interface AppComponent extends InjectComponent<AppApplication> {
     //图片管理器,用于加载图片的管理类,默认使用glide,使用策略模式,可替换框架
     ImageLoader imageLoader();
 
-    AuthRepository authRepository();
-
-//    UserInfoBeanGreenDaoImpl userInfoBeanGreenDao();
-//
-//    FollowFansBeanGreenDaoImpl followFansBeanGreenDao();
-//
-//    DynamicBeanGreenDaoImpl dynamicBeanGreenDao();
-//
-//    DynamicCommentBeanGreenDaoImpl dynamicCommentBeanGreenDao();
-//
-//    DigedBeanGreenDaoImpl digedBeanGreenDao();
-//
-//    CommentedBeanGreenDaoImpl commentedBeanGreenDao();
-//
-//    FlushMessageBeanGreenDaoImpl flushMessageBeanGreenDao();
-//
-//    DynamicDetailBeanGreenDaoImpl dynamicDetailBeanGreenDao();
-//
-//    DynamicToolBeanGreenDaoImpl dynamicToolBeanGreenDao();
-//
-//    InfoTypeBeanGreenDaoImpl infoTypeBeanGreenDaoImpl();
-//
-//    InfoListBeanGreenDaoImpl infoListBeanGreenDaoImpl();
-//
-//    ChannelInfoBeanGreenDaoImpl channelInfoBeanGreenDaoImpl();
-//
-//    ChannelSubscripBeanGreenDaoImpl channelSubscripBeanGreenDaoImpl();
-//
-//    MusicAlbumListBeanGreenDaoImpl musicAlbumListBeanGreenDaoImpl();
-//
-//    SystemConversationBeanGreenDaoImpl systemConversationBeanGreenDaoImpl();
-
-    UserInfoRepository userInfoRepository();
-
-    SendDynamicRepository dynamicPresenterRepository();
-
-    UpLoadRepository uploadRepository();
 }
