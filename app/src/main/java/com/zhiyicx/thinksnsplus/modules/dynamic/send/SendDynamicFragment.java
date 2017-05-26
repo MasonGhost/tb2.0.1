@@ -7,9 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,7 +16,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
@@ -52,12 +49,10 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.functions.Action1;
 
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -447,7 +442,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             public void onClick(View v) {
                 isToll = !isToll;
                 mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
-                mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
+                    mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                }
+
             }
         });
 
@@ -614,6 +612,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
+                mLLToll.setVisibility(View.GONE);
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
                 mEtDynamicContent.getEtContent().setHint(getString(R.string.dynamic_content_no_pic_hint));
                 break;
