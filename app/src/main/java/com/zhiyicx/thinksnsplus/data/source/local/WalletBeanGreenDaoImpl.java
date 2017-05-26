@@ -9,7 +9,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * @Describe (意见反馈 + 系统公告) 表数据库
@@ -45,6 +44,19 @@ public class WalletBeanGreenDaoImpl extends CommonCacheImpl<WalletBean> {
     public WalletBean getSingleDataFromCache(Long primaryKey) {
         WalletBeanDao walletBeanDao = getRDaoSession().getWalletBeanDao();
         return walletBeanDao.load(primaryKey);
+    }
+
+    /**
+     * 通过 user id 获取钱包信息
+     *
+     * @param userId
+     * @return
+     */
+    public WalletBean getSingleDataFromCacheByUserId(long userId) {
+        WalletBeanDao walletBeanDao = getRDaoSession().getWalletBeanDao();
+        return walletBeanDao.queryBuilder()
+                .where(WalletBeanDao.Properties.User_id.eq(userId))
+                .unique();
     }
 
     @Override

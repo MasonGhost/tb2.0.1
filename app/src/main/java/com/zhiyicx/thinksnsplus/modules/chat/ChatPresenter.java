@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.simple.eventbus.EventBus;
@@ -48,6 +49,8 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     private SparseArray<UserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();// 把用户信息存入内存，方便下次使用
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public ChatPresenter(ChatContract.Repository repository, ChatContract.View rootView) {
@@ -205,8 +208,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
         if (userInfoBean == null) {
-            userInfoBean = AppApplication.AppComponentHolder.getAppComponent()
-                    .userInfoBeanGreenDao().getSingleDataFromCache((long) message.getUid());
+            userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) message.getUid());
             mUserInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
         }
         chatItemBean.setUserInfo(userInfoBean);

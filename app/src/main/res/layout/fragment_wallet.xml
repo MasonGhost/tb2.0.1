@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -29,9 +28,10 @@
         android:includeFontPadding="false"
         android:paddingBottom="@dimen/spacing_large"
         android:paddingLeft="@dimen/spacing_mid"
+        android:text="@string/default_mongy"
         android:textColor="@color/white"
         android:textSize="34sp"
-        tools:text="1288.00"/>
+        />
     <!--充值-->
     <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/bt_recharge"
@@ -39,7 +39,7 @@
         android:layout_height="@dimen/full_button_height"
         app:leftText="@string/recharge"
         app:leftTextLeftPadding="@dimen/spacing_mid"
-        app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+        app:rightImage="@mipmap/ic_arrow_smallgrey"/>
     <!--提现-->
     <com.zhiyicx.baseproject.widget.button.CombinationButton
         android:id="@+id/bt_withdraw"
@@ -48,7 +48,7 @@
         app:leftText="@string/withdraw"
         app:leftTextLeftPadding="@dimen/spacing_mid"
         app:rightImage="@mipmap/ic_arrow_smallgrey"
-        app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+        app:showLine="false"/>
 
     <FrameLayout
         android:layout_width="match_parent"

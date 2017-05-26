@@ -1,4 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
+
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 

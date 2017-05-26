@@ -1,20 +1,18 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentContract;
@@ -41,16 +39,17 @@ import static com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHand
 public class MusicCommentRepositroty implements MusicCommentContract.Repository {
 
     MusicClient mMusicClient;
-    Context mContext;
-    protected UserInfoRepository mUserInfoRepository;
+    @Inject
+    Application mContext;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
     MusicDetailRepository mMusicDetailRepository;
-
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     public MusicCommentRepositroty(Application application, ServiceManager serviceManager) {
         mMusicClient = serviceManager.getMusicClient();
-        mContext = application;
-        mMusicDetailRepository = new MusicDetailRepository(serviceManager, application);
-        mUserInfoRepository = new UserInfoRepository(serviceManager, application);
     }
 
     @Override
@@ -102,8 +101,7 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                                             }
 
                                         }
-                                        AppApplication.AppComponentHolder.getAppComponent()
-                                                .userInfoBeanGreenDao().insertOrReplace(userinfobeans
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans
                                                 .getData());
                                     } else {
                                         listBaseJson.setStatus(userinfobeans.isStatus());
@@ -166,8 +164,7 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                                             }
 
                                         }
-                                        AppApplication.AppComponentHolder.getAppComponent()
-                                                .userInfoBeanGreenDao().insertOrReplace(userinfobeans
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans
                                                 .getData());
                                     } else {
                                         listBaseJson.setStatus(userinfobeans.isStatus());
@@ -183,13 +180,13 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     }
 
     @Override
-    public void sendComment(int music_id, int reply_id, String content, String path,Long comment_mark,
+    public void sendComment(int music_id, int reply_id, String content, String path, Long comment_mark,
                             BackgroundTaskHandler.OnNetResponseCallBack callBack) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("comment_content", content);
         params.put("reply_to_user_id", reply_id);
-        params.put(NET_CALLBACK,callBack);
+        params.put(NET_CALLBACK, callBack);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.POST, params);

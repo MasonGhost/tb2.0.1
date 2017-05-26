@@ -16,12 +16,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.DEFAULT_LOADING_SHOW_TIME;
 
 /**
  * @Describe
@@ -238,6 +241,50 @@ public class JavaTest {
                     }
                 });
         System.out.println("Sys = " + Thread.currentThread().getName());
+    }
+
+    @Test
+    public void rxTimerTest() {
+        Observable.timer(DEFAULT_LOADING_SHOW_TIME, TimeUnit.SECONDS)
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("aLong = onCompleted ");
+                        Assert.assertTrue(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Assert.assertFalse(false);
+                        System.out.println("aLong = onError ");
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        Assert.assertTrue(aLong == DEFAULT_LOADING_SHOW_TIME);
+                        System.out.println("aLong = " + aLong);
+                    }
+                });
+    }
+
+    @Test
+    public void tryCatchTest() {
+        String[] a = {"123", "4569"};
+        String b = null;
+        String c = null;
+        String d = null;
+        try {
+            b = a[0].toString();
+            c = a[1].toString();
+            d = a[5].toString();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
+        Assert.assertTrue(a[1].equals("4569"));
+        Assert.assertTrue(b.equals("123"));
+        Assert.assertTrue(c.equals("4569"));
+        Assert.assertTrue(d == null);
     }
 
 }

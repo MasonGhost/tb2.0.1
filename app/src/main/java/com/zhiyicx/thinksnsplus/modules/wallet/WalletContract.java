@@ -13,7 +13,19 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 public interface WalletContract {
 
     interface View extends IBaseView<Presenter> {
+        /**
+         * update balance
+         *
+         * @param balance current user's balance
+         */
+        void updateBalance(double balance);
 
+        /**
+         * handle request loading
+         *
+         * @param isShow true ,show loading
+         */
+        void handleLoading(boolean isShow);
 
     }
 
@@ -23,6 +35,15 @@ public interface WalletContract {
     }
 
     interface Presenter extends IBaseTouristPresenter {
+        /**
+         * update user info
+         */
+        void updateUserInfo();
 
+        /**
+         *
+         * @return  true when first looking wallet page
+         */
+        boolean checkIsNeedTipPop();
     }
 }

@@ -13,6 +13,7 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.imsdk.utils.common.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;

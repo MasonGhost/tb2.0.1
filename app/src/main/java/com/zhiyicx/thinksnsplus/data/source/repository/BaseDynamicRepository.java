@@ -9,7 +9,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -25,6 +24,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -61,6 +61,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     @Inject
     protected Application mContext;
 
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
@@ -362,7 +364,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                         listBaseJson.getData().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getData().get(i).getReply_to_user_id()));
                                                     }
                                                 }
-                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());
@@ -421,7 +423,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                         listBaseJson.getData().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getData().get(i).getReply_to_user_id()));
                                                     }
                                                 }
-                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());
@@ -527,7 +529,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                     }
 
                                                 }
-                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());

@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -28,6 +29,8 @@ import javax.inject.Inject;
 public class MinePresenter extends BasePresenter<MineContract.Repository, MineContract.View> implements MineContract.Presenter {
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
     FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
@@ -48,6 +51,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
             UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
+            userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id()));
             mRootView.setUserInfo(userInfoBean);
             setMineTipVisable(false);
         }
@@ -62,6 +66,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         if (data != null) {
             for (UserInfoBean userInfoBean : data) {
                 if (userInfoBean.getUser_id() == authBean.getUser_id()) {
+                    userInfoBean.setWallet(mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id()));
                     mRootView.setUserInfo(userInfoBean);
                     break;
                 }

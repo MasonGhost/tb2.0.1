@@ -42,6 +42,8 @@
     <string name="publish">发布</string>
     <string name="skip">跳过</string>
     <string name="intro_default">这家伙很懒,什么都没有留下</string>
+    <string name="money_format_with_unit">%.2f元</string>
+    <string name="money_format">%.2f</string>
     <!-- 注册 -->
     <string name="regist">注册</string>
     <string name="username_input_hint">输入2&#8211;8位用户名</string>

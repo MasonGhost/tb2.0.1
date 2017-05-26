@@ -254,9 +254,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             return;
         }
         this.mUserInfoBean = userInfoBean;
-        if (userInfoBean == null) {
-            return;
-        }
         // 设置用户头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
@@ -276,6 +273,12 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         // 设置关注数
         String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
+        double myMoney = 0;
+        if (userInfoBean.getWallet() != null) {
+            myMoney = userInfoBean.getWallet().getBalance();
+        }
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, myMoney));
+
     }
 
     @Override

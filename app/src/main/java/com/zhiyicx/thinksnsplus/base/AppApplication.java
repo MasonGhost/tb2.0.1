@@ -90,6 +90,7 @@ public class AppApplication extends TSApplication {
         initComponent();
         // IM
         if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
+            LogUtils.d(TAG, "---------------start IM---------------------");
             ZBIMSDK.init(getContext());
         }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
@@ -174,12 +175,12 @@ public class AppApplication extends TSApplication {
                 AuthBean authBean = mAuthRepository.getAuthBean();
                 if (authBean != null) {
                     return chain.request().newBuilder()
-                            .header("Accept","application/json")
-                            .header((request.url() + "").contains("v1") ? "ACCESS-TOKEN" : "Authorization", (request.url() + "").contains("v1") ? authBean.getToken():" Bearer " + authBean.getToken())
+                            .header("Accept", "application/json")
+                            .header((request.url() + "").contains("v1") ? "ACCESS-TOKEN" : "Authorization", (request.url() + "").contains("v1") ? authBean.getToken() : " Bearer " + authBean.getToken())
                             .build();
-                }else {
+                } else {
                     return chain.request().newBuilder()
-                            .header("Accept","application/json")
+                            .header("Accept", "application/json")
                             .build();
                 }
             }

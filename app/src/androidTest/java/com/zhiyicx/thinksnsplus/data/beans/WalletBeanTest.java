@@ -2,9 +2,6 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
-import com.zhiyicx.thinksnsplus.data.beans.WalletBeanDao;
-
 public class WalletBeanTest extends AbstractDaoTestLongPk<WalletBeanDao, WalletBean> {
 
     public WalletBeanTest() {
@@ -15,8 +12,8 @@ public class WalletBeanTest extends AbstractDaoTestLongPk<WalletBeanDao, WalletB
     protected WalletBean createEntity(Long key) {
         WalletBean entity = new WalletBean();
         entity.setId(key);
-        entity.setUser_id();
-        entity.setBalance();
+        entity.setUser_id(123);
+        entity.setBalance(1800.00);
         return entity;
     }
 

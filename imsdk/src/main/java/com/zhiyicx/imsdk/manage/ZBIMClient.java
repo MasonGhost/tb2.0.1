@@ -36,6 +36,7 @@ import java.util.List;
  * email:335891510@qq.com
  */
 public class ZBIMClient implements IMSoupport {
+    private static final String TAG = "ZBIMClient";
     public static final String KEY_EVENTCONTAINER = "EventContainer";
     public static final String KEY_DISCONNECTED_CODE = "disconnected_code";
     public static final String KEY_DISCONNECTED_REASON = "disconnected_reason";
@@ -111,6 +112,7 @@ public class ZBIMClient implements IMSoupport {
      */
     @Override
     public void login(IMConfig imConfig) {
+        LogUtils.debugInfo(TAG, "-----login-----imConfig--------" + (imConfig==null?"":imConfig.toString()));
         Bundle bundle = new Bundle();
         bundle.putInt(SocketService.EVENT_SOCKET_TAG, SocketService.TAG_IM_LOGIN);
         bundle.putSerializable(SocketService.BUNDLE_IMCONFIG, imConfig);

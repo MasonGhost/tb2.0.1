@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsContract;
 
 import javax.inject.Inject;
@@ -23,8 +22,7 @@ public class SettingsRepository implements SettingsContract.Repository {
     Application mContext;
 
     @Inject
-    public SettingsRepository(ServiceManager serviceManager) {
-
+    public SettingsRepository() {
     }
 
     /**

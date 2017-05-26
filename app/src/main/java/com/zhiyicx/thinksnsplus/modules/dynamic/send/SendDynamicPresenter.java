@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -50,10 +49,6 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     @Inject
     public SendDynamicPresenter(SendDynamicContract.Repository repository, SendDynamicContract.View rootView) {
         super(repository, rootView);
-        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
-                .dynamicBeanGreenDao();
-        mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
-                .dynamicDetailBeanGreenDao();
     }
 
     @Override

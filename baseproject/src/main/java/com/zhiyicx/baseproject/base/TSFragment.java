@@ -9,7 +9,6 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +56,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
     private View mCenterLoadingView; // 加载
+    private ImageView mIvRefresh; // 头部左边的刷新控件
 
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
@@ -465,7 +465,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left);
         mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right);
         mToolbarCenter = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_center);
-
+        mIvRefresh = (ImageView) toolBarContainer.findViewById(R.id.iv_refresh);
         // 如果标题为空，就隐藏它
         mToolbarCenter.setVisibility(TextUtils.isEmpty(setCenterTitle()) ? View.GONE : View.VISIBLE);
         mToolbarCenter.setText(setCenterTitle());
@@ -473,6 +473,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarLeft.setText(setLeftTitle());
         mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) && setRightImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarRight.setText(setRightTitle());
+
         setToolBarLeftImage(setLeftImg());
         setToolBarRightImage(setRightImg());
         RxView.clicks(mToolbarLeft)
@@ -534,6 +535,23 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected String setLeftTitle() {
         return "";
     }
+
+    /**
+     * 显示右上角的加载动画
+     */
+    protected void showLeftTopLoading() {
+        mIvRefresh.setVisibility(View.VISIBLE);
+        ((AnimationDrawable) mIvRefresh.getDrawable()).start();
+    }
+
+    /**
+     * 隐藏右上角的加载动画
+     */
+    protected void hideLeftTopLoading() {
+        mIvRefresh.setVisibility(View.GONE);
+        ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
+    }
+
 
     protected void setLeftTextColor(@ColorRes int resId) {
         mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), resId));

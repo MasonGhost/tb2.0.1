@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -23,9 +24,10 @@ import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -55,7 +57,8 @@ public class FindFragment extends TSFragment {
 
     private ActionPopupWindow mActionPopupWindow;
 
-    private AuthRepository mAuthRepository;
+    @Inject
+    AuthRepository mAuthRepository;
 
     public FindFragment() {
     }
@@ -69,6 +72,7 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);
     }
 
     @Override
@@ -83,7 +87,6 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initData() {
-        mAuthRepository = AppApplication.AppComponentHolder.getAppComponent().authRepository();
     }
 
     @Override
@@ -123,14 +126,14 @@ public class FindFragment extends TSFragment {
             case R.id.find_info:
                 if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     startActivity(new Intent(getActivity(), InfoActivity.class));
-                }else {
+                } else {
                     showLoginPop();
                 }
                 break;
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     startActivity(new Intent(getActivity(), ChannelListActivity.class));
-                }else {
+                } else {
                     showLoginPop();
                 }
                 break;
@@ -159,18 +162,14 @@ public class FindFragment extends TSFragment {
                     } else {
                         startActivity(new Intent(getActivity(), MusicListActivity.class));
                     }
-                }else {
+                } else {
                     showLoginPop();
                 }
                 break;
             case R.id.find_buy:
                 if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    Intent intent = new Intent(getActivity(), CustomWEBActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }else {
+                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
+                } else {
                     showLoginPop();
                 }
                 break;
@@ -217,7 +216,7 @@ public class FindFragment extends TSFragment {
                 })
                 .isFocus(true)
                 .isOutsideTouch(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .build();
     }
 }

@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.local.db;
 
-import android.content.Context;
+import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.zhiyicx.baseproject.cache.IDataBaseOperate;
@@ -19,14 +19,14 @@ import com.zhiyicx.thinksnsplus.data.beans.DaoSession;
 public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
     private static final UpDBHelper sUpDBHelper = new UpDBHelper(AppApplication.getContext(), DBConfig.DB_NAME);
 
-    public CommonCacheImpl(Context context) {
+    public CommonCacheImpl(Application context) {
     }
 
     /**
      * 获取可读数据库
      */
     protected SQLiteDatabase getReadableDatabase() {
-        return  sUpDBHelper.getReadableDatabase();
+        return sUpDBHelper.getReadableDatabase();
 
     }
 
@@ -41,7 +41,7 @@ public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
      * 获取可写数据库的DaoMaster
      */
     protected DaoMaster getWDaoMaster() {
-        return  new DaoMaster(getWritableDatabase());
+        return new DaoMaster(getWritableDatabase());
     }
 
     /**
@@ -62,6 +62,6 @@ public abstract class CommonCacheImpl<T> implements IDataBaseOperate<T> {
      * 获取可写数据库的DaoSession
      */
     protected DaoSession getRDaoSession() {
-        return  getRDaoMaster().newSession();
+        return getRDaoMaster().newSession();
     }
 }

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -48,6 +49,7 @@ public class AuthRepository implements IAuthRepository {
     public static final int MAX_RETRY_COUNTS = 2;//重试次数
     public static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
     private UserInfoClient mUserInfoClient;
+
     @Inject
     Application mContext;
     @Inject
@@ -68,32 +70,11 @@ public class AuthRepository implements IAuthRepository {
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
 
     @Inject
+    SystemRepository mSystemRepository;
+
+    @Inject
     public AuthRepository(ServiceManager serviceManager) {
         mUserInfoClient = serviceManager.getUserInfoClient();
-//        if (mDynamicBeanGreenDao == null) {
-//            mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
-//        }
-//        if (mDynamicDetailBeanGreenDao == null) {
-//            mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
-//        }
-//        if (mDynamicToolBeanGreenDao == null) {
-//            mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
-//        }
-//        if (mDynamicCommentBeanGreenDao == null) {
-//            mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
-//        }
-//        if (mDigedBeanGreenDao == null) {
-//            mDigedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().digedBeanGreenDao();
-//        }
-//        if (mCommentedBeanGreenDao == null) {
-//            mCommentedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().commentedBeanGreenDao();
-//        }
-//        if (mFlushMessageBeanGreenDao == null) {
-//            mFlushMessageBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().flushMessageBeanGreenDao();
-//        }
-//        if (mSystemConversationBeanGreenDao == null) {
-//            mSystemConversationBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().systemConversationBeanGreenDaoImpl();
-//        }
     }
 
 
@@ -181,6 +162,7 @@ public class AuthRepository implements IAuthRepository {
         SystemRepository.resetTSHelper(mContext);
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG)
+                && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IS_NOT_FIRST_LOOK_WALLET)
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
     }
 
@@ -191,7 +173,9 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean isLogin() {
-        return !isTourist() && getAuthBean() != null;
+        return !isTourist()
+                && getAuthBean() != null
+                && (TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve()) || getIMConfig() != null);
     }
 
     /**

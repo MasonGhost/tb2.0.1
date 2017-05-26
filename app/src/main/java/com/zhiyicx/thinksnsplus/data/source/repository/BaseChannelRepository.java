@@ -1,11 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.content.Context;
-
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
@@ -27,8 +24,6 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.umeng.socialize.utils.DeviceConfig.context;
-
 /**
  * @author LiuChao
  * @describe
@@ -38,15 +33,16 @@ import static com.umeng.socialize.utils.DeviceConfig.context;
 
 public class BaseChannelRepository extends BaseDynamicRepository implements IBaseChannelRepository {
     protected ChannelClient mChannelClient;
+    @Inject
     protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
+    @Inject
     protected ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
 
     @Inject
     public BaseChannelRepository(ServiceManager serviceManager) {
         super(serviceManager);
         mChannelClient = serviceManager.getChannelClient();
-        mChannelSubscripBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelSubscripBeanGreenDaoImpl();
-        mChannelInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelInfoBeanGreenDaoImpl();
+
     }
 
     @Override

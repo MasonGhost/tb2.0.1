@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.wallet;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,8 +12,10 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDetailActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -78,14 +82,26 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @Override
     protected void initData() {
-        mTvMineMoney.setText("182000.00");
+        mPresenter.updateUserInfo();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (mPresenter.checkIsNeedTipPop()) {
+            getView().post(new Runnable() {
+                @Override
+                public void run() {
+                    showRulePopupWindow();
+                }
+            });
+        }
     }
 
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), WithdrawalsActivity.class));
-        showSnackSuccessMessage("setRightClick");
+        startActivity(new Intent(getActivity(), WithdrawalsDetailActivity.class));
     }
 
     private void initListener() {
@@ -106,7 +122,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackSuccessMessage("mBtWithdraw");
+                        startActivity(new Intent(getActivity(), WithdrawalsActivity.class));
                     }
                 });
         // 充值提现规则
@@ -116,7 +132,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showRulePopupWindow();
+                        CustomWEBActivity.startToWEBActivity(getContext(), "http://www.baidu.com");
                     }
                 });
     }
@@ -150,4 +166,17 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         mRulePop.show();
     }
 
+    @Override
+    public void updateBalance(double balance) {
+        mTvMineMoney.setText(getString(R.string.money_format, balance));
+    }
+
+    @Override
+    public void handleLoading(boolean isShow) {
+        if (isShow) {
+            showLeftTopLoading();
+        } else {
+            hideLeftTopLoading();
+        }
+    }
 }

@@ -13,12 +13,15 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.source.repository.IAuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -37,7 +40,10 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     View mVShadow;
     List<Fragment> fragments = new ArrayList<>();
 
-    private IAuthRepository mIAuthRepository;
+    @Inject
+    AuthRepository mIAuthRepository;
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
 
     public void setOnImageClickListener(DynamicFragment.OnCommentClickListener onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
@@ -65,7 +71,7 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
 
     @Override
     protected void initView(View rootView) {
-        mIAuthRepository = AppApplication.AppComponentHolder.getAppComponent().authRepository();
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);// 需要在 initview 之前，应为在 initview 中使用了 dagger 注入的数据
         super.initView(rootView);
         initToolBar();
     }
@@ -104,8 +110,9 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
                 }
             }
         });
+
         // 启动 app，如果本地没有最新数据，应跳到“热门”页面 关联 github  #113  #366
-        if (AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao().getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
+        if (mDynamicBeanGreenDao.getNewestDynamicList(System.currentTimeMillis()).size() == 0) {
             mVpFragment.setCurrentItem(1);
         }
 
