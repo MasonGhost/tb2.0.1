@@ -277,7 +277,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (userInfoBean.getWallet() != null) {
             myMoney = userInfoBean.getWallet().getBalance();
         }
-        mBtWallet.setRightText(getString(R.string.money_format, myMoney));
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, myMoney));
 
     }
 

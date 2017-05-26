@@ -79,7 +79,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
 
     @Override
     protected void initData() {
-        mTvMineMoney.setText("182000.00");
+        mPresenter.updateUserInfo();
     }
 
     @Override
@@ -150,4 +150,17 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         mRulePop.show();
     }
 
+    @Override
+    public void updateBalance(double balance) {
+        mTvMineMoney.setText(getString(R.string.money_format, balance));
+    }
+
+    @Override
+    public void handleLoading(boolean isShow) {
+        if (isShow) {
+            showLeftTopLoading();
+        } else {
+            hideLeftTopLoading();
+        }
+    }
 }
