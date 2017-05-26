@@ -204,7 +204,7 @@
                 app:leftText="@string/mine_collect"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="true"></com.zhiyicx.baseproject.widget.button.CombinationButton>
-            <!--收藏-->
+            <!--钱包-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_wallet"
                 android:layout_width="match_parent"
@@ -212,7 +212,7 @@
                 android:visibility="visible"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
-                app:leftImage="@mipmap/ico_me_collect"
+                app:leftImage="@mipmap/ico_me_wallet"
                 app:leftText="@string/wallet"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
