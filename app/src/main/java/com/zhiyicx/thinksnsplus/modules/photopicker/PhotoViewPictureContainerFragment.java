@@ -34,6 +34,11 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
@@ -48,7 +53,8 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
     }
 
     public static PhotoViewPictureContainerFragment newInstance(String url, AnimationRectBean rect,
-                                                boolean animationIn, boolean firstOpenPage) {
+                                                                boolean animationIn, boolean
+                                                                        firstOpenPage) {
         PhotoViewPictureContainerFragment fragment = new PhotoViewPictureContainerFragment();
         Bundle bundle = new Bundle();
         bundle.putString("url", url);
@@ -99,6 +105,6 @@ public class PhotoViewPictureContainerFragment extends TSFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LogUtils.i(TAG+"onDestroy");
+        LogUtils.i(TAG + "onDestroy");
     }
 }

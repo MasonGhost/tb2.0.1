@@ -8,7 +8,7 @@ public class PictureTollActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return PictureTollFragment.newInstance();
+        return PictureTollFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

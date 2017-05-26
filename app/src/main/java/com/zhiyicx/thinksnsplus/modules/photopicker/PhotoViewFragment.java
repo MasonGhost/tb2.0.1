@@ -41,7 +41,8 @@ import butterknife.OnClick;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_MONEY;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_BACK_HERE;
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment
+        .EXTRA_BACK_HERE;
 
 
 /**
@@ -76,6 +77,7 @@ public class PhotoViewFragment extends TSFragment {
 
     public final static String ARG_MAX_COUNT = "MAX_COUNT";
     public final static String RIGHTTITLE = "righttitle";
+    public final static String OLDTOLL = "oldtoll";
 
     private int maxCount = 0;
 
@@ -86,11 +88,9 @@ public class PhotoViewFragment extends TSFragment {
 
     private int currentItem = 0;// 点击第几张图片进入的预览界面
 
-    private int toll_type;
-    private float toll_money;
-
-
     private SparseArray<Toll> tolls = new SparseArray<>();
+
+    private Toll oldToll;
 
     @Override
     protected String setRightTitle() {
@@ -103,16 +103,18 @@ public class PhotoViewFragment extends TSFragment {
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivityForResult(new Intent(getActivity(), PictureTollActivity.class), REQUEST_CODE);
+        Intent intent = new Intent(getActivity(), PictureTollActivity.class);
+        intent.putExtra(OLDTOLL, oldToll);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            toll_type = data.getIntExtra(TOLL_TYPE, 0);
-            toll_money = data.getFloatExtra(TOLL_MONEY, 0f);
-            tolls.put(currentItem, new Toll(toll_type, toll_money));
+            int toll_type = data.getIntExtra(TOLL_TYPE, 0);
+            float toll_money = data.getFloatExtra(TOLL_MONEY, 0f);
+            tolls.put(mViewPager.getCurrentItem(), new Toll(toll_type, toll_money));
         }
     }
 
@@ -123,18 +125,21 @@ public class PhotoViewFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        oldToll = tolls.get(currentItem);
         mViewPager.setBackgroundColor(Color.argb(0, 255, 255, 255));
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(currentItem);
         mViewPager.setOffscreenPageLimit(0);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset, int
+                    positionOffsetPixels) {
 
             }
 
             @Override
             public void onPageSelected(int position) {
+                oldToll = tolls.get(position);
                 hasAnim = currentItem == position;
                 // 是否包含了已经选中的图片
                 mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(position)));
@@ -148,7 +153,8 @@ public class PhotoViewFragment extends TSFragment {
         });
         // 初始化设置当前选择的数量
         mBtComplete.setEnabled(seletedPaths.size() > 0);
-        mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
+        mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
+                maxCount));
         // 初始化选择checkbox
         mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
         mRbSelectPhoto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -174,10 +180,12 @@ public class PhotoViewFragment extends TSFragment {
                 // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
                 mBtComplete.setEnabled(seletedPaths.size() > 0);
                 // 重置当前的选择数量
-                mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(), maxCount));
+                mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
+                        maxCount));
                 // 通知图片列表进行刷新
                 // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
-                // EventBus.getDefault().post(seletedPaths, EventBusTagConfig.EVENT_SELECTED_PHOTO_UPDATE);
+                // EventBus.getDefault().post(seletedPaths, EventBusTagConfig
+                // .EVENT_SELECTED_PHOTO_UPDATE);
             }
         });
     }
@@ -221,6 +229,7 @@ public class PhotoViewFragment extends TSFragment {
             hasRightTitle = bundle.getBoolean(RIGHTTITLE);
             rectList = bundle.getParcelableArrayList("rect");
             maxCount = bundle.getInt(ARG_MAX_COUNT);
+            tolls = bundle.getSparseParcelableArray(OLDTOLL);
         }
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
     }
@@ -248,7 +257,9 @@ public class PhotoViewFragment extends TSFragment {
     }
 
     public static PhotoViewFragment newInstance(List<String> selectedPaths, List<String> allPhotos,
-                                                ArrayList<AnimationRectBean> animationRectBeen, int currentItem, int maxCount, boolean isToll) {
+                                                ArrayList<AnimationRectBean> animationRectBeen,
+                                                int currentItem, int maxCount, boolean isToll,
+                                                SparseArray<Toll> tolls) {
 
         PhotoViewFragment f = new PhotoViewFragment();
         Bundle args = new Bundle();
@@ -257,6 +268,7 @@ public class PhotoViewFragment extends TSFragment {
         args.putInt(ARG_CURRENT_ITEM, currentItem);
         args.putInt(ARG_MAX_COUNT, maxCount);
         args.putBoolean(RIGHTTITLE, isToll);
+        args.putSparseParcelableArray(OLDTOLL, tolls);
         args.putParcelableArrayList("rect", animationRectBeen);
         f.setArguments(args);
         return f;
@@ -313,7 +325,8 @@ public class PhotoViewFragment extends TSFragment {
     public ObjectAnimator showBackgroundAnimate() {
         backgroundColor = new ColorDrawable(Color.WHITE);
         // mViewPager.setBackground(backgroundColor);
-        // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
+        // ((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground
+        // (backgroundColor);
         ObjectAnimator bgAnim = ObjectAnimator
                 .ofInt(backgroundColor, "alpha", 0, 255);
         bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -326,7 +339,8 @@ public class PhotoViewFragment extends TSFragment {
     }
 
     public void backPress() {
-        if (mPhotoViewPictureContainerFragment != null && mPhotoViewPictureContainerFragment.canAnimateCloseActivity()) {
+        if (mPhotoViewPictureContainerFragment != null && mPhotoViewPictureContainerFragment
+                .canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.WHITE);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
             bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

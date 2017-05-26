@@ -68,9 +68,12 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private int maxCount;// 可选的最大图片数量
     private ArrayList<ImageBean> photosList;// 存储已选择图片
     private ActionPopupWindow mActionPopupWindow;
+    private SparseArray<Toll> mTolls = new SparseArray<>();
 
-    public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, BaseFragment mFragment, int cropShape) {
-        takePhotoFolder = new File(Environment.getExternalStorageDirectory(), PathConfig.CAMERA_PHOTO_PATH);
+    public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, BaseFragment mFragment, int
+            cropShape) {
+        takePhotoFolder = new File(Environment.getExternalStorageDirectory(), PathConfig
+                .CAMERA_PHOTO_PATH);
         mTIPhotoBackListener = iPhotoBackListener;
         this.mFragment = mFragment;
         this.mContext = mFragment.getContext();
@@ -136,7 +139,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 }
             }
 
-            Uri mTakePhotoUri = FileProvider.getUriForFile(mFragment.getContext(), "ThinkSNSFileProvider", toFile);
+            Uri mTakePhotoUri = FileProvider.getUriForFile(mFragment.getContext(),
+                    "ThinkSNSFileProvider", toFile);
             Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTakePhotoUri);
             mFragment.startActivityForResult(captureIntent, CAMERA_PHOTO_CODE);
@@ -151,7 +155,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     @Override
     public void startToCraft(String imgPath) {
         String destinationFileName = "SampleCropImage" + format() + ".jpg";
-        UCrop uCrop = UCrop.of(Uri.fromFile(new File(imgPath)), Uri.fromFile(new File(mFragment.getActivity().getCacheDir(), destinationFileName)));
+        UCrop uCrop = UCrop.of(Uri.fromFile(new File(imgPath)), Uri.fromFile(new File(mFragment
+                .getActivity().getCacheDir(), destinationFileName)));
         UCrop.Options options = new UCrop.Options();
         initCropShape(uCrop, options);
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
@@ -237,6 +242,9 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 SparseArray<Toll> tolls = new SparseArray<>();
                 try {
                     tolls = data.getBundleExtra(TOLL).getSparseParcelableArray(TOLL);
+                    for (int i = 0; i < tolls.size(); i++) {
+                        mTolls.put(tolls.keyAt(i), tolls.valueAt(i));
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -252,7 +260,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 } else {
                     for (int i = 0; i < photos.size(); i++) {
                         ImageBean imageBean = new ImageBean();
-                        Toll toll = tolls.get(i);
+                        Toll toll = mTolls.get(i);
                         if (toll != null) {
                             imageBean.setToll_type(toll.toll_type);
                             imageBean.setToll_monye(toll.toll_money);
@@ -292,6 +300,10 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         void getPhotoSuccess(List<ImageBean> photoList);
 
         void getPhotoFailure(String errorMsg);
+    }
+
+    public SparseArray<Toll> getTolls() {
+        return mTolls;
     }
 
     /**

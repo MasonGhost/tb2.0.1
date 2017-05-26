@@ -14,9 +14,6 @@ import java.io.Serializable;
 
 public class ImageBean implements Parcelable, Serializable {  //Serializable 用于 DynamicDetailBean中 Convert base64
 
-    public static final int LOOK_TOLL = 1000;// 查看收费
-    public static final int DOWNLOAD_TOLL = 2000;// 下载收费
-
     /**
      * storage_id : 2
      * width : 1152.0
