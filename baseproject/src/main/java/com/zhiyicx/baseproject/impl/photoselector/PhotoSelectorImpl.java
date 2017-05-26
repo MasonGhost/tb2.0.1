@@ -79,10 +79,10 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         this.maxCount = maxCount;
         // 选择相册
         PhotoPicker.builder()
-                .setPreviewEnabled(maxCount == 1 ? false : true) // 是否可预览
+                .setPreviewEnabled(maxCount != 1) // 是否可预览
                 .setGridColumnCount(PHOTO_CLUMS_SIZE)      // 每行的图片数量
                 .setPhotoCount(maxCount)    //  每次能够选择的最
-                .setShowCamera(false)        // 是否需要展示相机
+                .setShowCamera(true)        // 是否需要展示相机
                 .setSelected(selectedPhotos)// 已经选择的图片
                 .start(mContext, mFragment);
     }

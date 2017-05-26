@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -181,7 +182,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 添加动态
             case R.id.fl_add:
                 if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
-                    startActivity(new Intent(getActivity(), SelectDynamicTypeActivity.class));
+                    Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
+                    startActivity(intent);
+
 //                    initPhotoPopupWindow();
 //                    mPhotoPopupWindow.show();
                 }

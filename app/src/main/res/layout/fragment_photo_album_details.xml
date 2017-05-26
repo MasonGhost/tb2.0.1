@@ -19,7 +19,7 @@
             android:id="@+id/rv_album_details"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            ></android.support.v7.widget.RecyclerView>
+            />
     </com.wcy.overscroll.OverScrollLayout>
 
     <LinearLayout
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/include_horizontal_divider"></include>
+        <include layout="@layout/include_horizontal_divider"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

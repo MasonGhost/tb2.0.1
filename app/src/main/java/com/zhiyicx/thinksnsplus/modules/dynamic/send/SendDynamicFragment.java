@@ -7,9 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,7 +16,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
@@ -34,6 +31,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
@@ -52,12 +50,10 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.functions.Action1;
 
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author LiuChao
@@ -100,7 +96,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
     private boolean isToll;
-    private ArrayList<Integer> mSelectDays;
+    private ArrayList<Float> mSelectDays;
 
     private int mPayType;
 
@@ -187,13 +183,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     protected void initData() {
         mSelectDays = new ArrayList<>();
-        mSelectDays.add(1);
-        mSelectDays.add(5);
-        mSelectDays.add(10);
+        mSelectDays.add(1f);
+        mSelectDays.add(5f);
+        mSelectDays.add(10f);
         initSelectDays(mSelectDays);
     }
 
-    private void initSelectDays(List<Integer> mSelectDays) {
+    private void initSelectDays(List<Float> mSelectDays) {
         mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(0)));
         mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(1)));
         mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(2)));
@@ -290,7 +286,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        ArrayList<String> photos = new ArrayList<String>();
+                        ArrayList<String> photos = new ArrayList<>();
                         // 最后一张是占位图
                         for (int i = 0; i < selectedPhotos.size(); i++) {
                             ImageBean imageBean = selectedPhotos.get(i);
@@ -374,7 +370,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public void getPhotoFailure(String errorMsg) {
-
+        ToastUtils.showToast(errorMsg);
     }
 
     @Override
@@ -447,7 +443,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             public void onClick(View v) {
                 isToll = !isToll;
                 mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
-                mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
+                    mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                }
+
             }
         });
 
@@ -549,8 +548,17 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     public void onClick(View v) {
                         DeviceUtils.hideSoftKeyboard(getContext(), v);
                         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                            initPhotoPopupWindow();
-                            mPhotoPopupWindow.show();
+                            ArrayList<String> photos = new ArrayList<>();
+                            // 最后一张是占位图
+                            for (int i = 0; i < selectedPhotos.size(); i++) {
+                                ImageBean imageBean = selectedPhotos.get(i);
+                                if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                                    photos.add(imageBean.getImgUrl());
+                                }
+                            }
+                            mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
+//                            initPhotoPopupWindow();
+//                            mPhotoPopupWindow.show();
                         } else {
                             // 预览图片
                             ArrayList<String> photos = new ArrayList<String>();
@@ -614,6 +622,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
+                mLLToll.setVisibility(View.GONE);
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
                 mEtDynamicContent.getEtContent().setHint(getString(R.string.dynamic_content_no_pic_hint));
                 break;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import me.iwf.photopicker.utils.PermissionsUtils;
 
+
 /**
  * Created by Donglua on 16/6/25.
  * Builder class to ease Intent setup.

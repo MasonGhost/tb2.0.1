@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout
@@ -36,12 +36,14 @@
             <RadioButton
                 android:id="@+id/rb_ways_one"
                 style="@style/style_dynamic_radiobutton"
+                android:text="@string/dynamic_send_toll_look"
                 tools:text="ssss"/>
 
             <RadioButton
                 android:id="@+id/rb_ways_two"
                 style="@style/style_dynamic_radiobutton"
-                android:layout_marginLeft="@dimen/spacing_large"/>
+                android:layout_marginLeft="@dimen/spacing_large"
+                android:text="@string/dynamic_send_toll_download"/>
 
         </RadioGroup>
 
@@ -52,9 +54,9 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="@dimen/spacing_mid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_mid"
         android:background="@color/white"
         android:orientation="vertical">
 

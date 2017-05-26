@@ -367,6 +367,9 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     @Override
     public void onSeekComplete(MediaPlayer mp) {
         mCurrentPosition = mp.getCurrentPosition();
+        if (mState == PlaybackStateCompat.STATE_PAUSED) {
+            return;
+        }
         if (mState == PlaybackStateCompat.STATE_BUFFERING) {
             registerAudioNoisyReceiver();
             mMediaPlayer.start();
