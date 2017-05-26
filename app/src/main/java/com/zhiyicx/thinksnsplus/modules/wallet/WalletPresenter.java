@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.wallet;
 
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
@@ -101,5 +103,18 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                 });
         addSubscrebe(timerSub);
         addSubscrebe(userInfoSub);
+    }
+
+    /**
+     *
+     * @return  check first look  need show  tip pop
+     */
+    @Override
+    public boolean checkIsNeedTipPop() {
+        boolean isNotFrist = SharePreferenceUtils.getBoolean(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IS_NOT_FIRST_LOOK_WALLET);
+        if (!isNotFrist) {
+            SharePreferenceUtils.saveBoolean(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IS_NOT_FIRST_LOOK_WALLET, true);
+        }
+        return !isNotFrist;
     }
 }

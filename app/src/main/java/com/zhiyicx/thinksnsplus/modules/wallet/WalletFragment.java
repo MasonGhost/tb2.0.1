@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.wallet;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -83,6 +85,19 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (mPresenter.checkIsNeedTipPop()) {
+            getView().post(new Runnable() {
+                @Override
+                public void run() {
+                    showRulePopupWindow();
+                }
+            });
+        }
+    }
+
+    @Override
     protected void setRightClick() {
         super.setRightClick();
         startActivity(new Intent(getActivity(), WithdrawalsDetailActivity.class));
@@ -116,7 +131,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showRulePopupWindow();
+
                     }
                 });
     }

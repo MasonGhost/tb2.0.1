@@ -39,5 +39,11 @@ public interface WalletContract {
          * update user info
          */
         void updateUserInfo();
+
+        /**
+         *
+         * @return  true when first looking wallet page
+         */
+        boolean checkIsNeedTipPop();
     }
 }
