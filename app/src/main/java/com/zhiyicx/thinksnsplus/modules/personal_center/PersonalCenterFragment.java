@@ -58,7 +58,6 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -583,11 +582,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
         String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
         if (!TextUtils.isEmpty(tsHelperUrl)) {
-            Intent intent = new Intent(context, CustomWEBActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, tsHelperUrl);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
+            CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
         } else {
             Intent intent = new Intent(context, PersonalCenterActivity.class);
             Bundle bundle = new Bundle();

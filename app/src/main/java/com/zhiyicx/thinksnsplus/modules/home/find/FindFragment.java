@@ -165,11 +165,7 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_buy:
                 if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    Intent intent = new Intent(getActivity(), CustomWEBActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
                 }else {
                     showLoginPop();
                 }

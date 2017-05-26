@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDetailActivity;
@@ -131,7 +132,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-
+                        CustomWEBActivity.startToWEBActivity(getContext(), "http://www.baidu.com");
                     }
                 });
     }

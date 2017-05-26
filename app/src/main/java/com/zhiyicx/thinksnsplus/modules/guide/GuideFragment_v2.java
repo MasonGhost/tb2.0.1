@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
@@ -13,7 +12,6 @@ import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.utils.BannerImageLoaderUtil;
 import com.zhiyicx.thinksnsplus.widget.TCountTimer;
 
@@ -163,12 +161,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void OnBannerClick(int position) {
-        Intent intent = new Intent(getActivity(), CustomWEBActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, URL_ABOUT_US);
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, "lalalla");
-        intent.putExtras(bundle);
-        startActivityForResult(intent, 0);
+        CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala");
     }
 
     @Override

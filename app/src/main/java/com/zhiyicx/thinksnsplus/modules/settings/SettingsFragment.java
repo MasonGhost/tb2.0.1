@@ -124,7 +124,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        startActivity(new Intent(getActivity(), CustomWEBActivity.class));
+                        CustomWEBActivity.startToWEBActivity(getContext());
                     }
                 });
         // 退出登录

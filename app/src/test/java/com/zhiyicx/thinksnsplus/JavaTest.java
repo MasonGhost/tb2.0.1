@@ -244,27 +244,47 @@ public class JavaTest {
     }
 
     @Test
-    public void rxTimerTest(){
+    public void rxTimerTest() {
         Observable.timer(DEFAULT_LOADING_SHOW_TIME, TimeUnit.SECONDS)
                 .subscribe(new Subscriber<Long>() {
                     @Override
                     public void onCompleted() {
-                        System.out.println("aLong = onCompleted " );
+                        System.out.println("aLong = onCompleted ");
                         Assert.assertTrue(true);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Assert.assertFalse(false);
-                        System.out.println("aLong = onError " );
+                        System.out.println("aLong = onError ");
                     }
 
                     @Override
                     public void onNext(Long aLong) {
-                        Assert.assertTrue(aLong==DEFAULT_LOADING_SHOW_TIME);
+                        Assert.assertTrue(aLong == DEFAULT_LOADING_SHOW_TIME);
                         System.out.println("aLong = " + aLong);
                     }
                 });
+    }
+
+    @Test
+    public void tryCatchTest() {
+        String[] a = {"123", "4569"};
+        String b = null;
+        String c = null;
+        String d = null;
+        try {
+            b = a[0].toString();
+            c = a[1].toString();
+            d = a[5].toString();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
+        Assert.assertTrue(a[1].equals("4569"));
+        Assert.assertTrue(b.equals("123"));
+        Assert.assertTrue(c.equals("4569"));
+        Assert.assertTrue(d == null);
     }
 
 }

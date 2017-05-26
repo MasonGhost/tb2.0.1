@@ -214,11 +214,7 @@ public abstract class BaseChatFragment<P extends IBasePresenter> extends TSFragm
      * 前往ts助手开发
      */
     private void toTSHelper() {
-        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);
+        CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.APP_PATH_SHARE_DEFAULT);
     }
 
     /**
