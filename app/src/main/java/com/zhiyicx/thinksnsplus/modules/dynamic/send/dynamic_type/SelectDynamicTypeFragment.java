@@ -73,8 +73,10 @@ public class SelectDynamicTypeFragment extends TSFragment {
                 SendDynamicActivity.startToSendDynamicActivity(getContext(), sendImageDynamicDataBean);
                 break;
             case R.id.im_close_dynamic:
-                getActivity().finish();
+
                 break;
         }
+        getActivity().finish();
+
     }
 }

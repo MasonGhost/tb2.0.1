@@ -31,6 +31,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
@@ -285,7 +286,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        ArrayList<String> photos = new ArrayList<String>();
+                        ArrayList<String> photos = new ArrayList<>();
                         // 最后一张是占位图
                         for (int i = 0; i < selectedPhotos.size(); i++) {
                             ImageBean imageBean = selectedPhotos.get(i);
@@ -369,7 +370,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public void getPhotoFailure(String errorMsg) {
-
+        ToastUtils.showToast(errorMsg);
     }
 
     @Override
@@ -547,8 +548,17 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     public void onClick(View v) {
                         DeviceUtils.hideSoftKeyboard(getContext(), v);
                         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                            initPhotoPopupWindow();
-                            mPhotoPopupWindow.show();
+                            ArrayList<String> photos = new ArrayList<>();
+                            // 最后一张是占位图
+                            for (int i = 0; i < selectedPhotos.size(); i++) {
+                                ImageBean imageBean = selectedPhotos.get(i);
+                                if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                                    photos.add(imageBean.getImgUrl());
+                                }
+                            }
+                            mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
+//                            initPhotoPopupWindow();
+//                            mPhotoPopupWindow.show();
                         } else {
                             // 预览图片
                             ArrayList<String> photos = new ArrayList<String>();

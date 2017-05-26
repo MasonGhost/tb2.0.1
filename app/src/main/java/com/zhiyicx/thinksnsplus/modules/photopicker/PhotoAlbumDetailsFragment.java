@@ -15,6 +15,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
@@ -47,13 +51,13 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
  * @date 2017/2/6
  * @contact email:450127106@qq.com
  */
-public class PhotoAlbumDetailsFragment extends TSFragment {
+public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelectorImpl.IPhotoBackListener {
     public static final int COMPLETE_REQUEST_CODE = 1000;
     public static final int TO_ALBUM_LIST_REQUEST_CODE = 2000;
     public static final String EXTRA_BACK_HERE = "back_here";// 回到当前图片列表页面，是否停留
     public final static String EXTRA_ORIGIN = "ORIGINAL_PHOTOS";
     public final static String EXTRA_VIEW_INDEX = "view_index";
-    public final static String EXTRA_CAMERA = "camera";
+    public final static String EXTRA_CAMERA = "SHOW_CAMERA";
     private final static String EXTRA_COLUMN = "column";
     public static final String EXTRA_VIEW_ALL_PHOTOS = "view_photos";
     public static final String EXTRA_VIEW_SELECTED_PHOTOS = "view_selected_photos";
@@ -74,10 +78,36 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     //传入的已选照片
     private ArrayList<String> originalPhotos;
     private RequestManager mGlideRequestManager;
+    private PhotoSelectorImpl mPhotoSelector;
     private int column;// 图片列数
     private int selected_directory;// 获取被选中的目录位置
     private boolean canPreview = true;// 是否能够预览
     private int maxCount = DEFAULT_MAX_COUNT;
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        List<String> photos = photoGridAdapter.getSelectedPhotos();
+        if (photos.size() >= 9) {
+            return;
+        }
+        for (ImageBean imageBean : photoList) {
+            photos.add(imageBean.getImgUrl());
+        }
+        mBtComplete.setEnabled(photos.size() > 0);
+        mTvPreview.setEnabled(photos.size() > 0);
+        mBtComplete.setText(getString(R.string.album_selected_count, photos.size(), maxCount));
+        photoGridAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
 
     @Override
     protected int getBodyLayoutId() {
@@ -125,6 +155,13 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
+
         mGlideRequestManager = Glide.with(this);
         directories = getArguments().getParcelableArrayList(ALL_PHOTOS);
         if (directories == null) {
@@ -136,6 +173,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
         maxCount = getArguments().getInt(EXTRA_MAX_COUNT, DEFAULT_MAX_COUNT);
         canPreview = getArguments().getBoolean(EXTRA_PREVIEW_ENABLED);
         LogUtils.i(TAG + " ccanPreview " + canPreview);
+
         // 如果不能预览图片，就隐藏下方的预览和完成按钮
         mLlBottomContainer.setVisibility(canPreview ? View.VISIBLE : View.GONE);
         photoGridAdapter = new PhotoGridAdapter(getActivity(), mGlideRequestManager, directories, originalPhotos, column);
@@ -187,6 +225,12 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 return isEnable;
             }
         });
+        photoGridAdapter.setOnCameraClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPhotoSelector.getPhotoFromCamera(originalPhotos);
+            }
+        });
         // 设置图片 item 的点击事件
         photoGridAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
             @Override
@@ -195,7 +239,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
                 List<String> allPhotos = photoGridAdapter.getCurrentPhotoPaths();
                 ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
                 ArrayList<AnimationRectBean> animationRectBeanArrayList
-                        = new ArrayList<AnimationRectBean>();
+                        = new ArrayList<>();
                 for (int i = 0; i < allPhotos.size(); i++) {
 
                     if (i < layoutManager.findFirstVisibleItemPosition()) {
@@ -287,6 +331,10 @@ public class PhotoAlbumDetailsFragment extends TSFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // 获取图片选择器返回结果
+        if (mPhotoSelector != null) {
+            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }
         if (requestCode == COMPLETE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             boolean stayHere = data.getBooleanExtra(EXTRA_BACK_HERE, false);
             if (stayHere) {

@@ -63,6 +63,15 @@ public class PictureTollFragment extends TSFragment {
 
     private double mRechargeMoney;
 
+    public static PictureTollFragment newInstance(){
+        return new PictureTollFragment();
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.dynamic_send_toll_title);
+    }
+
     @Override
     public void setPresenter(Object presenter) {
 

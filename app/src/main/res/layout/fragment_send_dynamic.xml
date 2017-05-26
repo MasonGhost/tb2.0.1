@@ -68,6 +68,7 @@
             app:rightImage="@mipmap/btn_close"/>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/ll_toll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

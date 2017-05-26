@@ -28,6 +28,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,7 @@ public class PhotoViewFragment extends TSFragment {
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        startActivity(new Intent(getActivity(), PictureTollActivity.class));
     }
 
     @Override

@@ -16,10 +16,6 @@ public class SelectDynamicTypeActivity extends TSActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View v = getWindow().getDecorView();
-        v.getBackground().setAlpha(0);
-
-        //getWindow().setBackgroundDrawable(ConvertUtils.bitmap2Drawable(getResources(), BitmapFactory.decodeResource(getResources(), R.mipmap.npc)));
     }
 
     @Override
