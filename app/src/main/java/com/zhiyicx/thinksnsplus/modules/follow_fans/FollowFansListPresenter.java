@@ -4,7 +4,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -35,8 +34,9 @@ import rx.schedulers.Schedulers;
 @FragmentScoped
 public class FollowFansListPresenter extends AppBasePresenter<FollowFansListContract.Repository,
         FollowFansListContract.View> implements FollowFansListContract.Presenter {
-    private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
+    @Inject
+    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -49,8 +49,6 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
     public FollowFansListPresenter(FollowFansListContract.Repository repository,
                                    FollowFansListContract.View rootView) {
         super(repository, rootView);
-        mFollowFansBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
-                .followFansBeanGreenDao();
     }
 
     @Override

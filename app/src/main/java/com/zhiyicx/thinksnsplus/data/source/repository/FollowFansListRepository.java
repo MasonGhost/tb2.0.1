@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.FollowFansClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
@@ -32,6 +33,8 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     private FollowFansClient mFollowFansClient;
     @Inject
     protected UserInfoRepository mUserInfoRepository;
+    @Inject
+    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public FollowFansListRepository(ServiceManager serviceManager, Application context) {
@@ -106,7 +109,7 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                                     followFansBean.setTargetUserInfo(userInfoBeanSparseArray.get((int) followFansBean.getTargetUserId()));
                                 }
                                 // 保存用户信息
-                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                             } else {
                                 // 用户信息获取失败，是否抛出错误或者异常，还是作为正常数据处理，只是界面上没有用户信息显示，这是一个问题
 

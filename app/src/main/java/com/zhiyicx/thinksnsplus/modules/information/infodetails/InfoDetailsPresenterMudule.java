@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoDetailsRepository;
 
 import dagger.Module;
@@ -29,8 +26,7 @@ public class InfoDetailsPresenterMudule {
     }
 
     @Provides
-    InfoDetailsConstract.Repository provideInfoDetailsRepository(ServiceManager serviceManager,
-                                                                 Application application){
-        return new InfoDetailsRepository(serviceManager,application);
+    InfoDetailsConstract.Repository provideInfoDetailsRepository(InfoDetailsRepository infoDetailsRepository){
+        return infoDetailsRepository;
     }
 }

@@ -1,15 +1,11 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
-
-import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
@@ -24,7 +20,7 @@ import javax.inject.Inject;
 
 public class ChannelInfoBeanGreenDaoImpl extends CommonCacheImpl<ChannelInfoBean> {
     @Inject
-    public ChannelInfoBeanGreenDaoImpl(Context context) {
+    public ChannelInfoBeanGreenDaoImpl(Application context) {
         super(context);
     }
 

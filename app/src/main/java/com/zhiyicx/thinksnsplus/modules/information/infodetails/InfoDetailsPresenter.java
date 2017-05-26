@@ -76,10 +76,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         super(repository, rootView);
     }
 
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
+
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {

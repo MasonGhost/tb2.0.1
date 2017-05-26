@@ -8,7 +8,6 @@ import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
@@ -45,14 +44,14 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     IUploadRepository mIUploadRepository;
     @Inject
     AuthRepository mIAuthRepository;
-    public UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View
             rootView) {
         super(repository, rootView);
-        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
-                .userInfoBeanGreenDao();
+
     }
 
     @Override

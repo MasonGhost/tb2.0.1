@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -55,18 +54,19 @@ import rx.schedulers.Schedulers;
 
 public class UserInfoRepository implements UserInfoContract.Repository {
     private UserInfoClient mUserInfoClient;
-    private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
-    private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-    private DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
-    private Context mContext;
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
+    @Inject
+    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    Application mContext;
 
     @Inject
     public UserInfoRepository(ServiceManager serviceManager, Application application) {
-        this.mContext = application;
         mUserInfoClient = serviceManager.getUserInfoClient();
-        mFollowFansBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().followFansBeanGreenDao();
-        mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
-        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
     }
 
     /**
@@ -340,7 +340,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                 for (DigRankBean digRankBean : listBaseJson.getData()) {
                                                     digRankBean.setDigUserInfo(userInfoBeanSparseArray.get(digRankBean.getUser_id().intValue()));
                                                 }
-                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());
@@ -388,7 +388,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                     digedBean.setDigUserInfo(userInfoBeanSparseArray.get(digedBean.getUser_id().intValue()));
                                                     digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTo_user_id().intValue()));
                                                 }
-                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());
@@ -444,7 +444,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                         commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_to_user_id().intValue()));
                                                     }
                                                 }
-                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());
@@ -486,7 +486,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                         @Override
                                         public BaseJson<List<FlushMessages>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
                                             if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                                AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao().insertOrReplace(userinfobeans.getData());
+                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                             } else {
                                                 listBaseJson.setStatus(userinfobeans.isStatus());
                                                 listBaseJson.setCode(userinfobeans.getCode());

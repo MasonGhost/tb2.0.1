@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
+import android.app.Application;
+
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -27,7 +29,7 @@ public class BackgroundRequestTaskBeanGreenDaoImplTest {
 
     @Before
     public void setUp() throws Exception {
-        mBackgroundTaskBeanGreenDao = new BackgroundRequestTaskBeanGreenDaoImpl(AppApplication.getContext());
+        mBackgroundTaskBeanGreenDao = new BackgroundRequestTaskBeanGreenDaoImpl((Application) AppApplication.getContext());
     }
 
     @After

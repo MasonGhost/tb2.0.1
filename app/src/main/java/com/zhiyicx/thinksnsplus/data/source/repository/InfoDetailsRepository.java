@@ -7,12 +7,12 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoWebBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsConstract;
@@ -29,6 +29,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+
 /**
  * @Author Jliuer
  * @Date 2017/03/24
@@ -38,14 +39,16 @@ import rx.schedulers.Schedulers;
 public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
 
     InfoMainClient mInfoMainClient;
-    protected UserInfoRepository mUserInfoRepository;
-    private Application context;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    Application mContext;
 
     @Inject
-    public InfoDetailsRepository(ServiceManager serviceManager, Application context) {
+    public InfoDetailsRepository(ServiceManager serviceManager) {
         mInfoMainClient = serviceManager.getInfoMainClient();
-        mUserInfoRepository = new UserInfoRepository(serviceManager, context);
-        this.context = context;
     }
 
     @Override
@@ -102,8 +105,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                                             }
 
                                         }
-                                        AppApplication.AppComponentHolder.getAppComponent()
-                                                .userInfoBeanGreenDao().insertOrReplace(userinfobeans
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans
                                                 .getData());
                                     } else {
                                         listBaseJson.setStatus(userinfobeans.isStatus());
@@ -141,7 +143,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                         }
                         backgroundRequestTaskBean.setPath(String.format(ApiConfig
                                 .APP_PATH_INFO_COLLECT_FORMAT, news_id));
-                        BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                                 (backgroundRequestTaskBean);
                     }
                 }, new Action1<Throwable>() {
@@ -174,7 +176,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                         }
                         backgroundRequestTaskBean.setPath(String.format(ApiConfig
                                 .APP_PATH_INFO_DIG_FORMAT, news_id));
-                        BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
+                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                                 (backgroundRequestTaskBean);
                     }
                 }, new Action1<Throwable>() {
@@ -198,7 +200,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                 (BackgroundTaskRequestMethodConfig.SEND_INFO_COMMENT, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_INFO_COMMENT_FORMAT,
                 new_id));
-        BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }
 
@@ -213,7 +215,7 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
                 (BackgroundTaskRequestMethodConfig.DELETE, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig
                 .APP_PATH_INFO_DELETE_COMMENT_FORMAT, news_id, comment_id));
-        BackgroundTaskManager.getInstance(context).addBackgroundRequestTask
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }
 
