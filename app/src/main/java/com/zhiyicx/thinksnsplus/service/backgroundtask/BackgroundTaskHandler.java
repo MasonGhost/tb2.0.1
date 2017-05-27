@@ -186,7 +186,7 @@ public class BackgroundTaskHandler {
         public void run() {
 
             while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
-//                LogUtils.d("---------backTask------- ");
+                LogUtils.d("---------backTask------- ");
                 if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);

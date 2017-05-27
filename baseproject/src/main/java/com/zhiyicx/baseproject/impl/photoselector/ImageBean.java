@@ -12,7 +12,8 @@ import java.io.Serializable;
  * @contact email:450127106@qq.com
  */
 
-public class ImageBean implements Parcelable, Serializable {  //Serializable 用于 DynamicDetailBean中 Convert base64
+public class ImageBean implements Parcelable, Serializable {
+    private static final long serialVersionUID = 7077767228027093637L;  //Serializable 用于 DynamicDetailBean中 Convert base64
 
     /**
      * storage_id : 2
