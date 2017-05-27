@@ -102,6 +102,8 @@ public class PictureTollFragment extends TSFragment {
     @Override
     protected void setRightClick() {
         mRbDaysGroupTollWays.clearCheck();
+        mPayType = 0;
+        mRechargeMoney = 0;
         mRbDaysGroup.clearCheck();
         mEtInput.setText("");
         setConfirmEnable();

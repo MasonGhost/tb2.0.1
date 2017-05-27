@@ -454,11 +454,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             @Override
             public void onClick(View v) {
                 isToll = !isToll;
-                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
                 if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
                     mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                } else {
+                    mCommonAdapter.notifyDataSetChanged();
                 }
-                mCommonAdapter.notifyDataSetChanged();
+                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             }
         });
 
@@ -662,7 +663,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
-                mLLToll.setVisibility(View.GONE);
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
                 mEtDynamicContent.getEtContent().setHint(getString(R.string
                         .dynamic_content_no_pic_hint));
