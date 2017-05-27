@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -348,6 +349,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
+        if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
+            return;
+        }
         List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<AnimationRectBean>();

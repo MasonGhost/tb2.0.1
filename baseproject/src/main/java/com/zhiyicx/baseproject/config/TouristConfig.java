@@ -25,6 +25,10 @@ public class TouristConfig {
      */
     public static final boolean DYNAMIC_DETAIL_CAN_LOOK = false;
     /**
+     * 大图是否可以查看
+     */
+    public static final boolean DYNAMIC_BIG_PHOTO_CAN_LOOK = false;
+    /**
      * 资讯列表是否可以查看
      */
     public static final boolean INFO_LIST_CAN_LOOK = true;
