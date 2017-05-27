@@ -83,6 +83,11 @@ public class PictureTollFragment extends TSFragment {
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.dynamic_send_toll_title);
     }
@@ -115,7 +120,7 @@ public class PictureTollFragment extends TSFragment {
     }
 
     private void initTollMoney() {
-        if (mToll==null)
+        if (mToll == null)
             return;
         if (mToll.getCustom_money() > 0) {
             mEtInput.setText(String.valueOf(mToll.getCustom_money()));
@@ -128,7 +133,7 @@ public class PictureTollFragment extends TSFragment {
     }
 
     private void initTollWays() {
-        if (mToll==null)
+        if (mToll == null)
             return;
         if (mToll.getToll_type() == LOOK_TOLL) {
             mRbDaysGroupTollWays.check(R.id.rb_ways_one);

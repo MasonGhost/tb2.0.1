@@ -554,10 +554,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 final View filterView = holder.getView(R.id.iv_dynamic_img_filter);
                 if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                     // 最后一项作为占位图
+                    paintView.setImageResource(R.mipmap.ico_edit_pen);
+                    filterView.setVisibility(View.GONE);
                     imageView.setImageResource(R.mipmap.img_edit_photo_frame);
                 } else {
 //                    paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
-                    LogUtils.e("imageBean.getToll_type::" + imageBean.getToll_type());
+                    LogUtils.e("imageBean.getToll_monye::" + imageBean.getToll_monye());
                     if (imageBean.getToll_type() > 0) {
                         filterView.setVisibility(View.VISIBLE);
                         paintView.setImageResource(R.mipmap.ico_lock);

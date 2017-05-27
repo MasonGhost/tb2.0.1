@@ -239,9 +239,10 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
             // 从本地相册获取图片
             if (requestCode == 1000) {
                 photosList.clear();// 清空之前的图片，重新装载
-                SparseArray<Toll> tolls = new SparseArray<>();
+                SparseArray<Toll> tolls;
                 try {
                     tolls = data.getBundleExtra(TOLL).getSparseParcelableArray(TOLL);
+                    mTolls.clear();
                     for (int i = 0; i < tolls.size(); i++) {
                         mTolls.put(tolls.keyAt(i), tolls.valueAt(i));
                     }
@@ -260,7 +261,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 } else {
                     for (int i = 0; i < photos.size(); i++) {
                         ImageBean imageBean = new ImageBean();
-                        Toll toll = mTolls.get(i);
+                        Toll toll = mTolls.valueAt(i);
                         if (toll != null) {
                             imageBean.setToll_type(toll.toll_type);
                             imageBean.setToll_monye(toll.toll_money);

@@ -95,7 +95,7 @@ public class PhotoViewFragment extends TSFragment {
     @Override
     protected String setRightTitle() {
         if (!hasRightTitle)
-            return "";
+            super.setRightTitle();
         mToolbarRight.setTextColor(getColor(R.color.themeColor));
         return getString(R.string.toll_setting);
     }
@@ -114,7 +114,8 @@ public class PhotoViewFragment extends TSFragment {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             int toll_type = data.getIntExtra(TOLL_TYPE, 0);
             float toll_money = data.getFloatExtra(TOLL_MONEY, 0f);
-            tolls.put(mViewPager.getCurrentItem(), new Toll(toll_type, toll_money));
+            oldToll= new Toll(toll_type, toll_money);
+            tolls.put(mViewPager.getCurrentItem(),oldToll);
         }
     }
 
@@ -125,7 +126,10 @@ public class PhotoViewFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-        oldToll = tolls.get(currentItem);
+        if (tolls.size() != 0) {
+            oldToll = tolls.valueAt(currentItem);
+        }
+
         mViewPager.setBackgroundColor(Color.argb(0, 255, 255, 255));
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(currentItem);
@@ -139,7 +143,12 @@ public class PhotoViewFragment extends TSFragment {
 
             @Override
             public void onPageSelected(int position) {
-                oldToll = tolls.get(position);
+                try {// 越界处理
+                    oldToll = tolls.valueAt(position);
+                } catch (Exception e) {
+                    oldToll = null;
+                }
+
                 hasAnim = currentItem == position;
                 // 是否包含了已经选中的图片
                 mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(position)));
@@ -172,10 +181,12 @@ public class PhotoViewFragment extends TSFragment {
                     // 当前选择该图片，如果还没有添加过，就进行添加
                     if (!seletedPaths.contains(path)) {
                         seletedPaths.add(path);
+                        tolls.put(mViewPager.getCurrentItem(), oldToll);
                     }
                 } else {
                     // 当前取消选择改图片，直接移除
                     seletedPaths.remove(path);
+                    tolls.remove(mViewPager.getCurrentItem());
                 }
                 // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
                 mBtComplete.setEnabled(seletedPaths.size() > 0);
