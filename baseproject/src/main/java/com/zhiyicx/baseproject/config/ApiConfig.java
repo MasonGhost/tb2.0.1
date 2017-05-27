@@ -297,5 +297,12 @@ public class ApiConfig {
     /**
      * 资讯
      */
-    public static final String APP_PATH_INFO_TYPE_V2 = "api/" + API_VERSION_2 + "/news/cates";// 资讯分类列表
+    // 资讯分类列表
+    public static final String APP_PATH_INFO_TYPE_V2 = "api/" + API_VERSION_2 + "/news/cates";
+
+    /**
+     * 钱包
+     */
+    // 钱包信息
+    public static final String APP_PAHT_WALLET_CONFIG = "api/" + API_VERSION_2 + "/wallet";
 }

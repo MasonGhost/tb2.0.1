@@ -9,7 +9,6 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
@@ -170,7 +169,6 @@ public class BackgroundTaskHandler {
             return;
         }
         List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
-        LogUtils.d("-------------------cacheDatas = " + cacheDatas.toString());
         if (cacheDatas != null) {
             for (BackgroundRequestTaskBean tmp : cacheDatas) {
                 mTaskBeanConcurrentLinkedQueue.add(tmp);
@@ -186,7 +184,7 @@ public class BackgroundTaskHandler {
         public void run() {
 
             while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
-                LogUtils.d("---------backTask------- ");
+//                LogUtils.d("---------backTask------- ");
                 if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                     BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                     handleTask(backgroundRequestTaskBean);

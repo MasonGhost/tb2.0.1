@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
 
 import javax.inject.Singleton;
 
@@ -149,6 +150,12 @@ public class ServiceModule {
     @Provides
     CommonCommentClient provideCommonCommentClient(Retrofit retrofit) {
         return retrofit.create(CommonCommentClient.class);
+    }
+
+    @Singleton
+    @Provides
+    WalletClient provideWalletClient(Retrofit retrofit) {
+        return retrofit.create(WalletClient.class);
     }
 
 }
