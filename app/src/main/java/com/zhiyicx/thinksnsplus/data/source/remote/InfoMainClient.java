@@ -27,6 +27,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_SEARCH;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LOGIN;
 
 /**
@@ -38,12 +39,13 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LOGIN;
 public interface InfoMainClient {
 
     // 获取资讯分类
-    @GET(APP_PATH_INFO_TYPE)
-    Observable<BaseJson<InfoTypeBean>> getInfoType();
+    @GET(APP_PATH_INFO_TYPE_V2)
+    Observable<InfoTypeBean> getInfoType();
+//    Observable<BaseJson<InfoTypeBean>> getInfoType();
 
     // 获取资讯分类
     @GET(APP_PATH_INFO_DETAILS)
-    Observable<BaseJson<InfoWebBean>> getInfoWebContent(@Path("news_id")String news_id);
+    Observable<BaseJson<InfoWebBean>> getInfoWebContent(@Path("news_id") String news_id);
 
     // 获取某类资讯列表
     @GET(APP_PATH_INFO_LIST)
@@ -79,8 +81,8 @@ public interface InfoMainClient {
 
     @GET(APP_PATH_INFO_SEARCH)
     Observable<BaseJson<List<InfoListDataBean>>> searchInfoList(@Query("key") String key,
-                                                                     @Query("max_id") Long max_id,
-                                                                     @Query("limit") Long limit);
+                                                                @Query("max_id") Long max_id,
+                                                                @Query("limit") Long limit);
 
     /**
      * 对一条资讯或一条资讯评论进行评论

@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -12,6 +15,7 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 
@@ -23,7 +27,12 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_MONEY;
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
+import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL;
+import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment.OLDTOLL;
 
 /**
  * @Author Jliuer
@@ -63,8 +72,19 @@ public class PictureTollFragment extends TSFragment {
 
     private double mRechargeMoney;
 
-    public static PictureTollFragment newInstance(){
-        return new PictureTollFragment();
+    private Toll mToll;
+
+    private int[] tollMoney = new int[]{R.id.rb_one, R.id.rb_two, R.id.rb_three};
+
+    public static PictureTollFragment newInstance(Bundle bundle) {
+        PictureTollFragment fragment = new PictureTollFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
     }
 
     @Override
@@ -73,13 +93,9 @@ public class PictureTollFragment extends TSFragment {
     }
 
     @Override
-    public void setPresenter(Object presenter) {
-
-    }
-
-    @Override
     protected void initView(View rootView) {
         mTvChooseTip.setText(R.string.dynamic_send_toll_count);
+        mToll = getArguments().getParcelable(OLDTOLL);
         initListener();
     }
 
@@ -93,9 +109,37 @@ public class PictureTollFragment extends TSFragment {
     }
 
     private void initSelectDays(List<Float> mSelectDays) {
-        mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(0)));
-        mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(1)));
-        mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(2)));
+        mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money),
+                mSelectDays.get(0)));
+        mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money),
+                mSelectDays.get(1)));
+        mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money),
+                mSelectDays.get(2)));
+        initTollWays();
+        initTollMoney();
+    }
+
+    private void initTollMoney() {
+        if (mToll == null)
+            return;
+        if (mToll.getCustom_money() > 0) {
+            mEtInput.setText(String.valueOf(mToll.getCustom_money()));
+        } else {
+            int position = mSelectDays.indexOf(mToll.getToll_money());
+            if (position != -1) {
+                mRbDaysGroup.check(tollMoney[position]);
+            }
+        }
+    }
+
+    private void initTollWays() {
+        if (mToll == null)
+            return;
+        if (mToll.getToll_type() == LOOK_TOLL) {
+            mRbDaysGroupTollWays.check(R.id.rb_ways_one);
+        } else if (mToll.getToll_type() == DOWNLOAD_TOLL) {
+            mRbDaysGroupTollWays.check(R.id.rb_ways_two);
+        }
     }
 
     private void initListener() {
@@ -106,7 +150,11 @@ public class PictureTollFragment extends TSFragment {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackSuccessMessage("mBtReCharge");
+                        Intent intent = new Intent();
+                        intent.putExtra(TOLL_TYPE, mPayType);
+                        intent.putExtra(TOLL_MONEY, Double.valueOf(mRechargeMoney).floatValue());
+                        getActivity().setResult(Activity.RESULT_OK, intent);
+                        getActivity().finish();
                     }
                 });
         //
@@ -124,9 +172,10 @@ public class PictureTollFragment extends TSFragment {
                         } else {
                             mRbDaysGroup.clearCheck();
                             try {
-                                mRechargeMoney = Double.parseDouble(textViewAfterTextChangeEvent.editable().toString());
+                                mRechargeMoney = Double.parseDouble(textViewAfterTextChangeEvent
+                                        .editable().toString());
                             } catch (NumberFormatException ne) {
-
+                                mRechargeMoney = 0;
                             }
                         }
                     }
@@ -155,6 +204,22 @@ public class PictureTollFragment extends TSFragment {
                                 break;
                         }
                         setCustomMoneyDefault();
+                    }
+                });
+
+        RxRadioGroup.checkedChanges(mRbDaysGroupTollWays)
+                .compose(this.<Integer>bindToLifecycle())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer checkedId) {
+                        switch (checkedId) {
+                            case R.id.rb_ways_one:
+                                mPayType = LOOK_TOLL;
+                                break;
+                            case R.id.rb_ways_two:
+                                mPayType = DOWNLOAD_TOLL;
+                                break;
+                        }
                     }
                 });
     }

@@ -68,6 +68,11 @@ public class PhotoViewPictureFragment extends TSFragment {
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }

@@ -44,7 +44,7 @@ public interface InfoMainContract {
 
 
     interface Reppsitory {
-        Observable<BaseJson<InfoTypeBean>> getInfoType();
+        Observable<InfoTypeBean> getInfoType();
 
         /**
          * @param cate_id 订阅分类 -1 推荐 -2 热门 其他对应资讯分类id

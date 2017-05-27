@@ -293,4 +293,9 @@ public class ApiConfig {
     public static final String APP_PATH_GET_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users/{user_id}";
     // 批量获取指定用户
     public static final String APP_PATH_GET_BATCH_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users";
+
+    /**
+     * 资讯
+     */
+    public static final String APP_PATH_INFO_TYPE_V2 = "api/" + API_VERSION_2 + "/news/cates";// 资讯分类列表
 }

@@ -14,7 +14,7 @@
         android:background="@color/white"
         />
 
-    <include layout="@layout/include_horizontal_divider"></include>
+    <include layout="@layout/include_horizontal_divider"/>
 
     <RelativeLayout
         android:id="@+id/rl_bottom_container"

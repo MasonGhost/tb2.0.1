@@ -38,9 +38,6 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reppsit
         , InfoMainContract.InfoListView> implements InfoMainContract.InfoListPresenter {
 
     @Inject
-    InfoMainRepository mInfoMainRepository;
-
-    @Inject
     InfoListBeanGreenDaoImpl mInfoListBeanGreenDao;
 
     @Inject
@@ -55,16 +52,12 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reppsit
         super(repository, rootInfoListView);
     }
 
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
         final long type = Long.parseLong(typeString);
-        Subscription subscription = mInfoMainRepository.getInfoList(mRootView.getInfoType()
+        Subscription subscription = mRepository.getInfoList(mRootView.getInfoType()
                 , maxId, mRootView.getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

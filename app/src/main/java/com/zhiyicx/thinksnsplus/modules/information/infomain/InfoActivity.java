@@ -17,7 +17,6 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoConta
  */
 public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContainerFragment> {
 
-
     @Override
     protected InfoContainerFragment getFragment() {
         if (mContanierFragment == null) {
