@@ -28,6 +28,22 @@ public class ImageBean implements Parcelable, Serializable {
     private double height;
     private int part;// 图片压缩比例
     private String imgMimeType;// 图片类型
+    private Toll toll;
+
+    public Toll getToll() {
+        return toll;
+    }
+
+    public void setToll(Toll toll) {
+        this.toll = toll;
+        if (toll == null) {
+            setToll_type(0);
+            setToll_monye(0);
+            return;
+        }
+        setToll_type(toll.toll_type);
+        setToll_monye(toll.toll_money);
+    }
 
     public int getToll_type() {
         return toll_type;
@@ -128,6 +144,7 @@ public class ImageBean implements Parcelable, Serializable {
         dest.writeDouble(this.height);
         dest.writeInt(this.part);
         dest.writeString(this.imgMimeType);
+        dest.writeParcelable(this.toll, flags);
     }
 
     protected ImageBean(Parcel in) {
@@ -139,6 +156,7 @@ public class ImageBean implements Parcelable, Serializable {
         this.height = in.readDouble();
         this.part = in.readInt();
         this.imgMimeType = in.readString();
+        this.toll = in.readParcelable(Toll.class.getClassLoader());
     }
 
     public static final Creator<ImageBean> CREATOR = new Creator<ImageBean>() {

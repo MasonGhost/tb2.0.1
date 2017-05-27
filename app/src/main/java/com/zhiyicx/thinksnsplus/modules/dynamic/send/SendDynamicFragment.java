@@ -22,10 +22,10 @@ import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
-import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -48,7 +48,6 @@ import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -455,11 +454,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             @Override
             public void onClick(View v) {
                 isToll = !isToll;
-                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
                 if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
                     mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                } else {
+                    mCommonAdapter.notifyDataSetChanged();
                 }
-
+                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             }
         });
 
@@ -558,7 +558,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     filterView.setVisibility(View.GONE);
                     imageView.setImageResource(R.mipmap.img_edit_photo_frame);
                 } else {
-//                    paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                    paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                    filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                    if (!isToll) {
+                        imageBean.setToll(null);
+                    }
                     LogUtils.e("imageBean.getToll_monye::" + imageBean.getToll_monye());
                     if (imageBean.getToll_type() > 0) {
                         filterView.setVisibility(View.VISIBLE);
@@ -625,8 +629,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                 }
                             }
                             PhotoViewActivity.startToPhotoView(SendDynamicFragment.this,
-                                    photos,photos,animationRectBeanArrayList, MAX_PHOTOS,
-                                    position, isToll,mPhotoSelector.getTolls());
+                                    photos, photos, animationRectBeanArrayList, MAX_PHOTOS,
+                                    position, isToll, selectedPhotos);
                         }
                     }
                 });
@@ -659,7 +663,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
-                mLLToll.setVisibility(View.GONE);
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
                 mEtDynamicContent.getEtContent().setHint(getString(R.string
                         .dynamic_content_no_pic_hint));

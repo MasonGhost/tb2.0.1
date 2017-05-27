@@ -128,6 +128,7 @@
     <string name="dynamic_send_toll_way">选择图片收费方式</string>
     <string name="dynamic_send_toll_count">选择图片收费金额</string>
     <string name="dynamic_send_toll_title">设置图片收费</string>
+    <string name="dynamic_send_toll_reset">重置</string>
     <string name="dynamic_send_toll_words_count">选择文字收费金额</string>
     <string name="dynamic_send_toll_money">自定义金额</string>
     <string name="dynamic_send_toll_look">查看收费</string>

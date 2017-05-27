@@ -15,6 +15,7 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -93,9 +94,30 @@ public class PictureTollFragment extends TSFragment {
     }
 
     @Override
+    protected String setRightTitle() {
+        mToolbarRight.setTextColor(getColor(R.color.themeColor));
+        return getString(R.string.dynamic_send_toll_reset);
+    }
+
+    @Override
+    protected void setRightClick() {
+        mRbDaysGroupTollWays.clearCheck();
+        mPayType = 0;
+        mRechargeMoney = 0;
+        mRbDaysGroup.clearCheck();
+        mEtInput.setText("");
+        setConfirmEnable();
+    }
+
+    @Override
     protected void initView(View rootView) {
         mTvChooseTip.setText(R.string.dynamic_send_toll_count);
-        mToll = getArguments().getParcelable(OLDTOLL);
+        try {// 第一次进入时没有值
+            ImageBean imageBean = getArguments().getParcelable(OLDTOLL);
+            mToll = imageBean.getToll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         initListener();
     }
 
@@ -142,6 +164,23 @@ public class PictureTollFragment extends TSFragment {
         }
     }
 
+    @Override
+    protected void setLeftClick() {
+        back();
+    }
+
+    public void onBackPressed() {
+        back();
+    }
+
+    private void back() {
+        Intent intent = new Intent();
+        intent.putExtra(TOLL_TYPE, mPayType);
+        intent.putExtra(TOLL_MONEY, Double.valueOf(mRechargeMoney).floatValue());
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
+
     private void initListener() {
         // 确认
         RxView.clicks(mBtTop)
@@ -150,11 +189,7 @@ public class PictureTollFragment extends TSFragment {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        Intent intent = new Intent();
-                        intent.putExtra(TOLL_TYPE, mPayType);
-                        intent.putExtra(TOLL_MONEY, Double.valueOf(mRechargeMoney).floatValue());
-                        getActivity().setResult(Activity.RESULT_OK, intent);
-                        getActivity().finish();
+                        back();
                     }
                 });
         //
@@ -178,6 +213,7 @@ public class PictureTollFragment extends TSFragment {
                                 mRechargeMoney = 0;
                             }
                         }
+                        setConfirmEnable();
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -203,6 +239,7 @@ public class PictureTollFragment extends TSFragment {
                                 mRechargeMoney = mSelectDays.get(2);
                                 break;
                         }
+                        setConfirmEnable();
                         setCustomMoneyDefault();
                     }
                 });
@@ -220,6 +257,7 @@ public class PictureTollFragment extends TSFragment {
                                 mPayType = DOWNLOAD_TOLL;
                                 break;
                         }
+                        setConfirmEnable();
                     }
                 });
     }
@@ -239,5 +277,9 @@ public class PictureTollFragment extends TSFragment {
     @OnClick(R.id.bt_top)
     public void onViewClicked() {
 
+    }
+
+    private void setConfirmEnable() {
+        mBtTop.setEnabled(mPayType > 0 && mRechargeMoney > 0);
     }
 }

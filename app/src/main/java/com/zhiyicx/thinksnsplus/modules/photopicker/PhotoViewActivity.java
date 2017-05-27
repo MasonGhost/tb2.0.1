@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 
@@ -56,11 +57,11 @@ public class PhotoViewActivity extends TSActivity {
         List<String> selectedPhotos = bundle.getStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS);
         int index = bundle.getInt(EXTRA_VIEW_INDEX);
         int maxCount = bundle.getInt(EXTRA_MAX_COUNT);
-        SparseArray<Toll> tolls=bundle.getSparseParcelableArray(OLDTOLL);
+        ArrayList<ImageBean> tolls = bundle.getParcelableArrayList(OLDTOLL);
         boolean isToll = bundle.getBoolean(RIGHTTITLE, false);
         ArrayList<AnimationRectBean> animationRectBeen = bundle.getParcelableArrayList("rect");
         return PhotoViewFragment.newInstance(selectedPhotos, allPhotos, animationRectBeen, index,
-                maxCount, isToll,tolls);
+                maxCount, isToll, tolls);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class PhotoViewActivity extends TSActivity {
     public static void startToPhotoView(Fragment fragment, ArrayList<String> allPhotos,
                                         ArrayList<String> selectedPhoto
             , ArrayList<AnimationRectBean> animationRectBeanArrayList, int maxCount,
-                                        int currentPosition, boolean isToll, SparseArray<Toll> tolls) {
+                                        int currentPosition, boolean isToll, List<ImageBean> selectedPhotos) {
         Intent it = new Intent(fragment.getContext(), PhotoViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(EXTRA_VIEW_INDEX, currentPosition);
@@ -93,7 +94,9 @@ public class PhotoViewActivity extends TSActivity {
         bundle.putStringArrayList(EXTRA_VIEW_SELECTED_PHOTOS, selectedPhoto);
         bundle.putParcelableArrayList("rect", animationRectBeanArrayList);
         bundle.putInt(EXTRA_MAX_COUNT, maxCount);
-        bundle.putSparseParcelableArray(OLDTOLL, tolls);
+        ArrayList<ImageBean> datas = new ArrayList<>();
+        datas.addAll(selectedPhotos);
+        bundle.putParcelableArrayList(OLDTOLL, datas);
         it.putExtras(bundle);
         fragment.startActivityForResult(it, COMPLETE_REQUEST_CODE);
     }
