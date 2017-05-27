@@ -15,6 +15,7 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -95,7 +96,12 @@ public class PictureTollFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         mTvChooseTip.setText(R.string.dynamic_send_toll_count);
-        mToll = getArguments().getParcelable(OLDTOLL);
+        try {
+            ImageBean imageBean = getArguments().getParcelable(OLDTOLL);
+            mToll = imageBean.getToll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         initListener();
     }
 

@@ -68,7 +68,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private int maxCount;// 可选的最大图片数量
     private ArrayList<ImageBean> photosList;// 存储已选择图片
     private ActionPopupWindow mActionPopupWindow;
-    private SparseArray<Toll> mTolls = new SparseArray<>();
+    private ArrayList<ImageBean> mTolls = new ArrayList<>();
 
     public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, BaseFragment mFragment, int
             cropShape) {
@@ -239,13 +239,11 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
             // 从本地相册获取图片
             if (requestCode == 1000) {
                 photosList.clear();// 清空之前的图片，重新装载
-                SparseArray<Toll> tolls;
+                ArrayList<ImageBean> tolls;
                 try {
-                    tolls = data.getBundleExtra(TOLL).getSparseParcelableArray(TOLL);
+                    tolls = data.getBundleExtra(TOLL).getParcelableArrayList(TOLL);
                     mTolls.clear();
-                    for (int i = 0; i < tolls.size(); i++) {
-                        mTolls.put(tolls.keyAt(i), tolls.valueAt(i));
-                    }
+                    mTolls.addAll(tolls);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -261,12 +259,12 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 } else {
                     for (int i = 0; i < photos.size(); i++) {
                         ImageBean imageBean = new ImageBean();
-                        Toll toll = mTolls.valueAt(i);
-                        if (toll != null) {
-                            imageBean.setToll_type(toll.toll_type);
-                            imageBean.setToll_monye(toll.toll_money);
-                        }
                         imageBean.setImgUrl(photos.get(i));
+                        try {
+                            imageBean.setToll(mTolls.get(i).getToll());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         photosList.add(imageBean);
                     }
 //                    for (String imgUrl : photos) {
@@ -301,10 +299,6 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         void getPhotoSuccess(List<ImageBean> photoList);
 
         void getPhotoFailure(String errorMsg);
-    }
-
-    public SparseArray<Toll> getTolls() {
-        return mTolls;
     }
 
     /**
