@@ -274,6 +274,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
+
+        if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
+            return;
+        }
+
         List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();

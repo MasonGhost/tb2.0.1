@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.text.TextUtils;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -174,8 +173,7 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public boolean isLogin() {
         return !isTourist()
-                && getAuthBean() != null
-                && (TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve()) || getIMConfig() != null);
+                && getAuthBean() != null;
     }
 
     /**

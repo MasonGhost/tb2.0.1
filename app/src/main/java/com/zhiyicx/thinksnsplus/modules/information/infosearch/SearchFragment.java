@@ -9,19 +9,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -30,14 +26,12 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -46,7 +40,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Description
  */
 public class SearchFragment extends TSListFragment<SearchContract.Presenter, InfoListDataBean>
-        implements SearchContract.View{
+        implements SearchContract.View {
 
     @BindView(R.id.fragment_info_search_back)
     ImageView mFragmentInfoSearchBack;
@@ -62,6 +56,11 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_info_search;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override

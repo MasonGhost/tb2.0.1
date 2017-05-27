@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
@@ -230,7 +231,6 @@ public class DynamicDetailHeader {
      * 设置图片点击事件
      */
     private void setImageClickListener(final List<ImageBean> photoList) {
-
         final ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<AnimationRectBean>();
         for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
@@ -119,6 +120,10 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
 
     @Override
     protected void setRightClick() {
+
+        if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
+            return;
+        }
         startActivity(new Intent(getActivity(), SearchActivity.class));
     }
 

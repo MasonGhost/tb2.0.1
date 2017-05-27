@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
 import javax.inject.Inject;
@@ -24,7 +23,7 @@ import rx.schedulers.Schedulers;
  * @Description
  */
 @FragmentScoped
-public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Reppsitory
+public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Reppsitory
         , InfoMainContract.InfoContainerView> implements InfoMainContract.InfoContainerPresenter {
 
     @Inject
