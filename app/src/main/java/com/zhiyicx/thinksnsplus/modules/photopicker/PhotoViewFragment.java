@@ -115,7 +115,8 @@ public class PhotoViewFragment extends TSFragment {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             int toll_type = data.getIntExtra(TOLL_TYPE, 0);
             float toll_money = data.getFloatExtra(TOLL_MONEY, 0f);
-            mImageBean.setToll(new Toll(toll_type, toll_money));
+            Toll toll = toll_money > 0 ? new Toll(toll_type, toll_money) : null;
+            mImageBean.setToll(toll);
         }
     }
 

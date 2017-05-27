@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll;
 
-import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
@@ -9,12 +8,18 @@ import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewFragment.OLD
 public class PictureTollActivity extends TSActivity {
 
     @Override
-    protected Fragment getFragment() {
+    protected PictureTollFragment getFragment() {
         return PictureTollFragment.newInstance(getIntent().getBundleExtra(OLDTOLL));
     }
 
     @Override
     protected void componentInject() {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        PictureTollFragment fragment = (PictureTollFragment) mContanierFragment;
+        fragment.onBackPressed();
     }
 }

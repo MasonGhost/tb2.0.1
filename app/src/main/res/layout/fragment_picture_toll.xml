@@ -104,6 +104,7 @@
     </LinearLayout>
 
     <TextView
+        android:enabled="false"
         android:id="@+id/bt_top"
         style="@style/style_login_button"
         android:layout_marginTop="@dimen/button_login_margin_top"
