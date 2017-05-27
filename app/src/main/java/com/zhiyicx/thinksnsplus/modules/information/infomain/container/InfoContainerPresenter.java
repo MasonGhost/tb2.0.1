@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
@@ -26,7 +27,7 @@ import rx.schedulers.Schedulers;
  * @Description
  */
 @FragmentScoped
-public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Reppsitory
+public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Reppsitory
         , InfoMainContract.InfoContainerView> implements InfoMainContract.InfoContainerPresenter {
 
     @Inject
@@ -39,14 +40,6 @@ public class InfoContainerPresenter extends BasePresenter<InfoMainContract.Repps
     public InfoContainerPresenter(InfoMainContract.Reppsitory repository,
                                   InfoMainContract.InfoContainerView rootContainerView) {
         super(repository, rootContainerView);
-    }
-
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
-
-    public InfoContainerPresenter() {
     }
 
     @Override

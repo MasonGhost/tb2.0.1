@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
@@ -121,6 +122,10 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @Override
     protected void setRightClick() {
+
+        if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
+            return;
+        }
         startActivity(new Intent(getActivity(), SearchActivity.class));
     }
 

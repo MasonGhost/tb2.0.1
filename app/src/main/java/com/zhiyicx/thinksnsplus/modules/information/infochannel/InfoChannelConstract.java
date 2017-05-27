@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 
@@ -19,7 +19,7 @@ public interface InfoChannelConstract {
 
     }
 
-    interface Presenter extends IBasePresenter{
+    interface Presenter extends IBaseTouristPresenter{
         void doSubscribe(String follows);
         void handleSubscribe(String follows);
         void updateLocalInfoType(InfoTypeBean infoTypeBean);
