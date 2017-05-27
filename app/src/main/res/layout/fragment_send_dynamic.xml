@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:overScrollMode="never">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sl_send_dynamic"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -64,16 +66,17 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
             android:paddingLeft="@dimen/spacing_normal"
+            android:visibility="gone"
             app:leftText="@string/dynamic_send_toll"
             app:rightImage="@mipmap/btn_close"/>
 
         <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/ll_toll"
+            android:id="@+id/send_dynamic_ll_toll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <include
                 layout="@layout/view_choose_item"/>
@@ -123,10 +126,7 @@
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:text="@string/dynamic_send_toll_notes"
                 android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_content_comment"
-                />
+                android:textSize="@dimen/size_content_comment"/>
         </LinearLayout>
-
-
     </LinearLayout>
 </ScrollView>

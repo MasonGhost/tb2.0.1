@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -75,7 +77,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     UserInfoInroduceInputView mEtDynamicContent;
     @BindView(R.id.tv_toll)
     CombinationButton mTvToll;
-    @BindView(R.id.ll_toll)
+    @BindView(R.id.send_dynamic_ll_toll)
     LinearLayout mLLToll;
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
@@ -89,6 +91,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     RadioGroup mRbDaysGroup;
     @BindView(R.id.et_input)
     EditText mEtInput;
+
+    @BindView(R.id.sl_send_dynamic)
+    ScrollView sl_send_dynamic;
 
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
@@ -462,7 +467,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             }
         });
-
     }
 
     /**
