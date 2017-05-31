@@ -20,6 +20,8 @@ import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDetailActivity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -115,7 +117,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                      mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE);
+                        mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE);
                     }
                 });
         // 提现
@@ -191,6 +193,11 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
      */
     @Override
     public void walletConfigCallBack(WalletConfigBean walletConfigBean, int tag) {
+        List<Integer> labes = new ArrayList<>();
+        labes.add(10);
+        labes.add(100);
+        labes.add(1000);
+        walletConfigBean.setLabels(labes);
         Bundle bundle = new Bundle();
         switch (tag) {
             case WalletPresenter.TAG_RECHARGE:
