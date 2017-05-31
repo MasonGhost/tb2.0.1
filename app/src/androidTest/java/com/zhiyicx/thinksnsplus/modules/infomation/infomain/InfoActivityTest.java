@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.infomation.infomain;
 import android.support.test.rule.ActivityTestRule;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
@@ -42,7 +42,7 @@ public class InfoActivityTest extends AcitivityTest {
         mInfoMainClient.getInfoType()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<InfoTypeBean>() {
+                .subscribe(new BaseSubscribeForV2<InfoTypeBean>() {
                     @Override
                     protected void onSuccess(InfoTypeBean data) {
 
