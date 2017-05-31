@@ -22,12 +22,10 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import retrofit2.http.HEAD;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -147,6 +145,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
+                        DeviceUtils.hideSoftKeyboard(getContext(), mBtRechargeStyle);
                         initPayStylePop();
                     }
                 });
@@ -166,6 +165,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                     @Override
                     public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
                         if (TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
+                            mRechargeMoney = 0;
+                            configSureButton();
                             return;
                         }
 
@@ -182,6 +183,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
                             }
                         }
+                        configSureButton();
                     }
                 }, new Action1<Throwable>() {
                     @Override
