@@ -75,7 +75,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     UserInfoInroduceInputView mEtDynamicContent;
     @BindView(R.id.tv_toll)
     CombinationButton mTvToll;
-    @BindView(R.id.ll_toll)
+    @BindView(R.id.send_dynamic_ll_toll)
     LinearLayout mLLToll;
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
