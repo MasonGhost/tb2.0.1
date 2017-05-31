@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -55,6 +56,10 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     public void sendDynamic(DynamicBean dynamicBean) {
         if (dynamicBean.getFeed().getStorages() == null) { // 当没有图片的时候，给一个占位数组
             dynamicBean.getFeed().setStorages(new ArrayList<ImageBean>());
+        }
+        if (mRootView.hasTollVerify()){
+            mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
+            return;
         }
         SendDynamicDataBean sendDynamicDataBean = mRootView.getDynamicSendData();
         int dynamicBelong = sendDynamicDataBean.getDynamicBelong();

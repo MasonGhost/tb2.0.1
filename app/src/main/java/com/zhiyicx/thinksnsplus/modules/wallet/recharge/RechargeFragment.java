@@ -22,10 +22,12 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import retrofit2.http.HEAD;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -61,6 +63,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     private ActionPopupWindow mPayStylePopupWindow;// pay type choose pop
     private ActionPopupWindow mRechargeInstructionsPopupWindow;// recharge instruction pop
 
+
     private WalletConfigBean mWalletConfigBean; // wallet config info
 
     private int mPayType;     // type for recharge
@@ -92,7 +95,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-        mTvChooseTip.setText(R.string.dynamic_send_toll_count);
+        mTvChooseTip.setText(R.string.choose_recharge_money);
         initListener();
 
     }
@@ -174,6 +177,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                             mRbDaysGroup.clearCheck();
                             try {
                                 mRechargeMoney = Double.parseDouble(textViewAfterTextChangeEvent.editable().toString());
+                                configSureButton();
                             } catch (NumberFormatException ne) {
 
                             }
@@ -203,6 +207,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                                 mRechargeMoney = mSelectDays.get(2);
                                 break;
                         }
+                        configSureButton();
                         setCustomMoneyDefault();
                     }
                 });
@@ -214,6 +219,10 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
      */
     private void setCustomMoneyDefault() {
         mEtInput.setText("");
+    }
+
+    private void configSureButton() {
+        mBtTop.setEnabled(mRechargeMoney > 0 && !TextUtils.isEmpty(mBtRechargeStyle.getRightText()));
     }
 
     /**
@@ -238,6 +247,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                         mPayType = PayType.ALIPAY.value;
                         mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.alipay)));
                         mPayStylePopupWindow.hide();
+                        configSureButton();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
@@ -246,6 +256,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                         mPayType = PayType.WX.value;
                         mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
                         mPayStylePopupWindow.hide();
+                        configSureButton();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

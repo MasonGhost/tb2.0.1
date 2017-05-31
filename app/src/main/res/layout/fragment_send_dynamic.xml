@@ -19,6 +19,7 @@
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
             android:id="@+id/et_dynamic_title"
             style="@style/style_edit_cursor"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_normal"
@@ -30,6 +31,7 @@
             app:showLimitSize="@integer/dynamic_title_input_size"/>
 
         <include
+            android:visibility="gone"
             layout="@layout/include_horizontal_divider_light"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"

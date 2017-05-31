@@ -135,6 +135,7 @@
     <string name="dynamic_send_toll_download">下载收费</string>
     <string name="dynamic_send_toll_notes">注：超过50字部分内容收费</string>
     <string name="dynamic_send_toll_select_money">¥%1$.2f</string>
+    <string name="dynamic_send_toll_toll_verify">应配置至少一张图片费用</string>
 
 
     <!--动态详情-->
@@ -202,7 +203,9 @@
     <string name="withdraw">提现</string>
     <string name="recharge_and_withdraw_rule">充值提现规则</string>
     <string name="recharge_instructions">充值说明</string>
+    <string name="withdrawal_instructions">提现说明</string>
     <string name="recharge_instructions_detail">充值金额必须是整数，不能出现小数</string>
+    <string name="withdrawal_instructions_detail">提现金额必须是整数，不能出现小数</string>
     <string name="recharge_and_withdraw_rule_detail">充值提现规则:發的卡jfk領導就仨個鏈接東方斯卡拉國家的放大鏡看撒結果來看的啥規律的時間啊趕緊發的司空見慣了肯定撒法結果來看發動機法國警方的思考了趕緊離開范德薩結果來看薩拉看過絕對瘋狂了時間過來看房考慮發過價格浮動考慮時間管理開發的價格</string>
     <string name="detail">明细</string>
     <string name="get_it">知道了</string>
@@ -210,6 +213,7 @@
     <string name="custom_recharge_money">自定义金额</string>
     <string name="choose_recharge_style">选择充值方式</string>
     <string name="choose_recharge_style_formart">%s充值</string>
+    <string name="choose_withdrawals_style_formart">%s提现</string>
     <string name="choose_pay_style_formart">%s支付</string>
     <string name="alipay">支付宝</string>
     <string name="wxpay">微信</string>
