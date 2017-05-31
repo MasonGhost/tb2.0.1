@@ -10,6 +10,7 @@
     android:overScrollMode="never">
 
     <LinearLayout
+        android:id="@+id/ll_send_dynamic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -66,7 +67,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/full_button_height"
             android:paddingLeft="@dimen/spacing_normal"
-            android:visibility="gone"
             app:leftText="@string/dynamic_send_toll"
             app:rightImage="@mipmap/btn_close"/>
 

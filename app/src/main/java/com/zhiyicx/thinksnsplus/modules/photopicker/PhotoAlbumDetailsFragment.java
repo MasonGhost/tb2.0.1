@@ -250,7 +250,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                         animationRectBeanArrayList.add(null);
                     } else {
                         View view = layoutManager
-                                .getChildAt(i - layoutManager.findFirstVisibleItemPosition());
+                                .getChildAt(i - layoutManager.findFirstVisibleItemPosition() + (showCamera ? 1 : 0));// 照相机占位
                         ImageView imageView = (ImageView) view.findViewById(R.id.iv_photo);
                         // 可以完全看见的图片
                         AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -77,6 +78,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     CombinationButton mTvToll;
     @BindView(R.id.send_dynamic_ll_toll)
     LinearLayout mLLToll;
+    @BindView(R.id.ll_send_dynamic)
+    LinearLayout ll_send_dynamic;
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
     @BindView(R.id.rb_one)
@@ -89,6 +92,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     RadioGroup mRbDaysGroup;
     @BindView(R.id.et_input)
     EditText mEtInput;
+    @BindView(R.id.sl_send_dynamic)
+    ScrollView sl_send_dynamic;
 
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
@@ -464,6 +469,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 isToll = !isToll;
                 if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
                     mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                    sl_send_dynamic.smoothScrollTo(0, 0);
                 } else {
                     mCommonAdapter.notifyDataSetChanged();
                 }
