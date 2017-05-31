@@ -7,7 +7,7 @@ public class WithdrawalsActivity extends TSActivity<WithDrawalsPresenter, Withdr
 
     @Override
     protected WithdrawalsFragment getFragment() {
-        return WithdrawalsFragment.newInstance();
+        return WithdrawalsFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

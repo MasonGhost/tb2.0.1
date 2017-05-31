@@ -3,28 +3,28 @@ package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxTextSwitcher;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDetailActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import rx.functions.Action1;
 
 /**
@@ -34,27 +34,34 @@ import rx.functions.Action1;
  * @Description
  */
 public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Presenter> implements WithDrawalsConstract.View {
+    public static final String BUNDLE_DATA = "walletconfig";
 
     @BindView(R.id.et_withdraw_input)
     EditText mEtWithdrawInput;
-    @BindView(R.id.et_withdraw_ways)
-    EditText mEtWithdrawWays;
+    @BindView(R.id.bt_withdraw_style)
+    CombinationButton mBtWithdrawStyle;
     @BindView(R.id.et_withdraw_account_input)
     EditText mEtWithdrawAccountInput;
     @BindView(R.id.bt_sure)
     TextView mBtSure;
 
-    public static WithdrawalsFragment newInstance() {
-        return new WithdrawalsFragment();
-    }
+
+    private ActionPopupWindow mWithdrawalsInstructionsPopupWindow;
+
+    private ActionPopupWindow mActionPopupWindow;
 
     private int mWithdrawalsType;
 
     private double mWithdrawalsMoney;
 
-    private ActionPopupWindow mWithdrawalsInstructionsPopupWindow;
+    private WalletConfigBean mWalletConfigBean; // wallet config info
 
-    private ActionPopupWindow mActionPopupWindow;
+
+    public static WithdrawalsFragment newInstance(Bundle bundle) {
+        WithdrawalsFragment withdrawalsFragment = new WithdrawalsFragment();
+        withdrawalsFragment.setArguments(bundle);
+        return withdrawalsFragment;
+    }
 
     @Override
     protected boolean showToolBarDivider() {
@@ -84,6 +91,9 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     @Override
     protected void initData() {
+        if (getArguments() != null) {
+            mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
+        }
     }
 
     @Override
@@ -96,7 +106,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     private void initListener() {
-        RxView.clicks(mEtWithdrawWays).subscribe(new Action1<Void>() {
+        RxView.clicks(mBtWithdrawStyle).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
                 initWithDrawalsStylePop();
@@ -165,9 +175,16 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
             mActionPopupWindow.show();
             return;
         }
+        List<String> cashType = null;
+        if (mWalletConfigBean != null && mWalletConfigBean.getCash() != null) {
+            cashType = mWalletConfigBean.getCash().getTypes();
+        }
+        if (cashType == null) {
+            cashType = new ArrayList<>();
+        }
         mActionPopupWindow = ActionPopupWindow.builder()
-                .item2Str(getString(R.string.choose_pay_style_formart, getString(R.string.alipay)))
-                .item3Str(getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)))
+                .item2Str(cashType.contains(WalletConfigBean.CashBean.TYPE_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
+                .item3Str(cashType.contains(WalletConfigBean.CashBean.TYPE_WECHAT) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -177,7 +194,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                     @Override
                     public void onItemClicked() {
                         mWithdrawalsType = PayType.ALIPAY.value;
-                        mEtWithdrawWays.setText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)));
+                        mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)));
                         mActionPopupWindow.hide();
                         configSureButton();
                     }
@@ -186,7 +203,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                     @Override
                     public void onItemClicked() {
                         mWithdrawalsType = PayType.WX.value;
-                        mEtWithdrawWays.setText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)));
+                        mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)));
                         mActionPopupWindow.hide();
                         configSureButton();
                     }
@@ -206,7 +223,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     private void configSureButton() {
-        mBtSure.setEnabled(mWithdrawalsMoney > 0 && !TextUtils.isEmpty(mEtWithdrawWays.getText())
+        mBtSure.setEnabled(mWithdrawalsMoney > 0 && !TextUtils.isEmpty(mBtWithdrawStyle.getRightText())
                 && !TextUtils.isEmpty(mEtWithdrawAccountInput.getText()));
     }
 }

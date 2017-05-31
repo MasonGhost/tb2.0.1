@@ -12,9 +12,12 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDetailActivity;
 
 import java.util.concurrent.TimeUnit;
@@ -112,7 +115,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        startActivity(new Intent(getActivity(), RechargeActivity.class));
+                        mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE);
                     }
                 });
         // 提现
@@ -122,7 +125,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        startActivity(new Intent(getActivity(), WithdrawalsActivity.class));
+                        mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW);
                     }
                 });
         // 充值提现规则
@@ -178,5 +181,46 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         } else {
             hideLeftTopLoading();
         }
+    }
+
+    /**
+     * the api walletconfig call back
+     *
+     * @param walletConfigBean wallet config info
+     * @param tag              action tag, 1 recharge 2 withdraw
+     */
+    @Override
+    public void walletConfigCallBack(WalletConfigBean walletConfigBean, int tag) {
+//        just for test
+//        List<Integer> labes = new ArrayList<>();
+//        labes.add(10);
+//        labes.add(100);
+//        labes.add(1000);
+//        walletConfigBean.setLabels(labes);
+        Bundle bundle = new Bundle();
+        switch (tag) {
+            case WalletPresenter.TAG_RECHARGE:
+                bundle.putParcelable(RechargeFragment.BUNDLE_DATA, walletConfigBean);
+                jumpActivity(bundle, RechargeActivity.class);
+                break;
+            case WalletPresenter.TAG_WITHDRAW:
+                bundle.putParcelable(WithdrawalsFragment.BUNDLE_DATA, walletConfigBean);
+                jumpActivity(bundle, WithdrawalsActivity.class);
+                break;
+            default:
+
+        }
+    }
+
+    /**
+     * activity jump
+     *
+     * @param bundle intent data
+     * @param cls    target class
+     */
+    private void jumpActivity(Bundle bundle, Class<?> cls) {
+        Intent to = new Intent(getActivity(), cls);
+        to.putExtras(bundle);
+        startActivity(to);
     }
 }

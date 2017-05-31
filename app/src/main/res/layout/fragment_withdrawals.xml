@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.wcy.overscroll.OverScrollLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/overscroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,38 +48,15 @@
                 tools:text="@string/yuan"/>
         </LinearLayout>
 
-        <LinearLayout
+        <!--选择充值方式-->
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+            android:id="@+id/bt_withdraw_style"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dynamice_top_input_height"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing_mid"
-            android:paddingRight="@dimen/spacing_mid">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/withdraw_ways"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"
-                tools:text="@string/withdraw_ways"/>
-
-            <EditText
-                android:id="@+id/et_withdraw_ways"
-                style="@style/style_dynamic_editext"
-                android:focusable="false"
-                android:clickable="true"
-                android:hint="@string/withdraw_ways"
-                tools:hint="@string/withdraw_ways"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/ic_arrow_smallgrey"
-                android:textColor="@color/important_for_content"
-                android:textSize="@dimen/size_content"/>
-        </LinearLayout>
-
+            android:layout_height="@dimen/full_button_height"
+            app:leftText="@string/withdraw_ways"
+            app:leftTextLeftPadding="@dimen/spacing_mid"
+            app:rightImage="@mipmap/ic_arrow_smallgrey"
+            app:showLine="false"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"

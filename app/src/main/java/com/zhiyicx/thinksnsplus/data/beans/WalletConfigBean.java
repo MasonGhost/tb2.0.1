@@ -14,7 +14,7 @@ import java.util.List;
  * @Contact master.jungle68@gmail.com
  */
 
-public class WalletConfigBean  implements Serializable, Parcelable {
+public class WalletConfigBean implements Serializable, Parcelable {
 
 
     private static final long serialVersionUID = 2408871831852484952L;
@@ -140,7 +140,10 @@ public class WalletConfigBean  implements Serializable, Parcelable {
 
     public static class CashBean implements Serializable, Parcelable {
         private static final long serialVersionUID = -113289545366067874L;
-        private List<String> types;
+
+        public static final String TYPE_ALIPAY = "alipay";
+        public static final String TYPE_WECHAT = "wechat";
+        private List<String> types; // 可选提现的「提现方式」，按照现在系统预设，只有 alipay 和 wechat
 
         public List<String> getTypes() {
             return types;

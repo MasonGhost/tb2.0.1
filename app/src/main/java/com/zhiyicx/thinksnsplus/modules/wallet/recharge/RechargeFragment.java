@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -17,9 +19,9 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +37,10 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class RechargeFragment extends TSFragment<RechargeContract.Presenter> implements RechargeContract.View {
+    public static final String BUNDLE_DATA = "walletconfig";
 
+    @BindView(R.id.ll_recharge_choose_money_item)
+    LinearLayout mLlRechargeChooseMoneyItem;
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
     @BindView(R.id.rb_two)
@@ -53,17 +58,22 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @BindView(R.id.bt_top)
     TextView mBtTop;
 
-    private ActionPopupWindow mPayStylePopupWindow;
-    private ActionPopupWindow mRechargeInstructionsPopupWindow;// 充值说明选择弹框
+    private ActionPopupWindow mPayStylePopupWindow;// pay type choose pop
+    private ActionPopupWindow mRechargeInstructionsPopupWindow;// recharge instruction pop
 
-    private int mPayType;
 
-    private double mRechargeMoney;
+    private WalletConfigBean mWalletConfigBean; // wallet config info
 
-    private ArrayList<Float> mSelectDays;
+    private int mPayType;     // type for recharge
 
-    public static RechargeFragment newInstance() {
-        return new RechargeFragment();
+    private double mRechargeMoney; // money choosed for recharge
+
+    private List<Integer> mSelectDays; // recharge lables
+
+    public static RechargeFragment newInstance(Bundle bundle) {
+        RechargeFragment rechargeFragment = new RechargeFragment();
+        rechargeFragment.setArguments(bundle);
+        return rechargeFragment;
     }
 
     @Override
@@ -90,17 +100,39 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     @Override
     protected void initData() {
-        mSelectDays = new ArrayList<>();
-        mSelectDays.add(1f);
-        mSelectDays.add(5f);
-        mSelectDays.add(10f);
-        initSelectDays(mSelectDays);
+        initSelectDays();
     }
 
-    private void initSelectDays(List<Float> mSelectDays) {
-        mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(0)));
-        mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(1)));
-        mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(2)));
+    private void initSelectDays() {
+        if (getArguments() != null) {
+            mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
+        }
+        mSelectDays = mWalletConfigBean.getLabels();
+
+        if (mSelectDays == null) {
+            return;
+        }
+        switch (mSelectDays.size()) {
+            case 6:
+            case 5:
+            case 4:
+            case 3:
+                mRbThree.setVisibility(View.VISIBLE);
+                mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
+            case 2:
+                mRbTwo.setVisibility(View.VISIBLE);
+                mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
+            case 1:
+                mRbOne.setVisibility(View.VISIBLE);
+                mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
+                mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
+                break;
+            case 0:
+                mLlRechargeChooseMoneyItem.setVisibility(View.GONE);
+                break;
+            default:
+
+        }
     }
 
 
@@ -113,6 +145,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
+                        DeviceUtils.hideSoftKeyboard(getContext(), mBtRechargeStyle);
                         initPayStylePop();
                     }
                 });
@@ -132,6 +165,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                     @Override
                     public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
                         if (TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
+                            mRechargeMoney = 0;
+                            configSureButton();
                             return;
                         }
 
@@ -148,6 +183,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
                             }
                         }
+                        configSureButton();
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -200,8 +236,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             return;
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
-                .item2Str(getString(R.string.choose_pay_style_formart, getString(R.string.alipay)))
-                .item3Str(getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)))
+                .item2Str(mWalletConfigBean.getAlipay().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.alipay)):"")
+                .item3Str(mWalletConfigBean.getWechat().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)):"")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
