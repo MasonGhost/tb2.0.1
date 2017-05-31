@@ -236,8 +236,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             return;
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
-                .item2Str(getString(R.string.choose_pay_style_formart, getString(R.string.alipay)))
-                .item3Str(getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)))
+                .item2Str(mWalletConfigBean.getAlipay().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.alipay)):"")
+                .item3Str(mWalletConfigBean.getWechat().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)):"")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
