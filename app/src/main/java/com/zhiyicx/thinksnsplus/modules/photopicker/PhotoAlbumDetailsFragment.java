@@ -250,7 +250,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                         animationRectBeanArrayList.add(null);
                     } else {
                         View view = layoutManager
-                                .getChildAt(i - layoutManager.findFirstVisibleItemPosition());
+                                .getChildAt(i - layoutManager.findFirstVisibleItemPosition() + (showCamera ? 1 : 0));// 照相机占位
                         ImageView imageView = (ImageView) view.findViewById(R.id.iv_photo);
                         // 可以完全看见的图片
                         AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
@@ -258,7 +258,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                     }
                 }
                 PhotoViewActivity.startToPhotoView(PhotoAlbumDetailsFragment.this, (ArrayList<String>) allPhotos
-                        , selectedPhotos, animationRectBeanArrayList, maxCount, index,false,null);
+                        , selectedPhotos, animationRectBeanArrayList, maxCount, index, false, new ArrayList<ImageBean>());
             }
         });
     }
@@ -304,7 +304,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                     animationRectBeanArrayList.add(null);
                 }
                 PhotoViewActivity.startToPhotoView(this, allPhotos, selectedPhoto,
-                        animationRectBeanArrayList, maxCount, 0,false,null);
+                        animationRectBeanArrayList, maxCount, 0, false, new ArrayList<ImageBean>());
                 break;
             case R.id.bt_complete:
                 Intent it = new Intent();
