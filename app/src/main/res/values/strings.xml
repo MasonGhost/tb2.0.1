@@ -213,6 +213,8 @@
     <string name="choose_pay_style_formart">%s支付</string>
     <string name="alipay">支付宝</string>
     <string name="wxpay">微信</string>
+    <string name="wallet_config_info_get_loading_tip">钱包配置信息获取中&#8230;</string>
+    <string name="get_succes">获取成功</string>
 
     <!--钱包 之 提现-->
     <string name="withdraw_count">提现金额</string>

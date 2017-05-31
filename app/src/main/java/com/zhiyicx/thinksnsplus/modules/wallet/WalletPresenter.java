@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -31,6 +32,13 @@ import rx.functions.Action0;
 public class WalletPresenter extends AppBasePresenter<WalletContract.Repository, WalletContract.View> implements WalletContract.Presenter {
     public static final int DEFAULT_LOADING_SHOW_TIME = 2;
 
+    /**
+     * action tag
+     */
+    public static final int TAG_DEfault = 0; // do nothing
+    public static final int TAG_RECHARGE = 1; // recharge
+    public static final int TAG_WITHDRAW = 2; // withdraw
+
     @Inject
     AuthRepository mIAuthRepository;
 
@@ -45,6 +53,9 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     private boolean mIsUsreInfoRequseted = false;// 用户信息是否拿到了
 
+    WalletConfigBean mWalletConfigBean; // 钱包配置信息，必须的数据
+
+
     @Inject
     public WalletPresenter(WalletContract.Repository repository, WalletContract.View rootView) {
         super(repository, rootView);
@@ -52,6 +63,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     @Override
     public void updateUserInfo() {
+        getWalletConfigFromServer(TAG_DEfault, false); // 默认主动获取一次
         Subscription timerSub = Observable.timer(DEFAULT_LOADING_SHOW_TIME, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
@@ -106,8 +118,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
     }
 
     /**
-     *
-     * @return  check first look  need show  tip pop
+     * @return check first look  need show  tip pop
      */
     @Override
     public boolean checkIsNeedTipPop() {
@@ -117,4 +128,68 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
         }
         return !isNotFrist;
     }
+
+    /**
+     * check wallet config info, if walletconfig has cach used it or get it from server
+     *
+     * @param tag action tag
+     */
+    @Override
+    public void checkWalletConfig(int tag) {
+        if (mWalletConfigBean != null) {
+            mRootView.walletConfigCallBack(mWalletConfigBean, tag);
+            return;
+        }
+        getWalletConfigFromServer(tag, true);
+
+    }
+
+
+    /**
+     * get wallet config info from server
+     *
+     * @param tag       action tag, 1 recharge 2 withdraw
+     * @param isNeedTip true show tip
+     */
+    private void getWalletConfigFromServer(final int tag, final boolean isNeedTip) {
+
+        final Subscription walletConfigSub = mRepository.getWalletConfig()
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (isNeedTip) {
+                            mRootView.showSnackLoadingMessage(mContext.getString(R.string.wallet_config_info_get_loading_tip));
+                        }
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<WalletConfigBean>() {
+                    @Override
+                    protected void onSuccess(WalletConfigBean data) {
+                        mWalletConfigBean = data;
+                        if (isNeedTip) {
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.get_succes));
+                        }
+                        mRootView.walletConfigCallBack(data, tag);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        if (isNeedTip) {
+                            mRootView.showSnackErrorMessage(mContext.getString(R.string.get_succes));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        if (isNeedTip) {
+                            mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+                        }
+                    }
+                });
+        addSubscrebe(walletConfigSub);
+    }
+
+
 }

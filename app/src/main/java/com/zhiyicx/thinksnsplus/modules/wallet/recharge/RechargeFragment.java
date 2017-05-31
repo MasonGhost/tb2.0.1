@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -35,6 +36,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class RechargeFragment extends TSFragment<RechargeContract.Presenter> implements RechargeContract.View {
+    public static final String BUNDLE_DATA="walletconfig";
 
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
@@ -62,7 +64,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     private ArrayList<Integer> mSelectDays;
 
-    public static RechargeFragment newInstance() {
+    public static RechargeFragment newInstance(Bundle bundle) {
         return new RechargeFragment();
     }
 

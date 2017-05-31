@@ -2,10 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.wallet.DaggerWalletComponent;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletFragment;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenterModule;
 
 /**
  * @Describe 钱包
@@ -29,7 +25,7 @@ public class RechargeActivity extends TSActivity<RechargePresenter, RechargeFrag
 
     @Override
     protected RechargeFragment getFragment() {
-        return RechargeFragment.newInstance();
+        return RechargeFragment.newInstance(getIntent().getExtras());
     }
 
 }

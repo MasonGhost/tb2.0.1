@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -15,12 +16,13 @@ import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDet
  * @Description
  */
 public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Presenter> implements WithDrawalsConstract.View {
-
-    public static WithdrawalsFragment newInstance() {
-        return new WithdrawalsFragment();
-    }
+    public static final String BUNDLE_DATA = "walletconfig";
 
     private ActionPopupWindow mActionPopupWindow;
+
+    public static WithdrawalsFragment newInstance(Bundle bundle) {
+        return new WithdrawalsFragment();
+    }
 
     @Override
     protected boolean showToolBarDivider() {
