@@ -64,6 +64,7 @@
                 android:textSize="@dimen/size_content"
                 tools:text="元"/>
         </LinearLayout>
+
         <!--选择充值方式-->
         <com.zhiyicx.baseproject.widget.button.CombinationButton
             android:id="@+id/bt_recharge_style"
@@ -74,7 +75,6 @@
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
             app:showLine="false"/>
-
 
         <TextView
             android:id="@+id/bt_top"
