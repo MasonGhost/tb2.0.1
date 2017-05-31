@@ -51,7 +51,7 @@
     <string name="username_toast_not_number_start_hint">用户名不能以数字开头</string>
     <string name="username_toast_not_symbol_hint">用户名只能包含数字、字母和下划线</string>
     <string name="immediate_regist">注册</string>
-    <string name="vertify_code_input_hint">输入验证码</string>
+    <string name="vertify_code_input_hint">输入4-6位验证码</string>
     <string name="phone_number_input_hint">输入11位手机号</string>
     <string name="phone_number_toast_hint">请输入正确的手机号</string>
     <string name="password_input_hint">输入6位以上登录密码</string>

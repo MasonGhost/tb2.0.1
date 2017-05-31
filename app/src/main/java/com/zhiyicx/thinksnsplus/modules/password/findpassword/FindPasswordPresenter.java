@@ -93,6 +93,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
                     @Override
                     protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
+                        mRootView.setSureBtEnabled(true);
                     }
 
                     @Override
@@ -156,7 +157,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
      * @return
      */
     private boolean checkVertifyLength(String vertifyCode) {
-        if (vertifyCode.length() != mContext.getResources().getInteger(R.integer.vertiry_code_lenght)) {
+        if (vertifyCode.length()< mContext.getResources().getInteger(R.integer.vertiry_code_min_lenght)) {
             mRootView.showMessage(mContext.getString(R.string.vertify_code_input_hint));
             return true;
         }

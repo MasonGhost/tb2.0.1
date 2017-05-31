@@ -15,6 +15,8 @@
     <integer name="username_min_length">2</integer>
     <!--验证码长度-->
     <integer name="vertiry_code_lenght">6</integer>
+    <!--验证码长度-->
+    <integer name="vertiry_code_min_lenght">4</integer>
 
     <!--#########################################      动画相关       ################################-->
 

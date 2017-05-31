@@ -187,7 +187,7 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
      * @return
      */
     private boolean checkVertifyLength(String vertifyCode) {
-        if (vertifyCode.length() != mContext.getResources().getInteger(R.integer.vertiry_code_lenght)) {
+        if (vertifyCode.length() < mContext.getResources().getInteger(R.integer.vertiry_code_min_lenght)) {
             mRootView.showMessage(mContext.getString(R.string.vertify_code_input_hint));
             return true;
         }
