@@ -25,6 +25,8 @@ public class SystemConfigBean implements Serializable {
     private String im_serve;
     @SerializedName("im:helper")
     private List<ImHelperBean> im_helper;
+    @SerializedName("ad")
+    private List<Advert> mAdverts;
 
     public int getWallet_ratio() {
         return wallet_ratio;
@@ -48,6 +50,14 @@ public class SystemConfigBean implements Serializable {
 
     public void setIm_helper(List<ImHelperBean> im_helper) {
         this.im_helper = im_helper;
+    }
+
+    public List<Advert> getAdverts() {
+        return mAdverts;
+    }
+
+    public void setAdverts(List<Advert> adverts) {
+        mAdverts = adverts;
     }
 
     /**
@@ -101,5 +111,84 @@ public class SystemConfigBean implements Serializable {
                 ", im_serve='" + im_serve + '\'' +
                 ", im_helper=" + im_helper +
                 '}';
+    }
+
+    /**
+     * {
+     * "id":1,
+     * "title":"广告1",
+     * "type":"image",
+     * "data":{
+     * "image":"https://avatars0.githubusercontent.com/u/5564821?v=3&s=460",
+     * "link":"https://github.com/zhiyicx/thinksns-plus"
+     * }
+     */
+    public static class Advert implements Serializable {
+        private int id;
+        private String title;
+        private String type;
+        private Object data;
+        private ImageAdvert mImageAdvert;
+
+        public ImageAdvert getImageAdvert() {
+            return mImageAdvert;
+        }
+
+        public void setImageAdvert(ImageAdvert imageAdvert) {
+            mImageAdvert = imageAdvert;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public Object getData() {
+            return data;
+        }
+
+        public void setData(Object data) {
+            this.data = data;
+        }
+    }
+
+    public static class ImageAdvert implements Serializable{
+        private String link;
+        private String image;
+
+        public String getLink() {
+            return link;
+        }
+
+        public void setLink(String link) {
+            this.link = link;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
     }
 }

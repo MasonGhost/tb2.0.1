@@ -5,17 +5,24 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.gson.internal.LinkedTreeMap;
 import com.jakewharton.rxbinding.view.RxView;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.BannerImageLoaderUtil;
 import com.zhiyicx.thinksnsplus.widget.TCountTimer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +49,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     TCountTimer mTimer;
     Subscription subscription;
     int mPosition;
+    SystemConfigBean.ImageAdvert advert;
 
     @Override
     protected int getBodyLayoutId() {
@@ -68,8 +76,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                 .map(new Func1<Long, Boolean>() {
                     @Override
                     public Boolean call(Long aLong) {
-                        //find advert in Db
-                        return true;
+                        return mPresenter.getAdvert() != null && mPresenter.getAdvert().getAdverts() != null;
                     }
                 })
                 .subscribe(new Action1<Boolean>() {
@@ -83,6 +90,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                     }
                 });
     }
+
 
     @Override
     protected boolean showToolbar() {
@@ -109,7 +117,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     }
 
     private void repleaseAdvert() {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mTimer == null)
             return;
         mGuideBanner.setOnPageChangeListener(null);
         mGuideBanner.stopAutoPlay();
@@ -170,7 +178,19 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         mPresenter.checkLogin();
     }
 
-    private void initAdvert() {
+    @Override
+    public void initAdvert() {
+        List<String> urls = new ArrayList<>();
+        List<SystemConfigBean.Advert> advertList = mPresenter.getAdvert().getAdverts();
+        for (SystemConfigBean.Advert advert : advertList) {
+
+            LogUtils.d("initAdvert::"+advert.getData().getClass().getSimpleName());
+            LogUtils.d("getImageAdvert::"+advert.getImageAdvert());
+            if (advert.getImageAdvert() != null) {
+                urls.add(advert.getImageAdvert().getImage());
+            }
+        }
+
         mGuideText.setVisibility(View.VISIBLE);
         mTimer = TCountTimer.builder()
                 .buildBtn(mGuideText)
@@ -179,8 +199,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
         mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
         mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
-        List<String> urls = new ArrayList<>();
-        urls.add("");
+
         urls.add("");
         urls.add("");
         urls.add("");

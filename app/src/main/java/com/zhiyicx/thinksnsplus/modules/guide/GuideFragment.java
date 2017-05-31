@@ -41,6 +41,11 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     }
 
     @Override
+    public void initAdvert() {
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)

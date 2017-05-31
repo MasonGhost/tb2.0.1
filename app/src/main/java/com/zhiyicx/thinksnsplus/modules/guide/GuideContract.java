@@ -6,6 +6,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public interface GuideContract {
          * @param tClass
          */
         void startActivity(Class tClass);
+        void initAdvert();
     }
 
     /**
@@ -47,6 +49,8 @@ public interface GuideContract {
     interface Presenter extends IBasePresenter {
 
         void checkLogin();
+
+        SystemConfigBean getAdvert();
 
         void getLaunchAdverts();
     }

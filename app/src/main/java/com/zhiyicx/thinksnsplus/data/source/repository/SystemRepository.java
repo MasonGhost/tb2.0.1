@@ -3,10 +3,13 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
@@ -29,6 +32,8 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -78,6 +83,7 @@ public class SystemRepository implements ISystemRepository {
                 .subscribe(new BaseSubscribeForV2<SystemConfigBean>() {
                     @Override
                     protected void onSuccess(SystemConfigBean data) {
+                        // 广告类型
                         saveComponentStatus(data, mContext);
                     }
                 });
@@ -94,6 +100,28 @@ public class SystemRepository implements ISystemRepository {
         SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
+        }
+        if (systemConfigBean.getAdverts()==null)
+            return systemConfigBean;
+        for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {
+            if (advert.getData() instanceof LinkedHashMap) {
+                LinkedHashMap advertMap = (LinkedHashMap) advert.getData();
+                SystemConfigBean.ImageAdvert imageAdvert = new SystemConfigBean.ImageAdvert();
+                for (Iterator it = advertMap.keySet().iterator(); it.hasNext(); ) {
+                    String key = (String) it.next();
+                    String value = (String) advertMap.get(key);
+                    if (key.equals("image")) {
+                        Glide.with(mContext).load(value).downloadOnly(DeviceUtils.getScreenWidth(mContext),
+                                DeviceUtils.getScreenHeight(mContext));
+                        imageAdvert.setImage(value);
+                    }
+                    if (key.equals("link")) {
+                        imageAdvert.setLink(value);
+                    }
+                    LogUtils.d(key + ":::" + value);
+                }
+                advert.setImageAdvert(imageAdvert);
+            }
         }
         return systemConfigBean;
     }
@@ -232,6 +260,7 @@ public class SystemRepository implements ISystemRepository {
                 }
             }
         }
+
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS, systemConfigBean);
     }
 

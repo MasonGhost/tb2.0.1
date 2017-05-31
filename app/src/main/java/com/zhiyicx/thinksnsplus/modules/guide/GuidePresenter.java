@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -60,6 +61,11 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                 // 出入数据库
             }
         });
+    }
+
+    @Override
+    public SystemConfigBean getAdvert() {
+        return mSystemRepository.getBootstrappersInfoFromLocal();
     }
 }
 

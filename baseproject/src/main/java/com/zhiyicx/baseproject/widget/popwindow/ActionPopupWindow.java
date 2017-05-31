@@ -9,7 +9,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -201,7 +200,6 @@ public class ActionPopupWindow extends PopupWindow {
         if (mParentView == null) {
             showAtLocation(mContentView, Gravity.TOP, 0, 0);
         } else {
-            mContentView.startAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_from_top_enter));
             showAsDropDown(mParentView, 0, 0);
         }
     }
@@ -224,7 +222,6 @@ public class ActionPopupWindow extends PopupWindow {
     public void dismiss() {
         if (mAnimationStyle == NO_ANIMATION)
             mContentView.clearAnimation();
-            mContentView.startAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_from_top_quit));
         super.dismiss();
         if (mActionPopupWindowDismissListener != null)
             mActionPopupWindowDismissListener.onDismiss();
