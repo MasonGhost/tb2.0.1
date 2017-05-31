@@ -103,13 +103,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
     private boolean isToll;
+    private boolean hasTollPic;
     private ArrayList<Float> mSelectDays;
 
     private int mPayType;
 
     private double mRechargeMoney;
-
-    private List<ImageBean> hasToll = new ArrayList<>();
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -196,6 +195,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mSelectDays.add(5f);
         mSelectDays.add(10f);
         initSelectDays(mSelectDays);
+    }
+
+    @Override
+    public boolean hasTollVerify() {
+        return isToll && !hasTollPic;
     }
 
     private void initSelectDays(List<Float> mSelectDays) {
@@ -366,6 +370,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         if (isPhotoListChanged(selectedPhotos, photoList)) {
+            hasTollPic = false;
             selectedPhotos.clear();
             selectedPhotos.addAll(photoList);
             addPlaceHolder();
@@ -579,6 +584,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     }
                     LogUtils.e("imageBean.getToll_monye::" + imageBean.getToll_monye());
                     if (imageBean.getToll_type() > 0) {
+                        hasTollPic = true;
                         filterView.setVisibility(View.VISIBLE);
                         paintView.setImageResource(R.mipmap.ico_lock);
                     } else {
@@ -677,6 +683,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
+                hasTollPic = true;
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
                 mEtDynamicContent.getEtContent().setHint(getString(R.string
                         .dynamic_content_no_pic_hint));

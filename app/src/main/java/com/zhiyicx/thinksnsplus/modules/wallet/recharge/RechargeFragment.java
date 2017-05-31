@@ -60,7 +60,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     private double mRechargeMoney;
 
-    private ArrayList<Integer> mSelectDays;
+    private ArrayList<Float> mSelectDays;
 
     public static RechargeFragment newInstance() {
         return new RechargeFragment();
@@ -83,7 +83,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-        mTvChooseTip.setText(R.string.dynamic_send_toll_count);
+        mTvChooseTip.setText(R.string.choose_recharge_money);
         initListener();
 
     }
@@ -91,16 +91,16 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     protected void initData() {
         mSelectDays = new ArrayList<>();
-        mSelectDays.add(1);
-        mSelectDays.add(5);
-        mSelectDays.add(10);
+        mSelectDays.add(1f);
+        mSelectDays.add(5f);
+        mSelectDays.add(10f);
         initSelectDays(mSelectDays);
     }
 
-    private void initSelectDays(List<Integer> mSelectDays) {
-        mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
-        mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
-        mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
+    private void initSelectDays(List<Float> mSelectDays) {
+        mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(0)));
+        mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(1)));
+        mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectDays.get(2)));
     }
 
 
