@@ -31,6 +31,7 @@
         <item name="android:textColor">@color/selector_topdynamictext_color</item>
         <item name="android:textSize">@dimen/size_content</item>
         <item name="android:gravity">center</item>
+        <item name="android:visibility">invisible</item>
         <item name="android:background">@drawable/selector_radiobutton_cornaer_dynamic_top</item>
         <item name="android:layout_weight">1</item>
         <item name="android:width">0dp</item>

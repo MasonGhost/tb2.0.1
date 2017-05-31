@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -18,9 +19,9 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,8 +37,10 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class RechargeFragment extends TSFragment<RechargeContract.Presenter> implements RechargeContract.View {
-    public static final String BUNDLE_DATA="walletconfig";
+    public static final String BUNDLE_DATA = "walletconfig";
 
+    @BindView(R.id.ll_recharge_choose_money_item)
+    LinearLayout mLlRechargeChooseMoneyItem;
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
     @BindView(R.id.rb_two)
@@ -55,17 +58,21 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @BindView(R.id.bt_top)
     TextView mBtTop;
 
-    private ActionPopupWindow mPayStylePopupWindow;// 性别选择弹框
-    private ActionPopupWindow mRechargeInstructionsPopupWindow;// 充值说明选择弹框
+    private ActionPopupWindow mPayStylePopupWindow;// pay type choose pop
+    private ActionPopupWindow mRechargeInstructionsPopupWindow;// recharge instruction pop
 
-    private int mPayType;
+    private WalletConfigBean mWalletConfigBean; // wallet config info
 
-    private double mRechargeMoney;
+    private int mPayType;     // type for recharge
 
-    private ArrayList<Integer> mSelectDays;
+    private double mRechargeMoney; // money choosed for recharge
+
+    private List<Integer> mSelectDays; // recharge lables
 
     public static RechargeFragment newInstance(Bundle bundle) {
-        return new RechargeFragment();
+        RechargeFragment rechargeFragment = new RechargeFragment();
+        rechargeFragment.setArguments(bundle);
+        return rechargeFragment;
     }
 
     @Override
@@ -92,17 +99,39 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     @Override
     protected void initData() {
-        mSelectDays = new ArrayList<>();
-        mSelectDays.add(1);
-        mSelectDays.add(5);
-        mSelectDays.add(10);
-        initSelectDays(mSelectDays);
+        initSelectDays();
     }
 
-    private void initSelectDays(List<Integer> mSelectDays) {
-        mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
-        mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
-        mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
+    private void initSelectDays() {
+        if (getArguments() != null) {
+            mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
+        }
+        mSelectDays = mWalletConfigBean.getLabels();
+
+        if (mSelectDays == null) {
+            return;
+        }
+        switch (mSelectDays.size()) {
+            case 6:
+            case 5:
+            case 4:
+            case 3:
+                mRbThree.setVisibility(View.VISIBLE);
+                mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
+            case 2:
+                mRbTwo.setVisibility(View.VISIBLE);
+                mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
+            case 1:
+                mRbOne.setVisibility(View.VISIBLE);
+                mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
+                mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
+                break;
+            case 0:
+                mLlRechargeChooseMoneyItem.setVisibility(View.GONE);
+                break;
+            default:
+
+        }
     }
 
 

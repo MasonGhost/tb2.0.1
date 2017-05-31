@@ -112,7 +112,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
+        if (isVisibleToUser && mPresenter != null) {
             mPresenter.getUserInfoFromDB();
         }
     }

@@ -21,7 +21,9 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     private ActionPopupWindow mActionPopupWindow;
 
     public static WithdrawalsFragment newInstance(Bundle bundle) {
-        return new WithdrawalsFragment();
+        WithdrawalsFragment withdrawalsFragment = new WithdrawalsFragment();
+        withdrawalsFragment.setArguments(bundle);
+        return withdrawalsFragment;
     }
 
     @Override

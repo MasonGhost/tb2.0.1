@@ -8,8 +8,10 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_recharge_choose_money_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:background="@color/white"
         android:orientation="vertical">
 
