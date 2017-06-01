@@ -113,6 +113,7 @@
     <string name="dynamic_list_uncollect_dynamic">取消收藏</string>
     <string name="dynamic_list_report_dynamic">举报</string>
     <string name="dynamic_list_delete_comment">删除评论</string>
+    <string name="dynamic_list_top_comment">置顶评论</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="resend">重新发送</string>
     <string name="reply">回复%s:</string>
@@ -183,6 +184,13 @@
     <string name="sticktop_instructions_detail">置顶金额必须是整数，不能出现小数</string>
     <string name="dynamic_list_top_dynamic">申请动态置顶</string>
     <string name="to_top_description">当前置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
+
+    <!--设置评论收费-->
+    <string name="dynamic_comment_toll">设置评论收费</string>
+    <string name="dynamic_comment_toll_money">设置评论收费金额</string>
+
+    <!--置顶评论-->
+    <string name="stick_comment_desc">您只需¥%.2f元就可以置顶评论，\n</string>
 
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>

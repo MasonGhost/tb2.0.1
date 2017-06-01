@@ -68,8 +68,7 @@ public class SelectDynamicTypeFragment extends TSFragment {
                 ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
                 ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
                 mAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-                mAnimatorSet.setStartDelay(1000);
-                mAnimatorSet.setDuration(12000);
+                mAnimatorSet.setDuration(1200);
                 mAnimatorSet.playTogether(
                         ObjectAnimator.ofFloat(view, "alpha", 0, 1, 1, 1),
                         ObjectAnimator.ofFloat(view, "scaleX", 0.3f, 1.05f, 0.9f, 1),
