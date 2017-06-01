@@ -108,7 +108,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         scrollTime = typedArray.getInt(R.styleable.Banner_scroll_time, BannerConfig.DURATION);
         isAutoPlay = typedArray.getBoolean(R.styleable.Banner_is_auto_play, BannerConfig.IS_AUTO_PLAY);
         isEnableScroll = typedArray.getBoolean(R.styleable.Banner_is_enable_scroll, BannerConfig.IS_ENABLE_SCROLL);
-        titleBackground = typedArray.getColor(R.styleable.Banner_title_background, BannerConfig.TITLE_BACKGROUND);
+        titleBackground = typedArray.getResourceId(R.styleable.Banner_title_background, BannerConfig.TITLE_BACKGROUND);
         titleHeight = typedArray.getDimensionPixelSize(R.styleable.Banner_title_height, BannerConfig.TITLE_HEIGHT);
         titleTextColor = typedArray.getColor(R.styleable.Banner_title_textcolor, BannerConfig.TITLE_TEXT_COLOR);
         titleTextSize = typedArray.getDimensionPixelSize(R.styleable.Banner_title_textsize, BannerConfig.TITLE_TEXT_SIZE);
@@ -292,7 +292,8 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
             throw new RuntimeException("[Banner] --> The number of titles and images is different");
         }
         if (titleBackground != -1) {
-            titleView.setBackgroundColor(titleBackground);
+            titleView.setBackgroundResource(titleBackground);
+//            titleView.setBackgroundColor(titleBackground);
         }
         if (titleHeight != -1) {
             titleView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, titleHeight));

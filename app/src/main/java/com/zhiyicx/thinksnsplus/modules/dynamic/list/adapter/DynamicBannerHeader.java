@@ -26,7 +26,6 @@ public class DynamicBannerHeader {
     private View mDynamicBannerHeader;
     private Context mContext;
 
-    private TextView mTitle;
     private Banner mBanner;
     private DynamicBannerHeadlerClickEvent mHeadlerClickEvent;
 

@@ -2,10 +2,13 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:zhiyi="http://schemas.android.com/apk/res-auto">
 
     <com.youth.banner.Banner
         android:id="@+id/item_banner"
+        zhiyi:title_background="@drawable/dynamiac_banner_gradient_bg"
+        zhiyi:title_height="@dimen/info_banner_title_hight"
         android:layout_width="match_parent"
         android:layout_height="@dimen/info_banner_hight"/>
 </LinearLayout>
