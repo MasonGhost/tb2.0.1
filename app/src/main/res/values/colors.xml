@@ -11,4 +11,6 @@
     <color name="dyanmic_top_flag">#4bb893</color>
     <!--发布动态-->
     <color name="dyanmic_send">#575757</color>
+
+    <color name="tym">#ddffffff</color>
 </resources>

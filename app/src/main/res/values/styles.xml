@@ -23,6 +23,10 @@
         <item name="android:windowFullscreen">true</item><!---->
     </style>
 
+    <style name="DynamciSelectTheme" parent="@style/GalleryTheme">
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
     <!--#########################################      动态置顶       ################################-->
     <!--动态置顶选择天数-->
     <style name="style_dynamic_radiobutton">

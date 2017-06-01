@@ -161,7 +161,8 @@ public class TCountTimer extends CountDownTimer {
             }
             mBtn.setText(str);
         }
-        mBtn.setEnabled(true);
+        LogUtils.d("onFinish::"+(mOnTimeListener != null && canUseListener));
+        mBtn.setEnabled(canUseOntick);
         if (mOnTimeListener != null && canUseListener) {
             mOnTimeListener.onFinish();
         }

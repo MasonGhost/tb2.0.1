@@ -49,7 +49,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     TCountTimer mTimer;
     Subscription subscription;
     int mPosition;
-    SystemConfigBean.ImageAdvert advert;
 
     @Override
     protected int getBodyLayoutId() {
@@ -183,26 +182,21 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         List<String> urls = new ArrayList<>();
         List<SystemConfigBean.Advert> advertList = mPresenter.getAdvert().getAdverts();
         for (SystemConfigBean.Advert advert : advertList) {
-
-            LogUtils.d("initAdvert::"+advert.getData().getClass().getSimpleName());
-            LogUtils.d("getImageAdvert::"+advert.getImageAdvert());
             if (advert.getImageAdvert() != null) {
                 urls.add(advert.getImageAdvert().getImage());
             }
         }
-
+        urls.add("");
         mGuideText.setVisibility(View.VISIBLE);
         mTimer = TCountTimer.builder()
                 .buildBtn(mGuideText)
+                .buildCanUseListener(urls.size() <= 1)// 单张图片
+                .buildOnTimeListener(this)
                 .buildCanUseOntick(false)
                 .build();
 
         mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
         mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
-
-        urls.add("");
-        urls.add("");
-        urls.add("");
         mGuideBanner.setImages(urls);
         mGuideBanner.setViewPagerIsScroll(false);
         mGuideBanner.setDelayTime(5000);

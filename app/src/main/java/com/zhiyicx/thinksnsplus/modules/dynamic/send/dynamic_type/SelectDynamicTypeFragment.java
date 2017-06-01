@@ -1,9 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -38,13 +45,8 @@ public class SelectDynamicTypeFragment extends TSFragment {
     }
 
     @Override
-    public void setPresenter(Object presenter) {
-
-    }
-
-    @Override
     protected void initView(View rootView) {
-
+        getActivity().getWindow().getDecorView().setBackgroundColor(getColor(R.color.tym));
     }
 
     @Override
@@ -77,6 +79,7 @@ public class SelectDynamicTypeFragment extends TSFragment {
                 break;
         }
         getActivity().finish();
-
+        getActivity().overridePendingTransition(0, R.anim.slide_out_bottom);
     }
+
 }
