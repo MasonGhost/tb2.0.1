@@ -186,7 +186,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                 urls.add(advert.getImageAdvert().getImage());
             }
         }
-        urls.add("");
         mGuideText.setVisibility(View.VISIBLE);
         mTimer = TCountTimer.builder()
                 .buildBtn(mGuideText)

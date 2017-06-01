@@ -1,11 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -47,10 +51,33 @@ public class SelectDynamicTypeFragment extends TSFragment {
     @Override
     protected void initView(View rootView) {
         getActivity().getWindow().getDecorView().setBackgroundColor(getColor(R.color.tym));
+        initAnimation(mSendWordsDynamic);
+        initAnimation(mSendImageDynamic);
     }
 
     @Override
     protected void initData() {
+
+    }
+
+    private void initAnimation(final View view) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                AnimatorSet mAnimatorSet = new AnimatorSet();
+                ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
+                ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
+                mAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+                mAnimatorSet.setStartDelay(1000);
+                mAnimatorSet.setDuration(12000);
+                mAnimatorSet.playTogether(
+                        ObjectAnimator.ofFloat(view, "alpha", 0, 1, 1, 1),
+                        ObjectAnimator.ofFloat(view, "scaleX", 0.3f, 1.05f, 0.9f, 1),
+                        ObjectAnimator.ofFloat(view, "scaleY", 0.3f, 1.05f, 0.9f, 1)
+                );
+                mAnimatorSet.start();
+            }
+        });
 
     }
 
