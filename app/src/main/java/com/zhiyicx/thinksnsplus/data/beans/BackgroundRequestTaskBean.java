@@ -68,7 +68,7 @@ public class BackgroundRequestTaskBean {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             this.user_id = 0L;
         }
-        this.user_id = Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id());
+        this.user_id = Long.valueOf(AppApplication.getMyUserIdWithdefault());
     }
 
     public BackgroundTaskRequestMethodConfig getMethodType() {

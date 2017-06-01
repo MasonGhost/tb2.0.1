@@ -168,6 +168,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @OnClick(R.id.fragment_infocontainer_change)
     public void onClick() {
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), ChannelActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_INFO_TYPE, mInfoTypeBean);
