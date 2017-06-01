@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 
+import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,16 +9,24 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -25,7 +34,7 @@ import rx.functions.Action1;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter> implements DynamicTopContract.View{
+public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter> implements DynamicTopContract.View {
 
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
@@ -48,7 +57,9 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     private int mCurrentDays;
     private float mInputMoney;
 
-    public static DynamicTopFragment newInstance(){
+    private ActionPopupWindow mStickTopInstructionsPopupWindow;
+
+    public static DynamicTopFragment newInstance() {
         return new DynamicTopFragment();
     }
 
@@ -69,7 +80,30 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
         mSelectDays.add(5);
         mSelectDays.add(10);
         initSelectDays(mSelectDays);
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, 33f));
+        initListener();
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    public boolean insufficientBalance() {
+        return mPresenter.getBalance() < mCurrentDays * mInputMoney;
+    }
+
+    @Override
+    public void gotoRecharge() {
+        startActivity(new Intent(getActivity(), WalletActivity.class));
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_dynamic_top;
+    }
+
+    private void initListener() {
         mRbDaysGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
@@ -95,13 +129,35 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
                     public void call(CharSequence charSequence) {
                         if (!TextUtils.isEmpty(charSequence)) {
                             if (charSequence.toString().contains(".")) {
-                                mEtTopInput.setError("只能充值整数");
+                                initStickTopInstructionsPop();
+                                mEtTopInput.setText("");
+                                return;
                             }
                             mInputMoney = Float.parseFloat(charSequence.toString());
                         } else {
                             mInputMoney = 0f;
                         }
                         setConfirmEnable();
+                    }
+                });
+
+        RxTextView.textChanges(mEtTopTotal)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        mBtTop.setText(getString(mPresenter.getBalance() < mCurrentDays * mInputMoney
+                                ? R.string.to_recharge : R.string.sure));
+                    }
+                });
+
+        RxView.clicks(mBtTop)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        mPresenter.stickTop();
                     }
                 });
     }
@@ -115,19 +171,32 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     private void setConfirmEnable() {
         mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
         mBtTop.setEnabled(mCurrentDays > 0 && mInputMoney > 0);
+        if (mCurrentDays == 0)
+            return;
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), mInputMoney / mCurrentDays, mPresenter.getBalance()));
     }
 
-    @Override
-    protected void initData() {
-
+    private void initStickTopInstructionsPop() {
+        if (mStickTopInstructionsPopupWindow != null) {
+            mStickTopInstructionsPopupWindow.show();
+            return;
+        }
+        mStickTopInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.sticktop_instructions))
+                .desStr(getString(R.string.sticktop_instructions_detail))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onItemClicked() {
+                        mStickTopInstructionsPopupWindow.hide();
+                    }
+                })
+                .build();
+        mStickTopInstructionsPopupWindow.show();
     }
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_dynamic_top;
-    }
-
-    @OnClick(R.id.bt_top)
-    public void onViewClicked() {
-    }
 }

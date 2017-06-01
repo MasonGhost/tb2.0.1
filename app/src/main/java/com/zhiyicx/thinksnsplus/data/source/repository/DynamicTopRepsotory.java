@@ -16,4 +16,9 @@ public class DynamicTopRepsotory implements DynamicTopContract.Repository {
     @Inject
     public DynamicTopRepsotory(ServiceManager serviceManager) {
     }
+
+    @Override
+    public void stickTop() {
+
+    }
 }

@@ -12,14 +12,16 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 public interface DynamicTopContract {
 
     interface View extends IBaseView<Presenter>{
-
+        boolean insufficientBalance();
+        void gotoRecharge();
     }
 
     interface Presenter extends IBasePresenter{
-
+        float getBalance();
+        void stickTop();
     }
 
     interface Repository {
-
+        void stickTop();
     }
 }

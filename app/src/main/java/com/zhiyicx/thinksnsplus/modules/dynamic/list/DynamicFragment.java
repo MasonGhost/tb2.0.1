@@ -426,14 +426,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                                     .STATUS_COLLECT_FEED_CHECKED, shareBitMap);
                     mMyDynamicPopWindow.show();
                 } else {
-                    initCenterPopWindow();
-                    mPayPopWindow.show();
+//                    initCenterPopWindow();
+//                    mPayPopWindow.show();
 
-//                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
-//                            mListDatas.get(dataPosition)
-//                                    .getTool().getIs_collection_feed() == DynamicToolBean
-//                                    .STATUS_COLLECT_FEED_CHECKED, shareBitMap);
-//                    mOtherDynamicPopWindow.show();
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
+                            mListDatas.get(dataPosition)
+                                    .getTool().getIs_collection_feed() == DynamicToolBean
+                                    .STATUS_COLLECT_FEED_CHECKED, shareBitMap);
+                    mOtherDynamicPopWindow.show();
                 }
 
                 break;

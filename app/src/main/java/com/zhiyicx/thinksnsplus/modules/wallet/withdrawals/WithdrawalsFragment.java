@@ -183,8 +183,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
             cashType = new ArrayList<>();
         }
         mActionPopupWindow = ActionPopupWindow.builder()
-                .item2Str(cashType.contains(WalletConfigBean.CashBean.TYPE_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
-                .item3Str(cashType.contains(WalletConfigBean.CashBean.TYPE_WECHAT) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
+                .item2Str(cashType.contains(WalletConfigBean.CashBean.TYPE_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)) : "")
+                .item3Str(cashType.contains(WalletConfigBean.CashBean.TYPE_WECHAT) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
