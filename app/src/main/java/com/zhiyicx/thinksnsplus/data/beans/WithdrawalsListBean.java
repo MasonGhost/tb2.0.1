@@ -2,12 +2,18 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @Author Jliuer
  * @Date 2017/05/24/9:33
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@Entity
 public class WithdrawalsListBean extends BaseListBean {
 
     /**
@@ -19,7 +25,9 @@ public class WithdrawalsListBean extends BaseListBean {
      * remark : null
      * created_at : 2017-06-01 09:30:22
      */
-
+    @Id(autoincrement = true)
+    private Long _id;
+    @Unique
     private int id;
     private int value;
     private String type;
@@ -28,13 +36,34 @@ public class WithdrawalsListBean extends BaseListBean {
     private long remark;
     private String created_at;
 
+    @Generated(hash = 138785795)
+    public WithdrawalsListBean(Long _id, int id, int value, String type,
+            String account, int status, long remark, String created_at) {
+        this._id = _id;
+        this.id = id;
+        this.value = value;
+        this.type = type;
+        this.account = account;
+        this.status = status;
+        this.remark = remark;
+        this.created_at = created_at;
+    }
+
+    @Generated(hash = 474679993)
+    public WithdrawalsListBean() {
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-        setMaxId((long) id);
+    }
+
+    @Override
+    public Long getMaxId() {
+        return (long) id;
     }
 
     public int getValue() {
@@ -83,5 +112,13 @@ public class WithdrawalsListBean extends BaseListBean {
 
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
+    }
+
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
     }
 }

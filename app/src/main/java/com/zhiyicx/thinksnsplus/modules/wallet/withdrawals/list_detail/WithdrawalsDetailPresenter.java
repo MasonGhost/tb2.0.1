@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.WithdrawalsListBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,9 @@ import rx.Subscription;
  */
 public class WithdrawalsDetailPresenter extends AppBasePresenter<WithdrawalsDetailConstract.Repository, WithdrawalsDetailConstract.View>
         implements WithdrawalsDetailConstract.Presenter {
+
+    @Inject
+    WithdrawalsListBeanGreenDaoImpl mWithdrawalsListBeanGreenDao;
 
     @Inject
     public WithdrawalsDetailPresenter(WithdrawalsDetailConstract.Repository repository, WithdrawalsDetailConstract.View rootView) {
@@ -52,11 +56,12 @@ public class WithdrawalsDetailPresenter extends AppBasePresenter<WithdrawalsDeta
 
     @Override
     public List<WithdrawalsListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+        return mWithdrawalsListBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<WithdrawalsListBean> data, boolean isLoadMore) {
-        return false;
+        mWithdrawalsListBeanGreenDao.saveMultiData(data);
+        return true;
     }
 }
