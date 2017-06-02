@@ -1,11 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment;
 
-import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -15,6 +12,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -22,8 +20,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -34,7 +30,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicCommentTollFragment extends TSFragment {
+public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollContract.Presenter>
+        implements DynamicCommentTollContract.View {
 
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
@@ -57,7 +54,7 @@ public class DynamicCommentTollFragment extends TSFragment {
 
     private float mCommentMoney;
 
-    public static DynamicCommentTollFragment newInstance(){
+    public static DynamicCommentTollFragment newInstance() {
         return new DynamicCommentTollFragment();
     }
 
@@ -114,6 +111,7 @@ public class DynamicCommentTollFragment extends TSFragment {
                         mCommentMoney = mSelectMoney.get(2);
                         break;
                 }
+                DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
                 setConfirmEnable();
             }
         });
@@ -144,6 +142,7 @@ public class DynamicCommentTollFragment extends TSFragment {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
+                        DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
                     }
                 });
     }

@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,12 +29,12 @@ public class WithdrawalsDetailPresenter extends AppBasePresenter<WithdrawalsDeta
     }
 
     @Override
-    public List<WithdrawalsDetailBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<WithdrawalsListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<WithdrawalsDetailBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<WithdrawalsListBean> data, boolean isLoadMore) {
         return false;
     }
 }

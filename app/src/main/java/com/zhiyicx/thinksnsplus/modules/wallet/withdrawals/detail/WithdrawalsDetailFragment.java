@@ -10,7 +10,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.account.AccountActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -24,7 +24,7 @@ import butterknife.BindView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailConstract.Presenter, WithdrawalsDetailBean>
+public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailConstract.Presenter, WithdrawalsListBean>
         implements WithdrawalsDetailConstract.View {
 
     @BindView(R.id.v_shadow)
@@ -104,7 +104,7 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
     @Override
     protected void initData() {
         super.initData();
-        WithdrawalsDetailBean test = new WithdrawalsDetailBean();
+        WithdrawalsListBean test = new WithdrawalsListBean();
         mListDatas.add(test);
         mListDatas.add(test);
         mListDatas.add(test);
@@ -122,9 +122,9 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        CommonAdapter adapter = new CommonAdapter<WithdrawalsDetailBean>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
+        CommonAdapter adapter = new CommonAdapter<WithdrawalsListBean>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, WithdrawalsDetailBean s, int position) {
+            protected void convert(ViewHolder holder, WithdrawalsListBean s, int position) {
                 TextView desc = holder.getView(R.id.withdrawals_desc);
                 if (position % 2 == 0) {
                     desc.setEnabled(false);

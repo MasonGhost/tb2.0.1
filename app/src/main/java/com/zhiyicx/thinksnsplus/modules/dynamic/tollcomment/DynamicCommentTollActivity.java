@@ -1,8 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-public class DynamicCommentTollActivity extends TSActivity {
+public class DynamicCommentTollActivity extends TSActivity<DynamicCommentTollPresenter, DynamicCommentTollFragment> {
 
     @Override
     protected DynamicCommentTollFragment getFragment() {
@@ -11,6 +12,9 @@ public class DynamicCommentTollActivity extends TSActivity {
 
     @Override
     protected void componentInject() {
-
+        DaggerDynamicCommentTollComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .dynamicCommentTollPresenterModule(new DynamicCommentTollPresenterModule(mContanierFragment))
+                .build().inject(this);
     }
 }

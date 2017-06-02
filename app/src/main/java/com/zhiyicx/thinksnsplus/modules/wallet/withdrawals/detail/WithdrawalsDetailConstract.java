@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 
 /**
  * @Author Jliuer
@@ -11,11 +11,11 @@ import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsDetailBean;
  * @Description
  */
 public interface WithdrawalsDetailConstract {
-    interface View extends ITSListView<WithdrawalsDetailBean,Presenter>{
+    interface View extends ITSListView<WithdrawalsListBean,Presenter>{
 
     }
 
-    interface Presenter extends ITSListPresenter<WithdrawalsDetailBean>{}
+    interface Presenter extends ITSListPresenter<WithdrawalsListBean>{}
 
     interface Repository{}
 }

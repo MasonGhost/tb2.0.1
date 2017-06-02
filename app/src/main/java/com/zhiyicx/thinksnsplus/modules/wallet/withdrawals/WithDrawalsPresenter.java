@@ -3,7 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import javax.inject.Inject;
 
@@ -19,6 +22,12 @@ import rx.functions.Action0;
 @SuppressWarnings("unchecked")
 public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.Repository, WithDrawalsConstract.View>
         implements WithDrawalsConstract.Presenter {
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public WithDrawalsPresenter(WithDrawalsConstract.Repository repository, WithDrawalsConstract.View rootView) {
@@ -44,7 +53,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackSuccessMessage(message);
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.withdraw_failed));
                     }
 
                     @Override
@@ -53,5 +62,26 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
                     }
                 });
         addSubscrebe(subscribe);
+    }
+
+    private void updateUserInfo$$Balance(){
+        Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                    @Override
+                    protected void onSuccess(UserInfoBean data) {
+                        mUserInfoBeanGreenDao.insertOrReplace(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackWarningMessage(message);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
+        addSubscrebe(userInfoSub);
     }
 }
