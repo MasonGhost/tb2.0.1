@@ -24,11 +24,12 @@
             app:showLines="@integer/dynamic_content_show_lines"/>
 
         <View
+            style="@style/style_divider_horizontal"
             android:layout_height="@dimen/spacing_small"
-            android:background="@color/feed_back_question"
-            style="@style/style_divider_horizontal"/>
+            android:background="@color/feed_back_question"/>
 
         <EditText
+            android:id="@+id/tv_feedback_contract"
             style="@style/style_edit_cursor"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_back_item_height"
@@ -37,6 +38,7 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:hint="@string/hint_phone_or_email"
+            android:inputType="phone|textEmailAddress"
             android:textColor="@color/important_for_content"
             android:textColorHint="@color/general_for_hint"
             android:textSize="@dimen/size_content"/>
