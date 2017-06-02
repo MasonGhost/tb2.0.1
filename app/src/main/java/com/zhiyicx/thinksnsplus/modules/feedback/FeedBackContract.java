@@ -10,9 +10,13 @@ import com.zhiyicx.common.mvp.i.IBaseView;
  * @Description
  */
 public interface FeedBackContract {
-    interface View extends IBaseView<Presenter>{}
+    interface View extends IBaseView<Presenter>{
+        void showWithdrawalsInstructionsPop();
+    }
 
-    interface Presenter extends IBasePresenter{}
+    interface Presenter extends IBasePresenter{
+        void submitFeedBack(String content,String contract);
+    }
 
     interface Repository{}
 }

@@ -176,7 +176,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         if (isNeedTip) {
-                            mRootView.showSnackErrorMessage(mContext.getString(R.string.get_succes));
+                            mRootView.showSnackErrorMessage(message);
                         }
                     }
 

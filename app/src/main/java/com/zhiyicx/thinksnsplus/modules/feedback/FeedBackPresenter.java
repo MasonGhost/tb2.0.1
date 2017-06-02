@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.feedback;
 
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 
 import javax.inject.Inject;
@@ -10,11 +11,20 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.Repository,FeedBackContract.View>
+public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.Repository, FeedBackContract.View>
         implements FeedBackContract.Presenter {
 
     @Inject
     public FeedBackPresenter(FeedBackContract.Repository repository, FeedBackContract.View rootView) {
         super(repository, rootView);
+    }
+
+    @Override
+    public void submitFeedBack(String content, String contract) {
+        if (!(RegexUtils.isMobileExact(contract) || RegexUtils.isEmail(content))) {
+            mRootView.showWithdrawalsInstructionsPop();
+        }else{
+
+        }
     }
 }
