@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail;
+package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail;
 
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +15,10 @@ import com.zhiyicx.thinksnsplus.modules.wallet.account.AccountActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -102,25 +106,6 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
     }
 
     @Override
-    protected void initData() {
-        super.initData();
-        WithdrawalsListBean test = new WithdrawalsListBean();
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-        mListDatas.add(test);
-    }
-
-    @Override
     protected RecyclerView.Adapter getAdapter() {
         CommonAdapter adapter = new CommonAdapter<WithdrawalsListBean>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
             @Override
@@ -150,6 +135,5 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
         return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
                 .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
                 .shape_recyclerview_grey_divider));
-
     }
 }

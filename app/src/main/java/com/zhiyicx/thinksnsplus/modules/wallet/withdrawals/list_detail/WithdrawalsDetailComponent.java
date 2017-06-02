@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail;
+package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;

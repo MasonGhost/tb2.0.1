@@ -8,7 +8,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class WithdrawalsListBean extends BaseListBean{
+public class WithdrawalsListBean extends BaseListBean {
 
     /**
      * id : 4
@@ -34,6 +34,7 @@ public class WithdrawalsListBean extends BaseListBean{
 
     public void setId(int id) {
         this.id = id;
+        setMaxId((long) id);
     }
 
     public int getValue() {

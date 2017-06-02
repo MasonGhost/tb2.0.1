@@ -115,11 +115,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    public void showLoading() {
-
-    }
-
-    @Override
     public void showMessage(String message) {
         showMessageNotSticky(message);
     }
