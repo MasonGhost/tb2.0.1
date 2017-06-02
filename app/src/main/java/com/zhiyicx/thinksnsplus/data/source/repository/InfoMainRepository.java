@@ -25,7 +25,6 @@ import rx.functions.Func1;
  */
 public class InfoMainRepository implements InfoMainContract.Reppsitory {
 
-    //    @Inject
     InfoMainClient mInfoMainClient;
 
     @Inject

@@ -305,4 +305,6 @@ public class ApiConfig {
      */
     // 钱包信息
     public static final String APP_PAHT_WALLET_CONFIG = "api/" + API_VERSION_2 + "/wallet";
+    // 提现
+    public static final String APP_PAHT_WALLET_WITHDRAW = "api/" + API_VERSION_2 + "/wallet/cashes";
 }

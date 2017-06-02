@@ -17,15 +17,18 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
+import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.detail.WithdrawalsDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -50,7 +53,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     private ActionPopupWindow mActionPopupWindow;
 
-    private int mWithdrawalsType;
+    private String mWithdrawalsType;
 
     private double mWithdrawalsMoney;
 
@@ -97,6 +100,11 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     @Override
+    public void withdrawResult(WithdrawResultBean withdrawResultBean) {
+
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_withdrawals;
     }
@@ -106,9 +114,20 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     private void initListener() {
+        RxView.clicks(mBtSure)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
+                        mPresenter.withdraw((int) mWithdrawalsMoney * 200, mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
+                    }
+                });
+
         RxView.clicks(mBtWithdrawStyle).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
+                DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
                 initWithDrawalsStylePop();
             }
         });
@@ -193,7 +212,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        mWithdrawalsType = PayType.ALIPAY.value;
+                        mWithdrawalsType = WithdrawType.ALIWITHDRAW.type;
                         mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)));
                         mActionPopupWindow.hide();
                         configSureButton();
@@ -202,7 +221,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        mWithdrawalsType = PayType.WX.value;
+                        mWithdrawalsType = WithdrawType.WXWITHDRAW.type;
                         mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)));
                         mActionPopupWindow.hide();
                         configSureButton();

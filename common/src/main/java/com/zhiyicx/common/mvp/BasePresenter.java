@@ -21,7 +21,6 @@ import rx.subscriptions.CompositeSubscription;
  * @Date 2016/12/14
  * @Contact 335891510@qq.com
  */
-
 public abstract class BasePresenter<R, V extends IBaseView> implements IBasePresenter {
     protected final String TAG = this.getClass().getSimpleName();
     protected final Observable.Transformer mSchedulersTransformer = new Observable.Transformer() {
