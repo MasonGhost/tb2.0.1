@@ -249,4 +249,16 @@
     <string name="transaction_description">交易说明</string>
     <string name="transaction_account">交易账户</string>
     <string name="transaction_time">交易时间</string>
+
+    <!--意见反馈-->
+    <string name="hint_phone_or_email">请输入电话或者邮箱，方便我们与您联系</string>
+    <string name="feed_back">意见反馈</string>
+    <string name="hint_feed_back">请输入反馈，我们将为您不断改进</string>
+    <string name="submit">提交</string>
+    <string name="normal_qustion">常见问题</string>
+    <string name="normal_qustion_one">不想看到未关注的动态，怎么关闭？</string>
+    <string name="normal_qustion_two">在3G/4G下不能使用ThinkSNS+</string>
+    <string name="normal_qustion_three">怎么更换个人主页相册封面？</string>
+    <string name="input_instructions">输入提示</string>
+    <string name="input_instructions_detail">输入格式错误，手机号码或邮箱仅支持数字或字母</string>
 </resources>

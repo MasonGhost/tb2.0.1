@@ -303,6 +303,10 @@
         </activity>
         <activity android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity">
         </activity>
+        <activity android:name=".modules.wallet.bill.BillActivity">
+        </activity>
+        <activity android:name=".modules.feedback.FeedBackActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -13,4 +13,7 @@
     <color name="dyanmic_send">#575757</color>
 
     <color name="tym">#ddffffff</color>
+
+    <!--意见反馈-常见问题背景-->
+    <color name="feed_back_question">#f4f5f5</color>
 </resources>

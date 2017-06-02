@@ -56,4 +56,7 @@
     <!--发布动态-->
     <dimen name="send_dynamic_send_button_img">65dp</dimen>
     <dimen name="send_dynamic_close_button_img">50dp</dimen>
+
+    <!--意见反馈-->
+    <dimen name="feed_back_item_height">45dp</dimen>
 </resources>

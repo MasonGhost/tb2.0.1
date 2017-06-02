@@ -32,11 +32,6 @@ import butterknife.BindView;
 public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailConstract.Presenter, WithdrawalsListBean>
         implements WithdrawalsDetailConstract.View {
 
-    @BindView(R.id.v_shadow)
-    View mVshadow;
-
-    private ActionPopupWindow mActionPopupWindow;
-
     public static WithdrawalsDetailFragment newInstance() {
         return new WithdrawalsDetailFragment();
     }
@@ -48,65 +43,12 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
 
     @Override
     protected String setCenterTitle() {
-        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowdown,0);
         return getString(R.string.withdraw_details);
-    }
-
-    @Override
-    protected void setCenterClick() {
-        mActionPopupWindow.showTop();
     }
 
     @Override
     protected boolean showToolBarDivider() {
         return true;
-    }
-
-    @Override
-    protected void initView(View rootView) {
-        super.initView(rootView);
-//        mToolbarCenter.setCompoundDrawables(null,null,getResources().getDrawable(R.mipmap.arr),null);
-        mActionPopupWindow = ActionPopupWindow.builder()
-                .with(getActivity())
-                .isFocus(true)
-                .isOutsideTouch(true)
-                .parentView(mDriver)
-                .animationStyle(ActionPopupWindow.NO_ANIMATION)
-                .item1Str(getString(R.string.withdraw_all))
-                .item2Str(getString(R.string.withdraw_out))
-                .item3Str(getString(R.string.withdraw_in))
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mActionPopupWindow.hide();
-                    }
-                })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mActionPopupWindow.hide();
-                    }
-                })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mActionPopupWindow.hide();
-                    }
-                })
-                .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
-                    @Override
-                    public void onShow() {
-                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowup,0);
-                        mVshadow.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onDismiss() {
-                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowdown,0);
-                        mVshadow.setVisibility(View.GONE);
-                    }
-                })
-                .build();
     }
 
     @Override

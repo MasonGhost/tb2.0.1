@@ -24,6 +24,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
@@ -236,6 +237,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(getActivity(), WalletActivity.class));
                 break;
             case R.id.bt_suggestion:
+                startActivity(new Intent(getActivity(), FeedBackActivity.class));
                 //LoadingDialogUtils.showStateSuccess(getContext());
                 break;
             case R.id.bt_question_answer:
