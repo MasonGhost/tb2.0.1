@@ -1,14 +1,18 @@
 package com.zhiyicx.baseproject.widget.popwindow;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
+import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -200,6 +204,7 @@ public class ActionPopupWindow extends PopupWindow {
         if (mParentView == null) {
             showAtLocation(mContentView, Gravity.TOP, 0, 0);
         } else {
+            initToInAnimation(mContentView);
             showAsDropDown(mParentView, 0, 0);
         }
     }
@@ -220,8 +225,9 @@ public class ActionPopupWindow extends PopupWindow {
 
     @Override
     public void dismiss() {
-        if (mAnimationStyle == NO_ANIMATION)
+        if (mAnimationStyle == NO_ANIMATION) {
             mContentView.clearAnimation();
+        }
         super.dismiss();
         if (mActionPopupWindowDismissListener != null)
             mActionPopupWindowDismissListener.onDismiss();
@@ -439,5 +445,41 @@ public class ActionPopupWindow extends PopupWindow {
 
         void onShow();
     }
+
+    private void initToInAnimation(final View view) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                int distance = view.getTop() + view.getHeight();
+                AnimatorSet mAnimatorSet = new AnimatorSet();
+                ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
+                ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
+                mAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+                mAnimatorSet.setDuration(500);
+                mAnimatorSet.playTogether(
+                        ObjectAnimator.ofFloat(view, "translationY", -distance, 0)
+                );
+                mAnimatorSet.start();
+            }
+        });
+    }
+
+//    private void initToOutAnimation(final View view) {
+//        view.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                AnimatorSet mAnimatorSet = new AnimatorSet();
+//                ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
+//                ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
+//                mAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+//                mAnimatorSet.setDuration(15000);
+//                mAnimatorSet.playTogether(
+//                        ObjectAnimator.ofFloat(view, "alpha", 1f, 0f),
+//                        ObjectAnimator.ofFloat(view, "translationY", 0, -view.getBottom())
+//                );
+//                mAnimatorSet.start();
+//            }
+//        });
+//    }
 
 }

@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +22,8 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
@@ -346,7 +347,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      */
     private void setCurrentPage() {
         if (getArguments() != null && getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE) != null) {
-            checkBottomItem(HomeFragment.PAGE_MESSAGE);
+            switch (((JpushMessageBean) getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE)).getType()) {
+                case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_SYSTEM:
+                    checkBottomItem(HomeFragment.PAGE_MINE);
+                    break;
+                default:
+                    checkBottomItem(HomeFragment.PAGE_MESSAGE);
+            }
         } else {
             mVpHome.setCurrentItem(PAGE_HOME, false);
         }

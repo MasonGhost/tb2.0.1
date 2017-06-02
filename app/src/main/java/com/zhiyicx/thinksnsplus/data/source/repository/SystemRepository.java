@@ -118,7 +118,6 @@ public class SystemRepository implements ISystemRepository {
                     if (key.equals("link")) {
                         imageAdvert.setLink(value);
                     }
-                    LogUtils.d(key + ":::" + value);
                 }
                 advert.setImageAdvert(imageAdvert);
             }

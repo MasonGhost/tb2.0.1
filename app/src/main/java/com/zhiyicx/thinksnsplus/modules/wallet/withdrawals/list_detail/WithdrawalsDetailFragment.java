@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -47,6 +48,7 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
 
     @Override
     protected String setCenterTitle() {
+        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowdown,0);
         return getString(R.string.withdraw_details);
     }
 
@@ -94,11 +96,13 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
                 .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
                     @Override
                     public void onShow() {
+                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowup,0);
                         mVshadow.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onDismiss() {
+                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowdown,0);
                         mVshadow.setVisibility(View.GONE);
                     }
                 })
