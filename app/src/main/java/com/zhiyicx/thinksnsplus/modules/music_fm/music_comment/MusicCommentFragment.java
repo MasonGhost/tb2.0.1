@@ -101,7 +101,6 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     protected void initView(View rootView) {
         AndroidBug5497Workaround.assistActivity(getActivity());
         super.initView(rootView);
-//        AndroidBug5497Workaround.assistActivity(getActivity());
         mIlvComment.setSendButtonVisiable(true);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
         mMusicCommentHeader = new MusicCommentHeader(getActivity());
