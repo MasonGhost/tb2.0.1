@@ -472,7 +472,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         });
 
         mTvToll.setVisibility(BuildConfig.USE_TOLL ? View.VISIBLE : View.GONE);
-        mEtDynamicTitle.setVisibility(mTvToll.getVisibility());
         mTvToll.setRightImageClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

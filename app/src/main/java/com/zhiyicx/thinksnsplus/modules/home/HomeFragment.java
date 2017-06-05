@@ -184,14 +184,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 添加动态
             case R.id.fl_add:
                 if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
-                    if (BuildConfig.USE_TOLL) {
-                        Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
-                        startActivity(intent);
-                        getActivity().overridePendingTransition(R.anim.zoom_in, 0);
-                        //getActivity().overridePendingTransition(R.anim.slide_in_bottom, 0);
-                    } else {
-                        initPhotoPopupWindow();
-                    }
+                    Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.zoom_in, 0);
+
+//                    initPhotoPopupWindow();
                 }
                 break;
             // 点击消息
