@@ -105,7 +105,8 @@ public class SelectDynamicTypeFragment extends TSFragment {
                 break;
         }
         getActivity().finish();
-        getActivity().overridePendingTransition(0, R.anim.slide_out_bottom);
+        getActivity().overridePendingTransition(0, R.anim.zoom_out);
+//        getActivity().overridePendingTransition(0, R.anim.slide_out_bottom);
     }
 
 }

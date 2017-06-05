@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -183,11 +184,16 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 添加动态
             case R.id.fl_add:
                 if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
-                    Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_bottom, 0);
-//                    initPhotoPopupWindow();
-//                    mPhotoPopupWindow.show();
+                    if (BuildConfig.USE_TOLL) {
+                        Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.zoom_in, 0);
+                        //getActivity().overridePendingTransition(R.anim.slide_in_bottom, 0);
+                    } else {
+                        initPhotoPopupWindow();
+                    }
+
+
                 }
                 break;
             // 点击消息
@@ -408,6 +414,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      */
     private void initPhotoPopupWindow() {
         if (mPhotoPopupWindow != null) {
+            mPhotoPopupWindow.show();
             return;
         }
         mPhotoPopupWindow = ActionPopupWindow.builder()
@@ -439,6 +446,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                         mPhotoPopupWindow.hide();
                     }
                 }).build();
+        mPhotoPopupWindow.show();
     }
 
 }
