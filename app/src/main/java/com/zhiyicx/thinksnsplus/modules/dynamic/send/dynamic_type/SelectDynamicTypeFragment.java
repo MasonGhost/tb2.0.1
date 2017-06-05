@@ -68,14 +68,14 @@ public class SelectDynamicTypeFragment extends TSFragment {
                 mAnimatorSet.setDuration(1200);
 
                 ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
-                ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0f, 1f);
-                ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0f, 1f);
+                ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0f, 1.01f);
+                ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0f, 1.01f);
                 ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", vertical_distance, 0);
 
                 AnimatorSet mAnimatorSetLate = mAnimatorSet.clone();
                 mAnimatorSetLate.playTogether(
-                        ObjectAnimator.ofFloat(view, "scaleX", 1f, 1.05f, 0.9f, 1),
-                        ObjectAnimator.ofFloat(view, "scaleY", 1f, 1.05f, 0.9f, 1));
+                        ObjectAnimator.ofFloat(view, "scaleX", 1.02f, 1.05f, 1.02f, 0.9f, 1f),
+                        ObjectAnimator.ofFloat(view, "scaleY", 1.02f, 1.05f, 1.02f, 0.9f, 1f));
                 mAnimatorSet.play(alpha).with(scaleX).with(scaleY).with(translationY).before(mAnimatorSetLate);
                 mAnimatorSet.start();
 
