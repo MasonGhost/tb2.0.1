@@ -16,15 +16,17 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.List;
+
 import butterknife.BindView;
 
 /**
  * @Author Jliuer
  * @Date 2017/06/02/15:42
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description  账单
  */
-public class BillListFragment extends TSListFragment {
+public class BillListFragment extends TSListFragment<BillContract.Presenter,WithdrawalsListBean> implements BillContract.View{
 
     @BindView(R.id.v_shadow)
     View mVshadow;
@@ -34,6 +36,8 @@ public class BillListFragment extends TSListFragment {
     public static BillListFragment newInstance(){
         return new BillListFragment();
     }
+
+
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
@@ -128,4 +132,7 @@ public class BillListFragment extends TSListFragment {
                 .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
                 .shape_recyclerview_grey_divider));
     }
+
+
+
 }

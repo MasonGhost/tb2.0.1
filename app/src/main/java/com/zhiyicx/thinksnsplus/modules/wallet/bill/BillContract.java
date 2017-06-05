@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.bill;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 
 /**
  * @Author Jliuer
@@ -10,11 +11,11 @@ import com.zhiyicx.baseproject.base.ITSListView;
  * @Description
  */
 public interface BillContract {
-    interface View extends ITSListView{
+    interface View extends ITSListView<WithdrawalsListBean,Presenter>{
 
     }
 
-    interface Presenter extends ITSListPresenter{
+    interface Presenter extends ITSListPresenter<WithdrawalsListBean>{
 
     }
 

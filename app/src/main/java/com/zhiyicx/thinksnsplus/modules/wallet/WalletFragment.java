@@ -14,6 +14,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
@@ -104,7 +105,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), WithdrawalsDetailActivity.class));
+        startActivity(new Intent(getActivity(), BillActivity.class));
     }
 
     private void initListener() {

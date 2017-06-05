@@ -13,7 +13,7 @@
         android:background="@drawable/bg_popwindow"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_25"
+        android:paddingBottom="@dimen/spacing_normal"
         android:paddingLeft="@dimen/margin_25"
         android:paddingRight="@dimen/margin_25"
         android:paddingTop="@dimen/margin_18">
