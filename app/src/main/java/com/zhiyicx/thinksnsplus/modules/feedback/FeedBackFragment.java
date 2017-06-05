@@ -73,18 +73,26 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
     private void initRightSubmit() {
         mToolbarRight.setEnabled(false);
 
-        Observable.zip(RxTextView.textChanges(mTvFeedbackContract), RxTextView.textChanges(mEtDynamicContent.getEtContent()),
-                new Func2<CharSequence, CharSequence, CharSequence>() {
+        Observable.combineLatest(RxTextView.textChanges(mTvFeedbackContract), RxTextView.textChanges(mEtDynamicContent.getEtContent()),
+                new Func2<CharSequence, CharSequence, Boolean>() {
                     @Override
-                    public CharSequence call(CharSequence charSequence, CharSequence charSequence2) {
-                        return (charSequence.toString() + charSequence2.toString()).replaceAll(" ", "");
+                    public Boolean call(CharSequence charSequence, CharSequence charSequence2) {
+                        return charSequence.toString().replaceAll(" ", "").length() > 0 && charSequence2.toString().replaceAll(" ", "").length() > 0;
                     }
-                }).subscribe(new Action1<CharSequence>() {
-            @Override
-            public void call(CharSequence s) {
-                mToolbarRight.setEnabled(s.toString().length() > 0);
-            }
-        });
+                })
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean enable) {
+                        mToolbarRight.setEnabled(enable);
+                    }
+
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+
         RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())

@@ -38,7 +38,6 @@
             android:background="@color/white"
             android:gravity="center_vertical"
             android:hint="@string/hint_phone_or_email"
-            android:inputType="phone|textEmailAddress"
             android:textColor="@color/important_for_content"
             android:textColorHint="@color/general_for_hint"
             android:textSize="@dimen/size_content"/>

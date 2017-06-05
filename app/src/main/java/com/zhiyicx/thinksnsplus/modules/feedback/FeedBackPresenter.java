@@ -31,7 +31,7 @@ public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.Reposit
 
     @Override
     public void submitFeedBack(String content, String contract) {
-        if (!(RegexUtils.isMobileExact(contract) || RegexUtils.isEmail(content))) {
+        if (!(RegexUtils.isMobileExact(contract) || !RegexUtils.isEmail(content))) {
             mRootView.showWithdrawalsInstructionsPop();
         } else {
             String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
