@@ -8,6 +8,7 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 
 import java.util.ArrayList;
@@ -173,7 +174,6 @@ public class MusicProvider {
             list.add(m.metadata);
         }
         mMusicListByGenre = newMusicListByGenre;
-
     }
 
     private synchronized void retrieveMedia() {
@@ -207,11 +207,12 @@ public class MusicProvider {
         if (MEDIA_ID_ROOT.equals(mediaId)) {
             for (String genre : getGenres()) {
                 for (MediaMetadataCompat metadata : mMusicListByGenre.get(genre)) {
+                    LogUtils.d("getChildren::" + metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
                     mediaItems.add(createMediaItem(metadata));
                 }
             }
 
-//            mediaItems.add(createBrowsableMediaItemForRoot(resources));
+            Collections.reverse(mediaItems);
 
         } else if (MEDIA_ID_MUSICS_BY_GENRE.equals(mediaId)) {
             for (String genre : getGenres()) {
@@ -225,6 +226,7 @@ public class MusicProvider {
             }
 
         } else {
+
         }
         return mediaItems;
     }

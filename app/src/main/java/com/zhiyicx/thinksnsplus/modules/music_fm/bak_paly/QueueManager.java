@@ -146,6 +146,7 @@ public class QueueManager {
 
     protected void setCurrentQueue(String title, List<MediaSessionCompat.QueueItem> newQueue,
                                    String initialMediaId) {
+        Collections.reverse(newQueue);
         mPlayingQueue = newQueue;
         int index = 0;
         if (initialMediaId != null) {
