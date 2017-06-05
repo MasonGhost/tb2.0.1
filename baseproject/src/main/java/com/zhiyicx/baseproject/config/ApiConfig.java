@@ -29,10 +29,10 @@ public class ApiConfig {
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
 //
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 //    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
@@ -230,7 +230,7 @@ public class ApiConfig {
      * 分享相关
      */
     public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "profile/%s";// 用户信息分享地址 url/profile/{user_id}
-    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "feeds/detail/%s";// 动态信息分享地址 url/feeds/detail/{feed_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "web/feed/%s";// 动态信息分享地址 url/feeds/detail/{feed_id}
     public static final String APP_PATH_SHARE_DEFAULT = APP_DOMAIN + "api/develop";// 开发中的提示
 
 

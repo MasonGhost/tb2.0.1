@@ -253,6 +253,9 @@
     <!--意见反馈-->
     <string name="hint_phone_or_email">请输入电话或者邮箱，方便我们与您联系</string>
     <string name="feed_back">意见反馈</string>
+    <string name="feed_back_ing">反馈中&#8230;</string>
+    <string name="feed_back_success">意见成功</string>
+    <string name="feed_back_failed">意见失败</string>
     <string name="hint_feed_back">请输入反馈，我们将为您不断改进</string>
     <string name="submit">提交</string>
     <string name="normal_qustion">常见问题</string>
