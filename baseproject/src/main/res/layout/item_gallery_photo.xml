@@ -54,6 +54,7 @@
         android:layout_marginBottom="@dimen/spacing_normal_large"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        android:visibility="gone"
         >
 
         <TextView

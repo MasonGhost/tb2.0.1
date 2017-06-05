@@ -192,8 +192,6 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                     } else {
                         initPhotoPopupWindow();
                     }
-
-
                 }
                 break;
             // 点击消息
@@ -384,6 +382,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             @Override
             public boolean onLongClick(View v) {
                 // 跳转到发送动态页面
+                if (BuildConfig.USE_TOLL) {
+                    return true;
+                }
                 SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
                 sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
                 sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);

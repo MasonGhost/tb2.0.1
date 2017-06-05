@@ -37,8 +37,6 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter,With
         return new BillListFragment();
     }
 
-
-
     @Override
     protected RecyclerView.Adapter getAdapter() {
         CommonAdapter adapter = new CommonAdapter<WithdrawalsListBean>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {

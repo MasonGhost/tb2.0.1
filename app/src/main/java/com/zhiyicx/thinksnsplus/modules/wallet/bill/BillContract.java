@@ -4,6 +4,10 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 
+import java.util.List;
+
+import rx.Observable;
+
 /**
  * @Author Jliuer
  * @Date 2017/06/02/15:46
@@ -20,6 +24,6 @@ public interface BillContract {
     }
 
     interface Repository{
-
+        Observable<List<WithdrawalsListBean>> getBillList(int after);
     }
 }

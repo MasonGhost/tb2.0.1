@@ -204,7 +204,7 @@ public class ActionPopupWindow extends PopupWindow {
         if (mParentView == null) {
             showAtLocation(mContentView, Gravity.TOP, 0, 0);
         } else {
-            initToInAnimation(mContentView);
+            initTopInAnimation(mContentView);
             showAsDropDown(mParentView, 0, 0);
         }
     }
@@ -446,7 +446,7 @@ public class ActionPopupWindow extends PopupWindow {
         void onShow();
     }
 
-    private void initToInAnimation(final View view) {
+    private void initTopInAnimation(final View view) {
         view.post(new Runnable() {
             @Override
             public void run() {
@@ -464,7 +464,12 @@ public class ActionPopupWindow extends PopupWindow {
         });
     }
 
-//    private void initToOutAnimation(final View view) {
+    @Override
+    public void setOnDismissListener(OnDismissListener onDismissListener) {
+        super.setOnDismissListener(onDismissListener);
+    }
+
+    //    private void initToOutAnimation(final View view) {
 //        view.post(new Runnable() {
 //            @Override
 //            public void run() {
