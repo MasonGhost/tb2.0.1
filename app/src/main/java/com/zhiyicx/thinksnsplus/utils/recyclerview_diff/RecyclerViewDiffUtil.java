@@ -18,11 +18,11 @@ import rx.schedulers.Schedulers;
  * @Date 2017/06/06/15:54
  * @Email Jliuer@aliyun.com
  * @Description
- * @Link http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2016/0924/6637.html
  */
 public abstract class RecyclerViewDiffUtil<T> extends DiffUtil.Callback {
 
     protected List<T> mOldDatas, mNewDatas;
+    protected RecyclerViewDiffUtil<T> mDiffUtil;
 
     public RecyclerViewDiffUtil(@NotNull List<T> oldDatas, @NotNull List<T> newDatas) {
         this.mOldDatas = oldDatas;
@@ -39,11 +39,7 @@ public abstract class RecyclerViewDiffUtil<T> extends DiffUtil.Callback {
         return mNewDatas.size();
     }
 
-    protected void parentDiffNotify(@NotNull final RecyclerViewDiffUtil diffUtil, @NotNull final RecyclerView.Adapter adapter) {
-        staticDiffNotify(diffUtil, adapter);
-    }
-
-    private static void staticDiffNotify(@NotNull final RecyclerViewDiffUtil diffUtil, @NotNull final RecyclerView.Adapter adapter) {
+    protected void diffNotify(@NotNull final RecyclerViewDiffUtil diffUtil, @NotNull final RecyclerView.Adapter adapter) {
         Observable<DiffUtil.DiffResult> observable = Observable.defer(new Func0<Observable<DiffUtil.DiffResult>>() {
             @Override
             public Observable<DiffUtil.DiffResult> call() {

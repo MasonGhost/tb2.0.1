@@ -78,12 +78,13 @@ public class DynamicDetailHeader {
     }
 
     private void initAdvert(Context context) {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
-            mDynamicDetailHeader.setVisibility(View.GONE);
-            return;
-        }
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+            mDynamicDetailAdvertHeader.hideAdvert();
+            return;
+        }
+
         List<String> testAdverts = new ArrayList<>();
         testAdverts.add("");
         testAdverts.add("");

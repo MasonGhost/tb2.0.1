@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.utils.recyclerview_diff;
 
-import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 
@@ -16,8 +15,13 @@ import java.util.List;
  */
 public class DynamicBeanDiff extends RecyclerViewDiffUtil<DynamicBean> {
 
-    public DynamicBeanDiff(@NotNull List<DynamicBean> oldDatas, @NotNull List<DynamicBean> newDatas) {
+    private DynamicBeanDiff(@NotNull List<DynamicBean> oldDatas, @NotNull List<DynamicBean> newDatas) {
         super(oldDatas, newDatas);
+    }
+
+    public static DynamicBeanDiff getInstance( List<DynamicBean> oldDatas,  List<DynamicBean> newDatas){
+
+        return new DynamicBeanDiff(oldDatas,newDatas);
     }
 
     /**
@@ -45,11 +49,6 @@ public class DynamicBeanDiff extends RecyclerViewDiffUtil<DynamicBean> {
         DynamicBean oldDynamic = mOldDatas.get(oldItemPosition);
         DynamicBean newDynamic = mNewDatas.get(newItemPosition);
         return false;
-    }
-
-
-    public static void diffNotify(@NotNull RecyclerViewDiffUtil diffUtil, @NotNull RecyclerView.Adapter adapter) {
-        diffNotify(diffUtil, adapter);
     }
 
 }

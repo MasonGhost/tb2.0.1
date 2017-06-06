@@ -22,6 +22,7 @@ public class DynamicDetailAdvertHeader {
 
     private View mRootView;
     private LinearLayout mAdvertContainer;
+    private LinearLayout mLLAdvert;
     private TextView mTitle;
     private Context mContext;
 
@@ -36,6 +37,7 @@ public class DynamicDetailAdvertHeader {
         mRootView = rootView;
         mTitle = (TextView) mRootView.findViewById(R.id.tv_advert_title);
         mAdvertContainer = (LinearLayout) mRootView.findViewById(R.id.fl_advert_container);
+        mLLAdvert = (LinearLayout) mRootView.findViewById(R.id.ll_advert);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
@@ -65,7 +67,7 @@ public class DynamicDetailAdvertHeader {
     }
 
     public void hideAdvert() {
-        mRootView.setVisibility(View.GONE);
+        mLLAdvert.setVisibility(View.GONE);
     }
 
     public void setHeight(int height) {
@@ -73,6 +75,10 @@ public class DynamicDetailAdvertHeader {
                 .MATCH_PARENT, height);
         params.setMargins(20, 20, 20, 20);
         mAdvertContainer.setLayoutParams(params);
+    }
+
+    public LinearLayout getAdvertContainer() {
+        return mAdvertContainer;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
