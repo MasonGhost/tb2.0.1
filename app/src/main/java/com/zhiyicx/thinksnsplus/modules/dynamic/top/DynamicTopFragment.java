@@ -157,7 +157,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mPresenter.stickTop();
+                        mPresenter.stickTop(2);
                     }
                 });
     }

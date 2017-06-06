@@ -127,4 +127,13 @@ public interface DynamicClient {
     @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
     Observable<BaseJson<Object>> handleDynamicViewCount(@Path("feed_id") Long feed_id);
 
+    /**
+     * 置顶动态
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
+    Observable<BaseJson<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id);
+
 }
