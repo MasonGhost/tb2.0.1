@@ -249,9 +249,9 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                         // 底部，无法看见的图片
                         animationRectBeanArrayList.add(null);
                     } else {
-                        View view = layoutManager
-                                .getChildAt(i - layoutManager.findFirstVisibleItemPosition() + (showCamera ? 1 : 0));// 照相机占位
-                        ImageView imageView = (ImageView) view.findViewById(R.id.iv_photo);
+//                        View view = layoutManager
+//                                .getChildAt(i - layoutManager.findFirstVisibleItemPosition() + (showCamera ? 1 : 0));// 照相机占位
+                        ImageView imageView = (ImageView) v;
                         // 可以完全看见的图片
                         AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
                         animationRectBeanArrayList.add(rect);

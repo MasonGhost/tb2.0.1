@@ -65,7 +65,7 @@ public class SelectDynamicTypeFragment extends TSFragment {
                 ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
                 ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
                 mAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-                mAnimatorSet.setDuration(1200);
+                mAnimatorSet.setDuration(500);
 
                 ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
                 ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0f, 1.01f);
@@ -74,8 +74,8 @@ public class SelectDynamicTypeFragment extends TSFragment {
 
                 AnimatorSet mAnimatorSetLate = mAnimatorSet.clone();
                 mAnimatorSetLate.playTogether(
-                        ObjectAnimator.ofFloat(view, "scaleX", 1.02f, 1.05f, 1.02f, 0.9f, 1f),
-                        ObjectAnimator.ofFloat(view, "scaleY", 1.02f, 1.05f, 1.02f, 0.9f, 1f));
+                        ObjectAnimator.ofFloat(view, "scaleX", 1.02f, 1.05f, 1.03f, 1.01f, 0.98f, 1f),
+                        ObjectAnimator.ofFloat(view, "scaleY", 1.02f, 1.05f, 1.03f, 1.01f, 0.98f, 1f));
                 mAnimatorSet.play(alpha).with(scaleX).with(scaleY).with(translationY).before(mAnimatorSetLate);
                 mAnimatorSet.start();
 
