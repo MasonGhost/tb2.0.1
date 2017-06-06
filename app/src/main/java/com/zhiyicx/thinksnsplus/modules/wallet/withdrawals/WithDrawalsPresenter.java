@@ -37,6 +37,10 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
 
     @Override
     public void withdraw(int value, String type, String account) {
+        if (value < 200) {
+            mRootView.minMoneyLimit();
+            return;
+        }
         Subscription subscribe = mRepository.withdraw(value, type, account)
                 .compose(mSchedulersTransformer)
                 .doOnSubscribe(new Action0() {
@@ -50,6 +54,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
                     protected void onSuccess(WithdrawResultBean data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.withdraw_succes));
                     }
+
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
@@ -64,7 +69,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
         addSubscrebe(subscribe);
     }
 
-    private void updateUserInfo$$Balance(){
+    private void updateUserInfo$$Balance() {
         Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -50,6 +51,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
 
     private ActionPopupWindow mWithdrawalsInstructionsPopupWindow;
+    private ActionPopupWindow mWithdrawalsMinMoneyLimitPopupWindow;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -105,6 +107,11 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     @Override
+    public void minMoneyLimit() {
+        initWithdrawalsInstructionsPop(R.string.min_withdraw_count);
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_withdrawals;
     }
@@ -147,7 +154,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 if (textViewAfterTextChangeEvent.editable().toString().contains(".")) {
                     setCustomMoneyDefault();
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-                    initWithdrawalsInstructionsPop();
+                    initWithdrawalsInstructionsPop(R.string.withdrawal_instructions_detail);
 
                 } else {
                     try {
@@ -166,8 +173,11 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         });
     }
 
-    private void initWithdrawalsInstructionsPop() {
+    private void initWithdrawalsInstructionsPop(int resDesStr) {
         if (mWithdrawalsInstructionsPopupWindow != null) {
+            mWithdrawalsInstructionsPopupWindow = mWithdrawalsInstructionsPopupWindow.newBuilder()
+                    .desStr(getString(resDesStr))
+                    .build();
             mWithdrawalsInstructionsPopupWindow.show();
             return;
         }
@@ -235,10 +245,6 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 })
                 .build();
         mActionPopupWindow.show();
-    }
-
-    @OnClick(R.id.bt_sure)
-    public void onViewClicked() {
     }
 
     private void configSureButton() {

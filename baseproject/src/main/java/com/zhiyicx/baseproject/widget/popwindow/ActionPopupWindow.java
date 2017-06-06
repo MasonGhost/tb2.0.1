@@ -102,6 +102,10 @@ public class ActionPopupWindow extends PopupWindow {
         }
     }
 
+    public Builder newBuilder() {
+        return new Builder(this);
+    }
+
     /**
      * 子类重新调用initView
      *
@@ -273,6 +277,37 @@ public class ActionPopupWindow extends PopupWindow {
         private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
 
         protected Builder() {
+        }
+
+        private Builder(ActionPopupWindow popupWindow) {
+            this.mActivity = popupWindow.mActivity;
+            this.parentView = popupWindow.mParentView;
+            this.mItem1Str = popupWindow.mItem1Str;
+            this.mItem2Str = popupWindow.mItem2Str;
+            this.mItem3Str = popupWindow.mItem3Str;
+            this.mItem4Str = popupWindow.mItem4Str;
+            this.mItem5Str = popupWindow.mItem5Str;
+            this.mAnimationStyle = popupWindow.mAnimationStyle;
+            this.mDesStr = popupWindow.mDesStr;
+            this.mBottomStr = popupWindow.mBottomStr;
+            this.mItem1Color = popupWindow.mItem1Color;
+            this.mItem2Color = popupWindow.mItem2Color;
+            this.mItem3Color = popupWindow.mItem3Color;
+            this.mItem4Color = popupWindow.mItem4Color;
+            this.mItem5Color = popupWindow.mItem5Color;
+            this.mItemDesColor = popupWindow.mItemDesColor;
+            this.mItemBottomColor = popupWindow.mItemBottomColor;
+            this.mIsOutsideTouch = popupWindow.mIsOutsideTouch;
+            this.mIsFocus = popupWindow.mIsFocus;
+            this.mAlpha = popupWindow.mAlpha;
+            this.mActionPopupWindowItem1ClickListener = popupWindow.mActionPopupWindowItem1ClickListener;
+            this.mActionPopupWindowItem2ClickListener = popupWindow.mActionPopupWindowItem2ClickListener;
+            this.mActionPopupWindowItem3ClickListener = popupWindow.mActionPopupWindowItem3ClickListener;
+            this.mActionPopupWindowItem4ClickListener = popupWindow.mActionPopupWindowItem4ClickListener;
+            this.mActionPopupWindowItem5ClickListener = popupWindow.mActionPopupWindowItem5ClickListener;
+            this.mActionPopupWindowDesClickListener = popupWindow.mActionPopupWindowDesClickListener;
+            this.mActionPopupWindowBottomClickListener = popupWindow.mActionPopupWindowBottomClickListener;
+            this.mActionPopupWindowDismissListener = popupWindow.mActionPopupWindowDismissListener;
         }
 
         public ActionPopupWindow.Builder with(Activity activity) {

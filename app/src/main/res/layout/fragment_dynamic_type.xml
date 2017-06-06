@@ -18,6 +18,7 @@
         <com.zhiyicx.thinksnsplus.widget.IconTextView
             android:id="@+id/send_words_dynamic"
             android:layout_width="0dp"
+            android:visibility="invisible"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             zhiyi:itv_direction="TOP"
@@ -32,6 +33,7 @@
         <com.zhiyicx.thinksnsplus.widget.IconTextView
             android:id="@+id/send_image_dynamic"
             android:layout_width="0dp"
+            android:visibility="invisible"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             zhiyi:itv_direction="TOP"

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.support.v4.view.ViewCompat;
@@ -14,8 +15,12 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * @Author Jliuer
@@ -48,7 +53,12 @@ public class SelectDynamicTypeFragment extends TSFragment {
     protected void initView(View rootView) {
         getActivity().getWindow().getDecorView().setBackgroundColor(getColor(R.color.tym));
         initAnimation(mSendWordsDynamic);
-        initAnimation(mSendImageDynamic);
+        Observable.timer(800, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+                initAnimation(mSendImageDynamic);
+            }
+        });
     }
 
     @Override
@@ -60,25 +70,44 @@ public class SelectDynamicTypeFragment extends TSFragment {
         view.post(new Runnable() {
             @Override
             public void run() {
-                int vertical_distance = mSelectDynamicParent.getHeight() - view.getTop();
                 AnimatorSet mAnimatorSet = new AnimatorSet();
                 ViewCompat.setPivotX(view, view.getWidth() / 2.0f);
                 ViewCompat.setPivotY(view, view.getHeight() / 2.0f);
                 mAnimatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-                mAnimatorSet.setDuration(500);
+                mAnimatorSet.setDuration(3000);
 
-                ObjectAnimator alpha = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
-                ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0f, 1.01f);
-                ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0f, 1.01f);
-                ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY", vertical_distance, 0);
+                ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "translationY",
+                        mSelectDynamicParent.getBottom() - view.getTop(),
+                        0, -10, 0, -7, 0, -3, 0);
 
                 AnimatorSet mAnimatorSetLate = mAnimatorSet.clone();
                 mAnimatorSetLate.playTogether(
                         ObjectAnimator.ofFloat(view, "scaleX", 1.02f, 1.05f, 1.03f, 1.01f, 0.98f, 1f),
                         ObjectAnimator.ofFloat(view, "scaleY", 1.02f, 1.05f, 1.03f, 1.01f, 0.98f, 1f));
-                mAnimatorSet.play(alpha).with(scaleX).with(scaleY).with(translationY).before(mAnimatorSetLate);
-                mAnimatorSet.start();
+                mAnimatorSet.play(translationY).before(mAnimatorSetLate);
 
+                mAnimatorSet.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        view.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                mAnimatorSet.start();
             }
         });
 

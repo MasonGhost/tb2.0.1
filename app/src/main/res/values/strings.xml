@@ -235,6 +235,7 @@
 
     <!--钱包 之 提现-->
     <string name="withdraw_count">提现金额</string>
+    <string name="min_withdraw_count">未满足可提现最低金额</string>
     <string name="withdraw_all">全部</string>
     <string name="withdraw_out">支出</string>
     <string name="withdraw_in">收入</string>
