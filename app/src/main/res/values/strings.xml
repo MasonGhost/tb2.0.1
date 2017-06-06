@@ -176,6 +176,7 @@
     <string name="select_day">%1$dd</string>
     <string name="select_topday">选择置顶天数</string>
     <string name="totop_money">置顶金额</string>
+    <string name="totop_vrify">此动态正在审核置顶中请勿重复提交</string>
     <string name="et_top_input">输入金额</string>
     <string name="et_top_total">总金额</string>
     <string name="to_top">申请置顶</string>

@@ -175,10 +175,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
             return;
         List<String> test = new ArrayList<>();
-        test.add("oneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneoneone");
-        test.add("twotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwotwo");
-        test.add("threethreethreethreethreethreethreethreethreethreethreethreethreethreethreethree");
-        test.add("fourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfourfour");
+        test.add("oneone");
+        test.add("twotwotwo");
+        test.add("threethreethree");
+        test.add("fourfourfourfourfour");
         mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
         DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
                 DynamicBannerHeaderInfo();
