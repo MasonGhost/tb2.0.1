@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.utils.recyclerview_diff;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,22 +47,9 @@ public class DynamicBeanDiff extends RecyclerViewDiffUtil<DynamicBean> {
         return false;
     }
 
-//    public static void diffNotify(final List<DynamicBean> oldDatas, final List<DynamicBean> newDatas,
-//                                  final RecyclerView.Adapter adapter) {
-//        Observable<DiffUtil.DiffResult> observable = Observable.defer(new Func0<Observable<DiffUtil.DiffResult>>() {
-//            @Override
-//            public Observable<DiffUtil.DiffResult> call() {
-//                return Observable.just(DiffUtil.calculateDiff(new DynamicBeanDiff(oldDatas, newDatas), true));
-//            }
-//        });
-//        observable.subscribeOn(Schedulers.computation())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<DiffUtil.DiffResult>() {
-//                    @Override
-//                    public void call(DiffUtil.DiffResult diffResult) {
-//                        diffResult.dispatchUpdatesTo(adapter);
-//                    }
-//                });
-//    }
+
+    public static void diffNotify(@NotNull RecyclerViewDiffUtil diffUtil, @NotNull RecyclerView.Adapter adapter) {
+        diffNotify(diffUtil, adapter);
+    }
 
 }
