@@ -108,7 +108,12 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     @Override
     public void minMoneyLimit() {
-        initWithdrawalsInstructionsPop(R.string.min_withdraw_count);
+        initWithdrawalsInstructionsPop(R.string.min_withdraw_money);
+    }
+
+    @Override
+    public void maxMoneyLimit() {
+        initWithdrawalsInstructionsPop(R.string.limit_withdraw_money);
     }
 
     @Override
