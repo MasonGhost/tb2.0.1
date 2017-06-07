@@ -7,6 +7,8 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 
 import javax.inject.Inject;
 
+import rx.functions.Action0;
+
 /**
  * @Author Jliuer
  * @Date 2017/06/02/11:03
@@ -23,23 +25,30 @@ public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicComment
 
     @Override
     public void tollDynamicComment(Long feed_id) {
-        mRepository.tollDynamicComment(feed_id).subscribe(new BaseSubscribeForV2<BaseJson<Integer>>() {
-            @Override
-            protected void onSuccess(BaseJson<Integer> data) {
-                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_comment_toll_success));
-            }
+        mRepository.tollDynamicComment(feed_id)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing));
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<BaseJson<Integer>>() {
+                    @Override
+                    protected void onSuccess(BaseJson<Integer> data) {
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_comment_toll_success));
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-                mRootView.showSnackErrorMessage(message);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.showSnackErrorMessage(throwable.getMessage());
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
     }
 }

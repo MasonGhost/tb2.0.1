@@ -107,12 +107,15 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                 switch (checkedId) {
                     case R.id.rb_one:
                         mCommentMoney = mSelectMoney.get(0);
+                        resetEtInput();
                         break;
                     case R.id.rb_two:
                         mCommentMoney = mSelectMoney.get(1);
+                        resetEtInput();
                         break;
                     case R.id.rb_three:
                         mCommentMoney = mSelectMoney.get(2);
+                        resetEtInput();
                         break;
                     default:
                         break;
@@ -179,5 +182,10 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
 
     private void setConfirmEnable() {
         mBtTop.setEnabled(mCommentMoney > 0);
+    }
+
+    private void resetEtInput(){
+        mEtInput.setText("");
+        DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
     }
 }

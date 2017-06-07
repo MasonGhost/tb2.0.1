@@ -187,6 +187,7 @@
     <string name="to_top_description">当前置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
 
     <!--设置评论收费-->
+    <string name="apply_doing">申请中&#8230;</string>
     <string name="dynamic_comment_toll">设置评论收费</string>
     <string name="limit_monye">金额必须是整数，不能出现小数</string>
     <string name="monye_instructions">金额说明</string>
