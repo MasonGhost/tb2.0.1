@@ -1,9 +1,6 @@
 package com.zhiyicx.tspay;
 
-import android.content.Context;
-
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import android.app.Activity;
 
 /**
  * @Describe
@@ -11,27 +8,27 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
  * @Date 2017/5/15
  * @Contact master.jungle68@gmail.com
  */
-
-public class TSPayClient {
+public abstract class TSPayClient {
     /**
-     * TS 支付初始化
-     *
-     * @param context
-     * @param wxAppId
+     * 手机支付宝 APP 支付
      */
-    public static void init(Context context, String wxAppId) {
-        initWxPay(context, wxAppId);
-    }
-
+    public static final String CHANNEL_ALIPAY = "alipay";
     /**
-     * 微信支付初始化
-     *
-     * @param context
-     * @param wxAppId
+     * 手机支付宝扫码支付
      */
-    private static void initWxPay(Context context, String wxAppId) {
-        final IWXAPI msgApi = WXAPIFactory.createWXAPI(context, null);
-        // 将该app注册到微信
-        msgApi.registerApp(wxAppId);
-    }
+    public static final String CHANNEL_ALIQRPAY = "alipay_qr";
+    /**
+     * 手机网页发起支付宝支付
+     */
+    public static final String CHANNEL_ALIWAPPAY = "alipay_wap";
+    /**
+     * 微信 APP 支付
+     */
+    public static final String CHANNEL_WXPAY = "wx";
+    /**
+     * 手机网页发起微信支付
+     */
+    public static final String CHANNEL_WXWAPPAY = "wx_wap";
+
+    public abstract void pay(String payWays, int payCount, Activity activity);
 }

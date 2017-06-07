@@ -168,6 +168,13 @@ public interface CommonClient {
     @GET(SYSTEM_LAUNCH_ADVERT)
     Observable<BaseJson<List<LaunchAdvertBean>>> getLaunchAdvert();
 
+    /**
+     * 获取支付信息
+     */
+    @FormUrlEncoded
+    @POST(SYSTEM_LAUNCH_ADVERT)
+    Observable<String> getPayStr(@Field("type") String channel, @Field("amount") int amount);
+
     /*******************************************  文件上传  *********************************************/
 
     /**

@@ -15,10 +15,12 @@ import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.pingplusplus.android.Pingpp;
 import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
@@ -95,7 +97,9 @@ public class AppApplication extends TSApplication {
         }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
         // 极光推送
-        JPushInterface.setDebugMode(true);
+        JPushInterface.setDebugMode(BuildConfig.USE_LOG);
+        // ping++
+        Pingpp.enableDebugLog(BuildConfig.USE_LOG);
         JPushInterface.init(this);
         // 友盟
         MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);

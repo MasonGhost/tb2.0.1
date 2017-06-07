@@ -101,7 +101,7 @@ public class SystemRepository implements ISystemRepository {
         if (systemConfigBean == null) { // 读取本地默认配置
             systemConfigBean = new Gson().fromJson(SystemConfig.DEFAULT_SYSTEM_CONFIG, SystemConfigBean.class);
         }
-        if (systemConfigBean.getAdverts()==null)
+        if (systemConfigBean.getAdverts() == null)
             return systemConfigBean;
         for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {
             if (advert.getData() instanceof LinkedHashMap) {
@@ -263,6 +263,12 @@ public class SystemRepository implements ISystemRepository {
         return SharePreferenceUtils.saveObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS, systemConfigBean);
     }
 
+    @Override
+    public Observable<String> getPayStr(String channel, int amount) {
+        return mCommonClient.getPayStr(channel, amount)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
     /**
      * 系统反馈

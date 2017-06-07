@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 
 import java.util.List;
 
+import retrofit2.http.Field;
 import rx.Observable;
 
 /**
@@ -47,6 +48,14 @@ public interface ISystemRepository {
      * @return
      */
     Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(long max_id, int limit);
+
+    /**
+     * 获取支付信息
+     * @param channel 支付渠道
+     * @param amount 支付金额
+     * @return
+     */
+    Observable<String> getPayStr(String channel,int amount);
 
     /**
      * 获取本地系统会话列表
