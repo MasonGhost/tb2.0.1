@@ -208,8 +208,8 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
             image = new UMImage(activity, mShareContent.getFile());
         }
         if (!TextUtils.isEmpty(mShareContent.getUrl())) {
-//            UMWeb web = new UMWeb(mShareContent.getUrl());
-            UMWeb web = new UMWeb(APP_PATH_SHARE_DEFAULT); // 由于后台还未开发完毕，暂时使用
+            UMWeb web = new UMWeb(mShareContent.getUrl());
+//            UMWeb web = new UMWeb(APP_PATH_SHARE_DEFAULT); // 由于后台还未开发完毕，暂时使用
             if (!TextUtils.isEmpty(mShareContent.getTitle())) {
                 web.setTitle(mShareContent.getTitle());//标题
             }

@@ -41,6 +41,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
         }).subscribe(new BaseSubscribeForV2<PayStrBean>() {
             @Override
             protected void onSuccess(PayStrBean data) {
+                mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_credentials_succes));
                 mRootView.payCredentialsResult(data);
             }
 

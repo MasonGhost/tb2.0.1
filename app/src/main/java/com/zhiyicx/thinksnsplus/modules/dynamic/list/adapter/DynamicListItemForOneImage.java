@@ -50,8 +50,8 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
 
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
-        super.convert(holder, dynamicBean, lastT, position,itemCounts);
+    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position, int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position, itemCounts);
         initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 
@@ -85,6 +85,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         } else {
             url = imageBean.getImgUrl();
         }
+
         Glide.with(mContext)
                 .load(url)
                 .asBitmap()

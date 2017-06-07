@@ -244,6 +244,7 @@
 
     <!--钱包 之 充值-->
     <string name="recharge_credentials_ing">获取充值凭证&#8230;</string>
+    <string name="recharge_credentials_succes">获取充值凭证成功</string>
 
     <!--钱包 之 提现-->
     <string name="withdraw_money">提现金额</string>
