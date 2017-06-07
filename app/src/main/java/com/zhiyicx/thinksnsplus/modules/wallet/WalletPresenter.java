@@ -28,7 +28,6 @@ import rx.functions.Action0;
  * @Date 2017/05/22
  * @Contact master.jungle68@gmail.com
  */
-
 public class WalletPresenter extends AppBasePresenter<WalletContract.Repository, WalletContract.View> implements WalletContract.Presenter {
     public static final int DEFAULT_LOADING_SHOW_TIME = 2;
 

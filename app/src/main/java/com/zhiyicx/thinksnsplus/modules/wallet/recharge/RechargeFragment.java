@@ -24,10 +24,13 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
 import com.zhiyicx.tspay.TSPayClient;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -84,6 +87,11 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_recharge;
     }
@@ -132,6 +140,9 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 String pay_result;
                 int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
                 showMessage(getString(id));
+                if (result.equals("success")) {
+                    EventBus.getDefault().post(result, EventBusTagConfig.EVENT_WALLET_RECHARGE);
+                }
             }
         }
     }

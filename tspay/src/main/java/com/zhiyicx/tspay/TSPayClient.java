@@ -1,8 +1,16 @@
 package com.zhiyicx.tspay;
 
 import android.app.Activity;
+import android.support.annotation.RestrictTo;
+import android.support.annotation.StringDef;
 
 import com.pingplusplus.android.Pingpp;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static android.support.annotation.RestrictTo.Scope.GROUP_ID;
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /**
  * @Describe
@@ -31,6 +39,12 @@ public class TSPayClient {
      * 手机网页发起微信支付
      */
     public static final String CHANNEL_WXWAPPAY = "wx_wap";
+
+    @RestrictTo(LIBRARY_GROUP)
+    @StringDef({CHANNEL_ALIPAY, CHANNEL_ALIQRPAY, CHANNEL_ALIWAPPAY,CHANNEL_WXPAY,CHANNEL_WXWAPPAY})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PayKey {
+    }
 
     public static void pay(String payCredentials, Activity activity) {
         Pingpp.createPayment(activity, payCredentials);

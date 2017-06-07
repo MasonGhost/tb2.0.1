@@ -75,6 +75,12 @@ public class EventBusTagConfig {
     public static final String EVENT_MUSIC_CHANGE = "event_music_change";
 
     /**
+     * 钱包相关
+     */
+    // 钱包余额充值成功后更新钱包界面
+    public static final String EVENT_WALLET_RECHARGE = "event_wallet_recharge";
+
+    /**
      * IM 相关
      */
     public static final String EVENT_IM_ONMESSAGERECEIVED = "onMessageReceived";
