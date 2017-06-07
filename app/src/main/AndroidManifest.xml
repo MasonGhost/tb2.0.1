@@ -271,6 +271,15 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <!--Ping++ 支付SDK-->
+        <activity
+            android:name="com.pingplusplus.android.PaymentActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+
         <!-- 微信支付结果类 -->
         <activity
             android:name=".wxapi.WXPayEntryActivity"
@@ -290,7 +299,7 @@
             android:screenOrientation="behind">
         </activity>
 
-
+        <!--频道-->
         <activity
             android:name=".modules.channel.list.ChannelListActivity"
             android:screenOrientation="portrait">

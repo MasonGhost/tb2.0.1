@@ -27,6 +27,16 @@ public class SystemConfigBean implements Serializable {
     private List<ImHelperBean> im_helper;
     @SerializedName("ad")
     private List<Advert> mAdverts;
+    @SerializedName("wallet:recharge-type")
+    private String[] mWalletTtype;
+
+    public String[] getWalletTtype() {
+        return mWalletTtype;
+    }
+
+    public void setWalletTtype(String[] walletTtype) {
+        mWalletTtype = walletTtype;
+    }
 
     public int getWallet_ratio() {
         return wallet_ratio;
