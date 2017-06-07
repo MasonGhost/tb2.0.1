@@ -262,7 +262,7 @@
     <string name="feed_back_failed">反馈失败</string>
     <string name="hint_feed_back">请输入反馈，我们将为您不断改进</string>
     <string name="submit">提交</string>
-    <string name="normal_qustion">常见问题</string>
+    <string name="normal_qustion">常见问题(暂未开放)</string>
     <string name="normal_qustion_one">不想看到未关注的动态，怎么关闭？</string>
     <string name="normal_qustion_two">在3G/4G下不能使用ThinkSNS+</string>
     <string name="normal_qustion_three">怎么更换个人主页相册封面？</string>
