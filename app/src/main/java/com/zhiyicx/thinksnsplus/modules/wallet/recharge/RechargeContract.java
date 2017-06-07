@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 
 /**
  * @Describe
@@ -13,8 +14,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 public interface RechargeContract {
 
     interface View extends IBaseView<Presenter> {
-
-
+        void payCredentialsResult(PayStrBean payStrBean);
     }
 
     interface Repository {
@@ -23,6 +23,6 @@ public interface RechargeContract {
     }
 
     interface Presenter extends IBaseTouristPresenter {
-
+        void getPayStr(String channel, int amount);
     }
 }

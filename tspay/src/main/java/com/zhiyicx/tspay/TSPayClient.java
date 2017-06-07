@@ -2,13 +2,15 @@ package com.zhiyicx.tspay;
 
 import android.app.Activity;
 
+import com.pingplusplus.android.Pingpp;
+
 /**
  * @Describe
  * @Author Jungle68
  * @Date 2017/5/15
  * @Contact master.jungle68@gmail.com
  */
-public abstract class TSPayClient {
+public class TSPayClient {
     /**
      * 手机支付宝 APP 支付
      */
@@ -30,5 +32,7 @@ public abstract class TSPayClient {
      */
     public static final String CHANNEL_WXWAPPAY = "wx_wap";
 
-    public abstract void pay(String payWays, int payCount, Activity activity);
+    public static void pay(String payCredentials, Activity activity) {
+        Pingpp.createPayment(activity, payCredentials);
+    }
 }

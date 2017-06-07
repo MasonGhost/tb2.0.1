@@ -16,6 +16,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -99,10 +100,10 @@ public class ConvertUtils {
     /**
      * 获取网络返回数据体内容
      *
-     * @param response  返回体
+     * @param response 返回体
      * @return
      */
-    public static String getResponseBodyString(Response response) throws IOException{
+    public static String getResponseBodyString(Response response) throws IOException {
         ResponseBody responseBody = response.errorBody();
         BufferedSource source = responseBody.source();
         source.request(Long.MAX_VALUE); // Buffer the entire body.
@@ -117,9 +118,10 @@ public class ConvertUtils {
 
     /**
      * 解析返回体数据内容
+     *
      * @param responseBody 返回体
-     * @param encoding  编码
-     * @param clone    数据
+     * @param encoding     编码
+     * @param clone        数据
      * @return
      */
     public static String praseBodyString(ResponseBody responseBody, String encoding, Buffer clone) {
@@ -840,6 +842,10 @@ public class ConvertUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static <T> String object2JsonStr(T obj) {
+        return new Gson().toJson(obj);
     }
 
 

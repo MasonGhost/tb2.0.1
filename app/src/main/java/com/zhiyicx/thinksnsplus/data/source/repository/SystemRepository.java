@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -264,7 +265,7 @@ public class SystemRepository implements ISystemRepository {
     }
 
     @Override
-    public Observable<String> getPayStr(String channel, int amount) {
+    public Observable<PayStrBean> getPayStr(String channel, int amount) {
         return mCommonClient.getPayStr(channel, amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

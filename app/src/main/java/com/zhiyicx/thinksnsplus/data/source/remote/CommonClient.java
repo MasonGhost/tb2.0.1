@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
@@ -34,6 +35,7 @@ import retrofit2.http.Query;
 import retrofit2.http.Url;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
@@ -106,6 +108,7 @@ public interface CommonClient {
     @FormUrlEncoded
     @POST(APP_PATH_GET_NON_MEMBER_VERTIFYCODE)
     Observable<Object> getNonMemberVertifyCode(@Field("phone") String phone);
+
     /**
      * 刷新 token
      *
@@ -172,8 +175,8 @@ public interface CommonClient {
      * 获取支付信息
      */
     @FormUrlEncoded
-    @POST(SYSTEM_LAUNCH_ADVERT)
-    Observable<String> getPayStr(@Field("type") String channel, @Field("amount") int amount);
+    @POST(APP_PAHT_WALLET_RECHARGE)
+    Observable<PayStrBean> getPayStr(@Field("type") String channel, @Field("amount") int amount);
 
     /*******************************************  文件上传  *********************************************/
 

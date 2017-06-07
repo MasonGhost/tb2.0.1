@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,14 +15,19 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
+import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
+import com.zhiyicx.tspay.TSPayClient;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -103,6 +110,32 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         initSelectDays();
     }
 
+    @Override
+    public void payCredentialsResult(PayStrBean payStrBean) {
+        TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getCharge()), getActivity());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                String result = data.getExtras().getString("pay_result");
+                /* 处理返回值
+                 * "success" - 支付成功
+                 * "fail"    - 支付失败
+                 * "cancel"  - 取消支付
+                 * "invalid" - 支付插件未安装（一般是微信客户端未安装的情况）
+                 */
+                String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
+                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                String pay_result;
+                int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
+                showMessage(getString(id));
+            }
+        }
+    }
+
     private void initSelectDays() {
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
@@ -156,7 +189,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showSnackSuccessMessage("mBtReCharge");
+                        mPresenter.getPayStr(TSPayClient.CHANNEL_ALIPAY, ((Double) mRechargeMoney).intValue() * 100);
                     }
                 });
         // 
@@ -236,8 +269,10 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             return;
         }
         mPayStylePopupWindow = ActionPopupWindow.builder()
-                .item2Str(mWalletConfigBean.getAlipay().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.alipay)):"")
-                .item3Str(mWalletConfigBean.getWechat().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)):"")
+//                .item2Str(mWalletConfigBean.getAlipay().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.alipay)):"")
+//                .item3Str(mWalletConfigBean.getWechat().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)):"")
+                .item2Str(getString(R.string.choose_pay_style_formart, getString(R.string.alipay)))
+                .item3Str(getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

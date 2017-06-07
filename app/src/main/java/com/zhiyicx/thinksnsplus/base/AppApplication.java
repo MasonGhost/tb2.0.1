@@ -104,8 +104,6 @@ public class AppApplication extends TSApplication {
         // 友盟
         MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
         registerActivityCallBacks();
-        // 支付
-        TSPayClient.init(this, PayConfig.WX_APP_ID);
 
     }
 

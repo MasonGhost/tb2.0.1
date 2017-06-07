@@ -237,6 +237,13 @@
     <string name="wxpay">微信</string>
     <string name="wallet_config_info_get_loading_tip">钱包配置信息获取中&#8230;</string>
     <string name="get_succes">获取成功</string>
+    <string name="pay_fail">支付成功</string>
+    <string name="pay_succes">支付失败</string>
+    <string name="pay_cancel">取消支付</string>
+    <string name="pay_invalid">微信客户端未安装</string>
+
+    <!--钱包 之 充值-->
+    <string name="recharge_credentials_ing">获取充值凭证&#8230;</string>
 
     <!--钱包 之 提现-->
     <string name="withdraw_money">提现金额</string>

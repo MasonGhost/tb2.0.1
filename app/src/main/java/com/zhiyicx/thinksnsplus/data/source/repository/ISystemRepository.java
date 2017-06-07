@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 
@@ -55,7 +56,7 @@ public interface ISystemRepository {
      * @param amount 支付金额
      * @return
      */
-    Observable<String> getPayStr(String channel,int amount);
+    Observable<PayStrBean> getPayStr(String channel, int amount);
 
     /**
      * 获取本地系统会话列表
