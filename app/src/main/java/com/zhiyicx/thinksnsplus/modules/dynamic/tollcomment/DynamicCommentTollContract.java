@@ -1,7 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+
+import retrofit2.http.Path;
+import rx.Observable;
 
 /**
  * @Author Jliuer
@@ -16,10 +20,10 @@ public interface DynamicCommentTollContract {
     }
 
     interface Presenter extends IBasePresenter {
-
+        void tollDynamicComment(Long feed_id);
     }
 
     interface Repository {
-
+        Observable<BaseJson<Integer>> tollDynamicComment(Long feed_id);
     }
 }

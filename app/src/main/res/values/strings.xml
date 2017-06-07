@@ -188,6 +188,9 @@
 
     <!--设置评论收费-->
     <string name="dynamic_comment_toll">设置评论收费</string>
+    <string name="limit_monye">金额必须是整数，不能出现小数</string>
+    <string name="monye_instructions">金额说明</string>
+    <string name="dynamic_comment_toll_success">设置评论收费成功</string>
     <string name="dynamic_comment_toll_money">设置评论收费金额</string>
 
     <!--置顶评论-->

@@ -51,7 +51,6 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
 
     private ActionPopupWindow mWithdrawalsInstructionsPopupWindow;
-    private ActionPopupWindow mWithdrawalsMinMoneyLimitPopupWindow;
 
     private ActionPopupWindow mActionPopupWindow;
 

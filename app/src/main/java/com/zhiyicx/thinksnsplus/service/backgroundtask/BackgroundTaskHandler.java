@@ -299,9 +299,7 @@ public class BackgroundTaskHandler {
             case SEND_DYNAMIC:
                 sendDynamic(backgroundRequestTaskBean);
                 break;
-            /**
-             * 发送动态
-             */
+
             case SEND_COMMENT:
                 sendComment(backgroundRequestTaskBean);
                 break;

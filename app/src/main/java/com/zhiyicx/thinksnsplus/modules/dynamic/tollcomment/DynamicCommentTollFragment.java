@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -53,6 +55,8 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
     private List<Float> mSelectMoney;
 
     private float mCommentMoney;
+
+    private ActionPopupWindow mTollCommentInstructionsPopupWindow;
 
     public static DynamicCommentTollFragment newInstance() {
         return new DynamicCommentTollFragment();
@@ -110,8 +114,9 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                     case R.id.rb_three:
                         mCommentMoney = mSelectMoney.get(2);
                         break;
+                    default:
+                        break;
                 }
-                DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
                 setConfirmEnable();
             }
         });
@@ -124,6 +129,7 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                         if (!TextUtils.isEmpty(charSequence)) {
                             if (charSequence.toString().contains(".")) {
                                 mEtInput.setText("");
+                                initWithdrawalsInstructionsPop();
                                 return;
                             }
                             mRbDaysGroup.clearCheck();
@@ -142,9 +148,33 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
+                        mPresenter.tollDynamicComment(0L);
                         DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
                     }
                 });
+    }
+
+    private void initWithdrawalsInstructionsPop() {
+        if (mTollCommentInstructionsPopupWindow != null) {
+            mTollCommentInstructionsPopupWindow.show();
+            return;
+        }
+        mTollCommentInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.monye_instructions))
+                .desStr(getString(R.string.limit_monye))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onItemClicked() {
+                        mTollCommentInstructionsPopupWindow.hide();
+                    }
+                })
+                .build();
+        mTollCommentInstructionsPopupWindow.show();
     }
 
     private void setConfirmEnable() {
