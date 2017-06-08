@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +32,20 @@ public class WalletConfigBean implements Serializable, Parcelable {
 
     private int ratio;
     private String rule;
-    private PayBean alipay;
-    private PayBean apple;
-    private PayBean wechat;
+//    private PayBean alipay;
+//    private PayBean apple;
+//    private PayBean wechat;
     private CashBean cash;
-    private List<Integer> labels;
+    private List<Float> labels;
+    private String[] recharge_type;
+
+    public String[] getRecharge_type() {
+        return recharge_type;
+    }
+
+    public void setRecharge_type(String[] recharge_type) {
+        this.recharge_type = recharge_type;
+    }
 
     public int getRatio() {
         return ratio;
@@ -52,30 +63,6 @@ public class WalletConfigBean implements Serializable, Parcelable {
         this.rule = rule;
     }
 
-    public PayBean getAlipay() {
-        return alipay;
-    }
-
-    public void setAlipay(PayBean alipay) {
-        this.alipay = alipay;
-    }
-
-    public PayBean getApple() {
-        return apple;
-    }
-
-    public void setApple(PayBean apple) {
-        this.apple = apple;
-    }
-
-    public PayBean getWechat() {
-        return wechat;
-    }
-
-    public void setWechat(PayBean wechat) {
-        this.wechat = wechat;
-    }
-
     public CashBean getCash() {
         return cash;
     }
@@ -84,59 +71,14 @@ public class WalletConfigBean implements Serializable, Parcelable {
         this.cash = cash;
     }
 
-    public List<Integer> getLabels() {
+    public List<Float> getLabels() {
         return labels;
     }
 
-    public void setLabels(List<Integer> labels) {
+    public void setLabels(List<Float> labels) {
         this.labels = labels;
     }
 
-    public static class PayBean implements Serializable, Parcelable {
-        private static final long serialVersionUID = -252453619898472184L;
-        /**
-         * open : false
-         */
-
-        private boolean open;
-
-        public boolean isOpen() {
-            return open;
-        }
-
-        public void setOpen(boolean open) {
-            this.open = open;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeByte(this.open ? (byte) 1 : (byte) 0);
-        }
-
-        public PayBean() {
-        }
-
-        protected PayBean(Parcel in) {
-            this.open = in.readByte() != 0;
-        }
-
-        public static final Parcelable.Creator<PayBean> CREATOR = new Parcelable.Creator<PayBean>() {
-            @Override
-            public PayBean createFromParcel(Parcel source) {
-                return new PayBean(source);
-            }
-
-            @Override
-            public PayBean[] newArray(int size) {
-                return new PayBean[size];
-            }
-        };
-    }
 
     public static class CashBean implements Serializable, Parcelable {
         private static final long serialVersionUID = -113289545366067874L;
@@ -183,6 +125,17 @@ public class WalletConfigBean implements Serializable, Parcelable {
         };
     }
 
+
+    @Override
+    public String toString() {
+        return "WalletConfigBean{" +
+                "ratio=" + ratio +
+                ", rule='" + rule + '\'' +
+                ", cash=" + cash +
+                ", labels=" + labels +
+                '}';
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -192,11 +145,9 @@ public class WalletConfigBean implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.ratio);
         dest.writeString(this.rule);
-        dest.writeParcelable(this.alipay, flags);
-        dest.writeParcelable(this.apple, flags);
-        dest.writeParcelable(this.wechat, flags);
         dest.writeParcelable(this.cash, flags);
         dest.writeList(this.labels);
+        dest.writeStringArray(this.recharge_type);
     }
 
     public WalletConfigBean() {
@@ -205,15 +156,13 @@ public class WalletConfigBean implements Serializable, Parcelable {
     protected WalletConfigBean(Parcel in) {
         this.ratio = in.readInt();
         this.rule = in.readString();
-        this.alipay = in.readParcelable(PayBean.class.getClassLoader());
-        this.apple = in.readParcelable(PayBean.class.getClassLoader());
-        this.wechat = in.readParcelable(PayBean.class.getClassLoader());
         this.cash = in.readParcelable(CashBean.class.getClassLoader());
-        this.labels = new ArrayList<Integer>();
-        in.readList(this.labels, Integer.class.getClassLoader());
+        this.labels = new ArrayList<Float>();
+        in.readList(this.labels, Float.class.getClassLoader());
+        this.recharge_type = in.createStringArray();
     }
 
-    public static final Parcelable.Creator<WalletConfigBean> CREATOR = new Parcelable.Creator<WalletConfigBean>() {
+    public static final Creator<WalletConfigBean> CREATOR = new Creator<WalletConfigBean>() {
         @Override
         public WalletConfigBean createFromParcel(Parcel source) {
             return new WalletConfigBean(source);
@@ -224,17 +173,4 @@ public class WalletConfigBean implements Serializable, Parcelable {
             return new WalletConfigBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "WalletConfigBean{" +
-                "ratio=" + ratio +
-                ", rule='" + rule + '\'' +
-                ", alipay=" + alipay +
-                ", apple=" + apple +
-                ", wechat=" + wechat +
-                ", cash=" + cash +
-                ", labels=" + labels +
-                '}';
-    }
 }

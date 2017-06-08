@@ -9,6 +9,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
@@ -425,6 +426,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(IMBean data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        LogUtils.d("-----login-----imConfig--------" + data.toString());
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());

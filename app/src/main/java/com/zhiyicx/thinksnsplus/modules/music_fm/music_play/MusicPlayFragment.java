@@ -460,6 +460,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                                 .skipToPrevious();
                     }
                 }
+                // 此处代码迁移到 popAdapter 更新中
                 if (mMusicList.size() == 1) {
                     mCurrentMusic = mMusicList.get(0);
                 } else {
@@ -556,7 +557,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     .placeholder(R.drawable.shape_default_image)
                     .url(description.getIconUri() + "")
                     .build());
-
+            // 此处代码迁移到 popAdapter 更新中
             Observable.from(mMusicList).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
                 @Override
                 public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
@@ -587,7 +588,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_incomplete);
-            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info().getComment_count());
+            mFragmentMusicPalyCommentCount.setText(String.valueOf(mCurrentMusic.getMusic_info().getComment_count()));
         } else {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_complete);
@@ -833,6 +834,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 authorName.setText("-" + s.getMusic_info().getSinger().getName());
 
                 if (mCurrentMediaId.equals(s.getMusic_info().getId() + "")) {
+                    mCurrentMusic = s;
+                    dealCurrentMusic();
                     musicName.setTextColor(getResources().getColor(R.color.important_for_theme));
                     authorName.setTextColor(getResources().getColor(R.color.important_for_theme));
                 } else {
@@ -934,7 +937,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_music_paly_share:// 分享
-                mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),mCurrentImageView.getDrawable(),R.mipmap.icon_256));
+                mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mCurrentImageView.getDrawable(), R.mipmap.icon_256));
                 break;
             case R.id.fragment_music_paly_like: // 点赞
                 mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,

@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
+import android.content.Intent;
+
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -28,4 +30,9 @@ public class RechargeActivity extends TSActivity<RechargePresenter, RechargeFrag
         return RechargeFragment.newInstance(getIntent().getExtras());
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode,resultCode,data);
+    }
 }

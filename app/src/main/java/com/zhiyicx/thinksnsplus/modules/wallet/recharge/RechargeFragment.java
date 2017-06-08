@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
@@ -22,20 +21,22 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
 import com.zhiyicx.tspay.TSPayClient;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -74,11 +75,11 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     private WalletConfigBean mWalletConfigBean; // wallet config info
 
-    private int mPayType;     // type for recharge
+    private String mPayType;     // type for recharge
 
     private double mRechargeMoney; // money choosed for recharge
 
-    private List<Integer> mSelectDays; // recharge lables
+    private List<Float> mRechargeLables; // recharge lables
 
     public static RechargeFragment newInstance(Bundle bundle) {
         RechargeFragment rechargeFragment = new RechargeFragment();
@@ -115,7 +116,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     @Override
     protected void initData() {
-        initSelectDays();
+        initRechargeLables();
     }
 
     @Override
@@ -128,7 +129,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {
-                String result = data.getExtras().getString("pay_result");
+                LogUtils.d(data.getExtras().toString());
+                String result = data.getExtras().getString("pay_result","");
                 /* 处理返回值
                  * "success" - 支付成功
                  * "fail"    - 支付失败
@@ -137,9 +139,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                  */
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
-                String pay_result;
                 int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
-                showMessage(getString(id));
+                showSnackSuccessMessage(getString(id));
                 if (result.equals("success")) {
                     EventBus.getDefault().post(result, EventBusTagConfig.EVENT_WALLET_RECHARGE);
                 }
@@ -147,28 +148,28 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         }
     }
 
-    private void initSelectDays() {
+    private void initRechargeLables() {
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
         }
-        mSelectDays = mWalletConfigBean.getLabels();
+        mRechargeLables = mWalletConfigBean.getLabels();
 
-        if (mSelectDays == null) {
+        if (mRechargeLables == null) {
             return;
         }
-        switch (mSelectDays.size()) {
+        switch (mRechargeLables.size()) {
             case 6:
             case 5:
             case 4:
             case 3:
                 mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
+                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2)));
             case 2:
                 mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
+                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1)));
             case 1:
                 mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
+                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0)));
                 mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
                 break;
             case 0:
@@ -200,43 +201,38 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mPresenter.getPayStr(TSPayClient.CHANNEL_ALIPAY, ((Double) mRechargeMoney).intValue() * 100);
+                        mPresenter.getPayStr(mPayType, ((Double) mRechargeMoney).intValue() * mWalletConfigBean.getRatio());
                     }
                 });
-        // 
-        RxTextView.afterTextChangeEvents(mEtInput)
-                .subscribe(new Action1<TextViewAfterTextChangeEvent>() {
-                    @Override
-                    public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
-                        if (TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
-                            mRechargeMoney = 0;
-                            configSureButton();
-                            return;
-                        }
 
-                        if (textViewAfterTextChangeEvent.editable().toString().contains(".")) {
-                            setCustomMoneyDefault();
-                            DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
-                            initmRechargeInstructionsPop();
-                        } else {
-                            mRbDaysGroup.clearCheck();
-                            try {
-                                mRechargeMoney = Double.parseDouble(textViewAfterTextChangeEvent.editable().toString());
-                                configSureButton();
-                            } catch (NumberFormatException ne) {
+        RxTextView.textChanges(mEtInput).subscribe(new Action1<CharSequence>() {
+            @Override
+            public void call(CharSequence charSequence) {
+                if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
+                    return;
+                }
+                if (charSequence.toString().contains(".")) {
+                    setCustomMoneyDefault();
+                    DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
+                    initmRechargeInstructionsPop();
+                } else {
+                    if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
+                        mRbDaysGroup.clearCheck();
+                    }
+                    mRechargeMoney = Double.parseDouble(charSequence.toString());
+                }
+                configSureButton();
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                throwable.printStackTrace();
+                setCustomMoneyDefault();
+                mRechargeMoney = 0;
+                configSureButton();
+            }
+        });
 
-                            }
-                        }
-                        configSureButton();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        setCustomMoneyDefault();
-                        mRechargeMoney = 0;
-                    }
-                });
         RxRadioGroup.checkedChanges(mRbDaysGroup)
                 .compose(this.<Integer>bindToLifecycle())
                 .subscribe(new Action1<Integer>() {
@@ -244,17 +240,19 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                     public void call(Integer checkedId) {
                         switch (checkedId) {
                             case R.id.rb_one:
-                                mRechargeMoney = mSelectDays.get(0);
+                                mRechargeMoney = mRechargeLables.get(0);
                                 break;
                             case R.id.rb_two:
-                                mRechargeMoney = mSelectDays.get(1);
+                                mRechargeMoney = mRechargeLables.get(1);
                                 break;
                             case R.id.rb_three:
-                                mRechargeMoney = mSelectDays.get(2);
+                                mRechargeMoney = mRechargeLables.get(2);
                                 break;
                         }
-                        configSureButton();
-                        setCustomMoneyDefault();
+                        if (checkedId!=-1){
+                            configSureButton();
+                            setCustomMoneyDefault();
+                        }
                     }
                 });
 
@@ -279,11 +277,10 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             mPayStylePopupWindow.show();
             return;
         }
+        List<String> recharge_types = Arrays.asList(mWalletConfigBean.getRecharge_type());
         mPayStylePopupWindow = ActionPopupWindow.builder()
-//                .item2Str(mWalletConfigBean.getAlipay().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.alipay)):"")
-//                .item3Str(mWalletConfigBean.getWechat().isOpen()?getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)):"")
-                .item2Str(getString(R.string.choose_pay_style_formart, getString(R.string.alipay)))
-                .item3Str(getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)))
+                .item2Str(recharge_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.alipay)) : "")
+                .item3Str(recharge_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_pay_style_formart, getString(R.string.wxpay)) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -292,7 +289,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        mPayType = PayType.ALIPAY.value;
+                        mPayType = TSPayClient.CHANNEL_ALIPAY;
                         mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.alipay)));
                         mPayStylePopupWindow.hide();
                         configSureButton();
@@ -301,7 +298,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        mPayType = PayType.WX.value;
+                        mPayType = TSPayClient.CHANNEL_WXPAY;
                         mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
                         mPayStylePopupWindow.hide();
                         configSureButton();

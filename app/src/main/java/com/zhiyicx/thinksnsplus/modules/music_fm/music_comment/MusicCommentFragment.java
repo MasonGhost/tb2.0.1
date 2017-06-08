@@ -93,6 +93,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }

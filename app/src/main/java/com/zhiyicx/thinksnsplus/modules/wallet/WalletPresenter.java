@@ -166,7 +166,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                     protected void onSuccess(WalletConfigBean data) {
                         mWalletConfigBean = data;
                         if (isNeedTip) {
-                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.get_succes));
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.get_success));
                         }
                         mRootView.walletConfigCallBack(data, tag);
                     }

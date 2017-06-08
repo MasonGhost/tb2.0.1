@@ -32,6 +32,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_WALLET_RECHARGE;
 
 /**
  * @Describe
@@ -235,7 +236,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         startActivity(to);
     }
 
-    @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
+    @Subscriber(tag = EVENT_WALLET_RECHARGE, mode = ThreadMode.MAIN)
     public void onRechargeSuccessUpdate(String result) {
         initData();
     }

@@ -80,7 +80,7 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         }
         Glide.with(mContext)
                 .load(url)
-                .override(with, height)
+//                .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
                 .into(view);
