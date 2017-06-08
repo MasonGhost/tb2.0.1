@@ -57,6 +57,7 @@
             app:leftTextLeftPadding="@dimen/spacing_mid"
             app:rightImage="@mipmap/ic_arrow_smallgrey"
             app:showLine="false"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
@@ -74,10 +75,11 @@
                 tools:text="@string/withdraw_account"/>
 
             <EditText
-                android:inputType="number"
                 android:id="@+id/et_withdraw_account_input"
                 style="@style/style_dynamic_editext"
+                android:digits="@null"
                 android:hint="@string/withdraw_account_input"
+                android:inputType="none"
                 tools:hint="@string/withdraw_account_input"/>
 
         </LinearLayout>

@@ -20,14 +20,18 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity;
+import com.zhiyicx.tspay.TSPayClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func3;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -142,37 +146,27 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 initWithDrawalsStylePop();
             }
         });
-        RxTextView.afterTextChangeEvents(mEtWithdrawAccountInput).subscribe(new Action1<TextViewAfterTextChangeEvent>() {
-            @Override
-            public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
-                configSureButton();
-            }
-        });
-        RxTextView.afterTextChangeEvents(mEtWithdrawInput).subscribe(new Action1<TextViewAfterTextChangeEvent>() {
-            @Override
-            public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
-                if (TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
-                    return;
-                }
 
-                if (textViewAfterTextChangeEvent.editable().toString().contains(".")) {
-                    setCustomMoneyDefault();
-                    DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-                    initWithdrawalsInstructionsPop(R.string.withdrawal_instructions_detail);
-
-                } else {
-                    try {
-                        mWithdrawalsMoney = Double.parseDouble(textViewAfterTextChangeEvent.editable().toString());
-                        configSureButton();
-                    } catch (NumberFormatException ne) {
-
+        Observable.combineLatest(RxTextView.textChanges(mEtWithdrawInput), RxTextView.textChanges(mEtWithdrawAccountInput),
+                RxTextView.textChanges(mBtWithdrawStyle.getCombinedButtonRightTextView()),
+                new Func3<CharSequence, CharSequence, CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) {
+                        if (charSequence.toString().contains(".")) {
+                            setCustomMoneyDefault();
+                            DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
+                            initWithdrawalsInstructionsPop(R.string.withdrawal_instructions_detail);
+                        } else if (charSequence.toString().replaceAll(" ", "").length() > 0) {
+                            mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
+                        } else {
+                            mWithdrawalsMoney = 0;
+                        }
+                        return mWithdrawalsMoney > 0 && !TextUtils.isEmpty(charSequence2) && !TextUtils.isEmpty(charSequence3);
                     }
-                }
-            }
-        }, new Action1<Throwable>() {
+                }).subscribe(new Action1<Boolean>() {
             @Override
-            public void call(Throwable throwable) {
-                mWithdrawalsMoney = 0;
+            public void call(Boolean aBoolean) {
+                mBtSure.setEnabled(aBoolean);
             }
         });
     }
@@ -208,16 +202,17 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
             mActionPopupWindow.show();
             return;
         }
-        List<String> cashType = null;
-        if (mWalletConfigBean != null && mWalletConfigBean.getCash() != null) {
-            cashType = mWalletConfigBean.getCash().getTypes();
-        }
-        if (cashType == null) {
-            cashType = new ArrayList<>();
-        }
+//        List<String> cashType = null;
+//        if (mWalletConfigBean != null && mWalletConfigBean.getCash() != null) {
+//            cashType = mWalletConfigBean.getCash().getTypes();
+//        }
+//        if (cashType == null) {
+//            cashType = new ArrayList<>();
+//        }
+        List<String> recharge_types = Arrays.asList(mWalletConfigBean.getRecharge_type());
         mActionPopupWindow = ActionPopupWindow.builder()
-                .item2Str(cashType.contains(WalletConfigBean.CashBean.TYPE_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)) : "")
-                .item3Str(cashType.contains(WalletConfigBean.CashBean.TYPE_WECHAT) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)) : "")
+                .item2Str(recharge_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)) : "")
+                .item3Str(recharge_types.contains(TSPayClient.CHANNEL_WXPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)) : "")
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -229,7 +224,6 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                         mWithdrawalsType = WithdrawType.ALIWITHDRAW.type;
                         mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)));
                         mActionPopupWindow.hide();
-                        configSureButton();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
@@ -238,7 +232,6 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                         mWithdrawalsType = WithdrawType.WXWITHDRAW.type;
                         mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)));
                         mActionPopupWindow.hide();
-                        configSureButton();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
@@ -251,8 +244,4 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         mActionPopupWindow.show();
     }
 
-    private void configSureButton() {
-        mBtSure.setEnabled(mWithdrawalsMoney > 0 && !TextUtils.isEmpty(mBtWithdrawStyle.getRightText())
-                && !TextUtils.isEmpty(mEtWithdrawAccountInput.getText()));
-    }
 }

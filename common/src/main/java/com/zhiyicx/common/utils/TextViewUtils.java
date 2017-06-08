@@ -11,10 +11,10 @@ import android.view.View;
 import android.widget.TextView;
 
 /**
- * @Describe
- * @Author Jungle68
- * @Date 2015/5/12
- * @Contact master.jungle68@gmail.com
+ * @Author Jliuer
+ * @Date 2017/6/8 14:28
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
 public class TextViewUtils {
 

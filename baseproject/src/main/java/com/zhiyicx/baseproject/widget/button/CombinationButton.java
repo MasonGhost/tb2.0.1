@@ -94,6 +94,10 @@ public class CombinationButton extends FrameLayout {
         mCombinedButtonRightText.setText(rightText);
     }
 
+    public TextView getCombinedButtonRightTextView() {
+        return mCombinedButtonRightText;
+    }
+
     public String getRightText() {
         return mCombinedButtonRightText.getText().toString();
     }
