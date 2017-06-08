@@ -187,6 +187,5 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 mHeaderAndFooterWrapper.notifyDataSetChanged();
             }
         });
-        LogUtils.d("EVENT_ABLUM_COLLECT");
     }
 }
