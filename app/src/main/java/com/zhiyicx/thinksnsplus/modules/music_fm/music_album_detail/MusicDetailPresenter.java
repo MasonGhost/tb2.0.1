@@ -154,7 +154,9 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
 
     @Override
     public void onSuccess(Share share) {
-        mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
+        if (!istourist()){
+            mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
+        }
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
     }
 

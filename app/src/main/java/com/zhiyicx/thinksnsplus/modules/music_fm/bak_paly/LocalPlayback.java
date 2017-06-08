@@ -270,6 +270,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mCallback.onPlaybackStatusChanged(mState);
             }
         }
+
     }
 
     @Override
@@ -367,6 +368,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     public void onSeekComplete(MediaPlayer mp) {
         mCurrentPosition = mp.getCurrentPosition();
         if (mState == PlaybackStateCompat.STATE_PAUSED) {
+            mMediaPlayer.pause();
             return;
         }
         if (mState == PlaybackStateCompat.STATE_BUFFERING) {
@@ -390,6 +392,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     @Override
     public void onPrepared(MediaPlayer player) {
         if (mState == PlaybackStateCompat.STATE_PAUSED) {
+            mMediaPlayer.pause();
             return;
         }
         EventBus.getDefault().post(player.getDuration() / 1000,
@@ -408,7 +411,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        LogUtils.d(percent);
         if (!isCached) {
             mCallback.onBuffering(percent);
         }

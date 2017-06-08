@@ -115,7 +115,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private CommonAdapter mAdapter;
     private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
 
-    private static final String ARG_MEDIA_ID = "media_id";
+    public static final String ARG_MEDIA_ID = "media_id";
     public static final String MUSIC_INFO = "music_info";
     private String mCurrentMediaId = "-1";
     private Bitmap mBgBitmap;
@@ -438,6 +438,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
+                    bundle.putString(ARG_MEDIA_ID, MediaIDHelper.extractMusicIDFromMediaID(item.getMediaId()));
                     intent.putExtra(MUSIC_INFO, bundle);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     WindowUtils.setMusicAlbumDetailsBean(bundle);

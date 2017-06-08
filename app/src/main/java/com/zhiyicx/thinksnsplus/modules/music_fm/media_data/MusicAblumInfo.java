@@ -45,10 +45,12 @@ public class MusicAblumInfo implements MusicProviderSource {
 
         String imageUrl = String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
                 needData.getSinger().getCover().getId(),50);
+        LogUtils.d("buildMusic--needData.getId:::"+needData.getId());
         //noinspection ResourceType
         return new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID,
                         ""+needData.getId())
+
                 .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE,
                         ""+musicUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, needData.getTitle())

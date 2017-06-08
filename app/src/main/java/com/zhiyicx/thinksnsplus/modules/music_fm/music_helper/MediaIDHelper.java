@@ -58,9 +58,7 @@ public class MediaIDHelper {
         return null;
     }
 
-    public static
-    @NonNull
-    String[] getHierarchy(@NonNull String mediaID) {
+    public static String[] getHierarchy(@NonNull String mediaID) {
         int pos = mediaID.indexOf(LEAF_SEPARATOR);
         if (pos >= 0) {
             mediaID = mediaID.substring(0, pos);
