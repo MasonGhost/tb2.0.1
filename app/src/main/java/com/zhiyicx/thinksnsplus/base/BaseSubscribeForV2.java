@@ -100,6 +100,7 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
      * @param code
      */
     protected void onFailure(String message, int code) {
+        onCompleted();
     }
 
     /**
@@ -108,6 +109,7 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
      * @param throwable
      */
     protected void onException(Throwable throwable) {
+        onCompleted();
     }
 
 }

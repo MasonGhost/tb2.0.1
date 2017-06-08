@@ -208,13 +208,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
             mActionPopupWindow.show();
             return;
         }
-//        List<String> cashType = null;
-//        if (mWalletConfigBean != null && mWalletConfigBean.getCash() != null) {
-//            cashType = mWalletConfigBean.getCash().getTypes();
-//        }
-//        if (cashType == null) {
-//            cashType = new ArrayList<>();
-//        }
+
         List<String> recharge_types = Arrays.asList(mWalletConfigBean.getRecharge_type());
         mActionPopupWindow = ActionPopupWindow.builder()
                 .item2Str(recharge_types.contains(TSPayClient.CHANNEL_ALIPAY) ? getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)) : "")

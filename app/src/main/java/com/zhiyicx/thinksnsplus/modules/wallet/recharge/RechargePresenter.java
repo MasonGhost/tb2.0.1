@@ -4,12 +4,14 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
 
 import rx.functions.Action0;
+import rx.functions.Action1;
 
 /**
  * @Describe
@@ -58,6 +60,16 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
                 mRootView.showSnackErrorMessage(throwable.getMessage());
             }
 
+        });
+    }
+
+    @Override
+    public void rechargeSuccess(String charge) {
+        mRepository.rechargeSuccess(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
+            @Override
+            protected void onSuccess(RechargeSuccessBean data) {
+                mRootView.rechargeSuccess(data);
+            }
         });
     }
 }

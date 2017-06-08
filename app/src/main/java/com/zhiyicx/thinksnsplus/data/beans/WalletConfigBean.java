@@ -18,7 +18,8 @@ import java.util.List;
 
 public class WalletConfigBean implements Serializable, Parcelable {
 
-
+    public static final String TYPE_ALIPAY = "alipay";
+    public static final String TYPE_WECHAT = "wechat";
     private static final long serialVersionUID = 2408871831852484952L;
     /**
      * labels : [550,2000,9900]
@@ -32,10 +33,7 @@ public class WalletConfigBean implements Serializable, Parcelable {
 
     private int ratio;
     private String rule;
-//    private PayBean alipay;
-//    private PayBean apple;
-//    private PayBean wechat;
-    private CashBean cash;
+    private String[] cash;
     private List<Float> labels;
     private String[] recharge_type;
 
@@ -63,11 +61,11 @@ public class WalletConfigBean implements Serializable, Parcelable {
         this.rule = rule;
     }
 
-    public CashBean getCash() {
+    public String[] getCash() {
         return cash;
     }
 
-    public void setCash(CashBean cash) {
+    public void setCash(String[] cash) {
         this.cash = cash;
     }
 
@@ -79,53 +77,6 @@ public class WalletConfigBean implements Serializable, Parcelable {
         this.labels = labels;
     }
 
-
-    public static class CashBean implements Serializable, Parcelable {
-        private static final long serialVersionUID = -113289545366067874L;
-
-        public static final String TYPE_ALIPAY = "alipay";
-        public static final String TYPE_WECHAT = "wechat";
-        private List<String> types; // 可选提现的「提现方式」，按照现在系统预设，只有 alipay 和 wechat
-
-        public List<String> getTypes() {
-            return types;
-        }
-
-        public void setTypes(List<String> types) {
-            this.types = types;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeStringList(this.types);
-        }
-
-        public CashBean() {
-        }
-
-        protected CashBean(Parcel in) {
-            this.types = in.createStringArrayList();
-        }
-
-        public static final Parcelable.Creator<CashBean> CREATOR = new Parcelable.Creator<CashBean>() {
-            @Override
-            public CashBean createFromParcel(Parcel source) {
-                return new CashBean(source);
-            }
-
-            @Override
-            public CashBean[] newArray(int size) {
-                return new CashBean[size];
-            }
-        };
-    }
-
-
     @Override
     public String toString() {
         return "WalletConfigBean{" +
@@ -136,6 +87,7 @@ public class WalletConfigBean implements Serializable, Parcelable {
                 '}';
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -145,7 +97,7 @@ public class WalletConfigBean implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.ratio);
         dest.writeString(this.rule);
-        dest.writeParcelable(this.cash, flags);
+        dest.writeStringArray(this.cash);
         dest.writeList(this.labels);
         dest.writeStringArray(this.recharge_type);
     }
@@ -156,7 +108,7 @@ public class WalletConfigBean implements Serializable, Parcelable {
     protected WalletConfigBean(Parcel in) {
         this.ratio = in.readInt();
         this.rule = in.readString();
-        this.cash = in.readParcelable(CashBean.class.getClassLoader());
+        this.cash = in.createStringArray();
         this.labels = new ArrayList<Float>();
         in.readList(this.labels, Float.class.getClassLoader());
         this.recharge_type = in.createStringArray();

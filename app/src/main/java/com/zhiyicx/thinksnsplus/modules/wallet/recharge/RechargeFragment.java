@@ -21,11 +21,11 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.tspay.TSPayClient;
 
@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.Observable;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -81,6 +80,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     private List<Float> mRechargeLables; // recharge lables
 
+    private String mPayChargeId; // recharge lables
+
     public static RechargeFragment newInstance(Bundle bundle) {
         RechargeFragment rechargeFragment = new RechargeFragment();
         rechargeFragment.setArguments(bundle);
@@ -121,7 +122,13 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     @Override
     public void payCredentialsResult(PayStrBean payStrBean) {
+        mPayChargeId = payStrBean.getId() + "";
         TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getCharge()), getActivity());
+    }
+
+    @Override
+    public void rechargeSuccess(RechargeSuccessBean rechargeSuccessBean) {
+        EventBus.getDefault().post("", EventBusTagConfig.EVENT_WALLET_RECHARGE);
     }
 
     @Override
@@ -130,7 +137,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {
                 configSureBtn(true);
-                String result = data.getExtras().getString("pay_result","");
+                String result = data.getExtras().getString("pay_result", "");
                 /* 处理返回值
                  * "success" - 支付成功
                  * "fail"    - 支付失败
@@ -143,7 +150,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
                 showSnackSuccessMessage(getString(id));
                 if (result.equals("success")) {
-                    EventBus.getDefault().post(result, EventBusTagConfig.EVENT_WALLET_RECHARGE);
+                    mPresenter.rechargeSuccess(mPayChargeId);
                 }
             }
         }
@@ -255,7 +262,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                                 mRechargeMoney = mRechargeLables.get(2);
                                 break;
                         }
-                        if (checkedId!=-1){
+                        if (checkedId != -1) {
                             configSureButton();
                             setCustomMoneyDefault();
                         }
