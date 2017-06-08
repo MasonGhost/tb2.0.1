@@ -311,5 +311,6 @@ public class ApiConfig {
     public static final String APP_PAHT_WALLET_RECHARGE = "api/" + API_VERSION_2 + "/wallet/recharge";
     // 钱包余额充值成功
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS = "api/" + API_VERSION_2 + "/wallet/charges/{charge}";
-    public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s";
+
+    public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/wallet/charges/{charge}?mode=retrieve";
 }

@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.tspay.TSPayClient;
 
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -21,14 +22,17 @@ public interface RechargeContract {
         void payCredentialsResult(PayStrBean payStrBean);
         void configSureBtn(boolean enable);
         void rechargeSuccess(RechargeSuccessBean rechargeSuccessBean);
+
     }
 
     interface Repository {
+        Observable<RechargeSuccessBean> rechargeSuccessCallBack(String charge);
         Observable<RechargeSuccessBean> rechargeSuccess(String charge);
     }
 
     interface Presenter extends IBaseTouristPresenter {
         void getPayStr(@TSPayClient.PayKey String channel, int amount);
         void rechargeSuccess(String charge);
+        void rechargeSuccessCallBack(String charge);
     }
 }

@@ -51,4 +51,9 @@ public class RechargeRepository implements RechargeContract.Repository {
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Observable<RechargeSuccessBean> rechargeSuccessCallBack(String charge) {
+        return mWalletClient.rechargeSuccessCallBack(charge);
+    }
 }

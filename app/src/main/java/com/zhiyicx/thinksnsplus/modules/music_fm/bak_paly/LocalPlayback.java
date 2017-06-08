@@ -309,28 +309,27 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     }
 
     private void configMediaPlayerState() {
-        if (mAudioFocus == AUDIO_NO_FOCUS_NO_DUCK) { // 没有焦点并且在播放中
+        if (mAudioFocus == AUDIO_NO_FOCUS_NO_DUCK) {
+            // 没有焦点并且在播放中
             if (mState == PlaybackStateCompat.STATE_PLAYING) {
                 pause();
             }
-        } else {// 播放器有焦点
+        } else {  // 播放器有焦点
             registerAudioNoisyReceiver();
             if (mAudioFocus == AUDIO_NO_FOCUS_CAN_DUCK) {
                 mMediaPlayer.setVolume(VOLUME_DUCK, VOLUME_DUCK);
             } else {
                 if (mMediaPlayer != null) {
                     mMediaPlayer.setVolume(VOLUME_NORMAL, VOLUME_NORMAL);
-                } else {
-                    // TODO ...
                 }
             }
 
             if (mPlayOnFocusGain) {
                 if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
                     if (mCurrentPosition == mMediaPlayer.getCurrentPosition()) {
-                        mMediaPlayer.start(); // 进入界面后是否自动播放
-                        mState = PlaybackStateCompat.STATE_PLAYING;
                         LogUtils.d("mCurrentPosition == mMediaPlayer.start()");
+                        mMediaPlayer.start();
+                        mState = PlaybackStateCompat.STATE_PLAYING;
                     } else {
                         LogUtils.d("mCurrentPosition == mMediaPlayer.seekTo");
                         mMediaPlayer.seekTo(mCurrentPosition);

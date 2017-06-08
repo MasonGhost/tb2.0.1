@@ -68,6 +68,16 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
         mRepository.rechargeSuccess(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
             @Override
             protected void onSuccess(RechargeSuccessBean data) {
+                rechargeSuccessCallBack(data.getId() + "");
+            }
+        });
+    }
+
+    @Override
+    public void rechargeSuccessCallBack(String charge) {
+        mRepository.rechargeSuccessCallBack(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
+            @Override
+            protected void onSuccess(RechargeSuccessBean data) {
                 mRootView.rechargeSuccess(data);
             }
         });
