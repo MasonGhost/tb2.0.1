@@ -124,6 +124,11 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         return R.layout.fragment_withdrawals;
     }
 
+    @Override
+    public void configSureBtn(boolean enable) {
+        mBtSure.setEnabled(enable);
+    }
+
     private void setCustomMoneyDefault() {
         mEtWithdrawInput.setText("");
     }
@@ -135,7 +140,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                     @Override
                     public void call(Void aVoid) {
                         DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-                        mPresenter.withdraw((int) mWithdrawalsMoney * 200, mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
+                        mPresenter.withdraw((int) mWithdrawalsMoney * mWalletConfigBean.getRatio()
+                                , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
                     }
                 });
 
@@ -181,7 +187,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         }
         mWithdrawalsInstructionsPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.withdrawal_instructions))
-                .desStr(getString(R.string.withdrawal_instructions_detail))
+                .desStr(getString(resDesStr))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

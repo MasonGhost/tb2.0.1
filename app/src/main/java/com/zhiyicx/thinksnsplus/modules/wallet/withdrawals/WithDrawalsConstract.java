@@ -18,6 +18,7 @@ public interface WithDrawalsConstract {
         void withdrawResult(WithdrawResultBean withdrawResultBean);
         void minMoneyLimit();
         void maxMoneyLimit();
+        void configSureBtn(boolean enable);
     }
 
     interface Presenter extends IBasePresenter{

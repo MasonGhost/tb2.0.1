@@ -16,6 +16,7 @@ public interface RechargeContract {
 
     interface View extends IBaseView<Presenter> {
         void payCredentialsResult(PayStrBean payStrBean);
+        void configSureBtn(boolean enable);
     }
 
     interface Repository {

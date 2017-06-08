@@ -37,7 +37,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
 
     @Override
     public void withdraw(int value, String type, String account) {
-        if (value < 200) {
+        if (value < 1) {
             mRootView.minMoneyLimit();
             return;
         }
@@ -46,6 +46,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
+                        mRootView.configSureBtn(false);
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.withdraw_doing));
                     }
                 })
@@ -58,35 +59,21 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.withdraw_failed));
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.withdraw_failed));
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.configSureBtn(true);
                     }
                 });
         addSubscrebe(subscribe);
-    }
-
-    private void updateUserInfo$$Balance() {
-        Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
-                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
-                    @Override
-                    protected void onSuccess(UserInfoBean data) {
-                        mUserInfoBeanGreenDao.insertOrReplace(data);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.showSnackWarningMessage(message);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
-                    }
-                });
-        addSubscrebe(userInfoSub);
     }
 }
