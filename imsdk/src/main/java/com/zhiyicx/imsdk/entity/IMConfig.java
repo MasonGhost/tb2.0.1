@@ -17,6 +17,11 @@ public class IMConfig implements Serializable {
     private int comprs = ImService.COMPRS_ZLIB;//:0不支持,1:deflate,2:zlib,3:gzip
     private String web_socket_authority;
 
+    @Override
+    public String toString() {
+        return imUid+"\n"+token+"\n"+web_socket_authority;
+    }
+
     public String getWeb_socket_authority() {
         return web_socket_authority;
     }
