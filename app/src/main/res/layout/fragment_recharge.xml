@@ -78,6 +78,7 @@
 
         <TextView
             android:id="@+id/bt_top"
+            android:enabled="false"
             style="@style/style_login_button"
             android:layout_marginTop="@dimen/button_login_margin_top"
             android:text="@string/sure"

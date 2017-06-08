@@ -129,7 +129,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {
-                LogUtils.d(data.getExtras().toString());
+                configSureBtn(true);
                 String result = data.getExtras().getString("pay_result","");
                 /* 处理返回值
                  * "success" - 支付成功

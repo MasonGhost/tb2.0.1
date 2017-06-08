@@ -58,11 +58,6 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
                 mRootView.showSnackErrorMessage(throwable.getMessage());
             }
 
-            @Override
-            public void onCompleted() {
-                super.onCompleted();
-                mRootView.configSureBtn(true);
-            }
         });
     }
 }
