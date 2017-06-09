@@ -317,7 +317,7 @@
         </activity>
         <activity android:name=".modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity">
         </activity>
-        <activity android:name=".modules.wallet.account.AccountActivity">
+        <activity android:name=".modules.wallet.bill_detail.BillDetailActivity">
         </activity>
         <activity
             android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity"

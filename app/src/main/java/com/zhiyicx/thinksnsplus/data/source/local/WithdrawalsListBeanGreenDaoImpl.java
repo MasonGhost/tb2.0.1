@@ -33,7 +33,7 @@ public class WithdrawalsListBeanGreenDaoImpl extends CommonCacheImpl<Withdrawals
 
     @Override
     public void saveMultiData(List<WithdrawalsListBean> multiData) {
-        mWithdrawalsListBeanDao.insertInTx(multiData);
+        mWithdrawalsListBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override

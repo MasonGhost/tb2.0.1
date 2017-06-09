@@ -39,7 +39,7 @@ public abstract class RecyclerViewDiffUtil<T> extends DiffUtil.Callback {
         return mNewDatas.size();
     }
 
-    protected void diffNotify(@NotNull final RecyclerViewDiffUtil diffUtil, @NotNull final RecyclerView.Adapter adapter) {
+    public void diffNotify(@NotNull final RecyclerViewDiffUtil diffUtil, @NotNull final RecyclerView.Adapter adapter) {
         Observable<DiffUtil.DiffResult> observable = Observable.defer(new Func0<Observable<DiffUtil.DiffResult>>() {
             @Override
             public Observable<DiffUtil.DiffResult> call() {

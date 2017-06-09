@@ -1,9 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * @Author Jliuer
@@ -12,7 +17,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * @Description
  */
 @Entity
-public class RechargeSuccessBean extends BaseListBean{
+public class RechargeSuccessBean extends BaseListBean implements Parcelable{
 
     /**
      * id : 1
@@ -31,7 +36,9 @@ public class RechargeSuccessBean extends BaseListBean{
      * updated_at : 2017-06-08 06:46:23
      * deleted_at : null
      */
-
+    @Id(autoincrement = true)
+    private Long _id;
+    @Unique
     private int id;
     private int user_id;
     private String channel;
@@ -48,11 +55,12 @@ public class RechargeSuccessBean extends BaseListBean{
     private String updated_at;
     private String deleted_at;
 
-    @Generated(hash = 590537891)
-    public RechargeSuccessBean(int id, int user_id, String channel, String account,
-            String charge_id, int action, int amount, String currency,
-            String subject, String body, String transaction_no, int status,
-            String created_at, String updated_at, String deleted_at) {
+    @Generated(hash = 719075135)
+    public RechargeSuccessBean(Long _id, int id, int user_id, String channel, String account,
+            String charge_id, int action, int amount, String currency, String subject,
+            String body, String transaction_no, int status, String created_at,
+            String updated_at, String deleted_at) {
+        this._id = _id;
         this.id = id;
         this.user_id = user_id;
         this.channel = channel;
@@ -72,6 +80,11 @@ public class RechargeSuccessBean extends BaseListBean{
 
     @Generated(hash = 1436548267)
     public RechargeSuccessBean() {
+    }
+
+    @Override
+    public Long getMaxId() {
+        return (long) this.id;
     }
 
     public int getId() {
@@ -193,4 +206,71 @@ public class RechargeSuccessBean extends BaseListBean{
     public void setDeleted_at(String deleted_at) {
         this.deleted_at = deleted_at;
     }
+
+    public Long get_id() {
+        return this._id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
+        dest.writeInt(this.id);
+        dest.writeInt(this.user_id);
+        dest.writeString(this.channel);
+        dest.writeString(this.account);
+        dest.writeString(this.charge_id);
+        dest.writeInt(this.action);
+        dest.writeInt(this.amount);
+        dest.writeString(this.currency);
+        dest.writeString(this.subject);
+        dest.writeString(this.body);
+        dest.writeString(this.transaction_no);
+        dest.writeInt(this.status);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.deleted_at);
+    }
+
+    protected RechargeSuccessBean(Parcel in) {
+        super(in);
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
+        this.id = in.readInt();
+        this.user_id = in.readInt();
+        this.channel = in.readString();
+        this.account = in.readString();
+        this.charge_id = in.readString();
+        this.action = in.readInt();
+        this.amount = in.readInt();
+        this.currency = in.readString();
+        this.subject = in.readString();
+        this.body = in.readString();
+        this.transaction_no = in.readString();
+        this.status = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.deleted_at = in.readString();
+    }
+
+    public static final Creator<RechargeSuccessBean> CREATOR = new Creator<RechargeSuccessBean>() {
+        @Override
+        public RechargeSuccessBean createFromParcel(Parcel source) {
+            return new RechargeSuccessBean(source);
+        }
+
+        @Override
+        public RechargeSuccessBean[] newArray(int size) {
+            return new RechargeSuccessBean[size];
+        }
+    };
 }
