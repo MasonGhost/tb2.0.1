@@ -34,7 +34,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
     }
 
     @Override
-    public void getPayStr(String channel, int amount) {
+    public void getPayStr(String channel, double amount) {
         mSystemRepository.getPayStr(channel, amount).doOnSubscribe(new Action0() {
             @Override
             public void call() {

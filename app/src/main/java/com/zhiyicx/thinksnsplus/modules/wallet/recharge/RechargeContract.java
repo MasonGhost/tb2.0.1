@@ -31,7 +31,7 @@ public interface RechargeContract {
     }
 
     interface Presenter extends IBaseTouristPresenter {
-        void getPayStr(@TSPayClient.PayKey String channel, int amount);
+        void getPayStr(@TSPayClient.PayKey String channel, double amount);
         void rechargeSuccess(String charge);
         void rechargeSuccessCallBack(String charge);
     }

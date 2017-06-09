@@ -56,7 +56,7 @@ public interface ISystemRepository {
      * @param amount 支付金额
      * @return
      */
-    Observable<PayStrBean> getPayStr(String channel, int amount);
+    Observable<PayStrBean> getPayStr(String channel, double amount);
 
     /**
      * 获取本地系统会话列表

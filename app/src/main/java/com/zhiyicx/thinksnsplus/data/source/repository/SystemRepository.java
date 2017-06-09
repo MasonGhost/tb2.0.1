@@ -265,7 +265,7 @@ public class SystemRepository implements ISystemRepository {
     }
 
     @Override
-    public Observable<PayStrBean> getPayStr(String channel, int amount) {
+    public Observable<PayStrBean> getPayStr(String channel, double amount) {
         return mCommonClient.getPayStr(channel, amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

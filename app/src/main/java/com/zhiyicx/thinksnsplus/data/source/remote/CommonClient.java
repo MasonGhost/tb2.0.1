@@ -176,7 +176,7 @@ public interface CommonClient {
      */
     @FormUrlEncoded
     @POST(APP_PAHT_WALLET_RECHARGE)
-    Observable<PayStrBean> getPayStr(@Field("type") String channel, @Field("amount") int amount);
+    Observable<PayStrBean> getPayStr(@Field("type") String channel, @Field("amount") double amount);
 
     /*******************************************  文件上传  *********************************************/
 
