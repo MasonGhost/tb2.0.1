@@ -34,6 +34,16 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_withdrawals_detail;
     }
