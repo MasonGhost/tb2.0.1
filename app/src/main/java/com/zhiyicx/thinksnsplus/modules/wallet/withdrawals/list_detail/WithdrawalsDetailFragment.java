@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
@@ -47,11 +48,17 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
     protected RecyclerView.Adapter getAdapter() {
         CommonAdapter adapter = new CommonAdapter<WithdrawalsListBean>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, WithdrawalsListBean s, int position) {
+            protected void convert(ViewHolder holder, WithdrawalsListBean withdrawal, int position) {
                 TextView desc = holder.getView(R.id.withdrawals_desc);
-                if (position % 2 == 0) {
-                    desc.setEnabled(false);
-                }
+                TextView time = holder.getView(R.id.withdrawals_time);
+                TextView account = holder.getView(R.id.withdrawals_account);
+                int status = withdrawal.getStatus();
+                boolean status_success = status == 1;
+                desc.setEnabled(status_success);
+                desc.setText(status_success ? "- " + withdrawal.getValue() : (getString(status == 0 ? R.string.bill_doing : R.string.transaction_fail)));
+                account.setText(String.format(getString(R.string.withdraw_money_done), withdrawal.getAccount()));
+                time.setText(TimeUtils.string2_ToDya_Yesterday_Week(withdrawal.getCreated_at()));
+
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

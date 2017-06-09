@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import android.os.Parcel;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -33,12 +35,11 @@ public class WithdrawalsListBean extends BaseListBean {
     private String type;
     private String account;
     private int status;
-    private long remark;
+    private String remark;
     private String created_at;
-
-    @Generated(hash = 138785795)
+    @Generated(hash = 1425554202)
     public WithdrawalsListBean(Long _id, int id, int value, String type,
-            String account, int status, long remark, String created_at) {
+            String account, int status, String remark, String created_at) {
         this._id = _id;
         this.id = id;
         this.value = value;
@@ -48,77 +49,98 @@ public class WithdrawalsListBean extends BaseListBean {
         this.remark = remark;
         this.created_at = created_at;
     }
-
     @Generated(hash = 474679993)
     public WithdrawalsListBean() {
     }
-
-    public int getId() {
-        return id;
+    public Long get_id() {
+        return this._id;
     }
-
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+    public int getId() {
+        return this.id;
+    }
     public void setId(int id) {
         this.id = id;
     }
-
-    @Override
-    public Long getMaxId() {
-        return (long) id;
-    }
-
     public int getValue() {
-        return value;
+        return this.value;
     }
-
     public void setValue(int value) {
         this.value = value;
     }
-
     public String getType() {
-        return type;
+        return this.type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
-
     public String getAccount() {
-        return account;
+        return this.account;
     }
-
     public void setAccount(String account) {
         this.account = account;
     }
-
     public int getStatus() {
-        return status;
+        return this.status;
     }
-
     public void setStatus(int status) {
         this.status = status;
     }
-
-    public long getRemark() {
-        return remark;
+    public String getRemark() {
+        return this.remark;
     }
-
-    public void setRemark(long remark) {
+    public void setRemark(String remark) {
         this.remark = remark;
     }
-
     public String getCreated_at() {
-        return created_at;
+        return this.created_at;
     }
-
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 
-    public Long get_id() {
-        return this._id;
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void set_id(Long _id) {
-        this._id = _id;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
+        dest.writeInt(this.id);
+        dest.writeInt(this.value);
+        dest.writeString(this.type);
+        dest.writeString(this.account);
+        dest.writeInt(this.status);
+        dest.writeString(this.remark);
+        dest.writeString(this.created_at);
     }
+
+    protected WithdrawalsListBean(Parcel in) {
+        super(in);
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
+        this.id = in.readInt();
+        this.value = in.readInt();
+        this.type = in.readString();
+        this.account = in.readString();
+        this.status = in.readInt();
+        this.remark = in.readString();
+        this.created_at = in.readString();
+    }
+
+    public static final Creator<WithdrawalsListBean> CREATOR = new Creator<WithdrawalsListBean>() {
+        @Override
+        public WithdrawalsListBean createFromParcel(Parcel source) {
+            return new WithdrawalsListBean(source);
+        }
+
+        @Override
+        public WithdrawalsListBean[] newArray(int size) {
+            return new WithdrawalsListBean[size];
+        }
+    };
 }
