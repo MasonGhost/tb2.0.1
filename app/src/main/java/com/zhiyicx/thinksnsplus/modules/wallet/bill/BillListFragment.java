@@ -19,8 +19,6 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
-import java.util.List;
-
 import butterknife.BindView;
 
 /**
@@ -37,6 +35,9 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
     View mVshadow;
 
     private ActionPopupWindow mActionPopupWindow;
+
+    private int[] mBillTypes = new int[]{0, 1, 2};
+    private int mBillType;
 
     public static BillListFragment newInstance() {
         return new BillListFragment();
@@ -101,6 +102,25 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initTopPopWindow();
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
+                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
+                .shape_recyclerview_grey_divider));
+    }
+
+    @Override
+    public int getBillType() {
+        return mBillType;
+    }
+
+    private void initTopPopWindow() {
+        if (mActionPopupWindow != null) {
+            return;
+        }
         mActionPopupWindow = ActionPopupWindow.builder()
                 .with(getActivity())
                 .isFocus(true)
@@ -114,6 +134,8 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                     @Override
                     public void onItemClicked() {
                         mToolbarCenter.setText(getString(R.string.withdraw_all));
+                        mPresenter.selectAll();
+                        mBillType = mBillTypes[0];
                         mActionPopupWindow.hide();
                     }
                 })
@@ -122,6 +144,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                     public void onItemClicked() {
                         mToolbarCenter.setText(getString(R.string.withdraw_out));
                         mPresenter.selectBillByAction(2);
+                        mBillType = mBillTypes[2];
                         mActionPopupWindow.hide();
                     }
                 })
@@ -130,6 +153,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                     public void onItemClicked() {
                         mToolbarCenter.setText(getString(R.string.withdraw_in));
                         mPresenter.selectBillByAction(1);
+                        mBillType = mBillTypes[1];
                         mActionPopupWindow.hide();
                     }
                 })
@@ -147,17 +171,5 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                     }
                 })
                 .build();
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
-                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
-                .shape_recyclerview_grey_divider));
-    }
-
-    @Override
-    public void selectBillByAction(List<RechargeSuccessBean> rechargeSuccessBeens) {
-
     }
 }

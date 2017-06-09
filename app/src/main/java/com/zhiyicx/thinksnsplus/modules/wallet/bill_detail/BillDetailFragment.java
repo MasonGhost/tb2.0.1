@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.bill_detail;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,6 +64,11 @@ public class BillDetailFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+
+    }
+
+    @Override
+    protected void initData() {
         mRechargeSuccessBean = getArguments().getParcelable(BILL_INFO);
         int action = mRechargeSuccessBean.getAction();
         int status = mRechargeSuccessBean.getStatus();
@@ -74,18 +80,13 @@ public class BillDetailFragment extends TSFragment {
             e.printStackTrace();
         }
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
-        String moneyStr = (status == 0 ? "" : (status == 1 ? "+ " : "- ")) + String.valueOf(mRechargeSuccessBean.getAmount());
+        String moneyStr = (status == 1 ? (action > 1 ? "- " : "+ ") : "") + String.valueOf(mRechargeSuccessBean.getAmount());
         mTvMineMoney.setText(moneyStr);
         mBillUserContainer.setVisibility(is_user ? View.VISIBLE : View.GONE);
         mBillAccountContainer.setVisibility(is_user ? View.GONE : View.VISIBLE);
-        mBillAccount.setText(mRechargeSuccessBean.getAccount());
+        mBillAccount.setText(TextUtils.isEmpty(mRechargeSuccessBean.getAccount()) ? mRechargeSuccessBean.getChannel() : mRechargeSuccessBean.getAccount());
         mBillDesc.setText(mRechargeSuccessBean.getBody());
         mBillTime.setText(TimeUtils.string2_Dya_Week_Time(mRechargeSuccessBean.getCreated_at()));
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     @Override

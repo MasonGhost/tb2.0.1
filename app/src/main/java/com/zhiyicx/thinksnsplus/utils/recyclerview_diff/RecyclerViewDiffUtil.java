@@ -22,7 +22,6 @@ import rx.schedulers.Schedulers;
 public abstract class RecyclerViewDiffUtil<T> extends DiffUtil.Callback {
 
     protected List<T> mOldDatas, mNewDatas;
-    protected RecyclerViewDiffUtil<T> mDiffUtil;
 
     public RecyclerViewDiffUtil(@NotNull List<T> oldDatas, @NotNull List<T> newDatas) {
         this.mOldDatas = oldDatas;
@@ -39,11 +38,15 @@ public abstract class RecyclerViewDiffUtil<T> extends DiffUtil.Callback {
         return mNewDatas.size();
     }
 
-    public void diffNotify(@NotNull final RecyclerViewDiffUtil diffUtil, @NotNull final RecyclerView.Adapter adapter) {
+    protected RecyclerViewDiffUtil getCurrentDiffUtil() {
+        return this;
+    }
+
+    public void diffNotify(@NotNull final RecyclerView.Adapter adapter, final boolean detectMoves) {
         Observable<DiffUtil.DiffResult> observable = Observable.defer(new Func0<Observable<DiffUtil.DiffResult>>() {
             @Override
             public Observable<DiffUtil.DiffResult> call() {
-                return Observable.just(DiffUtil.calculateDiff(diffUtil, true));
+                return Observable.just(DiffUtil.calculateDiff(getCurrentDiffUtil(), detectMoves));
             }
         });
         observable.subscribeOn(Schedulers.computation())
@@ -52,6 +55,11 @@ public abstract class RecyclerViewDiffUtil<T> extends DiffUtil.Callback {
                     @Override
                     public void call(DiffUtil.DiffResult diffResult) {
                         diffResult.dispatchUpdatesTo(adapter);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
                     }
                 });
     }

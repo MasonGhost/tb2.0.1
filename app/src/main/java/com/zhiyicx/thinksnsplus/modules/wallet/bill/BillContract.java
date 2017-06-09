@@ -17,16 +17,20 @@ import rx.Observable;
  * @Description
  */
 public interface BillContract {
-    interface View extends ITSListView<RechargeSuccessBean,Presenter>{
-        void selectBillByAction(List<RechargeSuccessBean> rechargeSuccessBeens);
+    interface View extends ITSListView<RechargeSuccessBean, Presenter> {
         HeaderAndFooterWrapper getTSAdapter();
+        int getBillType();
     }
 
-    interface Presenter extends ITSListPresenter<RechargeSuccessBean>{
+    interface Presenter extends ITSListPresenter<RechargeSuccessBean> {
         void selectBillByAction(int action);
+
+        void selectAll();
+
+
     }
 
-    interface Repository{
+    interface Repository {
         Observable<List<RechargeSuccessBean>> getBillList(int after);
     }
 }

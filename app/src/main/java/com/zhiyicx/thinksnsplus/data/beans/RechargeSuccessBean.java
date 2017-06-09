@@ -17,7 +17,7 @@ import org.greenrobot.greendao.annotation.Unique;
  * @Description
  */
 @Entity
-public class RechargeSuccessBean extends BaseListBean implements Parcelable{
+public class RechargeSuccessBean extends BaseListBean implements Parcelable {
 
     /**
      * id : 1
@@ -57,9 +57,9 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable{
 
     @Generated(hash = 719075135)
     public RechargeSuccessBean(Long _id, int id, int user_id, String channel, String account,
-            String charge_id, int action, int amount, String currency, String subject,
-            String body, String transaction_no, int status, String created_at,
-            String updated_at, String deleted_at) {
+                               String charge_id, int action, int amount, String currency, String subject,
+                               String body, String transaction_no, int status, String created_at,
+                               String updated_at, String deleted_at) {
         this._id = _id;
         this.id = id;
         this.user_id = user_id;
@@ -273,4 +273,11 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable{
             return new RechargeSuccessBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "id=" + id + "\n" +
+                "action=" + action + "\n" +
+                "status=" + status + "\n";
+    }
 }

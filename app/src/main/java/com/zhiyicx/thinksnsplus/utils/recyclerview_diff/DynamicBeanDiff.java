@@ -51,4 +51,8 @@ public class DynamicBeanDiff extends RecyclerViewDiffUtil<DynamicBean> {
         return false;
     }
 
+    @Override
+    protected RecyclerViewDiffUtil getCurrentDiffUtil() {
+        return null;
+    }
 }
