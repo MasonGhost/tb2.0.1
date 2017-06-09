@@ -39,6 +39,7 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_weight="1"
         android:gravity="right"
+        android:enabled="false"
         android:text="-780"
         android:textColor="@color/selector_withdrawalstext_color"
         android:textSize="@dimen/size_sub_title"

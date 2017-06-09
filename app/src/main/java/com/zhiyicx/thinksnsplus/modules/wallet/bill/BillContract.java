@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.List;
 
@@ -17,11 +18,12 @@ import rx.Observable;
  */
 public interface BillContract {
     interface View extends ITSListView<RechargeSuccessBean,Presenter>{
-
+        void selectBillByAction(List<RechargeSuccessBean> rechargeSuccessBeens);
+        HeaderAndFooterWrapper getTSAdapter();
     }
 
     interface Presenter extends ITSListPresenter<RechargeSuccessBean>{
-
+        void selectBillByAction(int action);
     }
 
     interface Repository{

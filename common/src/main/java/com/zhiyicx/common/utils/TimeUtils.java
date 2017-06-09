@@ -6,6 +6,7 @@ import com.zhiyicx.common.config.ConstantConfig;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -139,7 +140,6 @@ public class TimeUtils {
         }
         return result;
     }
-
 
 
     /**
@@ -444,6 +444,23 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public static String string2_ToDya_Yesterday_Week(String timeStr) {
+        long time = utc2LocalLong(timeStr);
+        Date otherDay = new Date(time);
+        int intervalDays = getifferenceDays(time);
+        String[] weeks = {"周日", "周一", "周二", "周三", "周四", "周五", "周六", "今天", "昨天"};
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(otherDay);
+        int week_index = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (week_index < 0) {
+            week_index = 0;
+        }
+        if (intervalDays <= 1) {
+            return weeks[7 + intervalDays] + "\n" + getStandardTimeWithMothAndDay(time);
+        }
+        return weeks[week_index] + "\n" + getStandardTimeWithMothAndDay(time);
     }
 
     /**

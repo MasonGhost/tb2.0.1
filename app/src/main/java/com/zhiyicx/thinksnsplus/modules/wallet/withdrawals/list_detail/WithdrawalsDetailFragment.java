@@ -7,21 +7,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
-import com.zhiyicx.thinksnsplus.modules.wallet.account.AccountActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.bill_detail.BillDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * @Author Jliuer
@@ -65,7 +57,7 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                startActivity(new Intent(getActivity(), AccountActivity.class));
+                startActivity(new Intent(getActivity(), BillDetailActivity.class));
             }
 
             @Override

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.bill;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,14 +9,15 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
-import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
-import com.zhiyicx.thinksnsplus.modules.wallet.account.AccountActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.bill_detail.BillDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.List;
 
@@ -25,16 +27,18 @@ import butterknife.BindView;
  * @Author Jliuer
  * @Date 2017/06/02/15:42
  * @Email Jliuer@aliyun.com
- * @Description  账单
+ * @Description 账单
  */
-public class BillListFragment extends TSListFragment<BillContract.Presenter,RechargeSuccessBean> implements BillContract.View{
+public class BillListFragment extends TSListFragment<BillContract.Presenter, RechargeSuccessBean> implements BillContract.View {
+
+    public static final String BILL_INFO = "BILL_INFO";
 
     @BindView(R.id.v_shadow)
     View mVshadow;
 
     private ActionPopupWindow mActionPopupWindow;
 
-    public static BillListFragment newInstance(){
+    public static BillListFragment newInstance() {
         return new BillListFragment();
     }
 
@@ -42,17 +46,25 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter,Rech
     protected RecyclerView.Adapter getAdapter() {
         CommonAdapter adapter = new CommonAdapter<RechargeSuccessBean>(getActivity(), R.layout.item_withdrawals_detail, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, RechargeSuccessBean s, int position) {
+            protected void convert(ViewHolder holder, RechargeSuccessBean recharge, int position) {
                 TextView desc = holder.getView(R.id.withdrawals_desc);
-                if (position % 2 == 0) {
-                    desc.setEnabled(false);
-                }
+                TextView time = holder.getView(R.id.withdrawals_time);
+                TextView account = holder.getView(R.id.withdrawals_account);
+
+                desc.setEnabled(recharge.getStatus() == 1);
+                desc.setText(String.valueOf(recharge.getAmount()));
+                account.setText(recharge.getSubject() + " " + recharge.getBody());
+                time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                startActivity(new Intent(getActivity(), AccountActivity.class));
+                Intent intent = new Intent(getActivity(), BillDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(BILL_INFO, mListDatas.get(position));
+                intent.putExtra(BILL_INFO, bundle);
+                startActivity(intent);
             }
 
             @Override
@@ -64,13 +76,18 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter,Rech
     }
 
     @Override
+    public HeaderAndFooterWrapper getTSAdapter() {
+        return mHeaderAndFooterWrapper;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_withdrawals_detail;
     }
 
     @Override
     protected String setCenterTitle() {
-        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowdown,0);
+        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowdown, 0);
         return getString(R.string.detail);
     }
 
@@ -94,31 +111,36 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter,Rech
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItemClicked() {
+                        mToolbarCenter.setText(getString(R.string.withdraw_all));
                         mActionPopupWindow.hide();
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItemClicked() {
+                        mToolbarCenter.setText(getString(R.string.withdraw_out));
+                        mPresenter.selectBillByAction(2);
                         mActionPopupWindow.hide();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItemClicked() {
+                        mToolbarCenter.setText(getString(R.string.withdraw_in));
+                        mPresenter.selectBillByAction(1);
                         mActionPopupWindow.hide();
                     }
                 })
                 .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
                     @Override
                     public void onShow() {
-                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowup,0);
+                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowup, 0);
                         mVshadow.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onDismiss() {
-                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.ico_detail_arrowdown,0);
+                        mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowdown, 0);
                         mVshadow.setVisibility(View.GONE);
                     }
                 })
@@ -132,6 +154,8 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter,Rech
                 .shape_recyclerview_grey_divider));
     }
 
+    @Override
+    public void selectBillByAction(List<RechargeSuccessBean> rechargeSuccessBeens) {
 
-
+    }
 }

@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/bill_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -49,6 +49,7 @@
             android:paddingRight="@dimen/spacing_mid">
 
             <TextView
+                android:id="@+id/bill_user"
                 android:layout_width="@dimen/withdrawal_detail_width"
                 android:layout_height="match_parent"
                 android:gravity="left|center"
@@ -58,6 +59,7 @@
                 tools:text="@string/account_form_name"/>
 
             <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
+                android:id="@+id/bill_user_head"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -96,6 +98,7 @@
                 tools:text="@string/transaction_account"/>
 
             <TextView
+                android:id="@+id/bill_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"
@@ -126,6 +129,7 @@
                 tools:text="@string/transaction_description"/>
 
             <TextView
+                android:id="@+id/bill_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"
@@ -156,6 +160,7 @@
                 tools:text="@string/transaction_time"/>
 
             <TextView
+                android:id="@+id/bill_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/spacing_large"

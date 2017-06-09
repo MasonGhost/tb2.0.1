@@ -3,7 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.wallet.bill;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
-import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.RechargeSuccessBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.utils.recyclerview_diff.RechargeSuccessBeanDiff;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,9 @@ import javax.inject.Inject;
  * @Description
  */
 public class BillPresenter extends AppBasePresenter<BillContract.Repository, BillContract.View> implements BillContract.Presenter {
+
+    @Inject
+    RechargeSuccessBeanGreenDaoImpl mRechargeSuccessBeanGreenDao;
 
     @Inject
     public BillPresenter(BillContract.Repository repository, BillContract.View rootView) {
@@ -48,11 +52,19 @@ public class BillPresenter extends AppBasePresenter<BillContract.Repository, Bil
 
     @Override
     public List<RechargeSuccessBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+        return mRechargeSuccessBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List data, boolean isLoadMore) {
-        return false;
+    public boolean insertOrUpdateData(@NotNull List<RechargeSuccessBean> data, boolean isLoadMore) {
+        mRechargeSuccessBeanGreenDao.saveMultiData(data);
+        return true;
+    }
+
+    @Override
+    public void selectBillByAction(int action) {
+        List<RechargeSuccessBean> data = mRechargeSuccessBeanGreenDao.selectBillByAction(action);
+        RechargeSuccessBeanDiff rechargeSuccessBeanDiff = new RechargeSuccessBeanDiff(mRootView.getListDatas(), data);
+        rechargeSuccessBeanDiff.diffNotify(rechargeSuccessBeanDiff, mRootView.getTSAdapter());
     }
 }

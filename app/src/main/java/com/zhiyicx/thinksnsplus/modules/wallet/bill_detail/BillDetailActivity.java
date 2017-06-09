@@ -1,12 +1,14 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.account;
+package com.zhiyicx.thinksnsplus.modules.wallet.bill_detail;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
-public class AccountActivity extends TSActivity {
+import static com.zhiyicx.thinksnsplus.modules.wallet.bill.BillListFragment.BILL_INFO;
+
+public class BillDetailActivity extends TSActivity {
 
     @Override
-    protected AccountFragment getFragment() {
-        return new AccountFragment();
+    protected BillDetailFragment getFragment() {
+        return BillDetailFragment.getInstance(getIntent().getBundleExtra(BILL_INFO));
     }
 
     @Override

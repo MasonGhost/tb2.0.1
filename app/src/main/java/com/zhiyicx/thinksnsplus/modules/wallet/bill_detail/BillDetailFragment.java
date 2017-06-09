@@ -1,5 +1,6 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.account;
+package com.zhiyicx.thinksnsplus.modules.wallet.bill_detail;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -11,7 +12,13 @@ import com.zhiyicx.thinksnsplus.R;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class AccountFragment extends TSFragment {
+public class BillDetailFragment extends TSFragment {
+
+    public static BillDetailFragment getInstance(Bundle bundle) {
+        BillDetailFragment billDetailFragment = new BillDetailFragment();
+        billDetailFragment.setArguments(bundle);
+        return billDetailFragment;
+    }
 
     @Override
     protected boolean showToolBarDivider() {
