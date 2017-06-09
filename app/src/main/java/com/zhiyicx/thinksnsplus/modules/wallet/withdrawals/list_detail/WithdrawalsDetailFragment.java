@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,9 +13,12 @@ import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill_detail.BillDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.bill_detail.BillDetailBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import static com.zhiyicx.thinksnsplus.modules.wallet.bill.BillListFragment.BILL_INFO;
 
 /**
  * @Author Jliuer
@@ -64,7 +68,11 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                startActivity(new Intent(getActivity(), BillDetailActivity.class));
+                Intent intent = new Intent(getActivity(), BillDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(BILL_INFO, BillDetailBean.withdrawals2Bill(mListDatas.get(position)));
+                intent.putExtra(BILL_INFO, bundle);
+                startActivity(intent);
             }
 
             @Override

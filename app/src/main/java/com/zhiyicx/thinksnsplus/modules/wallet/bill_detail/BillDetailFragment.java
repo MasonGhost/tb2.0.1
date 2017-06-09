@@ -43,7 +43,7 @@ public class BillDetailFragment extends TSFragment {
     @BindView(R.id.bill_time)
     TextView mBillTime;
 
-    private RechargeSuccessBean mRechargeSuccessBean;
+    private BillDetailBean mBillDetailBean;
     private int userId;
 
     public static BillDetailFragment getInstance(Bundle bundle) {
@@ -69,24 +69,24 @@ public class BillDetailFragment extends TSFragment {
 
     @Override
     protected void initData() {
-        mRechargeSuccessBean = getArguments().getParcelable(BILL_INFO);
-        int action = mRechargeSuccessBean.getAction();
-        int status = mRechargeSuccessBean.getStatus();
+        mBillDetailBean = getArguments().getParcelable(BILL_INFO);
+        int action = mBillDetailBean.getAction();
+        int status = mBillDetailBean.getStatus();
         boolean is_user = true;
         try {
-            userId = Integer.valueOf(mRechargeSuccessBean.getAccount());
+            userId = Integer.valueOf(mBillDetailBean.getAccount());
         } catch (NumberFormatException e) {
             is_user = false;
             e.printStackTrace();
         }
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
-        String moneyStr = (status == 1 ? (action > 1 ? "- " : "+ ") : "") + String.valueOf(mRechargeSuccessBean.getAmount());
+        String moneyStr = (status == 1 ? (action > 1 ? "- " : "+ ") : "") + String.valueOf(mBillDetailBean.getAmount());
         mTvMineMoney.setText(moneyStr);
         mBillUserContainer.setVisibility(is_user ? View.VISIBLE : View.GONE);
         mBillAccountContainer.setVisibility(is_user ? View.GONE : View.VISIBLE);
-        mBillAccount.setText(TextUtils.isEmpty(mRechargeSuccessBean.getAccount()) ? mRechargeSuccessBean.getChannel() : mRechargeSuccessBean.getAccount());
-        mBillDesc.setText(mRechargeSuccessBean.getBody());
-        mBillTime.setText(TimeUtils.string2_Dya_Week_Time(mRechargeSuccessBean.getCreated_at()));
+        mBillAccount.setText(TextUtils.isEmpty(mBillDetailBean.getAccount()) ? mBillDetailBean.getChannel() : mBillDetailBean.getAccount());
+        mBillDesc.setText(mBillDetailBean.getBody());
+        mBillTime.setText(TimeUtils.string2_Dya_Week_Time(mBillDetailBean.getCreated_at()));
     }
 
     @Override

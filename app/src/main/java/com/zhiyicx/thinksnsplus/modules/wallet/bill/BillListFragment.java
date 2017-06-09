@@ -14,6 +14,7 @@ import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill_detail.BillDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.bill_detail.BillDetailBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -29,7 +30,7 @@ import butterknife.BindView;
  */
 public class BillListFragment extends TSListFragment<BillContract.Presenter, RechargeSuccessBean> implements BillContract.View {
 
-    public static final String BILL_INFO = "BILL_INFO";
+    public static final String BILL_INFO = "bill_info";
 
     @BindView(R.id.v_shadow)
     View mVshadow;
@@ -65,7 +66,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent = new Intent(getActivity(), BillDetailActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(BILL_INFO, mListDatas.get(position));
+                bundle.putParcelable(BILL_INFO, BillDetailBean.recharge2Bill(mListDatas.get(position)));
                 intent.putExtra(BILL_INFO, bundle);
                 startActivity(intent);
             }
