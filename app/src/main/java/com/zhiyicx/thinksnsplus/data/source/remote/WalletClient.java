@@ -18,6 +18,7 @@ import rx.Observable;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_CONFIG;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_WITHDRAW;
 
 
@@ -41,6 +42,9 @@ public interface WalletClient {
 
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS)
     Observable<RechargeSuccessBean> rechargeSuccess(@Path("charge") String charge);
+
+    @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST)
+    Observable<List<RechargeSuccessBean>> getRechargeSuccessList(@Query("limit") int limit, @Query("after") int after);
 
     @GET(APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK)
     Observable<RechargeSuccessBean> rechargeSuccessCallBack(@Path("charge") String charge);

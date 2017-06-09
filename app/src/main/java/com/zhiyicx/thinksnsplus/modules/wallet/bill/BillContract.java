@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.bill;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 
 import java.util.List;
@@ -15,15 +16,15 @@ import rx.Observable;
  * @Description
  */
 public interface BillContract {
-    interface View extends ITSListView<WithdrawalsListBean,Presenter>{
+    interface View extends ITSListView<RechargeSuccessBean,Presenter>{
 
     }
 
-    interface Presenter extends ITSListPresenter<WithdrawalsListBean>{
+    interface Presenter extends ITSListPresenter<RechargeSuccessBean>{
 
     }
 
     interface Repository{
-        Observable<List<WithdrawalsListBean>> getBillList(int after);
+        Observable<List<RechargeSuccessBean>> getBillList(int after);
     }
 }

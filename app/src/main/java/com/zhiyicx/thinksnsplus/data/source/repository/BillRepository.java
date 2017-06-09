@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillContract;
@@ -30,8 +30,8 @@ public class BillRepository implements BillContract.Repository {
     }
 
     @Override
-    public Observable<List<WithdrawalsListBean>> getBillList(int after) {
-        return mWalletClient.getWithdrawList(TSListFragment.DEFAULT_PAGE_SIZE, after)
+    public Observable<List<RechargeSuccessBean>> getBillList(int after) {
+        return mWalletClient.getRechargeSuccessList(TSListFragment.DEFAULT_PAGE_SIZE, after)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

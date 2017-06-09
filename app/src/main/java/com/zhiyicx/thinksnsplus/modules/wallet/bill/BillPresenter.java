@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.bill;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,9 +26,9 @@ public class BillPresenter extends AppBasePresenter<BillContract.Repository, Bil
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        mRepository.getBillList(maxId.intValue()).subscribe(new BaseSubscribeForV2<List<WithdrawalsListBean>>() {
+        mRepository.getBillList(maxId.intValue()).subscribe(new BaseSubscribeForV2<List<RechargeSuccessBean>>() {
             @Override
-            protected void onSuccess(List<WithdrawalsListBean> data) {
+            protected void onSuccess(List<RechargeSuccessBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);
             }
 
@@ -46,7 +47,7 @@ public class BillPresenter extends AppBasePresenter<BillContract.Repository, Bil
     }
 
     @Override
-    public List<WithdrawalsListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<RechargeSuccessBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }
 

@@ -1,12 +1,18 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
+
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @Author Jliuer
  * @Date 2017/06/08/15:41
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class RechargeSuccessBean {
+@Entity
+public class RechargeSuccessBean extends BaseListBean{
 
     /**
      * id : 1
@@ -40,7 +46,33 @@ public class RechargeSuccessBean {
     private int status;
     private String created_at;
     private String updated_at;
-    private Object deleted_at;
+    private String deleted_at;
+
+    @Generated(hash = 590537891)
+    public RechargeSuccessBean(int id, int user_id, String channel, String account,
+            String charge_id, int action, int amount, String currency,
+            String subject, String body, String transaction_no, int status,
+            String created_at, String updated_at, String deleted_at) {
+        this.id = id;
+        this.user_id = user_id;
+        this.channel = channel;
+        this.account = account;
+        this.charge_id = charge_id;
+        this.action = action;
+        this.amount = amount;
+        this.currency = currency;
+        this.subject = subject;
+        this.body = body;
+        this.transaction_no = transaction_no;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.deleted_at = deleted_at;
+    }
+
+    @Generated(hash = 1436548267)
+    public RechargeSuccessBean() {
+    }
 
     public int getId() {
         return id;
@@ -154,11 +186,11 @@ public class RechargeSuccessBean {
         this.updated_at = updated_at;
     }
 
-    public Object getDeleted_at() {
+    public String getDeleted_at() {
         return deleted_at;
     }
 
-    public void setDeleted_at(Object deleted_at) {
+    public void setDeleted_at(String deleted_at) {
         this.deleted_at = deleted_at;
     }
 }

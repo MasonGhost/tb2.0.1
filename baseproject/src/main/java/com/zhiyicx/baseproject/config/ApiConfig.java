@@ -29,11 +29,11 @@ public class ApiConfig {
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
-//    public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
-//
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
+
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
     public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION + "/system/about";// 关于我们网站
@@ -309,8 +309,10 @@ public class ApiConfig {
     public static final String APP_PAHT_WALLET_WITHDRAW = "api/" + API_VERSION_2 + "/wallet/cashes";
     // 钱包余额充值
     public static final String APP_PAHT_WALLET_RECHARGE = "api/" + API_VERSION_2 + "/wallet/recharge";
-    // 钱包余额充值成功
+    // 钱包余额充值凭据
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS = "api/" + API_VERSION_2 + "/wallet/charges/{charge}";
-
+    // 凭据列表
+    public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_LIST = "api/" + API_VERSION_2 + "/wallet/charges";
+    // 凭据回执
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/wallet/charges/{charge}?mode=retrieve";
 }
