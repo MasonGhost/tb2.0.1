@@ -40,6 +40,7 @@
             tools:text="-1288.00"/>
 
         <LinearLayout
+            android:id="@+id/bill_user_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
             android:layout_marginTop="20dp"
@@ -81,6 +82,7 @@
             style="@style/style_divider_horizontal"/>
 
         <LinearLayout
+            android:id="@+id/bill_account_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamice_top_input_height"
             android:background="@color/white"

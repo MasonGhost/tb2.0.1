@@ -50,9 +50,11 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 TextView desc = holder.getView(R.id.withdrawals_desc);
                 TextView time = holder.getView(R.id.withdrawals_time);
                 TextView account = holder.getView(R.id.withdrawals_account);
+                boolean status_success = recharge.getStatus() == 1;
+                int action = recharge.getAction();
+                desc.setEnabled(status_success);
 
-                desc.setEnabled(recharge.getStatus() == 1);
-                desc.setText(String.valueOf(recharge.getAmount()));
+                desc.setText(status_success ? (action > 1 ? "- " + recharge.getAmount() : "+ " + recharge.getAmount()) : getString(R.string.bill_doing));
                 account.setText(recharge.getSubject() + " " + recharge.getBody());
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
             }

@@ -28,7 +28,7 @@ public class RechargePresenterModule {
     }
 
     @Provides
-    RechargeContract.Repository provideRechargeContractRepository(ServiceManager serviceManager, Application application) {
-        return new RechargeRepository(serviceManager,application);
+    RechargeContract.Repository provideRechargeContractRepository(RechargeRepository rechargeRepository) {
+        return rechargeRepository;
     }
 }

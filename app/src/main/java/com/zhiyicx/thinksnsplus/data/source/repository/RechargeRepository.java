@@ -41,7 +41,7 @@ public class RechargeRepository implements RechargeContract.Repository {
     WalletClient mWalletClient;
 
     @Inject
-    public RechargeRepository(ServiceManager serviceManager, Application context) {
+    public RechargeRepository(ServiceManager serviceManager) {
         mWalletClient = serviceManager.getWalletClient();
     }
 
@@ -54,6 +54,8 @@ public class RechargeRepository implements RechargeContract.Repository {
 
     @Override
     public Observable<RechargeSuccessBean> rechargeSuccessCallBack(String charge) {
-        return mWalletClient.rechargeSuccessCallBack(charge);
+        return mWalletClient.rechargeSuccessCallBack(charge)
+                .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }
