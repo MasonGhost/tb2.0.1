@@ -30,9 +30,11 @@ import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.picture_toll.PictureTollActivity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -144,7 +146,7 @@ public class PhotoViewFragment extends TSFragment {
 
             @Override
             public void onPageSelected(int position) {
-                try {// 越界处理
+                try {// 越界处理(切换图片时切换图片收费信息，也许之前没有图片收费信息)
                     mImageBean = tolls.get(position);
                 } catch (Exception e) {
                     mImageBean = null;
@@ -242,6 +244,7 @@ public class PhotoViewFragment extends TSFragment {
             rectList = bundle.getParcelableArrayList("rect");
             maxCount = bundle.getInt(ARG_MAX_COUNT);
             tolls = bundle.getParcelableArrayList(OLDTOLL);
+            removePlaceHolder(tolls);
         }
         mPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
     }
@@ -392,6 +395,18 @@ public class PhotoViewFragment extends TSFragment {
         it.putExtra(EXTRA_BACK_HERE, backToPhotoAlbum);
         getActivity().setResult(Activity.RESULT_OK, it);
         getActivity().finish();
+    }
+
+    public void removePlaceHolder(List<ImageBean> list) {
+        if (list.isEmpty())
+            return;
+        Iterator<ImageBean> iamgesIterator = list.iterator();
+        while (iamgesIterator.hasNext()) {
+            ImageBean data = iamgesIterator.next();
+            if (data.getImgUrl() == null) {
+                iamgesIterator.remove();
+            }
+        }
     }
 
 }

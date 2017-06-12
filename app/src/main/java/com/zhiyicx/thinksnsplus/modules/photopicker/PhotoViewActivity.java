@@ -81,6 +81,7 @@ public class PhotoViewActivity extends TSActivity {
      * @param maxCount                   能够选择的最大数量
      * @param currentPosition            进入预览时，需要显示第几张图片
      * @param isToll                     是否有收费选项
+     * @param selectedPhotos             之前就选中了的照片,可能 size=0
      */
     public static void startToPhotoView(Fragment fragment, ArrayList<String> allPhotos,
                                         ArrayList<String> selectedPhoto

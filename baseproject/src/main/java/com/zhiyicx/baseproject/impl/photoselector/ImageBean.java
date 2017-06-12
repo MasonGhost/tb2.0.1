@@ -122,6 +122,8 @@ public class ImageBean implements Parcelable, Serializable {
                 ", height=" + height +
                 ", part=" + part +
                 ", imgMimeType='" + imgMimeType + '\'' +
+                "\n"+"toll_type="+toll_type+
+                "\n"+"toll_monye="+toll_monye+
                 '}';
     }
 
