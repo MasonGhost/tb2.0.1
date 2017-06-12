@@ -182,7 +182,7 @@ public class GalleryFragment extends TSFragment {
                 alreadyAnimateIn = true;
                 fragmentMap.put(position, fragment);
             }
-            // PlaceholderFragment.newInstance(imageBeanList.get(position));
+
             return fragment;
         }
 

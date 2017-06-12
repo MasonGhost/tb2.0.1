@@ -94,12 +94,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     private ImageBean mImageBean;
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
-    private double mScreenWith;
-    private double mScreenHeiht;
     private int screenW, screenH;
-
     private boolean hasAnim = false;
-
     private PayPopWindow mPayPopWindow;
 
     public static GalleryPictureFragment newInstance(ImageBean imageUrl) {
@@ -111,12 +107,15 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         context = getContext();
         screenW = DeviceUtils.getScreenWidth(context);
         screenH = DeviceUtils.getScreenHeight(context);
-        mScreenWith = DeviceUtils.getScreenWidth(context);
-        mScreenHeiht = DeviceUtils.getScreenHeight(context);
         mPhotoViewAttacherNormal = new PhotoViewAttacher(mIvPager);
         mPhotoViewAttacherOrigin = new PhotoViewAttacher(mIvOriginPager);
         mPhotoViewAttacherNormal.setOnPhotoTapListener(this);
@@ -270,7 +269,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
-        LogUtils.e("imageBean = " + imageBean.toString() + "------" + animationIn);
+        LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
 
         if (imageBean.getImgUrl() != null) {
             int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
@@ -313,6 +312,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                 }
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
+
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             Glide.with(context)
                                     .using(new CustomImageModelLoader(context))
@@ -518,7 +518,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         switch (view.getId()) {
             case R.id.tv_to_pay:
                 initCenterPopWindow();
-                mPayPopWindow.show();
                 break;
             case R.id.tv_to_vip:
 
@@ -590,6 +589,10 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     private void initCenterPopWindow() {
+        if (mPayPopWindow != null) {
+            mPayPopWindow.show();
+            return;
+        }
         mPayPopWindow = PayPopWindow.builder()
                 .with(getActivity())
                 .isWrap(true)
@@ -633,6 +636,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 })
                 .build();
+        mPayPopWindow.show();
 
     }
 }

@@ -105,6 +105,11 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     @Override
+    public WalletConfigBean getWalletConfigBean() {
+        return mWalletConfigBean;
+    }
+
+    @Override
     public void withdrawResult(WithdrawResultBean withdrawResultBean) {
 
     }

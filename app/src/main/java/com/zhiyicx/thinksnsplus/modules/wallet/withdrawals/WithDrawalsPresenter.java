@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -37,11 +36,11 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
 
     @Override
     public void withdraw(double value, String type, String account) {
-        if (String.valueOf(value).contains(".")){
+        if (String.valueOf(value).contains(".")) {
             mRootView.initWithdrawalsInstructionsPop(R.string.withdrawal_instructions_detail);
             return;
         }
-        if (value < 1) {
+        if (value < mRootView.getWalletConfigBean().getCase_min_amount()) {
             mRootView.minMoneyLimit();
             return;
         }

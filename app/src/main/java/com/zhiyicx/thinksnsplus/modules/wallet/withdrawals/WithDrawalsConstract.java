@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 
 import rx.Observable;
@@ -20,6 +21,7 @@ public interface WithDrawalsConstract {
         void maxMoneyLimit();
         void configSureBtn(boolean enable);
         void initWithdrawalsInstructionsPop(int resId);
+        WalletConfigBean getWalletConfigBean();
     }
 
     interface Presenter extends IBasePresenter{

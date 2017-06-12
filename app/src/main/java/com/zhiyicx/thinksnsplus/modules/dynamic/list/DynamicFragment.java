@@ -155,6 +155,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_list_with_input;
     }
