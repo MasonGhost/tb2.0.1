@@ -22,6 +22,7 @@ public interface RechargeContract {
         void payCredentialsResult(PayStrBean payStrBean);
         void configSureBtn(boolean enable);
         void rechargeSuccess(RechargeSuccessBean rechargeSuccessBean);
+        void initmRechargeInstructionsPop();
 
     }
 

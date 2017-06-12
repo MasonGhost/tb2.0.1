@@ -45,8 +45,8 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
     }
 
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
-        super.convert(holder, dynamicBean, lastT, position,itemCounts);
+    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position, int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position, itemCounts);
         initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 
@@ -66,7 +66,8 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         int with;
         int height;
         int proportion; // 压缩比例
-        with = getCurrenItemWith(part);;
+        with = getCurrenItemWith(part);
+        ;
         ImageBean imageBean = dynamicBean.getFeed().getStorages().get(positon);
         height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
         height = height > mImageMaxHeight ? mImageMaxHeight : height;
@@ -78,9 +79,12 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         } else {
             url = imageBean.getImgUrl();
         }
+        if (with * height == 0) {// 就怕是 0
+            with = height = 100;
+        }
         Glide.with(mContext)
                 .load(url)
-//                .override(with, height)
+                .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
                 .into(view);

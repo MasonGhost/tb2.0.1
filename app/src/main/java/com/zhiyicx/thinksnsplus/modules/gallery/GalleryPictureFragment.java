@@ -376,8 +376,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 }))
                 .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), imageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
-//                .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-//                        imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)

@@ -19,13 +19,14 @@ public interface WithDrawalsConstract {
         void minMoneyLimit();
         void maxMoneyLimit();
         void configSureBtn(boolean enable);
+        void initWithdrawalsInstructionsPop(int resId);
     }
 
     interface Presenter extends IBasePresenter{
-        void withdraw(int value,String type,String account);
+        void withdraw(double value,String type,String account);
     }
 
     interface Repository{
-        Observable<WithdrawResultBean> withdraw(int value,String type,String account);
+        Observable<WithdrawResultBean> withdraw(double value,String type,String account);
     }
 }

@@ -35,7 +35,7 @@ public interface WalletClient {
 
     @FormUrlEncoded
     @POST(APP_PAHT_WALLET_WITHDRAW)
-    Observable<WithdrawResultBean> withdraw(@Field("value") int value, @Field("type") String type, @Field("account") String account);
+    Observable<WithdrawResultBean> withdraw(@Field("value") double value, @Field("type") String type, @Field("account") String account);
 
     @GET(APP_PAHT_WALLET_WITHDRAW)
     Observable<List<WithdrawalsListBean>> getWithdrawList(@Query("limit") int limit, @Query("after") int after);

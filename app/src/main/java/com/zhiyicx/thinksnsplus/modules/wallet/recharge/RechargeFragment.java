@@ -224,16 +224,10 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
                     return;
                 }
-                if (charSequence.toString().contains(".")) {
-                    setCustomMoneyDefault();
-                    DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
-                    initmRechargeInstructionsPop();
-                } else {
-                    if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
-                        mRbDaysGroup.clearCheck();
-                    }
-                    mRechargeMoney = Double.parseDouble(charSequence.toString());
+                if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
+                    mRbDaysGroup.clearCheck();
                 }
+                mRechargeMoney = Double.parseDouble(charSequence.toString());
                 configSureButton();
             }
         }, new Action1<Throwable>() {
@@ -330,7 +324,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     /**
      * 充值说明选择弹框
      */
-    private void initmRechargeInstructionsPop() {
+    @Override
+    public void initmRechargeInstructionsPop() {
         if (mRechargeInstructionsPopupWindow != null) {
             mRechargeInstructionsPopupWindow.show();
             return;

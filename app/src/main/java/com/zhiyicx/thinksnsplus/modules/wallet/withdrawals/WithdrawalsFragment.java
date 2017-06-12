@@ -140,7 +140,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                     @Override
                     public void call(Void aVoid) {
                         DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-                        mPresenter.withdraw((int) mWithdrawalsMoney * mWalletConfigBean.getRatio()
+                        mPresenter.withdraw(mWithdrawalsMoney * mWalletConfigBean.getRatio()
                                 , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
                     }
                 });
@@ -158,11 +158,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 new Func3<CharSequence, CharSequence, CharSequence, Boolean>() {
                     @Override
                     public Boolean call(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) {
-                        if (charSequence.toString().contains(".")) {
-                            setCustomMoneyDefault();
-                            DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-                            initWithdrawalsInstructionsPop(R.string.withdrawal_instructions_detail);
-                        } else if (charSequence.toString().replaceAll(" ", "").length() > 0) {
+                        if (charSequence.toString().replaceAll(" ", "").length() > 0) {
                             mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
                         } else {
                             mWithdrawalsMoney = 0;
@@ -177,7 +173,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         });
     }
 
-    private void initWithdrawalsInstructionsPop(int resDesStr) {
+    @Override
+    public void initWithdrawalsInstructionsPop(int resDesStr) {
         if (mWithdrawalsInstructionsPopupWindow != null) {
             mWithdrawalsInstructionsPopupWindow = mWithdrawalsInstructionsPopupWindow.newBuilder()
                     .desStr(getString(resDesStr))

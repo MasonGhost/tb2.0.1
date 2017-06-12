@@ -26,8 +26,7 @@ public class DynamicTopPresenterModule {
     }
 
     @Provides
-    DynamicTopContract.Repository provideDynamicTopContractRepository(DynamicTopRepsotory
-                                                                              dynamicTopRepsotory) {
+    DynamicTopContract.Repository provideDynamicTopContractRepository(DynamicTopRepsotory dynamicTopRepsotory) {
         return dynamicTopRepsotory;
     }
 }

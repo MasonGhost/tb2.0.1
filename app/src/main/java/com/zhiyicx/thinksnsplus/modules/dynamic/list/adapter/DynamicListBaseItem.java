@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -295,12 +296,19 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             }
 
         }
-        mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                .url(url)
-                .imagerView(view)
+
+        Glide.with(mContext)
+                .load(url)
                 .placeholder(R.drawable.shape_default_image)
-                .errorPic(R.drawable.shape_default_image)
-                .build());
+                .error(R.drawable.shape_default_image)
+                .into(view);
+
+//        mImageLoader.loadImage(mContext, GlideImageConfig.builder()
+//                .url(url)
+//                .imagerView(view)
+//                .placeholder(R.drawable.shape_default_image)
+//                .errorPic(R.drawable.shape_default_image)
+//                .build());
         if (dynamicBean.getFeed().getStorages() != null) {
             dynamicBean.getFeed().getStorages().get(positon).setPart(propPart);
         }

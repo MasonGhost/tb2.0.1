@@ -3,8 +3,6 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,7 @@ public class WalletConfigBean implements Serializable, Parcelable {
      * labels : [550,2000,9900]
      * ratio : 200
      * rule : 我是积分规则纯文本.
+     * case_min_amount : 1, // 真实金额分单位，用户最低提现金额。
      * alipay : {"open":false}
      * apple : {"open":false}
      * wechat : {"open":false}
@@ -32,6 +31,7 @@ public class WalletConfigBean implements Serializable, Parcelable {
      */
 
     private int ratio;
+    private int case_min_amount;
     private String rule;
     private String[] cash;
     private List<Float> labels;
@@ -39,6 +39,14 @@ public class WalletConfigBean implements Serializable, Parcelable {
 
     public String[] getRecharge_type() {
         return recharge_type;
+    }
+
+    public int getCase_min_amount() {
+        return case_min_amount;
+    }
+
+    public void setCase_min_amount(int case_min_amount) {
+        this.case_min_amount = case_min_amount;
     }
 
     public void setRecharge_type(String[] recharge_type) {

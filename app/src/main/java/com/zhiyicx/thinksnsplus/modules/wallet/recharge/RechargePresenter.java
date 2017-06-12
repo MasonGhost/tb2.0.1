@@ -35,6 +35,10 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
 
     @Override
     public void getPayStr(String channel, double amount) {
+        if (String.valueOf(amount).contains(".")) {
+            mRootView.initmRechargeInstructionsPop();
+            return;
+        }
         mSystemRepository.getPayStr(channel, amount).doOnSubscribe(new Action0() {
             @Override
             public void call() {

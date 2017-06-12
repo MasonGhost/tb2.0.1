@@ -85,11 +85,13 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         } else {
             url = imageBean.getImgUrl();
         }
-
+        if (with * height == 0) {// 就怕是 0
+            with = height = 100;
+        }
         Glide.with(mContext)
                 .load(url)
                 .asBitmap()
-//                .override(with, height)
+                .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.shape_default_image)

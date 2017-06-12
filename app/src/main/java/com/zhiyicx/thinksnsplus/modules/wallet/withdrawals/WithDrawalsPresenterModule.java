@@ -26,7 +26,7 @@ public class WithDrawalsPresenterModule {
     }
 
     @Provides
-    WithDrawalsConstract.Repository proviewWithDrawalsConstractRepository(ServiceManager serviceManager) {
-        return new WithDrawalsRepository(serviceManager);
+    WithDrawalsConstract.Repository proviewWithDrawalsConstractRepository(WithDrawalsRepository withDrawalsRepository) {
+        return withDrawalsRepository;
     }
 }
