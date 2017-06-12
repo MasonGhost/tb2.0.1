@@ -82,6 +82,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     private String mPayChargeId; // recharge lables
 
+    private String mRechargeMoneyStr=""; // recharge lables
+
     public static RechargeFragment newInstance(Bundle bundle) {
         RechargeFragment rechargeFragment = new RechargeFragment();
         rechargeFragment.setArguments(bundle);
@@ -161,6 +163,11 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         mBtTop.setEnabled(enable);
     }
 
+    @Override
+    public String getMoneyStr() {
+        return mRechargeMoneyStr;
+    }
+
     private void initRechargeLables() {
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
@@ -224,10 +231,11 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
                     return;
                 }
+                mRechargeMoneyStr=charSequence.toString();
                 if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
                     mRbDaysGroup.clearCheck();
                 }
-                mRechargeMoney = Double.parseDouble(charSequence.toString());
+                mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
                 configSureButton();
             }
         }, new Action1<Throwable>() {

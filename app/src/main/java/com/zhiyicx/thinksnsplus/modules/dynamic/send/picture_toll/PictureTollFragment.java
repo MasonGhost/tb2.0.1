@@ -17,7 +17,8 @@ import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -73,9 +74,13 @@ public class PictureTollFragment extends TSFragment {
 
     private double mRechargeMoney;
 
+    private String mRechargeMoneyStr;
+
     private Toll mToll;
 
     private int[] tollMoney = new int[]{R.id.rb_one, R.id.rb_two, R.id.rb_three};
+
+    private ActionPopupWindow mMoneyInstructionsPopupWindow;
 
     public static PictureTollFragment newInstance(Bundle bundle) {
         PictureTollFragment fragment = new PictureTollFragment();
@@ -106,6 +111,7 @@ public class PictureTollFragment extends TSFragment {
         mRechargeMoney = 0;
         mRbDaysGroup.clearCheck();
         mEtInput.setText("");
+        mToll.reset();
         setConfirmEnable();
     }
 
@@ -117,6 +123,9 @@ public class PictureTollFragment extends TSFragment {
             mToll = imageBean.getToll();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (mToll == null) {
+            mToll = new Toll();
         }
         initListener();
     }
@@ -175,8 +184,9 @@ public class PictureTollFragment extends TSFragment {
 
     private void back() {
         Intent intent = new Intent();
-        intent.putExtra(TOLL_TYPE, mPayType);
-        intent.putExtra(TOLL_MONEY, Double.valueOf(mRechargeMoney).floatValue());
+        Bundle bundle=new Bundle();
+        bundle.putParcelable(TOLL_TYPE,mToll);
+        intent.putExtra(TOLL_TYPE,bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -189,30 +199,31 @@ public class PictureTollFragment extends TSFragment {
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
+                        if (mRechargeMoneyStr.contains(".")) {
+                            initmMoneyInstructionsPop();
+                            return;
+                        }
+                        mToll.setToll_type(mPayType);
                         back();
                     }
                 });
-        //
+
         RxTextView.afterTextChangeEvents(mEtInput)
                 .subscribe(new Action1<TextViewAfterTextChangeEvent>() {
                     @Override
                     public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
-                        if (TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
+                        mRechargeMoneyStr = textViewAfterTextChangeEvent.editable().toString();
+                        if (TextUtils.isEmpty(mRechargeMoneyStr)) {
                             return;
                         }
 
-                        if (textViewAfterTextChangeEvent.editable().toString().contains(".")) {
-                            setCustomMoneyDefault();
-                            DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
-                        } else {
-                            mRbDaysGroup.clearCheck();
-                            try {
-                                mRechargeMoney = Double.parseDouble(textViewAfterTextChangeEvent
-                                        .editable().toString());
-                            } catch (NumberFormatException ne) {
-                                mRechargeMoney = 0;
-                            }
+                        mRbDaysGroup.clearCheck();
+                        try {
+                            mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
+                        } catch (NumberFormatException ne) {
+                            mRechargeMoney = 0;
                         }
+                        mToll.setCustom_money(((Double) mRechargeMoney).floatValue());
                         setConfirmEnable();
                     }
                 }, new Action1<Throwable>() {
@@ -231,13 +242,20 @@ public class PictureTollFragment extends TSFragment {
                         switch (checkedId) {
                             case R.id.rb_one:
                                 mRechargeMoney = mSelectDays.get(0);
+                                mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
                                 break;
                             case R.id.rb_two:
                                 mRechargeMoney = mSelectDays.get(1);
+                                mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
                                 break;
                             case R.id.rb_three:
                                 mRechargeMoney = mSelectDays.get(2);
+                                mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
                                 break;
+                            case -1:
+                                mToll.setToll_money(0);
+                                break;
+                            default:
                         }
                         setConfirmEnable();
                         setCustomMoneyDefault();
@@ -267,6 +285,7 @@ public class PictureTollFragment extends TSFragment {
      */
     private void setCustomMoneyDefault() {
         mEtInput.setText("");
+        mToll.setCustom_money(0);
     }
 
     @Override
@@ -281,5 +300,28 @@ public class PictureTollFragment extends TSFragment {
 
     private void setConfirmEnable() {
         mBtTop.setEnabled(mPayType > 0 && mRechargeMoney > 0);
+    }
+
+    public void initmMoneyInstructionsPop() {
+        if (mMoneyInstructionsPopupWindow != null) {
+            mMoneyInstructionsPopupWindow.show();
+            return;
+        }
+        mMoneyInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.transaction_description))
+                .desStr(getString(R.string.limit_monye))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
+                    @Override
+                    public void onItemClicked() {
+                        mMoneyInstructionsPopupWindow.hide();
+                    }
+                })
+                .build();
+        mMoneyInstructionsPopupWindow.show();
     }
 }

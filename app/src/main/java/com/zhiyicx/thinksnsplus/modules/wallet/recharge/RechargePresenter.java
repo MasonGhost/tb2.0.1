@@ -35,7 +35,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
 
     @Override
     public void getPayStr(String channel, double amount) {
-        if (String.valueOf(amount).contains(".")) {
+        if (mRootView.getMoneyStr().contains(".")) {
             mRootView.initmRechargeInstructionsPop();
             return;
         }

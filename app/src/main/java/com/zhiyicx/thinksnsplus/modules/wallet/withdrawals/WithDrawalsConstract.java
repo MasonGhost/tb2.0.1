@@ -22,6 +22,7 @@ public interface WithDrawalsConstract {
         void configSureBtn(boolean enable);
         void initWithdrawalsInstructionsPop(int resId);
         WalletConfigBean getWalletConfigBean();
+        String getMoneyStr();
     }
 
     interface Presenter extends IBasePresenter{

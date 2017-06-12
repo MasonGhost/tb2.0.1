@@ -60,6 +60,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     private String mWithdrawalsType;
 
+    private String mWithdrawalsMoneyStr="";
+
     private double mWithdrawalsMoney;
 
     private WalletConfigBean mWalletConfigBean; // wallet config info
@@ -134,6 +136,11 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         mBtSure.setEnabled(enable);
     }
 
+    @Override
+    public String getMoneyStr() {
+        return mWithdrawalsMoneyStr;
+    }
+
     private void setCustomMoneyDefault() {
         mEtWithdrawInput.setText("");
     }
@@ -163,7 +170,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 new Func3<CharSequence, CharSequence, CharSequence, Boolean>() {
                     @Override
                     public Boolean call(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) {
-                        if (charSequence.toString().replaceAll(" ", "").length() > 0) {
+                        mWithdrawalsMoneyStr = charSequence.toString();
+                        if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0) {
                             mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
                         } else {
                             mWithdrawalsMoney = 0;

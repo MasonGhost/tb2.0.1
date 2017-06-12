@@ -50,7 +50,6 @@ public class Toll implements Parcelable {
         this.toll_money = toll_money;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -80,4 +79,10 @@ public class Toll implements Parcelable {
             return new Toll[size];
         }
     };
+
+    public void reset() {
+        custom_money = 0;
+        toll_money = 0;
+        toll_type = 0;
+    }
 }

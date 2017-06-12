@@ -23,6 +23,7 @@ public interface RechargeContract {
         void configSureBtn(boolean enable);
         void rechargeSuccess(RechargeSuccessBean rechargeSuccessBean);
         void initmRechargeInstructionsPop();
+        String getMoneyStr();
 
     }
 
