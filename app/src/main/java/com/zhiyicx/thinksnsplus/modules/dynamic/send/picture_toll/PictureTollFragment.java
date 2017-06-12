@@ -154,7 +154,7 @@ public class PictureTollFragment extends TSFragment {
         if (mToll == null)
             return;
         if (mToll.getCustom_money() > 0) {
-            mEtInput.setText(String.valueOf(mToll.getCustom_money()));
+            mEtInput.setText(String.valueOf(Float.valueOf(mToll.getCustom_money()).intValue()));
         } else {
             int position = mSelectDays.indexOf(mToll.getToll_money());
             if (position != -1) {
@@ -184,9 +184,9 @@ public class PictureTollFragment extends TSFragment {
 
     private void back() {
         Intent intent = new Intent();
-        Bundle bundle=new Bundle();
-        bundle.putParcelable(TOLL_TYPE,mToll);
-        intent.putExtra(TOLL_TYPE,bundle);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TOLL_TYPE, mToll);
+        intent.putExtra(TOLL_TYPE, bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -216,8 +216,8 @@ public class PictureTollFragment extends TSFragment {
                         if (TextUtils.isEmpty(mRechargeMoneyStr)) {
                             return;
                         }
-
                         mRbDaysGroup.clearCheck();
+                        mToll.setToll_money(0);
                         try {
                             mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
                         } catch (NumberFormatException ne) {
@@ -253,8 +253,7 @@ public class PictureTollFragment extends TSFragment {
                                 mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
                                 break;
                             case -1:
-                                mToll.setToll_money(0);
-                                break;
+                                return;
                             default:
                         }
                         setConfirmEnable();

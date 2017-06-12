@@ -116,7 +116,7 @@ public class PhotoViewFragment extends TSFragment {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Toll toll = data.getBundleExtra(TOLL_TYPE).getParcelable(TOLL_TYPE);
             mImageBean.setToll(toll);
-        }
+         }
     }
 
     @Override

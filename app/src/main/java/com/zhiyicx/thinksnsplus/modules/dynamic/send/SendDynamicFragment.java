@@ -615,8 +615,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                 }
                             }
                             mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
-//                            initPhotoPopupWindow();
-//                            mPhotoPopupWindow.show();
                         } else {
                             // 预览图片
                             ArrayList<String> photos = new ArrayList<>();
