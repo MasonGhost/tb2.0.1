@@ -33,5 +33,5 @@ public class DigListRepository extends BaseDynamicRepository implements DigListC
     public DigListRepository(ServiceManager serviceManager) {
         super(serviceManager);
     }
-    
+
 }

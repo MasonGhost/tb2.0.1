@@ -88,6 +88,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -104,7 +109,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     protected void initView(View rootView) {
-        AndroidBug5497Workaround.assistActivity(getActivity());
+//        AndroidBug5497Workaround.assistActivity(getActivity());
         super.initView(rootView);
         mIlvComment.setSendButtonVisiable(true);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
