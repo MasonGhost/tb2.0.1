@@ -277,6 +277,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
         double myMoney = 0;
         if (userInfoBean.getWallet() != null) {
+
             myMoney = userInfoBean.getWallet().getBalance();
         }
         mBtWallet.setRightText(getString(R.string.money_format_with_unit, myMoney));

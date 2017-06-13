@@ -5,11 +5,17 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
+
+import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 
 /**
  * @Author Jliuer
@@ -25,6 +31,12 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
 
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public DynamicTopPresenter(DynamicTopContract.Repository repository, DynamicTopContract.View rootView) {
@@ -61,11 +73,15 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
 
     @Override
     public float getBalance() {
-        try {
-            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getMyUserIdWithdefault());
-            return (float) userInfoBean.getWallet().getBalance();
-        } catch (Exception e) {
-            return 0f;
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        if (authBean != null) {
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
+            if (userInfoBean != null) {
+                WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
+                int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
+                return (float) userInfoBean.getWallet().getBalance() * (ratio / MONEY_UNIT);
+            }
         }
+        return 0;
     }
 }

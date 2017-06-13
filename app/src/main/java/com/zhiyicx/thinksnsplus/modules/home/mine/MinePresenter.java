@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -19,6 +20,8 @@ import org.simple.eventbus.Subscriber;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 
 /**
  * @author LiuChao
@@ -35,6 +38,9 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
 
     @Inject
     FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
+
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public MinePresenter(MineContract.Repository repository, MineContract.View rootView) {
@@ -54,6 +60,8 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
             UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
             if (userInfoBean != null) {
                 WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
+                int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
+                walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
                 userInfoBean.setWallet(walletBean);
                 mRootView.setUserInfo(userInfoBean);
             }

@@ -231,11 +231,11 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 mRechargeMoneyStr = charSequence.toString();
                 if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0 && !mRechargeMoneyStr.contains(".")) {
                     mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
+                    if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
+                        mRbDaysGroup.clearCheck();
+                    }
                 } else {
                     mRechargeMoney = 0;
-                }
-                if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
-                    mRbDaysGroup.clearCheck();
                 }
                 configSureButton();
             }
