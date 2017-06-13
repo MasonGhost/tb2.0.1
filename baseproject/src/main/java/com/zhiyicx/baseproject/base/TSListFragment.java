@@ -7,6 +7,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -408,6 +410,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mTvTopTip.setText(text);
     }
 
+    protected void setTopTipHtmlText(@NotNull String text) {
+        Spanned html=Html.fromHtml(text);
+        mTvTopTip.setText(html);
+    }
+
     /**
      * Set the visibility state of this view.
      *
@@ -428,6 +435,13 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mIsTipMessageSticky = true;
         setTopTipVisible(View.VISIBLE);
         setTopTipText(text);
+    }
+
+    @Override
+    public void showStickyHtmlMessage(@NotNull String html) {
+        mIsTipMessageSticky = true;
+        setTopTipVisible(View.VISIBLE);
+        setTopTipHtmlText(html);
     }
 
     /**

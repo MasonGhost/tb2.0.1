@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -126,6 +127,8 @@ public interface DynamicContract {
          * 动态分享
          */
         void shareDynamic(DynamicBean dynamicBean, Bitmap bitmap);
+
+        List<SystemConfigBean.Advert> getAdvert();
 
     }
 }

@@ -70,6 +70,7 @@ public class DynamicBannerHeader {
         mBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
         mBanner.setTitleTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.size_content));
         mBanner.setBannerTitles(headInfo.getTitles());
+        mBanner.setOnBannerListener(headInfo.getOnBannerListener());
         mBanner.start();
     }
 
@@ -96,6 +97,7 @@ public class DynamicBannerHeader {
         private int delay;
         private List<String> titles;
         private List<String> urls;
+        private OnBannerListener mOnBannerListener;
 
         public int getDelay() {
             return delay;
@@ -119,6 +121,14 @@ public class DynamicBannerHeader {
 
         public void setUrls(List<String> urls) {
             this.urls = urls;
+        }
+
+        public void setOnBannerListener(OnBannerListener onBannerListener) {
+            mOnBannerListener = onBannerListener;
+        }
+
+        public OnBannerListener getOnBannerListener() {
+            return mOnBannerListener;
         }
     }
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -28,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
@@ -167,29 +169,40 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        initTestAdvert();
         initInputView();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 针对部分手机进入首页状态栏颜色修改无效
-//            getActivity().getWindow().getDecorView().setSystemUiVisibility(View
-//                    .SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-//        }
         AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     private void initTestAdvert() {
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
             return;
-        List<String> test = new ArrayList<>();
-        test.add("oneone");
-        test.add("twotwotwo");
-        test.add("threethreethree");
-        test.add("fourfourfourfourfour");
+        List<String> advertTitle = new ArrayList<>();
+        List<String> advertUrls = new ArrayList<>();
+        List<String> advertLinks = new ArrayList<>();
+        List<SystemConfigBean.Advert> advertList = mPresenter.getAdvert();
+        for (SystemConfigBean.Advert advert : advertList) {
+            if (advert.getImageAdvert() != null) {
+                advertTitle.add(advert.getTitle());
+                advertLinks.add(advert.getImageAdvert().getLink());
+                advertUrls.add(advert.getImageAdvert().getImage());
+            }
+            if (advert.getType().equals("html")) {
+                showStickyHtmlMessage((String) advert.getData());
+            }
+        }
+
         mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
         DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
                 DynamicBannerHeaderInfo();
-        headerInfo.setTitles(test);
-        headerInfo.setUrls(test);
+        headerInfo.setTitles(advertTitle);
+        headerInfo.setUrls(advertUrls);
         headerInfo.setDelay(4000);
+        headerInfo.setOnBannerListener(new OnBannerListener() {
+            @Override
+            public void OnBannerClick(int position) {
+
+            }
+        });
         mDynamicBannerHeader.setHeadInfo(headerInfo);
         mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
     }
@@ -250,7 +263,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .dynamicPresenterModule(new DynamicPresenterModule(this))
                 .build().inject(this);
         mDynamicType = getArguments().getString(BUNDLE_DYNAMIC_TYPE);
-
+        initTestAdvert();
         super.initData();
     }
 

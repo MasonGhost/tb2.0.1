@@ -2,6 +2,8 @@ package com.zhiyicx.baseproject.base;
 
 import com.zhiyicx.common.mvp.i.IBaseView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -41,6 +43,13 @@ public interface ITSListView<T,P> extends IBaseView<P> {
      * @param msg 信息内容
      */
     void showStickyMessage(String msg);
+
+    /**
+     * 显示常驻信息 html 格式
+     * 动态列表广告
+     * @param html 信息内容
+     */
+    void showStickyHtmlMessage(@NotNull String html);
 
     /**
      * 隐藏常驻信息
