@@ -95,7 +95,4 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
 
     }
 
-    private void packageMap() {
-
-    }
 }

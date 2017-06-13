@@ -1,15 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
-
-import java.util.List;
-
-import rx.Observable;
 
 /**
  * @author LiuChao

@@ -91,7 +91,7 @@ public class UpLoadRepository implements IUploadRepository {
                                             }.getType());
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    headerMap = new HashMap<String, String>();
+                                    headerMap = new HashMap<>();
                                 }
 
                                 // 处理 options
@@ -102,10 +102,12 @@ public class UpLoadRepository implements IUploadRepository {
                                             }.getType());
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    optionsMap = new HashMap<String, Object>();
+                                    optionsMap = new HashMap<>();
                                 }
+                                //TODO optionsMap在此处添加图片收费参数
+
                                 // 封装图片File
-                                HashMap<String, String> fileMap = new HashMap<String, String>();
+                                HashMap<String, String> fileMap = new HashMap<>();
                                 fileMap.put(storageTaskBean.getInput(), filePath);
                                 if (method.equalsIgnoreCase("put")) {
                                     // 使用map操作符携带任务id，继续向下传递

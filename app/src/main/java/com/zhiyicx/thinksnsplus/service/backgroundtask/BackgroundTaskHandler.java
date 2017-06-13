@@ -544,7 +544,7 @@ public class BackgroundTaskHandler {
                         @Override
                         public List<Integer> call(Object... args) {
                             // 得到图片上传的结果
-                            List<Integer> integers = new ArrayList<Integer>();
+                            List<Integer> integers = new ArrayList<>();
                             for (Object obj : args) {
                                 BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
                                 if (baseJson.isStatus()) {
@@ -558,10 +558,10 @@ public class BackgroundTaskHandler {
                     }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
-                            List<ImageBean> imageBeens = new ArrayList<ImageBean>();
+                            List<ImageBean> imageBeans = new ArrayList<>();
                             // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
                             for (int i = 0; i < integers.size(); i++) {
-                                imageBeens.add(new ImageBean(integers.get(i)));
+                                imageBeans.add(new ImageBean(integers.get(i)));
                             }
                             dynamicDetailBean.setStorage_task_ids(integers);
                             return mSendDynamicRepository.sendDynamic(dynamicDetailBean, dynamicBelong, channel_id);// 进行动态发布的请求

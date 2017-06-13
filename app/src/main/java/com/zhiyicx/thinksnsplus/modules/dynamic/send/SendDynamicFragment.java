@@ -391,27 +391,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         if (mPhotoSelector != null) {
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 
     @Override
     public void setPresenter(SendDynamicContract.Presenter presenter) {
         mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     @Override
@@ -428,7 +412,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         }
         return sendDynamicDataBean;
     }
-
 
     @Override
     protected void setRightClick() {
@@ -671,7 +654,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 // 没有图片就初始化这些
                 initPhotoSelector();
                 initPhotoList(bundle);
-
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
                 hasTollPic = true;
