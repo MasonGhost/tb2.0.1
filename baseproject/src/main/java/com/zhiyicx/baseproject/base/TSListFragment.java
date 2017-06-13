@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -160,10 +161,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 // SCROLL_STATE_FLING; //屏幕处于甩动状态
                 // SCROLL_STATE_IDLE; //停止滑动状态
                 // SCROLL_STATE_TOUCH_SCROLL;// 手指接触状态
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Glide.with(getContext()).resumeRequests();
-                } else {
-                    Glide.with(getContext()).pauseRequests();
+                if (AndroidLifecycleUtils.canLoadImage(getContext())) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        Glide.with(getContext()).resumeRequests();
+                    } else {
+                        Glide.with(getContext()).pauseRequests();
+                    }
                 }
             }
 
@@ -411,7 +414,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     }
 
     protected void setTopTipHtmlText(@NotNull String text) {
-        Spanned html=Html.fromHtml(text);
+        Spanned html = Html.fromHtml(text);
         mTvTopTip.setText(html);
     }
 
