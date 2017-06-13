@@ -15,7 +15,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:orientation="vertical">
 
             <TextView
@@ -42,7 +41,7 @@
                 android:paddingLeft="@dimen/spacing_mid"
                 android:text="@string/default_mongy"
                 android:textColor="@color/white"
-                android:textSize="34sp"
+                android:textSize="@dimen/withdrawal_detail_textsize"
                 />
             <!--充值-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton

@@ -51,8 +51,6 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
     EditText mEtInput;
     @BindView(R.id.bt_top)
     TextView mBtTop;
-    @BindView(R.id.tv_comment_toll_dec)
-    TextView mTvCommentTollDec;
 
     private List<Float> mSelectMoney;
 

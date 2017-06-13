@@ -14,11 +14,11 @@ public class RechargeSuccessBeanTest extends AbstractDaoTestLongPk<RechargeSucce
     @Override
     protected RechargeSuccessBean createEntity(Long key) {
         RechargeSuccessBean entity = new RechargeSuccessBean();
-        entity.setId();
-        entity.setUser_id();
-        entity.setAction();
-        entity.setAmount();
-        entity.setStatus();
+        entity.setId(0);
+        entity.setUser_id(3);
+        entity.setAction(1);
+        entity.setAmount(1);
+        entity.setStatus(1);
         return entity;
     }
 
