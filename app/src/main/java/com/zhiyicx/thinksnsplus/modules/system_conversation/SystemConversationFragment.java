@@ -34,6 +34,11 @@ public class SystemConversationFragment extends TSListFragment<SystemConversatio
     }
 
     @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
     }

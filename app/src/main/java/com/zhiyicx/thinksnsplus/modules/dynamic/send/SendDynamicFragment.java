@@ -110,6 +110,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private int mPayType;
 
     private double mRechargeMoney;
+    private String mRechargeMoneyStr;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -214,41 +215,31 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private void initWordsToll() {
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
-        RxTextView.afterTextChangeEvents(mEtInput)
-                .subscribe(new Action1<TextViewAfterTextChangeEvent>() {
-                    @Override
-                    public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
-                        if (TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
-                            return;
-                        }
+        RxTextView.textChanges(mEtInput).subscribe(new Action1<CharSequence>() {
+            @Override
+            public void call(CharSequence charSequence) {
+                mRechargeMoneyStr = charSequence.toString();
+                if (TextUtils.isEmpty(mRechargeMoneyStr.replaceAll(" ", ""))) {
+                    return;
+                }
+                mRbDaysGroup.clearCheck();
+                mRechargeMoney = Double.parseDouble(charSequence.toString());
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                mRechargeMoney = 0;
+            }
+        });
 
-                        if (textViewAfterTextChangeEvent.editable().toString().contains(".")) {
-                            setCustomMoneyDefault();
-                            com.zhiyicx.common.utils.DeviceUtils.hideSoftKeyboard(getContext(),
-                                    mEtInput);
-                        } else {
-                            mRbDaysGroup.clearCheck();
-                            try {
-                                mRechargeMoney = Double.parseDouble(textViewAfterTextChangeEvent
-                                        .editable().toString());
-                            } catch (NumberFormatException ne) {
-
-                            }
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        setCustomMoneyDefault();
-                        mRechargeMoney = 0;
-                    }
-                });
         RxRadioGroup.checkedChanges(mRbDaysGroup)
                 .compose(this.<Integer>bindToLifecycle())
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer checkedId) {
+                        if (checkedId != -1) {
+                            setCustomMoneyDefault();
+                        }
                         switch (checkedId) {
                             case R.id.rb_one:
                                 mRechargeMoney = mSelectDays.get(0);
@@ -260,7 +251,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                                 mRechargeMoney = mSelectDays.get(2);
                                 break;
                         }
-                        setCustomMoneyDefault();
                     }
                 });
     }
