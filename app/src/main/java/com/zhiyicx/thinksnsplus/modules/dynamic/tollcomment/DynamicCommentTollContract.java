@@ -16,7 +16,8 @@ import rx.Observable;
 public interface DynamicCommentTollContract {
 
     interface View extends IBaseView<Presenter> {
-
+        void initWithdrawalsInstructionsPop();
+        String getCommentMoneyStr();
     }
 
     interface Presenter extends IBasePresenter {

@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -221,7 +222,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mPresenter.getPayStr(mPayType, mRechargeMoney * mWalletConfigBean.getRatio());
+                        mPresenter.getPayStr(mPayType, mRechargeMoney * MONEY_UNIT);
                     }
                 });
 
@@ -229,7 +230,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             @Override
             public void call(CharSequence charSequence) {
                 mRechargeMoneyStr = charSequence.toString();
-                if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0 && !mRechargeMoneyStr.contains(".")) {
+                if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0) {
                     mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
                     if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
                         mRbDaysGroup.clearCheck();
@@ -254,6 +255,9 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer checkedId) {
+                        if (checkedId != -1) {
+                            setCustomMoneyDefault();
+                        }
                         switch (checkedId) {
                             case R.id.rb_one:
                                 mRechargeMoney = mRechargeLables.get(0);
@@ -267,7 +271,6 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                         }
                         if (checkedId != -1) {
                             configSureButton();
-                            setCustomMoneyDefault();
                         }
                     }
                 });

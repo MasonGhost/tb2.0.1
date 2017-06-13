@@ -51,10 +51,14 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
     EditText mEtInput;
     @BindView(R.id.bt_top)
     TextView mBtTop;
+    @BindView(R.id.tv_comment_toll_dec)
+    TextView mTvCommentTollDec;
 
     private List<Float> mSelectMoney;
 
     private float mCommentMoney;
+
+    private String mCommentMoneyStr;
 
     private ActionPopupWindow mTollCommentInstructionsPopupWindow;
 
@@ -90,6 +94,11 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
     }
 
     @Override
+    public String getCommentMoneyStr() {
+        return mCommentMoneyStr;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_dynamic_comment_toll;
     }
@@ -104,23 +113,25 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
         mRbDaysGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if (checkedId != -1) {
+                    resetEtInput();
+                }
                 switch (checkedId) {
                     case R.id.rb_one:
                         mCommentMoney = mSelectMoney.get(0);
-                        resetEtInput();
                         break;
                     case R.id.rb_two:
                         mCommentMoney = mSelectMoney.get(1);
-                        resetEtInput();
                         break;
                     case R.id.rb_three:
                         mCommentMoney = mSelectMoney.get(2);
-                        resetEtInput();
                         break;
                     default:
                         break;
                 }
-                setConfirmEnable();
+                if (checkedId != -1) {
+                    setConfirmEnable();
+                }
             }
         });
 
@@ -129,18 +140,19 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
+                        mCommentMoneyStr = charSequence.toString();
                         if (!TextUtils.isEmpty(charSequence)) {
-                            if (charSequence.toString().contains(".")) {
-                                mEtInput.setText("");
-                                initWithdrawalsInstructionsPop();
-                                return;
-                            }
-                            mRbDaysGroup.clearCheck();
                             mCommentMoney = Float.parseFloat(charSequence.toString());
+                            mRbDaysGroup.clearCheck();
                         } else {
                             mCommentMoney = 0f;
                         }
                         setConfirmEnable();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mCommentMoney = 0f;
                     }
                 });
 
@@ -157,7 +169,8 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                 });
     }
 
-    private void initWithdrawalsInstructionsPop() {
+    @Override
+    public void initWithdrawalsInstructionsPop() {
         if (mTollCommentInstructionsPopupWindow != null) {
             mTollCommentInstructionsPopupWindow.show();
             return;
@@ -184,7 +197,7 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
         mBtTop.setEnabled(mCommentMoney > 0);
     }
 
-    private void resetEtInput(){
+    private void resetEtInput() {
         mEtInput.setText("");
         DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
     }

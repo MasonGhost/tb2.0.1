@@ -134,7 +134,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
                     @Override
                     public void call(CharSequence charSequence) {
                         mInputMoneyStr = charSequence.toString();
-                        if (!TextUtils.isEmpty(charSequence) && !mInputMoneyStr.contains(".")) {
+                        if (!TextUtils.isEmpty(charSequence)) {
                             mInputMoney = Float.parseFloat(mInputMoneyStr);
                         } else {
                             mInputMoney = 0f;
@@ -144,7 +144,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        mInputMoney = 0f;
                     }
                 });
 
