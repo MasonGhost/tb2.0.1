@@ -658,8 +658,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item2Str(getString(feedIdIsNull ? R.string.empty :
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
-//                .item3Str(getString(R.string.dynamic_comment_toll))
-//                .item4Str(getString(R.string.dynamic_list_top_dynamic))
+                .item3Str(getString(R.string.dynamic_comment_toll))
+                .item4Str(getString(R.string.dynamic_list_top_dynamic))
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

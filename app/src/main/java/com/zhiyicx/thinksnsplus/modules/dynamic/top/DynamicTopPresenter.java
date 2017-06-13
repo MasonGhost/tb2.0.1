@@ -4,8 +4,8 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
@@ -33,6 +33,10 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
 
     @Override
     public void stickTop(long feed_id) {
+        if (mRootView.getInputMoneyStr().contains(".")) {
+            mRootView.initStickTopInstructionsPop();
+            return;
+        }
         if (mRootView.insufficientBalance()) {
             mRootView.gotoRecharge();
             return;
@@ -58,7 +62,8 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
     @Override
     public float getBalance() {
         try {
-            return (float) mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getMyUserIdWithdefault()).getWallet().getBalance();
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getMyUserIdWithdefault());
+            return (float) userInfoBean.getWallet().getBalance();
         } catch (Exception e) {
             return 0f;
         }

@@ -9,5 +9,6 @@ package com.zhiyicx.baseproject.config;
 
 public class PayConfig {
     public static final String WX_APP_ID = "wx324324324";
+    public static final int MONEY_UNIT = 100;
 
 }

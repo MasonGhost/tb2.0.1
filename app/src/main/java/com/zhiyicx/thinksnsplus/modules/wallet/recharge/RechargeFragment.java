@@ -82,7 +82,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     private String mPayChargeId; // recharge lables
 
-    private String mRechargeMoneyStr=""; // recharge lables
+    private String mRechargeMoneyStr = ""; // recharge lables
 
     public static RechargeFragment newInstance(Bundle bundle) {
         RechargeFragment rechargeFragment = new RechargeFragment();
@@ -221,21 +221,22 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mPresenter.getPayStr(mPayType,  mRechargeMoney * mWalletConfigBean.getRatio());
+                        mPresenter.getPayStr(mPayType, mRechargeMoney * mWalletConfigBean.getRatio());
                     }
                 });
 
         RxTextView.textChanges(mEtInput).subscribe(new Action1<CharSequence>() {
             @Override
             public void call(CharSequence charSequence) {
-                if (TextUtils.isEmpty(charSequence.toString().replaceAll(" ", ""))) {
-                    return;
+                mRechargeMoneyStr = charSequence.toString();
+                if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0 && !mRechargeMoneyStr.contains(".")) {
+                    mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
+                } else {
+                    mRechargeMoney = 0;
                 }
-                mRechargeMoneyStr=charSequence.toString();
                 if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
                     mRbDaysGroup.clearCheck();
                 }
-                mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
                 configSureButton();
             }
         }, new Action1<Throwable>() {

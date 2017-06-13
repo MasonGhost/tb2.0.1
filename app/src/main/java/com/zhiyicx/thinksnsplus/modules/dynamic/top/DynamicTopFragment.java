@@ -56,6 +56,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     private List<Integer> mSelectDays;
     private int mCurrentDays;
     private float mInputMoney;
+    private String mInputMoneyStr;
 
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
@@ -103,6 +104,11 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
         return R.layout.fragment_dynamic_top;
     }
 
+    @Override
+    public String getInputMoneyStr() {
+        return mInputMoneyStr;
+    }
+
     private void initListener() {
         mRbDaysGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -127,17 +133,18 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        if (!TextUtils.isEmpty(charSequence)) {
-                            if (charSequence.toString().contains(".")) {
-                                initStickTopInstructionsPop();
-                                mEtTopInput.setText("");
-                                return;
-                            }
-                            mInputMoney = Float.parseFloat(charSequence.toString());
+                        mInputMoneyStr = charSequence.toString();
+                        if (!TextUtils.isEmpty(charSequence) && !mInputMoneyStr.contains(".")) {
+                            mInputMoney = Float.parseFloat(mInputMoneyStr);
                         } else {
                             mInputMoney = 0f;
                         }
                         setConfirmEnable();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
                     }
                 });
 
@@ -169,14 +176,16 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     }
 
     private void setConfirmEnable() {
-        mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
-        mBtTop.setEnabled(mCurrentDays > 0 && mInputMoney > 0);
-        if (mCurrentDays == 0)
+        boolean enable = mCurrentDays > 0 && mInputMoney > 0;
+        mBtTop.setEnabled(enable);
+        if (!enable)
             return;
+        mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
         mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), mInputMoney / mCurrentDays, mPresenter.getBalance()));
     }
 
-    private void initStickTopInstructionsPop() {
+    @Override
+    public void initStickTopInstructionsPop() {
         if (mStickTopInstructionsPopupWindow != null) {
             mStickTopInstructionsPopupWindow.show();
             return;

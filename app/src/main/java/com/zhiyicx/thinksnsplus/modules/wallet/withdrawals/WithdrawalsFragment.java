@@ -60,7 +60,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     private String mWithdrawalsType;
 
-    private String mWithdrawalsMoneyStr="";
+    private String mWithdrawalsMoneyStr = "";
 
     private double mWithdrawalsMoney;
 
@@ -171,7 +171,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                     @Override
                     public Boolean call(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) {
                         mWithdrawalsMoneyStr = charSequence.toString();
-                        if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0) {
+                        if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0 && !mWithdrawalsMoneyStr.contains(".")) {
                             mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
                         } else {
                             mWithdrawalsMoney = 0;

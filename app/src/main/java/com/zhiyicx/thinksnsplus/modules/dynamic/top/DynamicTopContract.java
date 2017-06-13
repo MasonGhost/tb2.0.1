@@ -17,6 +17,8 @@ public interface DynamicTopContract {
     interface View extends IBaseView<Presenter>{
         boolean insufficientBalance();
         void gotoRecharge();
+        void initStickTopInstructionsPop();
+        String getInputMoneyStr();
     }
 
     interface Presenter extends IBasePresenter{

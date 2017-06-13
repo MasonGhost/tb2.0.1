@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+
+import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 
 /**
  * @Describe
@@ -43,6 +46,9 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -99,7 +105,8 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                         if (data.getWallet() != null) {
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
                         }
-                        mRootView.updateBalance(data.getWallet() != null ? data.getWallet().getBalance() : 0);
+                        int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
+                        mRootView.updateBalance(data.getWallet() != null ? data.getWallet().getBalance() * (ratio / MONEY_UNIT) : 0);
                     }
 
                     @Override
