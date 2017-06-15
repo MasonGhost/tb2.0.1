@@ -18,7 +18,7 @@ public class WithdrawalsListBeanTest extends AbstractDaoTestLongPk<WithdrawalsLi
         entity.setId(44);
         entity.setValue(2323);
         entity.setStatus(11);
-        entity.setRemark(1111L);
+        entity.setRemark("1111");
         return entity;
     }
 
