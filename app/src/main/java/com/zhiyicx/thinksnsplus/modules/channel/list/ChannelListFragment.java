@@ -169,4 +169,12 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     public List<ChannelSubscripBean> getChannelListData() {
         return mListDatas;
     }
+
+    @Override
+    public void gotoAllChannel() {
+        ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
+        if (channelListViewPagerFragment != null) {
+            channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
+        }
+    }
 }

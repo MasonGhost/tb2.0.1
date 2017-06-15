@@ -41,6 +41,8 @@ public interface ChannelListContract {
          */
         List<ChannelSubscripBean> getChannelListData();
 
+        void gotoAllChannel();
+
     }
 
     interface Presenter extends ITSListPresenter<ChannelSubscripBean> {

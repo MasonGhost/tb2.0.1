@@ -54,6 +54,10 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
         Observable<BaseJson<List<ChannelSubscripBean>>> observable = null;
         switch (pageType) {
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
+                if (istourist()) {
+                    mRootView.gotoAllChannel();
+                    return;
+                }
                 observable = mRepository.getMySubscribChannelList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
