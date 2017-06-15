@@ -39,7 +39,7 @@ public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.Reposit
                     .doOnSubscribe(new Action0() {
                         @Override
                         public void call() {
-                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.feed_back_ing));
+                            mRootView.showSnackLoadingMessage(mContext.getString(R.string.feed_back_ing));
                         }
                     })
                     .subscribe(new BaseSubscribeForV2<BaseJson<Object>>() {

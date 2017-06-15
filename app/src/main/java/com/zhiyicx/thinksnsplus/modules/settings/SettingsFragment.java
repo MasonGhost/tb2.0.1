@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -124,7 +125,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        CustomWEBActivity.startToWEBActivity(getContext());
+                        CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala");
                     }
                 });
         // 退出登录

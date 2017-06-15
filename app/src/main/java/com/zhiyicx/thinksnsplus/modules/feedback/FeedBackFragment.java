@@ -66,6 +66,18 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
     }
 
     @Override
+    public void showSnackSuccessMessage(String message) {
+        super.showSnackSuccessMessage(message);
+        Observable.timer(1, TimeUnit.SECONDS).subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+                getActivity().finish();
+            }
+        });
+
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_feedback;
     }

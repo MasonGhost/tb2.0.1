@@ -21,12 +21,15 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
     public static void startToWEBActivity(Context context, String... args) {
         Intent intent = new Intent(context, CustomWEBActivity.class);
         Bundle bundle = new Bundle();
-        try {
-            bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, args[0]);
-            bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, args[1]);
-        } catch (Exception e) {
+        if (args.length > 0) {
+            try {
+                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, args[0]);
+                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, args[1]);
+            } catch (Exception e) {
+            }
+            intent.putExtras(bundle);
         }
-        intent.putExtras(bundle);
+
         context.startActivity(intent);
     }
 
