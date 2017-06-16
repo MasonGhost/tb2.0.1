@@ -52,7 +52,7 @@ public class RetryWithInterceptDelay implements
                 .flatMap(new Func1<Throwable, Observable<?>>() {
                     @Override
                     public Observable<?> call(Throwable throwable) {
-                        if (++mCurrentRetryCount <= mMaxRetries) {
+                        if (++mCurrentRetryCount <= mMaxRetries && extraReTryCondition(throwable)) {
                             // When this Observable calls onNext, the original Observable will be retried (i.e. re-subscribed).
                             int time = mStartDelaySecond + mInterceptSecond * (mCurrentRetryCount - 1);
                             Log.d(TAG, "get error, it will try after " + time
@@ -65,5 +65,9 @@ public class RetryWithInterceptDelay implements
                         return Observable.error(throwable);
                     }
                 });
+    }
+
+    protected boolean extraReTryCondition(Throwable throwable) {
+        return true;
     }
 }

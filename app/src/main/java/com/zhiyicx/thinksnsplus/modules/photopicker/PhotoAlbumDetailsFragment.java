@@ -144,7 +144,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         intent.setClass(getContext(), PhotoAlbumListActivity.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, TO_ALBUM_LIST_REQUEST_CODE);
-//        getActivity().finish();
+//        getActivity().finish(); finish后出栈
         getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 

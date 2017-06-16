@@ -226,6 +226,9 @@ public class ApiConfig {
     // 启动广告
     public static final String SYSTEM_LAUNCH_ADVERT = "system_launch_advert";// 系统启动广告
 
+    ////////////////////////////////////////// 以下是通用 V2 接口
+    public static final String APP_PATH_STORAGE_HASH = "api/" + API_VERSION_2 + "/files/uploaded";// 校检文件hash
+
     /**
      * 分享相关
      */

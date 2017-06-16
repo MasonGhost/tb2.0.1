@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -39,6 +40,10 @@ import rx.functions.Func1;
 public class UpLoadRepository implements IUploadRepository {
     private CommonClient mCommonClient;
     private Context mContext;
+
+    // 这个用于服务器校检 hash
+    private static final int RETRY_MAX_COUNT = 2; // 最大重试次
+    private static final int RETRY_INTERVAL_TIME = 2; // 循环间隔时间 单位 s
 
     @Inject
     public UpLoadRepository(ServiceManager serviceManager, Application context) {
@@ -168,6 +173,159 @@ public class UpLoadRepository implements IUploadRepository {
                         }
                     }
                 });
+    }
+
+    @Override
+    public Observable<BaseJson<Integer>> upLoadSingleFileV2(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
+        File file = new File(filePath);
+        // 封装上传文件的参数
+        final HashMap<String, String> paramMap = new HashMap<>();
+        paramMap.put("hash", FileUtils.getFileMD5ToString(file));
+        paramMap.put("origin_filename", file.getName());
+        // 如果是图片就处理图片
+        if (isPic) {
+            paramMap.put("mime_type", mimeType);
+            paramMap.put("width", photoWidth + "");// 如果是图片就选择宽高
+            paramMap.put("height", photoHeight + "");// 如果是图片就选择宽高
+        } else {
+            paramMap.put("mime_type", FileUtils.getMimeType(filePath));
+        }
+        return checkStorageHash(paramMap.get("hash"))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME) {
+                    @Override
+                    protected boolean extraReTryCondition(Throwable throwable) {
+                        return super.extraReTryCondition(throwable);
+                    }
+                })
+                .onErrorReturn(new Func1<Throwable, BaseJson>() {
+                    @Override
+                    public BaseJson call(Throwable throwable) {
+                        BaseJson baseJson = new BaseJson();
+                        baseJson.setId(-1);
+                        baseJson.setStatus(false);
+                        return baseJson;
+                    }
+                })
+                .flatMap(new Func1<BaseJson, Observable<BaseJson<Integer>>>() {
+                    @Override
+                    public Observable<BaseJson<Integer>> call(BaseJson baseJson) {
+                        if (baseJson.getId() != -1) {
+                            BaseJson<Integer> success = new BaseJson<>();
+                            success.setData(baseJson.getId());
+                            success.setStatus(true);
+                            return Observable.just(success);
+                        } else {
+                            return mCommonClient.createStorageTask(paramMap, null)
+                                    // 处理创建存储任务到上传文件的过程
+                                    .flatMap(new Func1<BaseJson<StorageTaskBean>, Observable<String[]>>() {
+                                        @Override
+                                        public Observable<String[]> call(BaseJson<StorageTaskBean> storageTaskBeanBaseJson) {
+                                            // 服务器获取成功
+                                            if (storageTaskBeanBaseJson.isStatus()) {
+                                                StorageTaskBean storageTaskBean = storageTaskBeanBaseJson.getData();
+                                                int storageId = storageTaskBean.getStorage_id();
+                                                final int storageTaskId = storageTaskBean.getStorage_task_id();
+                                                if (storageId > 0) {
+                                                    // 表示服务器已经存在该附件,已经成功上传，不需要做其他事情了
+                                                    return Observable.just(new String[]{"success", storageTaskId + ""});
+                                                } else {
+                                                    // 创建上传任务成功，开始上传
+                                                    String method = storageTaskBean.getMethod();
+                                                    String uri = storageTaskBean.getUri();
+                                                    Gson gson = new Gson();
+                                                    // 处理 headers
+                                                    HashMap<String, String> headerMap;
+                                                    try {
+                                                        headerMap = gson.fromJson(gson.toJson(storageTaskBean.getHeaders()),
+                                                                new TypeToken<HashMap<String, String>>() {
+                                                                }.getType());
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                        headerMap = new HashMap<>();
+                                                    }
+
+                                                    // 处理 options
+                                                    HashMap<String, Object> optionsMap;
+                                                    try {
+                                                        optionsMap = gson.fromJson(gson.toJson(storageTaskBean.getOptions()),
+                                                                new TypeToken<HashMap<String, Object>>() {
+                                                                }.getType());
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                        optionsMap = new HashMap<>();
+                                                    }
+                                                    //TODO optionsMap在此处添加图片收费参数
+
+                                                    // 封装图片File
+                                                    HashMap<String, String> fileMap = new HashMap<>();
+                                                    fileMap.put(storageTaskBean.getInput(), filePath);
+                                                    if (method.equalsIgnoreCase("put")) {
+                                                        // 使用map操作符携带任务id，继续向下传递
+                                                        return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.upLoadFileAndParams(fileMap, optionsMap))
+                                                                .map(new Func1<String, String[]>() {
+                                                                    @Override
+                                                                    public String[] call(String s) {
+                                                                        return new String[]{s, storageTaskId + ""};
+                                                                    }
+                                                                });
+                                                    } else if (method.equalsIgnoreCase("post")) {
+                                                        // 使用map操作符携带任务id，继续向下传递
+                                                        return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.upLoadFileAndParams(fileMap, optionsMap))
+                                                                .map(new Func1<String, String[]>() {
+                                                                    @Override
+                                                                    public String[] call(String s) {
+                                                                        return new String[]{s, storageTaskId + ""};
+                                                                    }
+                                                                });
+                                                    } else {
+                                                        return Observable.just(new String[]{"failure", ""});// 没有合适的方法上传文件，这一般是不会发生的
+                                                    }
+                                                }
+                                            } else {
+                                                // 表示服务器创建存储任务失败
+                                                return Observable.just(new String[]{"failure", ""});
+                                            }
+                                        }
+                                    })
+                                    // 处理上传文件到获取任务通知的过程
+                                    .flatMap(new Func1<String[], Observable<BaseJson<Integer>>>() {
+                                        @Override
+                                        public Observable<BaseJson<Integer>> call(final String[] s) {
+                                            switch (s[0]) {
+                                                case "success":// 直接成功
+                                                    BaseJson<Integer> success = new BaseJson<>();
+                                                    success.setData(Integer.parseInt(s[1]));
+                                                    success.setStatus(true);
+                                                    return Observable.just(success);
+                                                case "failure":// 失败
+                                                    BaseJson<Integer> failure = new BaseJson<>();
+                                                    failure.setData(Integer.parseInt(s[1]));
+                                                    failure.setStatus(false);
+                                                    return Observable.just(failure);
+                                                default:// 调用通知任务
+                                                    return mCommonClient.notifyStorageTask(s[1], s[0], null)
+                                                            .map(new Func1<BaseJson, BaseJson<Integer>>() {
+                                                                @Override
+                                                                public BaseJson<Integer> call(BaseJson baseJson) {
+                                                                    BaseJson<Integer> newBaseJson = new BaseJson<>();
+                                                                    newBaseJson.setCode(baseJson.getCode());
+                                                                    newBaseJson.setStatus(baseJson.isStatus());
+                                                                    newBaseJson.setMessage(baseJson.getMessage());
+                                                                    newBaseJson.setData(Integer.parseInt(s[1]));
+                                                                    return newBaseJson;
+                                                                }
+                                                            });
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public Observable<BaseJson> checkStorageHash(String hash) {
+        return mCommonClient.checkStorageHash(hash);
     }
 
     /**

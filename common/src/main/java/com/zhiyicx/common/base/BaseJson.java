@@ -15,9 +15,18 @@ public class BaseJson<T> {
     private boolean status;
     private String message;
     private int code;
+    private int id = -1;
     private T data;
 
     public BaseJson() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isStatus() {
@@ -56,6 +65,7 @@ public class BaseJson<T> {
     public String toString() {
         return "BaseJson{" +
                 "status=" + status +
+                ", id=" + id +
                 ", message='" + message + '\'' +
                 ", code=" + code +
                 ", data=" + data +

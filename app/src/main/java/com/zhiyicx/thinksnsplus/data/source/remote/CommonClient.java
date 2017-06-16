@@ -48,6 +48,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_HASH;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SYSTEM_FEEDBACK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOKEN_EXPIERD;
 import static com.zhiyicx.baseproject.config.ApiConfig.SYSTEM_LAUNCH_ADVERT;
@@ -194,6 +195,16 @@ public interface CommonClient {
     @FormUrlEncoded
     @POST(APP_PATH_CREATE_STORAGE_TASK)
     Observable<BaseJson<StorageTaskBean>> createStorageTask(@FieldMap HashMap<String, String> fieldMap, @Query("requestState") String requestState);
+
+
+    /**
+     * 校验文件hash
+     *
+     * @param hash 文件 MD5 hash
+     * @return
+     */
+    @GET(APP_PATH_STORAGE_HASH)
+    Observable<BaseJson> checkStorageHash(@Query("hash") String hash);
 
     /**
      * 通过Post方法上传文件
