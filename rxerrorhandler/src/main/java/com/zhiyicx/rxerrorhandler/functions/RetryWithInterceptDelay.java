@@ -67,6 +67,11 @@ public class RetryWithInterceptDelay implements
                 });
     }
 
+    /**
+     * 需要进行 retry 的额外条件
+     * @param throwable
+     * @return
+     */
     protected boolean extraReTryCondition(Throwable throwable) {
         return true;
     }

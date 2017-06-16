@@ -202,7 +202,6 @@ public class UpLoadRepository implements IUploadRepository {
                     public BaseJson call(Throwable throwable) {
                         BaseJson baseJson = new BaseJson();
                         baseJson.setId(-1);
-                        baseJson.setStatus(false);
                         return baseJson;
                     }
                 })

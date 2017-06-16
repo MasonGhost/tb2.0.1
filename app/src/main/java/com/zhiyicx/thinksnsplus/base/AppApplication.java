@@ -139,6 +139,7 @@ public class AppApplication extends TSApplication {
                 try {
                     baseJson = new Gson().fromJson(httpResult, BaseJson.class);
                 } catch (JsonSyntaxException e) {
+                    LogUtils.e("Invalid Json length:::"+httpResult.length());
                 }
 
                 String tipStr = null;
