@@ -45,6 +45,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         if (realData.getStorage() == null) {
             imageView.setVisibility(View.GONE);
         } else {
+            imageView.setVisibility(View.VISIBLE);
             AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
                     .url(ImageUtils.imagePathConvert(realData.getStorage().getId() + "", ImageZipConfig.IMAGE_50_ZIP))
                     .placeholder(R.drawable.shape_default_image)
@@ -52,8 +53,6 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                     .imagerView(imageView)
                     .build());
         }
-
-
         String from = TextUtils.isEmpty(realData.getFrom()) ? "" : "\b\b\b来自\b" + realData.getFrom();
         holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
                 .getUpdated_at()) + from);

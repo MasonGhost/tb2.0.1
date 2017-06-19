@@ -99,6 +99,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
+    protected void onEmptyViewClick() {
+        mRefreshlayout.setRefreshing(true);
+    }
+
+    @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
     }
