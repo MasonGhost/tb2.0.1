@@ -31,7 +31,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
 
     @Override
     public void convert(ViewHolder holder, BaseListBean baseListBean, BaseListBean lastT,
-                        final int position,int itemCounts) {
+                        final int position, int itemCounts) {
         final InfoListDataBean realData = (InfoListDataBean) baseListBean;
         final TextView title = holder.getView(R.id.item_info_title);
         final ImageView imageView = holder.getView(R.id.item_info_imag);
@@ -42,12 +42,17 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                     .getColor(R.color.normal_for_assist_text));
         }
         title.setText(realData.getTitle());
-        AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(realData.getStorage().getId()+"",ImageZipConfig.IMAGE_50_ZIP))
-                .placeholder(R.drawable.shape_default_image)
-                .errorPic(R.drawable.shape_default_image)
-                .imagerView(imageView)
-                .build());
+        if (realData.getStorage() == null) {
+            imageView.setVisibility(View.GONE);
+        } else {
+            AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
+                    .url(ImageUtils.imagePathConvert(realData.getStorage().getId() + "", ImageZipConfig.IMAGE_50_ZIP))
+                    .placeholder(R.drawable.shape_default_image)
+                    .errorPic(R.drawable.shape_default_image)
+                    .imagerView(imageView)
+                    .build());
+        }
+
 
         String from = TextUtils.isEmpty(realData.getFrom()) ? "" : "\b\b\b来自\b" + realData.getFrom();
         holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
@@ -56,11 +61,11 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClick(position,imageView, title, realData);
+                itemClick(position, imageView, title, realData);
             }
         });
     }
 
-    public abstract void itemClick(int position,ImageView imageView, TextView title, InfoListDataBean realData);
+    public abstract void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData);
 
 }

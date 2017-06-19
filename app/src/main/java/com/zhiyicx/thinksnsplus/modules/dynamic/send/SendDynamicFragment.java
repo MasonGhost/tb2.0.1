@@ -558,7 +558,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     if (!isToll) {
                         imageBean.setToll(null);
                     }
-                    LogUtils.e("imageBean.getToll_monye::" + imageBean.getToll_monye());
+                    if (imageBean.getToll() != null) {
+                        LogUtils.e("imageBean.getToll::"+imageBean.getToll().toString());
+                    }
+
                     if (imageBean.getToll_type() > 0) {
                         hasTollPic = true;
                         filterView.setVisibility(View.VISIBLE);
