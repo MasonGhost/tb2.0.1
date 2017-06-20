@@ -4,7 +4,10 @@ import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
+
+import java.util.List;
 
 /**
  * @author LiuChao
@@ -27,6 +30,8 @@ public interface SendDynamicContract {
 
         boolean hasTollVerify();
 
+        List<SendDynamicDataBeanV2.StorageTaskBean> packageDynamicDataV2();
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -37,5 +42,6 @@ public interface SendDynamicContract {
 
     interface Presenter extends IBasePresenter {
         void sendDynamic(DynamicBean dynamicBean);
+        void sendDynamicV2(DynamicBean dynamicBean);
     }
 }

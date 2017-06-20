@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -34,6 +35,15 @@ public interface DynamicClient {
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_SEND_DYNAMIC)
     Observable<BaseJson<Object>> sendDynamic(@Body RequestBody body);
+
+    /**
+     * 发布动态
+     *
+     * @return
+     */
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(ApiConfig.APP_PATH_SEND_DYNAMIC_V2)
+    Observable<BaseJsonV2<Object>> sendDynamicV2(@Body RequestBody body);
 
     /**
      * 发布动态到频道

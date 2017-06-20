@@ -46,6 +46,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -56,6 +57,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import rx.functions.Action1;
+
+import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
+import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
+import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
 
 
 /**
@@ -518,6 +523,26 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     /**
+     * 封装动态上传的数据
+     */
+    @Override
+    public List<SendDynamicDataBeanV2.StorageTaskBean> packageDynamicDataV2() {
+        List<SendDynamicDataBeanV2.StorageTaskBean> storage_task = new ArrayList<>();
+        if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
+            for (int i = 0; i < selectedPhotos.size(); i++) {
+                if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
+                    SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
+                    ImageBean imageBean = new ImageBean();
+                    taskBean.setAmount(imageBean.getToll_monye());
+                    taskBean.setType(imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE);
+                    storage_task.add(taskBean);
+                }
+            }
+        }
+        return storage_task;
+    }
+
+    /**
      * 初始化图片列表
      */
     private void initPhotoList(Bundle bundle) {
@@ -559,7 +584,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         imageBean.setToll(null);
                     }
                     if (imageBean.getToll() != null) {
-                        LogUtils.e("imageBean.getToll::"+imageBean.getToll().toString());
+                        LogUtils.e("imageBean.getToll::" + imageBean.getToll().toString());
                     }
 
                     if (imageBean.getToll_type() > 0) {

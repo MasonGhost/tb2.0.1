@@ -98,6 +98,9 @@ public class ApiConfig {
      * 动态相关
      */
     public static final String APP_PATH_SEND_DYNAMIC = "api/" + API_VERSION + "/feeds";// 发布动态
+
+    public static final String APP_PATH_SEND_DYNAMIC_V2 = "api/" + API_VERSION_2 + "/feeds";// 发布动态 V2
+
     public static final String APP_PATH_DELETE_DYNAMIC = "api/" + API_VERSION + "/feeds/%s";// 删除一条动态
     // 获取动态列表
     // 最新：/api/" + API_VERSION + "/feeds;

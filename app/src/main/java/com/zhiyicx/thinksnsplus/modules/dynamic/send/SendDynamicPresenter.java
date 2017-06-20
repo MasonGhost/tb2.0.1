@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
@@ -57,7 +58,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         if (dynamicBean.getFeed().getStorages() == null) { // 当没有图片的时候，给一个占位数组
             dynamicBean.getFeed().setStorages(new ArrayList<ImageBean>());
         }
-        if (mRootView.hasTollVerify()){
+        if (mRootView.hasTollVerify()) {
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
@@ -95,4 +96,34 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
 
     }
 
+    @Override
+    public void sendDynamicV2(DynamicBean dynamicBean) {
+        if (dynamicBean.getFeed().getStorages() == null) { // 当没有图片的时候，给一个占位数组
+            dynamicBean.getFeed().setStorages(new ArrayList<ImageBean>());
+        }
+        if (mRootView.hasTollVerify()) {
+            mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
+            return;
+        }
+        SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
+        sendDynamicDataBeanV2.setStorage_task(mRootView.packageDynamicDataV2());
+
+        // 发送动态
+        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMICV2);
+        HashMap<String, Object> params = new HashMap<>();
+        // feed_mark作为参数
+        params.put("params", dynamicBean.getFeed_mark());
+        params.put("sendDynamicDataBean", sendDynamicDataBeanV2);
+
+        // 将动态信息存入数据库
+        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+        mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
+        mDynamicToolBeanGreenDao.insertOrReplace(dynamicBean.getTool());
+        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+
+        backgroundRequestTaskBean.setParams(params);
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        mRootView.sendDynamicComplete();// 发送动态放到后台任务处理，关闭当前的动态发送页面
+    }
 }

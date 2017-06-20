@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 
 import java.util.List;
 
@@ -27,6 +29,14 @@ public interface IDynamicReppsitory {
      * @return basejson, object is null
      */
     Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean, int dynamicBelong, long channel_id);
+
+    /**
+     * publish dynamic V2
+     *
+     * @param dynamicDetailBean dynamic content
+     * @return basejson, object is null
+     */
+    Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean);
 
     /**
      * get dynamic list
