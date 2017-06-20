@@ -49,6 +49,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUN
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_HASH;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_UPLAOD_FILE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SYSTEM_FEEDBACK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOKEN_EXPIERD;
 import static com.zhiyicx.baseproject.config.ApiConfig.SYSTEM_LAUNCH_ADVERT;
@@ -219,6 +220,21 @@ public interface CommonClient {
     @Multipart
     @PUT
     Observable<String> upLoadFileByPut(@Url String url, @HeaderMap HashMap<String, String> headers, @Part List<MultipartBody.Part> params);
+
+
+    /**
+     * 通过Post方法上传文件 V2
+     */
+    @Multipart
+    @POST(APP_PATH_STORAGE_UPLAOD_FILE)
+    Observable<String> upLoadFileByPostV2(@Part List<MultipartBody.Part> params);
+
+    /**
+     * 通过Put方法上传文件 V2
+     */
+    @Multipart
+    @PUT
+    Observable<String> upLoadFileByPutV2(@Part List<MultipartBody.Part> params);
 
 
     /**
