@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
@@ -201,11 +202,11 @@ public interface CommonClient {
     /**
      * 校验文件hash
      *
-     * @param hash 文件 MD5 hash
+     * @param hash 文件 MD5 值
      * @return
      */
     @GET(APP_PATH_STORAGE_HASH)
-    Observable<BaseJson> checkStorageHash(@Query("hash") String hash);
+    Observable<BaseJsonV2> checkStorageHash(@Path("hash") String hash);
 
     /**
      * 通过Post方法上传文件
@@ -227,7 +228,7 @@ public interface CommonClient {
      */
     @Multipart
     @POST(APP_PATH_STORAGE_UPLAOD_FILE)
-    Observable<BaseJson> upLoadFileByPostV2(@Part List<MultipartBody.Part> params);
+    Observable<BaseJsonV2> upLoadFileByPostV2(@Part List<MultipartBody.Part> params);
 
     /**
      * 通过Put方法上传文件 V2

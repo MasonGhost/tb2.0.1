@@ -12,14 +12,16 @@ public class BaseJson<T> {
      * {"message":"","data":{"key":"success"},"status":true,"code":0}
      */
 
-    private boolean status;
-    private String message;
-    private int code;
-    private int id = -1;
+    protected boolean status;
+    protected int code;
+    protected int id = -1;
     private T data;
+    private String message;
 
     public BaseJson() {
     }
+
+
 
     public int getId() {
         return id;

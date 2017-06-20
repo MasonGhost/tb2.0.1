@@ -3,11 +3,14 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
+import com.alipay.android.phone.mrpc.core.HttpException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
@@ -194,20 +197,20 @@ public class UpLoadRepository implements IUploadRepository {
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME) {
                     @Override
                     protected boolean extraReTryCondition(Throwable throwable) {
-                        return !throwable.toString().contains("404"); // 文件不存在 服务器返回404.
+                        return throwable.toString().contains("404"); // 文件不存在 服务器返回404.
                     }
                 })
-                .onErrorReturn(new Func1<Throwable, BaseJson>() {
+                .onErrorReturn(new Func1<Throwable, BaseJsonV2>() {
                     @Override
-                    public BaseJson call(Throwable throwable) {
-                        BaseJson baseJson = new BaseJson();
+                    public BaseJsonV2 call(Throwable throwable) {
+                        BaseJsonV2 baseJson = new BaseJsonV2();
                         baseJson.setId(-1);
                         return baseJson;
                     }
                 })
-                .flatMap(new Func1<BaseJson, Observable<BaseJson<Integer>>>() {
+                .flatMap(new Func1<BaseJsonV2, Observable<BaseJson<Integer>>>() {
                     @Override
-                    public Observable<BaseJson<Integer>> call(BaseJson baseJson) {
+                    public Observable<BaseJson<Integer>> call(BaseJsonV2 baseJson) {
                         if (baseJson.getId() != -1) {
                             BaseJson<Integer> success = new BaseJson<>();
                             success.setData(baseJson.getId());
@@ -218,10 +221,10 @@ public class UpLoadRepository implements IUploadRepository {
                             HashMap<String, String> fileMap = new HashMap<>();
                             fileMap.put("file", filePath);
                             return mCommonClient.upLoadFileByPostV2(UpLoadFile.upLoadFileAndParams(fileMap))
-                                    .flatMap(new Func1<BaseJson, Observable<BaseJson<Integer>>>() {
+                                    .flatMap(new Func1<BaseJsonV2, Observable<BaseJson<Integer>>>() {
                                         @Override
-                                        public Observable<BaseJson<Integer>> call(BaseJson uploadFileResultV2) {
-                                            if (uploadFileResultV2.getMessage().equals("上传成功")) {
+                                        public Observable<BaseJson<Integer>> call(BaseJsonV2 uploadFileResultV2) {
+                                            if (uploadFileResultV2.getMessage().get(0).equals("上传成功")) {
                                                 BaseJson<Integer> success = new BaseJson<>();
                                                 success.setData(uploadFileResultV2.getId());
                                                 success.setStatus(true);
@@ -234,13 +237,14 @@ public class UpLoadRepository implements IUploadRepository {
                                             }
                                         }
                                     });
+
                         }
                     }
                 });
     }
 
     @Override
-    public Observable<BaseJson> checkStorageHash(String hash) {
+    public Observable<BaseJsonV2> checkStorageHash(String hash) {
         return mCommonClient.checkStorageHash(hash);
     }
 
