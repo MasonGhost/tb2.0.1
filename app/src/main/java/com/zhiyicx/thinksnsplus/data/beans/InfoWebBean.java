@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.data.beans.info;
+package com.zhiyicx.thinksnsplus.data.beans;
 
 /**
  * @Author Jliuer

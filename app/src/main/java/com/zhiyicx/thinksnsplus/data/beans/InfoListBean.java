@@ -1,12 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;

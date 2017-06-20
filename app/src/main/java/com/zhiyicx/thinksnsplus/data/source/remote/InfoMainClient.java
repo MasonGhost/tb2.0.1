@@ -4,8 +4,8 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoWebBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
 
 import java.util.List;
 
@@ -26,9 +26,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_SEARCH;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE_V2;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_LOGIN;
 
 /**
  * @Author Jliuer
