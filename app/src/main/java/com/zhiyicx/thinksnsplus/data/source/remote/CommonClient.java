@@ -227,14 +227,14 @@ public interface CommonClient {
      */
     @Multipart
     @POST(APP_PATH_STORAGE_UPLAOD_FILE)
-    Observable<String> upLoadFileByPostV2(@Part List<MultipartBody.Part> params);
+    Observable<BaseJson> upLoadFileByPostV2(@Part List<MultipartBody.Part> params);
 
     /**
      * 通过Put方法上传文件 V2
      */
     @Multipart
     @PUT
-    Observable<String> upLoadFileByPutV2(@Part List<MultipartBody.Part> params);
+    Observable<BaseJson> upLoadFileByPutV2(@Part List<MultipartBody.Part> params);
 
 
     /**
