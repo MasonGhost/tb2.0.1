@@ -18,7 +18,7 @@ import java.util.Iterator;
 public class MusicDataConvert implements MusicProviderSource {
 
     private MusicAlbumDetailsBean mAlbumDetailsBean;
-    public static final String METADATA_KEY_GENRE = "_tym_";
+    public static final String METADATA_KEY_GENRE = "_zhiyicx_";
 
     public MusicDataConvert(MusicAlbumDetailsBean albumDetailsBean) {
         mAlbumDetailsBean = albumDetailsBean;

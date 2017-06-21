@@ -39,7 +39,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     private String feed_longtitude;
     private String feed_geohash;
     private float amount;
-    private List<StorageTaskBean> files;
+    private List<StorageTaskBean> images;
 
     public String getFeed_title() {
         return feed_title;
@@ -106,11 +106,11 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     }
 
     public List<StorageTaskBean> getStorage_task() {
-        return files;
+        return images;
     }
 
     public void setStorage_task(List<StorageTaskBean> storage_task) {
-        this.files = storage_task;
+        this.images = storage_task;
     }
 
     public static class StorageTaskBean implements Parcelable,Serializable {
@@ -194,7 +194,6 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         return sendDynamicDataBeanV2;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -210,7 +209,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         dest.writeString(this.feed_longtitude);
         dest.writeString(this.feed_geohash);
         dest.writeFloat(this.amount);
-        dest.writeTypedList(this.files);
+        dest.writeTypedList(this.images);
     }
 
     public SendDynamicDataBeanV2() {
@@ -225,7 +224,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.feed_longtitude = in.readString();
         this.feed_geohash = in.readString();
         this.amount = in.readFloat();
-        this.files = in.createTypedArrayList(StorageTaskBean.CREATOR);
+        this.images = in.createTypedArrayList(StorageTaskBean.CREATOR);
     }
 
     public static final Creator<SendDynamicDataBeanV2> CREATOR = new Creator<SendDynamicDataBeanV2>() {
