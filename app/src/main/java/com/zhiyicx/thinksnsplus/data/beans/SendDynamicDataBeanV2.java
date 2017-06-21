@@ -39,7 +39,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     private String feed_longtitude;
     private String feed_geohash;
     private float amount;
-    private List<StorageTaskBean> storage_task;
+    private List<StorageTaskBean> files;
 
     public String getFeed_title() {
         return feed_title;
@@ -106,14 +106,15 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     }
 
     public List<StorageTaskBean> getStorage_task() {
-        return storage_task;
+        return files;
     }
 
     public void setStorage_task(List<StorageTaskBean> storage_task) {
-        this.storage_task = storage_task;
+        this.files = storage_task;
     }
 
-    public static class StorageTaskBean implements Parcelable {
+    public static class StorageTaskBean implements Parcelable,Serializable {
+        private static final long serialVersionUID = 4113706643912669235L;
         /**
          * id : 1
          * amount : 100
@@ -147,7 +148,6 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         public void setType(String type) {
             this.type = type;
         }
-
 
         @Override
         public int describeContents() {
@@ -194,6 +194,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         return sendDynamicDataBeanV2;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -209,7 +210,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         dest.writeString(this.feed_longtitude);
         dest.writeString(this.feed_geohash);
         dest.writeFloat(this.amount);
-        dest.writeList(this.storage_task);
+        dest.writeTypedList(this.files);
     }
 
     public SendDynamicDataBeanV2() {
@@ -224,8 +225,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.feed_longtitude = in.readString();
         this.feed_geohash = in.readString();
         this.amount = in.readFloat();
-        this.storage_task = new ArrayList<StorageTaskBean>();
-        in.readList(this.storage_task, StorageTaskBean.class.getClassLoader());
+        this.files = in.createTypedArrayList(StorageTaskBean.CREATOR);
     }
 
     public static final Creator<SendDynamicDataBeanV2> CREATOR = new Creator<SendDynamicDataBeanV2>() {

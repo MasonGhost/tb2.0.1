@@ -30,7 +30,7 @@ public interface SendDynamicContract {
 
         boolean hasTollVerify();
 
-        List<SendDynamicDataBeanV2.StorageTaskBean> packageDynamicDataV2();
+        List<SendDynamicDataBeanV2.StorageTaskBean> packageDynamicStorageDataV2();
 
     }
 

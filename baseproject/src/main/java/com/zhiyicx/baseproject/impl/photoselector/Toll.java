@@ -7,6 +7,7 @@ public class Toll implements Parcelable {
 
     public static final int LOOK_TOLL = 1000;// 查看收费
     public static final String LOOK_TOLL_TYPE = "read";// 查看收费
+    public static final String LOOK_TOLL_TYPE_NONE = "none";// 查看收费
     public static final int DOWNLOAD_TOLL = 2000;// 下载收费
     public static final String DOWNLOAD_TOLL_TYPE = "download";// 下载收费
 

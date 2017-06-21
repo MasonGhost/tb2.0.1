@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
@@ -420,7 +419,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void setRightClick() {
-        mPresenter.sendDynamic(packageDynamicData());
+        mPresenter.sendDynamicV2(packageDynamicData());
     }
 
     private void setLeftTextColor() {
@@ -526,13 +525,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 封装动态上传的数据
      */
     @Override
-    public List<SendDynamicDataBeanV2.StorageTaskBean> packageDynamicDataV2() {
+    public List<SendDynamicDataBeanV2.StorageTaskBean> packageDynamicStorageDataV2() {
         List<SendDynamicDataBeanV2.StorageTaskBean> storage_task = new ArrayList<>();
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
             for (int i = 0; i < selectedPhotos.size(); i++) {
                 if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
-                    ImageBean imageBean = new ImageBean();
+                    ImageBean imageBean = selectedPhotos.get(i);
                     taskBean.setAmount(imageBean.getToll_monye());
                     taskBean.setType(imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE);
                     storage_task.add(taskBean);

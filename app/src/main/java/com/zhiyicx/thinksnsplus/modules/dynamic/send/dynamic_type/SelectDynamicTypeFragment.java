@@ -43,7 +43,7 @@ public class SelectDynamicTypeFragment extends TSFragment {
 
     @Override
     protected boolean setUseSatusbar() {
-        return true;
+        return false;
     }
 
     @Override

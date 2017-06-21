@@ -27,6 +27,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -277,7 +278,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                         try {
                             imageBean.setToll(mTolls.get(i).getToll());
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            LogUtils.d("第"+i+"张图片没有设置收费");
                         }
                         photosList.add(imageBean);
                     }

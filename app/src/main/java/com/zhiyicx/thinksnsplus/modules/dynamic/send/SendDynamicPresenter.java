@@ -105,22 +105,41 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
-        SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
-        sendDynamicDataBeanV2.setStorage_task(mRootView.packageDynamicDataV2());
 
-        // 发送动态
+        SendDynamicDataBean sendDynamicDataBean = mRootView.getDynamicSendData();
+        int dynamicBelong = sendDynamicDataBean.getDynamicBelong();
+        dynamicBean.setComments(new ArrayList<DynamicCommentBean>());
+        dynamicBean.setState(DynamicBean.SEND_ING);
+        dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
+
+        // 发送动态 V2 所需要的数据
+        SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
+        sendDynamicDataBeanV2.setStorage_task(mRootView.packageDynamicStorageDataV2());
+
+        // 建立 task
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMICV2);
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC_V2);
         HashMap<String, Object> params = new HashMap<>();
         // feed_mark作为参数
         params.put("params", dynamicBean.getFeed_mark());
         params.put("sendDynamicDataBean", sendDynamicDataBeanV2);
 
-        // 将动态信息存入数据库
-        mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-        mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
-        mDynamicToolBeanGreenDao.insertOrReplace(dynamicBean.getTool());
-        EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+        switch (dynamicBelong) {
+            case SendDynamicDataBean.MORMAL_DYNAMIC:
+                // 将动态信息存入数据库
+                mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
+                mDynamicToolBeanGreenDao.insertOrReplace(dynamicBean.getTool());
+                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
+                break;
+            case SendDynamicDataBean.CHANNEL_DYNAMIC:
+                // 没有存入数据库，所以通过map传到后台
+                params.put("dynamicbean", dynamicBean);
+                // 发送到频道，不做处理
+                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
+                break;
+            default:
+        }
 
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);

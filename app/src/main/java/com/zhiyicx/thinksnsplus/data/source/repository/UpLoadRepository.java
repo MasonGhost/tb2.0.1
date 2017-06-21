@@ -197,6 +197,8 @@ public class UpLoadRepository implements IUploadRepository {
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME) {
                     @Override
                     protected boolean extraReTryCondition(Throwable throwable) {
+                        String msg=throwable.toString();
+                        LogUtils.e("extraReTryCondition:"+msg);
                         return throwable.toString().contains("404"); // 文件不存在 服务器返回404.
                     }
                 })
