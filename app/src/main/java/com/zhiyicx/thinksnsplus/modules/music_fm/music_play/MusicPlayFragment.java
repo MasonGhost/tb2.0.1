@@ -86,7 +86,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicAblumInfo
+import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert
         .METADATA_KEY_GENRE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment
         .MUSIC_INFO;

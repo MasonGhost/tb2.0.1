@@ -49,7 +49,7 @@ public class MusicProvider {
     }
 
     public MusicProvider() {
-        this(new RemoteJSONSource());
+        this(new MusicDataConvert(null));
     }
 
     public MusicProvider(MusicProviderSource source) {
