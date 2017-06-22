@@ -7,13 +7,17 @@ import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Author Jliuer
@@ -23,6 +27,10 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class DynamicDetailBeanV2 implements Parcelable {
+
+    public static final int SEND_ERROR = 0;
+    public static final int SEND_ING = 1;
+    public static final int SEND_SUCCESS = 2;
 
     /**
      * id : 13
@@ -41,9 +49,11 @@ public class DynamicDetailBeanV2 implements Parcelable {
      * audit_status : 1
      * feed_mark : 12
      * has_digg : true
+     * has_collect : false
      * amount : 20
      * paid : true
-     * images : [{"file":4,"amount":100,"type":"download","paid":false},{"file":5}]
+     * images : [{"file":4,"size":null,"amount":100,"type":"download","paid":false},{"file":5,
+     * "size":"1930x1930"}]
      * diggs : [1]
      */
     @Unique
@@ -64,12 +74,26 @@ public class DynamicDetailBeanV2 implements Parcelable {
     @Id
     private Long feed_mark;
     private boolean has_digg;
+    private boolean has_collect;
     private double amount;
     private boolean paid;
     @Convert(converter = ImagesBeansVonvert.class,columnType = String.class)
     private List<ImagesBean> images;
     @Convert(converter = IntegerParamsConverter.class,columnType = String.class)
     private List<Integer> diggs;
+
+    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
+    private UserInfoBean userInfoBean;
+    // DynamicBean 的 feed_mark 与 DynamicCommentBean 的 feed_mark 关联
+    @ToMany(joinProperties = {@JoinProperty(name = "feed_mark", referencedName = "feed_mark")})
+    private List<DynamicCommentBean> comments;
+
+    private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
+    private boolean isFollowed;// 是否关注了该条动态（用户）
+    private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
+
+    @Convert(converter = DynamicBean.DataConverter.class, columnType = String.class)
+    private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
 
     public int getId() {
         return id;
@@ -93,14 +117,6 @@ public class DynamicDetailBeanV2 implements Parcelable {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
-    }
-
-    public String getDeleted_at() {
-        return deleted_at;
-    }
-
-    public void setDeleted_at(String deleted_at) {
-        this.deleted_at = deleted_at;
     }
 
     public int getUser_id() {
@@ -151,6 +167,18 @@ public class DynamicDetailBeanV2 implements Parcelable {
         this.feed_comment_count = feed_comment_count;
     }
 
+    public int getAudit_status() {
+        return audit_status;
+    }
+
+    public String getDeleted_at() {
+        return deleted_at;
+    }
+
+    public void setDeleted_at(String deleted_at) {
+        this.deleted_at = deleted_at;
+    }
+
     public String getFeed_latitude() {
         return feed_latitude;
     }
@@ -175,20 +203,24 @@ public class DynamicDetailBeanV2 implements Parcelable {
         this.feed_geohash = feed_geohash;
     }
 
-    public int getAudit_status() {
-        return audit_status;
-    }
-
-    public void setAudit_status(int audit_status) {
-        this.audit_status = audit_status;
-    }
-
     public Long getFeed_mark() {
         return feed_mark;
     }
 
     public void setFeed_mark(Long feed_mark) {
         this.feed_mark = feed_mark;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setAudit_status(int audit_status) {
+        this.audit_status = audit_status;
     }
 
     public boolean isHas_digg() {
@@ -199,12 +231,12 @@ public class DynamicDetailBeanV2 implements Parcelable {
         this.has_digg = has_digg;
     }
 
-    public double getAmount() {
-        return amount;
+    public boolean isHas_collect() {
+        return has_collect;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setHas_collect(boolean has_collect) {
+        this.has_collect = has_collect;
     }
 
     public boolean isPaid() {
@@ -231,27 +263,36 @@ public class DynamicDetailBeanV2 implements Parcelable {
         this.diggs = diggs;
     }
 
-    public boolean getHas_digg() {
-        return this.has_digg;
-    }
-
-    public boolean getPaid() {
-        return this.paid;
-    }
-
-    public static class ImagesBean implements Parcelable {
+    public static class ImagesBean implements Parcelable,Serializable{
         /**
          * file : 4
+         * size : null
          * amount : 100
          * type : download
          * paid : false
          */
 
         private int file;
-        private int amount;
-        private String type;
         private String size;
-        private boolean paid = true;
+        private double amount;
+        private String type;
+        private boolean paid;
+
+        public String getSize() {
+            return size;
+        }
+
+        public void setSize(String size) {
+            this.size = size;
+        }
+
+        public double getAmount() {
+            return amount;
+        }
+
+        public void setAmount(double amount) {
+            this.amount = amount;
+        }
 
         public int getFile() {
             return file;
@@ -259,14 +300,6 @@ public class DynamicDetailBeanV2 implements Parcelable {
 
         public void setFile(int file) {
             this.file = file;
-        }
-
-        public int getAmount() {
-            return amount;
-        }
-
-        public void setAmount(int amount) {
-            this.amount = amount;
         }
 
         public String getType() {
@@ -285,14 +318,6 @@ public class DynamicDetailBeanV2 implements Parcelable {
             this.paid = paid;
         }
 
-        public String getSize() {
-            return size;
-        }
-
-        public void setSize(String size) {
-            this.size = size;
-        }
-
 
         @Override
         public int describeContents() {
@@ -302,9 +327,9 @@ public class DynamicDetailBeanV2 implements Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.file);
-            dest.writeInt(this.amount);
-            dest.writeString(this.type);
             dest.writeString(this.size);
+            dest.writeDouble(this.amount);
+            dest.writeString(this.type);
             dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
         }
 
@@ -313,9 +338,9 @@ public class DynamicDetailBeanV2 implements Parcelable {
 
         protected ImagesBean(Parcel in) {
             this.file = in.readInt();
-            this.amount = in.readInt();
-            this.type = in.readString();
             this.size = in.readString();
+            this.amount = in.readDouble();
+            this.type = in.readString();
             this.paid = in.readByte() != 0;
         }
 
@@ -332,7 +357,76 @@ public class DynamicDetailBeanV2 implements Parcelable {
         };
     }
 
-    
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.deleted_at);
+        dest.writeInt(this.user_id);
+        dest.writeString(this.feed_content);
+        dest.writeInt(this.feed_from);
+        dest.writeInt(this.feed_digg_count);
+        dest.writeInt(this.feed_view_count);
+        dest.writeInt(this.feed_comment_count);
+        dest.writeString(this.feed_latitude);
+        dest.writeString(this.feed_longtitude);
+        dest.writeString(this.feed_geohash);
+        dest.writeInt(this.audit_status);
+        dest.writeValue(this.feed_mark);
+        dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
+        dest.writeDouble(this.amount);
+        dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.images);
+        dest.writeList(this.diggs);
+    }
+
+    public DynamicDetailBeanV2() {
+    }
+
+    protected DynamicDetailBeanV2(Parcel in) {
+        this.id = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.deleted_at = in.readString();
+        this.user_id = in.readInt();
+        this.feed_content = in.readString();
+        this.feed_from = in.readInt();
+        this.feed_digg_count = in.readInt();
+        this.feed_view_count = in.readInt();
+        this.feed_comment_count = in.readInt();
+        this.feed_latitude = in.readString();
+        this.feed_longtitude = in.readString();
+        this.feed_geohash = in.readString();
+        this.audit_status = in.readInt();
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.has_digg = in.readByte() != 0;
+        this.has_collect = in.readByte() != 0;
+        this.amount = in.readDouble();
+        this.paid = in.readByte() != 0;
+        this.images = in.createTypedArrayList(ImagesBean.CREATOR);
+        this.diggs = new ArrayList<Integer>();
+        in.readList(this.diggs, Integer.class.getClassLoader());
+    }
+
+    public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
+        @Override
+        public DynamicDetailBeanV2 createFromParcel(Parcel source) {
+            return new DynamicDetailBeanV2(source);
+        }
+
+        @Override
+        public DynamicDetailBeanV2[] newArray(int size) {
+            return new DynamicDetailBeanV2[size];
+        }
+    };
 
     public static class ImagesBeansVonvert implements PropertyConverter<List<ImagesBean>,String>{
         @Override
@@ -370,100 +464,4 @@ public class DynamicDetailBeanV2 implements Parcelable {
             return ConvertUtils.object2Base64Str(entityProperty);
         }
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.deleted_at);
-        dest.writeInt(this.user_id);
-        dest.writeString(this.feed_content);
-        dest.writeInt(this.feed_from);
-        dest.writeInt(this.feed_digg_count);
-        dest.writeInt(this.feed_view_count);
-        dest.writeInt(this.feed_comment_count);
-        dest.writeString(this.feed_latitude);
-        dest.writeString(this.feed_longtitude);
-        dest.writeString(this.feed_geohash);
-        dest.writeInt(this.audit_status);
-        dest.writeValue(this.feed_mark);
-        dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
-        dest.writeDouble(this.amount);
-        dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.images);
-        dest.writeList(this.diggs);
-    }
-
-    public DynamicDetailBeanV2() {
-    }
-
-    protected DynamicDetailBeanV2(Parcel in) {
-        this.id = in.readInt();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.deleted_at = in.readString();
-        this.user_id = in.readInt();
-        this.feed_content = in.readString();
-        this.feed_from = in.readInt();
-        this.feed_digg_count = in.readInt();
-        this.feed_view_count = in.readInt();
-        this.feed_comment_count = in.readInt();
-        this.feed_latitude = in.readString();
-        this.feed_longtitude = in.readString();
-        this.feed_geohash = in.readString();
-        this.audit_status = in.readInt();
-        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.has_digg = in.readByte() != 0;
-        this.amount = in.readDouble();
-        this.paid = in.readByte() != 0;
-        this.images = in.createTypedArrayList(ImagesBean.CREATOR);
-        this.diggs = new ArrayList<Integer>();
-        in.readList(this.diggs, Integer.class.getClassLoader());
-    }
-
-    @Generated(hash = 1464461115)
-    public DynamicDetailBeanV2(int id, String created_at, String updated_at, String deleted_at,
-            int user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
-            int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, double amount, boolean paid,
-            List<ImagesBean> images, List<Integer> diggs) {
-        this.id = id;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
-        this.user_id = user_id;
-        this.feed_content = feed_content;
-        this.feed_from = feed_from;
-        this.feed_digg_count = feed_digg_count;
-        this.feed_view_count = feed_view_count;
-        this.feed_comment_count = feed_comment_count;
-        this.feed_latitude = feed_latitude;
-        this.feed_longtitude = feed_longtitude;
-        this.feed_geohash = feed_geohash;
-        this.audit_status = audit_status;
-        this.feed_mark = feed_mark;
-        this.has_digg = has_digg;
-        this.amount = amount;
-        this.paid = paid;
-        this.images = images;
-        this.diggs = diggs;
-    }
-
-    public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
-        @Override
-        public DynamicDetailBeanV2 createFromParcel(Parcel source) {
-            return new DynamicDetailBeanV2(source);
-        }
-
-        @Override
-        public DynamicDetailBeanV2[] newArray(int size) {
-            return new DynamicDetailBeanV2[size];
-        }
-    };
 }
