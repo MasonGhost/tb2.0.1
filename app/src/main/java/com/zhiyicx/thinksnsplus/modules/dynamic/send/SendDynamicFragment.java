@@ -424,7 +424,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void setRightClick() {
-        mPresenter.sendDynamicV2(packageDynamicData());
+        mPresenter.sendDynamic(packageDynamicData());
     }
 
     private void setLeftTextColor() {

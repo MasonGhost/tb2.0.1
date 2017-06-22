@@ -23,12 +23,14 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -200,6 +202,16 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void getCurrentDynamicDetail(long feed_id) {
+        mRepository.getDynamicDetailBeanV2(feed_id).subscribe(new BaseSubscribeForV2<DynamicDetailBeanV2>() {
+            @Override
+            protected void onSuccess(DynamicDetailBeanV2 data) {
+
+            }
+        });
     }
 
     @Override

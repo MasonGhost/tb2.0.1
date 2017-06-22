@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailContract;
@@ -30,5 +31,4 @@ public class DynamicDetailRepository extends BaseDynamicRepository implements Dy
     public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
         return mUserInfoRepository.getUserFollowState(user_ids);
     }
-
 }

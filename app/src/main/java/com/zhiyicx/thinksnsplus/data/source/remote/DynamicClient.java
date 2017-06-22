@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 
@@ -154,5 +155,14 @@ public interface DynamicClient {
      */
     @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
     Observable<BaseJson<Integer>> tollDynamicComment(@Path("feed_id") Long feed_id);
+
+    /**
+     * 获取动态详情 V2
+     *
+     * @param feed_id 动态id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_DYNAMICDETAIL)
+    Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(@Path("feed_id") Long feed_id);
 
 }

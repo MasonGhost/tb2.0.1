@@ -111,6 +111,13 @@ public interface DynamicDetailContract {
         void getCurrentDynamic(long feed_id);
 
         /**
+         * 获取当前动态详情 V2
+         *
+         * @param feed_id
+         */
+        void getCurrentDynamicDetail(long feed_id);
+
+        /**
          * 获取当前动态的点赞列表
          */
         void getDetailAll(Long feed_id, Long max_id, String user_ids);

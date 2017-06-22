@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -475,6 +476,20 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         LogUtils.e(throwable, "handleDynamicViewCount");
                     }
                 });
+    }
+
+    /**
+     * 获取动态详情 V2
+     *
+     * @param feed_id 动态id
+     * @return
+     */
+    @Override
+    public Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(Long feed_id) {
+        return mDynamicClient.getDynamicDetailBeanV2(feed_id)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     protected Observable<BaseJson<List<DynamicBean>>> dealWithDynamicList(Observable<BaseJson<List<DynamicBean>>> observable, final String type, final boolean isLoadMore) {

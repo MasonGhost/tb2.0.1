@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 
@@ -135,6 +136,13 @@ public interface IDynamicReppsitory {
      * @return
      */
     Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentIds(String comment_ids);
+
+    /**
+     * 获取动态详情 V2
+     * @param feed_id 动态id
+     * @return
+     */
+    Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(Long feed_id);
 
     /**
      * 增加动态浏览量
