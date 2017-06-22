@@ -31,12 +31,14 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -83,6 +85,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public SharePolicy mSharePolicy;
@@ -388,7 +392,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         if (mRootView.getCurrentDynamic().getFeed().getStorages() != null && mRootView.getCurrentDynamic().getFeed().getStorages().size() > 0) {
             shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentDynamic().getFeed().getStorages().get(0).getStorage_id() + "", 100));
         } else {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         }
         shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, mRootView.getCurrentDynamic().getFeed_id() == null ? "" : mRootView.getCurrentDynamic().getFeed_id()));
         mSharePolicy.setShareContent(shareContent);
@@ -510,7 +514,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
     public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
-        LogUtils.d(TAG,"dynamic send success dynamicCommentBean = " + dynamicCommentBean.toString());
+        LogUtils.d(TAG, "dynamic send success dynamicCommentBean = " + dynamicCommentBean.toString());
         Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -563,6 +567,17 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
             EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
         }
+    }
+
+    @Override
+    public List<SystemConfigBean.Advert> getAdvert() {
+        List<SystemConfigBean.Advert> imageAdvert = new ArrayList<>();
+        for (SystemConfigBean.Advert advert : mSystemRepository.getBootstrappersInfoFromLocal().getAdverts()) {
+            if (advert.getImageAdvert() != null) {
+                imageAdvert.add(advert);
+            }
+        }
+        return imageAdvert;
     }
 
     public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {

@@ -81,7 +81,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        if (aBoolean.booleanValue() && com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+                        if (aBoolean && com.zhiyicx.common.BuildConfig.USE_ADVERT) {
                             initAdvert();
                         } else {
                             mPresenter.checkLogin();

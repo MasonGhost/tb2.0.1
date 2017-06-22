@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -59,7 +60,7 @@ public class DynamicDetailHeader {
         return mDynamicDetailHeader;
     }
 
-    public DynamicDetailHeader(Context context) {
+    public DynamicDetailHeader(Context context,List<SystemConfigBean.Advert> adverts) {
         this.mContext = context;
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_dynamic_detial, null);
@@ -67,7 +68,7 @@ public class DynamicDetailHeader {
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
-        initAdvert(context);
+        initAdvert(context,adverts);
         fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id
                 .fl_comment_count_container);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id
@@ -77,7 +78,7 @@ public class DynamicDetailHeader {
                 (R.dimen.spacing_normal) * 2;
     }
 
-    private void initAdvert(Context context) {
+    private void initAdvert(Context context,List<SystemConfigBean.Advert> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
@@ -85,12 +86,8 @@ public class DynamicDetailHeader {
             return;
         }
 
-        List<String> testAdverts = new ArrayList<>();
-        testAdverts.add("");
-        testAdverts.add("");
-        testAdverts.add("");
         mDynamicDetailAdvertHeader.setTitle("广告");
-        mDynamicDetailAdvertHeader.setAdverts(testAdverts);
+        mDynamicDetailAdvertHeader.setAdverts(adverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener(new DynamicDetailAdvertHeader
                 .OnItemClickListener() {
             @Override

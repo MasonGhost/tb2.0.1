@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -171,5 +172,7 @@ public interface DynamicDetailContract {
          * @return
          */
         boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark);
+
+        List<SystemConfigBean.Advert> getAdvert();
     }
 }

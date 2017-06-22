@@ -319,7 +319,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     protected boolean showNoMoreData() {
-        return true;
+        return false;
     }
 
     protected int setEmptView() {
@@ -663,7 +663,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了(除开缓存)
         if (!isFromCache && (data == null || data.size() < DEFAULT_PAGE_SIZE)) {
             mRefreshlayout.setLoadMoreEnabled(false);
-            if (mListDatas.size() > 0 && showNoMoreData()) {// mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE 当前数量大于一页显示数量时，显示加载更多
+            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE || showNoMoreData()) {// mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE 当前数量大于一页显示数量时，显示加载更多
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }

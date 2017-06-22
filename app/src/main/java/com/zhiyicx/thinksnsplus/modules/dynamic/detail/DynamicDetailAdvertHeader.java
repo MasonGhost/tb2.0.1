@@ -7,8 +7,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 
 import java.util.List;
 
@@ -45,7 +51,7 @@ public class DynamicDetailAdvertHeader {
         mTitle.setText(title);
     }
 
-    public void setAdverts(List<String> adverts) {
+    public void setAdverts(List<SystemConfigBean.Advert> adverts) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, mContext.getResources().getDimensionPixelSize(R.dimen.channel_advert_height));
         params.weight = 1;
         adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
@@ -55,12 +61,19 @@ public class DynamicDetailAdvertHeader {
             imageView.setLayoutParams(params);
             mAdvertContainer.addView(imageView);
             final int position = i;
-            final String url = adverts.get(position);
+            final String url = adverts.get(i).getImageAdvert().getImage();
+            final String link = adverts.get(i).getImageAdvert().getLink();
+            AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
+                    .url(url)
+                    .placeholder(R.drawable.shape_default_image)
+                    .errorPic(R.drawable.shape_default_image)
+                    .imagerView(imageView)
+                    .build());
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mOnItemClickListener != null)
-                        mOnItemClickListener.onItemClik(v, position, url);
+                        mOnItemClickListener.onItemClik(v, position, link);
                 }
             });
         }
