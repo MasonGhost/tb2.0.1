@@ -36,7 +36,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
 
     @Override
     public void withdraw(double value, String type, String account) {
-        if (mRootView.getMoneyStr().contains(".")) {
+        if (mRootView.getMoney() != (int) mRootView.getMoney()) {
             mRootView.initWithdrawalsInstructionsPop(R.string.withdrawal_instructions_detail);
             return;
         }

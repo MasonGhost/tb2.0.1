@@ -60,8 +60,6 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
 
     private String mWithdrawalsType;
 
-    private String mWithdrawalsMoneyStr = "";
-
     private double mWithdrawalsMoney;
 
     private WalletConfigBean mWalletConfigBean; // wallet config info
@@ -137,8 +135,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     }
 
     @Override
-    public String getMoneyStr() {
-        return mWithdrawalsMoneyStr;
+    public double getMoney() {
+        return mWithdrawalsMoney;
     }
 
     private void setCustomMoneyDefault() {
@@ -170,7 +168,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 new Func3<CharSequence, CharSequence, CharSequence, Boolean>() {
                     @Override
                     public Boolean call(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) {
-                        mWithdrawalsMoneyStr = charSequence.toString();
+                        String mWithdrawalsMoneyStr = charSequence.toString();
                         if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0 && !mWithdrawalsMoneyStr.contains(".")) {
                             mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
                         } else {

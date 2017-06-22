@@ -83,8 +83,6 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
 
     private String mPayChargeId; // recharge lables
 
-    private String mRechargeMoneyStr = ""; // recharge lables
-
     public static RechargeFragment newInstance(Bundle bundle) {
         RechargeFragment rechargeFragment = new RechargeFragment();
         rechargeFragment.setArguments(bundle);
@@ -165,8 +163,8 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     }
 
     @Override
-    public String getMoneyStr() {
-        return mRechargeMoneyStr;
+    public double getMoney() {
+        return mRechargeMoney;
     }
 
     private void initRechargeLables() {
@@ -229,7 +227,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         RxTextView.textChanges(mEtInput).subscribe(new Action1<CharSequence>() {
             @Override
             public void call(CharSequence charSequence) {
-                mRechargeMoneyStr = charSequence.toString();
+                String mRechargeMoneyStr = charSequence.toString();
                 if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0) {
                     mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
                     if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
