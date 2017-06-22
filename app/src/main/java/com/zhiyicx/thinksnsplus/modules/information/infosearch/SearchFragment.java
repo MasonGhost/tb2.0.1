@@ -77,7 +77,6 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     protected void initView(View rootView) {
         super.initView(rootView);
         mEmptyView.setVisibility(View.GONE);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mFragmentInfoSearchEdittext.setOnEditorActionListener(
                 new TextView.OnEditorActionListener() {
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

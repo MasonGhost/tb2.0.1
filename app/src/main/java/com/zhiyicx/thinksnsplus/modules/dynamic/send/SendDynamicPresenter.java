@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -62,6 +63,10 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
+        if (mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {
+            mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.limit_monye));
+            return;
+        }
         SendDynamicDataBean sendDynamicDataBean = mRootView.getDynamicSendData();
         int dynamicBelong = sendDynamicDataBean.getDynamicBelong();
         dynamicBean.setComments(new ArrayList<DynamicCommentBean>());
@@ -103,6 +108,13 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         }
         if (mRootView.hasTollVerify()) {
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
+            return;
+        }
+
+        int wordsTollMoney=(int)mRootView.getTollMoney();
+        LogUtils.e("wordsTollMoney:"+wordsTollMoney+"\n"+"getTollMoney:"+mRootView.getTollMoney());
+        if (mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {
+            mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.limit_monye));
             return;
         }
 

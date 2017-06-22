@@ -113,7 +113,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private int mPayType;
 
-    private double mRechargeMoney;
+    private double mTollMoney;
     private String mRechargeMoneyStr;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
@@ -204,6 +204,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     @Override
+    public double getTollMoney() {
+        return mTollMoney;
+    }
+
+    @Override
     public boolean hasTollVerify() {
         return isToll && !hasTollPic;
     }
@@ -227,12 +232,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     return;
                 }
                 mRbDaysGroup.clearCheck();
-                mRechargeMoney = Double.parseDouble(charSequence.toString());
+                mTollMoney = Double.parseDouble(charSequence.toString());
             }
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-                mRechargeMoney = 0;
+                mTollMoney = 0;
             }
         });
 
@@ -246,13 +251,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         }
                         switch (checkedId) {
                             case R.id.rb_one:
-                                mRechargeMoney = mSelectDays.get(0);
+                                mTollMoney = mSelectDays.get(0);
                                 break;
                             case R.id.rb_two:
-                                mRechargeMoney = mSelectDays.get(1);
+                                mTollMoney = mSelectDays.get(1);
                                 break;
                             case R.id.rb_three:
-                                mRechargeMoney = mSelectDays.get(2);
+                                mTollMoney = mSelectDays.get(2);
                                 break;
                         }
                     }
