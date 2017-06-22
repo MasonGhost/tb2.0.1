@@ -55,12 +55,8 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     private void initAdvert() {
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
             return;
-        List<String> test = new ArrayList<>();
-        test.add("");
-        test.add("");
-        test.add("");
-        test.add("");
-        ChannelAdvertHeader advertHeader = new ChannelAdvertHeader(getActivity(), test);
+
+        ChannelAdvertHeader advertHeader = new ChannelAdvertHeader(getActivity(), mPresenter.getAdvert());
         mHeaderAndFooterWrapper.addHeaderView(advertHeader.getRootView());
     }
 

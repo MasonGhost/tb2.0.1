@@ -85,7 +85,6 @@ public class DynamicDetailHeader {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
-
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(adverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener(new DynamicDetailAdvertHeader

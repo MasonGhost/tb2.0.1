@@ -8,13 +8,16 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +40,8 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
     ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
     @Inject
     ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public ChannelListPresenter(ChannelListContract.Repository repository, ChannelListContract.View rootView) {
@@ -120,6 +125,17 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
     public void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean) {
         mRepository.handleSubscribChannel(channelSubscripBean);
         EventBus.getDefault().post(channelSubscripBean, EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB);
+    }
+
+    @Override
+    public List<SystemConfigBean.Advert> getAdvert() {
+        List<SystemConfigBean.Advert> imageAdvert = new ArrayList<>();
+        for (SystemConfigBean.Advert advert : mSystemRepository.getBootstrappersInfoFromLocal().getAdverts()) {
+            if (advert.getImageAdvert() != null) {
+                imageAdvert.add(advert);
+            }
+        }
+        return imageAdvert;
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB)

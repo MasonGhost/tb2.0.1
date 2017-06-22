@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 
 import java.util.List;
@@ -50,6 +51,8 @@ public interface ChannelListContract {
          * 处理用户订阅状态
          */
         void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean);
+
+        List<SystemConfigBean.Advert> getAdvert();
     }
 
     interface Repository extends IBaseChannelRepository {
