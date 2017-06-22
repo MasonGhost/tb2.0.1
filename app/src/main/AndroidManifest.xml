@@ -126,6 +126,7 @@
         </activity>
         <activity
             android:name=".modules.photopicker.PhotoAlbumDetailsActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -167,6 +168,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.dynamic.send.SendDynamicActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
         <activity

@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,8 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -75,7 +79,7 @@ public class PhotoAlbumListFragment extends TSFragment {
 
     @Override
     protected void setRightClick() {
-
+        startActivity(new Intent(getActivity(),SendDynamicActivity.class));
         getActivity().finish();
         getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 //        getActivity().overridePendingTransition(R.anim.slide_from_right_in, R.anim.slide_from_left_out);

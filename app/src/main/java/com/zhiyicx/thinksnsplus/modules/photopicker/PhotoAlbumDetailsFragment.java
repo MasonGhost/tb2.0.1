@@ -140,11 +140,12 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         // 回到相册列表页面，同时将当前数据传递过去
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(EXTRA_ORIGIN, photoGridAdapter.getSelectedPhotoPaths());
+        bundle.putInt("iamges",getActivity().getTaskId());
         Intent intent = new Intent();
-        intent.setClass(getContext(), PhotoAlbumListActivity.class);
+        intent.setClass(getActivity(), PhotoAlbumListActivity.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, TO_ALBUM_LIST_REQUEST_CODE);
-//        getActivity().finish(); finish后出栈
+//        getActivity().finish();// finish后出栈
         getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
