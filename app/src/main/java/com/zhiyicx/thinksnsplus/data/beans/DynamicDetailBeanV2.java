@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -26,7 +27,7 @@ import java.util.List;
  * @Description 动态详情 V2
  */
 @Entity
-public class DynamicDetailBeanV2 implements Parcelable {
+public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
 
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
@@ -57,7 +58,7 @@ public class DynamicDetailBeanV2 implements Parcelable {
      * diggs : [1]
      */
     @Unique
-    private int id;
+    private Long id;
     private String created_at;
     private String updated_at;
     private String deleted_at;
@@ -77,9 +78,9 @@ public class DynamicDetailBeanV2 implements Parcelable {
     private boolean has_collect;
     private double amount;
     private boolean paid;
-    @Convert(converter = ImagesBeansVonvert.class,columnType = String.class)
+    @Convert(converter = ImagesBeansVonvert.class, columnType = String.class)
     private List<ImagesBean> images;
-    @Convert(converter = IntegerParamsConverter.class,columnType = String.class)
+    @Convert(converter = IntegerParamsConverter.class, columnType = String.class)
     private List<Integer> diggs;
 
     @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
@@ -95,11 +96,43 @@ public class DynamicDetailBeanV2 implements Parcelable {
     @Convert(converter = DynamicBean.DataConverter.class, columnType = String.class)
     private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
 
-    public int getId() {
+    public UserInfoBean getUserInfoBean() {
+        return userInfoBean;
+    }
+
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        this.userInfoBean = userInfoBean;
+    }
+
+    public List<DynamicCommentBean> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<DynamicCommentBean> comments) {
+        this.comments = comments;
+    }
+
+    public List<FollowFansBean> getDigUserInfoList() {
+        return digUserInfoList;
+    }
+
+    public void setDigUserInfoList(List<FollowFansBean> digUserInfoList) {
+        this.digUserInfoList = digUserInfoList;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -263,7 +296,12 @@ public class DynamicDetailBeanV2 implements Parcelable {
         this.diggs = diggs;
     }
 
-    public static class ImagesBean implements Parcelable,Serializable{
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
+    public static class ImagesBean implements Parcelable, Serializable {
         /**
          * file : 4
          * size : null
@@ -274,6 +312,8 @@ public class DynamicDetailBeanV2 implements Parcelable {
 
         private int file;
         private String size;
+        private int width;
+        private int height;
         private double amount;
         private String type;
         private boolean paid;
@@ -284,6 +324,19 @@ public class DynamicDetailBeanV2 implements Parcelable {
 
         public void setSize(String size) {
             this.size = size;
+            if (size!=null&&size.length()>0){
+                String[] sizes = size.split("x");
+                this.width=Integer.parseInt(sizes[0]);
+                this.height=Integer.parseInt(sizes[1]);
+            }
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
         }
 
         public double getAmount() {
@@ -318,7 +371,6 @@ public class DynamicDetailBeanV2 implements Parcelable {
             this.paid = paid;
         }
 
-
         @Override
         public int describeContents() {
             return 0;
@@ -328,6 +380,8 @@ public class DynamicDetailBeanV2 implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.file);
             dest.writeString(this.size);
+            dest.writeInt(this.width);
+            dest.writeInt(this.height);
             dest.writeDouble(this.amount);
             dest.writeString(this.type);
             dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
@@ -339,6 +393,8 @@ public class DynamicDetailBeanV2 implements Parcelable {
         protected ImagesBean(Parcel in) {
             this.file = in.readInt();
             this.size = in.readString();
+            this.width = in.readInt();
+            this.height = in.readInt();
             this.amount = in.readDouble();
             this.type = in.readString();
             this.paid = in.readByte() != 0;
@@ -358,77 +414,9 @@ public class DynamicDetailBeanV2 implements Parcelable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.deleted_at);
-        dest.writeInt(this.user_id);
-        dest.writeString(this.feed_content);
-        dest.writeInt(this.feed_from);
-        dest.writeInt(this.feed_digg_count);
-        dest.writeInt(this.feed_view_count);
-        dest.writeInt(this.feed_comment_count);
-        dest.writeString(this.feed_latitude);
-        dest.writeString(this.feed_longtitude);
-        dest.writeString(this.feed_geohash);
-        dest.writeInt(this.audit_status);
-        dest.writeValue(this.feed_mark);
-        dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
-        dest.writeDouble(this.amount);
-        dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.images);
-        dest.writeList(this.diggs);
-    }
 
-    public DynamicDetailBeanV2() {
-    }
-
-    protected DynamicDetailBeanV2(Parcel in) {
-        this.id = in.readInt();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.deleted_at = in.readString();
-        this.user_id = in.readInt();
-        this.feed_content = in.readString();
-        this.feed_from = in.readInt();
-        this.feed_digg_count = in.readInt();
-        this.feed_view_count = in.readInt();
-        this.feed_comment_count = in.readInt();
-        this.feed_latitude = in.readString();
-        this.feed_longtitude = in.readString();
-        this.feed_geohash = in.readString();
-        this.audit_status = in.readInt();
-        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.has_digg = in.readByte() != 0;
-        this.has_collect = in.readByte() != 0;
-        this.amount = in.readDouble();
-        this.paid = in.readByte() != 0;
-        this.images = in.createTypedArrayList(ImagesBean.CREATOR);
-        this.diggs = new ArrayList<Integer>();
-        in.readList(this.diggs, Integer.class.getClassLoader());
-    }
-
-    public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
-        @Override
-        public DynamicDetailBeanV2 createFromParcel(Parcel source) {
-            return new DynamicDetailBeanV2(source);
-        }
-
-        @Override
-        public DynamicDetailBeanV2[] newArray(int size) {
-            return new DynamicDetailBeanV2[size];
-        }
-    };
-
-    public static class ImagesBeansVonvert implements PropertyConverter<List<ImagesBean>,String>{
+    public static class ImagesBeansVonvert implements PropertyConverter<List<ImagesBean>, String> {
         @Override
         public List<ImagesBean> convertToEntityProperty(String databaseValue) {
             if (databaseValue == null) {
@@ -464,4 +452,88 @@ public class DynamicDetailBeanV2 implements Parcelable {
             return ConvertUtils.object2Base64Str(entityProperty);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.deleted_at);
+        dest.writeInt(this.user_id);
+        dest.writeString(this.feed_content);
+        dest.writeInt(this.feed_from);
+        dest.writeInt(this.feed_digg_count);
+        dest.writeInt(this.feed_view_count);
+        dest.writeInt(this.feed_comment_count);
+        dest.writeString(this.feed_latitude);
+        dest.writeString(this.feed_longtitude);
+        dest.writeString(this.feed_geohash);
+        dest.writeInt(this.audit_status);
+        dest.writeValue(this.feed_mark);
+        dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
+        dest.writeDouble(this.amount);
+        dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.images);
+        dest.writeList(this.diggs);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeTypedList(this.comments);
+        dest.writeValue(this.hot_creat_time);
+        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.state);
+        dest.writeTypedList(this.digUserInfoList);
+    }
+
+    public DynamicDetailBeanV2() {
+    }
+
+    protected DynamicDetailBeanV2(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.deleted_at = in.readString();
+        this.user_id = in.readInt();
+        this.feed_content = in.readString();
+        this.feed_from = in.readInt();
+        this.feed_digg_count = in.readInt();
+        this.feed_view_count = in.readInt();
+        this.feed_comment_count = in.readInt();
+        this.feed_latitude = in.readString();
+        this.feed_longtitude = in.readString();
+        this.feed_geohash = in.readString();
+        this.audit_status = in.readInt();
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.has_digg = in.readByte() != 0;
+        this.has_collect = in.readByte() != 0;
+        this.amount = in.readDouble();
+        this.paid = in.readByte() != 0;
+        this.images = in.createTypedArrayList(ImagesBean.CREATOR);
+        this.diggs = new ArrayList<Integer>();
+        in.readList(this.diggs, Integer.class.getClassLoader());
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
+        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
+        this.isFollowed = in.readByte() != 0;
+        this.state = in.readInt();
+        this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
+    }
+
+    public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
+        @Override
+        public DynamicDetailBeanV2 createFromParcel(Parcel source) {
+            return new DynamicDetailBeanV2(source);
+        }
+
+        @Override
+        public DynamicDetailBeanV2[] newArray(int size) {
+            return new DynamicDetailBeanV2[size];
+        }
+    };
 }

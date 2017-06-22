@@ -109,7 +109,51 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
      */
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription dynamicLisSub = mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage(), "", isLoadMore)
+//        Subscription dynamicLisSub = mRepository.getDynamicList(mRootView.getDynamicType(), maxId, mRootView.getPage(), "", isLoadMore)
+//                .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
+//                    @Override
+//                    public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
+//                        if (listBaseJson.isStatus()) {
+//                            insertOrUpdateDynamicDB(listBaseJson.getData()); // 更新数据库
+//                            if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+//                                if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
+//                                    List<DynamicBean> data = getDynamicBeenFromDB();
+//                                    data.addAll(listBaseJson.getData());
+//                                    listBaseJson.setData(data);
+//                                }
+//                            }
+//                            for (int i = 0; i < listBaseJson.getData().size(); i++) { // 把自己发的评论加到评论列表的前面
+//                                List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.getData().get(i).getFeed_mark());
+//                                if (!dynamicCommentBeen.isEmpty()) {
+//                                    dynamicCommentBeen.addAll(listBaseJson.getData().get(i).getComments());
+//                                    listBaseJson.getData().get(i).getComments().clear();
+//                                    listBaseJson.getData().get(i).getComments().addAll(dynamicCommentBeen);
+//                                }
+//                            }
+//
+//                        }
+//                        return listBaseJson;
+//                    }
+//                })
+//                .subscribe(new BaseSubscribe<List<DynamicBean>>() {
+//                    @Override
+//                    protected void onSuccess(List<DynamicBean> data) {
+//                        mRootView.onNetResponseSuccess(data, isLoadMore);
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(String message, int code) {
+//                        mRootView.showMessage(message);
+//                    }
+//
+//                    @Override
+//                    protected void onException(Throwable throwable) {
+//                        mRootView.onResponseError(throwable, isLoadMore);
+//                    }
+//                });
+
+        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(),
+                maxId,isLoadMore)
                 .map(new Func1<BaseJson<List<DynamicBean>>, BaseJson<List<DynamicBean>>>() {
                     @Override
                     public BaseJson<List<DynamicBean>> call(BaseJson<List<DynamicBean>> listBaseJson) {
@@ -151,6 +195,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+
         addSubscrebe(dynamicLisSub);
     }
 

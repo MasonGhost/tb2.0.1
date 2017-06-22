@@ -13,6 +13,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class DynamicListCommentView extends LinearLayout {
     private OnMoreCommentClickListener mOnMoreCommentClickListener;
     private OnCommentClickListener mOnCommentClickListener;
     private DynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
-    private DynamicBean mDynamicBean;
+    private DynamicDetailBeanV2 mDynamicBean;
 
     private boolean mIsUserNameClick = false; // 标识用户名被点击还是评论被点击了
 
@@ -132,7 +133,7 @@ public class DynamicListCommentView extends LinearLayout {
      *
      * @param dynamicBean
      */
-    public void setData(DynamicBean dynamicBean) {
+    public void setData(DynamicDetailBeanV2 dynamicBean) {
         mDynamicBean = dynamicBean;
         List<DynamicCommentBean> data = new ArrayList<>();
         if (dynamicBean.getComments() != null) {
@@ -145,7 +146,7 @@ public class DynamicListCommentView extends LinearLayout {
             }
         }
         mDynamicNoPullRecycleView.setData(data);
-        if (dynamicBean.getTool() != null && dynamicBean.getTool().getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
+        if (dynamicBean.getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
             mMoreComment.setVisibility(VISIBLE);
         } else {
             mMoreComment.setVisibility(GONE);
@@ -165,13 +166,13 @@ public class DynamicListCommentView extends LinearLayout {
     }
 
     public interface OnMoreCommentClickListener {
-        void onMoreCommentClick(View view, DynamicBean dynamicBean);
+        void onMoreCommentClick(View view, DynamicDetailBeanV2 dynamicBean);
     }
 
     public interface OnCommentClickListener {
         void onCommentUserInfoClick(UserInfoBean userInfoBean);
 
-        void onCommentContentClick(DynamicBean dynamicBean, int position);
+        void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position);
     }
 
 }

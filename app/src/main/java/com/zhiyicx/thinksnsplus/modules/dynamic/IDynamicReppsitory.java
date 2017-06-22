@@ -50,7 +50,7 @@ public interface IDynamicReppsitory {
      * @return dynamic list
      */
     Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page,String feed_ids, boolean isLoadMore);
-
+    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after,boolean isLoadMore);
     /**
      * 动态点赞
      *

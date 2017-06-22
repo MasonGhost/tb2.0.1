@@ -66,6 +66,9 @@ public interface DynamicClient {
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST)
     Observable<BaseJson<List<DynamicBean>>> getDynamicList(@Path("type") String type, @Query("max_id") Long max_id, @Query("limit") Long limit, @Query("page") int page, @Query("feed_ids") String feed_ids);
 
+    @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST)
+    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(@Path("type") String type, @Query
+            ("after") Long after, @Query("limit") Long limit);
     /**
      * #点赞一条动态
      *
@@ -162,7 +165,7 @@ public interface DynamicClient {
      * @param feed_id 动态id
      * @return
      */
-    @GET(ApiConfig.APP_PATH_GET_DYNAMICDETAIL)
+    @GET(ApiConfig.APP_PATH_GET_DYNAMIC_DETAIL)
     Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(@Path("feed_id") Long feed_id);
 
 }

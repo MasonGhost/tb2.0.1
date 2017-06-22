@@ -124,6 +124,13 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, feeds_id), type, isLoadMore);
     }
 
+    @Override
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after,, final boolean isLoadMore) {
+        return mDynamicClient.getDynamicListV2(type,after,Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     /**
      * 处理喜欢操作
      *
@@ -498,6 +505,84 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .flatMap(new Func1<BaseJson<List<DynamicBean>>, Observable<BaseJson<List<DynamicBean>>>>() {
                     @Override
                     public Observable<BaseJson<List<DynamicBean>>> call(final BaseJson<List<DynamicBean>> listBaseJson) {
+                        if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
+                            final List<Object> user_ids = new ArrayList<>();
+                            if (!isLoadMore && type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
+                                for (int i = listBaseJson.getData().size() - 1; i >= 0; i--) {
+                                    listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());
+                                }
+                            }
+                            for (DynamicBean dynamicBean : listBaseJson.getData()) {
+                                user_ids.add(dynamicBean.getUser_id());
+                                // 把详情中的 feed_id 设置到 dynamicBean 中
+                                dynamicBean.setFeed_id(dynamicBean.getFeed().getFeed_id());
+                                // 把 feed_mark 设置到详情中去
+                                dynamicBean.getFeed().setFeed_mark(dynamicBean.getFeed_mark());
+                                dynamicBean.getTool().setFeed_mark(dynamicBean.getFeed_mark());
+                                if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
+                                    dynamicBean.setIsFollowed(true);
+                                }
+                                if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) { // 热门的 max_id 是通过 hot_creat_time 标识，最新与关注都是通过 feed_id 标识
+                                    dynamicBean.setMaxId(dynamicBean.getHot_creat_time());
+                                } else {
+                                    dynamicBean.setMaxId(dynamicBean.getFeed().getFeed_id());
+                                }
+                                for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
+                                    user_ids.add(dynamicCommentBean.getUser_id());
+                                    user_ids.add(dynamicCommentBean.getReply_to_user_id());
+                                    dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark()); // 评论中增加 feed_mark \和用户标记
+                                    dynamicCommentBean.setFeed_user_id(dynamicBean.getUser_id());
+                                }
+                                mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(dynamicBean.getFeed_mark());// 删除本条动态的本地评论
+                            }
+
+                            return mUserInfoRepository.getUserInfo(user_ids)
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<DynamicBean>>>() {
+                                        @Override
+                                        public BaseJson<List<DynamicBean>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                            if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                                }
+                                                for (DynamicBean dynamicBean : listBaseJson.getData()) {
+                                                    dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicBean.getUser_id()));
+                                                    for (int i = 0; i < dynamicBean.getComments().size(); i++) {
+                                                        dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
+                                                        if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
+                                                            UserInfoBean userInfoBean = new UserInfoBean();
+                                                            userInfoBean.setUser_id(0L);
+                                                            dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
+                                                        } else {
+                                                            dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
+                                                        }
+                                                    }
+
+                                                }
+                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                            } else {
+                                                listBaseJson.setStatus(userinfobeans.isStatus());
+                                                listBaseJson.setCode(userinfobeans.getCode());
+                                                listBaseJson.setMessage(userinfobeans.getMessage());
+                                            }
+                                            return listBaseJson;
+                                        }
+                                    });
+                        } else {
+                            return Observable.just(listBaseJson);
+                        }
+
+                    }
+                });
+    }
+
+    protected Observable<List<DynamicDetailBeanV2>> dealWithDynamicListV2
+            (Observable<List<DynamicDetailBeanV2>> observable, final String type, final boolean isLoadMore) {
+        return observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<List<DynamicDetailBeanV2>>>() {
+                    @Override
+                    public Observable<List<DynamicDetailBeanV2>> call(final List<DynamicDetailBeanV2> listBaseJson) {
                         if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
                             final List<Object> user_ids = new ArrayList<>();
                             if (!isLoadMore && type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间

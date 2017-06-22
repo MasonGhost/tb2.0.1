@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
@@ -23,7 +24,7 @@ import rx.Observable;
  */
 public interface DynamicContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<DynamicBean, Presenter> {
+    interface View extends ITSListView<DynamicDetailBeanV2, Presenter> {
         /**
          * get dynamic type
          *
@@ -50,7 +51,7 @@ public interface DynamicContract {
         Observable<BaseJson<List<DynamicBean>>> getHistoryDynamicList(String type, long max_id, long limit, long page);
     }
 
-    interface Presenter extends ITSListPresenter<DynamicBean> {
+    interface Presenter extends ITSListPresenter<DynamicDetailBeanV2> {
         /**
          * handle like status
          *
