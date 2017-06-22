@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -50,8 +53,6 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     TextView mFragmentInfoSearchCancle;
     @BindView(R.id.fragment_info_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
-
-    private ImageLoader mImageLoader;
 
     @Override
     protected int getBodyLayoutId() {
@@ -120,11 +121,19 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
                             .getColor(R.color.normal_for_assist_text));
                 }
                 title.setText(realData.getTitle());
-                String url = String.format(ApiConfig.IMAGE_PATH, realData.getStorage().getId(), 50);
-                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                        .url(url)
-                        .imagerView(imageView)
-                        .build());
+
+                if (realData.getStorage() == null) {
+                    imageView.setVisibility(View.GONE);
+                } else {
+                    imageView.setVisibility(View.VISIBLE);
+                    AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
+                            .url(ImageUtils.imagePathConvert(realData.getStorage().getId() + "", ImageZipConfig.IMAGE_50_ZIP))
+                            .placeholder(R.drawable.shape_default_image)
+                            .errorPic(R.drawable.shape_default_image)
+                            .imagerView(imageView)
+                            .build());
+                }
+
                 holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
                         .getUpdated_at()));
 
