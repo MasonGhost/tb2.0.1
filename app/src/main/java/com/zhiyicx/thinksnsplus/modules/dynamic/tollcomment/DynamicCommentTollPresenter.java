@@ -25,7 +25,7 @@ public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicComment
 
     @Override
     public void tollDynamicComment(Long feed_id) {
-        if (mRootView.getCommentMoneyStr().contains(".")) {
+        if (mRootView.getCommentMoney() != (int) mRootView.getCommentMoney()) {
             mRootView.initWithdrawalsInstructionsPop();
             return;
         }

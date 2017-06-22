@@ -45,7 +45,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
 
     @Override
     public void stickTop(long feed_id) {
-        if (mRootView.getInputMoneyStr().contains(".")) {
+        if (mRootView.getInputMoney()!=(int)mRootView.getInputMoney()) {
             mRootView.initStickTopInstructionsPop();
             return;
         }

@@ -17,7 +17,7 @@ public interface DynamicCommentTollContract {
 
     interface View extends IBaseView<Presenter> {
         void initWithdrawalsInstructionsPop();
-        String getCommentMoneyStr();
+        float getCommentMoney();
     }
 
     interface Presenter extends IBasePresenter {

@@ -56,8 +56,6 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     private List<Integer> mSelectDays;
     private int mCurrentDays;
     private float mInputMoney;
-    private String mInputMoneyStr;
-
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
     public static DynamicTopFragment newInstance() {
@@ -105,8 +103,8 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     }
 
     @Override
-    public String getInputMoneyStr() {
-        return mInputMoneyStr;
+    public float getInputMoney() {
+        return mInputMoney;
     }
 
     private void initListener() {
@@ -133,9 +131,8 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        mInputMoneyStr = charSequence.toString();
                         if (!TextUtils.isEmpty(charSequence)) {
-                            mInputMoney = Float.parseFloat(mInputMoneyStr);
+                            mInputMoney = Float.parseFloat(charSequence.toString());
                         } else {
                             mInputMoney = 0f;
                         }

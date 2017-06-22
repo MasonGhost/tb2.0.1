@@ -111,8 +111,6 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             return;
         }
 
-        int wordsTollMoney=(int)mRootView.getTollMoney();
-        LogUtils.e("wordsTollMoney:"+wordsTollMoney+"\n"+"getTollMoney:"+mRootView.getTollMoney());
         if (mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.limit_monye));
             return;

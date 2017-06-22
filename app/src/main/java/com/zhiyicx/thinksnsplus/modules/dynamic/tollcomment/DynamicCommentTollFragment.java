@@ -56,8 +56,6 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
 
     private float mCommentMoney;
 
-    private String mCommentMoneyStr;
-
     private ActionPopupWindow mTollCommentInstructionsPopupWindow;
 
     public static DynamicCommentTollFragment newInstance() {
@@ -92,8 +90,8 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
     }
 
     @Override
-    public String getCommentMoneyStr() {
-        return mCommentMoneyStr;
+    public float getCommentMoney() {
+        return mCommentMoney;
     }
 
     @Override
@@ -138,7 +136,6 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        mCommentMoneyStr = charSequence.toString();
                         if (!TextUtils.isEmpty(charSequence)) {
                             mCommentMoney = Float.parseFloat(charSequence.toString());
                             mRbDaysGroup.clearCheck();
