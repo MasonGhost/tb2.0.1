@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -132,7 +133,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
                         mInterfaceNum++;
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
+//                        mRootView.onNetResponseSuccess(data, isLoadMore);
                         allready();
                     }
 
@@ -158,13 +159,13 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     }
 
     @Override
-    public List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<DynamicDetailBeanV2> requestCacheData(Long max_Id, boolean isLoadMore) {
         // 频道的动态不要从数据库拉取数据
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<DynamicBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
         return false;
     }
 
@@ -204,7 +205,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (feed_id == null || feed_id == 0) {
             return;
         }
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(postion).getTool());
+//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(postion).getTool());
         mRepository.handleLike(isLiked, feed_id);
 
     }
@@ -214,8 +215,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (feed_id == null || feed_id == 0) {
             return;
         }
-        mRootView.getListDatas().get(position).getTool().setFeed_view_count(mRootView.getListDatas().get(position).getTool().getFeed_view_count() + 1);
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getTool());
+//        mRootView.getListDatas().get(position).getTool().setFeed_view_count(mRootView.getListDatas().get(position).getTool().getFeed_view_count() + 1);
+//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getTool());
         mRepository.handleDynamicViewCount(feed_id);
         mRootView.refreshData();
     }
@@ -223,8 +224,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     @Override
     public void reSendDynamic(int position) {
         // 将动态信息存入数据库
-        mDynamicBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position));
-        mDynamicDetailBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getFeed());
+//        mDynamicBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position));
+//        mDynamicDetailBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getFeed());
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
@@ -237,8 +238,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
 
     @Override
     public void deleteComment(DynamicBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
-        mRootView.getListDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition).getTool());
+//        mRootView.getListDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
+//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition).getTool());
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getComments().remove(commentPositon);
         mRootView.refreshData();
@@ -258,7 +259,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         mDynamicBeanGreenDao.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
         if (mRootView.getListDatas().isEmpty()) {// 添加暂未图
-            mRootView.getListDatas().add(new DynamicBean());
+//            mRootView.getListDatas().add(new DynamicBean());
         }
         mRootView.refreshData();
         if (dynamicBean.getFeed_id() != null && dynamicBean.getFeed_id() != 0) {
@@ -298,12 +299,12 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         commentBeanList.addAll(mRootView.getListDatas().get(mCurrentPostion).getComments());
         mRootView.getListDatas().get(mCurrentPostion).getComments().clear();
         mRootView.getListDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
-        mRootView.getListDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
+//        mRootView.getListDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
         mRootView.refreshData();
 
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion).getTool());
+//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
+//        mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
 
     }
 
@@ -474,7 +475,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                             }
                         }
                         if (dynamicPosition != -1) {// 如果列表有当前评论
-                            mRootView.getListDatas().set(position, dynamicBean);
+//                            mRootView.getListDatas().set(position, dynamicBean);
                         }
 
                         return isNeedRefresh ? dynamicPosition : -1;

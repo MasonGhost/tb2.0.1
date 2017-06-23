@@ -92,6 +92,8 @@ public interface IDynamicReppsitory {
      */
     void updateOrInsertDynamic(List<DynamicBean> datas, String type);
 
+    void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> datas, String type);
+
     /**
      * 取消动态点赞
      *

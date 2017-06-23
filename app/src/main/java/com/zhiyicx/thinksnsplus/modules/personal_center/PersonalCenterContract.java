@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -23,7 +24,7 @@ import rx.Observable;
 
 public interface PersonalCenterContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<DynamicBean, PersonalCenterContract.Presenter> {
+    interface View extends ITSListView<DynamicDetailBeanV2, PersonalCenterContract.Presenter> {
         /**
          * 设置头部的用户相关信息
          */

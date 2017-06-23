@@ -15,7 +15,7 @@ public class DynamicDetailBeanV2Test extends AbstractDaoTestLongPk<DynamicDetail
     protected DynamicDetailBeanV2 createEntity(Long key) {
         DynamicDetailBeanV2 entity = new DynamicDetailBeanV2();
         entity.setFeed_mark(key);
-        entity.setId(0);
+        entity.setId(0L);
         entity.setUser_id(0);
         entity.setFeed_from(0);
         entity.setFeed_digg_count(0);

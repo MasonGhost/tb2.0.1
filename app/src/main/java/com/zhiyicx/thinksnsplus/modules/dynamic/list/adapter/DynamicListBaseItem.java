@@ -252,7 +252,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 } else {
                     comment.setVisibility(View.VISIBLE);
                 }
-                comment.setData(dynamicBean);
+//                comment.setData(dynamicBean);
                 comment.setOnCommentClickListener(mOnCommentClickListener);
                 comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
                 comment.setOnCommentStateClickListener(mOnCommentStateClickListener);

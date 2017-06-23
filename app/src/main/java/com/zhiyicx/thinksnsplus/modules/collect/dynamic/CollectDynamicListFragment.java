@@ -71,10 +71,10 @@ public class CollectDynamicListFragment extends DynamicFragment {
     }
 
     protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
-        dynamicListBaseItem.setOnImageClickListener(this);
+//        dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
-        dynamicListBaseItem.setOnMenuItemClickLisitener(this);
-        dynamicListBaseItem.setOnReSendClickListener(this);
+//        dynamicListBaseItem.setOnMenuItemClickLisitener(this);
+//        dynamicListBaseItem.setOnReSendClickListener(this);
         dynamicListBaseItem.setOnMoreCommentClickListener(this);
         dynamicListBaseItem.setOnCommentClickListener(this);
         dynamicListBaseItem.setOnCommentStateClickListener(this);
@@ -107,14 +107,14 @@ public class CollectDynamicListFragment extends DynamicFragment {
             mListDatas.remove(dynamicBean);
 
         } else {
-            mListDatas.add(dynamicBean);
-            // 按动态feedid大小进行逆序排列，防止上啦加载重复
-            Collections.sort(mListDatas, new Comparator<DynamicBean>() {
-                @Override
-                public int compare(DynamicBean o1, DynamicBean o2) {
-                    return o2.getFeed_id().longValue() > o1.getFeed_id().longValue() ? 1 : -1;
-                }
-            });
+//            mListDatas.add(dynamicBean);
+//            // 按动态feedid大小进行逆序排列，防止上啦加载重复
+//            Collections.sort(mListDatas, new Comparator<DynamicBean>() {
+//                @Override
+//                public int compare(DynamicBean o1, DynamicBean o2) {
+//                    return o2.getFeed_id().longValue() > o1.getFeed_id().longValue() ? 1 : -1;
+//                }
+//            });
         }
         refreshData();
     }

@@ -66,8 +66,8 @@ public interface DynamicClient {
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST)
     Observable<BaseJson<List<DynamicBean>>> getDynamicList(@Path("type") String type, @Query("max_id") Long max_id, @Query("limit") Long limit, @Query("page") int page, @Query("feed_ids") String feed_ids);
 
-    @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST)
-    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(@Path("type") String type, @Query
+    @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST_V2)
+    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(@Query("type") String type, @Query
             ("after") Long after, @Query("limit") Long limit);
     /**
      * #点赞一条动态
