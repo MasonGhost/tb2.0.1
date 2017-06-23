@@ -580,25 +580,26 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
             (Observable<List<DynamicDetailBeanV2>> observable, final String type, final boolean isLoadMore) {
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<DynamicDetailBeanV2>>() {
+                    @Override
+                    public Observable<DynamicDetailBeanV2> call(List<DynamicDetailBeanV2> dynamicDetailBeanV2s) {
+                        return null;
+                    }
+                })
                 .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<List<DynamicDetailBeanV2>>>() {
                     @Override
                     public Observable<List<DynamicDetailBeanV2>> call(final List<DynamicDetailBeanV2> listBaseJson) {
                         if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
                             final List<Object> user_ids = new ArrayList<>();
                             if (!isLoadMore && type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
-                                for (int i = listBaseJson.getData().size() - 1; i >= 0; i--) {
-                                    listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());
+                                for (int i = listBaseJson.size() - 1; i >= 0; i--) {
+                                    listBaseJson.get(i).setHot_creat_time(System.currentTimeMillis());
                                 }
                             }
-                            for (DynamicBean dynamicBean : listBaseJson.getData()) {
+                            for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
                                 user_ids.add(dynamicBean.getUser_id());
-                                // 把详情中的 feed_id 设置到 dynamicBean 中
-                                dynamicBean.setFeed_id(dynamicBean.getFeed().getFeed_id());
-                                // 把 feed_mark 设置到详情中去
-                                dynamicBean.getFeed().setFeed_mark(dynamicBean.getFeed_mark());
-                                dynamicBean.getTool().setFeed_mark(dynamicBean.getFeed_mark());
                                 if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
-                                    dynamicBean.setIsFollowed(true);
+                                    dynamicBean.setFollowed(true);
                                 }
                                 if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) { // 热门的 max_id 是通过 hot_creat_time 标识，最新与关注都是通过 feed_id 标识
                                     dynamicBean.setMaxId(dynamicBean.getHot_creat_time());

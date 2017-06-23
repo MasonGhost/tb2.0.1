@@ -96,6 +96,22 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     @Convert(converter = DynamicBean.DataConverter.class, columnType = String.class)
     private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
 
+    public boolean isFollowed() {
+        return isFollowed;
+    }
+
+    public void setFollowed(boolean followed) {
+        isFollowed = followed;
+    }
+
+    public Long getHot_creat_time() {
+        return hot_creat_time;
+    }
+
+    public void setHot_creat_time(Long hot_creat_time) {
+        this.hot_creat_time = hot_creat_time;
+    }
+
     public UserInfoBean getUserInfoBean() {
         return userInfoBean;
     }
