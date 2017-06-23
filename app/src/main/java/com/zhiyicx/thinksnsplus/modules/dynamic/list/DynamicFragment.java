@@ -34,7 +34,17 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.*;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForEightImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForFiveImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForFourImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForNineImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForOneImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForSevenImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForSixImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForThreeImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForTwoImage;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.top.DynamicTopActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -74,7 +84,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
         DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         MultiItemTypeAdapter.OnItemClickListener {
-    
+
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
     @BindView(R.id.fl_container)
@@ -265,11 +275,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected Long getMaxId(@NotNull List<DynamicDetailBeanV2> data) {
         if (mListDatas.size() > 0) {
-            if (getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
-                return mListDatas.get(mListDatas.size() - 1).getHot_creat_time();
-            } else {
-                return mListDatas.get(mListDatas.size() - 1).getId();
-            }
+            return mListDatas.get(mListDatas.size() - 1).getId();
         } else {
             return DEFAULT_PAGE_MAX_ID;
         }
@@ -295,8 +301,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         for (int i = 0; i < task.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
-            ImageBean imageBean=new ImageBean();
+            ImageBean imageBean = new ImageBean();
             imageBean.setStorage_id(task.get(i).getFile());
+            imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
         }

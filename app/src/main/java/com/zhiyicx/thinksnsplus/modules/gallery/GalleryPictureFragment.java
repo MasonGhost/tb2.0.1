@@ -270,7 +270,10 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
         LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
-
+        if (imageBean.getWidth()==0){
+            imageBean.setWidth(screenW);
+            imageBean.setHeight(screenW);
+        }
         if (imageBean.getImgUrl() != null) {
             int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
             int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
