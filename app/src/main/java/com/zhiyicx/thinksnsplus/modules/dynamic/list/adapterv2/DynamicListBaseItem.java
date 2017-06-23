@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
+package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -24,6 +24,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -47,7 +48,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FE
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
+public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2> {
     protected final String TAG = this.getClass().getSimpleName();
     private static final int CURREN_CLOUMS = 0;
     private final int mWidthPixels; // 屏幕宽度
@@ -86,7 +87,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
     protected OnReSendClickListener mOnReSendClickListener;
 
-    public void setOnCommentClickListener(DynamicListCommentView.OnCommentClickListener onCommentClickListener) {
+    public void setOnCommentClickListener(DynamicListCommentView.OnCommentClickListener
+                                                  onCommentClickListener) {
         mOnCommentClickListener = onCommentClickListener;
     }
 
@@ -94,13 +96,16 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
 
     protected DynamicListCommentView.OnMoreCommentClickListener mOnMoreCommentClickListener;
 
-    public void setOnCommentStateClickListener(DynamicNoPullRecycleView.OnCommentStateClickListener onCommentStateClickListener) {
+    public void setOnCommentStateClickListener(DynamicNoPullRecycleView
+                                                       .OnCommentStateClickListener
+                                                       onCommentStateClickListener) {
         mOnCommentStateClickListener = onCommentStateClickListener;
     }
 
     protected DynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
 
-    public void setOnMoreCommentClickListener(DynamicListCommentView.OnMoreCommentClickListener onMoreCommentClickListener) {
+    public void setOnMoreCommentClickListener(DynamicListCommentView.OnMoreCommentClickListener
+                                                      onMoreCommentClickListener) {
         mOnMoreCommentClickListener = onMoreCommentClickListener;
     }
 
@@ -111,10 +116,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     public DynamicListBaseItem(Context context) {
         mContext = context;
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        mTitleMaxShowNum = mContext.getResources().getInteger(R.integer.dynamic_list_title_max_show_size);
-        mContentMaxShowNum = mContext.getResources().getInteger(R.integer.dynamic_list_content_max_show_size);
+        mTitleMaxShowNum = mContext.getResources().getInteger(R.integer
+                .dynamic_list_title_max_show_size);
+        mContentMaxShowNum = mContext.getResources().getInteger(R.integer
+                .dynamic_list_content_max_show_size);
         mWidthPixels = DeviceUtils.getScreenWidth(context);
-        mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen.dynamic_list_image_marginright);
+        mMargin = 2 * context.getResources().getDimensionPixelSize(R.dimen
+                .dynamic_list_image_marginright);
         mDiverwith = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
         mImageContainerWith = mWidthPixels - mMargin;
         mImageMaxHeight = mImageContainerWith * 4 / 3; // 最大高度是最大宽度的4/3 保持 宽高比 3：4
@@ -126,9 +134,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
     }
 
     @Override
-    public boolean isForViewType(DynamicBean item, int position) {
+    public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return item.getFeed_mark() != null && (item.getFeed().getStorages() != null && item.getFeed().getStorages().size() == getImageCounts());
+        return item.getFeed_mark() != null && (item.getImages() != null && item.getImages().size() == getImageCounts());
     }
 
     /**
@@ -147,9 +155,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param position
      */
     @Override
-    public void convert(ViewHolder holder, DynamicBean dynamicBean, DynamicBean lastT, final int position, int itemCounts) {
+    public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
+            lastT,
+                        final int position, int itemCounts) {
         try {
-            String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
+            String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean
+                    ().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
             mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                     .url(userIconUrl)
                     .placeholder(R.mipmap.pic_default_portrait1)
@@ -158,18 +169,11 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                     .imagerView((ImageView) holder.getView(R.id.iv_headpic))
                     .build());
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
-            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean.getFeed().getCreated_at()));
-            String title = dynamicBean.getFeed().getTitle();
-            if (TextUtils.isEmpty(title)) { // 超过的数据用 ... 表示
-                holder.setVisible(R.id.tv_title, View.GONE);
-            } else {
-                holder.setVisible(R.id.tv_title, View.VISIBLE);
-                if (title.length() > mTitleMaxShowNum) {
-                    title = title.substring(0, mTitleMaxShowNum) + "...";
-                }
-                holder.setText(R.id.tv_title, title);
-            }
-            String content = dynamicBean.getFeed().getContent();
+            holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
+                    .getCreated_at()));
+            holder.setVisible(R.id.tv_title, View.GONE);
+
+            String content = dynamicBean.getFeed_content();
             TextView contentView = holder.getView(R.id.tv_content);
             try { // 置顶标识
                 TextView topFlagView = holder.getView(R.id.tv_top_flag);
@@ -184,10 +188,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
                 TextViewUtils.newInstance(contentView, content)
-                        .setSpanTextColor(BaseApplication.getContext().getResources().getColor(R.color.normal_for_assist_text))
+                        .setSpanTextColor(BaseApplication.getContext().getResources().getColor(R
+                                .color.normal_for_assist_text))
                         .setPosition(0, content.length())
                         .disPlayText(true);
-//              contentView.setText(content);
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
@@ -199,19 +203,15 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
             if (showToolMenu) {
                 // 显示工具栏
                 DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-                DynamicToolBean dynamicToolBean = dynamicBean.getTool();
-                if (dynamicToolBean != null) {
-                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_digg_count()), dynamicToolBean.getIs_digg_feed() == STATUS_DIGG_FEED_CHECKED, 0);
-                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_comment_count()), false, 1);
-                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicToolBean.getFeed_view_count() == 0 ? 1 : dynamicToolBean.getFeed_view_count()), false, 2);// 浏览量没有 0
-                }
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                        .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                        .getFeed_comment_count()), false, 1);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                                .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
+                        false, 2);// 浏览量没有 0
                 // 控制更多按钮的显示隐藏
                 dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
-//                if (dynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-//                    dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
-//                } else {
-//                    dynamicListMenuView.setItemPositionVisiable(3, View.GONE);
-//                }
                 // 设置工具栏的点击事件
                 dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
                     @Override
@@ -252,17 +252,18 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 } else {
                     comment.setVisibility(View.VISIBLE);
                 }
-//                comment.setData(dynamicBean);
+                comment.setData(dynamicBean);
                 comment.setOnCommentClickListener(mOnCommentClickListener);
                 comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
                 comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
             }
+
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
-    private void setUserInfoClick(View view, final DynamicBean dynamicBean) {
+    private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
@@ -284,13 +285,14 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param positon     image item position
      * @param part        this part percent of imageContainer
      */
-    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
         int propPart = getProportion(view, dynamicBean, part);
         String url = "";
-        if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-            ImageBean imageBean = dynamicBean.getFeed().getStorages().get(positon);
+
+        if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
+            DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                url = String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), propPart);
+                url = String.format(ApiConfig.IMAGE_PATH, imageBean.getFile(), propPart);
             } else {
                 url = imageBean.getImgUrl();
             }
@@ -303,14 +305,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 .error(R.drawable.shape_default_image)
                 .into(view);
 
-//        mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-//                .url(url)
-//                .imagerView(view)
-//                .placeholder(R.drawable.shape_default_image)
-//                .errorPic(R.drawable.shape_default_image)
-//                .build());
-        if (dynamicBean.getFeed().getStorages() != null) {
-            dynamicBean.getFeed().getStorages().get(positon).setPart(propPart);
+        if (dynamicBean.getImages() != null) {
+            dynamicBean.getImages().get(positon).setPropPart(propPart);
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
@@ -334,7 +330,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      * @param part        比例，总大小的份数
      * @return
      */
-    protected int getProportion(ImageView view, DynamicBean dynamicBean, int part) {
+    protected int getProportion(ImageView view, DynamicDetailBeanV2 dynamicBean, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */
@@ -342,9 +338,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
         int height;
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
-        ImageBean imageBean = dynamicBean.getFeed().getStorages().get(0);
-        with = (int) imageBean.getWidth() > currentWith ? currentWith : (int) imageBean.getWidth();
-        proportion = (int) ((with / imageBean.getWidth()) * 100);
+        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
+        if (imageBean.getSize().isEmpty()) {
+            return 70;
+        }
+        with = imageBean.getWidth() > currentWith ? currentWith : imageBean.getWidth();
+        proportion = ((with / imageBean.getWidth()) * 100);
         height = with;
         return proportion;
     }
@@ -374,7 +373,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
      */
     public interface OnImageClickListener {
 
-        void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position);
+        void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position);
     }
 
     /**

@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -126,6 +127,12 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         return dealWithDynamicList(mDynamicClient.getDynamicList(type, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, feeds_id), type, isLoadMore);
     }
+
+//    @Override
+//    public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, final boolean isLoadMore) {
+//        return dealWithDynamicListV2(mDynamicClient.getDynamicListV2(type, after, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE)),
+//                type, isLoadMore);
+//    }
 
     @Override
     public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, final boolean isLoadMore) {
@@ -618,9 +625,15 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     protected Observable<List<DynamicDetailBeanV2>> dealWithDynamicListV2
-            (Observable<List<DynamicDetailBeanV2>> observable, final String type, final boolean isLoadMore) {
+            (Observable<DynamicBeanV2> observable, final String type, final boolean isLoadMore) {
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<DynamicBeanV2, List<DynamicDetailBeanV2>>() {
+                    @Override
+                    public List<DynamicDetailBeanV2> call(DynamicBeanV2 dynamicBeanV2) {
+                        return dynamicBeanV2.getFeeds();
+                    }
+                })
                 .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<List<DynamicDetailBeanV2>>>() {
                     @Override
                     public Observable<List<DynamicDetailBeanV2>> call(final List<DynamicDetailBeanV2> listBaseJson) {
@@ -640,7 +653,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             } else {
                                 dynamicBean.setMaxId(dynamicBean.getId());
                             }
-                            dynamicBean.setComments(new ArrayList<DynamicCommentBean>());
                             for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
                                 user_ids.add(dynamicCommentBean.getUser_id());
                                 user_ids.add(dynamicCommentBean.getReply_to_user_id());

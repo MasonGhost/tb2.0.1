@@ -91,24 +91,6 @@
         tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"
         />
 
-    <LinearLayout
-        android:id="@+id/nrv_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_content"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/dynamic_list_image_marginright"
-        android:layout_toRightOf="@+id/iv_headpic"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/dynamic_image_padding_bottom">
-
-        <com.zhiyicx.thinksnsplus.widget.NineImageViewGroup
-            android:id="@+id/nrv_image_nine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
     <View
         android:id="@+id/v_line"
         android:layout_width="match_parent"

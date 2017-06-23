@@ -354,7 +354,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
          * type : download
          * paid : false
          */
-
+        private  int propPart;
         private int file;
         private String size;
         private String imgUrl;
@@ -364,6 +364,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         private String type;
         private boolean paid;
         private String imgMimeType;// 图片类型
+
+        public int getPropPart() {
+            return propPart;
+        }
+
+        public void setPropPart(int propPart) {
+            this.propPart = propPart;
+        }
 
         public String getImgMimeType() {
             return imgMimeType;
@@ -403,11 +411,19 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         }
 
         public int getWidth() {
-            return width;
+            if (size!=null&&size.length()>0){
+                String[] sizes = size.split("x");
+                return Integer.parseInt(sizes[0]);
+            }
+            return 100;
         }
 
         public int getHeight() {
-            return height;
+            if (size!=null&&size.length()>0){
+                String[] sizes = size.split("x");
+                return Integer.parseInt(sizes[1]);
+            }
+            return 100;
         }
 
         public double getAmount() {
@@ -442,6 +458,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
             this.paid = paid;
         }
 
+
         @Override
         public int describeContents() {
             return 0;
@@ -449,6 +466,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.propPart);
             dest.writeInt(this.file);
             dest.writeString(this.size);
             dest.writeString(this.imgUrl);
@@ -464,6 +482,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         }
 
         protected ImagesBean(Parcel in) {
+            this.propPart = in.readInt();
             this.file = in.readInt();
             this.size = in.readString();
             this.imgUrl = in.readString();

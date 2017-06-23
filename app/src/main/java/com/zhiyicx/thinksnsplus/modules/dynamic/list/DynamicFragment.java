@@ -34,7 +34,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.DynamicListBaseItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2.*;
 import com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.top.DynamicTopActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -230,7 +230,16 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
-        setAdapter(adapter, new DynamicListBaseItem(getContext()));
+        setAdapter(adapter, new DynamicListItemForZeroImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForOneImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForTwoImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForThreeImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForFourImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForFiveImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForSixImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForSevenImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForEightImage(getContext()));
+        setAdapter(adapter, new DynamicListItemForNineImage(getContext()));
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -273,18 +282,21 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param position
      */
     @Override
-    public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
+    public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
 
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
 
-        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
+        List<DynamicDetailBeanV2.ImagesBean> task = dynamicBean.getImages();
+        List<ImageBean> imageBeanList = new ArrayList<>();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
-        for (int i = 0; i < imageBeanList.size(); i++) {
+        for (int i = 0; i < task.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
+            ImageBean imageBean=new ImageBean();
+            imageBean.setStorage_id(task.get(i).getFile());
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
         }
