@@ -3,7 +3,11 @@ package com.zhiyicx.baseproject.impl.photoselector;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Toll implements Parcelable {
+import java.io.Serializable;
+
+public class Toll implements Parcelable, Serializable {
+
+    private static final long serialVersionUID = 123L;
 
     public static final int LOOK_TOLL = 1000;// 查看收费
     public static final String LOOK_TOLL_TYPE = "read";// 查看收费

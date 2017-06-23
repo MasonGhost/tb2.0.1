@@ -31,7 +31,7 @@ public interface SendDynamicContract {
 
         boolean hasTollVerify();
 
-        List<SendDynamicDataBeanV2.StorageTaskBean> packageDynamicStorageDataV2();
+        void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2);
 
         double getTollMoney();
 

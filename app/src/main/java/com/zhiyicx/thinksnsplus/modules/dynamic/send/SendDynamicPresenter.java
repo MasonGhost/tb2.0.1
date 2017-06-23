@@ -120,7 +120,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
 
         // 发送动态 V2 所需要的数据
         SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
-        sendDynamicDataBeanV2.setStorage_task(mRootView.packageDynamicStorageDataV2());
+        mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
 
         // 建立 task
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();

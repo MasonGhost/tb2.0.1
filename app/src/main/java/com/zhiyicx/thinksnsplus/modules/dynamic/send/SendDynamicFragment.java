@@ -531,20 +531,23 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 封装动态上传的数据
      */
     @Override
-    public List<SendDynamicDataBeanV2.StorageTaskBean> packageDynamicStorageDataV2() {
+    public void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
         List<SendDynamicDataBeanV2.StorageTaskBean> storage_task = new ArrayList<>();
+        List<ImageBean> photos = new ArrayList<>();
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
             for (int i = 0; i < selectedPhotos.size(); i++) {
                 if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
+                    photos.add(imageBean);
                     taskBean.setAmount(imageBean.getToll_monye());
                     taskBean.setType(imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE);
                     storage_task.add(taskBean);
                 }
             }
         }
-        return storage_task;
+        sendDynamicDataBeanV2.setPhotos(photos);
+        sendDynamicDataBeanV2.setStorage_task(storage_task);
     }
 
     /**

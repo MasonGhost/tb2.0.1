@@ -40,6 +40,15 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     private String feed_geohash;
     private float amount;
     private List<StorageTaskBean> images;
+    private List<ImageBean> photos;
+
+    public List<ImageBean> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<ImageBean> photos) {
+        this.photos = photos;
+    }
 
     public String getFeed_title() {
         return feed_title;
