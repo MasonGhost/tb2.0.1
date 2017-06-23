@@ -282,13 +282,6 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                         }
                         photosList.add(imageBean);
                     }
-//                    for (String imgUrl : photos) {
-//                        ImageBean imageBean = new ImageBean();
-//                        imageBean.setToll_type(type);
-//                        imageBean.setToll_monye(money);
-//                        imageBean.setImgUrl(imgUrl);
-//                        photosList.add(imageBean);
-//                    }
                     // 需要注意的是：用户有可能清空之前选择的所有图片，然后返回，这样就没有图片了
                     // 需要注意有可能造成的数组越界
                     mTIPhotoBackListener.getPhotoSuccess(photosList);

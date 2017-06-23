@@ -184,13 +184,11 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     }
 
 
-    public static SendDynamicDataBeanV2 DynamicDetailBean2SendDynamicDataBeanV2(DynamicBean dynamicBean) {
+    public static SendDynamicDataBeanV2 DynamicDetailBean2SendDynamicDataBeanV2(DynamicDetailBeanV2 dynamicBean) {
         SendDynamicDataBeanV2 sendDynamicDataBeanV2 = new SendDynamicDataBeanV2();
-        DynamicDetailBean detailBean = dynamicBean.getFeed();
-        sendDynamicDataBeanV2.setFeed_content(detailBean.getFeed_content());
-        sendDynamicDataBeanV2.setFeed_from(detailBean.getFeed_from() + "");
+        sendDynamicDataBeanV2.setFeed_content(dynamicBean.getFeed_content());
+        sendDynamicDataBeanV2.setFeed_from(dynamicBean.getFeed_from() + "");
         sendDynamicDataBeanV2.setFeed_mark(dynamicBean.getFeed_mark() + "");
-        sendDynamicDataBeanV2.setFeed_title(detailBean.getFeed_title());
         return sendDynamicDataBeanV2;
     }
 

@@ -42,7 +42,9 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
@@ -424,7 +426,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void setRightClick() {
-        mPresenter.sendDynamic(packageDynamicData());
+        mPresenter.sendDynamicV2(packageDynamicData());
     }
 
     private void setLeftTextColor() {
@@ -441,7 +443,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 //                System.out.println("hasFocus = " + hasFocus);
             }
         });
-
 
         mEtDynamicContent.setContentChangedListener(new UserInfoInroduceInputView
                 .ContentChangedListener() {
@@ -485,45 +486,45 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     /**
      * 封装动态上传的数据
      */
-    private DynamicBean packageDynamicData() {
+    private DynamicDetailBeanV2 packageDynamicData() {
+
+        DynamicDetailBeanV2 dynamicDetailBeanV2 = new DynamicDetailBeanV2();
+
         long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication
                 .getmCurrentLoginAuth().getUser_id() : 0;
         String feedMarkString = userId + "" + System.currentTimeMillis();
         long feedMark = Long.parseLong(feedMarkString);
-        DynamicToolBean toolBean = new DynamicToolBean();
-        toolBean.setFeed_mark(feedMark);
-        toolBean.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
-        DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
-        dynamicDetailBean.setFeed_mark(feedMark);
-        dynamicDetailBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        dynamicDetailBean.setContent(mEtDynamicContent.getInputContent());
-        dynamicDetailBean.setTitle(mEtDynamicTitle.getInputContent());
+
+        dynamicDetailBeanV2.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
+        dynamicDetailBeanV2.setFeed_mark(feedMark);
+        dynamicDetailBeanV2.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+        dynamicDetailBeanV2.setFeed_content(mEtDynamicContent.getInputContent());
+        dynamicDetailBeanV2.setFeed_from(ApiConfig.ANDROID_PLATFORM);
+        dynamicDetailBeanV2.setIsFollowed(true);// 因为关注里面需要显示我的动态
+        dynamicDetailBeanV2.setState(DynamicDetailBeanV2.SEND_ING);
+        dynamicDetailBeanV2.setComments(new ArrayList<DynamicCommentBean>());
+        dynamicDetailBeanV2.setUser_id(userId);
+        dynamicDetailBeanV2.setAmount(mTollMoney);
+
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
-            List<ImageBean> photos = new ArrayList<>();
+            List<DynamicDetailBeanV2.ImagesBean> images = new ArrayList<>();
             // 最后一张占位图，扔掉
             for (int i = 0; i < selectedPhotos.size(); i++) {
                 if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
-                    ImageBean imageBean = new ImageBean();
-                    imageBean.setImgUrl(selectedPhotos.get(i).getImgUrl());
+                    DynamicDetailBeanV2.ImagesBean imagesBean = new DynamicDetailBeanV2.ImagesBean();
+                    imagesBean.setImgUrl(selectedPhotos.get(i).getImgUrl());
                     BitmapFactory.Options options = DrawableProvider.getPicsWHByFile
                             (selectedPhotos.get(i).getImgUrl());
-                    imageBean.setHeight(options.outHeight);
-                    imageBean.setWidth(options.outWidth);
-                    imageBean.setImgMimeType(options.outMimeType);
-                    photos.add(imageBean);
+                    imagesBean.setHeight(options.outHeight);
+                    imagesBean.setWidth(options.outWidth);
+                    imagesBean.setImgMimeType(options.outMimeType);
+                    images.add(imagesBean);
                 }
             }
-            dynamicDetailBean.setStorages(photos);
+            dynamicDetailBeanV2.setImages(images);
         }
-        dynamicDetailBean.setFeed_from(ApiConfig.ANDROID_PLATFORM);
-        DynamicBean dynamicBean = new DynamicBean();
-        dynamicBean.setIsFollowed(true); // 因为关注里面需要显示我的动态
-        dynamicBean.setFeed(dynamicDetailBean);
-        dynamicBean.setState(DynamicBean.SEND_ING);
-        dynamicBean.setFeed_mark(feedMark);
-        dynamicBean.setUser_id(userId);
-        dynamicBean.setTool(toolBean);
-        return dynamicBean;
+
+        return dynamicDetailBeanV2;
     }
 
     /**

@@ -126,7 +126,6 @@
         </activity>
         <activity
             android:name=".modules.photopicker.PhotoAlbumDetailsActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
         <activity

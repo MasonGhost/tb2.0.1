@@ -231,8 +231,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
             }
         }
-        LogUtils.i("requestCacheData DYNAMIC_TYPE_MY_COLLECTION");
-        return null;
+        LogUtils.i("requestCacheData DYNAMIC_TYPE_MY_COLLECTION:"+datas.size());
+        return datas;
     }
 
     /**

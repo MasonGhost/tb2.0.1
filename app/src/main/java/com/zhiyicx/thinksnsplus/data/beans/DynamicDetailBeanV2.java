@@ -64,7 +64,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     private String created_at;
     private String updated_at;
     private String deleted_at;
-    private int user_id;
+    private Long user_id;
     private String feed_content;
     private int feed_from;
     private int feed_digg_count;
@@ -176,11 +176,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.updated_at = updated_at;
     }
 
-    public int getUser_id() {
+    public Long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(Long user_id) {
         this.user_id = user_id;
     }
 
@@ -320,6 +320,26 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.diggs = diggs;
     }
 
+    public boolean getHas_digg() {
+        return this.has_digg;
+    }
+
+    public boolean getHas_collect() {
+        return this.has_collect;
+    }
+
+    public boolean getPaid() {
+        return this.paid;
+    }
+
+    public boolean getIsFollowed() {
+        return this.isFollowed;
+    }
+
+    public void setIsFollowed(boolean isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
     @Override
     public Long getMaxId() {
         return id;
@@ -337,11 +357,37 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
 
         private int file;
         private String size;
+        private String imgUrl;
         private int width;
         private int height;
         private double amount;
         private String type;
         private boolean paid;
+        private String imgMimeType;// 图片类型
+
+        public String getImgMimeType() {
+            return imgMimeType;
+        }
+
+        public void setImgMimeType(String imgMimeType) {
+            this.imgMimeType = imgMimeType;
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public String getImgUrl() {
+            return imgUrl;
+        }
+
+        public void setImgUrl(String imgUrl) {
+            this.imgUrl = imgUrl;
+        }
 
         public String getSize() {
             return size;
@@ -405,11 +451,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.file);
             dest.writeString(this.size);
+            dest.writeString(this.imgUrl);
             dest.writeInt(this.width);
             dest.writeInt(this.height);
             dest.writeDouble(this.amount);
             dest.writeString(this.type);
             dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
+            dest.writeString(this.imgMimeType);
         }
 
         public ImagesBean() {
@@ -418,11 +466,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         protected ImagesBean(Parcel in) {
             this.file = in.readInt();
             this.size = in.readString();
+            this.imgUrl = in.readString();
             this.width = in.readInt();
             this.height = in.readInt();
             this.amount = in.readDouble();
             this.type = in.readString();
             this.paid = in.readByte() != 0;
+            this.imgMimeType = in.readString();
         }
 
         public static final Creator<ImagesBean> CREATOR = new Creator<ImagesBean>() {
@@ -437,8 +487,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
             }
         };
     }
-
-
 
 
     public static class ImagesBeansVonvert implements PropertyConverter<List<ImagesBean>, String> {
@@ -490,7 +538,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeString(this.deleted_at);
-        dest.writeInt(this.user_id);
+        dest.writeValue(this.user_id);
         dest.writeString(this.feed_content);
         dest.writeInt(this.feed_from);
         dest.writeInt(this.feed_digg_count);
@@ -515,75 +563,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         dest.writeTypedList(this.digUserInfoList);
     }
 
-    public boolean getHas_digg() {
-        return this.has_digg;
-    }
-
-    public boolean getHas_collect() {
-        return this.has_collect;
-    }
-
-    public boolean getPaid() {
-        return this.paid;
-    }
-
-    public boolean getIsFollowed() {
-        return this.isFollowed;
-    }
-
-    public void setIsFollowed(boolean isFollowed) {
-        this.isFollowed = isFollowed;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 249603048)
-    public synchronized void resetComments() {
-        comments = null;
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1467065995)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicDetailBeanV2Dao() : null;
-    }
-
     public DynamicDetailBeanV2() {
     }
 
@@ -593,7 +572,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.deleted_at = in.readString();
-        this.user_id = in.readInt();
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_content = in.readString();
         this.feed_from = in.readInt();
         this.feed_digg_count = in.readInt();
@@ -619,40 +598,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
     }
 
-    @Generated(hash = 883330056)
-    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at,
-            int user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
-            int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, double amount,
-            boolean paid, List<ImagesBean> images, List<Integer> diggs, Long hot_creat_time,
-            boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
-        this.id = id;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
-        this.user_id = user_id;
-        this.feed_content = feed_content;
-        this.feed_from = feed_from;
-        this.feed_digg_count = feed_digg_count;
-        this.feed_view_count = feed_view_count;
-        this.feed_comment_count = feed_comment_count;
-        this.feed_latitude = feed_latitude;
-        this.feed_longtitude = feed_longtitude;
-        this.feed_geohash = feed_geohash;
-        this.audit_status = audit_status;
-        this.feed_mark = feed_mark;
-        this.has_digg = has_digg;
-        this.has_collect = has_collect;
-        this.amount = amount;
-        this.paid = paid;
-        this.images = images;
-        this.diggs = diggs;
-        this.hot_creat_time = hot_creat_time;
-        this.isFollowed = isFollowed;
-        this.state = state;
-        this.digUserInfoList = digUserInfoList;
-    }
-
     public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
         @Override
         public DynamicDetailBeanV2 createFromParcel(Parcel source) {
@@ -664,12 +609,4 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
             return new DynamicDetailBeanV2[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 49871375)
-    private transient DynamicDetailBeanV2Dao myDao;
-    @Generated(hash = 1536342946)
-    private transient Integer userInfoBean__resolvedKey;
 }

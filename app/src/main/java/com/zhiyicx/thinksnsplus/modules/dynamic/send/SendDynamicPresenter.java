@@ -9,10 +9,12 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
@@ -41,9 +43,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     @Inject
     IUploadRepository mIUploadRepository;
     @Inject
-    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
-    @Inject
-    DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
@@ -82,8 +82,6 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
                 // 将动态信息存入数据库
-                mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
                 mDynamicToolBeanGreenDao.insertOrReplace(dynamicBean.getTool());
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 break;
@@ -102,24 +100,22 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     }
 
     @Override
-    public void sendDynamicV2(DynamicBean dynamicBean) {
-        if (dynamicBean.getFeed().getStorages() == null) { // 当没有图片的时候，给一个占位数组
-            dynamicBean.getFeed().setStorages(new ArrayList<ImageBean>());
+    public void sendDynamicV2(DynamicDetailBeanV2 dynamicBean) {
+        if (dynamicBean.getImages() == null) { // 当没有图片的时候，给一个占位数组
+            dynamicBean.setImages(new ArrayList<DynamicDetailBeanV2.ImagesBean>());
         }
-        if (mRootView.hasTollVerify()) {
+        if (mRootView.hasTollVerify()) {// 当设置图片收费时，最少配置一张图
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
-
-        if (mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {
+        if (mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {// 文字收费金额整数限制
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.limit_monye));
             return;
         }
 
         SendDynamicDataBean sendDynamicDataBean = mRootView.getDynamicSendData();
         int dynamicBelong = sendDynamicDataBean.getDynamicBelong();
-        dynamicBean.setComments(new ArrayList<DynamicCommentBean>());
-        dynamicBean.setState(DynamicBean.SEND_ING);
+
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
 
         // 发送动态 V2 所需要的数据
@@ -137,9 +133,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
                 // 将动态信息存入数据库
-                mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
-                mDynamicDetailBeanGreenDao.insertOrReplace(dynamicBean.getFeed());
-                mDynamicToolBeanGreenDao.insertOrReplace(dynamicBean.getTool());
+                mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 break;
             case SendDynamicDataBean.CHANNEL_DYNAMIC:
