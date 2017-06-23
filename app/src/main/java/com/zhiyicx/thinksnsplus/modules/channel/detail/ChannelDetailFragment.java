@@ -502,7 +502,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
+    private void initDeletDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -592,7 +592,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * @param dynamicPositon  dynamic comment position
      * @param commentPosition current comment position
      */
-    private void initDeletCommentPopWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
+    private void initDeletCommentPopWindow(final DynamicDetailBeanV2 dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -788,8 +788,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
-        Long feed_id = dynamicBean.getFeed_id();
+    private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position, boolean isCollected) {
+        Long feed_id = dynamicBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull ? R.string.empty :isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))

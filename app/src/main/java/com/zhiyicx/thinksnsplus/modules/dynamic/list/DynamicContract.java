@@ -84,7 +84,7 @@ public interface DynamicContract {
          * @param comment_id      comment's id
          * @param commentPosition comment curren position
          */
-        void deleteComment(DynamicBean dynamicBean, int dynamicPositon, long comment_id, int commentPosition);
+        void deleteComment(DynamicDetailBeanV2 dynamicBean, int dynamicPositon, long comment_id, int commentPosition);
 
         /**
          * 重发评论
@@ -100,7 +100,7 @@ public interface DynamicContract {
          * @param dynamicBean
          * @param position
          */
-        void deleteDynamic(DynamicBean dynamicBean,int position);
+        void deleteDynamic(DynamicDetailBeanV2 dynamicBean,int position);
 
         /**
          * send a comment

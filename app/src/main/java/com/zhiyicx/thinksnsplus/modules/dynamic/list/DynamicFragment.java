@@ -470,8 +470,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .isHas_digg());
         mListDatas.get(dataPosition).setFeed_digg_count(mListDatas.get(dataPosition)
                 .isHas_digg() ?
-                mListDatas.get(dataPosition).getFeed_digg_count() - 1 : mListDatas.get
-                (dataPosition).getFeed_digg_count() + 1);
+                mListDatas.get(dataPosition).getFeed_digg_count() + 1 : mListDatas.get
+                (dataPosition).getFeed_digg_count() - 1);
         refreshData();
         mPresenter.handleLike(mListDatas.get(dataPosition).isHas_digg(),
                 mListDatas.get(dataPosition).getId(), dataPosition);
@@ -584,9 +584,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
-//                        mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean
-//                                        .getComments().get(commentPosition).getComment_id(),
-//                                commentPosition);
+                        mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean
+                                        .getComments().get(commentPosition).getComment_id(),
+                                commentPosition);
                         showBottomView(true);
                     }
                 })
@@ -708,7 +708,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onItemClicked() {// 删除
                         mMyDynamicPopWindow.hide();
-//                        mPresenter.deleteDynamic(dynamicBean, position);
+                        mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
                     }
                 })

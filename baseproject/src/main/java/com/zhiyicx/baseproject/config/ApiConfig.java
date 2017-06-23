@@ -46,6 +46,9 @@ public class ApiConfig {
     // 图片地址
     public static final String NO_PROCESS_IMAGE_PATH = APP_DOMAIN + "api/" + API_VERSION + "/storages/%s";// 不带质量压缩
 
+    // 图片地址 V2
+    public static final String IMAGE_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
+
     /*******************************************  接口 Path  *********************************************/
 
     /**

@@ -38,6 +38,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -77,6 +78,8 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     private static final int NEED_INTERFACE_NUM = 3;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     IUploadRepository mIUploadRepository;
     @Inject
@@ -396,13 +399,13 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public void deleteComment(DynamicBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
-//        mRootView.getListDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
-//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition).getTool());
+    public void deleteComment(DynamicDetailBeanV2 dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
+        mRootView.getListDatas().get(dynamicPosition).setFeed_comment_count(dynamicBean.getFeed_comment_count() - 1);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getComments().remove(commentPositon);
-        mRootView.refreshData();
-        mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
+        mRootView.refreshData(dynamicPosition);
+        mRepository.deleteComment(dynamicBean.getId(), comment_id);
     }
 
     @Override
@@ -413,16 +416,16 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public void deleteDynamic(DynamicBean dynamicBean, int position) {
+    public void deleteDynamic(DynamicDetailBeanV2 dynamicBean, int position) {
 
-        mDynamicBeanGreenDao.deleteSingleCache(dynamicBean);
+        mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
         if (mRootView.getListDatas().isEmpty()) {// 添加暂未图
 //            mRootView.getListDatas().add(new DynamicBean());
         }
         mRootView.refreshData();
-        if (dynamicBean.getFeed_id() != null && dynamicBean.getFeed_id() != 0) {
-            mRepository.deleteDynamic(dynamicBean.getFeed_id());
+        if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
+            mRepository.deleteDynamic(dynamicBean.getId());
         }
 
 

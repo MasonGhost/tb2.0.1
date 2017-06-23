@@ -21,6 +21,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
@@ -292,13 +293,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                url = String.format(ApiConfig.IMAGE_PATH, imageBean.getFile(), propPart);
+                url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), 50, 50, propPart);
             } else {
                 url = imageBean.getImgUrl();
             }
 
         }
-
+        LogUtils.e("initImageView:url:" + url);
         Glide.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.shape_default_image)
@@ -339,7 +340,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
         DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
-        if (imageBean.getSize().isEmpty()) {
+        if (imageBean.getSize() == null || imageBean.getSize().isEmpty()) {
             return 70;
         }
         with = imageBean.getWidth() > currentWith ? currentWith : imageBean.getWidth();

@@ -334,7 +334,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         }
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(postion));
         mRepository.handleLike(isLiked, feed_id);
-
     }
 
     @Override
@@ -364,13 +363,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     }
 
     @Override
-    public void deleteComment(DynamicBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
-//        mRootView.getListDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
-//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition).getTool());
+    public void deleteComment(DynamicDetailBeanV2 dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
+        mRootView.getListDatas().get(dynamicPosition).setFeed_comment_count(dynamicBean.getFeed_comment_count() - 1);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getComments().remove(commentPositon);
         mRootView.refreshData(dynamicPosition);
-        mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
+        mRepository.deleteComment(dynamicBean.getId(), comment_id);
     }
 
     @Override
@@ -381,12 +380,12 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     }
 
     @Override
-    public void deleteDynamic(DynamicBean dynamicBean, int position) {
-        mDynamicBeanGreenDao.deleteSingleCache(dynamicBean);
+    public void deleteDynamic(DynamicDetailBeanV2 dynamicBean, int position) {
+        mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
         mRootView.refreshData();
-        if (dynamicBean.getFeed_id() != null && dynamicBean.getFeed_id() != 0) {
-            mRepository.deleteDynamic(dynamicBean.getFeed_id());
+        if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
+            mRepository.deleteDynamic(dynamicBean.getId());
         }
     }
 
@@ -575,21 +574,21 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
      * @param dynamicBean
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST)
-    public void handleSendDynamic(DynamicBean dynamicBean) {
+    public void handleSendDynamic(DynamicDetailBeanV2 dynamicBean) {
         if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW)
                 || mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
-//            int position = hasDynamicContanied(dynamicBean);
-//            if (position != -1) {// 如果列表有当前数据
-//                mRootView.showNewDynamic(position);
-//            } else {
-//                List<DynamicBean> temps = new ArrayList<>();
-//                temps.add(dynamicBean);
-////                temps.addAll(mRootView.getListDatas());
-//                mRootView.getListDatas().clear();
-////                mRootView.getListDatas().addAll(temps);
-//                temps.clear();
-//                mRootView.showNewDynamic(-1);
-//            }
+            int position = hasDynamicContanied(dynamicBean);
+            if (position != -1) {// 如果列表有当前数据
+                mRootView.showNewDynamic(position);
+            } else {
+                List<DynamicDetailBeanV2> temps = new ArrayList<>();
+                temps.add(dynamicBean);
+                temps.addAll(mRootView.getListDatas());
+                mRootView.getListDatas().clear();
+                mRootView.getListDatas().addAll(temps);
+                temps.clear();
+                mRootView.showNewDynamic(-1);
+            }
 
         }
     }
@@ -637,7 +636,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     }
 
     @Subscriber(tag = EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE)
-    public void deleteDynamic(DynamicBean dynamicBean) {
+    public void deleteDynamic(DynamicDetailBeanV2 dynamicBean) {
         deleteDynamic(dynamicBean, mRootView.getListDatas().indexOf(dynamicBean));
         LogUtils.d(EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE);
     }

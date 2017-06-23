@@ -675,7 +675,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicPositon  dynamic comment position
      * @param commentPosition current comment position
      */
-    private void initDeletCommentPopWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
+    private void initDeletCommentPopWindow(final DynamicDetailBeanV2 dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -706,9 +706,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position, final Bitmap shareBitmap) {
-        boolean isCollected = dynamicBean.getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED;
-        Long feed_id = dynamicBean.getFeed_id();
+    private void initDeletDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position, final Bitmap shareBitmap) {
+        boolean isCollected = dynamicBean.isHas_collect();
+        Long feed_id = dynamicBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
@@ -722,7 +722,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        mPresenter.handleCollect(dynamicBean);
+//                        mPresenter.handleCollect(dynamicBean);
                         mDeletDynamicPopWindow.hide();
                     }
                 })
@@ -738,7 +738,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItemClicked() {
-                        mPresenter.shareDynamic(dynamicBean, shareBitmap);
+//                        mPresenter.shareDynamic(dynamicBean, shareBitmap);
                         mDeletDynamicPopWindow.hide();
                     }
                 })
