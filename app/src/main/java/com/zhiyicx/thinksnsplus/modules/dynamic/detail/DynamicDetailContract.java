@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
@@ -144,7 +145,7 @@ public interface DynamicDetailContract {
         /**
          * 动态分享
          */
-        void shareDynamic();
+        void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap);
 
         /**
          * 关注或者取消关注

@@ -233,8 +233,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected List<DynamicDetailBeanV2> requestCacheData(Long maxId, boolean isLoadMore) {
-//        return mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
-        return null;
+        return mPresenter.requestCacheData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
 
     @Override

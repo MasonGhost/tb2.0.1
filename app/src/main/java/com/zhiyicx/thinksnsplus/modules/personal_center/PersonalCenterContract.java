@@ -86,7 +86,7 @@ public interface PersonalCenterContract {
         /**
          * 获取某个人的动态列表
          */
-        Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id);
+        Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id);
 
         /**
          * 获取用户关注状态
@@ -118,7 +118,7 @@ public interface PersonalCenterContract {
          * @param user_id
          * @return
          */
-        List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore, long user_id);
+        List<DynamicDetailBeanV2> requestCacheData(Long max_Id, boolean isLoadMore, long user_id);
 
         /**
          * 设置进入个人中心是的用户关注状态

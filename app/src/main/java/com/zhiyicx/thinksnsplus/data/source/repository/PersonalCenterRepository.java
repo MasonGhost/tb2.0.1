@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -56,9 +57,9 @@ public class PersonalCenterRepository extends BaseDynamicRepository implements P
     }
 
     @Override
-    public Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id) {
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id) {
         String type = String.format(ApiConfig.DYNAMIC_TYPE_SOMEONE, user_id);
-        return getDynamicList(type, max_id, 0, "", false);
+        return getDynamicListV2(type, max_id, false);
     }
 
     @Override

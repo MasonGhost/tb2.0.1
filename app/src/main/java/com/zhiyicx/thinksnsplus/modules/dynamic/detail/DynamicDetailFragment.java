@@ -469,7 +469,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_2:
                         // 分享
-                        mPresenter.shareDynamic();
+                        mPresenter.shareDynamic(getCurrentDynamic(),mDynamicDetailHeader.getSharBitmap());
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_3:
                         // 处理喜欢逻辑，包括服务器，数据库，ui
@@ -613,7 +613,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
                     public void onItemClicked() {// 分享
-                        mPresenter.shareDynamic();
+                        mPresenter.shareDynamic(getCurrentDynamic(),mDynamicDetailHeader.getSharBitmap());
                         mOtherDynamicPopWindow.hide();
                     }
                 })
@@ -660,7 +660,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItemClicked() {// 分享
-                        mPresenter.shareDynamic();
+                        mPresenter.shareDynamic(getCurrentDynamic(),mDynamicDetailHeader.getSharBitmap());
                         mMyDynamicPopWindow.hide();
                     }
                 })

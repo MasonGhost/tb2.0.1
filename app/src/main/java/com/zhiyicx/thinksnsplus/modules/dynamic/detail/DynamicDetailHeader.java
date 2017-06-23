@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -54,6 +56,7 @@ public class DynamicDetailHeader {
     private Context mContext;
     private int screenWidth;
     private int picWidth;
+    private Bitmap sharBitmap;
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
 
@@ -121,13 +124,22 @@ public class DynamicDetailHeader {
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
         if (photoList == null || photoList.isEmpty()) {
             mPhotoContainer.setVisibility(View.GONE);
+            sharBitmap=ConvertUtils.drawBg4Bitmap(0xffffff,BitmapFactory.decodeResource(context
+                    .getResources(), R.mipmap.icon_256).copy(Bitmap.Config.RGB_565, true));
         } else {
             mPhotoContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < photoList.size(); i++) {
                 showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
             }
+            FilterImageView imageView=(FilterImageView)mPhotoContainer.getChildAt(0);
+            sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
+                    .getDrawable(), R.mipmap.icon_256);
             setImageClickListener(photoList);
         }
+    }
+
+    public Bitmap getSharBitmap(){
+        return sharBitmap;
     }
 
     /**

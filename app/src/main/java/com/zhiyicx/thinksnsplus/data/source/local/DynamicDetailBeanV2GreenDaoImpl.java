@@ -198,4 +198,17 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
                         + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC "// feedId倒序
                 , String.valueOf(userId));
     }
+
+    /**
+     * 获取属于我的动态
+     *
+     * @return
+     */
+    public List<DynamicDetailBeanV2> getMyDynamics(Long userId) {
+        return mDynamicDetailBeanV2Dao.queryDeep(" where "
+                        + " T." + DynamicDetailBeanV2Dao.Properties.User_id.columnName + " = ? "
+                        + " ORDER BY  T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " " +
+                        "DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
+                , String.valueOf(userId));
+    }
 }

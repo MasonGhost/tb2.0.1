@@ -29,4 +29,14 @@ public class ImageUtils {
         }
     }
 
+    public static String imagePathConvertV2(String storage, int part) {
+        try {
+            // 如果图片的storage能够转成一个整数
+            Integer.parseInt(storage);
+            return String.format(Locale.getDefault(),ApiConfig.IMAGE_PATH_V2, storage,50,50, part);
+        } catch (NumberFormatException e) {
+            return storage;
+        }
+    }
+
 }

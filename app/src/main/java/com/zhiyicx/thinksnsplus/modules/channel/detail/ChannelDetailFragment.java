@@ -405,12 +405,12 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
             case 3: // 更多
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-//                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-//                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                    initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
+                            .getHas_collect());
                     mMyDynamicPopWindow.show();
                 } else {
-//                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
-//                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED,shareBitMap);
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
+                            .getHas_collect(),shareBitMap);
                     mOtherDynamicPopWindow.show();
                 }
                 break;
@@ -746,7 +746,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      *
      * @param dynamicBean curent dynamic
      */
-    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected,final Bitmap shareBitmap) {
+    private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected,final
+    Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_share_dynamic))
