@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -60,7 +61,7 @@ public class DynamicDetailHeader {
         return mDynamicDetailHeader;
     }
 
-    public DynamicDetailHeader(Context context,List<SystemConfigBean.Advert> adverts) {
+    public DynamicDetailHeader(Context context, List<SystemConfigBean.Advert> adverts) {
         this.mContext = context;
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_dynamic_detial, null);
@@ -68,7 +69,7 @@ public class DynamicDetailHeader {
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
         mContent = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_content);
-        initAdvert(context,adverts);
+        initAdvert(context, adverts);
         fl_comment_count_container = (FrameLayout) mDynamicDetailHeader.findViewById(R.id
                 .fl_comment_count_container);
         mPhotoContainer = (LinearLayout) mDynamicDetailHeader.findViewById(R.id
@@ -78,7 +79,7 @@ public class DynamicDetailHeader {
                 (R.dimen.spacing_normal) * 2;
     }
 
-    private void initAdvert(Context context,List<SystemConfigBean.Advert> adverts) {
+    private void initAdvert(Context context, List<SystemConfigBean.Advert> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
@@ -101,15 +102,14 @@ public class DynamicDetailHeader {
      *
      * @param dynamicBean
      */
-    public void setDynamicDetial(DynamicBean dynamicBean) {
-        final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
-        String titleText = dynamicDetailBean.getTitle();
+    public void setDynamicDetial(DynamicDetailBeanV2 dynamicBean) {
+        String titleText = "";
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
         } else {
             mTitle.setText(titleText);
         }
-        String contentText = dynamicDetailBean.getContent();
+        String contentText = dynamicBean.getFeed_content();
         if (TextUtils.isEmpty(contentText)) {
             mContent.setVisibility(View.GONE);
         } else {
@@ -118,7 +118,7 @@ public class DynamicDetailHeader {
 
         final Context context = mTitle.getContext();
         // 设置图片
-        List<ImageBean> photoList = dynamicDetailBean.getStorages();
+        List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
         if (photoList == null || photoList.isEmpty()) {
             mPhotoContainer.setVisibility(View.GONE);
         } else {
@@ -135,18 +135,15 @@ public class DynamicDetailHeader {
      *
      * @param dynamicBean
      */
-    public void updateHeaderViewData(final DynamicBean dynamicBean) {
+    public void updateHeaderViewData(final DynamicDetailBeanV2 dynamicBean) {
 
         DynamicHorizontalStackIconView dynamicHorizontalStackIconView =
                 (DynamicHorizontalStackIconView) mDynamicDetailHeader.findViewById(R.id
                         .detail_dig_view);
-        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
-        if (dynamicToolBean == null) {
-            return;
-        }
-        dynamicHorizontalStackIconView.setDigCount(dynamicToolBean.getFeed_digg_count());
-        dynamicHorizontalStackIconView.setPublishTime(dynamicBean.getFeed().getCreated_at());
-        dynamicHorizontalStackIconView.setViewerCount(dynamicToolBean.getFeed_view_count());
+
+        dynamicHorizontalStackIconView.setDigCount(dynamicBean.getFeed_digg_count());
+        dynamicHorizontalStackIconView.setPublishTime(dynamicBean.getCreated_at());
+        dynamicHorizontalStackIconView.setViewerCount(dynamicBean.getFeed_view_count());
         // 设置点赞头像
         List<FollowFansBean> userInfoList = dynamicBean.getDigUserInfoList();
         List<ImageBean> imageBeanList = null;
@@ -174,20 +171,20 @@ public class DynamicDetailHeader {
                 mDynamicDetailHeader.getContext().startActivity(intent);
             }
         });
-        if (dynamicBean.getTool().getFeed_comment_count() <= 0) {
+        if (dynamicBean.getFeed_comment_count() <= 0) {
             fl_comment_count_container.setVisibility(View.GONE);
         } else {
             ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
                     (mDynamicDetailHeader.getResources().getString(R.string
                             .dynamic_comment_count, ConvertUtils.numberConvert(dynamicBean
-                            .getTool().getFeed_comment_count())));
+                            .getFeed_comment_count())));
             fl_comment_count_container.setVisibility(View.VISIBLE);
         }
     }
 
-    private void showContentImage(Context context, List<ImageBean> photoList, final int position,
+    private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position,
                                   boolean lastImg, LinearLayout photoContainer) {
-        ImageBean imageBean = photoList.get(position);
+        DynamicDetailBeanV2.ImagesBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
         FilterImageView imageView = (FilterImageView) view.findViewById(R.id.dynamic_content_img);
         // 隐藏最后一张图的下间距
@@ -198,14 +195,16 @@ public class DynamicDetailHeader {
         String imgUrl = "";
         // 如果有本地图片，优先显示本地图片
         int height = 0;// 图片需要显示的高度
-        height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
+//        height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
+        height = 5 * picWidth / 3;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
 
-            int part = (int) (screenWidth / imageBean.getWidth() * 100);
+            int part = (screenWidth / imageBean.getWidth() * 100);
             if (part > 100) {
                 part = 100;
             }
-            imgUrl = String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), part);
+            imgUrl = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(),screenWidth,height,
+                    part);
         } else {
             imgUrl = imageBean.getImgUrl();
         }
@@ -227,9 +226,10 @@ public class DynamicDetailHeader {
     /**
      * 设置图片点击事件
      */
-    private void setImageClickListener(final List<ImageBean> photoList) {
+    private void setImageClickListener(final List<DynamicDetailBeanV2.ImagesBean> photoList) {
         final ArrayList<AnimationRectBean> animationRectBeanArrayList
-                = new ArrayList<AnimationRectBean>();
+                = new ArrayList<>();
+        final List<ImageBean> imageBeanList = new ArrayList<>();
         for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
             final View photoView = mPhotoContainer.getChildAt(i);
             ImageView imageView = (ImageView) photoView.findViewById(R.id.dynamic_content_img);
@@ -241,11 +241,14 @@ public class DynamicDetailHeader {
                         View photoView = mPhotoContainer.getChildAt(i);
                         ImageView imageView = (ImageView) photoView.findViewById(R.id
                                 .dynamic_content_img);
+                        ImageBean imageBean = new ImageBean();
+                        imageBean.setStorage_id(photoList.get(i).getFile());
+                        imageBeanList.add(imageBean);
                         AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
                         animationRectBeanArrayList.add(rect);
                     }
                     GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild
-                            (photoView), photoList, animationRectBeanArrayList);
+                            (photoView), imageBeanList, animationRectBeanArrayList);
                 }
             });
         }

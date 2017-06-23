@@ -122,12 +122,12 @@ public interface DynamicContract {
         /**
          * 处理收藏逻辑
          */
-        void handleCollect(DynamicBean dynamicBean);
+        void handleCollect(DynamicDetailBeanV2 dynamicBean);
 
         /**
          * 动态分享
          */
-        void shareDynamic(DynamicBean dynamicBean, Bitmap bitmap);
+        void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap);
 
         List<SystemConfigBean.Advert> getAdvert();
 

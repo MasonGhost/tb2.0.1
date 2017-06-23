@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -26,7 +27,7 @@ import rx.Observable;
 public interface DynamicDetailContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
     interface View extends ITSListView<DynamicCommentBean, Presenter> {
-        void initDynamicDetial(DynamicBean dynamicBean);
+        void initDynamicDetial(DynamicDetailBeanV2 dynamicBean);
 
         /**
          * 设置是否喜欢该动态
@@ -60,7 +61,7 @@ public interface DynamicDetailContract {
         /**
          * 获取当前动态数据
          */
-        DynamicBean getCurrentDynamic();
+        DynamicDetailBeanV2 getCurrentDynamic();
 
         /**
          * 获取当前动态在列表中的位置
@@ -132,13 +133,13 @@ public interface DynamicDetailContract {
          *
          * @param dynamicToolBean 更新数据库
          */
-        void handleLike(boolean isLiked, Long feed_id, DynamicToolBean dynamicToolBean);
+        void handleLike(boolean isLiked, Long feed_id, DynamicDetailBeanV2 dynamicToolBean);
 
         /**
          * 处理收藏逻辑
          */
 
-        void handleCollect(DynamicBean dynamicBean);
+        void handleCollect(DynamicDetailBeanV2 dynamicBean);
 
         /**
          * 动态分享

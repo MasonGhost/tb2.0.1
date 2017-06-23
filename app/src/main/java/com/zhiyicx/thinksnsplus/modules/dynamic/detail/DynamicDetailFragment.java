@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -94,7 +95,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @BindView(R.id.toolbar_top_blank)
     View mToolbarTopBlank;
 
-    private DynamicBean mDynamicBean;// 上一个页面传进来的数据
+    private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
     private boolean mIsLookMore = false;
     private DynamicDetailHeader mDynamicDetailHeader;
@@ -146,7 +147,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         if (mDynamicBean == null) {
             mPresenter.getCurrentDynamic(getArguments().getLong(MessageCommentAdapter.BUNDLE_SOURCE_ID));
         } else {
-            mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
+            mPresenter.getDetailAll(mDynamicBean.getId(), DEFAULT_PAGE_MAX_ID, mDynamicBean
+                    .getUser_id() + "");
         }
     }
 
@@ -240,20 +242,21 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             if (mDynamicBean == null) {
                 mPresenter.getCurrentDynamic(bundle.getLong(MessageCommentAdapter.BUNDLE_SOURCE_ID));
             } else {
-                mPresenter.getCurrentDynamic(mDynamicBean.getFeed_id());
+                mPresenter.getCurrentDynamic(mDynamicBean.getId());
             }
         }
     }
 
     @Override
-    public void initDynamicDetial(DynamicBean dynamicBean) {
+    public void initDynamicDetial(DynamicDetailBeanV2 dynamicBean) {
         mDynamicBean = dynamicBean;
         if (mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
             dynamicHasBeDeleted();
             return;
         }
         if (mDynamicBean.getDigUserInfoList() == null) {
-            mPresenter.getDetailAll(mDynamicBean.getFeed_id(), DEFAULT_PAGE_MAX_ID, mDynamicBean.getUser_id() + "");
+            mPresenter.getDetailAll(mDynamicBean.getId(), DEFAULT_PAGE_MAX_ID, mDynamicBean
+                    .getUser_id() + "");
         } else {
             allDataReady();
         }
@@ -289,7 +292,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     /**
      * 设置toolBar上面的用户头像,关注状态
      */
-    private void setToolBarUser(DynamicBean dynamicBean) {
+    private void setToolBarUser(DynamicDetailBeanV2 dynamicBean) {
         // 设置用户头像，名称
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
@@ -337,7 +340,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public DynamicBean getCurrentDynamic() {
+    public DynamicDetailBeanV2 getCurrentDynamic() {
         return mDynamicBean;
     }
 
@@ -437,12 +440,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     /**
      * 进入页面，设置底部工具栏的数据
      */
-    private void initBottomToolData(DynamicBean dynamicBean) {
-        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
+    private void initBottomToolData(DynamicDetailBeanV2 dynamicBean) {
         // 设置是否喜欢
-        mDdDynamicTool.setItemIsChecked(dynamicToolBean.getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED, DynamicDetailMenuView.ITEM_POSITION_0);
+        mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_digg(), DynamicDetailMenuView.ITEM_POSITION_0);
         //设置是否收藏
-        mDdDynamicTool.setItemIsChecked(dynamicToolBean.getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED, DynamicDetailMenuView.ITEM_POSITION_3);
+        mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_collect(), DynamicDetailMenuView.ITEM_POSITION_3);
     }
 
     /**
@@ -456,8 +458,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 switch (postion) {
                     case DynamicDetailMenuView.ITEM_POSITION_0:
                         // 处理喜欢逻辑，包括服务器，数据库，ui
-                        mPresenter.handleLike(mDynamicBean.getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED,
-                                mDynamicBean.getFeed_id(), mDynamicBean.getTool());
+                        mPresenter.handleLike(!mDynamicBean.isHas_digg(),
+                                mDynamicBean.getId(), mDynamicBean);
                         break;
                     case DynamicDetailMenuView.ITEM_POSITION_1:
                         // 评论
@@ -472,12 +474,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     case DynamicDetailMenuView.ITEM_POSITION_3:
                         // 处理喜欢逻辑，包括服务器，数据库，ui
                         if (mDynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-                            initMyDynamicPopupWindow(mDynamicBean, mDynamicBean.getTool().getIs_collection_feed() ==
-                                    DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                            initMyDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
                             mMyDynamicPopWindow.show();
                         } else {
-                            initOtherDynamicPopupWindow(mDynamicBean, mDynamicBean.getTool().getIs_collection_feed() ==
-                                    DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                            initOtherDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
                             mOtherDynamicPopWindow.show();
                         }
                         break;
@@ -593,7 +593,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      *
      * @param dynamicBean curent dynamic
      */
-    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected) {
+    private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
 //                .item2Str(getString(R.string.dynamic_list_share_dynamic))
@@ -631,7 +631,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      *
      * @param dynamicBean curent dynamic
      */
-    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected) {
+    private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected) {
         mMyDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_delete_dynamic))
