@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -146,6 +147,14 @@ public interface IDynamicReppsitory {
      * @return
      */
     Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(Long feed_id);
+
+    /**
+     * 设置动态评论收费 V2
+     * @param feed_id 动态id
+     * @param amout 收费金额
+     * @return
+     */
+    void setDynamicCommentToll(Long feed_id,int amout);
 
     /**
      * 增加动态浏览量

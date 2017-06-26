@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
@@ -17,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
@@ -217,6 +217,17 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
+    public void setDynamicCommentToll(Long feed_id, int amout) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("amount", amout);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.TOLL_DYNAMIC_COMMENT_V2, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_COMMENT_PAID_V2, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
     public void updateOrInsertDynamic(List<DynamicBean> dynamicBeens, final String type) {
 
         Observable.just(dynamicBeens)
@@ -249,7 +260,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> dynamicBeens,final String type) {
+    public void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> dynamicBeens, final String type) {
         Observable.just(dynamicBeens)
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<List<DynamicDetailBeanV2>>() {

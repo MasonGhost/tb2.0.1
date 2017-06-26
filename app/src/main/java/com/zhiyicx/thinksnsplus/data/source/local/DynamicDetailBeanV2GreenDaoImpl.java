@@ -137,6 +137,15 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
         return null;
     }
 
+    public DynamicDetailBeanV2 getDynamicByFeedId(Long feed_id) {
+        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2Dao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " = ? "// feedId倒序
+                , String.valueOf(feed_id));
+        if (!datas.isEmpty()) {
+            return datas.get(0);
+        }
+        return null;
+    }
+
     /**
      * 获取关注的动态列表
      */

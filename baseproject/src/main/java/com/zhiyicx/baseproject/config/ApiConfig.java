@@ -142,6 +142,7 @@ public class ApiConfig {
 
     // 设置动态评论收费 V2
     public static final String APP_PATH_COMMENT_PAID_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comment-paid";
+    public static final String APP_PATH_COMMENT_PAID_V2_FORMAT = "api/" + API_VERSION_2 + "/feeds/%d/comment-paid";
 
 
     /**

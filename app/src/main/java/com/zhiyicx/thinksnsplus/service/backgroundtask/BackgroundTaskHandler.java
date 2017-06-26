@@ -309,9 +309,16 @@ public class BackgroundTaskHandler {
                 break;
 
             /**
-             * 发送动态
+             * 发送动态 V2 api
              */
             case SEND_DYNAMIC_V2:
+                sendDynamicV2(backgroundRequestTaskBean);
+                break;
+
+            /**
+             * 设置动态评论收费 V2 api
+             */
+            case TOLL_DYNAMIC_COMMENT_V2:
                 sendDynamicV2(backgroundRequestTaskBean);
                 break;
 
@@ -616,6 +623,20 @@ public class BackgroundTaskHandler {
                         sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }
                 });
+
+    }
+
+
+    private void setTollDynamicComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long feed_Id = (Long) params.get("amount");
+
+        final DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_Id);
+        if (dynamicDetailBeanV2 == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+
 
     }
 
