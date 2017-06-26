@@ -217,14 +217,10 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public void setDynamicCommentToll(Long feed_id, int amout) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("amount", amout);
-        // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.TOLL_DYNAMIC_COMMENT_V2, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_COMMENT_PAID_V2, feed_id));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    public Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id, int amout) {
+        return mDynamicClient.setDynamicCommentToll(feed_id, amout)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

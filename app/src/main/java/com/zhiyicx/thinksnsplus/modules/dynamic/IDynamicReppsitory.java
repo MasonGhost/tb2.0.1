@@ -154,7 +154,7 @@ public interface IDynamicReppsitory {
      * @param amout 收费金额
      * @return
      */
-    void setDynamicCommentToll(Long feed_id,int amout);
+    Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id,int amout);
 
     /**
      * 增加动态浏览量

@@ -1,9 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseDynamicRepository;
 
 import javax.inject.Inject;
 
@@ -19,26 +20,25 @@ public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicComment
         implements DynamicCommentTollContract.Presenter {
 
     @Inject
+    BaseDynamicRepository mBaseDynamicRepository;
+
+    @Inject
     public DynamicCommentTollPresenter(DynamicCommentTollContract.Repository repository, DynamicCommentTollContract.View rootView) {
         super(repository, rootView);
     }
 
     @Override
-    public void tollDynamicComment(Long feed_id) {
-        if (mRootView.getCommentMoney() != (int) mRootView.getCommentMoney()) {
-            mRootView.initWithdrawalsInstructionsPop();
-            return;
-        }
-        mRepository.tollDynamicComment(feed_id)
+    public void setDynamicCommentToll(Long feed_id, int amout) {
+        mBaseDynamicRepository.setDynamicCommentToll(feed_id, amout)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing));
                     }
                 })
-                .subscribe(new BaseSubscribeForV2<BaseJson<Integer>>() {
+                .subscribe(new BaseSubscribeForV2<DynamicCommentToll>() {
                     @Override
-                    protected void onSuccess(BaseJson<Integer> data) {
+                    protected void onSuccess(DynamicCommentToll data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_comment_toll_success));
                     }
 
@@ -55,4 +55,5 @@ public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicComment
                     }
                 });
     }
+
 }

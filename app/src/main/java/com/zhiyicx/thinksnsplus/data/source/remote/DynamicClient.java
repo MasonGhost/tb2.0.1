@@ -180,4 +180,14 @@ public interface DynamicClient {
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_DETAIL)
     Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(@Path("feed_id") Long feed_id);
 
+    /**
+     * 设置动态评论收费 V2
+     * @param feed_id 动态id
+     * @param amount 收费金额
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_COMMENT_PAID_V2)
+    Observable<DynamicCommentToll> setDynamicCommentToll(@Path("feed_id") Long feed_id, @Field("amount")int amount);
+
 }

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment;
 
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,12 +11,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollContract.Presenter>
         implements DynamicCommentTollContract.View {
+
+    public static final String TOLL_DYNAMIC_COMMENT = "toll_dynamic_comment";
 
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
@@ -58,8 +63,12 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
 
     private ActionPopupWindow mTollCommentInstructionsPopupWindow;
 
-    public static DynamicCommentTollFragment newInstance() {
-        return new DynamicCommentTollFragment();
+    private DynamicDetailBeanV2 mDynamicDetailBeanV2;
+
+    public static DynamicCommentTollFragment newInstance(Bundle bundle) {
+        DynamicCommentTollFragment dynamicCommentTollFragment = new DynamicCommentTollFragment();
+        dynamicCommentTollFragment.setArguments(bundle);
+        return dynamicCommentTollFragment;
     }
 
     @Override
@@ -86,7 +95,7 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
 
     @Override
     protected void initData() {
-
+        mDynamicDetailBeanV2 = (DynamicDetailBeanV2) getArguments().get(TOLL_DYNAMIC_COMMENT);
     }
 
     @Override
@@ -106,30 +115,34 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
     }
 
     private void initListener() {
-        mRbDaysGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                if (checkedId != -1) {
-                    resetEtInput();
-                }
-                switch (checkedId) {
-                    case R.id.rb_one:
-                        mCommentMoney = mSelectMoney.get(0);
-                        break;
-                    case R.id.rb_two:
-                        mCommentMoney = mSelectMoney.get(1);
-                        break;
-                    case R.id.rb_three:
-                        mCommentMoney = mSelectMoney.get(2);
-                        break;
-                    default:
-                        break;
-                }
-                if (checkedId != -1) {
-                    setConfirmEnable();
-                }
-            }
-        });
+
+        RxRadioGroup.checkedChanges(mRbDaysGroup)
+                .compose(this.<Integer>bindToLifecycle())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer checkedId) {
+                        if (checkedId != -1) {
+                            resetEtInput();
+                        }
+                        switch (checkedId) {
+                            case R.id.rb_one:
+                                mCommentMoney = mSelectMoney.get(0);
+                                break;
+                            case R.id.rb_two:
+                                mCommentMoney = mSelectMoney.get(1);
+                                break;
+                            case R.id.rb_three:
+                                mCommentMoney = mSelectMoney.get(2);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        if (checkedId != -1) {
+                            setConfirmEnable();
+                        }
+                    }
+                });
 
         RxTextView.textChanges(mEtInput)
                 .compose(this.<CharSequence>bindToLifecycle())
@@ -158,7 +171,7 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mPresenter.tollDynamicComment(0L);
+                        mPresenter.setDynamicCommentToll(mDynamicDetailBeanV2.getId(), (int) mCommentMoney);
                         DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
                     }
                 });
@@ -194,6 +207,5 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
 
     private void resetEtInput() {
         mEtInput.setText("");
-        DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
     }
 }

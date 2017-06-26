@@ -203,7 +203,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
      *
      * @param data
      */
-
     private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
         mRepository.updateOrInsertDynamic(data, mRootView.getDynamicType());
     }

@@ -16,11 +16,13 @@ import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
@@ -319,7 +321,7 @@ public class BackgroundTaskHandler {
              * 设置动态评论收费 V2 api
              */
             case TOLL_DYNAMIC_COMMENT_V2:
-                sendDynamicV2(backgroundRequestTaskBean);
+                setTollDynamicComment(backgroundRequestTaskBean);
                 break;
 
             case SEND_COMMENT:
@@ -629,14 +631,29 @@ public class BackgroundTaskHandler {
 
     private void setTollDynamicComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
-        final Long feed_Id = (Long) params.get("amount");
+        final Long feed_Id = (Long) params.get("feed_id");
+        final int amount = (int) params.get("amount");
 
         final DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_Id);
         if (dynamicDetailBeanV2 == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
+        mSendDynamicRepository.setDynamicCommentToll(feed_Id,amount).subscribe(new BaseSubscribeForV2<DynamicCommentToll>() {
+            @Override
+            protected void onSuccess(DynamicCommentToll data) {
+            }
 
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+            }
+        });
 
     }
 

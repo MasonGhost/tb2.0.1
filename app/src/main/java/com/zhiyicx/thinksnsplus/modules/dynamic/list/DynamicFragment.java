@@ -71,6 +71,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
 
 /**
  * @Describe 动态列表
@@ -713,7 +714,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItemClicked() {// 申请评论收费
-                        startActivity(new Intent(getActivity(), DynamicCommentTollActivity.class));
+                        Intent intent=new Intent(getActivity(), DynamicCommentTollActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putParcelable(TOLL_DYNAMIC_COMMENT,dynamicBean);
+                        intent.putExtra(TOLL_DYNAMIC_COMMENT,bundle);
+                        startActivity(intent);
                         mMyDynamicPopWindow.hide();
                     }
                 })

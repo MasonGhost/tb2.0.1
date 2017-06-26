@@ -21,7 +21,7 @@ public interface DynamicCommentTollContract {
     }
 
     interface Presenter extends IBasePresenter {
-        void tollDynamicComment(Long feed_id);
+        void setDynamicCommentToll(Long feed_id, int amout);
     }
 
     interface Repository {
