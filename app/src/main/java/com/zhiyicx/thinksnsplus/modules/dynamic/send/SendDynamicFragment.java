@@ -541,7 +541,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
                     taskBean.setAmount(imageBean.getToll_monye()>0?imageBean.getToll_monye():null);
-                    taskBean.setType(imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE);
+                    taskBean.setType(imageBean.getToll_monye()*imageBean.getToll_type()>0
+                            ?(imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE):null);
                     storage_task.add(taskBean);
                 }
             }
