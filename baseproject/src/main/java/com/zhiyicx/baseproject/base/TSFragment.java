@@ -23,6 +23,7 @@ import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -64,6 +65,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
     private boolean isFirstIn = true;// 是否是第一次进入页面
     private Subscription mViewTreeSubscription = null;// View 树监听订阅器
+    private LoadingDialog mCenterLoadingDialog;
 
     @Nullable
     @Override
@@ -147,7 +149,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
-
+        if (needCenterLoadingDialog()){
+            mCenterLoadingDialog=new LoadingDialog(getActivity());
+        }
         return linearLayout;
     }
 
@@ -326,6 +330,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelOffset(R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(R.dimen.divider_line);
     }
 
+    @Override
+    public void showCenterLoading(String msg) {
+        mCenterLoadingDialog.showStateIng(msg);
+    }
+
+    @Override
+    public void hideCenterLoading() {
+        mCenterLoadingDialog.onDestroy();
+    }
+
     /**
      * 是否开启中心加载布局
      *
@@ -444,7 +458,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return mToolbarRight;
     }
 
-
+    protected boolean needCenterLoadingDialog(){
+        return false;
+    }
     /**
      * 是否显示分割线,默认显示
      */

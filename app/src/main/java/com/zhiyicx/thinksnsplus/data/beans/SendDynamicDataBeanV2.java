@@ -4,10 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -198,6 +196,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         sendDynamicDataBeanV2.setFeed_content(dynamicBean.getFeed_content());
         sendDynamicDataBeanV2.setFeed_from(dynamicBean.getFeed_from() + "");
         sendDynamicDataBeanV2.setFeed_mark(dynamicBean.getFeed_mark() + "");
+        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount()>0?(float)dynamicBean.getAmount():null);
         return sendDynamicDataBeanV2;
     }
 

@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -30,6 +31,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -39,6 +41,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -55,6 +58,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -87,7 +91,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
-
+    @Inject
+    CommentRepository mCommentRepository;
     @Inject
     public SharePolicy mSharePolicy;
 
@@ -452,6 +457,36 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public List<SystemConfigBean.Advert> getAdvert() {
         return mSystemRepository.getBootstrappersInfoFromLocal().getAdverts();
+    }
+
+    @Override
+    public void checkNote(int note) {
+        mCommentRepository.checkNote(note)
+                .subscribe(new BaseSubscribeForV2<PurChasesBean>() {
+            @Override
+            protected void onSuccess(PurChasesBean data) {
+
+            }
+        });
+    }
+
+    @Override
+    public void payNote(int note) {
+        mCommentRepository.paykNote(note)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.showCenterLoading("交易中...");
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+            @Override
+            protected void onSuccess(BaseJsonV2 data) {
+                mRootView.hideCenterLoading();
+                mRootView.paySuccess();
+                mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentPayDynamic());
+            }
+        });
     }
 
     @Override

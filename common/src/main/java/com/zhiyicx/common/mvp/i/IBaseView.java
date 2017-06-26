@@ -59,4 +59,11 @@ public interface IBaseView<VP> {
      */
     void showLoginPop();
 
+    /**
+     * 屏幕中间带文字的 loading 窗口
+     */
+    void showCenterLoading(String msg);
+
+    void hideCenterLoading();
+
 }

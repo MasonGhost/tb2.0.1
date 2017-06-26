@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
@@ -87,7 +88,7 @@ public class CommentRepository implements ICommentRepository {
     }
 
     @Override
-    public Observable<PurChasesBean> paykNote(int note) {
+    public Observable<BaseJsonV2> paykNote(int note) {
         return mCommonClient.payNote(note)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

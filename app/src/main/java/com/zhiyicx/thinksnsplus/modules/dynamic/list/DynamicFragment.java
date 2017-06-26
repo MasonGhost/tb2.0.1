@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
+import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -111,6 +112,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private long mReplyToUserId;// 被评论者的 id
 
     private DynamicBannerHeader mDynamicBannerHeader;
+    private DynamicDetailBeanV2 mCurrentPayDynamic;
 
 
     public void setOnCommentClickListener(OnCommentClickListener onCommentClickListener) {
@@ -159,6 +161,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     @Override
     protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
+    protected boolean needCenterLoadingDialog() {
         return true;
     }
 
@@ -289,8 +296,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
-
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
+            return;
+        }
+        if (!dynamicBean.getImages().get(position).isPaid()){
+            mCurrentPayDynamic=dynamicBean;
+            mCurrentPayDynamic.getImages().get(position).setPaid(true);
+            initImageCenterPopWindow((float) dynamicBean.getImages().get(position).getAmount(),dynamicBean.getImages().get(position).getPaid_node());
             return;
         }
 
@@ -329,6 +341,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     public String getDynamicType() {
         return mDynamicType;
+    }
+
+    @Override
+    public DynamicDetailBeanV2 getCurrentPayDynamic() {
+        return mCurrentPayDynamic;
     }
 
     @Override
@@ -389,6 +406,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
+    @Override
+    public void paySuccess() {
+
+    }
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -749,11 +770,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .build();
     }
 
-    private void initImageCenterPopWindow() {
-        if (mPayImagePopWindow != null) {
-            mPayImagePopWindow.show();
-            return;
-        }
+    private void initImageCenterPopWindow(float amout,final int note) {
+//        if (mPayImagePopWindow != null) {
+//            mPayImagePopWindow.show();
+//            return;
+//        }
         mPayImagePopWindow = PayPopWindow.builder()
                 .with(getActivity())
                 .isWrap(true)
@@ -764,16 +785,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R
-                        .string.buy_pay_member), 4.4))
+                        .string.buy_pay_member), amout))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), 4.4))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
                 .buildCenterPopWindowItem1ClickListener(new PayPopWindow
                         .CenterPopWindowItem1ClickListener() {
                     @Override
                     public void onClicked() {
+                        mPresenter.payNote(note);
                         mPayImagePopWindow.hide();
                     }
                 })

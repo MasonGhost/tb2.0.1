@@ -361,6 +361,16 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     }
 
     @Override
+    public void checkNote(int note) {
+
+    }
+
+    @Override
+    public void payNote(int note) {
+
+    }
+
+    @Override
     public void onStart(Share share) {
     }
 

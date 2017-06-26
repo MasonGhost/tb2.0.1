@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 
 import java.util.ArrayList;
@@ -48,6 +47,10 @@ public class PayPopWindow extends CustomPopupWindow {
 
     public static CBuilder builder() {
         return new CBuilder();
+    }
+
+    public CBuilder newBuilder(){
+        return new CBuilder(this);
     }
 
     private PayPopWindow(CBuilder builder) {
@@ -170,6 +173,31 @@ public class PayPopWindow extends CustomPopupWindow {
         private int item2Color;
         private int linksColor1;
         private int linksColor2;
+
+        public CBuilder() {
+        }
+
+        public CBuilder(PayPopWindow builder) {
+            this.titleStr = builder.titleStr;
+            this.moneyStr = builder.moneyStr;
+            this.descrStr = builder.descrStr;
+            this.linksStr = builder.linksStr;
+            this.item1Str = builder.item1Str;
+            this.item2Str = builder.item2Str;
+
+            this.titleColor = builder.titleColor;
+            this.moneyColor = builder.moneyColor;
+            this.descrColor = builder.descrColor;
+            this.item1Color = builder.item1Color;
+            this.item2Color = builder.item2Color;
+            this.linksColor1 = builder.linksColor1;
+            this.linksColor2 = builder.linksColor2;
+
+            this.mCenterPopWindowItem1ClickListener = builder.mCenterPopWindowItem1ClickListener;
+            this.mCenterPopWindowItem2ClickListener = builder.mCenterPopWindowItem2ClickListener;
+            this.mCenterPopWindowLinkClickListener = builder.mCenterPopWindowLinkClickListener;
+
+        }
 
         public CBuilder buildCenterPopWindowLinkClickListener(CenterPopWindowLinkClickListener mCenterPopWindowLinkClickListener) {
             this.mCenterPopWindowLinkClickListener = mCenterPopWindowLinkClickListener;

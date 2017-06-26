@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 
 import retrofit2.http.Path;
@@ -19,6 +20,6 @@ public interface ICommentRepository {
 
     Observable<PurChasesBean> checkNote(int note);
 
-    Observable<PurChasesBean> paykNote(int note);
+    Observable<BaseJsonV2> paykNote(int note);
 
 }

@@ -532,6 +532,16 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         return null;
     }
 
+    @Override
+    public void checkNote(int note) {
+
+    }
+
+    @Override
+    public void payNote(int note) {
+
+    }
+
     /**
      * 通过 feedMark 获取当前数据的位置
      *
