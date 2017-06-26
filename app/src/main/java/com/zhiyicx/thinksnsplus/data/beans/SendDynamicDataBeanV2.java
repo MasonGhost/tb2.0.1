@@ -38,7 +38,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     private String feed_latitude;
     private String feed_longtitude;
     private String feed_geohash;
-    private float amount;
+    private Float amount;
     private List<StorageTaskBean> images;
     private List<ImageBean> photos;
 
@@ -106,11 +106,11 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.feed_geohash = feed_geohash;
     }
 
-    public float getAmount() {
+    public Float getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(Float amount) {
         this.amount = amount;
     }
 
@@ -131,7 +131,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
          */
 
         private int id;
-        private float amount;
+        private Float amount;
         private String type;
 
         public int getId() {
@@ -142,11 +142,11 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
             this.id = id;
         }
 
-        public float getAmount() {
+        public Float getAmount() {
             return amount;
         }
 
-        public void setAmount(float amount) {
+        public void setAmount(Float amount) {
             this.amount = amount;
         }
 

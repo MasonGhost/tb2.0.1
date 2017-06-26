@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;

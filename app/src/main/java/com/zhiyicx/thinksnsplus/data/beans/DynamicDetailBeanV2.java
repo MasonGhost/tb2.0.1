@@ -6,8 +6,10 @@ import android.os.Parcelable;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
@@ -19,8 +21,6 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 /**
  * @Author Jliuer
@@ -74,7 +74,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     private String feed_longtitude;
     private String feed_geohash;
     private int audit_status;
-    private int paid_node;
     @Id
     private Long feed_mark;
     private boolean has_digg;
@@ -85,6 +84,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     private List<ImagesBean> images;
     @Convert(converter = IntegerParamsConverter.class, columnType = String.class)
     private List<Integer> diggs;
+    @Convert(converter = PaidNoteConverter.class, columnType = String.class)
+    private PaidNote paid_node;
 
     @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
     private UserInfoBean userInfoBean;
@@ -518,6 +519,77 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         };
     }
 
+    public static class PaidNote implements Serializable,Parcelable{
+        private static final long serialVersionUID=1234L;
+        /**
+         * paid : true
+         * node : 9
+         * amount : 20
+         */
+
+        private boolean paid;
+        private int node;
+        private int amount;
+
+        public boolean isPaid() {
+            return paid;
+        }
+
+        public void setPaid(boolean paid) {
+            this.paid = paid;
+        }
+
+        public int getNode() {
+            return node;
+        }
+
+        public void setNode(int node) {
+            this.node = node;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
+
+        public void setAmount(int amount) {
+            this.amount = amount;
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.node);
+            dest.writeInt(this.amount);
+        }
+
+        public PaidNote() {
+        }
+
+        protected PaidNote(Parcel in) {
+            this.paid = in.readByte() != 0;
+            this.node = in.readInt();
+            this.amount = in.readInt();
+        }
+
+        public static final Creator<PaidNote> CREATOR = new Creator<PaidNote>() {
+            @Override
+            public PaidNote createFromParcel(Parcel source) {
+                return new PaidNote(source);
+            }
+
+            @Override
+            public PaidNote[] newArray(int size) {
+                return new PaidNote[size];
+            }
+        };
+    }
+
 
     public static class ImagesBeansVonvert implements PropertyConverter<List<ImagesBean>, String> {
         @Override
@@ -556,6 +628,26 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         }
     }
 
+    public static class PaidNoteConverter implements PropertyConverter<PaidNote, String> {
+
+        @Override
+        public PaidNote convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(PaidNote entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -585,12 +677,21 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.images);
         dest.writeList(this.diggs);
+        dest.writeParcelable(this.paid_node, flags);
         dest.writeParcelable(this.userInfoBean, flags);
         dest.writeTypedList(this.comments);
         dest.writeValue(this.hot_creat_time);
         dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
         dest.writeInt(this.state);
         dest.writeTypedList(this.digUserInfoList);
+    }
+
+    public PaidNote getPaid_node() {
+        return this.paid_node;
+    }
+
+    public void setPaid_node(PaidNote paid_node) {
+        this.paid_node = paid_node;
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
@@ -635,14 +736,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         myDao.update(this);
     }
 
-    public int getPaid_node() {
-        return this.paid_node;
-    }
-
-    public void setPaid_node(int paid_node) {
-        this.paid_node = paid_node;
-    }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1467065995)
     public void __setDaoSession(DaoSession daoSession) {
@@ -677,6 +770,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.images = in.createTypedArrayList(ImagesBean.CREATOR);
         this.diggs = new ArrayList<Integer>();
         in.readList(this.diggs, Integer.class.getClassLoader());
+        this.paid_node = in.readParcelable(PaidNote.class.getClassLoader());
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
         this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
@@ -685,12 +779,12 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
     }
 
-    @Generated(hash = 491967563)
+    @Generated(hash = 938959960)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at,
             Long user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
             int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, int paid_node, Long feed_mark, boolean has_digg, boolean has_collect,
-            double amount, boolean paid, List<ImagesBean> images, List<Integer> diggs,
+            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, double amount,
+            boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node,
             Long hot_creat_time, boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
         this.id = id;
         this.created_at = created_at;
@@ -706,7 +800,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.feed_longtitude = feed_longtitude;
         this.feed_geohash = feed_geohash;
         this.audit_status = audit_status;
-        this.paid_node = paid_node;
         this.feed_mark = feed_mark;
         this.has_digg = has_digg;
         this.has_collect = has_collect;
@@ -714,6 +807,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.paid = paid;
         this.images = images;
         this.diggs = diggs;
+        this.paid_node = paid_node;
         this.hot_creat_time = hot_creat_time;
         this.isFollowed = isFollowed;
         this.state = state;

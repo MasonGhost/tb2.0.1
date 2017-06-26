@@ -199,7 +199,7 @@ public class UpLoadRepository implements IUploadRepository {
                     protected boolean extraReTryCondition(Throwable throwable) {
                         String msg=throwable.toString();
                         LogUtils.e("extraReTryCondition:"+msg);
-                        return throwable.toString().contains("404"); // 文件不存在 服务器返回404.
+                        return !throwable.toString().contains("404"); // 文件不存在 服务器返回404.
                     }
                 })
                 .onErrorReturn(new Func1<Throwable, BaseJsonV2>() {

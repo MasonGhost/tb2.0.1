@@ -559,6 +559,7 @@ public class BackgroundTaskHandler {
                     }).map(new Func1<List<Integer>, SendDynamicDataBeanV2>() {
                         @Override
                         public SendDynamicDataBeanV2 call(final List<Integer> integers) {
+                            sendDynamicDataBean.setPhotos(null);
                             return sendDynamicDataBean;
                         }
                     }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
