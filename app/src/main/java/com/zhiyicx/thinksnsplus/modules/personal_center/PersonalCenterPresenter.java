@@ -538,7 +538,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public void payNote(int note) {
+    public void payNote(int dynamicPosition, int imagePosition, int note) {
 
     }
 

@@ -366,7 +366,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     }
 
     @Override
-    public void payNote(int note) {
+    public void payNote(int dynamicPosition, int imagePosition, int note) {
 
     }
 

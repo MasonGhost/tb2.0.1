@@ -77,7 +77,7 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
         String url;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            url = String.format(ApiConfig.IMAGE_PATH, imageBean.getFile(), proportion);
+            url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), 50, 50, proportion);
         } else {
             url = imageBean.getImgUrl();
         }

@@ -137,7 +137,7 @@ public interface DynamicContract {
 
         void checkNote(int note);
 
-        void payNote(int note);
+        void payNote(int dynamicPosition,int imagePosition,int note);
 
     }
 }

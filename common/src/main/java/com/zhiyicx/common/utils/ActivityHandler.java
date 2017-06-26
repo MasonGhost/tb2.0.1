@@ -81,6 +81,7 @@ public class ActivityHandler {
     public void removeActivity(Activity activity) {
         if (activity != null) {
             activityStack.remove(activity);
+            activity.finish();
             activity = null;
         }
     }

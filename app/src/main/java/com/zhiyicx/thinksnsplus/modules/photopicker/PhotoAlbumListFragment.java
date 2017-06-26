@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -79,7 +80,7 @@ public class PhotoAlbumListFragment extends TSFragment {
 
     @Override
     protected void setRightClick() {
-        startActivity(new Intent(getActivity(),SendDynamicActivity.class));
+        ActivityHandler.getInstance().removeActivity(PhotoAlbumDetailsActivity.class);
         getActivity().finish();
         getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 //        getActivity().overridePendingTransition(R.anim.slide_from_right_in, R.anim.slide_from_left_out);

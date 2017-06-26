@@ -30,7 +30,6 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -119,25 +118,25 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
         Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(),
-                maxId,isLoadMore)
+                maxId, isLoadMore)
                 .map(new Func1<List<DynamicDetailBeanV2>, List<DynamicDetailBeanV2>>() {
                     @Override
                     public List<DynamicDetailBeanV2> call(List<DynamicDetailBeanV2> listBaseJson) {
                         insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
-                            if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                                if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
-                                    List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
-                                    data.addAll(listBaseJson);
-                                }
+                        if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                            if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
+                                List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
+                                data.addAll(listBaseJson);
                             }
-                            for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
-                                List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i).getFeed_mark());
-                                if (!dynamicCommentBeen.isEmpty()) {
-                                    dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
-                                    listBaseJson.get(i).getComments().clear();
-                                    listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
-                                }
+                        }
+                        for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                            List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i).getFeed_mark());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
+                                listBaseJson.get(i).getComments().clear();
+                                listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
                             }
+                        }
 
                         return listBaseJson;
                     }
@@ -147,6 +146,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     protected void onSuccess(List<DynamicDetailBeanV2> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
+
                     @Override
                     protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
@@ -194,7 +194,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 datas.get(i).setComments(mDynamicCommentBeanGreenDao.getLocalComments(datas.get(i).getFeed_mark()));
             }
         }
-        LogUtils.i("requestCacheData DYNAMIC_TYPE_MY_COLLECTION:"+datas.size());
+        LogUtils.i("requestCacheData DYNAMIC_TYPE_MY_COLLECTION:" + datas.size());
         return datas;
     }
 
@@ -463,30 +463,52 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     public void checkNote(int note) {
         mCommentRepository.checkNote(note)
                 .subscribe(new BaseSubscribeForV2<PurChasesBean>() {
-            @Override
-            protected void onSuccess(PurChasesBean data) {
+                    @Override
+                    protected void onSuccess(PurChasesBean data) {
 
-            }
-        });
+                    }
+                });
     }
 
     @Override
-    public void payNote(int note) {
+    public void payNote(final int dynamicPosition, final int imagePosition, int note) {
         mCommentRepository.paykNote(note)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        mRootView.showCenterLoading("交易中...");
+                        mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing));
                     }
                 })
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
-            @Override
-            protected void onSuccess(BaseJsonV2 data) {
-                mRootView.hideCenterLoading();
-                mRootView.paySuccess();
-                mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentPayDynamic());
-            }
-        });
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.hideCenterLoading();
+                        mRootView.paySuccess();
+                        mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
+                        mRootView.refreshData(dynamicPosition);
+                        mDynamicDetailBeanV2GreenDao.insertOrReplace( mRootView.getListDatas().get(dynamicPosition));
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_fail));
+                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentPayDynamic());
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.hideCenterLoading();
+                    }
+                });
     }
 
     @Override

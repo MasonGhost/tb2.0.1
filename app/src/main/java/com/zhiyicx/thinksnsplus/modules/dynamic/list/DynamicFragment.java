@@ -282,7 +282,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected Long getMaxId(@NotNull List<DynamicDetailBeanV2> data) {
         if (mListDatas.size() > 0) {
-            return mListDatas.get(mListDatas.size() - 1).getId();
+            if (getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+                return mListDatas.get(mListDatas.size() - 1).getHot_creat_time();
+            } else {
+                return mListDatas.get(mListDatas.size() - 1).getId();
+            }
         } else {
             return DEFAULT_PAGE_MAX_ID;
         }
@@ -300,9 +304,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
         if (!dynamicBean.getImages().get(position).isPaid()){
-            mCurrentPayDynamic=dynamicBean;
-            mCurrentPayDynamic.getImages().get(position).setPaid(true);
-            initImageCenterPopWindow((float) dynamicBean.getImages().get(position).getAmount(),dynamicBean.getImages().get(position).getPaid_node());
+            initImageCenterPopWindow(holder.getAdapterPosition(),position,(float) dynamicBean.getImages().get(position).getAmount(),dynamicBean.getImages().get(position).getPaid_node());
             return;
         }
 
@@ -770,7 +772,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .build();
     }
 
-    private void initImageCenterPopWindow(float amout,final int note) {
+    private void initImageCenterPopWindow(final int dynamicPosition,final int imagePosition,float amout,final int note) {
 //        if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();
 //            return;
@@ -795,7 +797,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                         .CenterPopWindowItem1ClickListener() {
                     @Override
                     public void onClicked() {
-                        mPresenter.payNote(note);
+                        mPresenter.payNote(dynamicPosition,imagePosition,note);
                         mPayImagePopWindow.hide();
                     }
                 })

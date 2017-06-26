@@ -293,13 +293,15 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             } else {
                 url = imageBean.getImgUrl();
             }
-
+            if (!imageBean.isPaid() && dynamicBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id()) {// 没有付费的他人图片
+                url = "";
+            }
         }
         LogUtils.e("initImageView:url:" + url);
         Glide.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.shape_default_image)
-                .error(R.drawable.shape_default_image)
+                .error(R.mipmap.pic_locked_square)
                 .into(view);
 
         if (dynamicBean.getImages() != null) {
