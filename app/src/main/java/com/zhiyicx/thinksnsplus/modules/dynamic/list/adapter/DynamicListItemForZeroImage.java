@@ -1,14 +1,9 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
+package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2;
 
 import android.content.Context;
-import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListBaseItem;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 
 /**
  * @author LiuChao
@@ -24,8 +19,8 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
 
 
     @Override
-    public boolean isForViewType(DynamicBean item, int position) {
-        return item.getFeed_mark() != null && (item.getFeed().getStorages() == null||item.getFeed().getStorages().isEmpty());
+    public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
+        return item.getFeed_mark() != null && (item.getImages() == null||item.getImages().isEmpty());
     }
 
 }

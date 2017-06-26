@@ -1,11 +1,10 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
+package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
