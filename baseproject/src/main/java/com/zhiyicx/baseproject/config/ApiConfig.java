@@ -242,6 +242,8 @@ public class ApiConfig {
     ////////////////////////////////////////// 以下是通用 V2 接口
     public static final String APP_PATH_STORAGE_HASH = "api/" + API_VERSION_2 + "/files/uploaded/{hash}";// 校检文件hash V2
 
+    public static final String APP_PATH_CHECK_NOTE = "api/" + API_VERSION_2 + "/purchases/{node}";// 节点付费相关
+
     public static final String APP_PATH_STORAGE_UPLAOD_FILE = "api/" + API_VERSION_2 + "/files";// 文件上传 V2
 
     public static final String APP_PATH_STORAGE_GET_FILE = "api/" + API_VERSION_2 + "/files/{file}";// 文件获取 V2

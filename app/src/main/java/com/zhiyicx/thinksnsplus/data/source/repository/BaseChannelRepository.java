@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
@@ -151,5 +152,8 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         return dealWithDynamicList(mChannelClient.getDynamicListFromChannel(channel_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id), "", false);
     }
 
-
+    @Override
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListFromChannelV2(long channel_id, long max_id) {
+        return null;
+    }
 }

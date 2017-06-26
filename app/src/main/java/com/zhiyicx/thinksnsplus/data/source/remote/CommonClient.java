@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
@@ -37,6 +38,7 @@ import retrofit2.http.Url;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
@@ -200,13 +202,25 @@ public interface CommonClient {
 
 
     /**
-     * 校验文件hash
+     * 校验文件hash V2 api
      *
      * @param hash 文件 MD5 值
      * @return
      */
     @GET(APP_PATH_STORAGE_HASH)
     Observable<BaseJsonV2> checkStorageHash(@Path("hash") String hash);
+
+    /**
+     * 校验文件hash V2 api
+     *
+     * @param note 文件付费节点
+     * @return
+     */
+    @GET(APP_PATH_CHECK_NOTE)
+    Observable<PurChasesBean> checkNote(@Path("note") int note);
+
+    @POST(APP_PATH_CHECK_NOTE)
+    Observable<PurChasesBean> payNote(@Path("note") int note);
 
     /**
      * 通过Post方法上传文件

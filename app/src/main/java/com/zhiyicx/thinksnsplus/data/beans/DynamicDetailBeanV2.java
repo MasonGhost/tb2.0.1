@@ -74,6 +74,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     private String feed_longtitude;
     private String feed_geohash;
     private int audit_status;
+    private int paid_node;
     @Id
     private Long feed_mark;
     private boolean has_digg;
@@ -359,10 +360,12 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         private String size;
         private String imgUrl;
         private int width;
+        private int paid_node;
         private int height;
         private double amount;
         private String type;
         private boolean paid;
+
         private String imgMimeType;// 图片类型
 
         public int getPropPart() {
@@ -399,6 +402,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
 
         public String getSize() {
             return size;
+        }
+
+        public int getPaid_node() {
+            return paid_node;
+        }
+
+        public void setPaid_node(int paid_node) {
+            this.paid_node = paid_node;
         }
 
         public void setSize(String size) {
@@ -624,6 +635,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         myDao.update(this);
     }
 
+    public int getPaid_node() {
+        return this.paid_node;
+    }
+
+    public void setPaid_node(int paid_node) {
+        this.paid_node = paid_node;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1467065995)
     public void __setDaoSession(DaoSession daoSession) {
@@ -666,13 +685,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
     }
 
-    @Generated(hash = 1075150798)
+    @Generated(hash = 491967563)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at,
             Long user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
             int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, double amount,
-            boolean paid, List<ImagesBean> images, List<Integer> diggs, Long hot_creat_time,
-            boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
+            int audit_status, int paid_node, Long feed_mark, boolean has_digg, boolean has_collect,
+            double amount, boolean paid, List<ImagesBean> images, List<Integer> diggs,
+            Long hot_creat_time, boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -687,6 +706,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.feed_longtitude = feed_longtitude;
         this.feed_geohash = feed_geohash;
         this.audit_status = audit_status;
+        this.paid_node = paid_node;
         this.feed_mark = feed_mark;
         this.has_digg = has_digg;
         this.has_collect = has_collect;
