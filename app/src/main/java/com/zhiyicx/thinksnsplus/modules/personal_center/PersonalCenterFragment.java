@@ -30,7 +30,6 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -38,7 +37,6 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -154,7 +152,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mPersonalCenterHeaderViewItem.initHeaderView(false);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
-        //mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
+//        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
@@ -327,22 +325,27 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
+    public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
+
+        List<DynamicDetailBeanV2.ImagesBean> task = dynamicBean.getImages();
+        List<ImageBean> imageBeanList = new ArrayList<>();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
-                = new ArrayList<AnimationRectBean>();
-        for (int i = 0; i < imageBeanList.size(); i++) {
+                = new ArrayList<>();
+        for (int i = 0; i < task.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
+            ImageBean imageBean = new ImageBean();
+            imageBean.setStorage_id(task.get(i).getFile());
+            imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
-            LogUtils.i("dynamic_" + i + rect.toString());
         }
 
-        GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
+        GalleryActivity.startToGallery(getContext(), position, imageBeanList,
+                animationRectBeanArrayList);
     }
 
     @Override
@@ -381,7 +384,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
 
             case 3: // 更多
-//                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, shareBitMap);
+                initDeletDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, shareBitMap);
                 mDeletDynamicPopWindow.show();
                 break;
             default:

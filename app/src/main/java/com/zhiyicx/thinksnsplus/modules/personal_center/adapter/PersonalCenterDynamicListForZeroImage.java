@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.personal_center.adapter;
 import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
@@ -23,13 +24,13 @@ public class PersonalCenterDynamicListForZeroImage extends PersonalCenterDynamic
     }
 
     @Override
-    public boolean isForViewType(DynamicBean item, int position) {
-        return position == 0 || (item.getFeed_mark() != null && (item.getFeed().getStorages() == null||item.getFeed().getStorages().isEmpty()));
+    public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
+        return position == 0 || (item.getFeed_mark() != null && (item.getImages() == null||item.getImages().isEmpty()));
     }
 
 
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
+    public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position,itemCounts);
     }
 }

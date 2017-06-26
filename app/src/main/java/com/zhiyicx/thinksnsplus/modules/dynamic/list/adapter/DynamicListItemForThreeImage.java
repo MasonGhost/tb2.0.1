@@ -1,10 +1,9 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2;
+package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 import android.widget.ImageView;
 
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 

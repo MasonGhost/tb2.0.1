@@ -1,8 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2;
+package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 
 /**

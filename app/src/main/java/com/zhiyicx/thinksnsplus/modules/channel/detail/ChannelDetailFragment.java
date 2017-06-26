@@ -349,22 +349,27 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
-    public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
+    public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
+
+        List<DynamicDetailBeanV2.ImagesBean> task = dynamicBean.getImages();
+        List<ImageBean> imageBeanList = new ArrayList<>();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
-                = new ArrayList<AnimationRectBean>();
-        for (int i = 0; i < imageBeanList.size(); i++) {
+                = new ArrayList<>();
+        for (int i = 0; i < task.size(); i++) {
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
+            ImageBean imageBean = new ImageBean();
+            imageBean.setStorage_id(task.get(i).getFile());
+            imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);
-            LogUtils.i("dynamic_" + i + rect.toString());
         }
 
-        GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
+        GalleryActivity.startToGallery(getContext(), position, imageBeanList,
+                animationRectBeanArrayList);
     }
 
     @Override

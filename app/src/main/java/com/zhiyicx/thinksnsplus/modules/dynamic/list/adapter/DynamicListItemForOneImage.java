@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2;
+package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -9,13 +9,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;

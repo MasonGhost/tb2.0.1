@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2;
+package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -13,7 +13,6 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -26,7 +25,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -38,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean.STATUS_DIGG_FEED_CHECKED;
 
 /**
  * @Describe 动态列表适配器基类

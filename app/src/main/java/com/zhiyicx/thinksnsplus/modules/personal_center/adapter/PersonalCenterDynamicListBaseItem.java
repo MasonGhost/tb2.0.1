@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -23,13 +23,13 @@ public class PersonalCenterDynamicListBaseItem extends DynamicListBaseItem {
     }
 
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
+    public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position,itemCounts);
         //////这儿的时间处理放在了DynamicListBaseItem中，否则还要在每个ImageItem中重写//////
         ////////////////////////////添加个人中心时间处理/////////////////////////
         TextView timeUp = holder.getView(R.id.tv_time_up);
         TextView timeDown = holder.getView(R.id.tv_time_down);
-        String createdTime = dynamicBean.getFeed().getCreated_at();
+        String createdTime = dynamicBean.getCreated_at();
         String timeString = TimeUtils.getTimeFriendlyForUserHome(createdTime);
         if (timeString.equals("今,天") || timeString.equals("昨,天")) {
             timeString = timeString.replace(",", "\n");

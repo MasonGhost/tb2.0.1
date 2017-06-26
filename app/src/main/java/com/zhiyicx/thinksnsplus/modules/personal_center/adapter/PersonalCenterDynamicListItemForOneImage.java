@@ -6,11 +6,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -45,7 +47,7 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
     }
 
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position, int itemCounts) {
+    public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
         initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
@@ -59,23 +61,23 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
      * @param part        this part percent of imageContainer
      */
     @Override
-    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */
         int with;
         int height;
         int proportion; // 压缩比例
-        with = getCurrenItemWith(part);
-        ;
-        ImageBean imageBean = dynamicBean.getFeed().getStorages().get(positon);
-        height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
+        int currentWith = getCurrenItemWith(part);
+        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
+        with = currentWith;
+        height = (with * imageBean.getHeight() / imageBean.getWidth());
         height = height > mImageMaxHeight ? mImageMaxHeight : height;
-        proportion = (int) ((with / imageBean.getWidth()) * 100);
+        proportion =((with / imageBean.getWidth()) * 100);
         view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
         String url;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            url = String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), proportion);
+            url = String.format(ApiConfig.IMAGE_PATH, imageBean.getFile(), proportion);
         } else {
             url = imageBean.getImgUrl();
         }
@@ -84,12 +86,14 @@ public class PersonalCenterDynamicListItemForOneImage extends PersonalCenterDyna
         }
         Glide.with(mContext)
                 .load(url)
+                .asBitmap()
                 .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.shape_default_image)
                 .into(view);
-        if (dynamicBean.getFeed().getStorages() != null) {
-            dynamicBean.getFeed().getStorages().get(positon).setPart(proportion);
+        if (dynamicBean.getImages() != null) {
+            dynamicBean.getImages().get(positon).setPropPart(proportion);
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作

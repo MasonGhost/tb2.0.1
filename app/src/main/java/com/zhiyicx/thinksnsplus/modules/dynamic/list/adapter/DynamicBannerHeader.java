@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapterv2;
+package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
