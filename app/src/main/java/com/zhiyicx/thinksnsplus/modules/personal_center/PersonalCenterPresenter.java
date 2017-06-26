@@ -296,7 +296,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
-//        mRepository.updateOrInsertDynamic(data, ApiConfig.DYNAMIC_TYPE_NEW);
+        mRepository.updateOrInsertDynamicV2(data, ApiConfig.DYNAMIC_TYPE_NEW);
         return true;
     }
 

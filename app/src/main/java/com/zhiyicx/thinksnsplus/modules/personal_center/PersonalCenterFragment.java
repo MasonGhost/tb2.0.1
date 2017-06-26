@@ -152,7 +152,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         mPersonalCenterHeaderViewItem = new PersonalCenterHeaderViewItem(getActivity(), mPhotoSelector, mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent);
         mPersonalCenterHeaderViewItem.initHeaderView(false);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
-//        mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 255);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_BLACK_ICON[0],
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
@@ -287,7 +286,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         // 按照添加顺序，先判断成功后，后面的item就不会继续判断了，类似if else
         setAdapter(adapter, new PersonalCenterDynamicListForZeroImage(getContext()));
-        //setAdapter(adapter, new PersonalCenterDynamicListBaseItem(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new PersonalCenterDynamicListItemForThreeImage(getContext()));
@@ -350,7 +348,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        dataPosition = dataPosition - 1;// 减去 header
+        dataPosition = dataPosition - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
         Bitmap shareBitMap = null;
         try {
@@ -406,7 +404,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void allDataReady() {
         closeLoadingView();
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 0);
-        // mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 0);
         mPersonalCenterHeaderViewItem.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.v_horizontal_line), TOOLBAR_DIVIDER_RGB, 0);
         mPersonalCenterHeaderViewItem.setToolbarIconColor(Color.argb(255, TOOLBAR_WHITE_ICON[0]
                 , TOOLBAR_WHITE_ICON[1], TOOLBAR_WHITE_ICON[2]));
@@ -540,7 +537,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     public void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-//            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
+            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
             showCommentView();
@@ -636,12 +633,15 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      */
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
-//        mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
-//        mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
-//                mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
+        mListDatas.get(dataPosition).setHas_digg(!mListDatas.get(dataPosition)
+                .isHas_digg());
+        mListDatas.get(dataPosition).setFeed_digg_count(mListDatas.get(dataPosition)
+                .isHas_digg() ?
+                mListDatas.get(dataPosition).getFeed_digg_count() + 1 : mListDatas.get
+                (dataPosition).getFeed_digg_count() - 1);
         refreshData();
-//        mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-//                mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
+        mPresenter.handleLike(mListDatas.get(dataPosition).isHas_digg(),
+                mListDatas.get(dataPosition).getId(), dataPosition);
     }
 
 
@@ -724,7 +724,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
                     public void onItemClicked() {
-//                        mPresenter.handleCollect(dynamicBean);
+                        mPresenter.handleCollect(dynamicBean);
                         mDeletDynamicPopWindow.hide();
                     }
                 })
@@ -740,7 +740,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItemClicked() {
-//                        mPresenter.shareDynamic(dynamicBean, shareBitmap);
+                        mPresenter.shareDynamic(dynamicBean, shareBitmap);
                         mDeletDynamicPopWindow.hide();
                     }
                 })
