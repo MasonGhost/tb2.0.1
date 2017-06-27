@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.feedback;
 
+import android.support.annotation.ColorInt;
 import android.view.View;
 import android.widget.EditText;
 

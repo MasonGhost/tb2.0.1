@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -66,6 +67,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                         // 登录成功跳转
                         mAuthRepository.saveAuthBean(authBeanBaseJson.getData());// 保存auth信息
                         // IM 登录 需要 token ,所以需要先保存登录信息
+                        AppApplication.TOKEN = authBeanBaseJson.getData().getToken();
                         handleIMLogin();
                         // 获取用户信息
                         return mUserInfoRepository.getCurrentLoginUserInfo();
@@ -74,7 +76,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                 .flatMap(new Func1<UserInfoBean, Observable<BaseJson<UserInfoBean>>>() {
                     @Override
                     public Observable<BaseJson<UserInfoBean>> call(UserInfoBean userInfoBean) {
-                        BaseJson<UserInfoBean> userInfoBeanBaseJson=new BaseJson<>();
+                        BaseJson<UserInfoBean> userInfoBeanBaseJson = new BaseJson<>();
                         userInfoBeanBaseJson.setData(userInfoBean);
                         userInfoBeanBaseJson.setStatus(true);
                         return Observable.just(userInfoBeanBaseJson);

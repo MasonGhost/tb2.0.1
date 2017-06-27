@@ -51,6 +51,7 @@ import org.simple.eventbus.Subscriber;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -60,6 +61,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -471,6 +473,20 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void payNote(final int dynamicPosition, final int imagePosition, int note) {
+//        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+
+//        double balance = userInfo.getWallet().getBalance();
+//        double amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
+//        if (balance < amount) {
+//            mRootView.showSnackErrorMessage("余额不足请充值");
+//            Observable.timer(1, TimeUnit.SECONDS).subscribe(new Action1<Long>() {
+//                @Override
+//                public void call(Long aLong) {
+//
+//                }
+//            });
+//            return;
+//        }
         mCommentRepository.paykNote(note)
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -485,20 +501,20 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                         mRootView.paySuccess();
                         mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
                         mRootView.refreshData(dynamicPosition);
-                        mDynamicDetailBeanV2GreenDao.insertOrReplace( mRootView.getListDatas().get(dynamicPosition));
+                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_fail));
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentPayDynamic());
                     }
 
                     @Override
-                    protected void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
 

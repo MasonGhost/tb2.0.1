@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -23,6 +24,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -56,6 +58,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected final int mImageMaxHeight; // 单张图片最大高度
     protected ImageLoader mImageLoader;
     protected Context mContext;
+    protected AuthBean mAuthBean;
+
     private boolean showToolMenu = true;// 是否显示工具栏:默认显示
     private boolean showCommentList = true;// 是否显示评论内容:默认显示
     private boolean showReSendBtn = true;// 是否显示重发按钮
@@ -112,6 +116,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
 
     public DynamicListBaseItem(Context context) {
+        mAuthBean = AppApplication.getmCurrentLoginAuth();
         mContext = context;
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mTitleMaxShowNum = mContext.getResources().getInteger(R.integer
@@ -293,8 +298,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             } else {
                 url = imageBean.getImgUrl();
             }
-            if (!imageBean.isPaid() && dynamicBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id()) {// 没有付费的他人图片
-                url = "";
+            if (dynamicBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id()){
+                if (!imageBean.isPaid()) {// 没有付费的他人图片
+                    url = "1234";
+                }
             }
         }
         Glide.with(mContext)

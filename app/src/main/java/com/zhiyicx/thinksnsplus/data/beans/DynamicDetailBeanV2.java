@@ -365,7 +365,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         private int height;
         private double amount;
         private String type;
-        private boolean paid=true;
+        private Boolean paid;
 
         private String imgMimeType;// 图片类型
 
@@ -462,11 +462,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
             this.type = type;
         }
 
-        public boolean isPaid() {
+        public Boolean isPaid() {
             return paid;
         }
 
-        public void setPaid(boolean paid) {
+        public void setPaid(Boolean paid) {
             this.paid = paid;
         }
 

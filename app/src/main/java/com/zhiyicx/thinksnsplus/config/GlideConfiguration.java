@@ -10,8 +10,23 @@ import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.load.engine.cache.DiskLruCacheWrapper;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
+import com.bumptech.glide.load.model.GenericLoaderFactory;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.ModelLoader;
+import com.bumptech.glide.load.model.ModelLoaderFactory;
+import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 import com.bumptech.glide.module.GlideModule;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * @Describe Glide配置信息
@@ -48,6 +63,6 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-
+        glide.register(String.class, InputStream.class, new ImageUtils.V2ImageHeaderedLoader.Factory(AppApplication.TOKEN));
     }
 }

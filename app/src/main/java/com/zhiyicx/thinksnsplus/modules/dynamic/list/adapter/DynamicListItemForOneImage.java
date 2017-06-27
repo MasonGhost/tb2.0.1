@@ -1,14 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.annotation.ColorInt;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -33,6 +40,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
     private static final int IMAGE_COUNTS = 1;// 动态列表图片数量
     private static final int CURREN_CLOUMS = 1; // 当前列数
+    GlideUrl glideUrl;
 
     public DynamicListItemForOneImage(Context context) {
         super(context);
@@ -81,24 +89,27 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         String url;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), with, height, proportion);
-
         } else {
             url = imageBean.getImgUrl();
+
         }
-        if (dynamicBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id() && !imageBean.isPaid()) {// 没有付费的他人图片
-            url = "";
+        if (dynamicBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            if (!imageBean.isPaid()) {// 没有付费的他人图片
+                url = "1234";
+            }
         }
         if (with * height == 0) {// 就怕是 0
             with = height = 100;
         }
+
         Glide.with(mContext)
                 .load(url)
-                .asBitmap()
                 .override(with, height)
                 .placeholder(R.drawable.shape_default_image)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.mipmap.pic_locked)
                 .into(view);
+
         if (dynamicBean.getImages() != null) {
             dynamicBean.getImages().get(positon).setPropPart(proportion);
         }
