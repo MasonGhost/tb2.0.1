@@ -88,8 +88,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
-    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
-    @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     SystemRepository mSystemRepository;
@@ -158,8 +156,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         if (mRootView.getCurrentDynamic() == null || AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
-
-
         // 从数据库获取关注状态，如果没有从服务器获取
         FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication.getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
         if (followFansBean != null) {
@@ -196,7 +192,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     }
                     @Override
                     protected void onFailure(String message, int code) {
-                        LogUtils.i(message);
+                        LogUtils.e(message);
                         handleDynamicHasBeDeleted(code, feed_id);
                     }
 
@@ -224,16 +220,14 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                 , mRepository.getUserFollowState(user_ids)
                 , mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_mark(),
                         mRootView.getCurrentDynamic().getId(), max_id)
-                , new Func3<BaseJson<List<FollowFansBean>>, BaseJson<List<FollowFansBean>>, BaseJson<List<DynamicCommentBean>>, BaseJson<DynamicBean>>() {
+                , new Func3<BaseJson<List<FollowFansBean>>, BaseJson<List<FollowFansBean>>, BaseJson<List<DynamicCommentBean>>, DynamicDetailBeanV2>() {
                     @Override
-                    public BaseJson<DynamicBean> call(BaseJson<List<FollowFansBean>> listBaseJson, BaseJson<List<FollowFansBean>> listBaseJson2, BaseJson<List<DynamicCommentBean>> listBaseJson3) {
-                        BaseJson<DynamicBean> dynamicBean = new BaseJson<>();
-                        dynamicBean.setData(new DynamicBean());
+                    public DynamicDetailBeanV2 call(BaseJson<List<FollowFansBean>> listBaseJson, BaseJson<List<FollowFansBean>> listBaseJson2, BaseJson<List<DynamicCommentBean>> listBaseJson3) {
+                        DynamicDetailBeanV2 dynamicBean = new DynamicDetailBeanV2();
                         if (listBaseJson.isStatus()) {
                             if (listBaseJson2.isStatus()) {
                                 if (listBaseJson3.isStatus()) {
-                                    dynamicBean.setStatus(listBaseJson3.isStatus());
-                                    dynamicBean.getData().setDigUserInfoList(listBaseJson.getData());
+                                    dynamicBean.setDigUserInfoList(listBaseJson.getData());
                                     mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0)); // 保存关注状态
                                     List<DynamicCommentBean> data = listBaseJson3.getData();
                                     // 取出本地为发送成功的评论
@@ -249,30 +243,30 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                                         data.clear();
                                         data.addAll(myComments);
                                     }
-                                    dynamicBean.getData().setComments(data);
+                                    dynamicBean.setComments(data);
                                 } else {
-                                    dynamicBean.setStatus(listBaseJson3.isStatus());
-                                    dynamicBean.setMessage(listBaseJson3.getMessage());
-                                    dynamicBean.setCode(listBaseJson3.getCode());
+//                                    dynamicBean.setStatus(listBaseJson3.isStatus());
+//                                    dynamicBean.setMessage(listBaseJson3.getMessage());
+//                                    dynamicBean.setCode(listBaseJson3.getCode());
                                 }
                             } else {
-                                dynamicBean.setStatus(listBaseJson2.isStatus());
-                                dynamicBean.setMessage(listBaseJson2.getMessage());
-                                dynamicBean.setCode(listBaseJson2.getCode());
+//                                dynamicBean.setStatus(listBaseJson2.isStatus());
+//                                dynamicBean.setMessage(listBaseJson2.getMessage());
+//                                dynamicBean.setCode(listBaseJson2.getCode());
                             }
                         } else {
-                            dynamicBean.setStatus(listBaseJson.isStatus());
-                            dynamicBean.setMessage(listBaseJson.getMessage());
-                            dynamicBean.setCode(listBaseJson.getCode());
+//                            dynamicBean.setStatus(listBaseJson.isStatus());
+//                            dynamicBean.setMessage(listBaseJson.getMessage());
+//                            dynamicBean.setCode(listBaseJson.getCode());
                         }
                         return dynamicBean;
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<DynamicBean>() {
+                .subscribe(new BaseSubscribeForV2<DynamicDetailBeanV2>() {
                     @Override
-                    protected void onSuccess(DynamicBean data) {
+                    protected void onSuccess(DynamicDetailBeanV2 data) {
                         mRootView.getCurrentDynamic().setComments(data.getComments());
                         mRootView.getCurrentDynamic().setDigUserInfoList(data.getDigUserInfoList());
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
@@ -301,7 +295,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     private void handleDynamicHasBeDeleted(int code, Long feed_id) {
         if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
-            mDynamicBeanGreenDao.deleteDynamicByFeedId(feed_id);
+            mDynamicDetailBeanV2GreenDao.deleteDynamicByFeedId(feed_id);
             mRootView.dynamicHasBeDeleted();
         } else {
             mRootView.loadAllError();
@@ -474,7 +468,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      */
     @Override
     public boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark) {
-        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id() && mDynamicBeanGreenDao.getDynamicByFeedMark(feed_mark) == null) { // 检查当前动态是否已经被删除了
+        if (user_id == AppApplication.getmCurrentLoginAuth().getUser_id() && mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(feed_mark) == null) { // 检查当前动态是否已经被删除了
             return true;
         }
         return false;

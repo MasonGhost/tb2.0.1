@@ -81,16 +81,17 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         String url;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
             url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), 50, 50, proportion);
-            LogUtils.e("initImageView:url:" + url);
+
         } else {
             url = imageBean.getImgUrl();
         }
-        if (!imageBean.isPaid() && dynamicBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id()) {// 没有付费的他人图片
+        if (dynamicBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id() && !imageBean.isPaid()) {// 没有付费的他人图片
             url = "";
         }
         if (with * height == 0) {// 就怕是 0
             with = height = 100;
         }
+        LogUtils.e("initImageView:url:" + url);
         Glide.with(mContext)
                 .load(url)
                 .asBitmap()

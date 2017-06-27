@@ -678,19 +678,25 @@ public class ConvertUtils {
     }
 
     public static Bitmap drawable2BitmapWithWhiteBg(Context context, Drawable drawable, int defaultRes) {
-        // 取 drawable 的长宽
-        int w = drawable.getIntrinsicWidth();
-        int h = drawable.getIntrinsicHeight();
-
-        // 取 drawable 的颜色格式
-        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-                : Bitmap.Config.RGB_565;
         // 建立对应 bitmap
         Bitmap bitmap;
+        int w, h;
+        Bitmap.Config config;
         try {
+            // 取 drawable 的长宽
+            w = drawable.getIntrinsicWidth();
+            h = drawable.getIntrinsicHeight();
+
+            // 取 drawable 的颜色格式
+            config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                    : Bitmap.Config.RGB_565;
             bitmap = Bitmap.createBitmap(w, h, config);
         } catch (Exception e) {
+            config = Bitmap.Config.RGB_565;
             bitmap = BitmapFactory.decodeResource(context.getResources(), defaultRes).copy(config, true);
+            w = bitmap.getWidth();
+            h = bitmap.getHeight();
+            drawable=ConvertUtils.bitmap2Drawable(context.getResources(),bitmap);
         }
         // 建立对应 bitmap 的画布
         Canvas canvas = new Canvas(bitmap);

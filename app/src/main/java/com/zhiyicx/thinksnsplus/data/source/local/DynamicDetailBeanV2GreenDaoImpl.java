@@ -76,6 +76,13 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
 
     }
 
+    public void deleteDynamicByFeedId(Long feed_id) {
+        DynamicDetailBeanV2 data = mDynamicDetailBeanV2Dao.queryBuilder()
+                .where(DynamicDetailBeanV2Dao.Properties.Id.eq(feed_id)).unique();
+        if (data != null)
+            mDynamicDetailBeanV2Dao.delete(data);
+    }
+
     @Override
     public long insertOrReplace(DynamicDetailBeanV2 newData) {
         return mDynamicDetailBeanV2Dao.insertOrReplace(newData);
@@ -107,14 +114,14 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 datas = mDynamicDetailBeanV2Dao.queryBuilder()
-                        .where(DynamicDetailBeanV2Dao.Properties.Id.isNotNull(),DynamicDetailBeanV2Dao.Properties.User_id.notEq(AppApplication.getmCurrentLoginAuth().getUser_id()))
+                        .where(DynamicDetailBeanV2Dao.Properties.Id.isNotNull(), DynamicDetailBeanV2Dao.Properties.User_id.notEq(AppApplication.getmCurrentLoginAuth().getUser_id()))
                         .whereOr(DynamicDetailBeanV2Dao.Properties.Hot_creat_time.isNull(), DynamicDetailBeanV2Dao.Properties.Hot_creat_time.eq(0), DynamicDetailBeanV2Dao.Properties.IsFollowed.eq(false))
                         .list();
                 mDynamicDetailBeanV2Dao.deleteInTx(datas);
                 return;
             case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
                 List<DynamicDetailBeanV2> beanV2List;
-                beanV2List= mDynamicDetailBeanV2Dao.queryBuilder().where(DynamicDetailBeanV2Dao.Properties.Has_collect.eq(1)).list();
+                beanV2List = mDynamicDetailBeanV2Dao.queryBuilder().where(DynamicDetailBeanV2Dao.Properties.Has_collect.eq(1)).list();
 
                 for (DynamicDetailBeanV2 dynamicToolBean : beanV2List) {
                     dynamicToolBean.setHas_collect(false);
@@ -192,7 +199,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
      * @return
      */
     public List<DynamicDetailBeanV2> getMyCollectDynamic() {
-        return  mDynamicDetailBeanV2Dao.queryDeep(" where "
+        return mDynamicDetailBeanV2Dao.queryDeep(" where "
                         + " T1." + DynamicDetailBeanV2Dao.Properties.Has_collect.columnName + " = ? "
                         + " ORDER BY  T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , "1");
@@ -220,4 +227,5 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
                         "DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , String.valueOf(userId));
     }
+
 }
