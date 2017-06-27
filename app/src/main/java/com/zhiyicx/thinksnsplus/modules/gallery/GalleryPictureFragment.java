@@ -270,7 +270,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
         LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
-        if (imageBean.getWidth()==0){
+        if (imageBean.getWidth() == 0) {
             imageBean.setWidth(screenW);
             imageBean.setHeight(screenW);
         }
@@ -297,7 +297,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 尝试从缓存获取原图
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
-                    .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
+                    .load(String.format(ApiConfig.IMAGE_PATH_V2.toLowerCase(), mImageBean.getStorage_id(), screenW, 0, ImageZipConfig.IMAGE_100_ZIP))
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
@@ -325,7 +325,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .error(R.drawable.shape_default_image)
-//                                    .centerCrop()
+                                    .centerCrop()
                                     .into(new SimpleTarget<GlideDrawable>() {
                                         @Override
                                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {

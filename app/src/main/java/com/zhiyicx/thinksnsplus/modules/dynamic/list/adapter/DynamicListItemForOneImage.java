@@ -91,7 +91,6 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         if (with * height == 0) {// 就怕是 0
             with = height = 100;
         }
-        LogUtils.e("initImageView:url:" + url);
         Glide.with(mContext)
                 .load(url)
                 .asBitmap()

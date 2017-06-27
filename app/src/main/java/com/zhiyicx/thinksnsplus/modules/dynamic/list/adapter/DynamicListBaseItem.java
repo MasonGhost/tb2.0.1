@@ -297,7 +297,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 url = "";
             }
         }
-        LogUtils.e("initImageView:url:" + url);
         Glide.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.shape_default_image)

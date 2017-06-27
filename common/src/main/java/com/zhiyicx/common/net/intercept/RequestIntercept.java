@@ -17,6 +17,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
+import okio.ByteString;
 
 /**
  * @Describe
@@ -90,6 +91,6 @@ public class RequestIntercept implements Interceptor {
         if (body.contentType() != null && !body.contentType().toString().contains("multipart")) {
             return URLDecoder.decode(requestbuffer.readUtf8(), "UTF-8");
         }
-        return "null";
+        return "multipart";
     }
 }

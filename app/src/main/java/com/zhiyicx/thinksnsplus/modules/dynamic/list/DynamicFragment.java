@@ -317,6 +317,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
             ImageBean imageBean = new ImageBean();
+            imageBean.setImgUrl(task.get(i).getImgUrl());
             imageBean.setStorage_id(task.get(i).getFile());
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
