@@ -535,7 +535,7 @@ public class BackgroundTaskHandler {
         // 存入数据库
         // ....
         List<ImageBean> photos = sendDynamicDataBean.getPhotos();
-        Observable<BaseJson<Object>> observable = null;
+        Observable<BaseJson<Object>> observable;
         // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
         if (photos != null && !photos.isEmpty()) {
             // 先处理图片上传，图片上传成功后，在进行动态发布

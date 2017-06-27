@@ -42,7 +42,7 @@ public class ImageBean implements Parcelable, Serializable {
             return;
         }
         setToll_type(toll.toll_type);
-        setToll_monye(toll.toll_money);
+        setToll_monye(toll.toll_money > toll.custom_money ? toll.toll_money : toll.custom_money);
     }
 
     public int getToll_type() {
@@ -122,8 +122,8 @@ public class ImageBean implements Parcelable, Serializable {
                 ", height=" + height +
                 ", part=" + part +
                 ", imgMimeType='" + imgMimeType + '\'' +
-                "\n"+"toll_type="+toll_type+
-                "\n"+"toll_monye="+toll_monye+"\n"+
+                "\n" + "toll_type=" + toll_type +
+                "\n" + "toll_monye=" + toll_monye + "\n" +
                 '}';
     }
 

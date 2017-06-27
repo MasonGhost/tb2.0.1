@@ -120,7 +120,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.images = storage_task;
     }
 
-    public static class StorageTaskBean implements Parcelable,Serializable {
+    public static class StorageTaskBean implements Parcelable, Serializable {
         private static final long serialVersionUID = 4113706643912669235L;
         /**
          * id : 1
@@ -196,7 +196,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         sendDynamicDataBeanV2.setFeed_content(dynamicBean.getFeed_content());
         sendDynamicDataBeanV2.setFeed_from(dynamicBean.getFeed_from() + "");
         sendDynamicDataBeanV2.setFeed_mark(dynamicBean.getFeed_mark() + "");
-        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount()>0?(float)dynamicBean.getAmount():null);
+        sendDynamicDataBeanV2.setAmount(dynamicBean.getAmount() > 0 ? (float) dynamicBean.getAmount() : null);
         return sendDynamicDataBeanV2;
     }
 
