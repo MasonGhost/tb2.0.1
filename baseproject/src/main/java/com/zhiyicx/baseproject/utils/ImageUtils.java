@@ -47,14 +47,18 @@ public class ImageUtils {
      * @param part    压缩比例 0-100
      * @return
      */
-    public static String imagePathConvertV2(String storage, int w, int h, int part) {
+    public static String imagePathConvertV2(int storage, int w, int h, int part) {
         try {
             // 如果图片的storage能够转成一个整数
-            Integer.parseInt(storage);
             return String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
         } catch (NumberFormatException e) {
-            return storage;
+            return "";
         }
+
+//        return new GlideUrl(String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part), new LazyHeaders.Builder()
+//                .addHeader("Authorization",token )
+//                .build());
+
     }
 
     public static class V2ImageHeaderedLoader extends BaseGlideUrlLoader<String> {

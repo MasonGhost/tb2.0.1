@@ -63,6 +63,6 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-        glide.register(String.class, InputStream.class, new ImageUtils.V2ImageHeaderedLoader.Factory(AppApplication.TOKEN));
+        glide.register(String.class, InputStream.class, new ImageUtils.V2ImageHeaderedLoader.Factory("Bearer "+AppApplication.TOKEN));
     }
 }

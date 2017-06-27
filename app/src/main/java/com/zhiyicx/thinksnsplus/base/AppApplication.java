@@ -358,6 +358,8 @@ public class AppApplication extends TSApplication {
 
     public static void setmCurrentLoginAuth(AuthBean mCurrentLoginAuth) {
         AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
+        if (mCurrentLoginAuth != null)
+            TOKEN = mCurrentLoginAuth.getToken();
     }
 
     public static HttpProxyCacheServer getProxy() {

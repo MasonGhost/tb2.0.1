@@ -39,6 +39,7 @@ import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -269,6 +270,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
+        final int w, h;
+        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+        h = imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight();
         LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
         if (imageBean.getWidth() == 0) {
             imageBean.setWidth(screenW);
@@ -297,7 +301,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 尝试从缓存获取原图
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
-                    .load(String.format(ApiConfig.IMAGE_PATH_V2.toLowerCase(), mImageBean.getStorage_id(), screenW, 0, ImageZipConfig.IMAGE_100_ZIP))
+                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
@@ -317,11 +321,16 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                             }
 
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
+
                             Glide.with(context)
                                     .using(new CustomImageModelLoader(context))
-                                    .load(new CustomImageSizeModelImp(imageBean))
-                                    .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
+                                    .load(new CustomImageSizeModelImp(imageBean) {
+                                        @Override
+                                        public String requestCustomSizeUrl() {
+                                            return ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP);
+                                        }
+                                    })
+                                    .override(w, h)
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .error(R.drawable.shape_default_image)

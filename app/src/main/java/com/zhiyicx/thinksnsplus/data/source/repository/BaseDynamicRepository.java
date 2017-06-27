@@ -262,7 +262,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .subscribe(new Action1<List<DynamicDetailBeanV2>>() {
                     @Override
                     public void call(List<DynamicDetailBeanV2> datas) {
-                        mDynamicBeanGreenDao.deleteDynamicByType(type); // 清除旧数据
+                        mDynamicDetailBeanV2GreenDao .deleteDynamicByType(type); // 清除旧数据
                         List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
 
                         for (DynamicDetailBeanV2 dynamicBeanTmp : datas) {
