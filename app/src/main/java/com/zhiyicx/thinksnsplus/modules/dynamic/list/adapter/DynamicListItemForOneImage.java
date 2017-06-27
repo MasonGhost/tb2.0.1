@@ -80,7 +80,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
         String url;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), 50, 50, proportion);
+            url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), with, height, proportion);
 
         } else {
             url = imageBean.getImgUrl();

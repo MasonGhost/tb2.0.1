@@ -154,7 +154,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      */
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
-            lastT,final int position, int itemCounts) {
+            lastT, final int position, int itemCounts) {
         try {
             String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean
                     ().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
@@ -289,7 +289,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), 50, 50, propPart);
+                url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), getCurrenItemWith(part), getCurrenItemWith(part), propPart);
             } else {
                 url = imageBean.getImgUrl();
             }
@@ -334,7 +334,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
          * 一张图时候，需要对宽高做限制
          */
         int with;
-        int height;
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
         DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
@@ -343,7 +342,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         }
         with = imageBean.getWidth() > currentWith ? currentWith : imageBean.getWidth();
         proportion = ((with / imageBean.getWidth()) * 100);
-        height = with;
+        proportion = proportion > 100 ? 100 : proportion;
         return proportion;
     }
 
