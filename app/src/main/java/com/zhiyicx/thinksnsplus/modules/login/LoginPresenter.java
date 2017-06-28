@@ -67,7 +67,6 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                         // 登录成功跳转
                         mAuthRepository.saveAuthBean(authBeanBaseJson.getData());// 保存auth信息
                         // IM 登录 需要 token ,所以需要先保存登录信息
-                        AppApplication.TOKEN = authBeanBaseJson.getData().getToken();
                         handleIMLogin();
                         // 获取用户信息
                         return mUserInfoRepository.getCurrentLoginUserInfo();

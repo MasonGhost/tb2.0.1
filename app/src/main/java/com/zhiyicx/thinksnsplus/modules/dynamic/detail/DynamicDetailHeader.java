@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.ToastUtils;
@@ -124,21 +125,21 @@ public class DynamicDetailHeader {
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
         if (photoList == null || photoList.isEmpty()) {
             mPhotoContainer.setVisibility(View.GONE);
-            sharBitmap=ConvertUtils.drawBg4Bitmap(0xffffff,BitmapFactory.decodeResource(context
+            sharBitmap = ConvertUtils.drawBg4Bitmap(0xffffff, BitmapFactory.decodeResource(context
                     .getResources(), R.mipmap.icon_256).copy(Bitmap.Config.RGB_565, true));
         } else {
             mPhotoContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < photoList.size(); i++) {
-                showContentImage(context, photoList, i, i == photoList.size() - 1, mPhotoContainer);
+                showContentImage(context, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
             }
-            FilterImageView imageView=(FilterImageView)mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
+            FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
             sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
                     .getDrawable(), R.mipmap.icon_256);
             setImageClickListener(photoList);
         }
     }
 
-    public Bitmap getSharBitmap(){
+    public Bitmap getSharBitmap() {
         return sharBitmap;
     }
 
@@ -194,7 +195,7 @@ public class DynamicDetailHeader {
         }
     }
 
-    private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position,
+    private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position, final int user_id,
                                   boolean lastImg, LinearLayout photoContainer) {
         DynamicDetailBeanV2.ImagesBean imageBean = photoList.get(position);
         View view = LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_photos, null);
@@ -210,24 +211,28 @@ public class DynamicDetailHeader {
 //        height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
         height = 5 * picWidth / 3;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-
             int part = (screenWidth / imageBean.getWidth() * 100);
             if (part > 100) {
                 part = 100;
             }
-            imgUrl = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(),screenWidth,height,
-                    part);
+            imgUrl = ImageUtils.imagePathConvertV2(imageBean.getFile(), screenWidth, height, part);
         } else {
             imgUrl = imageBean.getImgUrl();
+        }
+        if (user_id != AppApplication.getmCurrentLoginAuth().getUser_id()) {
+            if (imageBean.isPaid() != null && !imageBean.isPaid()) {// 没有付费的他人图片
+                imgUrl = "1234";
+            }
         }
         // 提前设置图片控件的大小，使得占位图显示
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         imageView.setLayoutParams(layoutParams);
+
         AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                 .loadImage(context, GlideImageConfig.builder()
                         .placeholder(R.drawable.shape_default_image)
-                        .errorPic(R.drawable.shape_default_image)
+                        .errorPic(R.mipmap.pic_locked)
                         .url(imgUrl)
                         .imagerView(imageView)
                         .build()
@@ -255,6 +260,7 @@ public class DynamicDetailHeader {
                                 .dynamic_content_img);
                         ImageBean imageBean = new ImageBean();
                         imageBean.setStorage_id(photoList.get(i).getFile());
+                        imageBean.setImgUrl(photoList.get(i).getImgUrl());
                         imageBeanList.add(imageBean);
                         AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
                         animationRectBeanArrayList.add(rect);

@@ -22,6 +22,7 @@ import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -105,6 +106,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mOtherDynamicPopWindow;
     private ActionPopupWindow mMyDynamicPopWindow;
+
+    private PayPopWindow mPayImagePopWindow;
 
     @Override
     protected boolean showToolbar() {

@@ -356,7 +356,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
          * type : download
          * paid : false
          */
-        private  int propPart;
+        private int propPart;
         private int file;
         private String size;
         private String imgUrl;
@@ -415,15 +415,15 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
 
         public void setSize(String size) {
             this.size = size;
-            if (size!=null&&size.length()>0){
+            if (size != null && size.length() > 0) {
                 String[] sizes = size.split("x");
-                this.width=Integer.parseInt(sizes[0]);
-                this.height=Integer.parseInt(sizes[1]);
+                this.width = Integer.parseInt(sizes[0]);
+                this.height = Integer.parseInt(sizes[1]);
             }
         }
 
         public int getWidth() {
-            if (size!=null&&size.length()>0){
+            if (size != null && size.length() > 0) {
                 String[] sizes = size.split("x");
                 return Integer.parseInt(sizes[0]);
             }
@@ -431,7 +431,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         }
 
         public int getHeight() {
-            if (size!=null&&size.length()>0){
+            if (size != null && size.length() > 0) {
                 String[] sizes = size.split("x");
                 return Integer.parseInt(sizes[1]);
             }
@@ -517,10 +517,15 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
                 return new ImagesBean[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "付费：" + paid;
+        }
     }
 
-    public static class PaidNote implements Serializable,Parcelable{
-        private static final long serialVersionUID=1234L;
+    public static class PaidNote implements Serializable, Parcelable {
+        private static final long serialVersionUID = 1234L;
         /**
          * paid : true
          * node : 9
@@ -694,7 +699,9 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.paid_node = paid_node;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 249603048)
     public synchronized void resetComments() {
         comments = null;
@@ -781,11 +788,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
 
     @Generated(hash = 938959960)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at,
-            Long user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
-            int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, double amount,
-            boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node,
-            Long hot_creat_time, boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
+                               Long user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
+                               int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
+                               int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, double amount,
+                               boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node,
+                               Long hot_creat_time, boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -825,10 +832,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
             return new DynamicDetailBeanV2[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 49871375)
     private transient DynamicDetailBeanV2Dao myDao;
     @Generated(hash = 1005780391)

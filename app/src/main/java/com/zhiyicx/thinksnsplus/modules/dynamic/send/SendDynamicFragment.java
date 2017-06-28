@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -53,6 +54,7 @@ import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -604,12 +606,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         paintView.setImageResource(R.mipmap.ico_edit_pen);
                         filterView.setVisibility(View.GONE);
                     }
-                    ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent()
-                            .imageLoader();
-                    imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                            .imagerView(imageView)
-                            .url(imageBean.getImgUrl())
-                            .build());
+                    Glide.with(getContext())
+                            .load(imageBean.getImgUrl())
+                            .placeholder(R.drawable.shape_default_image)
+                            .error(R.drawable.shape_default_image)
+                            .override(convertView.getLayoutParams().width,convertView.getLayoutParams().height)
+                            .into(imageView);
+
                 }
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override

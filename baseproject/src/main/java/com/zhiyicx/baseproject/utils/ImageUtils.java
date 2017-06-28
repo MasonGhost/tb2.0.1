@@ -2,14 +2,18 @@ package com.zhiyicx.baseproject.utils;
 
 import android.content.Context;
 
+import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
+import com.bumptech.glide.load.model.file_descriptor.FileDescriptorFileLoader;
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.InputStream;
 import java.util.Locale;
@@ -61,6 +65,24 @@ public class ImageUtils {
 
     }
 
+    /**
+     * 图片地址转换 V2 api
+     *
+     * @param storage 图片对应的 id 号，也可能是本地的图片路径
+     * @param part    压缩比例 0-100
+     * @return
+     */
+    public static GlideUrl imagePathConvertV2(int storage, int w, int h, int part, String token) {
+        String url = String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
+        return imagePathConvertV2(url,token);
+    }
+
+    public static GlideUrl imagePathConvertV2(String url, String token) {
+        return new GlideUrl(url, new LazyHeaders.Builder()
+                .addHeader("Authorization", token)
+                .build());
+    }
+
     public static class V2ImageHeaderedLoader extends BaseGlideUrlLoader<String> {
         final Headers HEADERS;
 
@@ -73,7 +95,13 @@ public class ImageUtils {
 
         @Override
         protected String getUrl(String model, int width, int height) {
+            LogUtils.e("getUrl::" + model);
             return model;
+        }
+
+        @Override
+        public DataFetcher<InputStream> getResourceFetcher(String model, int width, int height) {
+            return super.getResourceFetcher(model, width, height);
         }
 
         @Override
@@ -81,10 +109,10 @@ public class ImageUtils {
             return HEADERS;
         }
 
-        public static class Factory implements ModelLoaderFactory<String, InputStream> {
+        public static class StreamFactory implements ModelLoaderFactory<String, InputStream> {
             String token;
 
-            public Factory(String token) {
+            public StreamFactory(String token) {
                 this.token = token;
             }
 

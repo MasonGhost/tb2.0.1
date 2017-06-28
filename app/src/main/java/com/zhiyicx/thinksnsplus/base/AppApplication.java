@@ -82,7 +82,7 @@ public class AppApplication extends TSApplication {
     private static HttpProxyCacheServer mMediaProxyCacheServer;
     private static QueueManager sQueueManager;
     private static PlaybackManager sPlaybackManager;
-    public static String TOKEN = "none";
+    private static String TOKEN = "none";
     public static List<String> sOverRead = new ArrayList<>();
     public int mActivityCount = 0;
 
@@ -341,10 +341,6 @@ public class AppApplication extends TSApplication {
         return userId;
     }
 
-    public static void setTOKEN(String TOKEN) {
-        AppApplication.TOKEN = TOKEN;
-    }
-
     /**
      * 在启动页面尝试刷新Token,同时需要刷新im的token
      */
@@ -360,6 +356,10 @@ public class AppApplication extends TSApplication {
         AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
         if (mCurrentLoginAuth != null)
             TOKEN = mCurrentLoginAuth.getToken();
+    }
+
+    public static String getTOKEN() {
+        return "Bearer "+AppApplication.mCurrentLoginAuth.getToken();
     }
 
     public static HttpProxyCacheServer getProxy() {

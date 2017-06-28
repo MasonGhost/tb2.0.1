@@ -304,8 +304,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-        if (!dynamicBean.getImages().get(position).isPaid()){
-            initImageCenterPopWindow(holder.getAdapterPosition(),position,(float) dynamicBean.getImages().get(position).getAmount(),dynamicBean.getImages().get(position).getPaid_node());
+        Boolean paid = dynamicBean.getImages().get(position).isPaid();
+        if (paid != null && !paid) {
+            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean.getImages().get(position).getAmount(), dynamicBean.getImages().get(position).getPaid_node());
             return;
         }
 
@@ -715,10 +716,10 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
                     public void onItemClicked() {// 申请评论收费
-                        Intent intent=new Intent(getActivity(), DynamicCommentTollActivity.class);
-                        Bundle bundle=new Bundle();
-                        bundle.putParcelable(TOLL_DYNAMIC_COMMENT,dynamicBean);
-                        intent.putExtra(TOLL_DYNAMIC_COMMENT,bundle);
+                        Intent intent = new Intent(getActivity(), DynamicCommentTollActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(TOLL_DYNAMIC_COMMENT, dynamicBean);
+                        intent.putExtra(TOLL_DYNAMIC_COMMENT, bundle);
                         startActivity(intent);
                         mMyDynamicPopWindow.hide();
                     }
@@ -778,7 +779,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .build();
     }
 
-    private void initImageCenterPopWindow(final int dynamicPosition,final int imagePosition,float amout,final int note) {
+    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition, float amout, final int note) {
 //        if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();
 //            return;
@@ -803,7 +804,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                         .CenterPopWindowItem1ClickListener() {
                     @Override
                     public void onClicked() {
-                        mPresenter.payNote(dynamicPosition,imagePosition,note);
+                        mPresenter.payNote(dynamicPosition, imagePosition, note);
                         mPayImagePopWindow.hide();
                     }
                 })

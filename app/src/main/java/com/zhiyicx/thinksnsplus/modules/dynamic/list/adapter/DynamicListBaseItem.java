@@ -8,6 +8,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -161,7 +167,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
         try {
-            String userIconUrl = String.format(ApiConfig.IMAGE_PATH, dynamicBean.getUserInfoBean
+            String userIconUrl = ImageUtils.imagePathConvert(dynamicBean.getUserInfoBean
                     ().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
             mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                     .url(userIconUrl)
@@ -289,26 +295,46 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      */
     protected void initImageView(final ViewHolder holder, ImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
         int propPart = getProportion(view, dynamicBean, part);
-        String url = "";
-
+        int w, h;
+        w = h = getCurrenItemWith(part);
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                url = String.format(ApiConfig.IMAGE_PATH_V2, imageBean.getFile(), getCurrenItemWith(part), getCurrenItemWith(part), propPart);
+                Glide.with(mContext)
+                        .load(ImageUtils.imagePathConvertV2(imageBean.getFile(), w, h, propPart, AppApplication.getTOKEN()))
+                        .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                if (e != null) {
+                                    LogUtils.e("onException::" + e.toString());
+                                } else {
+                                    LogUtils.e("onException::e isNull:请购买文件:" + AppApplication.getTOKEN() + "\n" +
+                                            model.toStringUrl() + "\n" +
+                                            model.getHeaders().toString());
+                                }
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                return false;
+                            }
+                        })
+                        .override(w, h)
+                        .placeholder(R.drawable.shape_default_image)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .error(R.mipmap.pic_locked)
+                        .into(view);
             } else {
-                url = imageBean.getImgUrl();
-            }
-            if (dynamicBean.getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id()){
-                if (!imageBean.isPaid()) {// 没有付费的他人图片
-                    url = "1234";
-                }
+                Glide.with(mContext)
+                        .load(imageBean.getImgUrl())
+                        .override(w, h)
+                        .placeholder(R.drawable.shape_default_image)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .error(R.mipmap.pic_locked)
+                        .into(view);
             }
         }
-        Glide.with(mContext)
-                .load(url)
-                .placeholder(R.drawable.shape_default_image)
-                .error(R.mipmap.pic_locked_square)
-                .into(view);
 
         if (dynamicBean.getImages() != null) {
             dynamicBean.getImages().get(positon).setPropPart(propPart);
@@ -362,7 +388,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         try {
             return (mImageContainerWith - (getCurrenCloums() - 1) * mDiverwith) / getCurrenCloums() * part;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.d("获取当前 item 的宽 = 0");
         }
         return 0;
     }
