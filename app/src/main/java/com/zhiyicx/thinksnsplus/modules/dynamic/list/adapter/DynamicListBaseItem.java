@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.base.BaseApplication;
@@ -300,26 +301,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+                Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
                 Glide.with(mContext)
-                        .load(ImageUtils.imagePathConvertV2(imageBean.getFile(), w, h, propPart, AppApplication.getTOKEN()))
-                        .listener(new RequestListener<GlideUrl, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                if (e != null) {
-                                    LogUtils.e("onException::" + e.toString());
-                                } else {
-                                    LogUtils.e("onException::e isNull:请购买文件:" + AppApplication.getTOKEN() + "\n" +
-                                            model.toStringUrl() + "\n" +
-                                            model.getHeaders().toString());
-                                }
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
+                        .load(ImageUtils.imagePathConvertV2(canLook,imageBean.getFile(), w, h, propPart, AppApplication.getTOKEN()))
                         .override(w, h)
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)

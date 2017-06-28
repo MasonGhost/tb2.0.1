@@ -15,9 +15,9 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
-import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -304,22 +304,30 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-        Boolean paid = dynamicBean.getImages().get(position).isPaid();
-        if (paid != null && !paid) {
+        DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
+        Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
+        if (!canLook) {
             initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean.getImages().get(position).getAmount(), dynamicBean.getImages().get(position).getPaid_node());
             return;
         }
 
-        List<DynamicDetailBeanV2.ImagesBean> task = dynamicBean.getImages();
+        List<DynamicDetailBeanV2.ImagesBean> tasks = dynamicBean.getImages();
         List<ImageBean> imageBeanList = new ArrayList<>();
         ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
-        for (int i = 0; i < task.size(); i++) {
+        for (int i = 0; i < tasks.size(); i++) {
+            DynamicDetailBeanV2.ImagesBean task = tasks.get(i);
             int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
             ImageView imageView = holder.getView(id);
             ImageBean imageBean = new ImageBean();
-            imageBean.setImgUrl(task.get(i).getImgUrl());
-            imageBean.setStorage_id(task.get(i).getFile());
+            imageBean.setImgUrl(task.getImgUrl());
+            Toll toll = new Toll();
+            toll.setPaid(task.isPaid());
+            toll.setToll_money((float) task.getAmount());
+            toll.setToll_type_string(task.getType());
+            toll.setToll_type(task.getPaid_node());
+            imageBean.setToll(toll);
+            imageBean.setStorage_id(task.getFile());
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
             animationRectBeanArrayList.add(rect);

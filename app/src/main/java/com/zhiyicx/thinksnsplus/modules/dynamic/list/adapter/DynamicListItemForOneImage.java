@@ -12,6 +12,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -87,26 +88,9 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(imageBean.getFile(), with, height, proportion, AppApplication.getTOKEN()))
-                    .listener(new RequestListener<GlideUrl, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            if (e != null) {
-                                LogUtils.e("onException::" + e.toString());
-                            } else {
-                                LogUtils.e("onException::e isNull:请购买文件:" + AppApplication.getTOKEN() + "\n" +
-                                        model.toStringUrl() + "\n" +
-                                        model.getHeaders().toString());
-                            }
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
+                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), with, height, proportion, AppApplication.getTOKEN()))
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

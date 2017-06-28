@@ -47,40 +47,27 @@ public class ImageUtils {
     /**
      * 图片地址转换 V2 api
      *
+     * @param canLook  是否可查看
      * @param storage 图片对应的 id 号，也可能是本地的图片路径
      * @param part    压缩比例 0-100
      * @return
      */
-    public static String imagePathConvertV2(int storage, int w, int h, int part) {
-        try {
-            // 如果图片的storage能够转成一个整数
-            return String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
-        } catch (NumberFormatException e) {
-            return "";
-        }
-
-//        return new GlideUrl(String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part), new LazyHeaders.Builder()
-//                .addHeader("Authorization",token )
-//                .build());
-
-    }
-
-    /**
-     * 图片地址转换 V2 api
-     *
-     * @param storage 图片对应的 id 号，也可能是本地的图片路径
-     * @param part    压缩比例 0-100
-     * @return
-     */
-    public static GlideUrl imagePathConvertV2(int storage, int w, int h, int part, String token) {
+    public static GlideUrl imagePathConvertV2(boolean canLook, int storage, int w, int h, int part, String token) {
         String url = String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
-        return imagePathConvertV2(url,token);
+        if (!canLook) {
+            url = "zhiyicx";
+        }
+        return imagePathConvertV2(url, token);
     }
 
     public static GlideUrl imagePathConvertV2(String url, String token) {
         return new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());
+    }
+
+    public static String imagePathConvertV2(int storage, int w, int h, int part) {
+        return String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
     }
 
     public static class V2ImageHeaderedLoader extends BaseGlideUrlLoader<String> {

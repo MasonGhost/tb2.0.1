@@ -19,6 +19,7 @@ public class Toll implements Parcelable, Serializable {
     String toll_type_string;
     float toll_money;
     float custom_money;
+    Boolean isPaid;
 
     public Toll() {
     }
@@ -27,6 +28,22 @@ public class Toll implements Parcelable, Serializable {
         this.toll_type = toll_type;
         this.toll_money = toll_money;
         this.custom_money = custom_money;
+    }
+
+    public Boolean getPaid() {
+        return isPaid;
+    }
+
+    public void setPaid(Boolean paid) {
+        isPaid = paid;
+    }
+
+    public String getToll_type_string() {
+        return toll_type_string;
+    }
+
+    public void setToll_type_string(String toll_type_string) {
+        this.toll_type_string = toll_type_string;
     }
 
     public void setToll_type(int toll_type) {

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -47,6 +49,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
@@ -271,13 +274,16 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
         final int w, h;
+        if (imageBean.getWidth() * imageBean.getHeight() == 0) {
+            // 搞什么飞机，之前的本地规划画布没用了，
+            // 这个画廊界面我本地怎么知道传多少宽高嘛，高矮胖瘦都有。
+            imageBean.setWidth(screenW);
+            imageBean.setHeight(screenH);
+        }
         w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
         h = imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight();
         LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
-        if (imageBean.getWidth() == 0) {
-            imageBean.setWidth(screenW);
-            imageBean.setHeight(screenW);
-        }
+
         if (imageBean.getImgUrl() != null) {
             int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
             int height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
@@ -295,9 +301,20 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 加载网络图片
             DrawableRequestBuilder thumbnailBuilder = Glide
                     .with(context)
-                    .load(new CustomImageSizeModelImp(imageBean)
+                    .load(new CustomImageSizeModelImp(imageBean) {
+                        @Override
+                        public String requestCustomSizeUrl() {
+                            final Toll toll = mImageBean.getToll();
+                            final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            if (!canLook) {
+                                return "";
+                            }
+                            return super.requestCustomSizeUrl();
+                        }
+                    }
                             .requestCustomSizeUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
+
             // 尝试从缓存获取原图
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
@@ -305,7 +322,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.shape_default_image)
-                    .error(R.drawable.shape_default_image)
+                    .error(R.mipmap.pic_locked_square)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -319,21 +336,19 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                 }
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
+                            final Toll toll = mImageBean.getToll();
+                            final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            if (!canLook) {
+                                return false;
+                            }
 
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
-
                             Glide.with(context)
-                                    .using(new CustomImageModelLoader(context))
-                                    .load(new CustomImageSizeModelImp(imageBean) {
-                                        @Override
-                                        public String requestCustomSizeUrl() {
-                                            return ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP);
-                                        }
-                                    })
-                                    .override(w, h)
+                                    .load(ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
+                                            ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN()))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
-                                    .error(R.drawable.shape_default_image)
+                                    .error(R.mipmap.pic_locked_square)
                                     .centerCrop()
                                     .into(new SimpleTarget<GlideDrawable>() {
                                         @Override
@@ -358,7 +373,6 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     })
                     .centerCrop()
                     .into(new GallarySimpleTarget(rect));
-
 
         }
     }
@@ -512,7 +526,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                 result = getString(R.string.save_failure2);
                                 break;
                             default:
-                                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                                         Uri.parse("file://" + result)));// 更新系统相册
                                 result = getString(R.string.save_success) + result;
 
@@ -615,16 +629,17 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R
-                        .string.buy_pay_member), 4.4))
+                        .string.buy_pay_member), mImageBean.getToll().getToll_money()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), 4.4))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), mImageBean.getToll().getToll_money()))
                 .buildCenterPopWindowItem1ClickListener(new PayPopWindow
                         .CenterPopWindowItem1ClickListener() {
                     @Override
                     public void onClicked() {
+
                         mPayPopWindow.hide();
                     }
                 })
