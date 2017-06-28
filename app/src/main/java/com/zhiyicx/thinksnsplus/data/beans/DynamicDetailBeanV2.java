@@ -471,6 +471,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         }
 
 
+
+
+        @Override
+        public String toString() {
+            return "付费：" + paid;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -483,10 +490,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
             dest.writeString(this.size);
             dest.writeString(this.imgUrl);
             dest.writeInt(this.width);
+            dest.writeInt(this.paid_node);
             dest.writeInt(this.height);
             dest.writeDouble(this.amount);
             dest.writeString(this.type);
-            dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
+            dest.writeValue(this.paid);
             dest.writeString(this.imgMimeType);
         }
 
@@ -499,10 +507,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
             this.size = in.readString();
             this.imgUrl = in.readString();
             this.width = in.readInt();
+            this.paid_node = in.readInt();
             this.height = in.readInt();
             this.amount = in.readDouble();
             this.type = in.readString();
-            this.paid = in.readByte() != 0;
+            this.paid = (Boolean) in.readValue(Boolean.class.getClassLoader());
             this.imgMimeType = in.readString();
         }
 
@@ -517,11 +526,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
                 return new ImagesBean[size];
             }
         };
-
-        @Override
-        public String toString() {
-            return "付费：" + paid;
-        }
     }
 
     public static class PaidNote implements Serializable, Parcelable {

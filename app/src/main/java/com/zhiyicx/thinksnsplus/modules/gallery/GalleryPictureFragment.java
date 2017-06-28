@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -62,6 +63,7 @@ import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -303,16 +305,15 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .with(context)
                     .load(new CustomImageSizeModelImp(imageBean) {
                         @Override
-                        public String requestCustomSizeUrl() {
+                        public GlideUrl requestGlideUrl() {
                             final Toll toll = mImageBean.getToll();
                             final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
-                            if (!canLook) {
-                                return "";
-                            }
-                            return super.requestCustomSizeUrl();
+                            return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
+                                    ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN());
+
                         }
                     }
-                            .requestCustomSizeUrl())
+                            .requestGlideUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
             // 尝试从缓存获取原图
@@ -339,6 +340,13 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                             final Toll toll = mImageBean.getToll();
                             final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
                             if (!canLook) {
+                                if (mPbProgress != null) {
+                                    mPbProgress.setVisibility(View.GONE);
+                                }
+                                if (mIvPager != null) {
+                                    mIvPager.setImageResource(R.mipmap.pic_locked_square);
+                                }
+                                mPhotoViewAttacherNormal.update();
                                 return false;
                             }
 
@@ -383,6 +391,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         mTvOriginPhoto.setClickable(false);
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
         mTvOriginPhoto.setText("0%");
+        final Toll toll = mImageBean.getToll();
+        final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
         Glide.with(context)
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
@@ -400,8 +410,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                             }
                         }
                     }
-                }))
-                .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), imageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
+                }, AppApplication.getTOKEN()))
+                .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), screenW, screenH, ImageZipConfig.IMAGE_100_ZIP))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
@@ -505,6 +515,12 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
      */
     private void getSaveBitmapResultObservable(final Bitmap bitmap) {
         Observable.just(1)// 不能empty否则map无法进行转换
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
+//                        showSnackLoadingMessage(getString(R.string.save_pic_ing));
+                    }
+                })
                 .map(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {

@@ -16,6 +16,7 @@ public class Toll implements Parcelable, Serializable {
     public static final String DOWNLOAD_TOLL_TYPE = "download";// 下载收费
 
     int toll_type;
+    int paid_node;
     String toll_type_string;
     float toll_money;
     float custom_money;
@@ -28,6 +29,14 @@ public class Toll implements Parcelable, Serializable {
         this.toll_type = toll_type;
         this.toll_money = toll_money;
         this.custom_money = custom_money;
+    }
+
+    public int getPaid_node() {
+        return paid_node;
+    }
+
+    public void setPaid_node(int paid_node) {
+        this.paid_node = paid_node;
     }
 
     public Boolean getPaid() {
