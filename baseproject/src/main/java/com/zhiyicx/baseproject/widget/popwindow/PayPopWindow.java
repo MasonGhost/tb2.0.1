@@ -22,7 +22,7 @@ import java.util.List;
  * @Author Jliuer
  * @Date 2017/05/15/14:13
  * @Email Jliuer@aliyun.com
- * @Description
+ * @Description 支付中间弹窗
  */
 public class PayPopWindow extends CustomPopupWindow {
 

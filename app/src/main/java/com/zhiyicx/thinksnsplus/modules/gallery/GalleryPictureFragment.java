@@ -78,7 +78,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @date 2017/3/20
  * @contact email:450127106@qq.com
  */
-
 public class GalleryPictureFragment extends TSFragment implements View.OnLongClickListener, PhotoViewAttacher.OnPhotoTapListener {
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
@@ -275,6 +274,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
+        mLlToll.setVisibility(View.GONE);
         final int w, h;
         if (imageBean.getWidth() * imageBean.getHeight() == 0) {
             // 搞什么飞机，之前的本地规划画布没用了，
@@ -283,7 +283,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             imageBean.setHeight(screenH);
         }
         w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
-        h = imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight();
+        h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
+
         LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
 
         if (imageBean.getImgUrl() != null) {
@@ -322,6 +323,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .override(w, h)
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.mipmap.pic_locked_square)
                     .listener(new RequestListener<String, GlideDrawable>() {
@@ -340,6 +342,10 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                             final Toll toll = mImageBean.getToll();
                             final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
                             if (!canLook) {
+                                if (mTvOriginPhoto != null) {
+                                    mTvOriginPhoto.setVisibility(View.GONE);
+                                }
+
                                 if (mPbProgress != null) {
                                     mPbProgress.setVisibility(View.GONE);
                                 }
@@ -347,6 +353,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                     mIvPager.setImageResource(R.mipmap.pic_locked_square);
                                 }
                                 mPhotoViewAttacherNormal.update();
+                                mLlToll.setVisibility(View.VISIBLE);
                                 return false;
                             }
 
@@ -356,6 +363,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                             ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN()))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
+                                    .override(w, h)
                                     .error(R.mipmap.pic_locked_square)
                                     .centerCrop()
                                     .into(new SimpleTarget<GlideDrawable>() {
@@ -387,6 +395,15 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载原图:
     private void loadOriginImage(ImageBean imageBean) {
+        final int w, h;
+        if (imageBean.getWidth() * imageBean.getHeight() == 0) {
+            // 搞什么飞机，之前的本地规划画布没用了，
+            // 这个画廊界面我本地怎么知道传多少宽高嘛，高矮胖瘦都有。
+            imageBean.setWidth(screenW);
+            imageBean.setHeight(screenH);
+        }
+        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+        h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 禁止点击查看原图按钮
         mTvOriginPhoto.setClickable(false);
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
@@ -412,6 +429,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     }
                 }, AppApplication.getTOKEN()))
                 .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), screenW, screenH, ImageZipConfig.IMAGE_100_ZIP))
+                .override(w, h)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
@@ -643,7 +661,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 .buildLinksColor1(R.color.themeColor)
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R
                         .string.buy_pay_member), mImageBean.getToll().getToll_money()))
                 .buildLinksStr(getString(R.string.buy_pay_member))

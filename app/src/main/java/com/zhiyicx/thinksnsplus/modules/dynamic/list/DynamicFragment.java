@@ -327,6 +327,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
+            imageBean.setWidth(task.getWidth());
+            imageBean.setHeight(task.getHeight());
             imageBean.setStorage_id(task.getFile());
             imageBeanList.add(imageBean);
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);

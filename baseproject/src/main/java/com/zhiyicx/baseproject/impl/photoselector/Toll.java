@@ -84,35 +84,7 @@ public class Toll implements Parcelable, Serializable {
         this.toll_money = toll_money;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.toll_type);
-        dest.writeFloat(this.toll_money);
-        dest.writeFloat(this.custom_money);
-    }
-
-    protected Toll(Parcel in) {
-        this.toll_type = in.readInt();
-        this.toll_money = in.readFloat();
-        this.custom_money = in.readFloat();
-    }
-
-    public static final Creator<Toll> CREATOR = new Creator<Toll>() {
-        @Override
-        public Toll createFromParcel(Parcel source) {
-            return new Toll(source);
-        }
-
-        @Override
-        public Toll[] newArray(int size) {
-            return new Toll[size];
-        }
-    };
 
     public void reset() {
         custom_money = 0;
@@ -126,4 +98,40 @@ public class Toll implements Parcelable, Serializable {
                 + ",toll_money=" + toll_money
                 + ",custom_money=" + custom_money;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.toll_type);
+        dest.writeInt(this.paid_node);
+        dest.writeString(this.toll_type_string);
+        dest.writeFloat(this.toll_money);
+        dest.writeFloat(this.custom_money);
+        dest.writeValue(this.isPaid);
+    }
+
+    protected Toll(Parcel in) {
+        this.toll_type = in.readInt();
+        this.paid_node = in.readInt();
+        this.toll_type_string = in.readString();
+        this.toll_money = in.readFloat();
+        this.custom_money = in.readFloat();
+        this.isPaid = (Boolean) in.readValue(Boolean.class.getClassLoader());
+    }
+
+    public static final Creator<Toll> CREATOR = new Creator<Toll>() {
+        @Override
+        public Toll createFromParcel(Parcel source) {
+            return new Toll(source);
+        }
+
+        @Override
+        public Toll[] newArray(int size) {
+            return new Toll[size];
+        }
+    };
 }
