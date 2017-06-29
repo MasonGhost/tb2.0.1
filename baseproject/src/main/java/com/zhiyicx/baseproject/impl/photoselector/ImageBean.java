@@ -21,7 +21,9 @@ public class ImageBean implements Parcelable, Serializable {
      * height : 1701.0
      */
     private String imgUrl;// 图片的地址
+    private Long feed_id;
     private int storage_id;
+    private int position;
     private int toll_type;
     private float toll_monye;
     private double width;
@@ -43,6 +45,22 @@ public class ImageBean implements Parcelable, Serializable {
         }
         setToll_type(toll.toll_type);
         setToll_monye(toll.toll_money > toll.custom_money ? toll.toll_money : toll.custom_money);
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public Long getFeed_id() {
+        return feed_id;
+    }
+
+    public void setFeed_id(Long feed_id) {
+        this.feed_id = feed_id;
     }
 
     public int getToll_type() {
@@ -139,7 +157,9 @@ public class ImageBean implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.imgUrl);
+        dest.writeValue(this.feed_id);
         dest.writeInt(this.storage_id);
+        dest.writeInt(this.position);
         dest.writeInt(this.toll_type);
         dest.writeFloat(this.toll_monye);
         dest.writeDouble(this.width);
@@ -151,7 +171,9 @@ public class ImageBean implements Parcelable, Serializable {
 
     protected ImageBean(Parcel in) {
         this.imgUrl = in.readString();
+        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
         this.storage_id = in.readInt();
+        this.position = in.readInt();
         this.toll_type = in.readInt();
         this.toll_monye = in.readFloat();
         this.width = in.readDouble();

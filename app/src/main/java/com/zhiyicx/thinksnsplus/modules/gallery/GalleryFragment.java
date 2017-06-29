@@ -176,6 +176,7 @@ public class GalleryFragment extends TSFragment {
             if (fragment == null) {
 
                 boolean animateIn = (currentItem == position) && !alreadyAnimateIn;
+                allImages.get(position).setPosition(position);
                 fragment = GalleryPictureContainerFragment
                         .newInstance(allImages.get(position), rectList.get(position), animateIn,
                                 currentItem == position);

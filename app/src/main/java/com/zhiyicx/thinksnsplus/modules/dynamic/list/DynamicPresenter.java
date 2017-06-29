@@ -503,7 +503,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                         mRootView.refreshData(dynamicPosition);
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_fail));
-                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentPayDynamic());
+//                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentPayDynamic());
                     }
 
                     @Override

@@ -58,6 +58,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
@@ -78,7 +80,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @date 2017/3/20
  * @contact email:450127106@qq.com
  */
-public class GalleryPictureFragment extends TSFragment implements View.OnLongClickListener, PhotoViewAttacher.OnPhotoTapListener {
+public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presenter> implements View.OnLongClickListener, PhotoViewAttacher.OnPhotoTapListener, GalleryConstract.View {
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
@@ -93,6 +95,8 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     TextView mTvToVip;
     @BindView(R.id.ll_toll)
     LinearLayout mLlToll;
+    @Inject
+    GalleryPresenter mGalleryPresenter;
 
     private PhotoViewAttacher mPhotoViewAttacherOrigin;
     private PhotoViewAttacher mPhotoViewAttacherNormal;
@@ -113,6 +117,11 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     @Override
     protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
+    protected boolean needCenterLoadingDialog() {
         return true;
     }
 
@@ -142,6 +151,10 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     @Override
     protected void initData() {
+        DaggerGalleryComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .galleryPresenterModule(new GalleryPresenterModule(this))
+                .build().inject(this);
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
@@ -162,6 +175,16 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                 loadImage(mImageBean, rect, animateIn);
             }
         }
+    }
+
+    @Override
+    public ImageBean getCurrentImageBean() {
+        return mImageBean;
+    }
+
+    @Override
+    public void reLoadImage() {
+
     }
 
     @Override
@@ -364,6 +387,26 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
                                     .override(w, h)
+                                    .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                                        @Override
+                                        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                            LogUtils.i(TAG + "加载高清图失败:"+e.toString());
+                                            if (mPbProgress != null) {
+                                                mPbProgress.setVisibility(View.GONE);
+                                            }
+                                            if (mIvPager != null) {
+                                                mIvPager.setImageResource(R.drawable.shape_default_image);
+                                            }
+                                            mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
+                                            mPhotoViewAttacherNormal.update();
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                            return false;
+                                        }
+                                    })
                                     .error(R.mipmap.pic_locked_square)
                                     .centerCrop()
                                     .into(new SimpleTarget<GlideDrawable>() {
@@ -375,6 +418,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                             }
                                             mPhotoViewAttacherNormal.update();
                                         }
+
                                     });
                             return false;
                         }
@@ -612,6 +656,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             }
         }
 
+
     }
 
     private static final StreamModelLoader<String> cacheOnlyStreamLoader = new StreamModelLoader<String>() {
@@ -673,7 +718,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         .CenterPopWindowItem1ClickListener() {
                     @Override
                     public void onClicked() {
-
+                        mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
                         mPayPopWindow.hide();
                     }
                 })
