@@ -91,6 +91,8 @@ public interface DynamicDetailContract {
          */
         void dynamicHasBeDeleted();
 
+        void reLaodImage();
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -183,5 +185,9 @@ public interface DynamicDetailContract {
         boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark);
 
         List<SystemConfigBean.Advert> getAdvert();
+
+        void checkNote(int note);
+
+        void payNote(int imagePosition,int note);
     }
 }

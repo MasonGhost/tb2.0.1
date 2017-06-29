@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -42,6 +43,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -58,6 +60,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func3;
@@ -91,6 +94,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    CommentRepository mCommentRepository;
 
     @Inject
     public SharePolicy mSharePolicy;
@@ -588,6 +593,49 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             }
         }
         return imageAdvert;
+    }
+
+    @Override
+    public void checkNote(int note) {
+
+    }
+
+    @Override
+    public void payNote(final int imagePosition, int note) {
+        mCommentRepository.paykNote(note)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing));
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.hideCenterLoading();
+                        mRootView.getCurrentDynamic().getImages().get(imagePosition).setPaid(true);
+                        mDynamicDetailBeanV2GreenDao.insertOrReplace( mRootView.getCurrentDynamic());
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.hideCenterLoading();
+                    }
+                });
     }
 
     public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {

@@ -64,7 +64,9 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DEL
  * @contact email:450127106@qq.com
  */
 
-public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean> implements DynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener, OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean>
+        implements DynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
+        OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener ,DynamicDetailHeader.OnImageClickLisenter {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
@@ -227,6 +229,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mDynamicDetailHeader = new DynamicDetailHeader(getContext(),mPresenter.getAdvert());
+        mDynamicDetailHeader.setOnImageClickLisenter(this);
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
@@ -284,6 +287,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
+    }
+
+    @Override
+    public void onImageClick(int iamgePosition, double amount,int note) {
+        initImageCenterPopWindow(iamgePosition,(float) amount,note);
     }
 
     public static DynamicDetailFragment initFragment(Bundle bundle) {
@@ -398,6 +406,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mTvToolbarRight.setVisibility(View.GONE);
         mTvToolbarCenter.setVisibility(View.GONE);
         showLoadViewLoadErrorDisableClick();
+    }
+
+    @Override
+    public void reLaodImage() {
+        mDynamicDetailHeader.updateImage(getCurrentDynamic());
     }
 
     private void setAllData() {
@@ -674,6 +687,59 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     }
                 })
                 .build();
+    }
+
+    private void initImageCenterPopWindow(final int imagePosition, float amout, final int note) {
+//        if (mPayImagePopWindow != null) {
+//            mPayImagePopWindow.show();
+//            return;
+//        }
+        mPayImagePopWindow = PayPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R
+                        .string.buy_pay_member), amout))
+                .buildLinksStr(getString(R.string.buy_pay_member))
+                .buildTitleStr(getString(R.string.buy_pay))
+                .buildItem1Str(getString(R.string.buy_pay_in))
+                .buildItem2Str(getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
+                .buildCenterPopWindowItem1ClickListener(new PayPopWindow
+                        .CenterPopWindowItem1ClickListener() {
+                    @Override
+                    public void onClicked() {
+                        mPresenter.payNote(imagePosition, note);
+                        mPayImagePopWindow.hide();
+                    }
+                })
+                .buildCenterPopWindowItem2ClickListener(new PayPopWindow
+                        .CenterPopWindowItem2ClickListener() {
+                    @Override
+                    public void onClicked() {
+                        mPayImagePopWindow.hide();
+                    }
+                })
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
+
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayImagePopWindow.show();
+
     }
 
     /**

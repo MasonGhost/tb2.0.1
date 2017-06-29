@@ -14,10 +14,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.TouristConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -26,10 +26,7 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
@@ -58,7 +55,9 @@ public class DynamicDetailHeader {
     private int screenWidth;
     private int picWidth;
     private Bitmap sharBitmap;
+    private int position;
 
+    private OnImageClickLisenter mOnImageClickLisenter;
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
 
     public View getDynamicDetailHeader() {
@@ -135,12 +134,19 @@ public class DynamicDetailHeader {
             FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
             sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
                     .getDrawable(), R.mipmap.icon_256);
-            setImageClickListener(photoList);
+            setImageClickListener(photoList, dynamicBean);
         }
     }
 
     public Bitmap getSharBitmap() {
         return sharBitmap;
+    }
+
+    public void updateImage(DynamicDetailBeanV2 dynamicBean) {
+        List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
+        for (int i = 0; i < photoList.size(); i++) {
+            showContentImage(mContext, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
+        }
     }
 
     /**
@@ -205,69 +211,106 @@ public class DynamicDetailHeader {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
 
-        String imgUrl = "";
         // 如果有本地图片，优先显示本地图片
-        int height = 0;// 图片需要显示的高度
-        height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
-        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            int part = (picWidth / imageBean.getWidth() * 100);
-            if (part > 100) {
-                part = 100;
-            }
-            imgUrl = ImageUtils.imagePathConvertV2(imageBean.getFile(), picWidth, height, part);
-        } else {
-            imgUrl = imageBean.getImgUrl();
-        }
-        if (user_id != AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            if (imageBean.isPaid() != null && !imageBean.isPaid()) {// 没有付费的他人图片
-                imgUrl = "1234";
-            }
-        }
+        int height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
         // 提前设置图片控件的大小，使得占位图显示
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         imageView.setLayoutParams(layoutParams);
 
-        AppApplication.AppComponentHolder.getAppComponent().imageLoader()
-                .loadImage(context, GlideImageConfig.builder()
-                        .placeholder(R.drawable.shape_default_image)
-                        .errorPic(R.mipmap.pic_locked)
-                        .url(imgUrl)
-                        .imagerView(imageView)
-                        .build()
-                );
+        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+            int part = (picWidth / imageBean.getWidth()) * 100;
+            if (part > 100) {
+                part = 100;
+            }
+            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+            if (!canLook) {
+                layoutParams.width = picWidth;
+                layoutParams.height = picWidth;
+                imageView.setLayoutParams(layoutParams);
+            }
+            imageView.setLayoutParams(layoutParams);
+            Glide.with(mContext)
+                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), picWidth, height, part, AppApplication.getTOKEN()))
+                    .override(picWidth, height)
+                    .placeholder(R.drawable.shape_default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.mipmap.pic_locked)
+                    .into(imageView);
+        } else {
+            Glide.with(mContext)
+                    .load(imageBean.getImgUrl())
+                    .override(picWidth, height)
+                    .placeholder(R.drawable.shape_default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.mipmap.pic_locked)
+                    .into(imageView);
+        }
         photoContainer.addView(view);
     }
 
     /**
      * 设置图片点击事件
      */
-    private void setImageClickListener(final List<DynamicDetailBeanV2.ImagesBean> photoList) {
+    private void setImageClickListener(final List<DynamicDetailBeanV2.ImagesBean> photoList, final DynamicDetailBeanV2 dynamicBean) {
         final ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
         final List<ImageBean> imageBeanList = new ArrayList<>();
         for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
             final View photoView = mPhotoContainer.getChildAt(i);
+            position = i;
             ImageView imageView = (ImageView) photoView.findViewById(R.id.dynamic_content_img);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     animationRectBeanArrayList.clear();
+
+                    DynamicDetailBeanV2.ImagesBean img = photoList.get(position);
+                    Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
+                    if (!canLook) {
+                        mOnImageClickLisenter.onImageClick(position, img.getAmount(),photoList.get(position).getPaid_node());
+                        return;
+                    }
+
                     for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
                         View photoView = mPhotoContainer.getChildAt(i);
                         ImageView imageView = (ImageView) photoView.findViewById(R.id
                                 .dynamic_content_img);
+                        DynamicDetailBeanV2.ImagesBean task = photoList.get(i);
                         ImageBean imageBean = new ImageBean();
-                        imageBean.setStorage_id(photoList.get(i).getFile());
-                        imageBean.setImgUrl(photoList.get(i).getImgUrl());
+                        imageBean.setImgUrl(task.getImgUrl());
+                        Toll toll = new Toll();
+                        toll.setPaid(task.isPaid());
+                        toll.setToll_money((float) task.getAmount());
+                        toll.setToll_type_string(task.getType());
+                        toll.setPaid_node(task.getPaid_node());
+                        imageBean.setToll(toll);
+                        imageBean.setFeed_id(dynamicBean.getId());
+                        imageBean.setWidth(task.getWidth());
+                        imageBean.setHeight(task.getHeight());
+                        imageBean.setStorage_id(task.getFile());
                         imageBeanList.add(imageBean);
                         AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
                         animationRectBeanArrayList.add(rect);
                     }
+
                     GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild
                             (photoView), imageBeanList, animationRectBeanArrayList);
                 }
             });
         }
     }
+
+    public OnImageClickLisenter getOnImageClickLisenter() {
+        return mOnImageClickLisenter;
+    }
+
+    public void setOnImageClickLisenter(OnImageClickLisenter onImageClickLisenter) {
+        mOnImageClickLisenter = onImageClickLisenter;
+    }
+
+    public interface OnImageClickLisenter {
+        void onImageClick(int iamgePosition, double amount,int note);
+    }
+
 }
