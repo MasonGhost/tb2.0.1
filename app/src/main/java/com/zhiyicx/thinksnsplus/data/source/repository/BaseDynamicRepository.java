@@ -236,6 +236,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         params.put("comment_content", commentContent);
         params.put("reply_to_user_id", reply_to_user_id);
         params.put("comment_mark", comment_mark);
+        LogUtils.d("sendCommentV2::" + params.toString());
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_COMMENT, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT_V2, feed_id));
