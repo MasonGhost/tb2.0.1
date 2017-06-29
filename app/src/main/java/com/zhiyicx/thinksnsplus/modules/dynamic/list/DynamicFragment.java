@@ -96,7 +96,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @BindView(R.id.v_shadow)
     View mVShadow;
 
-
     @Inject
     DynamicPresenter mDynamicPresenter;  // 仅用于构造
     private String mDynamicType = ApiConfig.DYNAMIC_TYPE_NEW;

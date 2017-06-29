@@ -618,9 +618,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (showToolbar() && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
             mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
             mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
-
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
-
         }
     }
 

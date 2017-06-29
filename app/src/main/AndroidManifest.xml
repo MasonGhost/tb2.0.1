@@ -167,7 +167,6 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.dynamic.send.SendDynamicActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
         <activity
