@@ -182,19 +182,26 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public void getCurrentDynamic(final long feed_id) {
-        Subscription subscription = mRepository.getDynamicDetailBeanV2(feed_id)
-                .subscribe(new BaseSubscribeForV2<DynamicDetailBeanV2>() {
+        Subscription subscription = mRepository.getDynamicListV2(ApiConfig.DYNAMIC_TYPE_NEW,
+                DEFAULT_PAGE_MAX_ID, false)
+                .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
                     @Override
-                    protected void onSuccess(DynamicDetailBeanV2 data) {
-                        mRootView.initDynamicDetial(data);
-                        mDynamicDetailBeanV2GreenDao.insertOrReplace(data);
-                        mDynamicCommentBeanGreenDao.insertOrReplace(data.getComments());
+                    protected void onSuccess(List<DynamicDetailBeanV2> data) {
+                        if (data.isEmpty()) {
+                            onFailure("", ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED);
+                            return;
+                        }
+                        mRootView.initDynamicDetial(data.get(0));
+                        mDynamicDetailBeanV2GreenDao.insertOrReplace(data.get(0));
+                        mDynamicCommentBeanGreenDao.insertOrReplace(data.get(0).getComments());
                     }
+
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.e(message);
                         handleDynamicHasBeDeleted(code, feed_id);
                     }
+
                     @Override
                     protected void onException(Throwable throwable) {
                         mRootView.loadAllError();
@@ -204,50 +211,60 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public void getCurrentDynamicDetail(long feed_id) {
-        mRepository.getDynamicDetailBeanV2(feed_id).subscribe(new BaseSubscribeForV2<DynamicDetailBeanV2>() {
-            @Override
-            protected void onSuccess(DynamicDetailBeanV2 data) {
+    public void getCurrentDynamicDetail(final long feed_id) {
+        Subscription subscription = mRepository.getDynamicDetailBeanV2(feed_id)
+                .subscribe(new BaseSubscribeForV2<DynamicDetailBeanV2>() {
+                    @Override
+                    protected void onSuccess(DynamicDetailBeanV2 data) {
+                        mRootView.initDynamicDetial(data);
+                        mDynamicDetailBeanV2GreenDao.insertOrReplace(data);
+                        mDynamicCommentBeanGreenDao.insertOrReplace(data.getComments());
+                    }
 
-            }
-        });
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        LogUtils.e(message);
+                        handleDynamicHasBeDeleted(code, feed_id);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.loadAllError();
+                    }
+                });
+        addSubscrebe(subscription);
     }
 
     @Override
     public void getDetailAll(final Long feed_id, Long max_id, final String user_ids) {
         Subscription subscription = Observable.zip(mRepository.getDynamicDigList(feed_id, max_id)
                 , mRepository.getUserFollowState(user_ids)
-                , mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_mark(),
+                , mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(),
                         mRootView.getCurrentDynamic().getId(), max_id)
-                , new Func3<BaseJson<List<FollowFansBean>>, BaseJson<List<FollowFansBean>>, BaseJson<List<DynamicCommentBean>>, DynamicDetailBeanV2>() {
+                , new Func3<BaseJson<List<FollowFansBean>>, BaseJson<List<FollowFansBean>>, List<DynamicCommentBean>, DynamicDetailBeanV2>() {
                     @Override
-                    public DynamicDetailBeanV2 call(BaseJson<List<FollowFansBean>> listBaseJson, BaseJson<List<FollowFansBean>> listBaseJson2, BaseJson<List<DynamicCommentBean>> listBaseJson3) {
+                    public DynamicDetailBeanV2 call(BaseJson<List<FollowFansBean>> listBaseJson, BaseJson<List<FollowFansBean>> listBaseJson2, List<DynamicCommentBean> listBaseJson3) {
                         DynamicDetailBeanV2 dynamicBean = new DynamicDetailBeanV2();
                         if (listBaseJson.isStatus()) {
                             if (listBaseJson2.isStatus()) {
-                                if (listBaseJson3.isStatus()) {
-                                    dynamicBean.setDigUserInfoList(listBaseJson.getData());
-                                    mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0)); // 保存关注状态
-                                    List<DynamicCommentBean> data = listBaseJson3.getData();
-                                    // 取出本地为发送成功的评论
-                                    List<DynamicCommentBean> myComments = mDynamicCommentBeanGreenDao.getMySendingComment(mRootView.getCurrentDynamic().getFeed_mark());
-                                    if (!myComments.isEmpty()) {
-                                        for (int i = 0; i < myComments.size(); i++) {
-                                            myComments.get(i).setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(myComments.get(i).getUser_id()));
-                                            if (myComments.get(i).getReply_to_user_id() != 0) {
-                                                myComments.get(i).setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(myComments.get(i).getReply_to_user_id()));
-                                            }
+                                dynamicBean.setDigUserInfoList(listBaseJson.getData());
+                                mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0)); // 保存关注状态
+                                List<DynamicCommentBean> data = listBaseJson3;
+                                // 取出本地为发送成功的评论
+                                List<DynamicCommentBean> myComments = mDynamicCommentBeanGreenDao.getMySendingComment(mRootView.getCurrentDynamic().getFeed_mark());
+                                if (!myComments.isEmpty()) {
+                                    for (int i = 0; i < myComments.size(); i++) {
+                                        myComments.get(i).setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(myComments.get(i).getUser_id()));
+                                        if (myComments.get(i).getReply_to_user_id() != 0) {
+                                            myComments.get(i).setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(myComments.get(i).getReply_to_user_id()));
                                         }
-                                        myComments.addAll(data);
-                                        data.clear();
-                                        data.addAll(myComments);
                                     }
-                                    dynamicBean.setComments(data);
-                                } else {
-//                                    dynamicBean.setStatus(listBaseJson3.isStatus());
-//                                    dynamicBean.setMessage(listBaseJson3.getMessage());
-//                                    dynamicBean.setCode(listBaseJson3.getCode());
+                                    myComments.addAll(data);
+                                    data.clear();
+                                    data.addAll(myComments);
                                 }
+                                dynamicBean.setComments(data);
+
                             } else {
 //                                dynamicBean.setStatus(listBaseJson2.isStatus());
 //                                dynamicBean.setMessage(listBaseJson2.getMessage());
@@ -327,7 +344,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public void handleLike(boolean isLiked, final Long feed_id,final DynamicDetailBeanV2 dynamicToolBean) {
+    public void handleLike(boolean isLiked, final Long feed_id, final DynamicDetailBeanV2 dynamicToolBean) {
         mIsNeedDynamicListRefresh = true;
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
@@ -608,7 +625,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.hideCenterLoading();
                         mRootView.getCurrentDynamic().getImages().get(imagePosition).setPaid(true);
-                        mDynamicDetailBeanV2GreenDao.insertOrReplace( mRootView.getCurrentDynamic());
+                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
                     }
 
