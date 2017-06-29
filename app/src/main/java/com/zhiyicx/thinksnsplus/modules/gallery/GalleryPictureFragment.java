@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,7 +71,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 
@@ -155,6 +155,10 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .galleryPresenterModule(new GalleryPresenterModule(this))
                 .build().inject(this);
+        loadImage_();
+    }
+
+    private void loadImage_() {
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
@@ -184,7 +188,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     @Override
     public void reLoadImage() {
-
+        loadImage_();
     }
 
     @Override
@@ -221,6 +225,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public void onItemClicked() {
                             mActionPopupWindow.hide();
+                            if (mImageBean.getToll().getToll_type_string().equals(Toll.DOWNLOAD_TOLL_TYPE)) {
+                                initCenterPopWindow(R.string.buy_pay_downlaod_desc);
+                                return;
+                            }
+
                             saveImage();
                         }
                     })
@@ -232,6 +241,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     })
                     .build();
         }
+
         mActionPopupWindow.show();
         return false;
     }
@@ -390,11 +400,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                     .listener(new RequestListener<GlideUrl, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            LogUtils.i(TAG + "加载高清图失败:"+e.toString());
+                                            LogUtils.i(TAG + "加载高清图失败:" + e.toString());
                                             if (mPbProgress != null) {
                                                 mPbProgress.setVisibility(View.GONE);
                                             }
                                             if (mIvPager != null) {
+                                                ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
+                                                params.width = w;
+                                                params.height = h;
+                                                mIvPager.setLayoutParams(params);
                                                 mIvPager.setImageResource(R.drawable.shape_default_image);
                                             }
                                             mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
@@ -577,10 +591,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
      */
     private void getSaveBitmapResultObservable(final Bitmap bitmap) {
         Observable.just(1)// 不能empty否则map无法进行转换
+                .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
-//                        showSnackLoadingMessage(getString(R.string.save_pic_ing));
+                        showSnackLoadingMessage(getString(R.string.save_pic_ing));
                     }
                 })
                 .map(new Func1<Integer, String>() {
@@ -591,7 +606,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
                     }
                 })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())// subscribeOn & doOnSubscribe 的特殊性质
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
                     @Override
@@ -621,7 +636,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_to_pay:
-                initCenterPopWindow();
+                initCenterPopWindow(R.string.buy_pay_desc);
                 break;
             case R.id.tv_to_vip:
 
@@ -693,7 +708,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         super.onDestroy();
     }
 
-    private void initCenterPopWindow() {
+    private void initCenterPopWindow(int resId) {
         if (mPayPopWindow != null) {
             mPayPopWindow.show();
             return;
@@ -707,7 +722,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
-                .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R
+                .buildDescrStr(String.format(getString(resId) + getString(R
                         .string.buy_pay_member), mImageBean.getToll().getToll_money()))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))

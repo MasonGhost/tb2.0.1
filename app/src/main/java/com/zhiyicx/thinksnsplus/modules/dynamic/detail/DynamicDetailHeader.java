@@ -208,14 +208,13 @@ public class DynamicDetailHeader {
         String imgUrl = "";
         // 如果有本地图片，优先显示本地图片
         int height = 0;// 图片需要显示的高度
-//        height = (int) (imageBean.getHeight() * picWidth / imageBean.getWidth());
-        height = 5 * picWidth / 3;
+        height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            int part = (screenWidth / imageBean.getWidth() * 100);
+            int part = (picWidth / imageBean.getWidth() * 100);
             if (part > 100) {
                 part = 100;
             }
-            imgUrl = ImageUtils.imagePathConvertV2(imageBean.getFile(), screenWidth, height, part);
+            imgUrl = ImageUtils.imagePathConvertV2(imageBean.getFile(), picWidth, height, part);
         } else {
             imgUrl = imageBean.getImgUrl();
         }

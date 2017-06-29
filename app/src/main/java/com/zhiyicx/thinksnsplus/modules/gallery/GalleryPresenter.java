@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.gallery;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
@@ -51,8 +52,10 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
                         mRootView.hideCenterLoading();
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
                         dynamicDetailBeanV2.getImages().get(imagePosition).setPaid(true);
+                        mRootView.getCurrentImageBean().getToll().setPaid(true);
+                        mRootView.reLoadImage();
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicDetailBeanV2);
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_fail));
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
                     }
 
                     @Override

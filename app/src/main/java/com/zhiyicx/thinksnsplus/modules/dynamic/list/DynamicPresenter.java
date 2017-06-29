@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -502,7 +503,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                         mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
                         mRootView.refreshData(dynamicPosition);
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_fail));
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
 //                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentPayDynamic());
                     }
 
