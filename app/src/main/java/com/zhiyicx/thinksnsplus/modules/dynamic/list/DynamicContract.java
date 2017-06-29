@@ -116,6 +116,8 @@ public interface DynamicContract {
          */
         void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
 
+        void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent);
+
         /**
          * 通过 feedMark 获取当前数据的位置
          *

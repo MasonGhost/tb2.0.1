@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -85,6 +86,7 @@ public interface IDynamicReppsitory {
      * @param comment_mark
      */
     void sendComment(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
+    void sendCommentV2(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
     /**
      * 插入或者更新动态列表
@@ -132,6 +134,7 @@ public interface IDynamicReppsitory {
      * @return
      */
     Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark, Long feed_id, Long max_id);
+    Observable<List<DynamicCommentBean>> getDynamicCommentListV2(Long feed_mark, Long feed_id, Long max_id);
 
     /**
      * 根据 id 获取评论列表

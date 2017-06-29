@@ -485,6 +485,11 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
+    public void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent) {
+
+    }
+
+    @Override
     public void handleCollect(DynamicDetailBeanV2 dynamicBean) {
         // 收藏
         // 修改数据

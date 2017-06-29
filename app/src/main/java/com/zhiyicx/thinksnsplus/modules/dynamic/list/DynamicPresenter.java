@@ -11,7 +11,6 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -52,7 +51,6 @@ import org.simple.eventbus.Subscriber;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -62,7 +60,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -120,8 +117,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
-        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(),
-                maxId, isLoadMore)
+        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, isLoadMore)
                 .map(new Func1<List<DynamicDetailBeanV2>, List<DynamicDetailBeanV2>>() {
                     @Override
                     public List<DynamicDetailBeanV2> call(List<DynamicDetailBeanV2> listBaseJson) {
@@ -392,6 +388,39 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion)
                 .getId(), replyToUserId, creatComment.getComment_mark());
 
+    }
+
+    @Override
+    public void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent) {
+        DynamicCommentBean creatComment = new DynamicCommentBean();
+        creatComment.setState(DynamicCommentBean.SEND_ING);
+        creatComment.setComment_content(commentContent);
+        creatComment.setFeed_mark(mRootView.getListDatas().get(mCurrentPostion).getFeed_mark());
+        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
+        creatComment.setComment_mark(Long.parseLong(comment_mark));
+        creatComment.setReply_to_user_id(replyToUserId);
+        if (replyToUserId == 0) { //当回复动态的时候
+            UserInfoBean userInfoBean = new UserInfoBean();
+            userInfoBean.setUser_id(replyToUserId);
+            creatComment.setReplyUser(userInfoBean);
+        } else {
+            creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
+        }
+        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+        List<DynamicCommentBean> commentBeanList = new ArrayList<>();
+        commentBeanList.add(creatComment);
+        commentBeanList.addAll(mRootView.getListDatas().get(mCurrentPostion).getComments());
+        mRootView.getListDatas().get(mCurrentPostion).getComments().clear();
+        mRootView.getListDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
+        mRootView.getListDatas().get(mCurrentPostion).setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getFeed_comment_count() + 1);
+        mRootView.refreshData(mCurrentPostion);
+
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion));
+        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
+        mRepository.sendCommentV2(commentContent, mRootView.getListDatas().get(mCurrentPostion)
+                .getId(), replyToUserId, creatComment.getComment_mark());
     }
 
     /**

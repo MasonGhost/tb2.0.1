@@ -123,10 +123,12 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_DELETE_COMMENT = "api/" + API_VERSION + "/feeds/%s/comment/%s";
     // 对一条动态或一条动态评论进行评论
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT = "api/" + API_VERSION + "/feeds/%s/comment";
+    public static final String APP_PATH_DYNAMIC_SEND_COMMENT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/comment";
     // 获取点赞列表
     public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/diggusers";
     // 一条动态的评论列表
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/comments";
+    public static final String APP_PATH_DYNAMIC_COMMENT_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comments";
     // 根据id获取评论列表
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST_BY_COMMENT_ID = "api/" + API_VERSION + "/feeds/comments";
     // 收藏动态，取消收藏

@@ -45,6 +45,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
     @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean replyUser;// 被评论的用户信息
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
+    private int pinned ;// 是否是被固定（置顶）的评论
 
 
     @Override
@@ -86,10 +87,10 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
         this.state = in.readInt();
     }
 
-    @Generated(hash = 937363585)
-    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark,
-                              String created_at, String comment_content, long feed_user_id, long user_id,
-                              long reply_to_user_id, int state) {
+    @Generated(hash = 1239881824)
+    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark, String created_at,
+            String comment_content, long feed_user_id, long user_id, long reply_to_user_id, int state,
+            int pinned) {
         this._id = _id;
         this.comment_id = comment_id;
         this.feed_mark = feed_mark;
@@ -100,6 +101,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
         this.user_id = user_id;
         this.reply_to_user_id = reply_to_user_id;
         this.state = state;
+        this.pinned = pinned;
     }
 
     public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {
@@ -343,6 +345,14 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable {
     @Override
     public Long getMaxId() {
         return comment_id;
+    }
+
+    public int getPinned() {
+        return this.pinned;
+    }
+
+    public void setPinned(int pinned) {
+        this.pinned = pinned;
     }
 
     /** called by internal mechanisms, do not call yourself. */

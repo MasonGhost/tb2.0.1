@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -217,6 +218,19 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
+    public void sendCommentV2(String commentContent, Long feed_id, Long reply_to_user_id, Long comment_mark) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("comment_content", commentContent);
+        params.put("reply_to_user_id", reply_to_user_id);
+        params.put("comment_mark", comment_mark);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_COMMENT, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT_V2, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
     public Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id, int amout) {
         return mDynamicClient.setDynamicCommentToll(feed_id, amout)
                 .subscribeOn(Schedulers.io())
@@ -262,7 +276,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .subscribe(new Action1<List<DynamicDetailBeanV2>>() {
                     @Override
                     public void call(List<DynamicDetailBeanV2> datas) {
-                        mDynamicDetailBeanV2GreenDao .deleteDynamicByType(type); // 清除旧数据
+                        mDynamicDetailBeanV2GreenDao.deleteDynamicByType(type); // 清除旧数据
                         List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
 
                         for (DynamicDetailBeanV2 dynamicBeanTmp : datas) {
@@ -444,6 +458,61 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
                     }
 
+                });
+    }
+
+    /**
+     * V2
+     *
+     * @param feed_mark dyanmic feed mark
+     * @param feed_id   dyanmic detail id
+     * @param after     max_id
+     * @return
+     */
+    @Override
+    public Observable<List<DynamicCommentBean>> getDynamicCommentListV2(
+            final Long feed_mark, Long feed_id, Long after) {
+        return mDynamicClient.getDynamicCommentListV2(feed_id, after, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<DynamicCommentBeanV2, Observable<List<DynamicCommentBean>>>() {
+                    @Override
+                    public Observable<List<DynamicCommentBean>> call(final DynamicCommentBeanV2 listBaseJson) {
+                        final List<Object> user_ids = new ArrayList<>();
+                        listBaseJson.getPinned().addAll(listBaseJson.getComments());
+                        for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinned()) {
+                            user_ids.add(dynamicCommentBean.getUser_id());
+                            user_ids.add(dynamicCommentBean.getReply_to_user_id());
+                            dynamicCommentBean.setFeed_mark(feed_mark);
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(new Func1<BaseJson<List<UserInfoBean>>, List<DynamicCommentBean>>() {
+                                    @Override
+                                    public List<DynamicCommentBean> call(BaseJson<List<UserInfoBean>> userinfobeans) {
+                                        if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                            for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                            }
+                                            for (int i = 0; i < listBaseJson.getPinned().size(); i++) {
+                                                listBaseJson.getPinned().get(i).setCommentUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinned().get(i).getUser_id()));
+                                                if (listBaseJson.getPinned().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
+                                                    UserInfoBean userInfoBean = new UserInfoBean();
+                                                    userInfoBean.setUser_id(0L);
+                                                    listBaseJson.getPinned().get(i).setReplyUser(userInfoBean);
+                                                } else {
+                                                    listBaseJson.getPinned().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinned().get(i).getReply_to_user_id()));
+                                                }
+                                            }
+                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                        } else {
+
+                                        }
+                                        return listBaseJson.getPinned();
+                                    }
+                                });
+
+                    }
                 });
     }
 
