@@ -182,25 +182,19 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public void getCurrentDynamic(final long feed_id) {
-        Subscription subscription = mRepository.getDynamicListV2(ApiConfig.DYNAMIC_TYPE_NEW,
-                DEFAULT_PAGE_MAX_ID, false)
-                .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
+        Subscription subscription = mRepository.getDynamicDetailBeanV2(feed_id)
+                .subscribe(new BaseSubscribeForV2<DynamicDetailBeanV2>() {
                     @Override
-                    protected void onSuccess(List<DynamicDetailBeanV2> data) {
-                        if (data.isEmpty()) {
-                            onFailure("", ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED);
-                            return;
-                        }
-                        mRootView.initDynamicDetial(data.get(0));
-                        mDynamicDetailBeanV2GreenDao.insertOrReplace(data.get(0));
-                        mDynamicCommentBeanGreenDao.insertOrReplace(data.get(0).getComments());
+                    protected void onSuccess(DynamicDetailBeanV2 data) {
+                        mRootView.initDynamicDetial(data);
+                        mDynamicDetailBeanV2GreenDao.insertOrReplace(data);
+                        mDynamicCommentBeanGreenDao.insertOrReplace(data.getComments());
                     }
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.e(message);
                         handleDynamicHasBeDeleted(code, feed_id);
                     }
-
                     @Override
                     protected void onException(Throwable throwable) {
                         mRootView.loadAllError();

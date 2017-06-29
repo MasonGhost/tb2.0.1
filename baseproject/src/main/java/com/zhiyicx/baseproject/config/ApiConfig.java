@@ -137,7 +137,8 @@ public class ApiConfig {
     // 增加动态浏览量
     public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT = "api/" + API_VERSION + "/feeds/{feed_id}/viewcount";
 
-    public static final String APP_PATH_GET_DYNAMIC_DETAIL = "api/" + API_VERSION_2 + "/feeds/{feed_id}";// 获取动态详情 V2
+    // 获取动态详情 V2
+    public static final String APP_PATH_GET_DYNAMIC_DETAIL = "api/" + API_VERSION_2 + "/feeds/{feed_id}";
 
     // 获取动态列表 V2
     public static final String APP_PATH_GET_DYNAMIC_LIST_V2 = "api/" + API_VERSION_2 + "/feeds";//
