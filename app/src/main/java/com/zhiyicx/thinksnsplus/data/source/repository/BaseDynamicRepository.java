@@ -186,6 +186,18 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
+    @Override
+    public void deleteCommentV2(Long feed_id, Long comment_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("feed_id", feed_id);
+        params.put("comment_id", comment_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_DELETE_COMMENT_V2, feed_id, comment_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
     /**
      * 删除评论
      *

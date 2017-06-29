@@ -563,7 +563,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         com.zhiyicx.imsdk.utils.common.DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
-        mPresenter.sendComment(mCurrentPostion, mReplyToUserId, text);
+        mPresenter.sendCommentV2(mCurrentPostion, mReplyToUserId, text);
         showBottomView(true);
     }
 
@@ -618,7 +618,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     @Override
                     public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
-                        mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean
+                        mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean
                                         .getComments().get(commentPosition).getComment_id(),
                                 commentPosition);
                         showBottomView(true);

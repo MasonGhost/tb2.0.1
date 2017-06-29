@@ -424,6 +424,16 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
+    public void deleteCommentV2(DynamicDetailBeanV2 dynamicBean, int dynamicPositon, long comment_id, int commentPosition) {
+        mRootView.getListDatas().get(dynamicPositon).setFeed_comment_count(dynamicBean.getFeed_comment_count() - 1);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPositon));
+        mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPosition));
+        mRootView.getListDatas().get(dynamicPositon).getComments().remove(commentPosition);
+        mRootView.refreshData(dynamicPositon);
+        mRepository.deleteCommentV2(dynamicBean.getId(), comment_id);
+    }
+
+    @Override
     public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
         mRepository.sendComment(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(), commentBean.getComment_mark());

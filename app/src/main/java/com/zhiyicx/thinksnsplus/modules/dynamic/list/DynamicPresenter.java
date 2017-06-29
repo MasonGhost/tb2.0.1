@@ -324,11 +324,23 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void deleteComment(DynamicDetailBeanV2 dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
+
+
         mRootView.getListDatas().get(dynamicPosition).setFeed_comment_count(dynamicBean.getFeed_comment_count() - 1);
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getComments().remove(commentPositon);
         mRootView.refreshData(dynamicPosition);
+        mRepository.deleteComment(dynamicBean.getId(), comment_id);
+    }
+
+    @Override
+    public void deleteCommentV2(DynamicDetailBeanV2 dynamicBean, int dynamicPositon, long comment_id, int commentPosition) {
+        mRootView.getListDatas().get(dynamicPositon).setFeed_comment_count(dynamicBean.getFeed_comment_count() - 1);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPositon));
+        mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPosition));
+        mRootView.getListDatas().get(dynamicPositon).getComments().remove(commentPosition);
+        mRootView.refreshData(dynamicPositon);
         mRepository.deleteComment(dynamicBean.getId(), comment_id);
     }
 

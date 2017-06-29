@@ -76,6 +76,7 @@ public interface IDynamicReppsitory {
      * @param comment_id
      */
     void deleteComment(final Long feed_id, Long comment_id);
+    void deleteCommentV2(final Long feed_id, Long comment_id);
 
     /**
      * 发送评论
