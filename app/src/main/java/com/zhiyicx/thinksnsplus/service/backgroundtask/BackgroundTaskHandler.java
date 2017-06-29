@@ -798,11 +798,11 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .subscribe(new BaseSubscribe<Object>() {
+                .subscribe(new BaseSubscribeForV2<BaseJson<Object>>() {
                     @Override
-                    protected void onSuccess(Object data) {
+                    protected void onSuccess(BaseJson<Object> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        dynamicCommentBean.setComment_id(((Double) data).longValue());
+                        dynamicCommentBean.setComment_id((long)data.getId());
                         dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -810,6 +810,7 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -817,6 +818,7 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
