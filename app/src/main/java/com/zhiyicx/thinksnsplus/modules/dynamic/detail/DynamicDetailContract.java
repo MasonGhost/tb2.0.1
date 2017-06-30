@@ -166,6 +166,7 @@ public interface DynamicDetailContract {
          * @param commentContent comment content
          */
         void sendComment(long replyToUserId, String commentContent);
+        void sendCommentV2(long replyToUserId, String commentContent);
 
         /**
          * delete a comment
@@ -174,6 +175,7 @@ public interface DynamicDetailContract {
          * @param commentPosition comment curren position
          */
         void deleteComment(long comment_id, int commentPosition);
+        void deleteCommentV2(long comment_id, int commentPosition);
 
         /**
          * check current dynamic is has been deleted

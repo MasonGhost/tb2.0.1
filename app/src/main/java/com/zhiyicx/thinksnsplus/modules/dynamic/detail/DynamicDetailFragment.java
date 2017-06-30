@@ -536,7 +536,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         DeviceUtils.hideSoftKeyboard(getContext(), v);
         mIlvComment.setVisibility(View.GONE);
         mVShadow.setVisibility(View.GONE);
-        mPresenter.sendComment(mReplyUserId, text);
+        mPresenter.sendCommentV2(mReplyUserId, text);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
     }
 
@@ -592,7 +592,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                     @Override
                     public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
-                        mPresenter.deleteComment(comment_id, commentPosition);
+                        mPresenter.deleteCommentV2(comment_id, commentPosition);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

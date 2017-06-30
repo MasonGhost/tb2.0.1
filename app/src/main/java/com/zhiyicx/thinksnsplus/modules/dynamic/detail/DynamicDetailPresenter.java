@@ -475,6 +475,22 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         mRepository.deleteComment(mRootView.getCurrentDynamic().getId(), comment_id);
     }
 
+    @Override
+    public void deleteCommentV2(long comment_id, int commentPosition) {
+        mIsNeedDynamicListRefresh = true;
+        mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic().getFeed_comment_count() - 1);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
+        mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments().get(commentPosition));
+        mRootView.getListDatas().remove(commentPosition);
+        if (mRootView.getListDatas().isEmpty()) {
+            DynamicCommentBean emptyData = new DynamicCommentBean();
+            mRootView.getListDatas().add(emptyData);
+        }
+        mRootView.refreshData();
+        mRootView.updateCommentCountAndDig();
+        mRepository.deleteCommentV2(mRootView.getCurrentDynamic().getId(), comment_id);
+    }
+
     /**
      * check current dynamic is has been deleted
      *
@@ -531,6 +547,42 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         mRepository.sendComment(commentContent, mRootView.getCurrentDynamic().getId(),
                 replyToUserId, creatComment.getComment_mark());
 
+    }
+
+    @Override
+    public void sendCommentV2(long replyToUserId, String commentContent) {
+        mIsNeedDynamicListRefresh = true;
+        // 生成一条评论
+        DynamicCommentBean creatComment = new DynamicCommentBean();
+        creatComment.setState(DynamicCommentBean.SEND_ING);
+        creatComment.setComment_content(commentContent);
+        creatComment.setFeed_mark(mRootView.getCurrentDynamic().getFeed_mark());
+        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
+        creatComment.setComment_mark(Long.parseLong(comment_mark));
+        creatComment.setReply_to_user_id(replyToUserId);
+        if (replyToUserId == 0) { //当回复动态的时候
+            UserInfoBean userInfoBean = new UserInfoBean();
+            userInfoBean.setUser_id(replyToUserId);
+            creatComment.setReplyUser(userInfoBean);
+        } else {
+
+            creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
+        }
+        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
+        // 处理评论数
+        mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic().getFeed_comment_count() + 1);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
+        if (mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas().get(0).getComment_content())) {
+            mRootView.getListDatas().clear();
+        }
+        mRootView.getListDatas().add(0, creatComment);
+        mRootView.refreshData();
+        mRootView.updateCommentCountAndDig();
+        mRepository.sendCommentV2(commentContent, mRootView.getCurrentDynamic().getId(),
+                replyToUserId, creatComment.getComment_mark());
     }
 
     /**
@@ -625,6 +677,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.hideCenterLoading();
                         mRootView.getCurrentDynamic().getImages().get(imagePosition).setPaid(true);
+                        mRootView.reLaodImage();
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
                     }

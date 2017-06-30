@@ -226,7 +226,7 @@ public class DynamicDetailHeader {
             Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             if (!canLook) {
                 layoutParams.width = picWidth;
-                layoutParams.height = picWidth;
+                layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
                 imageView.setLayoutParams(layoutParams);
             }
             imageView.setLayoutParams(layoutParams);
@@ -264,7 +264,6 @@ public class DynamicDetailHeader {
                 @Override
                 public void onClick(View v) {
                     animationRectBeanArrayList.clear();
-
                     DynamicDetailBeanV2.ImagesBean img = photoList.get(position);
                     Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
                     if (!canLook) {
