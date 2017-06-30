@@ -496,7 +496,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent) {
-
+        
     }
 
     @Override

@@ -45,6 +45,8 @@ public interface ChannelDetailContract {
          * 动态已发送的ui通知
          */
         void sendDynamic();
+
+        DynamicDetailBeanV2 getCurrentPayDynamic();
     }
 
     interface Repository extends IBaseChannelRepository {

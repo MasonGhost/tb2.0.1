@@ -167,6 +167,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
+    public DynamicDetailBeanV2 getCurrentPayDynamic() {
+        return null;
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }

@@ -186,6 +186,26 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         return datas;
     }
 
+    @NonNull
+    private List<DynamicDetailBeanV2> getDynamicBeenFromDBV2() {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return new ArrayList<>();
+        }
+        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        msendingStatus.clear();
+        for (int i = 0; i < datas.size(); i++) {
+            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+                datas.get(i).setState(DynamicDetailBeanV2.SEND_ERROR);
+            }
+            msendingStatus.put(i, datas.get(i).getFeed_mark());
+        }
+        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+            mDynamicDetailBeanV2GreenDao.insertOrReplace(datas);
+        }
+
+        return datas;
+    }
+
     @Override
     protected boolean useEventBus() {
         return true;
@@ -257,7 +277,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPosition));
         mRootView.getListDatas().get(dynamicPositon).getComments().remove(commentPosition);
         mRootView.refreshData(dynamicPositon);
-        mRepository.deleteComment(dynamicBean.getId(), comment_id);
+        mRepository.deleteCommentV2(dynamicBean.getId(), comment_id);
     }
 
     @Override
