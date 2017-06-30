@@ -512,7 +512,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     }
 
     @Override
-    public void payNote(final int dynamicPosition, final int imagePosition, int note) {
+    public void payNote(final int dynamicPosition, final int imagePosition, int note,final boolean isImage) {
 //        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
 
 //        double balance = userInfo.getWallet().getBalance();
@@ -539,7 +539,11 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.hideCenterLoading();
                         mRootView.paySuccess();
-                        mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
+                        if (isImage){
+                            mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
+                        }else{
+                            mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
+                        }
                         mRootView.refreshData(dynamicPosition);
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));

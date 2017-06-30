@@ -496,7 +496,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent) {
-        
+
     }
 
     @Override
@@ -553,7 +553,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public void payNote(int dynamicPosition, int imagePosition, int note) {
+    public void payNote(int dynamicPosition, int imagePosition, int note,boolean isImage) {
 
     }
 

@@ -306,7 +306,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean.getImages().get(position).getAmount(), dynamicBean.getImages().get(position).getPaid_node());
+            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean.getImages().get(position).getAmount(),
+                    dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc,true);
             return;
         }
 
@@ -417,6 +418,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.DYNAMIC_DETAIL_CAN_LOOK && mPresenter.handleTouristControl()) { // 游客处理
             return;
         }
+        DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(position);
+        boolean canNotLookWords = detailBeanV2.getPaid_node() != null && !detailBeanV2.getPaid_node().isPaid()
+                && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth().getUser_id();
+        if (canNotLookWords) {
+            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) detailBeanV2.getPaid_node().getAmount(),
+                    detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc,false);
+            return;
+        }
+
         goDynamicDetail(position, false);
 
     }
@@ -789,7 +799,17 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .build();
     }
 
-    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition, float amout, final int note) {
+    /**
+     *
+     * @param dynamicPosition 动态位置
+     * @param imagePosition 图片位置
+     * @param amout 费用
+     * @param note 支付节点
+     * @param strRes 文字说明
+     * @param isImage 是否是图片收费
+     */
+    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition, float amout,
+                                          final int note, int strRes,final boolean isImage) {
 //        if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();
 //            return;
@@ -803,7 +823,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R
+                .buildDescrStr(String.format(getString(strRes) + getString(R
                         .string.buy_pay_member), amout))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
@@ -814,7 +834,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                         .CenterPopWindowItem1ClickListener() {
                     @Override
                     public void onClicked() {
-                        mPresenter.payNote(dynamicPosition, imagePosition, note);
+                        mPresenter.payNote(dynamicPosition, imagePosition, note,isImage);
                         mPayImagePopWindow.hide();
                     }
                 })
