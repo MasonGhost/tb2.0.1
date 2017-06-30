@@ -134,14 +134,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         mTakePhotoPath = toFile.getAbsolutePath();
         if (suc) {
             photosList.clear();// 清空之前的图片，重新装载
-            // 添加已选择的图片，防止丢失
-            if (selectedPhotos != null) {
-                for (String pic : selectedPhotos) {
-                    ImageBean imageBean = new ImageBean();
-                    imageBean.setImgUrl(pic);
-                    photosList.add(imageBean);
-                }
-            }
+            // 添加已选择的图片，防止丢失 --->>> 这样数据会重复的
+//            if (selectedPhotos != null) {
+//                for (String pic : selectedPhotos) {
+//                    ImageBean imageBean = new ImageBean();
+//                    imageBean.setImgUrl(pic);
+//                    photosList.add(imageBean);
+//                }
+//            }
 
             Uri mTakePhotoUri = FileProvider.getUriForFile(mFragment.getContext(),
                     "ThinkSNSFileProvider", toFile);

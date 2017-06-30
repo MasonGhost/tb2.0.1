@@ -49,12 +49,14 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
@@ -284,7 +286,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     public void saveImage() {
         // 通过GLide获取bitmap,有缓存读缓存
         Glide.with(getActivity())
-                .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
+                .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(),(int)mImageBean.getWidth(),(int)mImageBean.getHeight()
+                        , ImageZipConfig.IMAGE_100_ZIP,AppApplication.getTOKEN()))
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
@@ -595,7 +598,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
-                        showSnackLoadingMessage(getString(R.string.save_pic_ing));
+                        TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
+                                .setPromptThemBackground(Prompt.SUCCESS)
+                                .addIconProgressLoading(0, true, false)
+                                .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
+                                .show();
                     }
                 })
                 .map(new Func1<Integer, String>() {
@@ -619,10 +626,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 result = getString(R.string.save_failure2);
                                 break;
                             default:
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                                        Uri.parse("file://" + result)));// 更新系统相册
-                                result = getString(R.string.save_success) + result;
-
+                                File file = new File(result);
+                                if (file.exists()) {
+                                    result = getString(R.string.save_success) + result;
+                                    FileUtils.insertPhotoToAlbumAndRefresh(context, file);
+                                }
                         }
                         TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
                                 .setPromptThemBackground(Prompt.SUCCESS)

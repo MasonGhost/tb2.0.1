@@ -66,6 +66,12 @@ public class ImageUtils {
                 .build());
     }
 
+    public static GlideUrl imagePathConvertV2(int storage, int w, int h, int part, String token) {
+        return new GlideUrl(imagePathConvertV2(storage,w,h,part), new LazyHeaders.Builder()
+                .addHeader("Authorization", token)
+                .build());
+    }
+
     public static String imagePathConvertV2(int storage, int w, int h, int part) {
         return String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH_V2, storage, w, h, part);
     }
