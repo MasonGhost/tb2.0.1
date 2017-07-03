@@ -60,11 +60,13 @@ configurations.all {
     }
 }
 dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
     def testDependences = rootProject.ext.testDependencies
     def dataDependences = rootProject.ext.dataDependencies
     def sdkSoupportDependences = rootProject.ext.sdksoupportDependencies
     def developmentDependencies = rootProject.ext.developmentDependencies
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+
     // Sdksoupport dependencies
     compile sdkSoupportDependences.appcompatV7
     compile sdkSoupportDependences.supportV4
@@ -103,8 +105,8 @@ dependencies {
     compile dataDependences.rxbindingSupportV7
     compile dataDependences.rxbindingDesign
     compile dataDependences.rxbindingDesignrRcyclerviewV7
-    compile dataDependences.clickSpanLink // click span
-
+    compile dataDependences.clickSpanLink
+    // click span
     compile dataDependences.gson
     // Development
     debugCompile developmentDependencies.leakCanaryDebug
@@ -123,7 +125,6 @@ dependencies {
     //分包
     compile dataDependences.multidex
     testCompile testDependencies.multidexTest
-    compile project(':skinlibrary')
     compile project(':mysnackbar')
     // 指示器
     compile dataDependences.magicIndicator
