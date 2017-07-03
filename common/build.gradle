@@ -128,4 +128,11 @@ dependencies {
     compile project(':mysnackbar')
     // 指示器
     compile dataDependences.magicIndicator
+
+    // skin
+    compile dataDependences.skinDesign
+    compile dataDependences.skinCardveiw
+
+    // font
+    compile dataDependences.calligraphyFont
 }
