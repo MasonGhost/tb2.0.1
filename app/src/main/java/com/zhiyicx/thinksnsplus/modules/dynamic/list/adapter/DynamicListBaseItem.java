@@ -15,10 +15,8 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
-import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -183,11 +181,13 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicBean> {
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
-                TextViewUtils.newInstance(contentView, content)
-                        .setSpanTextColor(BaseApplication.getContext().getResources().getColor(R.color.normal_for_assist_text))
-                        .setPosition(0, content.length())
-                        .disPlayText(true);
-//              contentView.setText(content);
+//                System.out.println("length = " + content.length());
+//                System.out.println("content = " + content);
+//                TextViewUtils.newInstance(contentView, content)
+//                        .setSpanTextColor(BaseApplication.getContext().getResources().getColor(R.color.normal_for_assist_text))
+//                        .setPosition(0, content.length())
+//                        .disPlayText(true);
+              contentView.setText(content);
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);

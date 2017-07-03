@@ -518,13 +518,19 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                 for (DynamicBean dynamicBean : listBaseJson.getData()) {
                                                     dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicBean.getUser_id()));
                                                     for (int i = 0; i < dynamicBean.getComments().size(); i++) {
-                                                        dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
+                                                        UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id());
+                                                        if (tmpUserinfo != null) {
+                                                            dynamicBean.getComments().get(i).setCommentUser(tmpUserinfo);
+                                                        }
                                                         if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
                                                             UserInfoBean userInfoBean = new UserInfoBean();
                                                             userInfoBean.setUser_id(0L);
                                                             dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
                                                         } else {
-                                                            dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
+                                                            if (userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()) != null) {
+                                                                dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
+                                                            }
+
                                                         }
                                                     }
 

@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -571,7 +572,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void initDeletCommentPopupWindow(final DynamicBean dynamicBean, final int
             dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_top_comment))
+                .item1Str(BuildConfig.USE_TOLL?getString(R.string.dynamic_list_top_comment):null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -671,8 +672,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item2Str(getString(feedIdIsNull ? R.string.empty :
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
-                .item3Str(getString(R.string.dynamic_comment_toll))
-                .item4Str(getString(R.string.dynamic_list_top_dynamic))
+                .item3Str(BuildConfig.USE_TOLL?getString(R.string.dynamic_comment_toll):null)
+                .item4Str(BuildConfig.USE_TOLL?getString(R.string.dynamic_list_top_dynamic):null)
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

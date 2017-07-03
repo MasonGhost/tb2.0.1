@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.klinker.android.link_builder.Link;
-import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -52,7 +51,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         }
         holder.setText(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, setShowText(dynamicCommentBean, position));
         // Add the links and make the links clickable
-        ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_simple_text_comment),setLiknks(dynamicCommentBean, position));
+        ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_simple_text_comment), setLiknks(dynamicCommentBean, position));
 
         holder.setOnClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, new OnClickListener() {
             @Override
@@ -150,10 +149,13 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
      */
     private String handleName(DynamicCommentBean dynamicCommentBean) {
         String content = "";
+        String comentUserName = dynamicCommentBean.getCommentUser() == null ? "该用户已被删除" : dynamicCommentBean.getCommentUser().getName();
+        String replyUserName = dynamicCommentBean.getReplyUser() == null ? "该用户已被删除" : dynamicCommentBean.getReplyUser().getName();
         if (dynamicCommentBean.getReply_to_user_id() == 0) { // 当没有回复者时，就是回复评论
-            content += "" + dynamicCommentBean.getCommentUser().getName() + ":  " + dynamicCommentBean.getComment_content();
+
+            content += "" + comentUserName + ":  " + dynamicCommentBean.getComment_content();
         } else {
-            content += "" + dynamicCommentBean.getCommentUser().getName() + " 回复 " + dynamicCommentBean.getReplyUser().getName() + ":  " + dynamicCommentBean.getComment_content();
+            content += "" + comentUserName + " 回复 " + replyUserName + ":  " + dynamicCommentBean.getComment_content();
         }
         return content;
     }
