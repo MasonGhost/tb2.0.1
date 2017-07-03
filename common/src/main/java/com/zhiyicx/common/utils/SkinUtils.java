@@ -18,6 +18,19 @@ import skin.support.content.res.SkinCompatResources;
 public class SkinUtils {
 
 
+    /**
+     * 暂不开放
+     * set text color for skin support .
+     *
+     * @param textView target view
+     * @param resId    the color id to set
+     */
+//    @SuppressWarnings("ResourceAsColor")
+//    public static void setCompatTextColor(TextView textView, int resId) {
+//        textView.setTextColor(resId);
+//
+//    }
+
     public static void setTextColor(TextView textView, @ColorRes int resId) {
         textView.setTextColor(getColor(resId));
     }
