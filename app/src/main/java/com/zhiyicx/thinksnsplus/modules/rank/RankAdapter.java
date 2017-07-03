@@ -92,7 +92,7 @@ public class RankAdapter extends CommonAdapter<DigRankBean> {
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
         holder.setText(R.id.tv_rank, (position+1)+"");
         // 修改点赞数量颜色
-        String digCountString = userInfoBean.getDiggs_count();
+        String digCountString = digRankBean.getValue();
         // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常
         if (TextUtils.isEmpty(digCountString)) {
             digCountString = 0 + "";
