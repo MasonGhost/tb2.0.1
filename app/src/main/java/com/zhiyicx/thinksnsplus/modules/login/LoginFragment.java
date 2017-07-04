@@ -191,11 +191,11 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             mEtLoginPhone.setText("");
             mEtLoginPhone.requestFocus();
             DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
-            if (mIsToourist) {
-                getActivity().finish();
-            } else {
+//            if (mIsToourist) {
+//                getActivity().finish();
+//            } else {
                 goHome();
-            }
+//            }
         }
     }
 
