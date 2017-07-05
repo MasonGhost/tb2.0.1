@@ -1,10 +1,11 @@
-package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicCommentBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,27 +17,31 @@ import javax.inject.Inject;
 import rx.Subscription;
 
 /**
- * @Describe
- * @Author Jungle68
- * @Date 2017/2/8
- * @Contact master.jungle68@gmail.com
+ * @Author Jliuer
+ * @Date 2017/7/5/20:39
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
 @FragmentScoped
-public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.Repository, MessageLikeContract.View> implements MessageLikeContract.Presenter {
-    @Inject
-    DigedBeanGreenDaoImpl mDigedBeanGreenDao;
+public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContract.Repository,
+        MessageReviewContract.View> implements MessageReviewContract.Presenter {
 
     @Inject
-    public MessageLikePresenter(MessageLikeContract.Repository repository, MessageLikeContract.View rootView) {
+    TopDynamicCommentBeanGreenDaoImpl mTopDynamicCommentBeanGreenDao;
+
+    @Inject
+    public MessageReviewPresenter(MessageReviewContract.Repository repository,
+                                  MessageReviewContract.View rootView) {
         super(repository, rootView);
     }
 
+
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription commentSub = mRepository.getMyDiggs(maxId.intValue())
-                .subscribe(new BaseSubscribe<List<DigedBean>>() {
+        Subscription commentSub = mRepository.getReviewComment(maxId.intValue())
+                .subscribe(new BaseSubscribeForV2<List<TopDynamicCommentBean>>() {
                     @Override
-                    protected void onSuccess(List<DigedBean> data) {
+                    protected void onSuccess(List<TopDynamicCommentBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -55,19 +60,20 @@ public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.R
     }
 
     @Override
-    public List<DigedBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    public List<TopDynamicCommentBean> requestCacheData(Long maxId, boolean isLoadMore) {
         if (isLoadMore) {
             return new ArrayList<>();
         }
-        return mDigedBeanGreenDao.getMultiDataFromCache();
+        return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<DigedBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<TopDynamicCommentBean> data, boolean
+            isLoadMore) {
         if (!isLoadMore) {
-            mDigedBeanGreenDao.clearTable();
+            mTopDynamicCommentBeanGreenDao.clearTable();
         }
-        mDigedBeanGreenDao.saveMultiData(data);
+        mTopDynamicCommentBeanGreenDao.saveMultiData(data);
         return true;
     }
 }

@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 
 import java.util.List;
 
@@ -203,4 +204,12 @@ public interface DynamicClient {
     @POST(ApiConfig.APP_PATH_TOP_DYNAMIC_COMMENT)
     Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id,@Path("comment_id") Long comment_id,@Field("amount") int amount,@Field("day") int day);
 
+    /**
+     * 获取动态评论置顶审核列表 V2
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_REVIEW_DYNAMIC_COMMENT)
+    Observable<List<TopDynamicCommentBean>> getReviewComment(@Query("after") int after, @Query("limit")
+            int limit);
 }

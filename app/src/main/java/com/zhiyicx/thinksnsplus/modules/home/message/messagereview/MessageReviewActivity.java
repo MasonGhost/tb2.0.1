@@ -1,30 +1,30 @@
-package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.DaggerMessageLikeComponent;
 
 /**
- * @Describe  消息赞
- * @Author Jungle68
- * @Date 2017/1/17
- * @Contact master.jungle68@gmail.com
+ * @Author Jliuer
+ * @Date 2017/7/5/21:25
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
-
-public class MessageLikeActivity extends TSActivity<MessageLikePresenter,MessageLikeFragment> {
+public class MessageReviewActivity extends TSActivity<MessageReviewPresenter,MessageReviewFragment> {
 
 
     @Override
     protected void componentInject() {
-       DaggerMessageLikeComponent
+       DaggerMessageReviewComponent
                .builder()
                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-               .messageLikePresenterModule(new MessageLikePresenterModule(mContanierFragment))
+               .messageReviewPresenterModule(new MessageReviewPresenterModule(mContanierFragment))
                .build()
                .inject(this);
     }
     @Override
-    protected MessageLikeFragment getFragment() {
-        return MessageLikeFragment.newInstance();
+    protected MessageReviewFragment getFragment() {
+        return MessageReviewFragment.newInstance();
     }
 
 }

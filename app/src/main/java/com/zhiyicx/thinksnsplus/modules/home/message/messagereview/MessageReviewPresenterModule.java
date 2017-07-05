@@ -1,32 +1,33 @@
-package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.MessageLikeRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.MessageReviewRepository;
 
 import dagger.Module;
 import dagger.Provides;
 
 /**
- * @Describe
- * @Author Jungle68
- * @Date 2017/1/10
- * @Contact master.jungle68@gmail.com
+ * @Author Jliuer
+ * @Date 2017/7/5/21:12
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
 @Module
-public class MessageLikePresenterModule {
-    private final MessageLikeContract.View mView;
+public class MessageReviewPresenterModule {
+    private final MessageReviewContract.View mView;
 
-    public MessageLikePresenterModule(MessageLikeContract.View view) {
+    public MessageReviewPresenterModule(MessageReviewContract.View view) {
         mView = view;
     }
 
     @Provides
-    MessageLikeContract.View provideMessageLikeContractView() {
+    MessageReviewContract.View provideMessageLikeContractView() {
         return mView;
     }
 
 
     @Provides
-    MessageLikeContract.Repository provideMessageLikeContractRepository(MessageLikeRepository messageLikeRepository) {
-        return messageLikeRepository;
+    MessageReviewContract.Repository provideMessageLikeContractRepository(MessageReviewRepository
+                                                                                  messageReviewRepository) {
+        return messageReviewRepository;
     }
 }

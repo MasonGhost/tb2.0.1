@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
@@ -7,12 +7,12 @@ import com.zhiyicx.thinksnsplus.base.InjectComponent;
 import dagger.Component;
 
 /**
- * @Describe
- * @Author Jungle68
- * @Date 2017/2/13
- * @Contact master.jungle68@gmail.com
+ * @Author Jliuer
+ * @Date 2017/7/5/20:14
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules = MessageLikePresenterModule.class)
-public interface MessageLikeComponent extends InjectComponent<MessageLikeActivity>{
+@Component(dependencies = AppComponent.class, modules = MessageReviewPresenterModule.class)
+public interface MessageReviewComponent extends InjectComponent<MessageReviewActivity>{
 }

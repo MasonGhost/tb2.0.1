@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -9,21 +9,25 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 /**
- * @Describe 消息赞
- * @Author Jungle68
- * @Date 2017/1/17
- * @Contact master.jungle68@gmail.com
+ * @Author Jliuer
+ * @Date 2017/7/5/20:55
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
-public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Presenter, DigedBean> implements MessageLikeContract.View {
+public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
+        TopDynamicCommentBean> implements MessageReviewContract.View,MultiItemTypeAdapter.OnItemClickListener {
 
-    public MessageLikeFragment() {
+    public MessageReviewFragment() {
     }
 
-    public static MessageLikeFragment newInstance() {
-        MessageLikeFragment fragment = new MessageLikeFragment();
+    public static MessageReviewFragment newInstance() {
+        MessageReviewFragment fragment = new MessageReviewFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -50,13 +54,27 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
     }
 
     @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
         super.initData();
     }
 
     @Override
-    protected CommonAdapter<DigedBean> getAdapter() {
-        return new MessageLikeAdapter(getActivity(), R.layout.item_message_like_list, mListDatas);
+    protected CommonAdapter<TopDynamicCommentBean> getAdapter() {
+        CommonAdapter<TopDynamicCommentBean> adapter=new CommonAdapter<TopDynamicCommentBean>
+                (getContext(),R.layout.item_message_review_list,mListDatas) {
+            @Override
+            protected void convert(ViewHolder holder, TopDynamicCommentBean
+                    topDynamicCommentBean, int position) {
+
+            }
+        };
+        adapter.setOnItemClickListener(this);
+        return adapter;
     }
 
     @Override
@@ -64,4 +82,13 @@ public class MessageLikeFragment extends TSListFragment<MessageLikeContract.Pres
         return R.mipmap.img_default_nothing;
     }
 
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
+    }
 }

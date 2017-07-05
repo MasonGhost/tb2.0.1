@@ -1,34 +1,32 @@
-package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
+package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 
+import java.util.List;
+
+import rx.Observable;
+
 /**
- * @Describe
- * @Author Jungle68
- * @Date 2017/2/13
- * @Contact master.jungle68@gmail.com
+ * @Author Jliuer
+ * @Date 2017/7/5/20:25
+ * @Email Jliuer@aliyun.com
+ * @Description
  */
+public interface MessageReviewContract {
 
-public interface MessageLikeContract {
-    /**
-     * 对于经常使用的关于 UI 的方法可以定义到 BaseView 中,如显示隐藏进度条,和显示文字消息
-     */
-    interface View extends ITSListView<DigedBean, Presenter> {
+    interface View extends ITSListView<TopDynamicCommentBean, Presenter> {
 
     }
 
-    /**
-     * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
-     */
-    interface Repository extends UserInfoContract.Repository{
+    interface Repository {
+        Observable<List<TopDynamicCommentBean>> getReviewComment(int after);
     }
 
-    interface Presenter extends ITSListPresenter<DigedBean> {
-
-
+    interface Presenter extends ITSListPresenter<TopDynamicCommentBean> {
     }
 
 }

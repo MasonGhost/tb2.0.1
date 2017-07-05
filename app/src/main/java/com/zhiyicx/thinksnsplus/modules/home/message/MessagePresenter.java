@@ -66,6 +66,7 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_NOTICES;
+import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_REVIEWS;
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
@@ -108,6 +109,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     private MessageItemBean mItemBeanComment; // 评论的
     private MessageItemBean mItemBeanDigg;    // 点赞的
+    private MessageItemBean mItemBeanTop;    // 评论置顶的
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -144,28 +146,25 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         if (datas.isEmpty()) {
             getCoversationList();
         } else {
-            Observable.zip(datas, new FuncN<Object>() {
-                @Override
-                public Object call(Object... args) {
-                    for (int i = 0; i < args.length; i++) {  // 为 ts 助手添加提示语
-                        Conversation data = ((BaseJson<Conversation>) args[i]).getData();
-                        // 写入 ts helper 默认提示语句
-                        long currentTime = System.currentTimeMillis();
-                        Message message = new Message();
-                        message.setId((int) currentTime);
-                        message.setType(MessageType.MESSAGE_TYPE_TEXT);
-                        message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
-                        message.setSend_status(MessageStatus.SEND_SUCCESS);
-                        message.setIs_read(false);
-                        message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
-                        message.setCid(data.getCid());
-                        message.setCreate_time(currentTime);
+            Observable.zip(datas, (FuncN<Object>) args -> {
+                for (int i = 0; i < args.length; i++) {  // 为 ts 助手添加提示语
+                    Conversation data = ((BaseJson<Conversation>) args[i]).getData();
+                    // 写入 ts helper 默认提示语句
+                    long currentTime = System.currentTimeMillis();
+                    Message message = new Message();
+                    message.setId((int) currentTime);
+                    message.setType(MessageType.MESSAGE_TYPE_TEXT);
+                    message.setTxt(mContext.getString(R.string.ts_helper_default_tip));
+                    message.setSend_status(MessageStatus.SEND_SUCCESS);
+                    message.setIs_read(false);
+                    message.setUid(Integer.parseInt(tsHlepers.get(i).getUid()));
+                    message.setCid(data.getCid());
+                    message.setCreate_time(currentTime);
 //                    public static final long TIME_DEFAULT_ADD = 1451577600000L; //  消息的MID，`(mid >> 23) + 1451577600000` 为毫秒时间戳
-                        message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
-                        MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
-                    }
-                    return args;
+                    message.setMid((currentTime - TIME_DEFAULT_ADD) << 23);
+                    MessageDao.getInstance(mContext).insertOrUpdateMessage(message);
                 }
+                return args;
             }).subscribe(new BaseSubscribeForV2<Object>() {
                 @Override
                 protected void onSuccess(Object data) {
@@ -181,12 +180,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     private void getCoversationList() {
         mRepository.getConversationList(AppApplication.getmCurrentLoginAuth().getUser_id())
-                .doAfterTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.hideLoading();
-                    }
-                })
+                .doAfterTerminate(() -> mRootView.hideLoading())
                 .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
                     @Override
                     protected void onSuccess(final List<MessageItemBean> data) {
@@ -249,6 +243,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         return mItemBeanDigg;
     }
 
+    @Override
+    public MessageItemBean updateReviewItemData() {
+        return mItemBeanTop;
+    }
+
     /**
      * 刷新是否显示底部红点
      * 刷新当条item 的未读数
@@ -258,19 +257,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         Subscription represhSu = Observable.just("")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<String, List<MessageItemBean>>() {
-                    @Override
-                    public List<MessageItemBean> call(String s) {
-                        int size = mRootView.getListDatas().size();
-                        for (int i = 0; i < size; i++) {
-                            Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation().getCid());
-                            mRootView.getListDatas().get(i).getConversation().setLast_message(message);
-                            mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
-                            mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView.getListDatas().get(i).getConversation().getCid()));
-                        }
-
-                        return mRootView.getListDatas();
+                .map(s -> {
+                    int size = mRootView.getListDatas().size();
+                    for (int i = 0; i < size; i++) {
+                        Message message = MessageDao.getInstance(mContext).getLastMessageByCid(mRootView.getListDatas().get(i).getConversation().getCid());
+                        mRootView.getListDatas().get(i).getConversation().setLast_message(message);
+                        mRootView.getListDatas().get(i).getConversation().setLast_message_time(message.getCreate_time());
+                        mRootView.getListDatas().get(i).setUnReadMessageNums(MessageDao.getInstance(mContext).getUnReadMessageCount(mRootView.getListDatas().get(i).getConversation().getCid()));
                     }
+
+                    return mRootView.getListDatas();
                 })
                 .subscribe(new Action1<List<MessageItemBean>>() {
                     @Override
@@ -504,25 +500,15 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         }
         mUserInfoRepository.getMyFlushMessage(last_request_time, "")
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.showTopRightLoading();
-
-                    }
-                }).subscribeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.closeTopRightLoading();
-                    }
-                })
+                .doOnSubscribe(() -> mRootView.showTopRightLoading()).subscribeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(() -> mRootView.closeTopRightLoading())
                 .subscribe(new BaseSubscribe<List<FlushMessages>>() {
                     @Override
                     protected void onSuccess(List<FlushMessages> data) {
                         SharePreferenceUtils.saveLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME, System.currentTimeMillis() / 1000);
                         FlushMessages commentFlushMessage = null;
                         FlushMessages diggFlushMessage = null;
+                        FlushMessages reviewFlushMessage = null;
                         FlushMessages followFlushMessage = null;
                         FlushMessages noticeFlushMessage = null;
 
@@ -535,6 +521,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
                                         diggFlushMessage = flushMessages;
+                                        break;
+                                    case ApiConfig.FLUSHMESSAGES_KEY_REVIEWS:
+                                        reviewFlushMessage = flushMessages;
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
                                         followFlushMessage = flushMessages;
@@ -559,6 +548,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                         break;
                                     case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
+                                        break;
+                                    case ApiConfig.FLUSHMESSAGES_KEY_REVIEWS:
+                                        MessagePresenter.this.handleFlushMessage(flushMessage, reviewFlushMessage);
                                         break;
                                     case FLUSHMESSAGES_KEY_NOTICES:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, noticeFlushMessage);
@@ -647,6 +639,15 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     textEndTip = mContext.getString(R.string.ts_helper_default_tip);
                 } else {
                     textEndTip = systemConversationBean.getContent();
+                }
+
+            case FLUSHMESSAGES_KEY_REVIEWS:
+                textEndTip = mContext.getString(R.string.like_me);
+                max_user_nums = MAX_USER_NUMS_DIGG;
+                DigedBean lasstDiggBend = mDigedBeanGreenDao.getLastData();
+                if (lasstDiggBend != null && flushMessage.getMax_id() != 0 && lasstDiggBend.getId
+                        () > flushMessage.getMax_id()) {
+                    flushMessage.setCount(0);
                 }
 
                 break;
