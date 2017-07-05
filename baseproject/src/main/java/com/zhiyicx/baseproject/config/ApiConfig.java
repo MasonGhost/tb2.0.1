@@ -147,10 +147,10 @@ public class ApiConfig {
     public static final String APP_PATH_COMMENT_PAID_V2_FORMAT = "api/" + API_VERSION_2 + "/feeds/%d/comment-paid";
 
     // 置顶动态 V2
-    public static final String APP_PATH_TOP_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/{feed_id}/pinned";
+    public static final String APP_PATH_TOP_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/{feed_id}/pinneds";
 
     // 置顶动态评论 V2
-    public static final String APP_PATH_TOP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comments/{comment_id}/pinned";
+    public static final String APP_PATH_TOP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comments/{comment_id}/pinneds";
 
 
     /**
