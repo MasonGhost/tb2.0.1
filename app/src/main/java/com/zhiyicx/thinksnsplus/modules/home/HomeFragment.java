@@ -99,6 +99,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private PhotoSelectorImpl mPhotoSelector;
     private JpushAlias mJpushAlias;
 
+    private int mCurrenPage;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
 
@@ -162,6 +163,17 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mPresenter.isLogin() && mVpHome.getChildCount() < PAGE_NUMS) { // 游客登录后的处理
+            initViewPager();
+            mVpHome.setCurrentItem(mCurrenPage, false);
+        }
+
+
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_home;
     }
@@ -172,12 +184,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 点击主页
             case R.id.ll_home:
                 mVpHome.setCurrentItem(PAGE_HOME, false);
+                mCurrenPage = PAGE_HOME;
                 break;
             // 点击发现
             case R.id.ll_find:
                 if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_FIND, false);
                 }
+                mCurrenPage = PAGE_FIND;
                 break;
             // 添加动态
             case R.id.fl_add:
@@ -194,12 +208,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_MESSAGE, false);
                 }
+                mCurrenPage = PAGE_MESSAGE;
                 break;
             // 点击我的
             case R.id.ll_mine:
                 if (TouristConfig.MINE_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_MINE, false);
                 }
+                mCurrenPage = PAGE_MINE;
                 break;
             default:
         }

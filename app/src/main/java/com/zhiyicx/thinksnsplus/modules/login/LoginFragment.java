@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
 
@@ -181,11 +182,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             mEtLoginPhone.setText("");
             mEtLoginPhone.requestFocus();
             DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
-//            if (mIsToourist) {
-//                getActivity().finish();
-//            } else {
+            if (mIsToourist) {
+                getActivity().setResult(RESULT_OK);
+                getActivity().finish();
+            } else {
                 goHome();
-//            }
+            }
         }
     }
 
