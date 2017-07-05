@@ -3,11 +3,13 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
+import static com.zhiyicx.thinksnsplus.modules.dynamic.top.DynamicTopFragment.FEEDID;
+
 public class DynamicTopActivity extends TSActivity<DynamicTopPresenter, DynamicTopFragment> {
 
     @Override
     protected DynamicTopFragment getFragment() {
-        return DynamicTopFragment.newInstance();
+        return DynamicTopFragment.newInstance(getIntent().getLongExtra(FEEDID, -1L));
     }
 
     @Override

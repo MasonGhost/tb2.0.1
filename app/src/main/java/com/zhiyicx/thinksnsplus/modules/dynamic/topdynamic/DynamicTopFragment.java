@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -36,6 +37,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter> implements DynamicTopContract.View {
 
+    public static final String FEEDID="feed_id";
+
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
     @BindView(R.id.rb_two)
@@ -58,8 +61,12 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     private float mInputMoney;
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
-    public static DynamicTopFragment newInstance() {
-        return new DynamicTopFragment();
+    public static DynamicTopFragment newInstance(long feed_id) {
+        DynamicTopFragment dynamicTopFragment=new DynamicTopFragment();
+        Bundle bundle=new Bundle();
+        bundle.putLong(FEEDID,feed_id);
+        dynamicTopFragment.setArguments(bundle);
+        return dynamicTopFragment;
     }
 
     @Override
@@ -107,63 +114,47 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
         return mInputMoney;
     }
 
+    @Override
+    public int getTopDyas() {
+        return mCurrentDays;
+    }
+
     private void initListener() {
-        mRbDaysGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                switch (checkedId) {
-                    case R.id.rb_one:
-                        mCurrentDays = mSelectDays.get(0);
-                        break;
-                    case R.id.rb_two:
-                        mCurrentDays = mSelectDays.get(1);
-                        break;
-                    case R.id.rb_three:
-                        mCurrentDays = mSelectDays.get(2);
-                        break;
-                }
-                setConfirmEnable();
+        mRbDaysGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.rb_one:
+                    mCurrentDays = mSelectDays.get(0);
+                    break;
+                case R.id.rb_two:
+                    mCurrentDays = mSelectDays.get(1);
+                    break;
+                case R.id.rb_three:
+                    mCurrentDays = mSelectDays.get(2);
+                    break;
             }
+            setConfirmEnable();
         });
 
         RxTextView.textChanges(mEtTopInput)
-                .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        if (!TextUtils.isEmpty(charSequence)) {
-                            mInputMoney = Float.parseFloat(charSequence.toString());
-                        } else {
-                            mInputMoney = 0f;
-                        }
-                        setConfirmEnable();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+                .compose(this.bindToLifecycle())
+                .subscribe(charSequence -> {
+                    if (!TextUtils.isEmpty(charSequence)) {
+                        mInputMoney = Float.parseFloat(charSequence.toString());
+                    } else {
                         mInputMoney = 0f;
                     }
-                });
+                    setConfirmEnable();
+                }, throwable -> mInputMoney = 0f);
 
         RxTextView.textChanges(mEtTopTotal)
-                .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        mBtTop.setText(getString(mPresenter.getBalance() < mCurrentDays * mInputMoney
-                                ? R.string.to_recharge : R.string.sure));
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(charSequence -> mBtTop.setText(getString(mPresenter.getBalance() < mCurrentDays * mInputMoney
+                        ? R.string.to_recharge : R.string.sure)));
 
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mPresenter.stickTop(2);
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mPresenter.stickTop(getArguments().getLong(FEEDID)));
     }
 
     private void initSelectDays(List<Integer> mSelectDays) {
@@ -195,12 +186,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mStickTopInstructionsPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mStickTopInstructionsPopupWindow.hide())
                 .build();
         mStickTopInstructionsPopupWindow.show();
     }

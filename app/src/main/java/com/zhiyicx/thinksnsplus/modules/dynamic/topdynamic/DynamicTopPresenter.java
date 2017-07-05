@@ -1,12 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.top;
 
 
-import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -45,7 +44,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
 
     @Override
     public void stickTop(long feed_id) {
-        if (mRootView.getInputMoney()!=(int)mRootView.getInputMoney()) {
+        if (mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
             mRootView.initStickTopInstructionsPop();
             return;
         }
@@ -53,22 +52,26 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
             mRootView.gotoRecharge();
             return;
         }
-        mRepository.stickTop(feed_id).subscribe(new BaseSubscribeForV2<BaseJson<Integer>>() {
-            @Override
-            protected void onSuccess(BaseJson<Integer> data) {
+        if (feed_id < 0) {
+            return;
+        }
+        mRepository.stickTop(feed_id, (int) mRootView.getInputMoney(), mRootView.getTopDyas())
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Integer> data) {
 
-            }
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
+                });
     }
 
     @Override
