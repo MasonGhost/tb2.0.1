@@ -18,7 +18,6 @@ import com.google.gson.JsonSyntaxException;
 import com.pingplusplus.android.Pingpp;
 import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.base.TSApplication;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
@@ -42,7 +41,6 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
-import com.zhiyicx.tspay.TSPayClient;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -359,7 +357,7 @@ public class AppApplication extends TSApplication {
     }
 
     public static String getTOKEN() {
-        return "Bearer "+AppApplication.mCurrentLoginAuth.getToken();
+        return "Bearer "+(AppApplication.mCurrentLoginAuth==null?"":AppApplication.mCurrentLoginAuth.getToken());
     }
 
     public static HttpProxyCacheServer getProxy() {
