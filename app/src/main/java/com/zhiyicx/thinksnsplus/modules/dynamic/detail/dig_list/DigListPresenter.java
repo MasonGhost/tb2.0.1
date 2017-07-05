@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -68,10 +68,10 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.Repositor
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore, long feed_id) {
-        mRepository.getDynamicDigList(feed_id, maxId)
+        mRepository.getDynamicDigListV2(feed_id, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<FollowFansBean>>() {
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
                         LogUtils.i("digList_netData" + data.toString());
