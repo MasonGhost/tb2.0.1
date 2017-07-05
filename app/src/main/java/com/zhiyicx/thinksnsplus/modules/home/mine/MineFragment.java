@@ -207,28 +207,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 Intent toRank = new Intent(getContext(), RankActivity.class);
                 startActivity(toRank);
 
-                // 加载主题库方法，用于测试主题切换
-               /* SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
-                    @Override
-                    public void onStart() {
-
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        ToastUtils.showToast("加载成功");
-                    }
-
-                    @Override
-                    public void onFailed(String errMsg) {
-                        ToastUtils.showToast("加载失败-->" + errMsg);
-                    }
-
-                    @Override
-                    public void onProgress(int progress) {
-
-                    }
-                });*/
                 break;
             case R.id.bt_collect:
                 startActivity(new Intent(getActivity(), CollectListActivity.class));

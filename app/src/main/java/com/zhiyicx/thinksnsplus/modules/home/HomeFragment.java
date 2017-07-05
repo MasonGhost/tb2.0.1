@@ -29,7 +29,6 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
@@ -45,7 +44,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
@@ -101,6 +99,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private PhotoSelectorImpl mPhotoSelector;
     private JpushAlias mJpushAlias;
 
+    private int mCurrenPage;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
 
@@ -164,6 +163,17 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mPresenter.isLogin() && mVpHome.getChildCount() < PAGE_NUMS) { // 游客登录后的处理
+            initViewPager();
+            mVpHome.setCurrentItem(mCurrenPage, false);
+        }
+
+
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_home;
     }
@@ -174,21 +184,23 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 点击主页
             case R.id.ll_home:
                 mVpHome.setCurrentItem(PAGE_HOME, false);
+                mCurrenPage = PAGE_HOME;
                 break;
             // 点击发现
             case R.id.ll_find:
                 if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_FIND, false);
                 }
+                mCurrenPage = PAGE_FIND;
                 break;
             // 添加动态
             case R.id.fl_add:
                 if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
-                    Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.zoom_in, 0);
+//                    Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
+//                    startActivity(intent);
+//                    getActivity().overridePendingTransition(R.anim.zoom_in, 0);
 
-//                    initPhotoPopupWindow();
+                    initPhotoPopupWindow();
                 }
                 break;
             // 点击消息
@@ -196,12 +208,14 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_MESSAGE, false);
                 }
+                mCurrenPage = PAGE_MESSAGE;
                 break;
             // 点击我的
             case R.id.ll_mine:
                 if (TouristConfig.MINE_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     mVpHome.setCurrentItem(PAGE_MINE, false);
                 }
+                mCurrenPage = PAGE_MINE;
                 break;
             default:
         }
@@ -261,12 +275,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     @Override
     public void onButtonMenuShow(boolean isShow) {
         if (isShow) {
-            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(new Func1<Long, Object>() {
-                @Override
-                public Object call(Long aLong) {
-                    mLlBottomContainer.setVisibility(View.VISIBLE);
-                    return null;
-                }
+            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(aLong -> {
+                mLlBottomContainer.setVisibility(View.VISIBLE);
+                return null;
             }).subscribe();
         } else {
             mLlBottomContainer.setVisibility(View.GONE);
@@ -375,19 +386,16 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
      * 长按动态发送按钮，进入纯文字的动态发布
      */
     private void longClickSendTextDynamic() {
-        mFlAdd.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                // 跳转到发送动态页面
-                if (BuildConfig.USE_TOLL) {
-                    return true;
-                }
-                SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
-                sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
-                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+        mFlAdd.setOnLongClickListener(v -> {
+            // 跳转到发送动态页面
+            if (BuildConfig.USE_TOLL) {
                 return true;
             }
+            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+            return true;
         });
     }
 
@@ -423,27 +431,16 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        clickSendPhotoTextDynamic();
-                        mPhotoPopupWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    clickSendPhotoTextDynamic();
+                    mPhotoPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera(null);
-                        mPhotoPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(null);
+                    mPhotoPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPhotoPopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
         mPhotoPopupWindow.show();
     }
 

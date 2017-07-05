@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
@@ -109,7 +110,7 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
                     .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |
                             Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     .putExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION,
-                            intent.getParcelableExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION));
+                            (Parcelable) intent.getParcelableExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION));
             startActivity(fullScreenIntent);
         }
     }

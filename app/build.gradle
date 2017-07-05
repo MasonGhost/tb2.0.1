@@ -1,23 +1,23 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'jacoco' //测试报告
 apply from: "$rootDir/jacocoCoverage.gradle"
 apply plugin: 'com.antfortune.freeline'
+apply plugin: 'me.tatarka.retrolambda'
 jacoco {
     toolVersion = "0.7.8"
     reportsDir = file("$buildDir/customJacocoReportDir")
 }
 android {
     def gConfig = rootProject.extensions.getByName("ext")
-    compileSdkVersion gConfig.getAt("compileSdkVersion")
-    buildToolsVersion gConfig.getAt("buildToolsVersion")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
     defaultConfig {
-        applicationId gConfig.getAt("applicationId")
-        minSdkVersion gConfig.getAt("minSdkVersion")
-        targetSdkVersion gConfig.getAt("targetSdkVersion")
-        versionCode gConfig.getAt("versionCode")
-        versionName gConfig.getAt("versionName")
+        applicationId gConfig["applicationId"]
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
 
         ndk {
@@ -114,6 +114,10 @@ android {
         preDexLibraries true
         javaMaxHeapSize "6g"//越大越好
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 greendao {
     /**
@@ -133,7 +137,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'me.tatarka:gradle-retrolambda:3.6.1'
     }
 }
 configurations.all {
@@ -169,15 +173,15 @@ dependencies {
     testCompile testDependences.runner
     testCompile testDependences.robolectric
     testCompile testDependences.mockito
-    androidTestApt dataDependences.daggerCompiler
+    annotationProcessor dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
-    apt dataDependences.daggerCompiler
+    annotationProcessor dataDependences.daggerCompiler
     // Butterknife
     compile dataDependences.butterknife
-    apt dataDependences.butterknifeApt
+    annotationProcessor dataDependences.butterknifeApt
     // Project
     compile project(":baseproject")
     compile project(":media-cache")
@@ -193,6 +197,5 @@ dependencies {
 
     compile dataDependences.greendaoSqlcipher
     compile(name: 'lint-library-release', ext: 'aar')
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
 }
 

@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
 
@@ -86,36 +86,27 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                    }
+                .subscribe(charSequence -> {
+                    mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)
                 .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        mIsPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                    }
+                .subscribe(charSequence -> {
+                    mIsPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
         // 点击登录按钮
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        if (aBoolean) {// 获取到了权限
-                            mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
-                        } else {// 拒绝权限，但是可以再次请求
-                            showErrorTips(getString(R.string.permisson_refused));
-                        }
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {// 获取到了权限
+                        mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
+                    } else {// 拒绝权限，但是可以再次请求
+                        showErrorTips(getString(R.string.permisson_refused));
                     }
                 });
     }
@@ -191,9 +182,10 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             mEtLoginPhone.setText("");
             mEtLoginPhone.requestFocus();
             DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
-            if(mIsToourist){
+            if (mIsToourist) {
+                getActivity().setResult(RESULT_OK);
                 getActivity().finish();
-            }else{
+            } else {
                 goHome();
             }
         }

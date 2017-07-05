@@ -88,6 +88,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         super.initView(rootView);
         mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
+        rootView.setBackgroundResource(R.color.bgColor);
     }
 
     @Override

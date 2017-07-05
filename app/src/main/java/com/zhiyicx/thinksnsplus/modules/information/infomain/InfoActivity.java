@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.common.utils.ActivityUtils;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.container.DaggerInfoContainerComponent;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment;
@@ -19,10 +17,7 @@ public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContain
 
     @Override
     protected InfoContainerFragment getFragment() {
-        if (mContanierFragment == null) {
-            mContanierFragment = new InfoContainerFragment();
-        }
-        return mContanierFragment;
+        return new InfoContainerFragment();
     }
 
     @Override
@@ -33,13 +28,6 @@ public class InfoActivity extends TSActivity<InfoContainerPresenter, InfoContain
                         new InfoContainerPresenterModule(mContanierFragment))
                 .build()
                 .inject(this);
-    }
-
-    @Override
-    protected void initView() {
-        mContanierFragment = getFragment();
-        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), mContanierFragment,
-                R.id.fl_fragment_container);
     }
 
 }

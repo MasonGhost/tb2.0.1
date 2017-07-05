@@ -690,7 +690,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         intent.setType("text/plain");
         // Verify that the intent will resolve to an activity
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-            startActivity(intent);
+            startActivityForResult(intent,0);
         }
     }
 

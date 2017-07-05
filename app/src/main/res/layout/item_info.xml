@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/info_channel_list_height"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/white"
     android:paddingBottom="@dimen/spacing_mid"
     android:paddingLeft="@dimen/spacing_normal"
@@ -35,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/size_sub_title"
-        android:text="流动性捉襟见肘，新三板如履薄冰"
+        tools:text="流动性捉襟见肘，新三板如履薄冰"
         android:textColor="@color/important_for_content"/>
 
     <TextView
@@ -43,7 +44,7 @@
         android:id="@+id/item_info_timeform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="三小时前   来自火星"/>
+        tools:text="三小时前   来自火星"/>
 
     </LinearLayout>
 

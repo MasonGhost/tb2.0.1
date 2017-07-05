@@ -1,14 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 android {
     def gConfig = rootProject.extensions.getByName("ext")
-    compileSdkVersion gConfig.getAt("compileSdkVersion")
-    buildToolsVersion gConfig.getAt("buildToolsVersion")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
     defaultConfig {
-        minSdkVersion gConfig.getAt("minSdkVersion")
-        targetSdkVersion gConfig.getAt("targetSdkVersion")
-        versionCode gConfig.getAt("versionCode")
-        versionName gConfig.getAt("versionName")
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
     }
     buildTypes { // 作为libary时只会触发 relase
@@ -48,7 +47,6 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
 }
@@ -85,7 +83,7 @@ dependencies {
     // Dagger dependencies
     compile dataDependences.dagger
     provided dataDependences.javaxAnnotation
-    apt dataDependences.daggerCompiler
+    annotationProcessor dataDependences.daggerCompiler
     // Retrofit + rx + gson
     compile dataDependences.retrofit
     compile dataDependences.retrofitConverterGson
@@ -105,8 +103,8 @@ dependencies {
     compile dataDependences.rxbindingSupportV7
     compile dataDependences.rxbindingDesign
     compile dataDependences.rxbindingDesignrRcyclerviewV7
-    compile dataDependences.clickSpanLink
-    // click span
+    compile dataDependences.clickSpanLink // click span
+
     compile dataDependences.gson
     // Development
     debugCompile developmentDependencies.leakCanaryDebug
