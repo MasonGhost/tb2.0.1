@@ -87,6 +87,9 @@ public interface DynamicClient {
     @POST(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE)
     Observable<BaseJson<String>> likeDynamic(@Path("feed_id") Long feed_id);
 
+    @POST(ApiConfig.APP_PATH_DYNAMIC_CLICK_LIKE_V2)
+    Observable<String> likeDynamicV2(@Path("feed_id") Long feed_id);
+
     /**
      * #取消点赞一条动态
      *
@@ -95,6 +98,9 @@ public interface DynamicClient {
      */
     @DELETE(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE)
     Observable<BaseJson<String>> cancleLikeDynamic(@Path("feed_id") Long feed_id);
+
+    @DELETE(ApiConfig.APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_V2)
+    Observable<BaseJson<String>> cancleLikeDynamicV2(@Path("feed_id") Long feed_id);
 
     /**
      * 获取某条动态的点赞用户列表
