@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollContract;
+import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopContract;
 
 import javax.inject.Inject;
 
@@ -17,21 +19,18 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicCommentTollRepository implements DynamicCommentTollContract.Repository {
+public class DynamicCommentTopRepository implements DynamicCommentTopContract.Repository {
 
     DynamicClient mDynamicClient;
 
 
     @Inject
-    public DynamicCommentTollRepository(ServiceManager serviceManager) {
+    public DynamicCommentTopRepository(ServiceManager serviceManager) {
         mDynamicClient = serviceManager.getDynamicClient();
     }
 
     @Override
-    public Observable<DynamicCommentToll> tollDynamicComment(Long feed_id, int amount) {
-        return mDynamicClient.setDynamicCommentToll(feed_id, amount)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+    public Observable<BaseJsonV2<Integer>> stickTop(long feed_id, int amount, int day) {
+        return null;
     }
 }

@@ -13,6 +13,6 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules = DynamicCommentTollPresenterModule.class)
-public interface DynamicCommentTollComponent extends InjectComponent<DynamicCommentTollActivity> {
+@Component(dependencies = AppComponent.class, modules = DynamicCommentTopPresenterModule.class)
+public interface DynamicCommentTopComponent extends InjectComponent<DynamicCommentTopActivity> {
 }

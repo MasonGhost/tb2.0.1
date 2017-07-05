@@ -14,14 +14,14 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicCommentTollContract.Repository, DynamicCommentTollContract.View>
-        implements DynamicCommentTollContract.Presenter {
+public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentTopContract.Repository, DynamicCommentTopContract.View>
+        implements DynamicCommentTopContract.Presenter {
 
     @Inject
     BaseDynamicRepository mBaseDynamicRepository;
 
     @Inject
-    public DynamicCommentTollPresenter(DynamicCommentTollContract.Repository repository, DynamicCommentTollContract.View rootView) {
+    public DynamicCommentTopPresenter(DynamicCommentTopContract.Repository repository, DynamicCommentTopContract.View rootView) {
         super(repository, rootView);
     }
 

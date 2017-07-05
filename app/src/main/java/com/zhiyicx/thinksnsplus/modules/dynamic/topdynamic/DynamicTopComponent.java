@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.top;
+package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;

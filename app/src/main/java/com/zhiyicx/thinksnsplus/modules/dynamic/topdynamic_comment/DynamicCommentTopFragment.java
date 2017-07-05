@@ -33,8 +33,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollContract.Presenter>
-        implements DynamicCommentTollContract.View {
+public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContract.Presenter>
+        implements DynamicCommentTopContract.View {
 
     public static final String TOLL_DYNAMIC_COMMENT = "toll_dynamic_comment";
 
@@ -63,15 +63,15 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
 
     private DynamicDetailBeanV2 mDynamicDetailBeanV2;
 
-    public static DynamicCommentTollFragment newInstance(Bundle bundle) {
-        DynamicCommentTollFragment dynamicCommentTollFragment = new DynamicCommentTollFragment();
+    public static DynamicCommentTopFragment newInstance(Bundle bundle) {
+        DynamicCommentTopFragment dynamicCommentTollFragment = new DynamicCommentTopFragment();
         dynamicCommentTollFragment.setArguments(bundle);
         return dynamicCommentTollFragment;
     }
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.dynamic_comment_toll);
+        return getString(R.string.stick_dynamic_comment);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
     private void initListener() {
 
         RxRadioGroup.checkedChanges(mRbDaysGroup)
-                .compose(this.<Integer>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(checkedId -> {
                     if (checkedId != -1) {
                         resetEtInput();

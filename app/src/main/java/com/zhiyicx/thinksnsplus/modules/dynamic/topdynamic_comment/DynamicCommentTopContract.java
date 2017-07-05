@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
@@ -12,7 +13,7 @@ import rx.Observable;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public interface DynamicCommentTollContract {
+public interface DynamicCommentTopContract {
 
     interface View extends IBaseView<Presenter> {
         void initWithdrawalsInstructionsPop();
@@ -24,6 +25,6 @@ public interface DynamicCommentTollContract {
     }
 
     interface Repository {
-        Observable<DynamicCommentToll> tollDynamicComment(Long feed_id, int amount);
+        Observable<BaseJsonV2<Integer>> stickTop(long feed_id, int amount, int day);
     }
 }

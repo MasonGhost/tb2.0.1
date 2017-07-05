@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment;
 
 import com.zhiyicx.thinksnsplus.data.source.repository.DynamicCommentTollRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.DynamicCommentTopRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -12,21 +13,21 @@ import dagger.Provides;
  * @Description
  */
 @Module
-public class DynamicCommentTollPresenterModule {
+public class DynamicCommentTopPresenterModule {
 
-    DynamicCommentTollContract.View mView;
+    DynamicCommentTopContract.View mView;
 
-    public DynamicCommentTollPresenterModule(DynamicCommentTollContract.View view) {
+    public DynamicCommentTopPresenterModule(DynamicCommentTopContract.View view) {
         mView = view;
     }
 
     @Provides
-    DynamicCommentTollContract.View provideDynamicCommentTollContractView() {
+    DynamicCommentTopContract.View provideDynamicCommentTollContractView() {
         return mView;
     }
 
     @Provides
-    DynamicCommentTollContract.Repository provideDynamicCommentTollContractRepository(DynamicCommentTollRepository commentTollRepository) {
-        return commentTollRepository;
+    DynamicCommentTopContract.Repository provideDynamicCommentTollContractRepository(DynamicCommentTopRepository commentTopRepository) {
+        return commentTopRepository;
     }
 }

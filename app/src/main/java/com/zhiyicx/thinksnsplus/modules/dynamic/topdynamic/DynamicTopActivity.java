@@ -1,9 +1,9 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.top;
+package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-import static com.zhiyicx.thinksnsplus.modules.dynamic.top.DynamicTopFragment.FEEDID;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopFragment.FEEDID;
 
 public class DynamicTopActivity extends TSActivity<DynamicTopPresenter, DynamicTopFragment> {
 

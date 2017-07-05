@@ -549,28 +549,22 @@ public class BackgroundTaskHandler {
                 upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
             }
             observable = // 组合多个图片上传任务
-                    Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
-                        @Override
-                        public List<Integer> call(Object... args) {
-                            // 得到图片上传的结果
-                            List<Integer> integers = new ArrayList<>();
-                            for (int i = 0; i < args.length; i++) {
-                                BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
-                                if (baseJson.isStatus()) {
-                                    sendDynamicDataBean.getStorage_task().get(i).setId(baseJson.getData());
-                                    integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-                                } else {
-                                    throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                                }
+                    Observable.combineLatest(upLoadPics, args -> {
+                        // 得到图片上传的结果
+                        List<Integer> integers = new ArrayList<>();
+                        for (int i = 0; i < args.length; i++) {
+                            BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
+                            if (baseJson.isStatus()) {
+                                sendDynamicDataBean.getStorage_task().get(i).setId(baseJson.getData());
+                                integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+                            } else {
+                                throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
                             }
-                            return integers;
                         }
-                    }).map(new Func1<List<Integer>, SendDynamicDataBeanV2>() {
-                        @Override
-                        public SendDynamicDataBeanV2 call(final List<Integer> integers) {
-                            sendDynamicDataBean.setPhotos(null);
-                            return sendDynamicDataBean;
-                        }
+                        return integers;
+                    }).map(integers -> {
+                        sendDynamicDataBean.setPhotos(null);
+                        return sendDynamicDataBean;
                     }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
@@ -705,21 +699,18 @@ public class BackgroundTaskHandler {
                 upLoadPics.add(mUpLoadRepository.upLoadSingleFile(filePath, photoMimeType, true, photoWidth, photoHeight));
             }
             observable = // 组合多个图片上传任务
-                    Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
-                        @Override
-                        public List<Integer> call(Object... args) {
-                            // 得到图片上传的结果
-                            List<Integer> integers = new ArrayList<>();
-                            for (Object obj : args) {
-                                BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
-                                if (baseJson.isStatus()) {
-                                    integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-                                } else {
-                                    throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                                }
+                    Observable.combineLatest(upLoadPics, args -> {
+                        // 得到图片上传的结果
+                        List<Integer> integers = new ArrayList<>();
+                        for (Object obj : args) {
+                            BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
+                            if (baseJson.isStatus()) {
+                                integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+                            } else {
+                                throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
                             }
-                            return integers;
                         }
+                        return integers;
                     }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
@@ -796,11 +787,11 @@ public class BackgroundTaskHandler {
         }
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .subscribe(new BaseSubscribeForV2<BaseJson<Object>>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(BaseJson<Object> data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         dynamicCommentBean.setComment_id((long)data.getId());
                         dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);

@@ -1,9 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.dynamic.top.DynamicTopContract;
+import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopContract;
 
 import javax.inject.Inject;
 
@@ -27,8 +27,8 @@ public class DynamicTopRepsotory implements DynamicTopContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<Integer>> stickTop(long feed_id) {
-        return mDynamicClient.stickTopDynamic(feed_id)
+    public Observable<BaseJsonV2<Integer>> stickTop(long feed_id, int amount, int day) {
+        return mDynamicClient.stickTopDynamic(feed_id, amount, day)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

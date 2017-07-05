@@ -152,24 +152,6 @@ public interface DynamicClient {
     Observable<BaseJson<Object>> handleDynamicViewCount(@Path("feed_id") Long feed_id);
 
     /**
-     * 置顶动态
-     *
-     * @param feed_id 动态的唯一 id
-     * @return
-     */
-    @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
-    Observable<BaseJson<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id);
-
-    /**
-     * 置顶动态
-     *
-     * @param feed_id 动态的唯一 id
-     * @return
-     */
-    @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
-    Observable<BaseJson<Integer>> tollDynamicComment(@Path("feed_id") Long feed_id);
-
-    /**
      * 获取动态详情 V2
      *
      * @param feed_id 动态id
@@ -187,5 +169,26 @@ public interface DynamicClient {
     @FormUrlEncoded
     @PATCH(APP_PATH_COMMENT_PAID_V2)
     Observable<DynamicCommentToll> setDynamicCommentToll(@Path("feed_id") Long feed_id, @Field("amount")int amount);
+
+    /**
+     * 置顶动态 V2
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_DYNAMIC)
+    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id,@Field("amount") int amount,@Field("day") int day);
+
+
+    /**
+     * 置顶动态评论  V2
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_DYNAMIC_COMMENT)
+    Observable<BaseJson<Integer>> topDynamicComment(@Path("feed_id") Long feed_id);
 
 }

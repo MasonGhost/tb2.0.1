@@ -118,62 +118,48 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
 
         RxRadioGroup.checkedChanges(mRbDaysGroup)
                 .compose(this.<Integer>bindToLifecycle())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer checkedId) {
-                        if (checkedId != -1) {
-                            resetEtInput();
-                        }
-                        switch (checkedId) {
-                            case R.id.rb_one:
-                                mCommentMoney = mSelectMoney.get(0);
-                                break;
-                            case R.id.rb_two:
-                                mCommentMoney = mSelectMoney.get(1);
-                                break;
-                            case R.id.rb_three:
-                                mCommentMoney = mSelectMoney.get(2);
-                                break;
-                            default:
-                                break;
-                        }
+                .subscribe(checkedId -> {
+                    if (checkedId != -1) {
+                        resetEtInput();
+                    }
+                    switch (checkedId) {
+                        case R.id.rb_one:
+                            mCommentMoney = mSelectMoney.get(0);
+                            break;
+                        case R.id.rb_two:
+                            mCommentMoney = mSelectMoney.get(1);
+                            break;
+                        case R.id.rb_three:
+                            mCommentMoney = mSelectMoney.get(2);
+                            break;
+                        default:
+                            break;
+                    }
 
-                        if (checkedId != -1) {
-                            setConfirmEnable();
-                        }
+                    if (checkedId != -1) {
+                        setConfirmEnable();
                     }
                 });
 
         RxTextView.textChanges(mEtInput)
-                .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        if (!TextUtils.isEmpty(charSequence)) {
-                            mCommentMoney = Float.parseFloat(charSequence.toString());
-                            mRbDaysGroup.clearCheck();
-                        } else {
-                            mCommentMoney = 0f;
-                        }
-                        setConfirmEnable();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+                .compose(this.bindToLifecycle())
+                .subscribe(charSequence -> {
+                    if (!TextUtils.isEmpty(charSequence)) {
+                        mCommentMoney = Float.parseFloat(charSequence.toString());
+                        mRbDaysGroup.clearCheck();
+                    } else {
                         mCommentMoney = 0f;
                     }
-                });
+                    setConfirmEnable();
+                }, throwable -> mCommentMoney = 0f);
 
 
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mPresenter.setDynamicCommentToll(mDynamicDetailBeanV2.getId(), (int) mCommentMoney);
-                        DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
-                    }
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    mPresenter.setDynamicCommentToll(mDynamicDetailBeanV2.getId(), (int) mCommentMoney);
+                    DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
                 });
     }
 
@@ -191,12 +177,7 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mTollCommentInstructionsPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mTollCommentInstructionsPopupWindow.hide())
                 .build();
         mTollCommentInstructionsPopupWindow.show();
     }

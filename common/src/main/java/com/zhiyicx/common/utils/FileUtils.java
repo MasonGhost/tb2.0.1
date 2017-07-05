@@ -557,6 +557,10 @@ public class FileUtils {
         return ConvertUtils.bytes2HexString(getFileMD5(file));
     }
 
+    public static String getFileSHA_256ToString(File file) {
+        return ConvertUtils.bytes2HexString(getFileMD5(file));
+    }
+
     /**
      * 获取文件的MD5校验码
      *
@@ -569,6 +573,31 @@ public class FileUtils {
         try {
             FileInputStream fis = new FileInputStream(file);
             MessageDigest md = MessageDigest.getInstance("MD5");
+            dis = new DigestInputStream(fis, md);
+            byte[] buffer = new byte[1024 * 256];
+            while (dis.read(buffer) > 0) ;
+            md = dis.getMessageDigest();
+            return md.digest();
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            CloseUtils.closeIO(dis);
+        }
+        return null;
+    }
+
+    /**
+     * 获取文件的MD5校验码
+     *
+     * @param file 文件
+     * @return 文件的MD5校验码
+     */
+    public static byte[] getFileSHA_256(File file) {
+        if (file == null) return null;
+        DigestInputStream dis = null;
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
             dis = new DigestInputStream(fis, md);
             byte[] buffer = new byte[1024 * 256];
             while (dis.read(buffer) > 0) ;

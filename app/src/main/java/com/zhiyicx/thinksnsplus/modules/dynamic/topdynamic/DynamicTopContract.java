@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.top;
+package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBasePresenter;

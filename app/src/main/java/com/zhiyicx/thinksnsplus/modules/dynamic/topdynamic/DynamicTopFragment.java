@@ -1,8 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.top;
+package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -17,15 +16,12 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
