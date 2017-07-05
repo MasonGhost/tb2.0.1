@@ -13,7 +13,6 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
-import com.zhiyicx.imsdk.utils.common.LogUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
@@ -32,7 +31,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 
@@ -150,23 +148,17 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
      * @param authData
      */
     private void synIMMessage(AuthData authData) {
-        Observable.from(authData.getSeqs()) // 消息同步
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new Action1<AuthData.SeqsBean>() {
-                    @Override
-                    public void call(AuthData.SeqsBean seqsBean) {
+        if (authData.getSeqs() != null) {
+            Observable.from(authData.getSeqs()) // 消息同步
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(seqsBean -> {
                         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(seqsBean.getCid());
                         if (message != null && message.getSeq() < seqsBean.getSeq()) {
                             ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq(), seqsBean.getSeq(), (int) System.currentTimeMillis());
                         }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                    }, throwable -> throwable.printStackTrace());
+        }
     }
 
     @Override
