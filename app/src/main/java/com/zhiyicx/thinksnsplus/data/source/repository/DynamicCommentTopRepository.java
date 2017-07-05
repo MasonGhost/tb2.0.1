@@ -30,7 +30,10 @@ public class DynamicCommentTopRepository implements DynamicCommentTopContract.Re
     }
 
     @Override
-    public Observable<BaseJsonV2<Integer>> stickTop(long feed_id, int amount, int day) {
-        return null;
+    public Observable<BaseJsonV2<Integer>> stickTop(long feed_id,long comment_id, int amount, int day) {
+        return mDynamicClient.stickTopDynamicComment(feed_id,comment_id,amount,day)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

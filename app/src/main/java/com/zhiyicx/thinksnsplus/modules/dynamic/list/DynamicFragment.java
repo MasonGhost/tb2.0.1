@@ -49,6 +49,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForT
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
@@ -74,6 +75,8 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopFragment.FEEDID;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_COMMENT_ID;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_ID;
 
 /**
  * @Describe 动态列表
@@ -617,30 +620,26 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                        initCommentCenterPopWindow();
-                        showBottomView(true);
-                    }
+                .item1ClickListener(() -> {
+                    Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
+                    intent.putExtra(TOP_DYNAMIC_ID, dynamicBean
+                            .getComments().get(commentPosition).getComment_id());
+                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, dynamicBean.getId());
+                    mDeletCommentPopWindow.hide();
+                    startActivity(intent);
+//                        initCommentCenterPopWindow();
+                    showBottomView(true);
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                        mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean
-                                        .getComments().get(commentPosition).getComment_id(),
-                                commentPosition);
-                        showBottomView(true);
-                    }
+                .item2ClickListener(() -> {
+                    mDeletCommentPopWindow.hide();
+                    mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean
+                                    .getComments().get(commentPosition).getComment_id(),
+                            commentPosition);
+                    showBottomView(true);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                        showBottomView(true);
-                    }
+                .bottomClickListener(() -> {
+                    mDeletCommentPopWindow.hide();
+                    showBottomView(true);
                 })
                 .build();
     }
@@ -815,21 +814,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
-                .buildCenterPopWindowItem1ClickListener(new PayPopWindow
-                        .CenterPopWindowItem1ClickListener() {
-                    @Override
-                    public void onClicked() {
-                        mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
-                        mPayImagePopWindow.hide();
-                    }
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
+                    mPayImagePopWindow.hide();
                 })
-                .buildCenterPopWindowItem2ClickListener(new PayPopWindow
-                        .CenterPopWindowItem2ClickListener() {
-                    @Override
-                    public void onClicked() {
-                        mPayImagePopWindow.hide();
-                    }
-                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
                 .buildCenterPopWindowLinkClickListener(new PayPopWindow
                         .CenterPopWindowLinkClickListener() {
                     @Override

@@ -16,15 +16,23 @@ import rx.Observable;
 public interface DynamicCommentTopContract {
 
     interface View extends IBaseView<Presenter> {
-        void initWithdrawalsInstructionsPop();
-        float getCommentMoney();
+        boolean insufficientBalance();
+
+        void gotoRecharge();
+
+        void initStickTopInstructionsPop();
+
+        int getTopDyas();
+
+        float getInputMoney();
     }
 
     interface Presenter extends IBasePresenter {
-        void setDynamicCommentToll(Long feed_id, int amout);
+        float getBalance();
+        void topDynamicComment(long feed_id,long comment_id, int amount, int day);
     }
 
     interface Repository {
-        Observable<BaseJsonV2<Integer>> stickTop(long feed_id, int amount, int day);
+        Observable<BaseJsonV2<Integer>> stickTop(long feed_id,long comment_id, int amount, int day);
     }
 }

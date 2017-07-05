@@ -189,6 +189,6 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_DYNAMIC_COMMENT)
-    Observable<BaseJson<Integer>> topDynamicComment(@Path("feed_id") Long feed_id);
+    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id,@Path("comment_id") Long comment_id,@Field("amount") int amount,@Field("day") int day);
 
 }

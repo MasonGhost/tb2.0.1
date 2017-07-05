@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,7 +18,8 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,41 +39,45 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
         implements DynamicCommentTopContract.View {
 
     public static final String TOLL_DYNAMIC_COMMENT = "toll_dynamic_comment";
+    public static final String TOP_DYNAMIC_COMMENT_ID = "top_dynamic_comment_id";
+    public static final String TOP_DYNAMIC_ID = "top_dynamic_id";
 
-    @BindView(R.id.tv_choose_tip)
-    TextView mTvChooseTip;
+    public static final String FEEDID = "feed_id";
+
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
     @BindView(R.id.rb_two)
     RadioButton mRbTwo;
     @BindView(R.id.rb_three)
     RadioButton mRbThree;
-    @BindView(R.id.rb_days_group)
-    RadioGroup mRbDaysGroup;
-    @BindView(R.id.ll_comment_choose_money_item)
-    LinearLayout mLlCommentChooseMoneyItem;
-    @BindView(R.id.et_input)
-    EditText mEtInput;
+    @BindView(R.id.et_top_input)
+    EditText mEtTopInput;
+    @BindView(R.id.et_top_total)
+    EditText mEtTopTotal;
     @BindView(R.id.bt_top)
     TextView mBtTop;
+    @BindView(R.id.tv_dynamic_top_dec)
+    TextView mTvDynamicTopDec;
+    @BindView(R.id.rb_days_group)
+    RadioGroup mRbDaysGroup;
 
-    private List<Float> mSelectMoney;
+    private List<Integer> mSelectDays;
+    private int mCurrentDays;
+    private float mInputMoney;
+    private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
-    private float mCommentMoney;
-
-    private ActionPopupWindow mTollCommentInstructionsPopupWindow;
-
-    private DynamicDetailBeanV2 mDynamicDetailBeanV2;
-
-    public static DynamicCommentTopFragment newInstance(Bundle bundle) {
-        DynamicCommentTopFragment dynamicCommentTollFragment = new DynamicCommentTopFragment();
-        dynamicCommentTollFragment.setArguments(bundle);
-        return dynamicCommentTollFragment;
+    public static DynamicCommentTopFragment newInstance(long feed_id, long comment_id) {
+        DynamicCommentTopFragment dynamicCommentTopFragment = new DynamicCommentTopFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(TOP_DYNAMIC_ID, feed_id);
+        bundle.putLong(TOP_DYNAMIC_COMMENT_ID, comment_id);
+        dynamicCommentTopFragment.setArguments(bundle);
+        return dynamicCommentTopFragment;
     }
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.stick_dynamic_comment);
+        return getString(R.string.to_top);
     }
 
     @Override
@@ -81,110 +87,114 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
 
     @Override
     protected void initView(View rootView) {
-        mLlCommentChooseMoneyItem.setVisibility(View.VISIBLE);
-        mTvChooseTip.setText(R.string.dynamic_comment_toll_money);
-        mSelectMoney = new ArrayList<>();
-        mSelectMoney.add(1f);
-        mSelectMoney.add(5f);
-        mSelectMoney.add(10f);
-        initSelectDays(mSelectMoney);
+        mSelectDays = new ArrayList<>();
+        mSelectDays.add(1);
+        mSelectDays.add(5);
+        mSelectDays.add(10);
+        initSelectDays(mSelectDays);
         initListener();
     }
 
     @Override
     protected void initData() {
-        mDynamicDetailBeanV2 = (DynamicDetailBeanV2) getArguments().get(TOLL_DYNAMIC_COMMENT);
+
     }
 
     @Override
-    public float getCommentMoney() {
-        return mCommentMoney;
+    public boolean insufficientBalance() {
+        return mPresenter.getBalance() < mCurrentDays * mInputMoney;
+    }
+
+    @Override
+    public void gotoRecharge() {
+        startActivity(new Intent(getActivity(), WalletActivity.class));
     }
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_dynamic_comment_toll;
+        return R.layout.fragment_dynamic_top;
     }
 
-    private void initSelectDays(List<Float> mSelectMoney) {
-        mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectMoney.get(0)));
-        mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectMoney.get(1)));
-        mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mSelectMoney.get(2)));
+    @Override
+    public float getInputMoney() {
+        return mInputMoney;
+    }
+
+    @Override
+    public int getTopDyas() {
+        return mCurrentDays;
     }
 
     private void initListener() {
+        mRbDaysGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.rb_one:
+                    mCurrentDays = mSelectDays.get(0);
+                    break;
+                case R.id.rb_two:
+                    mCurrentDays = mSelectDays.get(1);
+                    break;
+                case R.id.rb_three:
+                    mCurrentDays = mSelectDays.get(2);
+                    break;
+            }
+            setConfirmEnable();
+        });
 
-        RxRadioGroup.checkedChanges(mRbDaysGroup)
-                .compose(this.bindToLifecycle())
-                .subscribe(checkedId -> {
-                    if (checkedId != -1) {
-                        resetEtInput();
-                    }
-                    switch (checkedId) {
-                        case R.id.rb_one:
-                            mCommentMoney = mSelectMoney.get(0);
-                            break;
-                        case R.id.rb_two:
-                            mCommentMoney = mSelectMoney.get(1);
-                            break;
-                        case R.id.rb_three:
-                            mCommentMoney = mSelectMoney.get(2);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if (checkedId != -1) {
-                        setConfirmEnable();
-                    }
-                });
-
-        RxTextView.textChanges(mEtInput)
+        RxTextView.textChanges(mEtTopInput)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (!TextUtils.isEmpty(charSequence)) {
-                        mCommentMoney = Float.parseFloat(charSequence.toString());
-                        mRbDaysGroup.clearCheck();
+                        mInputMoney = Float.parseFloat(charSequence.toString());
                     } else {
-                        mCommentMoney = 0f;
+                        mInputMoney = 0f;
                     }
                     setConfirmEnable();
-                }, throwable -> mCommentMoney = 0f);
+                }, throwable -> mInputMoney = 0f);
 
+        RxTextView.textChanges(mEtTopTotal)
+                .compose(this.bindToLifecycle())
+                .subscribe(charSequence -> mBtTop.setText(getString(mPresenter.getBalance() < mCurrentDays * mInputMoney
+                        ? R.string.to_recharge : R.string.sure)));
 
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    mPresenter.setDynamicCommentToll(mDynamicDetailBeanV2.getId(), (int) mCommentMoney);
-                    DeviceUtils.hideSoftKeyboard(getContext(), mEtInput);
-                });
+                .subscribe(aVoid -> mPresenter.topDynamicComment(getArguments().getLong(TOP_DYNAMIC_ID),
+                        getArguments().getLong(TOP_DYNAMIC_COMMENT_ID),(int)mInputMoney,mCurrentDays));
+    }
+
+    private void initSelectDays(List<Integer> mSelectDays) {
+        mRbOne.setText(String.format(getString(R.string.select_day), mSelectDays.get(0)));
+        mRbTwo.setText(String.format(getString(R.string.select_day), mSelectDays.get(1)));
+        mRbThree.setText(String.format(getString(R.string.select_day), mSelectDays.get(2)));
+    }
+
+    private void setConfirmEnable() {
+        boolean enable = mCurrentDays > 0 && mInputMoney > 0;
+        mBtTop.setEnabled(enable);
+        if (!enable)
+            return;
+        mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), mInputMoney / mCurrentDays, mPresenter.getBalance()));
     }
 
     @Override
-    public void initWithdrawalsInstructionsPop() {
-        if (mTollCommentInstructionsPopupWindow != null) {
-            mTollCommentInstructionsPopupWindow.show();
+    public void initStickTopInstructionsPop() {
+        if (mStickTopInstructionsPopupWindow != null) {
+            mStickTopInstructionsPopupWindow.show();
             return;
         }
-        mTollCommentInstructionsPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.monye_instructions))
-                .desStr(getString(R.string.limit_monye))
+        mStickTopInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.sticktop_instructions))
+                .desStr(getString(R.string.sticktop_instructions_detail))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .bottomClickListener(() -> mTollCommentInstructionsPopupWindow.hide())
+                .bottomClickListener(() -> mStickTopInstructionsPopupWindow.hide())
                 .build();
-        mTollCommentInstructionsPopupWindow.show();
-    }
-
-    private void setConfirmEnable() {
-        mBtTop.setEnabled(mCommentMoney > 0);
-    }
-
-    private void resetEtInput() {
-        mEtInput.setText("");
+        mStickTopInstructionsPopupWindow.show();
     }
 }

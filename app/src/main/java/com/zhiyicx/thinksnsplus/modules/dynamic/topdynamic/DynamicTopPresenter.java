@@ -14,6 +14,8 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 
 /**
@@ -55,7 +57,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
         if (feed_id < 0) {
             return;
         }
-        mRepository.stickTop(feed_id, (int) mRootView.getInputMoney(), mRootView.getTopDyas())
+        Subscription subscription = mRepository.stickTop(feed_id, (int) mRootView.getInputMoney(), mRootView.getTopDyas())
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
@@ -72,6 +74,8 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
                         super.onException(throwable);
                     }
                 });
+
+        addSubscrebe(subscription);
     }
 
     @Override

@@ -197,6 +197,8 @@
 
     <!--置顶评论-->
     <string name="stick_dynamic_comment">置顶评论收费</string>
+    <string name="dynamic_comment_top_success">置顶评论成功</string>
+    <string name="dynamic_comment_top_money">设置评论置顶金额</string>
     <string name="stick_comment_desc">您只需¥%.2f元就可以置顶评论，\n</string>
 
     <!--代码中的string-->
