@@ -3,9 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
@@ -52,8 +50,10 @@ public interface IDynamicReppsitory {
      * @param isLoadMore 是否是刷新
      * @return dynamic list
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page,String feed_ids, boolean isLoadMore);
-    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after,boolean isLoadMore);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page, String feed_ids, boolean isLoadMore);
+
+    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, boolean isLoadMore);
+
     /**
      * 动态点赞
      *
@@ -76,6 +76,7 @@ public interface IDynamicReppsitory {
      * @param comment_id
      */
     void deleteComment(final Long feed_id, Long comment_id);
+
     void deleteCommentV2(final Long feed_id, Long comment_id);
 
     /**
@@ -87,6 +88,7 @@ public interface IDynamicReppsitory {
      * @param comment_mark
      */
     void sendComment(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
+
     void sendCommentV2(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
     /**
@@ -126,6 +128,8 @@ public interface IDynamicReppsitory {
      */
     Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id);
 
+    Observable<List<FollowFansBean>> getDynamicDigListV2(Long feed_id, Long max_id);
+
     /**
      * 一条动态的评论列表
      *
@@ -135,6 +139,7 @@ public interface IDynamicReppsitory {
      * @return
      */
     Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark, Long feed_id, Long max_id);
+
     Observable<List<DynamicCommentBean>> getDynamicCommentListV2(Long feed_mark, Long feed_id, Long max_id);
 
     /**
@@ -147,6 +152,7 @@ public interface IDynamicReppsitory {
 
     /**
      * 获取动态详情 V2
+     *
      * @param feed_id 动态id
      * @return
      */
@@ -154,11 +160,12 @@ public interface IDynamicReppsitory {
 
     /**
      * 设置动态评论收费 V2
+     *
      * @param feed_id 动态id
-     * @param amout 收费金额
+     * @param amout   收费金额
      * @return
      */
-    Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id,int amout);
+    Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id, int amout);
 
     /**
      * 增加动态浏览量
