@@ -118,24 +118,27 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
         Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, isLoadMore)
-                .map(listBaseJson -> {
-                    insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
-                    if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                        if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
-                            List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
-                            data.addAll(listBaseJson);
+                .map(new Func1<List<DynamicDetailBeanV2>, List<DynamicDetailBeanV2>>() {
+                    @Override
+                    public List<DynamicDetailBeanV2> call(List<DynamicDetailBeanV2> listBaseJson) {
+                        insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
+                        if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                            if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
+                                List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
+                                data.addAll(listBaseJson);
+                            }
                         }
-                    }
-                    for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
-                        List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i).getFeed_mark());
-                        if (!dynamicCommentBeen.isEmpty()) {
-                            dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
-                            listBaseJson.get(i).getComments().clear();
-                            listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
+                        for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                            List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i).getFeed_mark());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
+                                listBaseJson.get(i).getComments().clear();
+                                listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
+                            }
                         }
-                    }
 
-                    return listBaseJson;
+                        return listBaseJson;
+                    }
                 })
                 .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
                     @Override

@@ -505,7 +505,7 @@ public class BackgroundTaskHandler {
     private void deleteMethodV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         HashMap<String, Object> datas = backgroundRequestTaskBean.getParams();
         if (datas == null) {
-            datas = new HashMap();
+            datas = new HashMap<>();
         }
         final OnNetResponseCallBack callBack = (OnNetResponseCallBack) datas.get(NET_CALLBACK);
         datas.remove(NET_CALLBACK);

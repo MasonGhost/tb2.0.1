@@ -757,6 +757,14 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         mItemBeanDigg.setConversation(diggConveration);
         mItemBeanDigg.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
                 + mContext.getString(R.string.like_me));
+
+        mItemBeanTop = new MessageItemBean();
+        Conversation reviewConveration = new Conversation();
+        Message reviewmessage = new Message();
+        reviewConveration.setLast_message(reviewmessage);
+        mItemBeanTop.setConversation(reviewConveration);
+        mItemBeanTop.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
+                + mContext.getString(R.string.like_me));
     }
 
 

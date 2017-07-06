@@ -147,13 +147,13 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .subscribe(aBoolean -> {
                     BackgroundRequestTaskBean backgroundRequestTaskBean;
                     HashMap<String, Object> params = new HashMap<>();
-                    params.put("feed_id", feed_id);
+//                    params.put("feed_id", feed_id);
                     // 后台处理
                     if (aBoolean) {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
                         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_CLICK_LIKE_FORMAT_V2, feed_id));
                     } else {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_FORMAT_V2, feed_id));
                     }
 
