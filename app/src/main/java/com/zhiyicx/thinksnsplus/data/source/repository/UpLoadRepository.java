@@ -183,7 +183,7 @@ public class UpLoadRepository implements IUploadRepository {
         File file = new File(filePath);
         // 封装上传文件的参数
         final HashMap<String, String> paramMap = new HashMap<>();
-        paramMap.put("hash", FileUtils.getFileSHA_256ToString(file));
+        paramMap.put("hash", FileUtils.getFileMD5ToString(file));
         paramMap.put("origin_filename", file.getName());
         // 如果是图片就处理图片
         if (isPic) {
