@@ -558,7 +558,7 @@ public class FileUtils {
     }
 
     public static String getFileSHA_256ToString(File file) {
-        return ConvertUtils.bytes2HexString(getFileMD5(file));
+        return ConvertUtils.bytes2HexString(getFileSHA_256(file));
     }
 
     /**
