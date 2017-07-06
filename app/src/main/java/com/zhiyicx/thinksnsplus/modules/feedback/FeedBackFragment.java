@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.feedback;
 
-import android.support.annotation.ColorInt;
 import android.view.View;
 import android.widget.EditText;
 
@@ -17,8 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func2;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -69,12 +66,7 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
     @Override
     public void showSnackSuccessMessage(String message) {
         super.showSnackSuccessMessage(message);
-        Observable.timer(1, TimeUnit.SECONDS).subscribe(new Action1<Long>() {
-            @Override
-            public void call(Long aLong) {
-                getActivity().finish();
-            }
-        });
+        Observable.timer(1, TimeUnit.SECONDS).subscribe(aLong -> getActivity().finish());
 
     }
 
@@ -86,35 +78,21 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
     private void initRightSubmit() {
         mToolbarRight.setEnabled(false);
 
-        Observable.combineLatest(RxTextView.textChanges(mTvFeedbackContract), RxTextView.textChanges(mEtDynamicContent.getEtContent()),
-                new Func2<CharSequence, CharSequence, Boolean>() {
-                    @Override
-                    public Boolean call(CharSequence charSequence, CharSequence charSequence2) {
-                        return charSequence.toString().replaceAll(" ", "").length() > 0 && charSequence2.toString().replaceAll(" ", "").length() > 0;
-                    }
-                })
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean enable) {
-                        mToolbarRight.setEnabled(enable);
-                    }
+//        Observable.combineLatest(RxTextView.textChanges(mTvFeedbackContract), RxTextView.textChanges(mEtDynamicContent.getEtContent()),
+//                (charSequence, charSequence2) -> charSequence.toString().replaceAll(" ", "").length() > 0 && charSequence2.toString().replaceAll(" ", "").length() > 0)
+//                .subscribe(enable -> mToolbarRight.setEnabled(enable), throwable -> throwable.printStackTrace());
 
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+        RxTextView.textChanges(mEtDynamicContent.getEtContent())
+                .map(charSequence -> charSequence.toString().replaceAll(" ", "").length() > 0).subscribe(aBoolean ->
+                mToolbarRight.setEnabled(aBoolean)
+        );
 
         RxView.clicks(mToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
-                        mPresenter.submitFeedBack(mEtDynamicContent.getInputContent(), mTvFeedbackContract.getText().toString());
-                    }
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    DeviceUtils.hideSoftKeyboard(getContext(), mEtDynamicContent);
+                    mPresenter.submitFeedBack(mEtDynamicContent.getInputContent(), mTvFeedbackContract.getText().toString());
                 });
     }
 
@@ -132,12 +110,7 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mFeedBackInstructionsPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mFeedBackInstructionsPopupWindow.hide())
                 .build();
         mFeedBackInstructionsPopupWindow.show();
     }

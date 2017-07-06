@@ -24,11 +24,13 @@
             app:showLines="@integer/dynamic_content_show_lines"/>
 
         <View
+            android:visibility="gone"
             style="@style/style_divider_horizontal"
             android:layout_height="@dimen/spacing_small"
             android:background="@color/feed_back_question"/>
 
         <EditText
+            android:visibility="gone"
             android:id="@+id/tv_feedback_contract"
             style="@style/style_edit_cursor"
             android:layout_width="match_parent"
@@ -43,6 +45,7 @@
             android:textSize="@dimen/size_content"/>
 
         <TextView
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_back_item_height"
             android:background="@color/feed_back_question"
@@ -53,6 +56,7 @@
             android:textSize="@dimen/size_content_comment"/>
 
         <TextView
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_back_item_height"
             android:layout_marginLeft="@dimen/spacing_normal"
@@ -62,9 +66,11 @@
             android:textSize="@dimen/size_content"/>
 
         <View
+            android:visibility="gone"
             style="@style/style_divider_horizontal"/>
 
         <TextView
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_back_item_height"
             android:layout_marginLeft="@dimen/spacing_normal"
@@ -74,9 +80,11 @@
             android:textSize="@dimen/size_content"/>
 
         <View
+            android:visibility="gone"
             style="@style/style_divider_horizontal"/>
 
         <TextView
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feed_back_item_height"
             android:layout_marginLeft="@dimen/spacing_normal"
