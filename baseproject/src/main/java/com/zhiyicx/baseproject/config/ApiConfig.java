@@ -165,6 +165,10 @@ public class ApiConfig {
     public static final String APP_PATH_REVIEW_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
             "/user/feed-comment-pinneds";
 
+    // 动态评论置顶审核列表 V2
+    public static final String APP_PATH_APPROVED_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
+            "/feeds/{feed_id}/comments/{comment_id}/pinneds/{pinned_id}";
+
 
     /**
      * 资讯相关

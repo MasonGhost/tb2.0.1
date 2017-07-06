@@ -286,11 +286,7 @@ public class DrawableProvider {
             }
         }
         try {
-            File f = new File(dir, picName);
-            if (f.exists()){
-                f.delete();
-            }
-            f.createNewFile();
+            File f = new File(dir +"/"+ picName);
             FileOutputStream out = new FileOutputStream(f);
             boolean isSuccess = bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
@@ -301,10 +297,7 @@ public class DrawableProvider {
                 return "-1";
             }
 
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
 
