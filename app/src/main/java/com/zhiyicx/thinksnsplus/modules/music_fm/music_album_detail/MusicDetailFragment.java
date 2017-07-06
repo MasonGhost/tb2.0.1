@@ -556,9 +556,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     private void initHeadInfo(MusicAlbumListBean albumListBean) {
-
+        int imageSize=getResources().getDimensionPixelSize(R.dimen.music_album_detail_head);
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvert(albumListBean.getStorage().getId() + "",
+                .load(ImageUtils.imagePathConvertV2(albumListBean.getStorage().getId(),imageSize,imageSize,
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(getActivity(), 5))

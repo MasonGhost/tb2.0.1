@@ -22,7 +22,6 @@ import android.text.format.DateUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -32,9 +31,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
@@ -74,8 +71,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
@@ -86,18 +81,12 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert
-        .METADATA_KEY_GENRE;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment
-        .MUSIC_INFO;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment
-        .CURRENT_COMMENT;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment
-        .CURRENT_COMMENT_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment
-        .CURRENT_COMMENT_TYPE_MUSIC;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
-        .MEDIA_ID_MUSICS_BY_GENRE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment.MUSIC_INFO;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_MUSIC;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE;
 
 /**
  * @Author Jliuer
@@ -417,14 +406,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             }
         });
 
-        mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int w = mFragmentMusicPalyPhonographPoint.getWidth();
-                int h = mFragmentMusicPalyPhonographPoint.getHeight();
-                mFragmentMusicPalyPhonographPoint.setPivotX(9 * w / 10);
-                mFragmentMusicPalyPhonographPoint.setPivotY(h / 2);
-            }
+        mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            int w = mFragmentMusicPalyPhonographPoint.getWidth();
+            int h = mFragmentMusicPalyPhonographPoint.getHeight();
+            mFragmentMusicPalyPhonographPoint.setPivotX(9 * w / 10);
+            mFragmentMusicPalyPhonographPoint.setPivotY(h / 2);
         });
 
         mFragmentMusicPalyRv.addOnPageChangedListener(new PagerRecyclerView.OnPageChangedListener
@@ -502,19 +488,13 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     private void updateCurrentMusic(final String mediaId) {
-        Observable.from(mMusicList).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
-            @Override
-            public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                LogUtils.e(musicsBean.getMusic_info().getId() + ":::" + mediaId);
-                return (musicsBean.getMusic_info().getId() + "").equals(mediaId);
-            }
-        }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
-            @Override
-            public void call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                mCurrentMusic = musicsBean;
-                dealCurrentMusic();
-                mFragmentMusicPalyComment.setEnabled(true);
-            }
+        Observable.from(mMusicList).filter(musicsBean -> {
+            LogUtils.i(musicsBean.getMusic_info().getId() + ":::" + mediaId);
+            return (musicsBean.getMusic_info().getId() + "").equals(mediaId);
+        }).subscribe(musicsBean -> {
+            mCurrentMusic = musicsBean;
+            dealCurrentMusic();
+            mFragmentMusicPalyComment.setEnabled(true);
         });
     }
 
@@ -678,12 +658,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                             .MILLISECONDS);
         }
         mProgressSubscription = mProgressObservable
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        updateProgress();
-                    }
-                });
+                .subscribe(aLong -> updateProgress());
     }
 
     // 停止音乐播放进度条
@@ -813,13 +788,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mPhonographAnimate.setInterpolator(new LinearInterpolator());
         mPhonographAnimate.setRepeatCount(ObjectAnimator.INFINITE);
         // 设置动画监听
-        mPhonographAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                // TODO Auto-generated method stub
-                // 监听动画执行的位置，以便下次开始时，从当前位置开始
-                mCurrentValue = (float) animation.getAnimatedValue();
-            }
+        mPhonographAnimate.addUpdateListener(animation -> {
+            // TODO Auto-generated method stub
+            // 监听动画执行的位置，以便下次开始时，从当前位置开始
+            mCurrentValue = (float) animation.getAnimatedValue();
         });
         mPhonographAnimate.start();
     }
@@ -896,22 +868,24 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     // 音乐磁盘适配器
     @NonNull
     private CommonAdapter getMediaListAdapter() {
-        mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(),
-                R.layout.item_music_play, mMusicList) {
-            @Override
-            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean o, final
-            int position) {
-                ImageView image = holder.getView(R.id.fragment_music_paly_img);
-                String imageUrl = String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                        o.getMusic_info().getSinger().getCover().getId(), 50);
-                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                        .imagerView(image)
-                        .errorPic(R.drawable.shape_default_image)
-                        .placeholder(R.drawable.shape_default_image)
-                        .url(imageUrl)
-                        .build());
-            }
-        };
+        final int imageSize =getResources().getDimensionPixelSize(R.dimen.music_play_head);
+                mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(),
+                        R.layout.item_music_play, mMusicList) {
+                    @Override
+                    protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean o, final
+                    int position) {
+                        ImageView image = holder.getView(R.id.fragment_music_paly_img);
+                        String imageUrl = ImageUtils.imagePathConvertV2(
+                                o.getMusic_info().getSinger().getCover().getId(), imageSize,imageSize ,ImageZipConfig.IMAGE_70_ZIP );
+
+                        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                                .imagerView(image)
+                                .errorPic(R.drawable.shape_default_image)
+                                .placeholder(R.drawable.shape_default_image)
+                                .url(imageUrl)
+                                .build());
+                    }
+                };
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
