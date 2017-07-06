@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.media_data;
 import android.support.v4.media.MediaMetadataCompat;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 
@@ -42,11 +43,10 @@ public class MusicDataConvert implements MusicProviderSource {
 
     private MediaMetadataCompat buildMusic(MusicAlbumDetailsBean.MusicsBean data) {
         MusicAlbumDetailsBean.MusicsBean.MusicInfoBean needData = data.getMusic_info();
-        String musicUrl = String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
+        String musicUrl = String.format(ApiConfig.MUSIC_PATH,
                 needData.getStorage());
 
-        String imageUrl = String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                needData.getSinger().getCover().getId(), 50);
+        String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(),50,50,100));
         LogUtils.d("buildMusic--needData.getId:::" + needData.getId());
         //noinspection ResourceType
         return new MediaMetadataCompat.Builder()

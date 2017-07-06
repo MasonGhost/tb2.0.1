@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -42,17 +43,21 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         if (AppApplication.sOverRead.contains(position + "")) {
             title.setTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
         }
+
         title.setText(realData.getTitle());
         if (realData.getStorage() == null) {
             imageView.setVisibility(View.GONE);
         } else {
-            imageView.setVisibility(View.VISIBLE);
-            Glide.with(BaseApplication.getContext())
-                    .load(ImageUtils.imagePathConvertV2(realData.getStorage().getId(),imageView.getWidth(),imageView.getHeight(),
-                            ImageZipConfig.IMAGE_50_ZIP))
-                    .override(imageView.getWidth(),imageView.getHeight())
-                    .into(imageView);
-
+            imageView.post(() -> {
+                imageView.setVisibility(View.VISIBLE);
+                Glide.with(BaseApplication.getContext())
+                        .load(ImageUtils.imagePathConvertV2(realData.getStorage().getId(),imageView.getWidth(),imageView.getHeight(),
+                                ImageZipConfig.IMAGE_80_ZIP))
+                        .placeholder(R.drawable.shape_default_image)
+                        .error(R.drawable.shape_default_image)
+                        .override(imageView.getWidth(),imageView.getHeight())
+                        .into(imageView);
+            });
         }
         String from = TextUtils.isEmpty(realData.getFrom()) ? "" : "\b\b\b来自\b" + realData.getFrom();
         holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
