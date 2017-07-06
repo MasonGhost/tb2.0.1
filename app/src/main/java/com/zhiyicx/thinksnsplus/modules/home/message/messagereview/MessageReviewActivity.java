@@ -12,7 +12,6 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.DaggerMessageLi
  */
 public class MessageReviewActivity extends TSActivity<MessageReviewPresenter,MessageReviewFragment> {
 
-
     @Override
     protected void componentInject() {
        DaggerMessageReviewComponent
