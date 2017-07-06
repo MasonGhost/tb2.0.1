@@ -246,6 +246,15 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 postMethod(backgroundRequestTaskBean);
                 break;
+
+            case POST_V2:
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                postMethodV2(backgroundRequestTaskBean);
+                break;
             /**
              * 通用 GET 接口处理
              */
@@ -277,6 +286,14 @@ public class BackgroundTaskHandler {
                 }
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 deleteMethod(backgroundRequestTaskBean);
+                break;
+            case DELETE_V2:
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                deleteMethodV2(backgroundRequestTaskBean);
                 break;
             /**
              * 获取 IM 信息，必须保证 header 中已经加入了权限 token
@@ -333,6 +350,48 @@ public class BackgroundTaskHandler {
             default:
         }
 
+    }
+
+    /**
+     * 处理Post请求类型的后台任务
+     */
+    private void postMethodV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        HashMap params = backgroundRequestTaskBean.getParams();
+        if (params == null) {
+            params = new HashMap();
+        }
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) params.get(NET_CALLBACK);
+        params.remove(NET_CALLBACK);
+        mServiceManager.getCommonClient().handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, params))
+                .subscribe(new BaseSubscribeForV2() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        if (callBack != null) {
+                            callBack.onSuccess(data);
+                        }
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        }
+                        if (callBack != null) {
+                            callBack.onFailure(message, code);
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                        if (callBack != null) {
+                            callBack.onException(throwable);
+                        }
+                    }
+                });
     }
 
     /**
@@ -421,6 +480,41 @@ public class BackgroundTaskHandler {
                 .subscribe(new BaseSubscribe<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
+    }
+
+    /**
+     * 处理Delete请求类型的后台任务 V2
+     */
+    private void deleteMethodV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        HashMap<String, Object> datas = backgroundRequestTaskBean.getParams();
+        if (datas == null) {
+            datas = new HashMap();
+        }
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) datas.get(NET_CALLBACK);
+        datas.remove(NET_CALLBACK);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
+        mServiceManager.getCommonClient().handleBackGroudTaskDeleteV2(backgroundRequestTaskBean.getPath()
+                , body)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<CacheBean>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<CacheBean> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     }
 

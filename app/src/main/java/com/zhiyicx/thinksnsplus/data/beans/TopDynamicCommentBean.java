@@ -286,6 +286,14 @@ public class TopDynamicCommentBean extends BaseListBean {
         dest.writeParcelable(this.feed, flags);
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public TopDynamicCommentBean() {
     }
 
@@ -299,6 +307,19 @@ public class TopDynamicCommentBean extends BaseListBean {
         this.created_at = in.readString();
         this.comment = in.readParcelable(CommentBean.class.getClassLoader());
         this.feed = in.readParcelable(FeedBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 1519258651)
+    public TopDynamicCommentBean(Long id, int amount, int day, int user_id, String expires_at,
+            String created_at, CommentBean comment, FeedBean feed) {
+        this.id = id;
+        this.amount = amount;
+        this.day = day;
+        this.user_id = user_id;
+        this.expires_at = expires_at;
+        this.created_at = created_at;
+        this.comment = comment;
+        this.feed = feed;
     }
 
     public static final Creator<TopDynamicCommentBean> CREATOR = new Creator<TopDynamicCommentBean>() {

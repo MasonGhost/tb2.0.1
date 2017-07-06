@@ -482,18 +482,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                 return Observable.just(listBaseJson);
                             }
                             return getUserInfo(userIdstmp)
-                                    .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<FlushMessages>>>() {
-                                        @Override
-                                        public BaseJson<List<FlushMessages>> call(BaseJson<List<UserInfoBean>> userinfobeans) {
-                                            if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                            } else {
-                                                listBaseJson.setStatus(userinfobeans.isStatus());
-                                                listBaseJson.setCode(userinfobeans.getCode());
-                                                listBaseJson.setMessage(userinfobeans.getMessage());
-                                            }
-                                            return listBaseJson;
+                                    .map(userinfobeans -> {
+                                        if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                        } else {
+                                            listBaseJson.setStatus(userinfobeans.isStatus());
+                                            listBaseJson.setCode(userinfobeans.getCode());
+                                            listBaseJson.setMessage(userinfobeans.getMessage());
                                         }
+                                        return listBaseJson;
                                     });
                         }
                         return Observable.just(listBaseJson);
