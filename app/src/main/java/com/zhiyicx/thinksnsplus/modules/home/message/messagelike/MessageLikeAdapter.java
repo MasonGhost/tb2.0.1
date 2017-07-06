@@ -3,8 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_COMPONENT_SOURCE_TABLE_MUSICS;
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
@@ -63,19 +64,29 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         } else {
             holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
         }
+        int storegeId = DEFAULT_IMAGE_ID;
+        if (digedBean.getDigUserInfo() != null && !TextUtils.isEmpty(digedBean.getDigUserInfo().getAvatar())) {
+            storegeId = Integer.parseInt(digedBean.getDigUserInfo().getAvatar());
+        }
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(digedBean.getDigUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                .url(ImageUtils.imagePathConvertV2(storegeId
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , ImageZipConfig.IMAGE_38_ZIP))
                 .transformation(new GlideCircleTransform(getContext()))
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .placeholder(R.mipmap.pic_default_portrait1)
-                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                .imagerView(holder.getView(R.id.iv_headpic))
                 .build());
         if (digedBean.getSource_cover() != 0) {
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvert(digedBean.getSource_cover() + "", ImageZipConfig.IMAGE_50_ZIP))
-                    .imagerView((ImageView) holder.getView(R.id.iv_detail_image))
+                    .url(ImageUtils.imagePathConvertV2(digedBean.getSource_cover()
+                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                            , ImageZipConfig.IMAGE_50_ZIP))
+                    .imagerView(holder.getView(R.id.iv_detail_image))
                     .build());
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);

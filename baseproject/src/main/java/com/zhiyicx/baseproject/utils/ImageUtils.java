@@ -7,9 +7,7 @@ import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.file_descriptor.FileDescriptorFileLoader;
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -26,28 +24,29 @@ import java.util.Locale;
  */
 
 public class ImageUtils {
+    public static final int DEFAULT_IMAGE_ID = -1;
 
-    /**
-     * 图片地址转换
-     *
-     * @param storage 图片对应的 id 号，也可能是本地的图片路径
-     * @param part    压缩比例 0-100
-     * @return
-     */
-    public static String imagePathConvert(String storage, int part) {
-        try {
-            // 如果图片的storage能够转成一个整数
-            Integer.parseInt(storage);
-            return String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH, storage, part);
-        } catch (NumberFormatException e) {
-            return storage;
-        }
-    }
+//    /**
+//     * 图片地址转换
+//     *
+//     * @param storage 图片对应的 id 号，也可能是本地的图片路径
+//     * @param part    压缩比例 0-100
+//     * @return
+//     */
+//    public static String imagePathConvert(String storage, int part) {
+//        try {
+//            // 如果图片的storage能够转成一个整数
+//            Integer.parseInt(storage);
+//            return String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH, storage, part);
+//        } catch (NumberFormatException e) {
+//            return storage;
+//        }
+//    }
 
     /**
      * 图片地址转换 V2 api
      *
-     * @param canLook  是否可查看
+     * @param canLook 是否可查看
      * @param storage 图片对应的 id 号，也可能是本地的图片路径
      * @param part    压缩比例 0-100
      * @return
@@ -62,7 +61,8 @@ public class ImageUtils {
 
     /**
      * 图片地址转换 V2 api
-     * @param url 图片地址
+     *
+     * @param url   图片地址
      * @param token 图片token
      * @return
      */
@@ -73,16 +73,15 @@ public class ImageUtils {
     }
 
     /**
-     *
      * @param storage 图片资源id
-     * @param w 宽
-     * @param h 高
-     * @param part 压缩比例
-     * @param token token
+     * @param w       宽
+     * @param h       高
+     * @param part    压缩比例
+     * @param token   token
      * @return
      */
     public static GlideUrl imagePathConvertV2(int storage, int w, int h, int part, String token) {
-        return new GlideUrl(imagePathConvertV2(storage,w,h,part), new LazyHeaders.Builder()
+        return new GlideUrl(imagePathConvertV2(storage, w, h, part), new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());
     }

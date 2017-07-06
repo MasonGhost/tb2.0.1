@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -56,10 +58,17 @@ public class DigListAdapter extends CommonAdapter<FollowFansBean> {
             tv_content.setText(userInfoBean.getIntro());
             // 显示用户头像
             ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+            int storegeId = DEFAULT_IMAGE_ID;
+            if (userInfoBean != null && !TextUtils.isEmpty(userInfoBean.getAvatar())) {
+                storegeId = Integer.parseInt(userInfoBean.getAvatar());
+            }
             imageLoader.loadImage(filterImageView.getContext(), GlideImageConfig.builder()
                     .imagerView(filterImageView)
                     .transformation(new GlideCircleTransform(filterImageView.getContext()))
-                    .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                    .url(ImageUtils.imagePathConvertV2(storegeId
+                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , ImageZipConfig.IMAGE_38_ZIP))
                     .placeholder(R.mipmap.pic_default_portrait1)
                     .errorPic(R.mipmap.pic_default_portrait1)
                     .build());

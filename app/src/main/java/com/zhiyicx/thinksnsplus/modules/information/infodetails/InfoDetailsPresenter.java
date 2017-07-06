@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -145,8 +146,11 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         }
 
         if (mRootView.getCurrentInfo().getStorage() != null) {
-            shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentInfo()
-                    .getStorage().getId() + "", 100));
+            shareContent.setImage(ImageUtils.imagePathConvertV2(mRootView.getCurrentInfo()
+                    .getStorage().getId()
+                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                    , ImageZipConfig.IMAGE_70_ZIP));
         }
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

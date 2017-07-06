@@ -325,8 +325,10 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
                         headerInfo.setCommentCount(data.getComment_count());
                         headerInfo.setId(data.getId());
                         headerInfo.setLitenerCount(data.getTaste_count() + "");
-                        headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getSinger().getCover().getId() + "",
-                                ImageZipConfig.IMAGE_70_ZIP));
+                        headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(data.getSinger().getCover().getId()
+                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                , ImageZipConfig.IMAGE_70_ZIP));
                         headerInfo.setTitle(data.getTitle());
                         mRootView.setHeaderInfo(headerInfo);
                     }
@@ -353,7 +355,10 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
                         headerInfo.setCommentCount(data.getComment_count());
                         headerInfo.setId(data.getId());
                         headerInfo.setLitenerCount(data.getTaste_count() + "");
-                        headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getStorage() + "", ImageZipConfig.IMAGE_70_ZIP));
+                        headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(data.getStorage().getId()
+                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                , ImageZipConfig.IMAGE_70_ZIP));
                         headerInfo.setTitle(data.getTitle());
                         mRootView.setHeaderInfo(headerInfo);
                     }

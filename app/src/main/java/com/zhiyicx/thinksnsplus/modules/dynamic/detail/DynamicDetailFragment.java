@@ -27,10 +27,8 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
@@ -308,15 +306,18 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
+        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvert(dynamicBean.getUserInfoBean().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
+                .load(ImageUtils.imagePathConvertV2(Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar())
+                        ,headIconWidth
+                        ,headIconWidth
+                        , ImageZipConfig.IMAGE_26_ZIP))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
                         resource.setBounds(0, 0, headIconWidth, headIconWidth);
                         mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
                     }

@@ -44,7 +44,7 @@ public class MusicAlbumDetailFragmentTest {
                     MusicAlbumListBean messageItemBean = new MusicAlbumListBean();
                     messageItemBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
                     messageItemBean.setCollect_count(5);
-                    messageItemBean.setStorage(new MusicAlbumListBean.StorageBean());
+                    messageItemBean.setStorage(new MusicAlbumListBean().getStorage());
                     messageItemBean.setTitle("test");
                     messageItemBean.setId(100);
                     messageItemBean.setMaxId(System.currentTimeMillis());
