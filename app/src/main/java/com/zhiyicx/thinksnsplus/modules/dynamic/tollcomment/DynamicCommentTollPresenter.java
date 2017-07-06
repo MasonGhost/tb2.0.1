@@ -30,12 +30,7 @@ public class DynamicCommentTollPresenter extends AppBasePresenter<DynamicComment
     @Override
     public void setDynamicCommentToll(Long feed_id, int amout) {
         mBaseDynamicRepository.setDynamicCommentToll(feed_id, amout)
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing));
-                    }
-                })
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
                 .subscribe(new BaseSubscribeForV2<DynamicCommentToll>() {
                     @Override
                     protected void onSuccess(DynamicCommentToll data) {

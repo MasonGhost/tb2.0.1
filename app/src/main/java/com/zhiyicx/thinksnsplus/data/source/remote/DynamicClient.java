@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 
 import java.util.List;
 
@@ -163,24 +164,6 @@ public interface DynamicClient {
     Observable<BaseJson<Object>> handleDynamicViewCount(@Path("feed_id") Long feed_id);
 
     /**
-     * 置顶动态
-     *
-     * @param feed_id 动态的唯一 id
-     * @return
-     */
-    @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
-    Observable<BaseJson<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id);
-
-    /**
-     * 置顶动态
-     *
-     * @param feed_id 动态的唯一 id
-     * @return
-     */
-    @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
-    Observable<BaseJson<Integer>> tollDynamicComment(@Path("feed_id") Long feed_id);
-
-    /**
      * 获取动态详情 V2
      *
      * @param feed_id 动态id
@@ -200,4 +183,33 @@ public interface DynamicClient {
     @PATCH(APP_PATH_COMMENT_PAID_V2)
     Observable<DynamicCommentToll> setDynamicCommentToll(@Path("feed_id") Long feed_id, @Field("amount") int amount);
 
+    /**
+     * 置顶动态 V2
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_DYNAMIC)
+    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id,@Field("amount") int amount,@Field("day") int day);
+
+
+    /**
+     * 置顶动态评论  V2
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id,@Path("comment_id") Long comment_id,@Field("amount") int amount,@Field("day") int day);
+
+    /**
+     * 获取动态评论置顶审核列表 V2
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_REVIEW_DYNAMIC_COMMENT)
+    Observable<List<TopDynamicCommentBean>> getReviewComment(@Query("after") int after, @Query("limit")
+            int limit);
 }

@@ -73,6 +73,7 @@ public class ApiConfig {
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     public static final String FLUSHMESSAGES_KEY_DIGGS = "diggs";
     public static final String FLUSHMESSAGES_KEY_COMMENTS = "comments";
+    public static final String FLUSHMESSAGES_KEY_REVIEWS = "reviews";
     public static final String FLUSHMESSAGES_KEY_FOLLOWS = "follows";
     public static final String FLUSHMESSAGES_KEY_NOTICES = "notices";
 
@@ -153,6 +154,16 @@ public class ApiConfig {
     // 设置动态评论收费 V2
     public static final String APP_PATH_COMMENT_PAID_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comment-paid";
     public static final String APP_PATH_COMMENT_PAID_V2_FORMAT = "api/" + API_VERSION_2 + "/feeds/%d/comment-paid";
+
+    // 置顶动态 V2
+    public static final String APP_PATH_TOP_DYNAMIC = "api/" + API_VERSION_2 + "/feeds/{feed_id}/pinneds";
+
+    // 置顶动态评论 V2
+    public static final String APP_PATH_TOP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comments/{comment_id}/pinneds";
+
+    // 动态评论置顶审核列表 V2
+    public static final String APP_PATH_REVIEW_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
+            "/user/feed-comment-pinneds";
 
 
     /**

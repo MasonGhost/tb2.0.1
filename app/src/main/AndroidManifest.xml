@@ -312,7 +312,7 @@
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.dynamic.top.DynamicTopActivity">
+        <activity android:name=".modules.dynamic.topdynamic.DynamicTopActivity">
         </activity>
         <activity android:name=".modules.wallet.withdrawals.WithdrawalsActivity">
         </activity>
@@ -327,6 +327,8 @@
         <activity android:name=".modules.dynamic.send.picture_toll.PictureTollActivity">
         </activity>
         <activity android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity">
+        </activity>
+        <activity android:name=".modules.dynamic.topdynamic_comment.DynamicCommentTopActivity">
         </activity>
         <activity android:name=".modules.wallet.bill.BillActivity">
         </activity>

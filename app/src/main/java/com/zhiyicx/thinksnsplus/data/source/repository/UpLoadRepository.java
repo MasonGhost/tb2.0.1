@@ -183,7 +183,7 @@ public class UpLoadRepository implements IUploadRepository {
         File file = new File(filePath);
         // 封装上传文件的参数
         final HashMap<String, String> paramMap = new HashMap<>();
-        paramMap.put("hash", FileUtils.getFileMD5ToString(file));
+        paramMap.put("hash", FileUtils.getFileSHA_256ToString(file));
         paramMap.put("origin_filename", file.getName());
         // 如果是图片就处理图片
         if (isPic) {
@@ -200,13 +200,10 @@ public class UpLoadRepository implements IUploadRepository {
                         return !throwable.toString().contains("404"); // 文件不存在 服务器返回404.
                     }
                 })
-                .onErrorReturn(new Func1<Throwable, BaseJsonV2>() {
-                    @Override
-                    public BaseJsonV2 call(Throwable throwable) {
-                        BaseJsonV2 baseJson = new BaseJsonV2();
-                        baseJson.setId(-1);
-                        return baseJson;
-                    }
+                .onErrorReturn(throwable -> {
+                    BaseJsonV2 baseJson = new BaseJsonV2();
+                    baseJson.setId(-1);
+                    return baseJson;
                 })
                 .flatMap(new Func1<BaseJsonV2, Observable<BaseJson<Integer>>>() {
                     @Override

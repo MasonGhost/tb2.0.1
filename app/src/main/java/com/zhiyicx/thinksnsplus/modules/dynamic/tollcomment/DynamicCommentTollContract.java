@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 
 import retrofit2.http.Path;
 import rx.Observable;
@@ -25,6 +26,6 @@ public interface DynamicCommentTollContract {
     }
 
     interface Repository {
-        Observable<BaseJson<Integer>> tollDynamicComment(Long feed_id);
+        Observable<DynamicCommentToll> tollDynamicComment(Long feed_id, int amount);
     }
 }

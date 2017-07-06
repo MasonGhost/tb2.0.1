@@ -21,6 +21,8 @@ import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.common.config.ConstantConfig;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +32,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -449,6 +453,29 @@ public class ConvertUtils {
         return sb.toString();
     }
 
+    public static String getStringMD5(@NotNull String string) {
+        if (TextUtils.isEmpty(string)) {
+            return "";
+        }
+        MessageDigest md5 = null;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+            byte[] bytes = md5.digest(string.getBytes());
+            String result = "";
+            for (byte b : bytes) {
+                String temp = Integer.toHexString(b & 0xff);
+                if (temp.length() == 1) {
+                    temp = "0" + temp;
+                }
+                result += temp;
+            }
+            return result;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     /**
      * bits 转 bytes
      *
@@ -696,7 +723,7 @@ public class ConvertUtils {
             bitmap = BitmapFactory.decodeResource(context.getResources(), defaultRes).copy(config, true);
             w = bitmap.getWidth();
             h = bitmap.getHeight();
-            drawable=ConvertUtils.bitmap2Drawable(context.getResources(),bitmap);
+            drawable = ConvertUtils.bitmap2Drawable(context.getResources(), bitmap);
         }
         // 建立对应 bitmap 的画布
         Canvas canvas = new Canvas(bitmap);

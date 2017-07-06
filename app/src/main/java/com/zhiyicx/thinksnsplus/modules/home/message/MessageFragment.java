@@ -40,7 +40,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean> implements MessageContract.View, MessageAdapter.OnSwipItemClickListener, OnUserInfoClickListener {
+public class MessageFragment extends TSListFragment<MessageContract.Presenter, MessageItemBean>
+        implements MessageContract.View, MessageAdapter.OnSwipItemClickListener,
+        OnUserInfoClickListener {
     private View mHeaderView;
 
     @Inject
@@ -130,7 +132,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     protected RecyclerView.Adapter getAdapter() {
 
 //        MessageSwipeAdapter commonAdapter =new MessageSwipeAdapter(getContext(),mListDatas);
-        MessageAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout.item_message_list, mListDatas);
+        MessageAdapter commonAdapter = new MessageAdapter(getActivity(), R.layout
+                .item_message_list, mListDatas);
         commonAdapter.setOnSwipItemClickListener(this);
         commonAdapter.setOnUserInfoClickListener(this);
         return commonAdapter;
@@ -141,7 +144,8 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.view_header_message_list, null);
+        mHeaderView = LayoutInflater.from(getContext()).inflate(R.layout
+                .view_header_message_list, null);
         mHeaderAndFooterWrapper.addHeaderView(mHeaderView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -153,66 +157,92 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      *
      * @param headerview
      */
-    private void updateHeaderViewData(View headerview, MessageItemBean commentItemData, MessageItemBean likedItemData) {
+    private void updateHeaderViewData(View headerview, MessageItemBean commentItemData,
+                                      MessageItemBean likedItemData,MessageItemBean
+                                              reviewItemBean) {
         View rlCritical = null;
         View liked;
+        View review;
+
         TextView tvHeaderCommentContent = null;
         TextView tvHeaderCommentTime = null;
         BadgeView tvHeaderCommentTip = null;
+
         TextView tvHeaderLikeContent = null;
         TextView tvHeaderLikeTime = null;
         BadgeView tvHeaderLikeTip = null;
+
+        TextView tvHeaderReviewContent = null;
+        TextView tvHeaderReviewTime = null;
+        BadgeView tvHeaderReviewTip = null;
+
         if (rlCritical == null) {
+
             rlCritical = headerview.findViewById(R.id.rl_critical);
             RxView.clicks(rlCritical)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            toCommentList();
-                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
-                            mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
-                            updateCommnetItemData(mPresenter.updateCommnetItemData());
+                    .subscribe(aVoid -> {
+                        toCommentList();
+                        mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
+                        mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
+                        updateCommnetItemData(mPresenter.updateCommnetItemData());
 
-                        }
                     });
+
             liked = headerview.findViewById(R.id.rl_liked);
             RxView.clicks(liked)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            toLikeList();
-                            mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_DIGGS);
-                            mPresenter.updateLikeItemData().setUnReadMessageNums(0);
-                            updateCommnetItemData(mPresenter.updateLikeItemData());
-                        }
+                    .subscribe(aVoid -> {
+                        toLikeList();
+                        mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_DIGGS);
+                        mPresenter.updateLikeItemData().setUnReadMessageNums(0);
+                        updateCommnetItemData(mPresenter.updateLikeItemData());
                     });
-            tvHeaderCommentContent = (TextView) headerview.findViewById(R.id.tv_header_comment_content);
+
+            review = headerview.findViewById(R.id.rl_review);
+
+            tvHeaderCommentContent = (TextView) headerview.findViewById(R.id
+                    .tv_header_comment_content);
             tvHeaderCommentTime = (TextView) headerview.findViewById(R.id.tv_header_comment_time);
             tvHeaderCommentTip = (BadgeView) headerview.findViewById(R.id.tv_header_comment_tip);
 
             tvHeaderLikeContent = (TextView) headerview.findViewById(R.id.tv_header_like_content);
             tvHeaderLikeTime = (TextView) headerview.findViewById(R.id.tv_header_like_time);
             tvHeaderLikeTip = (BadgeView) headerview.findViewById(R.id.tv_header_like_tip);
+
+            tvHeaderReviewContent = (TextView) headerview.findViewById(R.id
+                    .tv_header_review_content);
+            tvHeaderReviewTime = (TextView) headerview.findViewById(R.id.tv_header_review_time);
+            tvHeaderReviewTip = (BadgeView) headerview.findViewById(R.id.tv_header_review_tip);
         }
-        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt());
-        if (commentItemData.getConversation().getLast_message_time() == 0 || commentItemData.getConversation().getLast_message().getTxt().contains(getString(R.string.has_no_body))) {
+
+        tvHeaderCommentContent.setText(commentItemData.getConversation().getLast_message().getTxt
+                ());
+
+        if (commentItemData.getConversation().getLast_message_time() == 0 || commentItemData
+                .getConversation().getLast_message().getTxt().contains(getString(R.string
+                        .has_no_body))) {
             tvHeaderCommentTime.setVisibility(View.INVISIBLE);
         } else {
             tvHeaderCommentTime.setVisibility(View.VISIBLE);
-            tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData.getConversation().getLast_message_time()));
+            tvHeaderCommentTime.setText(TimeUtils.getTimeFriendlyNormal(commentItemData
+                    .getConversation().getLast_message_time()));
         }
-        tvHeaderCommentTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(commentItemData.getUnReadMessageNums())));
+        tvHeaderCommentTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert
+                (commentItemData.getUnReadMessageNums())));
 
         tvHeaderLikeContent.setText(likedItemData.getConversation().getLast_message().getTxt());
-        if (likedItemData.getConversation().getLast_message_time() == 0 || likedItemData.getConversation().getLast_message().getTxt().contains(getString(R.string.has_no_body))) {
+        if (likedItemData.getConversation().getLast_message_time() == 0 || likedItemData
+                .getConversation().getLast_message().getTxt().contains(getString(R.string
+                        .has_no_body))) {
             tvHeaderLikeTime.setVisibility(View.INVISIBLE);
         } else {
             tvHeaderLikeTime.setVisibility(View.VISIBLE);
-            tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(likedItemData.getConversation().getLast_message_time()));
+            tvHeaderLikeTime.setText(TimeUtils.getTimeFriendlyNormal(likedItemData
+                    .getConversation().getLast_message_time()));
         }
-        tvHeaderLikeTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(likedItemData.getUnReadMessageNums())));
+        tvHeaderLikeTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert
+                (likedItemData.getUnReadMessageNums())));
         refreshData();
     }
 
@@ -235,13 +265,22 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
-        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
+                .updateLikeItemData(),mPresenter.updateReviewItemData());
         refreshData();
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
-        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter.updateLikeItemData());
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
+                .updateLikeItemData(),mPresenter.updateReviewItemData());
+        refreshData();
+    }
+
+    @Override
+    public void updateReviewItemData(MessageItemBean messageItemBean) {
+        updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
+                .updateLikeItemData(),mPresenter.updateReviewItemData());
         refreshData();
     }
 

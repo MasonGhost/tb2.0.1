@@ -37,6 +37,13 @@ public interface MessageContract {
         void updateLikeItemData(MessageItemBean messageItemBean);
 
         /**
+         * 更新置顶的
+         *
+         * @param messageItemBean
+         */
+        void updateReviewItemData(MessageItemBean messageItemBean);
+
+        /**
          * 显示 右上角的加载动画
          */
         void showTopRightLoading();
@@ -73,6 +80,8 @@ public interface MessageContract {
         MessageItemBean updateCommnetItemData();
 
         MessageItemBean updateLikeItemData();
+
+        MessageItemBean updateReviewItemData();
 
 //        MessageItemBean updateNoticesItemData();
 

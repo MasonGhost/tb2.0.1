@@ -47,6 +47,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
@@ -285,14 +286,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     public void saveImage() {
         // 通过GLide获取bitmap,有缓存读缓存
+        GlideUrl glideUrl=ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(),(int)mImageBean.getWidth(),(int)mImageBean.getHeight()
+                , ImageZipConfig.IMAGE_100_ZIP,AppApplication.getTOKEN());
         Glide.with(getActivity())
-                .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(),(int)mImageBean.getWidth(),(int)mImageBean.getHeight()
-                        , ImageZipConfig.IMAGE_100_ZIP,AppApplication.getTOKEN()))
+                .load(glideUrl)
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        getSaveBitmapResultObservable(resource);
+                        getSaveBitmapResultObservable(resource,glideUrl.toStringUrl());
                     }
                 });
     }
@@ -592,51 +594,42 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     /**
      * 通过Rxjava在io线程中处理保存图片的逻辑，得到返回结果，否则会阻塞ui
      */
-    private void getSaveBitmapResultObservable(final Bitmap bitmap) {
+    private void getSaveBitmapResultObservable(final Bitmap bitmap,final String url) {
         Observable.just(1)// 不能empty否则map无法进行转换
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
-                        TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
-                                .setPromptThemBackground(Prompt.SUCCESS)
-                                .addIconProgressLoading(0, true, false)
-                                .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
-                                .show();
-                    }
+                .doOnSubscribe(() -> {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
+                    TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
+                            .setPromptThemBackground(Prompt.SUCCESS)
+                            .addIconProgressLoading(0, true, false)
+                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
+                            .show();
                 })
-                .map(new Func1<Integer, String>() {
-                    @Override
-                    public String call(Integer integer) {
-                        String imgName = System.currentTimeMillis() + ".jpg";
-                        String imgPath = PathConfig.PHOTO_SAVA_PATH;
-                        return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
-                    }
+                .map(integer -> {
+                    String imgName = ConvertUtils.getStringMD5(url)+".jpg";
+                    String imgPath = PathConfig.PHOTO_SAVA_PATH;
+                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())// subscribeOn & doOnSubscribe 的特殊性质
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String result) {
-                        switch (result) {
-                            case "-1":
-                                result = getString(R.string.save_failure1);
-                                break;
-                            case "-2":
-                                result = getString(R.string.save_failure2);
-                                break;
-                            default:
-                                File file = new File(result);
-                                if (file.exists()) {
-                                    result = getString(R.string.save_success) + result;
-                                    FileUtils.insertPhotoToAlbumAndRefresh(context, file);
-                                }
-                        }
-                        TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
-                                .setPromptThemBackground(Prompt.SUCCESS)
-                                .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
-                                .show();
+                .subscribe(result -> {
+                    switch (result) {
+                        case "-1":
+                            result = getString(R.string.save_failure1);
+                            break;
+                        case "-2":
+                            result = getString(R.string.save_failure2);
+                            break;
+                        default:
+                            File file = new File(result);
+                            if (file.exists()) {
+                                result = getString(R.string.save_success) + result;
+                                FileUtils.insertPhotoToAlbumAndRefresh(context, file);
+                            }
                     }
+                    TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
+                            .setPromptThemBackground(Prompt.SUCCESS)
+                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
+                            .show();
                 });
     }
 
@@ -682,31 +675,26 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     }
 
-    private static final StreamModelLoader<String> cacheOnlyStreamLoader = new StreamModelLoader<String>() {
+    private static final StreamModelLoader<String> cacheOnlyStreamLoader = (model, i, i1) -> new DataFetcher<InputStream>() {
         @Override
-        public DataFetcher<InputStream> getResourceFetcher(final String model, int i, int i1) {
-            return new DataFetcher<InputStream>() {
-                @Override
-                public InputStream loadData(Priority priority) throws Exception {
-                    // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
-                    throw new IOException("intercupt net by own");
-                }
+        public InputStream loadData(Priority priority) throws Exception {
+            // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
+            throw new IOException("intercupt net by own");
+        }
 
-                @Override
-                public void cleanup() {
+        @Override
+        public void cleanup() {
 
-                }
+        }
 
-                @Override
-                public String getId() {
-                    return model;
-                }
+        @Override
+        public String getId() {
+            return model;
+        }
 
-                @Override
-                public void cancel() {
+        @Override
+        public void cancel() {
 
-                }
-            };
         }
     };
 
@@ -737,21 +725,11 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), mImageBean.getToll().getToll_money()))
-                .buildCenterPopWindowItem1ClickListener(new PayPopWindow
-                        .CenterPopWindowItem1ClickListener() {
-                    @Override
-                    public void onClicked() {
-                        mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
-                        mPayPopWindow.hide();
-                    }
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
+                    mPayPopWindow.hide();
                 })
-                .buildCenterPopWindowItem2ClickListener(new PayPopWindow
-                        .CenterPopWindowItem2ClickListener() {
-                    @Override
-                    public void onClicked() {
-                        mPayPopWindow.hide();
-                    }
-                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())
                 .buildCenterPopWindowLinkClickListener(new PayPopWindow
                         .CenterPopWindowLinkClickListener() {
                     @Override
