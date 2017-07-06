@@ -200,7 +200,7 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
      */
     public List<DynamicDetailBeanV2> getMyCollectDynamic() {
         return mDynamicDetailBeanV2Dao.queryDeep(" where "
-                        + " T1." + DynamicDetailBeanV2Dao.Properties.Has_collect.columnName + " = ? "
+                        + " T." + DynamicDetailBeanV2Dao.Properties.Has_collect.columnName + " = ? "
                         + " ORDER BY  T." + DynamicDetailBeanV2Dao.Properties.Id.columnName + " DESC LIMIT " + TSListFragment.DEFAULT_PAGE_SIZE// 按照Feed_id倒序：越新的动态，Feed_id越大
                 , "1");
     }

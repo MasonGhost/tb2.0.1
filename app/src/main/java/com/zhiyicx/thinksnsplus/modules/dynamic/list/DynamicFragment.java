@@ -223,23 +223,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         headerInfo.setTitles(advertTitle);
         headerInfo.setUrls(advertUrls);
         headerInfo.setDelay(4000);
-        headerInfo.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(int position) {
+        headerInfo.setOnBannerListener(position -> {
 
-            }
         });
         mDynamicBannerHeader.setHeadInfo(headerInfo);
         mHeaderAndFooterWrapper.addHeaderView(mDynamicBannerHeader.getDynamicBannerHeader());
     }
 
     private void initInputView() {
-        mVShadow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeInputView();
-            }
-        });
+        mVShadow.setOnClickListener(v -> closeInputView());
         mIlvComment.setOnSendClickListener(this);
     }
 

@@ -5,11 +5,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -38,31 +40,25 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
 
         // 记录点击过后颜色
         if (AppApplication.sOverRead.contains(position + "")) {
-            title.setTextColor(BaseApplication.getContext().getResources()
-                    .getColor(R.color.normal_for_assist_text));
+            title.setTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
         }
         title.setText(realData.getTitle());
         if (realData.getStorage() == null) {
             imageView.setVisibility(View.GONE);
         } else {
             imageView.setVisibility(View.VISIBLE);
-            AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvert(realData.getStorage().getId() + "", ImageZipConfig.IMAGE_50_ZIP))
-                    .placeholder(R.drawable.shape_default_image)
-                    .errorPic(R.drawable.shape_default_image)
-                    .imagerView(imageView)
-                    .build());
+            Glide.with(BaseApplication.getContext())
+                    .load(ImageUtils.imagePathConvertV2(realData.getStorage().getId(),imageView.getWidth(),imageView.getHeight(),
+                            ImageZipConfig.IMAGE_50_ZIP))
+                    .override(imageView.getWidth(),imageView.getHeight())
+                    .into(imageView);
+
         }
         String from = TextUtils.isEmpty(realData.getFrom()) ? "" : "\b\b\b来自\b" + realData.getFrom();
         holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
                 .getUpdated_at()) + from);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClick(position, imageView, title, realData);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> itemClick(position, imageView, title, realData));
     }
 
     public abstract void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData);

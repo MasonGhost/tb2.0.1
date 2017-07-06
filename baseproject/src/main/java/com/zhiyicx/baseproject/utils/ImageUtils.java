@@ -60,12 +60,27 @@ public class ImageUtils {
         return imagePathConvertV2(url, token);
     }
 
+    /**
+     * 图片地址转换 V2 api
+     * @param url 图片地址
+     * @param token 图片token
+     * @return
+     */
     public static GlideUrl imagePathConvertV2(String url, String token) {
         return new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
                 .build());
     }
 
+    /**
+     *
+     * @param storage 图片资源id
+     * @param w 宽
+     * @param h 高
+     * @param part 压缩比例
+     * @param token token
+     * @return
+     */
     public static GlideUrl imagePathConvertV2(int storage, int w, int h, int part, String token) {
         return new GlideUrl(imagePathConvertV2(storage,w,h,part), new LazyHeaders.Builder()
                 .addHeader("Authorization", token)
