@@ -46,7 +46,7 @@ public class MusicDataConvert implements MusicProviderSource {
         String musicUrl = String.format(ApiConfig.MUSIC_PATH,
                 needData.getStorage());
 
-        String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(),50,50,50));
+        String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(),50,50,100));
         LogUtils.d("buildMusic--needData.getId:::" + needData.getId());
         //noinspection ResourceType
         return new MediaMetadataCompat.Builder()

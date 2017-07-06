@@ -52,7 +52,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                 imageView.setVisibility(View.VISIBLE);
                 Glide.with(BaseApplication.getContext())
                         .load(ImageUtils.imagePathConvertV2(realData.getStorage().getId(),imageView.getWidth(),imageView.getHeight(),
-                                ImageZipConfig.IMAGE_50_ZIP))
+                                ImageZipConfig.IMAGE_80_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .override(imageView.getWidth(),imageView.getHeight())
