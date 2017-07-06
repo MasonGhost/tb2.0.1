@@ -643,6 +643,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 break;
             case PlaybackStateCompat.STATE_ERROR:
                 showSnackErrorMessage(getString(R.string.music_not_found));
+                getActivity().finish();
                 break;
             default:
                 break;
