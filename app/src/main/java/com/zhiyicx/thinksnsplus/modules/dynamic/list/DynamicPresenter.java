@@ -467,12 +467,15 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         params.put("feed_id", dynamicBean.getId());
         // 后台处理
         if (newCollectState) {
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
+            backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_V2_FORMAT,
+                    dynamicBean.getId()));
         } else {
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+            backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_UNCOLLECT_V2_FORMAT,
+                    dynamicBean.getId()));
         }
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT,
-                dynamicBean.getId()));
+
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         EventBus.getDefault().post(dynamicBean, EventBusTagConfig.EVENT_COLLECT_DYNAMIC);
     }
@@ -512,7 +515,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     }
 
     @Override
-    public void payNote(final int dynamicPosition, final int imagePosition, int note,final boolean isImage) {
+    public void payNote(final int dynamicPosition, final int imagePosition, int note, final boolean isImage) {
 //        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
 
 //        double balance = userInfo.getWallet().getBalance();
@@ -539,9 +542,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.hideCenterLoading();
                         mRootView.paySuccess();
-                        if (isImage){
+                        if (isImage) {
                             mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
-                        }else{
+                        } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
                         }
                         mRootView.refreshData(dynamicPosition);

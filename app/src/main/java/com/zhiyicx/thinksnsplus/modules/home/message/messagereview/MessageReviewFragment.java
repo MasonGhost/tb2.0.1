@@ -35,7 +35,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.like);
+        return getString(R.string.review);
     }
 
     @Override

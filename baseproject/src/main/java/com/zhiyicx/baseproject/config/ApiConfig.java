@@ -140,7 +140,7 @@ public class ApiConfig {
     // 根据id获取评论列表
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST_BY_COMMENT_ID = "api/" + API_VERSION + "/feeds/comments";
     // 收藏动态，取消收藏
-    public static final String APP_PATH_HANDLE_COLLECT = "api/" + API_VERSION + "/feeds/{feed_id}/collection";
+    public static final String APP_PATH_HANDLE_COLLECT = "api/" + API_VERSION + "/feeds/{feed_id}/collections";
     public static final String APP_PATH_HANDLE_COLLECT_FORMAT = "api/" + API_VERSION + "/feeds/%s/collection";
     // 增加动态浏览量
     public static final String APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT = "api/" + API_VERSION + "/feeds/{feed_id}/viewcount";
@@ -165,6 +165,15 @@ public class ApiConfig {
     public static final String APP_PATH_REVIEW_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
             "/user/feed-comment-pinneds";
 
+    // 动态评论置顶审核列表 V2
+    public static final String APP_PATH_APPROVED_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
+            "/feeds/{feed_id}/comments/{comment_id}/pinneds/{pinned_id}";
+
+    // 收藏动态，取消收藏 V2
+    public static final String APP_PATH_HANDLE_COLLECT_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/collections";
+    public static final String APP_PATH_HANDLE_COLLECT_V2_FORMAT = "api/" + API_VERSION_2 + "/feeds/%s/collections";
+    public static final String APP_PATH_HANDLE_UNCOLLECT_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/uncollect";
+    public static final String APP_PATH_HANDLE_UNCOLLECT_V2_FORMAT = "api/" + API_VERSION_2 + "/feeds/%s/uncollect";
 
     /**
      * 资讯相关

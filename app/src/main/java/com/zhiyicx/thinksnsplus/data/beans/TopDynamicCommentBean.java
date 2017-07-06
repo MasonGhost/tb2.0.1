@@ -35,7 +35,7 @@ public class TopDynamicCommentBean extends BaseListBean {
      * feed : {"id":1,"content":"动态内容"}
      */
     @Id
-    private int id;
+    private Long id;
     private int amount;
     private int day;
     private int user_id;
@@ -45,14 +45,6 @@ public class TopDynamicCommentBean extends BaseListBean {
     private CommentBean comment;
     @Convert(converter = FeedConvert.class, columnType = String.class)
     private FeedBean feed;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getAmount() {
         return amount;
@@ -276,7 +268,6 @@ public class TopDynamicCommentBean extends BaseListBean {
         };
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -285,7 +276,7 @@ public class TopDynamicCommentBean extends BaseListBean {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeInt(this.id);
+        dest.writeValue(this.id);
         dest.writeInt(this.amount);
         dest.writeInt(this.day);
         dest.writeInt(this.user_id);
@@ -295,12 +286,20 @@ public class TopDynamicCommentBean extends BaseListBean {
         dest.writeParcelable(this.feed, flags);
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public TopDynamicCommentBean() {
     }
 
     protected TopDynamicCommentBean(Parcel in) {
         super(in);
-        this.id = in.readInt();
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.amount = in.readInt();
         this.day = in.readInt();
         this.user_id = in.readInt();
@@ -310,8 +309,8 @@ public class TopDynamicCommentBean extends BaseListBean {
         this.feed = in.readParcelable(FeedBean.class.getClassLoader());
     }
 
-    @Generated(hash = 1502092136)
-    public TopDynamicCommentBean(int id, int amount, int day, int user_id, String expires_at,
+    @Generated(hash = 1519258651)
+    public TopDynamicCommentBean(Long id, int amount, int day, int user_id, String expires_at,
             String created_at, CommentBean comment, FeedBean feed) {
         this.id = id;
         this.amount = amount;
@@ -323,8 +322,7 @@ public class TopDynamicCommentBean extends BaseListBean {
         this.feed = feed;
     }
 
-    public static final Creator<TopDynamicCommentBean> CREATOR = new
-            Creator<TopDynamicCommentBean>() {
+    public static final Creator<TopDynamicCommentBean> CREATOR = new Creator<TopDynamicCommentBean>() {
         @Override
         public TopDynamicCommentBean createFromParcel(Parcel source) {
             return new TopDynamicCommentBean(source);

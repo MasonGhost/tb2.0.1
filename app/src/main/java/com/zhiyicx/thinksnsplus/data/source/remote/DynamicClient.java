@@ -191,7 +191,7 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_DYNAMIC)
-    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id,@Field("amount") int amount,@Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id, @Field("amount") int amount, @Field("day") int day);
 
 
     /**
@@ -202,7 +202,7 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id,@Path("comment_id") Long comment_id,@Field("amount") int amount,@Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id, @Path("comment_id") Long comment_id, @Field("amount") int amount, @Field("day") int day);
 
     /**
      * 获取动态评论置顶审核列表 V2
@@ -212,4 +212,13 @@ public interface DynamicClient {
     @GET(ApiConfig.APP_PATH_REVIEW_DYNAMIC_COMMENT)
     Observable<List<TopDynamicCommentBean>> getReviewComment(@Query("after") int after, @Query("limit")
             int limit);
+
+    /**
+     * 动态评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @PATCH(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2> approvedTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
+            int comment_id, @Path("pinned_id") int pinned_id);
 }

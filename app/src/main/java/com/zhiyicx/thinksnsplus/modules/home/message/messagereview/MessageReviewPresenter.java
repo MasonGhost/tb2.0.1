@@ -1,9 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicCommentBeanGreenDaoImpl;
 
@@ -75,5 +75,26 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         }
         mTopDynamicCommentBeanGreenDao.saveMultiData(data);
         return true;
+    }
+
+    @Override
+    public void approvedTopComment(Long feed_id, int comment_id, int pinned_id) {
+        Subscription subscription = mRepository.approvedTopComment(feed_id, comment_id, pinned_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+            @Override
+            protected void onSuccess(BaseJsonV2 data) {
+
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+            }
+        });
+        addSubscrebe(subscription);
     }
 }

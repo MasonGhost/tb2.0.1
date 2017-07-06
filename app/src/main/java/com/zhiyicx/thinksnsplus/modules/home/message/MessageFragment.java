@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -200,6 +201,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     });
 
             review = headerview.findViewById(R.id.rl_review);
+            RxView.clicks(review)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        toReviewList();
+                        mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_REVIEWS);
+                        mPresenter.updateReviewItemData().setUnReadMessageNums(0);
+                        updateCommnetItemData(mPresenter.updateReviewItemData());
+                    });
 
             tvHeaderCommentContent = (TextView) headerview.findViewById(R.id
                     .tv_header_comment_content);
@@ -260,6 +269,11 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
     private void toLikeList() {
         Intent to = new Intent(getActivity(), MessageLikeActivity.class);
+        startActivity(to);
+    }
+
+    private void toReviewList(){
+        Intent to = new Intent(getActivity(), MessageReviewActivity.class);
         startActivity(to);
     }
 

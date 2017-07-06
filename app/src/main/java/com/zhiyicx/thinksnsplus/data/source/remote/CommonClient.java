@@ -292,6 +292,10 @@ public interface CommonClient {
     @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK, hasBody = true)
     Observable<BaseJson<CacheBean>> handleBackGroudTaskDelete(@Path("path") String path, @Body RequestBody requestBody);
 
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK, hasBody = true)
+    Observable<BaseJsonV2<CacheBean>> handleBackGroudTaskDeleteV2(@Path("path") String path, @Body RequestBody requestBody);
+
 
     /**
      * rap接口，用来测试token过期,当前返回token过期

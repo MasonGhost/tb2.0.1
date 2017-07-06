@@ -211,7 +211,7 @@
             android:paddingLeft="@dimen/spacing_mid"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"
-            android:text="@string/liked"/>
+            android:text="@string/review"/>
         <TextView
             android:id="@+id/tv_header_review_time"
             android:layout_width="wrap_content"

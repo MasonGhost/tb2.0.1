@@ -334,6 +334,8 @@
         </activity>
         <activity android:name=".modules.feedback.FeedBackActivity">
         </activity>
+        <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
+        </activity>
     </application>
 
 </manifest>

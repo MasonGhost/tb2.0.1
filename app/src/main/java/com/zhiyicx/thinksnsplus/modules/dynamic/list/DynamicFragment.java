@@ -709,7 +709,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item2Str(getString(feedIdIsNull ? R.string.empty :
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
-                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)
+//                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)// 付费评论功能 移除
                 .item4Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_dynamic) : null)
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
