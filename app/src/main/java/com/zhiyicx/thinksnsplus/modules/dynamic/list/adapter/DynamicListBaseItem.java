@@ -3,28 +3,21 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
-import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -41,8 +34,6 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -175,7 +166,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     .placeholder(R.mipmap.pic_default_portrait1)
                     .transformation(new GlideCircleTransform(mContext))
                     .errorPic(R.mipmap.pic_default_portrait1)
-                    .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                    .imagerView( holder.getView(R.id.iv_headpic))
                     .build());
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
@@ -184,7 +175,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             String content = dynamicBean.getFeed_content();
             TextView contentView = holder.getView(R.id.tv_content);
-            try { // 置顶标识
+            try { // 置顶标识 ,防止没有置顶布局错误
                 TextView topFlagView = holder.getView(R.id.tv_top_flag);
                 topFlagView.setVisibility(View.GONE);
             } catch (Exception e) {
@@ -197,10 +188,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
                 TextViewUtils.newInstance(contentView, content)
-                        .setSpanTextColor(BaseApplication.getContext().getResources().getColor(R
+                        .spanTextColor(SkinUtils.getColor(R
                                 .color.normal_for_assist_text))
-                        .setPosition(0, content.length())
-                        .disPlayText(true);
+                        .position(0, 50)
+                        .maxLines(contentView.getResources().getInteger(R.integer.dynamic_list_content_show_lines))
+                        .disPlayText(false)
+                        .build();
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
@@ -222,12 +215,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 // 控制更多按钮的显示隐藏
                 dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
                 // 设置工具栏的点击事件
-                dynamicListMenuView.setItemOnClick(new DynamicListMenuView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(ViewGroup parent, View v, int menuPostion) {
-                        if (mOnMenuItemClickLisitener != null) {
-                            mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
-                        }
+                dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
+                    if (mOnMenuItemClickLisitener != null) {
+                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
                     }
                 });
             }
@@ -242,12 +232,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 }
                 RxView.clicks(holder.getView(R.id.fl_tip))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(new Action1<Void>() {
-                            @Override
-                            public void call(Void aVoid) {
-                                if (mOnReSendClickListener != null) {
-                                    mOnReSendClickListener.onReSendClick(position);
-                                }
+                        .subscribe(aVoid -> {
+                            if (mOnReSendClickListener != null) {
+                                mOnReSendClickListener.onReSendClick(position);
                             }
                         });
             }
@@ -275,12 +262,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnUserInfoClickListener != null) {
-                            mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnUserInfoClickListener != null) {
+                        mOnUserInfoClickListener.onUserInfoClick(dynamicBean.getUserInfoBean());
                     }
                 });
     }
@@ -325,12 +309,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnImageClickListener != null) {
+                        mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
                     }
                 });
 

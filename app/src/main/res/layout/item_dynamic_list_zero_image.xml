@@ -84,6 +84,7 @@
         android:ellipsize="end"
         android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:maxLines="@integer/dynamic_list_content_show_lines"
+        android:singleLine="false"
         android:paddingBottom="@dimen/dynamic_image_padding_bottom"
         android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/normal_for_dynamic_list_content"
