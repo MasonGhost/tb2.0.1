@@ -1,21 +1,16 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Author Jliuer
@@ -81,77 +76,6 @@ public class MusicAlbumDetailsBean implements Serializable {
 
     @Generated(hash = 1417869479)
     public MusicAlbumDetailsBean() {
-    }
-
-    public static class StorageBean implements Parcelable, Serializable {
-        @Transient
-        private static final long serialVersionUID = 1L;
-        /**
-         * id : 5
-         * image_width : 1080
-         * image_height : 1800
-         */
-
-        private int id;
-        private int image_width;
-        private int image_height;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getImage_width() {
-            return image_width;
-        }
-
-        public void setImage_width(int image_width) {
-            this.image_width = image_width;
-        }
-
-        public int getImage_height() {
-            return image_height;
-        }
-
-        public void setImage_height(int image_height) {
-            this.image_height = image_height;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeInt(this.image_width);
-            dest.writeInt(this.image_height);
-        }
-
-        public StorageBean() {
-        }
-
-        protected StorageBean(Parcel in) {
-            this.id = in.readInt();
-            this.image_width = in.readInt();
-            this.image_height = in.readInt();
-        }
-
-        public static final Creator<MusicAlbumListBean.StorageBean> CREATOR = new Creator<MusicAlbumListBean.StorageBean>() {
-            @Override
-            public MusicAlbumListBean.StorageBean createFromParcel(Parcel source) {
-                return new MusicAlbumListBean.StorageBean(source);
-            }
-
-            @Override
-            public MusicAlbumListBean.StorageBean[] newArray(int size) {
-                return new MusicAlbumListBean.StorageBean[size];
-            }
-        };
     }
 
     public String getIntro() {

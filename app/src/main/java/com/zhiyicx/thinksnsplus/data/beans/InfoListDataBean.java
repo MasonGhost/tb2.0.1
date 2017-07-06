@@ -1,21 +1,19 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
-
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class InfoListDataBean extends BaseListBean implements Serializable {
@@ -94,77 +92,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.storage = storage;
     }
 
-    public static class StorageBean implements Parcelable, Serializable {
-        @Transient
-        private static final long serialVersionUID = 1L;
-        /**
-         * id : 1
-         * image_width : null
-         * image_height : null
-         */
-
-        private int id;
-        private int image_width;
-        private int image_height;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getImage_width() {
-            return image_width;
-        }
-
-        public void setImage_width(int image_width) {
-            this.image_width = image_width;
-        }
-
-        public int getImage_height() {
-            return image_height;
-        }
-
-        public void setImage_height(int image_height) {
-            this.image_height = image_height;
-        }
-
-        public StorageBean() {
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeInt(this.image_width);
-            dest.writeInt(this.image_height);
-        }
-
-        protected StorageBean(Parcel in) {
-            this.id = in.readInt();
-            this.image_width = in.readInt();
-            this.image_height = in.readInt();
-        }
-
-        public static final Creator<StorageBean> CREATOR = new Creator<StorageBean>() {
-            @Override
-            public StorageBean createFromParcel(Parcel source) {
-                return new StorageBean(source);
-            }
-
-            @Override
-            public StorageBean[] newArray(int size) {
-                return new StorageBean[size];
-            }
-        };
-    }
-
     public InfoListDataBean() {
     }
 
@@ -203,10 +130,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     }
 
 
-
     @Generated(hash = 1322048907)
     public InfoListDataBean(Long _id, int id, Long info_type, int is_collection_news, int is_digg_news,
-            String title, String from, String updated_at, StorageBean storage) {
+                            String title, String from, String updated_at, StorageBean storage) {
         this._id = _id;
         this.id = id;
         this.info_type = info_type;
@@ -261,11 +187,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     }
 
 
-
     public Long getInfo_type() {
         return this.info_type;
     }
-
 
 
     public void setInfo_type(Long info_type) {
