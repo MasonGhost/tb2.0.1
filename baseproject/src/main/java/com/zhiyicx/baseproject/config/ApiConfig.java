@@ -48,7 +48,7 @@ public class ApiConfig {
     public static final String IMAGE_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
 
     // 音乐地址 V2
-    public static final String MUSIC_PATH = APP_DOMAIN + "api/" + API_VERSION_2 + "/storages/%s";
+    public static final String MUSIC_PATH = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s";
 
     /*******************************************  接口 Path  *********************************************/
 
