@@ -405,7 +405,7 @@ public class MusicAlbumDetailsBean implements Serializable {
                 private String created_at;
                 private String updated_at;
                 private String name;
-                private CoverBean cover;
+                private StorageBean cover;
 
                 public int getId() {
                     return id;
@@ -439,49 +439,12 @@ public class MusicAlbumDetailsBean implements Serializable {
                     this.name = name;
                 }
 
-                public CoverBean getCover() {
+                public StorageBean getCover() {
                     return cover;
                 }
 
-                public void setCover(CoverBean cover) {
+                public void setCover(StorageBean cover) {
                     this.cover = cover;
-                }
-
-                public static class CoverBean implements Serializable {
-                    private static final long serialVersionUID = 1L;
-                    /**
-                     * id : 2
-                     * image_width : 3264
-                     * image_height : 2448
-                     */
-
-                    private int id;
-                    private int image_width;
-                    private int image_height;
-
-                    public int getId() {
-                        return id;
-                    }
-
-                    public void setId(int id) {
-                        this.id = id;
-                    }
-
-                    public int getImage_width() {
-                        return image_width;
-                    }
-
-                    public void setImage_width(int image_width) {
-                        this.image_width = image_width;
-                    }
-
-                    public int getImage_height() {
-                        return image_height;
-                    }
-
-                    public void setImage_height(int image_height) {
-                        this.image_height = image_height;
-                    }
                 }
             }
         }

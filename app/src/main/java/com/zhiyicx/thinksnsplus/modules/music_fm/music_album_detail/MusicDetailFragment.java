@@ -556,9 +556,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     private void initHeadInfo(MusicAlbumListBean albumListBean) {
-
+        int imageSize = getResources().getDimensionPixelSize(R.dimen.music_album_detail_head);
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvert(albumListBean.getStorage().getId() + "",
+                .load(ImageUtils.imagePathConvertV2(albumListBean.getStorage().getId(), imageSize, imageSize,
                         ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(getActivity(), 5))
@@ -613,8 +613,10 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 headerInfo.setId(mMusicAlbumListBean.getId());
                 headerInfo.setTitle(mMusicAlbumListBean.getTitle());
                 headerInfo.setLitenerCount(mMusicAlbumListBean.getTaste_count() + "");
-                headerInfo.setImageUrl(ImageUtils.imagePathConvert(mMusicAlbumListBean.getStorage().getId() + "",
-                        ImageZipConfig.IMAGE_70_ZIP));
+                headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mMusicAlbumListBean.getStorage().getId()
+                        , mMusicAlbumListBean.getStorage().getWidth()
+                        , mMusicAlbumListBean.getStorage().getHeight()
+                        , ImageZipConfig.IMAGE_70_ZIP));
                 musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
                 intent.putExtra(CURRENT_COMMENT, musicBundle);
                 startActivity(intent);
