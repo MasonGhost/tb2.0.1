@@ -97,4 +97,46 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         });
         addSubscrebe(subscription);
     }
+
+    @Override
+    public void refuseTopComment(int pinned_id) {
+        Subscription subscription = mRepository.refuseTopComment(pinned_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+            @Override
+            protected void onSuccess(BaseJsonV2 data) {
+
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+            }
+        });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void deleteTopComment(Long feed_id, int comment_id) {
+        Subscription subscription = mRepository.deleteTopComment(feed_id, comment_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+            @Override
+            protected void onSuccess(BaseJsonV2 data) {
+
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+            }
+        });
+        addSubscrebe(subscription);
+    }
 }

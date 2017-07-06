@@ -141,8 +141,34 @@ public class MusicAlbumListBean extends BaseListBean implements Serializable {
          */
 
         private int id;
+        private String size;
         private int image_width;
         private int image_height;
+
+        public void setSize(String size) {
+            this.size = size;
+            if (size != null && size.length() > 0) {
+                String[] sizes = size.split("x");
+                this.image_width = Integer.parseInt(sizes[0]);
+                this.image_height = Integer.parseInt(sizes[1]);
+            }
+        }
+
+        public int getWidth() {
+            if (size != null && size.length() > 0) {
+                String[] sizes = size.split("x");
+                return Integer.parseInt(sizes[0]);
+            }
+            return 100;
+        }
+
+        public int getHeight() {
+            if (size != null && size.length() > 0) {
+                String[] sizes = size.split("x");
+                return Integer.parseInt(sizes[1]);
+            }
+            return 100;
+        }
 
         public int getId() {
             return id;

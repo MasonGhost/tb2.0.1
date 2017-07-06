@@ -26,11 +26,15 @@ public interface MessageReviewContract {
     interface Repository {
         Observable<List<TopDynamicCommentBean>> getReviewComment(int after);
         Observable<BaseJsonV2> approvedTopComment(Long feed_id,int comment_id,int pinned_id);
+        Observable<BaseJsonV2> refuseTopComment(int pinned_id);
+        Observable<BaseJsonV2> deleteTopComment(Long feed_id,int comment_id);
 
     }
 
     interface Presenter extends ITSListPresenter<TopDynamicCommentBean> {
         void approvedTopComment(Long feed_id,int comment_id,int pinned_id);
+        void refuseTopComment(int pinned_id);
+        void deleteTopComment(Long feed_id,int comment_id);
     }
 
 }

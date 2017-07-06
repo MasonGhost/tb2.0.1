@@ -221,4 +221,21 @@ public interface DynamicClient {
     @PATCH(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
     Observable<BaseJsonV2> approvedTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
             int comment_id, @Path("pinned_id") int pinned_id);
+
+    /**
+     * 动态评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2> refuseTopComment(int pinned_id);
+
+    /**
+     * 动态评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2> deleteTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
+            int comment_id);
 }

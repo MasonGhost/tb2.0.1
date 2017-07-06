@@ -165,9 +165,17 @@ public class ApiConfig {
     public static final String APP_PATH_REVIEW_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
             "/user/feed-comment-pinneds";
 
-    // 动态评论置顶审核列表 V2
+    // 同意动态评论置顶 V2
     public static final String APP_PATH_APPROVED_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
             "/feeds/{feed_id}/comments/{comment_id}/pinneds/{pinned_id}";
+
+    // 拒绝动态评论置顶 V2
+    public static final String APP_PATH_REFUSE_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
+            "/user/feed-comment-pinneds/{pinned_id}";
+
+    // 删除动态评论置顶 V2
+    public static final String APP_PATH_DELETE_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +
+            "/feeds/{feed_id}/comments/{comment_id}/unpinned";
 
     // 收藏动态，取消收藏 V2
     public static final String APP_PATH_HANDLE_COLLECT_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/collections";

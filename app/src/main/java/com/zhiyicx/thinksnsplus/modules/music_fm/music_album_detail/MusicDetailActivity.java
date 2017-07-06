@@ -33,7 +33,7 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
 
     private MediaBrowserCompat mMediaBrowserCompat;
 
-    private MusicPlayBackFragment mPlayBackFragment;
+//    private MusicPlayBackFragment mPlayBackFragment;
 
     public static final String EXTRA_START_FULLSCREEN =
             "com.zhiyicx.thinksnsplus.EXTRA_START_FULLSCREEN";
@@ -71,12 +71,12 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     @Override
     protected void onStart() {
         super.onStart();
-        mPlayBackFragment = (MusicPlayBackFragment) getSupportFragmentManager().findFragmentById
-                (R.id.fragment_playback_controls);
-        if (mPlayBackFragment == null) {
-            throw new IllegalStateException("Mising fragment with id 'controls'. Cannot continue.");
-        }
-        hidePlaybackControls();
+//        mPlayBackFragment = (MusicPlayBackFragment) getSupportFragmentManager().findFragmentById
+//                (R.id.fragment_playback_controls);
+//        if (mPlayBackFragment == null) {
+//            throw new IllegalStateException("Mising fragment with id 'controls'. Cannot continue.");
+//        }
+//        hidePlaybackControls();
         mMediaBrowserCompat.connect();
     }
 
@@ -158,9 +158,9 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     }
 
     protected void hidePlaybackControls() {
-        getSupportFragmentManager().beginTransaction()
-                .hide(mPlayBackFragment)
-                .commit();
+//        getSupportFragmentManager().beginTransaction()
+//                .hide(mPlayBackFragment)
+//                .commit();
     }
 
     protected boolean shouldShowControls() {
@@ -189,9 +189,9 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
         } else {
             hidePlaybackControls();
         }
-        if (mPlayBackFragment != null) {
-            mPlayBackFragment.onConnected();
-        }
+//        if (mPlayBackFragment != null) {
+//            mPlayBackFragment.onConnected();
+//        }
         onMediaControllerConnected();
     }
 

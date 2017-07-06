@@ -45,4 +45,14 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Observable<BaseJsonV2> refuseTopComment(int pinned_id) {
+        return null;
+    }
+
+    @Override
+    public Observable<BaseJsonV2> deleteTopComment(Long feed_id, int comment_id) {
+        return null;
+    }
 }
