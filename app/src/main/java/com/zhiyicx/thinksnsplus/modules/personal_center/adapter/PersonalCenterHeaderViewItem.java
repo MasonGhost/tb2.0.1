@@ -25,6 +25,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -36,6 +37,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @author LiuChao
@@ -216,9 +219,16 @@ public class PersonalCenterHeaderViewItem {
     }
 
     public void initHeaderViewData(final UserInfoBean userInfoBean) {
+        int storegeId = DEFAULT_IMAGE_ID;
+        if (userInfoBean != null && !TextUtils.isEmpty(userInfoBean.getAvatar())) {
+            storegeId = Integer.parseInt(userInfoBean.getAvatar());
+        }
         // 显示头像
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_70_ZIP))
+                .url(ImageUtils.imagePathConvertV2(storegeId
+                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , ImageZipConfig.IMAGE_70_ZIP))
                 .placeholder(R.mipmap.pic_default_portrait2)
                 .errorPic(R.mipmap.pic_default_portrait2)
                 .imagerView(iv_head_icon)
@@ -393,7 +403,10 @@ public class PersonalCenterHeaderViewItem {
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
                 .placeholder(R.mipmap.default_pic_personal)
                 .errorPic(R.mipmap.default_pic_personal)
-                .url(ImageUtils.imagePathConvert(coverImage, 100))// 显示原图
+                .url(ImageUtils.imagePathConvertV2(Integer.parseInt(coverImage)
+                        , DeviceUtils.getScreenWidth(mActivity)
+                        , iv_background_cover.getHeight()
+                        , ImageZipConfig.IMAGE_100_ZIP))// 显示原图
                 .imagerView(iv_background_cover)
                 .build());
     }

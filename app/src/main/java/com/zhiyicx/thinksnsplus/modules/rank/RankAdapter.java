@@ -24,8 +24,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.functions.Action1;
-
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -90,7 +89,7 @@ public class RankAdapter extends CommonAdapter<DigRankBean> {
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
-        holder.setText(R.id.tv_rank, (position+1)+"");
+        holder.setText(R.id.tv_rank, (position + 1) + "");
         // 修改点赞数量颜色
         String digCountString = digRankBean.getValue();
         // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常
@@ -107,8 +106,15 @@ public class RankAdapter extends CommonAdapter<DigRankBean> {
         // 头像加载
         ImageView headPic = holder.getView(R.id.iv_headpic);
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        int storegeId = DEFAULT_IMAGE_ID;
+        if (userInfoBean != null && !TextUtils.isEmpty(userInfoBean.getAvatar())) {
+            storegeId = Integer.parseInt(userInfoBean.getAvatar());
+        }
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                .url(ImageUtils.imagePathConvertV2(storegeId
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                        , ImageZipConfig.IMAGE_38_ZIP))
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .transformation(new GlideCircleTransform(getContext()))
@@ -119,12 +125,7 @@ public class RankAdapter extends CommonAdapter<DigRankBean> {
         // 添加点击事件
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter(getContext(), userInfoBean);
-                    }
-                });
+                .subscribe(aVoid -> toUserCenter(getContext(), userInfoBean));
 
     }
 

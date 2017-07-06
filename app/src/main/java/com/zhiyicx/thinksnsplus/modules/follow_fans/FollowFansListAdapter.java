@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -106,7 +107,7 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
          * 如果关注粉丝列表中出现了自己，需要隐藏关注按钮
          */
         holder.getView(R.id.iv_user_follow).setVisibility(
-                userInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()? View.GONE:View.VISIBLE);
+                userInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id() ? View.GONE : View.VISIBLE);
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
@@ -126,8 +127,15 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
         // 头像加载
         ImageView headPic = holder.getView(R.id.iv_headpic);
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        int storegeId = DEFAULT_IMAGE_ID;
+        if (userInfoBean != null && !TextUtils.isEmpty(userInfoBean.getAvatar())) {
+            storegeId = Integer.parseInt(userInfoBean.getAvatar());
+        }
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                .url(ImageUtils.imagePathConvertV2(storegeId
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , ImageZipConfig.IMAGE_38_ZIP))
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .transformation(new GlideCircleTransform(getContext()))

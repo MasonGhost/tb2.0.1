@@ -1,68 +1,36 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.shapes.RoundRectShape;
-import android.graphics.drawable.shapes.Shape;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
-import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FastBlur;
-import com.zhiyicx.common.utils.StatusBarUtils;
-import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
-import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenter;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.widget.ColorFilterTextView;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
-
-import static com.zhiyicx.thinksnsplus.R.id.fl_cover_contaner;
 
 /**
  * @author LiuChao
@@ -272,8 +240,10 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         // 图片边框宽度2dp
         int strokeWidth = ConvertUtils.dp2px(mActivity, 2);
         Glide.with(mActivity)
-                .load(ImageUtils.imagePathConvert(channelCoverBean.getId() + "",
-                        ImageZipConfig.IMAGE_70_ZIP))
+                .load(ImageUtils.imagePathConvertV2(channelCoverBean.getId()
+                        ,mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        ,mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        ,ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(mActivity, strokeWidth))
                 .placeholder(R.drawable.shape_default_image)

@@ -35,6 +35,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -159,14 +160,20 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
         try {
-            String userIconUrl = ImageUtils.imagePathConvert(dynamicBean.getUserInfoBean
-                    ().getAvatar(), ImageZipConfig.IMAGE_38_ZIP);
+            int storegeId = DEFAULT_IMAGE_ID;
+            if (dynamicBean != null && dynamicBean.getUserInfoBean() != null && !TextUtils.isEmpty(dynamicBean.getUserInfoBean().getAvatar())) {
+                storegeId = Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar());
+            }
+            String userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_38_ZIP);
             mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                     .url(userIconUrl)
                     .placeholder(R.mipmap.pic_default_portrait1)
                     .transformation(new GlideCircleTransform(mContext))
                     .errorPic(R.mipmap.pic_default_portrait1)
-                    .imagerView( holder.getView(R.id.iv_headpic))
+                    .imagerView(holder.getView(R.id.iv_headpic))
                     .build());
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
@@ -287,7 +294,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                 Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
                 Glide.with(mContext)
-                        .load(ImageUtils.imagePathConvertV2(canLook,imageBean.getFile(), w, h, propPart, AppApplication.getTOKEN()))
+                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h, propPart, AppApplication.getTOKEN()))
                         .override(w, h)
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)

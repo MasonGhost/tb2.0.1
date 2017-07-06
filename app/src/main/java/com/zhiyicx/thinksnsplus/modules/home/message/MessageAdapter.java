@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -83,8 +84,15 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
 
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
+                int storegeId = DEFAULT_IMAGE_ID;
+                if (messageItemBean.getUserInfo() != null && !TextUtils.isEmpty(messageItemBean.getUserInfo().getAvatar())) {
+                    storegeId = Integer.parseInt(messageItemBean.getUserInfo().getAvatar());
+                }
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvert(messageItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                        .url(ImageUtils.imagePathConvertV2(storegeId
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                                , ImageZipConfig.IMAGE_38_ZIP))
                         .transformation(new GlideCircleTransform(mContext))
                         .errorPic(R.mipmap.pic_default_portrait1)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic))

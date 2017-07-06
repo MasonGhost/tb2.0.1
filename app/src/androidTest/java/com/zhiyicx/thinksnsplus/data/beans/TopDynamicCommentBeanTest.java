@@ -2,9 +2,6 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBeanDao;
-
 public class TopDynamicCommentBeanTest extends AbstractDaoTestLongPk<TopDynamicCommentBeanDao, TopDynamicCommentBean> {
 
     public TopDynamicCommentBeanTest() {
@@ -15,10 +12,10 @@ public class TopDynamicCommentBeanTest extends AbstractDaoTestLongPk<TopDynamicC
     protected TopDynamicCommentBean createEntity(Long key) {
         TopDynamicCommentBean entity = new TopDynamicCommentBean();
         entity.setId(key);
-        entity.setId();
-        entity.setAmount();
-        entity.setDay();
-        entity.setUser_id();
+        entity.setId(12l);
+        entity.setAmount(12);
+        entity.setDay(12);
+        entity.setUser_id(123);
         return entity;
     }
 

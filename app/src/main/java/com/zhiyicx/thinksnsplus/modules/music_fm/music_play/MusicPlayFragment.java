@@ -868,24 +868,24 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     // 音乐磁盘适配器
     @NonNull
     private CommonAdapter getMediaListAdapter() {
-        final int imageSize =getResources().getDimensionPixelSize(R.dimen.music_play_head);
-                mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(),
-                        R.layout.item_music_play, mMusicList) {
-                    @Override
-                    protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean o, final
-                    int position) {
-                        ImageView image = holder.getView(R.id.fragment_music_paly_img);
-                        String imageUrl = ImageUtils.imagePathConvertV2(
-                                o.getMusic_info().getSinger().getCover().getId(), imageSize,imageSize ,ImageZipConfig.IMAGE_70_ZIP );
+        final int imageSize = getResources().getDimensionPixelSize(R.dimen.music_play_head);
+        mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(),
+                R.layout.item_music_play, mMusicList) {
+            @Override
+            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean o, final
+            int position) {
+                ImageView image = holder.getView(R.id.fragment_music_paly_img);
+                String imageUrl = ImageUtils.imagePathConvertV2(
+                        o.getMusic_info().getSinger().getCover().getId(), imageSize, imageSize, ImageZipConfig.IMAGE_70_ZIP);
 
-                        mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                                .imagerView(image)
-                                .errorPic(R.drawable.shape_default_image)
-                                .placeholder(R.drawable.shape_default_image)
-                                .url(imageUrl)
-                                .build());
-                    }
-                };
+                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
+                        .imagerView(image)
+                        .errorPic(R.drawable.shape_default_image)
+                        .placeholder(R.drawable.shape_default_image)
+                        .url(imageUrl)
+                        .build());
+            }
+        };
         mAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -948,9 +948,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 headerInfo.setId(mCurrentMusic.getMusic_id());
                 headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
                 headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
-                headerInfo.setImageUrl(ImageUtils.imagePathConvert(mCurrentMusic.getMusic_info()
-                                .getSinger().getCover().getId() + "",
-                        ImageZipConfig.IMAGE_70_ZIP));
+                headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mCurrentMusic.getMusic_info()
+                                .getSinger().getCover().getId()
+                        , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , ImageZipConfig.IMAGE_70_ZIP));
                 musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
                 musicBundle.putString(CURRENT_COMMENT_TYPE, CURRENT_COMMENT_TYPE_MUSIC);
                 intent.putExtra(CURRENT_COMMENT, musicBundle);

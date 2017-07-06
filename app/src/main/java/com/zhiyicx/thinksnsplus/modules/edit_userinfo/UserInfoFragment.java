@@ -52,10 +52,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @author LiuChao
@@ -419,8 +420,15 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         // 设置头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        int storegeId = DEFAULT_IMAGE_ID;
+        if (mUserInfoBean != null && !TextUtils.isEmpty(mUserInfoBean.getAvatar())) {
+            storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
+        }
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                .url(ImageUtils.imagePathConvertV2(storegeId
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , ImageZipConfig.IMAGE_38_ZIP))
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .imagerView(mIvHeadIcon)

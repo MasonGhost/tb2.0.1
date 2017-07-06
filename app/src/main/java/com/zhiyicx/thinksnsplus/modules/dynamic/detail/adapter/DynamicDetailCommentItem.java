@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -29,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.functions.Action1;
+
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @Describe
@@ -73,24 +74,30 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
             @Override
             public void onClick(View v) {
                 LogUtils.d("-----dy------onClick----------------");
-                if(mOnCommentTextClickListener!=null){
+                if (mOnCommentTextClickListener != null) {
                     mOnCommentTextClickListener.onCommentTextClick(position);
                 }
             }
         });
         List<Link> links = setLiknks(holder, dynamicCommentBean, position);
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content),links);
+            ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content), links);
         }
-
+        int storegeId = DEFAULT_IMAGE_ID;
+        if (dynamicCommentBean != null && dynamicCommentBean.getCommentUser() != null && !TextUtils.isEmpty(dynamicCommentBean.getCommentUser().getAvatar())) {
+            storegeId = Integer.parseInt(dynamicCommentBean.getCommentUser().getAvatar());
+        }
         AppApplication.AppComponentHolder.getAppComponent()
                 .imageLoader()
                 .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvert(dynamicCommentBean.getCommentUser().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
+                        .url(ImageUtils.imagePathConvertV2(storegeId
+                                , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                                , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                                , ImageZipConfig.IMAGE_26_ZIP))
                         .placeholder(R.mipmap.pic_default_portrait1)
                         .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
                         .errorPic(R.mipmap.pic_default_portrait1)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                        .imagerView(holder.getView(R.id.iv_headpic))
                         .build()
                 );
         setUserInfoClick(holder.getView(R.id.tv_name), dynamicCommentBean.getCommentUser());
@@ -114,7 +121,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
 
     protected List<Link> setLiknks(ViewHolder holder, final DynamicCommentBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (dynamicCommentBean.getReplyUser() != null &&  dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser().getName() != null) {
+        if (dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser().getName() != null) {
             Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
                     .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
