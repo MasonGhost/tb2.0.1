@@ -33,7 +33,7 @@ public class TopDynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<TopDynami
 
     @Override
     public void saveMultiData(List<TopDynamicCommentBean> multiData) {
-
+        mTopDynamicCommentBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override
@@ -43,27 +43,27 @@ public class TopDynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<TopDynami
 
     @Override
     public TopDynamicCommentBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        return mTopDynamicCommentBeanDao.load(primaryKey);
     }
 
     @Override
     public List<TopDynamicCommentBean> getMultiDataFromCache() {
-        return null;
+        return mTopDynamicCommentBeanDao.loadAll();
     }
 
     @Override
     public void clearTable() {
-
+        mTopDynamicCommentBeanDao.deleteAll();
     }
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        mTopDynamicCommentBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(TopDynamicCommentBean dta) {
-
+        mTopDynamicCommentBeanDao.delete(dta);
     }
 
     @Override
@@ -73,6 +73,6 @@ public class TopDynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<TopDynami
 
     @Override
     public long insertOrReplace(TopDynamicCommentBean newData) {
-        return 0;
+        return mTopDynamicCommentBeanDao.insertOrReplace(newData);
     }
 }

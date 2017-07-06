@@ -332,6 +332,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
+            imageBean.setUser_id(dynamicBean.getUser_id());
             imageBean.setFeed_id(dynamicBean.getId());
             imageBean.setWidth(task.getWidth());
             imageBean.setHeight(task.getHeight());
@@ -766,21 +767,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendDynamicPopWindow.hide();
-                        mListDatas.get(position).setState(DynamicBean.SEND_ING);
-                        refreshData();
-                        mPresenter.reSendDynamic(position);
-                    }
+                .item1ClickListener(() -> {
+                    mReSendDynamicPopWindow.hide();
+                    mListDatas.get(position).setState(DynamicBean.SEND_ING);
+                    refreshData();
+                    mPresenter.reSendDynamic(position);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendDynamicPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mReSendDynamicPopWindow.hide())
                 .build();
     }
 
@@ -901,20 +894,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendCommentPopWindow.hide();
-                        mPresenter.reSendComment(commentBean, feed_id);
-                        showBottomView(true);
-                    }
+                .item1ClickListener(() -> {
+                    mReSendCommentPopWindow.hide();
+                    mPresenter.reSendComment(commentBean, feed_id);
+                    showBottomView(true);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendCommentPopWindow.hide();
-                        showBottomView(true);
-                    }
+                .bottomClickListener(() -> {
+                    mReSendCommentPopWindow.hide();
+                    showBottomView(true);
                 })
                 .build();
     }

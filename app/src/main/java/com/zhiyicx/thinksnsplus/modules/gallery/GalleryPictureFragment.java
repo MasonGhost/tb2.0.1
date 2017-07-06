@@ -143,13 +143,8 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
         RxView.clicks(mTvOriginPhoto)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        loadOriginImage(mImageBean);
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> loadOriginImage(mImageBean));
     }
 
     @Override
@@ -224,24 +219,16 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .isOutsideTouch(true)
                     .isFocus(true)
                     .with((Activity) context)
-                    .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                        @Override
-                        public void onItemClicked() {
-                            mActionPopupWindow.hide();
-                            if (mImageBean.getToll().getToll_type_string().equals(Toll.DOWNLOAD_TOLL_TYPE)) {
-                                initCenterPopWindow(R.string.buy_pay_downlaod_desc);
-                                return;
-                            }
-
-                            saveImage();
+                    .item1ClickListener(() -> {
+                        mActionPopupWindow.hide();
+                        if (mImageBean.getToll().getToll_type_string().equals(Toll.DOWNLOAD_TOLL_TYPE)
+                                && !mImageBean.getToll().getPaid()) {
+                            initCenterPopWindow(R.string.buy_pay_downlaod_desc);
+                            return;
                         }
+                        saveImage();
                     })
-                    .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                        @Override
-                        public void onItemClicked() {
-                            mActionPopupWindow.hide();
-                        }
-                    })
+                    .bottomClickListener(() -> mActionPopupWindow.hide())
                     .build();
         }
 
@@ -286,15 +273,15 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
 
     public void saveImage() {
         // 通过GLide获取bitmap,有缓存读缓存
-        GlideUrl glideUrl=ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(),(int)mImageBean.getWidth(),(int)mImageBean.getHeight()
-                , ImageZipConfig.IMAGE_100_ZIP,AppApplication.getTOKEN());
+        GlideUrl glideUrl = ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), (int) mImageBean.getWidth(), (int) mImageBean.getHeight()
+                , ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
         Glide.with(getActivity())
                 .load(glideUrl)
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        getSaveBitmapResultObservable(resource,glideUrl.toStringUrl());
+                        getSaveBitmapResultObservable(resource, glideUrl.toStringUrl());
                     }
                 });
     }
@@ -594,7 +581,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
     /**
      * 通过Rxjava在io线程中处理保存图片的逻辑，得到返回结果，否则会阻塞ui
      */
-    private void getSaveBitmapResultObservable(final Bitmap bitmap,final String url) {
+    private void getSaveBitmapResultObservable(final Bitmap bitmap, final String url) {
         Observable.just(1)// 不能empty否则map无法进行转换
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
@@ -605,7 +592,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                             .show();
                 })
                 .map(integer -> {
-                    String imgName = ConvertUtils.getStringMD5(url)+".jpg";
+                    String imgName = ConvertUtils.getStringMD5(url) + ".jpg";
                     String imgPath = PathConfig.PHOTO_SAVA_PATH;
                     return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
                 })
