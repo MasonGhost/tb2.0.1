@@ -107,7 +107,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
 
     @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
-        final int width = DeviceUtils.getScreenWidth(getActivity()) - 60;
+        final int width = (DeviceUtils.getScreenWidth(getActivity()) - 60) / 2;
         CommonAdapter<MusicAlbumListBean> comAdapter = new CommonAdapter<MusicAlbumListBean>
                 (getActivity(), R.layout.item_music_list, mListDatas) {
             @Override
@@ -115,10 +115,10 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(),musicListBean.getStorage().getWidth(),musicListBean.getStorage().getHeight(),
+                        .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width,width,
                                 ImageZipConfig.IMAGE_70_ZIP))
                         .placeholder(R.drawable.shape_default_image)
-                        .override(width / 2, width / 2)
+                        .override(width, width)
                         .error(R.drawable.shape_default_image)
                         .into(imag);
                 holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
