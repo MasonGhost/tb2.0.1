@@ -11,7 +11,7 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 /**
- * @Describe  for TextView click spannable  and Blur effect
+ * @Describe for TextView click spannable  and Blur effect
  * @Author Jungle68
  * @Date 2015/5/12
  * @Contact master.jungle68@gmail.com
@@ -30,6 +30,12 @@ public class TextViewUtils {
     private int mEndPos;
 
     private int mAlpha;
+
+    private int mDynamicPosition;// 动态位置
+
+    private int mNote;// 付费节点
+
+    private int mAmount;// 付费金额
 
     private Integer mSpanTextColor;
     private boolean mCanRead;
@@ -63,6 +69,21 @@ public class TextViewUtils {
 
     public TextViewUtils alpha(int alpha) {
         mAlpha = alpha;
+        return this;
+    }
+
+    public TextViewUtils amount(int amount) {
+        mAmount = amount;
+        return this;
+    }
+
+    public TextViewUtils note(int note) {
+        mNote = note;
+        return this;
+    }
+
+    public TextViewUtils dynamicPosition(int dynamicPosition) {
+        mDynamicPosition = dynamicPosition;
         return this;
     }
 
@@ -117,7 +138,7 @@ public class TextViewUtils {
         @Override
         public void onClick(View widget) {
             if (mSpanTextClickListener != null) {
-                mSpanTextClickListener.setSpanText(mTextView, canNotRead);
+                mSpanTextClickListener.setSpanText(mDynamicPosition, mNote, mAmount, mTextView, canNotRead);
             }
         }
 
@@ -144,7 +165,7 @@ public class TextViewUtils {
     }
 
     public interface OnSpanTextClickListener {
-        void setSpanText(TextView view, boolean canNotRead);
+        void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead);
     }
 }
 
