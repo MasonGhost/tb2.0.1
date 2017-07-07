@@ -22,7 +22,8 @@ public class ImageBean implements Parcelable, Serializable {
     private String imgUrl;// 图片的地址
     private Long feed_id;
     private int storage_id;
-    private int position;
+    private int position;// 图片位置
+    private int dynamicPosition;// 动态位置
     private int toll_type;
     private float toll_monye;
     private double width;
@@ -44,6 +45,14 @@ public class ImageBean implements Parcelable, Serializable {
         }
         setToll_type(toll.toll_type);
         setToll_monye(toll.toll_money > toll.custom_money ? toll.toll_money : toll.custom_money);
+    }
+
+    public int getDynamicPosition() {
+        return dynamicPosition;
+    }
+
+    public void setDynamicPosition(int dynamicPosition) {
+        this.dynamicPosition = dynamicPosition;
     }
 
     public int getPosition() {

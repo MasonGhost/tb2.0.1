@@ -57,9 +57,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -118,27 +115,24 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
         Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, isLoadMore)
-                .map(new Func1<List<DynamicDetailBeanV2>, List<DynamicDetailBeanV2>>() {
-                    @Override
-                    public List<DynamicDetailBeanV2> call(List<DynamicDetailBeanV2> listBaseJson) {
-                        insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
-                        if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                            if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
-                                List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
-                                data.addAll(listBaseJson);
-                            }
+                .map(listBaseJson -> {
+                    insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
+                    if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                        if (mRootView.getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_NEW) || mRootView.getDynamicType().equals((ApiConfig.DYNAMIC_TYPE_FOLLOWS))) {
+                            List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
+                            data.addAll(listBaseJson);
                         }
-                        for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i).getFeed_mark());
-                            if (!dynamicCommentBeen.isEmpty()) {
-                                dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
-                                listBaseJson.get(i).getComments().clear();
-                                listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
-                            }
-                        }
-
-                        return listBaseJson;
                     }
+                    for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                        List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i).getFeed_mark());
+                        if (!dynamicCommentBeen.isEmpty()) {
+                            dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
+                            listBaseJson.get(i).getComments().clear();
+                            listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
+                        }
+                    }
+
+                    return listBaseJson;
                 })
                 .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
                     @Override
@@ -531,12 +525,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 //            return;
 //        }
         mCommentRepository.paykNote(note)
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing));
-                    }
-                })
+                .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
@@ -601,45 +590,34 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<DynamicCommentBean, Integer>() {
-                    @Override
-                    public Integer call(DynamicCommentBean dynamicCommentBean) {
-                        int size = mRootView.getListDatas().size();
-                        int dynamicPosition = -1;
-                        for (int i = 0; i < size; i++) {
-                            if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
-                                dynamicPosition = i;
+                .map(dynamicCommentBean1 -> {
+                    int size = mRootView.getListDatas().size();
+                    int dynamicPosition = -1;
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicCommentBean1.getFeed_mark())) {
+                            dynamicPosition = i;
+                            break;
+                        }
+                    }
+                    if (dynamicPosition != -1) {// 如果列表有当前评论
+                        int commentSize = mRootView.getListDatas().get(dynamicPosition).getComments().size();
+                        for (int i = 0; i < commentSize; i++) {
+                            if (mRootView.getListDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals(dynamicCommentBean1.getFeed_mark())) {
+                                mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setState(dynamicCommentBean1.getState());
+                                mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setComment_id(dynamicCommentBean1.getComment_id());
+                                mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setComment_mark(dynamicCommentBean1.getComment_mark());
                                 break;
                             }
                         }
-                        if (dynamicPosition != -1) {// 如果列表有当前评论
-                            int commentSize = mRootView.getListDatas().get(dynamicPosition).getComments().size();
-                            for (int i = 0; i < commentSize; i++) {
-                                if (mRootView.getListDatas().get(dynamicPosition).getComments().get(i).getFeed_mark().equals(dynamicCommentBean.getFeed_mark())) {
-                                    mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setState(dynamicCommentBean.getState());
-                                    mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setComment_id(dynamicCommentBean.getComment_id());
-                                    mRootView.getListDatas().get(dynamicPosition).getComments().get(i).setComment_mark(dynamicCommentBean.getComment_mark());
-                                    break;
-                                }
-                            }
-                        }
-                        return dynamicPosition;
                     }
+                    return dynamicPosition;
                 })
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        if (integer != -1) {
-                            mRootView.refreshData(integer);
-                        }
+                .subscribe(integer -> {
+                    if (integer != -1) {
+                        mRootView.refreshData(integer);
+                    }
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                }, throwable -> throwable.printStackTrace());
 
     }
 
@@ -679,33 +657,21 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         Observable.just(data)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Bundle, Integer>() {
-                    @Override
-                    public Integer call(Bundle bundle) {
-                        boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
-                        DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
-                        int dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
-                        if (dynamicPosition != -1) {// 如果列表有当前评论
-                            mRootView.getListDatas().set(dynamicPosition, dynamicBean);
-                        }
-
-                        return isNeedRefresh ? dynamicPosition : -1;
+                .map(bundle -> {
+                    boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
+                    DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                    int dynamicPosition = mRootView.getListDatas().indexOf(dynamicBean);
+                    if (dynamicPosition != -1) {// 如果列表有当前评论
+                        mRootView.getListDatas().set(dynamicPosition, dynamicBean);
                     }
+                    return isNeedRefresh ? dynamicPosition : -1;
                 })
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        if (integer != -1) {
-                            mRootView.refreshData(integer);
-                        }
+                .subscribe(integer -> {
+                    if (integer != -1) {
+                        mRootView.refreshData(integer);
+                    }
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                }, throwable -> throwable.printStackTrace());
 
 
     }

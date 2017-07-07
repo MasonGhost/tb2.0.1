@@ -747,13 +747,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1467065995)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicDetailBeanV2Dao() : null;
-    }
-
     public DynamicDetailBeanV2() {
     }
 
@@ -848,4 +841,27 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     private transient DynamicDetailBeanV2Dao myDao;
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DynamicDetailBeanV2 that = (DynamicDetailBeanV2) o;
+
+        return id.equals(that.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1467065995)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDynamicDetailBeanV2Dao() : null;
+    }
 }
