@@ -56,6 +56,8 @@ public class ApiConfig {
      * 登录 Login
      */
     public static final String APP_PATH_LOGIN = "api/" + API_VERSION + "/auth";
+
+    public static final String APP_PATH_LOGIN_V2 = "api/" + API_VERSION_2 + "/login";
     /**
      * 密码 PasswordClient
      */
@@ -64,7 +66,7 @@ public class ApiConfig {
     /**
      * 注册 RegitstClient
      */
-    public static final String APP_PATH_REGISTER = "api/" + API_VERSION + "/auth/register";// 注册
+    public static final String APP_PATH_REGISTER = "api/" + API_VERSION_2 + "/users";// 注册
     /**
      * 用户 UserInfoClient
      */

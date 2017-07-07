@@ -1,12 +1,10 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
-import java.io.IOException;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -51,9 +49,7 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
                 } else {
                     handleError(e);
                 }
-            } catch (IOException e1) {
-                handleError(e);
-            } catch (JsonSyntaxException e1) {
+            } catch (Exception e1) {
                 handleError(e);
             }
         } else {

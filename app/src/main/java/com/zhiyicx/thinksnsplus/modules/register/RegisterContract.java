@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IVertifyCodeRepository;
@@ -65,7 +64,7 @@ public interface RegisterContract {
          * @param password    用户密码
          * @return
          */
-        Observable<BaseJson<AuthBean>> register(String phone, String name, String vertifyCode, String password);
+        Observable<AuthBean> register(String phone, String name, String vertifyCode, String password);
 
     }
 

@@ -67,12 +67,12 @@ import static com.zhiyicx.baseproject.config.ApiConfig.SYSTEM_LAUNCH_ADVERT;
 public interface CommonClient {
     /**
      * 验证码类型
-     * register: 注册
+     * registerByPhone: 注册
      * login: 登录
      * change: 修改,找回密码
      */
 
-    String VERTIFY_CODE_TYPE_REGISTER = "register";
+    String VERTIFY_CODE_TYPE_REGISTER = "registerByPhone";
     String VERTIFY_CODE_TYPE_LOGIN = "login";
     String VERTIFY_CODE_TYPE_CHANGE = "change";
 
@@ -85,7 +85,7 @@ public interface CommonClient {
      *
      * @param requestState {requestState}=success/fasle
      * @param phone        需要被发送验证码的手机号
-     * @param type         发送验证码的类型，固定三个值(register、login、change) register: 注
+     * @param type         发送验证码的类型，固定三个值(registerByPhone、login、change) registerByPhone: 注
      * @return
      */
     @FormUrlEncoded

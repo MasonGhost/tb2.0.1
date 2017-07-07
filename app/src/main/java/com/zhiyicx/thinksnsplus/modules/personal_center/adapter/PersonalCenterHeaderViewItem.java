@@ -38,7 +38,7 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
+import static com.zhiyicx.baseproject.utils.ImageUtils.imagePathConvertV2;
 
 /**
  * @author LiuChao
@@ -223,7 +223,7 @@ public class PersonalCenterHeaderViewItem {
         String userIconUrl;
         try {
             storegeId = Integer.parseInt(userInfoBean.getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+            userIconUrl = imagePathConvertV2(storegeId
                     , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
                     , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
                     , ImageZipConfig.IMAGE_70_ZIP);
@@ -400,14 +400,19 @@ public class PersonalCenterHeaderViewItem {
      * 设置用户的封面
      */
     private void setUserCover(String coverImage) {
+        try {
+            coverImage = ImageUtils.imagePathConvertV2(Integer.parseInt(coverImage)
+                    , DeviceUtils.getScreenWidth(mActivity)
+                    , iv_background_cover.getHeight()
+                    , ImageZipConfig.IMAGE_100_ZIP);
+        } catch (Exception e) {
+
+        }
         // 设置封面
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
                 .placeholder(R.mipmap.default_pic_personal)
                 .errorPic(R.mipmap.default_pic_personal)
-                .url(ImageUtils.imagePathConvertV2(Integer.parseInt(coverImage)
-                        , DeviceUtils.getScreenWidth(mActivity)
-                        , iv_background_cover.getHeight()
-                        , ImageZipConfig.IMAGE_100_ZIP))// 显示原图
+                .url(coverImage)// 显示原图
                 .imagerView(iv_background_cover)
                 .build());
     }

@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -31,8 +29,8 @@ public class RegisterRepository extends VertifyCodeRepository implements Registe
     }
 
     @Override
-    public Observable<BaseJson<AuthBean>> register(String phone, String name, String vertifyCode, String password) {
-        return mRegisterClient.register("success", phone, name, vertifyCode, password, DeviceUtils.getIMEI(mContext))
+    public Observable<AuthBean> register(String phone, String name, String vertifyCode, String password) {
+        return mRegisterClient.registerByPhone(phone, name, vertifyCode, password)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
