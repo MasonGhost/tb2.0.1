@@ -72,15 +72,19 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         } else {
             holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
         }
-        int storegeId = DEFAULT_IMAGE_ID;
-        if (commentedBean.getCommentUserInfo() != null && !TextUtils.isEmpty(commentedBean.getCommentUserInfo().getAvatar())) {
+        int storegeId;
+        String userIconUrl;
+        try {
             storegeId = Integer.parseInt(commentedBean.getCommentUserInfo().getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_38_ZIP);
+        } catch (Exception e) {
+            userIconUrl = commentedBean.getCommentUserInfo().getAvatar();
         }
         mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvertV2(storegeId
-                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , ImageZipConfig.IMAGE_38_ZIP))
+                .url(userIconUrl)
                 .transformation(new GlideCircleTransform(getContext()))
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .placeholder(R.mipmap.pic_default_portrait1)

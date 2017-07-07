@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
 import android.graphics.BitmapFactory;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DrawableProvider;
@@ -9,6 +10,7 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -128,9 +130,10 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         Subscription subscription = mRepository.changeUserInfo(userInfos)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe() {
+                .subscribe(new BaseSubscribeForV2<BaseJson>() {
+
                     @Override
-                    protected void onSuccess(Object data) {
+                    protected void onSuccess(BaseJson data) {
                         // 修改成功后，关闭页面
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(1, "");

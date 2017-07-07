@@ -40,7 +40,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
 
@@ -237,20 +236,26 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         this.mUserInfoBean = userInfoBean;
         // 设置用户头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        int storegeId = DEFAULT_IMAGE_ID;
-        if (mUserInfoBean != null && !TextUtils.isEmpty(mUserInfoBean.getAvatar())) {
+        int storegeId;
+        String userIconUrl;
+        try {
             storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_100_ZIP);
+        } catch (Exception e) {
+            userIconUrl = mUserInfoBean.getAvatar();
         }
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView(mIvHeadIcon)
-                .url(ImageUtils.imagePathConvertV2(storegeId
-                        , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                        , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                        , ImageZipConfig.IMAGE_100_ZIP))
+                .url(userIconUrl)
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .build());
+
+
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介

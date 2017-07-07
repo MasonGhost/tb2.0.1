@@ -219,16 +219,20 @@ public class PersonalCenterHeaderViewItem {
     }
 
     public void initHeaderViewData(final UserInfoBean userInfoBean) {
-        int storegeId = DEFAULT_IMAGE_ID;
-        if (userInfoBean != null && !TextUtils.isEmpty(userInfoBean.getAvatar())) {
+        int storegeId;
+        String userIconUrl;
+        try {
             storegeId = Integer.parseInt(userInfoBean.getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_70_ZIP);
+        } catch (Exception e) {
+            userIconUrl = userInfoBean.getAvatar();
         }
         // 显示头像
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvertV2(storegeId
-                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                        , ImageZipConfig.IMAGE_70_ZIP))
+                .url(userIconUrl)
                 .placeholder(R.mipmap.pic_default_portrait2)
                 .errorPic(R.mipmap.pic_default_portrait2)
                 .imagerView(iv_head_icon)
@@ -236,14 +240,11 @@ public class PersonalCenterHeaderViewItem {
                 .build());
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
-        tv_user_name.post(new Runnable() {
-            @Override
-            public void run() {
-                int[] location = new int[2];
-                tv_user_name.getLocationOnScreen(location);
-                userNameFirstY = location[1];
-                LogUtils.i(TAG + "tv_user_name " + userNameFirstY);
-            }
+        tv_user_name.post(() -> {
+            int[] location = new int[2];
+            tv_user_name.getLocationOnScreen(location);
+            userNameFirstY = location[1];
+            LogUtils.i(TAG + "tv_user_name " + userNameFirstY);
         });
         // 标题栏的用户名
         userName.setText(userInfoBean.getName());

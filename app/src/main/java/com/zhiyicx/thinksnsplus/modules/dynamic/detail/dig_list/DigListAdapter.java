@@ -58,28 +58,27 @@ public class DigListAdapter extends CommonAdapter<FollowFansBean> {
             tv_content.setText(userInfoBean.getIntro());
             // 显示用户头像
             ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-            int storegeId = DEFAULT_IMAGE_ID;
-            if (userInfoBean != null && !TextUtils.isEmpty(userInfoBean.getAvatar())) {
+            int storegeId;
+            String userIconUrl;
+            try {
                 storegeId = Integer.parseInt(userInfoBean.getAvatar());
+                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , ImageZipConfig.IMAGE_38_ZIP);
+            } catch (Exception e) {
+                userIconUrl = userInfoBean.getAvatar();
             }
             imageLoader.loadImage(filterImageView.getContext(), GlideImageConfig.builder()
                     .imagerView(filterImageView)
                     .transformation(new GlideCircleTransform(filterImageView.getContext()))
-                    .url(ImageUtils.imagePathConvertV2(storegeId
-                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                            , ImageZipConfig.IMAGE_38_ZIP))
+                    .url(userIconUrl)
                     .placeholder(R.mipmap.pic_default_portrait1)
                     .errorPic(R.mipmap.pic_default_portrait1)
                     .build());
             RxView.clicks(holder.getConvertView())
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            PersonalCenterFragment.startToPersonalCenter(filterImageView.getContext(), userInfoBean);
-                        }
-                    });
+                    .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(filterImageView.getContext(), userInfoBean));
         }
         // 如果当前列表包含了自己，就隐藏该关注按钮
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();

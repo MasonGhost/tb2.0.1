@@ -67,17 +67,21 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
     @Override
     public void convert(final ViewHolder holder, InfoCommentListBean infoCommentListBean,
                         InfoCommentListBean lastT, final int position, int itemCounts) {
-        int storegeId = DEFAULT_IMAGE_ID;
-        if (infoCommentListBean.getFromUserInfoBean() != null && !TextUtils.isEmpty(infoCommentListBean.getFromUserInfoBean().getAvatar())) {
+        int storegeId;
+        String userIconUrl;
+        try {
             storegeId = Integer.parseInt(infoCommentListBean.getFromUserInfoBean().getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_38_ZIP);
+        } catch (Exception e) {
+            userIconUrl = infoCommentListBean.getFromUserInfoBean().getAvatar();
         }
         AppApplication.AppComponentHolder.getAppComponent()
                 .imageLoader()
                 .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvertV2(storegeId
-                                , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                , ImageZipConfig.IMAGE_26_ZIP))
+                        .url(userIconUrl)
                         .placeholder(R.drawable.shape_default_image_circle)
                         .transformation(new GlideCircleTransform(holder.getConvertView()
                                 .getContext()))
@@ -89,24 +93,18 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(infoCommentListBean
                 .getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(infoCommentListBean, position));
-        holder.setOnClickListener(R.id.tv_content, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnCommentItemListener != null) {
-                    mOnCommentItemListener.onItemClick(v, holder, position);
-                }
+        holder.setOnClickListener(R.id.tv_content, v -> {
+            if (mOnCommentItemListener != null) {
+                mOnCommentItemListener.onItemClick(v, holder, position);
             }
         });
         List<Link> links = setLiknks(holder, infoCommentListBean, position);
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnCommentItemListener != null) {
-                    mOnCommentItemListener.onItemClick(v, holder, position);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (mOnCommentItemListener != null) {
+                mOnCommentItemListener.onItemClick(v, holder, position);
             }
         });
         setUserInfoClick(holder.getView(R.id.tv_name), infoCommentListBean.getFromUserInfoBean());

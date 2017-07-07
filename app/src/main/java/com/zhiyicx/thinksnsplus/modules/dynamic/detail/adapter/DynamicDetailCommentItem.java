@@ -83,17 +83,21 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content), links);
         }
-        int storegeId = DEFAULT_IMAGE_ID;
-        if (dynamicCommentBean != null && dynamicCommentBean.getCommentUser() != null && !TextUtils.isEmpty(dynamicCommentBean.getCommentUser().getAvatar())) {
+        int storegeId;
+        String userIconUrl;
+        try {
             storegeId = Integer.parseInt(dynamicCommentBean.getCommentUser().getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_26_ZIP);
+        } catch (Exception e) {
+            userIconUrl = dynamicCommentBean.getCommentUser().getAvatar();
         }
         AppApplication.AppComponentHolder.getAppComponent()
                 .imageLoader()
                 .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvertV2(storegeId
-                                , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                , ImageZipConfig.IMAGE_26_ZIP))
+                        .url(userIconUrl)
                         .placeholder(R.mipmap.pic_default_portrait1)
                         .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
                         .errorPic(R.mipmap.pic_default_portrait1)

@@ -84,15 +84,19 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
 
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
-                int storegeId = DEFAULT_IMAGE_ID;
-                if (messageItemBean.getUserInfo() != null && !TextUtils.isEmpty(messageItemBean.getUserInfo().getAvatar())) {
+                int storegeId;
+                String userIconUrl;
+                try {
                     storegeId = Integer.parseInt(messageItemBean.getUserInfo().getAvatar());
+                    userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , ImageZipConfig.IMAGE_38_ZIP);
+                } catch (Exception e) {
+                    userIconUrl = messageItemBean.getUserInfo().getAvatar();
                 }
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvertV2(storegeId
-                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                , ImageZipConfig.IMAGE_38_ZIP))
+                        .url(userIconUrl)
                         .transformation(new GlideCircleTransform(mContext))
                         .errorPic(R.mipmap.pic_default_portrait1)
                         .imagerView((ImageView) holder.getView(R.id.iv_headpic))

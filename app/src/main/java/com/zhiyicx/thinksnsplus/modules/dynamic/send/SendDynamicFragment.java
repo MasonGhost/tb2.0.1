@@ -439,35 +439,25 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 发布按钮的状态监听
      */
     private void initSendDynamicBtnState() {
-        mEtDynamicTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+        mEtDynamicTitle.setOnFocusChangeListener((v, hasFocus) -> {
 //                System.out.println("hasFocus = " + hasFocus);
-            }
         });
 
-        mEtDynamicContent.setContentChangedListener(new UserInfoInroduceInputView
-                .ContentChangedListener() {
-            @Override
-            public void contentChanged(CharSequence s) {
-                hasContent = !TextUtils.isEmpty(s);
-                setSendDynamicState();
-            }
+        mEtDynamicContent.setContentChangedListener(s -> {
+            hasContent = !TextUtils.isEmpty(s);
+            setSendDynamicState();
         });
 
         mTvToll.setVisibility(BuildConfig.USE_TOLL ? View.VISIBLE : View.GONE);
-        mTvToll.setRightImageClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isToll = !isToll;
-                if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
-                    mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
-                    sl_send_dynamic.smoothScrollTo(0, 0);
-                } else {
-                    mCommonAdapter.notifyDataSetChanged();
-                }
-                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+        mTvToll.setRightImageClickListener(v -> {
+            isToll = !isToll;
+            if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
+                mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                sl_send_dynamic.smoothScrollTo(0, 0);
+            } else {
+                mCommonAdapter.notifyDataSetChanged();
             }
+            mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
         });
 
     }
@@ -504,7 +494,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         dynamicDetailBeanV2.setFeed_from(ApiConfig.ANDROID_PLATFORM);
         dynamicDetailBeanV2.setIsFollowed(true);// 因为关注里面需要显示我的动态
         dynamicDetailBeanV2.setState(DynamicDetailBeanV2.SEND_ING);
-        dynamicDetailBeanV2.setComments(new ArrayList<DynamicCommentBean>());
+        dynamicDetailBeanV2.setComments(new ArrayList<>());
         dynamicDetailBeanV2.setUser_id(userId);
         dynamicDetailBeanV2.setAmount(mTollMoney);
 

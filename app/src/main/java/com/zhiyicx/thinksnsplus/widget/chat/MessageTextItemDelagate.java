@@ -125,15 +125,19 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             if (chatItemBean.getUserInfo().getName().equals(holder.getConvertView().getContext().getString(R.string.ts_helper))) { // TS 助手
                 ((ImageView) holder.getView(R.id.iv_chat_headpic)).setImageResource(R.mipmap.ico_ts_assistant);
             } else {
-                int storegeId = DEFAULT_IMAGE_ID ;
-                if (chatItemBean.getUserInfo() != null && !TextUtils.isEmpty(chatItemBean.getUserInfo().getAvatar())) {
+                int storegeId;
+                String userIconUrl;
+                try {
                     storegeId = Integer.parseInt(chatItemBean.getUserInfo().getAvatar());
+                    userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                            , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , ImageZipConfig.IMAGE_38_ZIP);
+                } catch (Exception e) {
+                    userIconUrl = chatItemBean.getUserInfo().getAvatar();
                 }
                 mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvertV2(storegeId
-                                , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                , ImageZipConfig.IMAGE_38_ZIP))
+                        .url(userIconUrl)
                         .placeholder(R.mipmap.pic_default_portrait1)
                         .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
                         .errorPic(R.mipmap.pic_default_portrait1)

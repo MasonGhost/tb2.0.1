@@ -318,17 +318,21 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
             emptyView.setNeedTextTip(false);
             emptyView.setErrorType(EmptyView.STATE_NODATA_ENABLE_CLICK);
         } else {
-            int storegeId = DEFAULT_IMAGE_ID;
-            if (infoCommentListBean.getFromUserInfoBean() != null && !TextUtils.isEmpty(infoCommentListBean.getFromUserInfoBean().getAvatar())) {
+            int storegeId;
+            String userIconUrl;
+            try {
                 storegeId = Integer.parseInt(infoCommentListBean.getFromUserInfoBean().getAvatar());
+                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , ImageZipConfig.IMAGE_26_ZIP);
+            } catch (Exception e) {
+                userIconUrl = infoCommentListBean.getFromUserInfoBean().getAvatar();
             }
             AppApplication.AppComponentHolder.getAppComponent()
                     .imageLoader()
                     .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                            .url(ImageUtils.imagePathConvertV2(storegeId
-                                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                    , ImageZipConfig.IMAGE_26_ZIP))
+                            .url(userIconUrl)
                             .placeholder(R.drawable.shape_default_image_circle)
                             .transformation(new GlideCircleTransform(holder.getConvertView()
                                     .getContext()))

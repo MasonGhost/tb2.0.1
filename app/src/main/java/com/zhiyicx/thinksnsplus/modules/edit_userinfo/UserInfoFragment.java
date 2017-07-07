@@ -420,15 +420,19 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         // 设置头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        int storegeId = DEFAULT_IMAGE_ID;
-        if (mUserInfoBean != null && !TextUtils.isEmpty(mUserInfoBean.getAvatar())) {
+        int storegeId;
+        String userIconUrl;
+        try {
             storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_38_ZIP);
+        } catch (Exception e) {
+            userIconUrl = mUserInfoBean.getAvatar();
         }
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvertV2(storegeId
-                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , ImageZipConfig.IMAGE_38_ZIP))
+                .url(userIconUrl)
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .imagerView(mIvHeadIcon)

@@ -35,7 +35,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -160,14 +159,17 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
         try {
-            int storegeId = DEFAULT_IMAGE_ID;
-            if (dynamicBean != null && dynamicBean.getUserInfoBean() != null && !TextUtils.isEmpty(dynamicBean.getUserInfoBean().getAvatar())) {
+            int storegeId;
+            String userIconUrl;
+            try {
                 storegeId = Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar());
+                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , ImageZipConfig.IMAGE_38_ZIP);
+            } catch (Exception e) {
+                userIconUrl = dynamicBean.getUserInfoBean().getAvatar();
             }
-            String userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_38_ZIP);
             mImageLoader.loadImage(mContext, GlideImageConfig.builder()
                     .url(userIconUrl)
                     .placeholder(R.mipmap.pic_default_portrait1)

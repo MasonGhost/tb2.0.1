@@ -200,7 +200,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                     Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.zoom_in, 0);
-
+//
 //                    initPhotoPopupWindow();
                 }
                 break;
