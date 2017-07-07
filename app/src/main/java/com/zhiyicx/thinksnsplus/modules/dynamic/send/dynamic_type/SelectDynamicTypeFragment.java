@@ -104,6 +104,8 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
                 sendWordsDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
                 sendWordsDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
                 SendDynamicActivity.startToSendDynamicActivity(getContext(), sendWordsDynamicDataBean);
+                getActivity().finish();
+                getActivity().overridePendingTransition(0, R.anim.zoom_out);
                 break;
             case R.id.send_image_dynamic:
                 clickSendPhotoTextDynamic();

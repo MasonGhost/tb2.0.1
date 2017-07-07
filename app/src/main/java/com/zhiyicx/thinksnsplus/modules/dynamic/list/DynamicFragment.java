@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -24,6 +25,7 @@ import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -90,7 +92,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener,
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
         DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
-        MultiItemTypeAdapter.OnItemClickListener {
+        MultiItemTypeAdapter.OnItemClickListener,TextViewUtils.OnSpanTextClickListener {
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
@@ -261,6 +263,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem
             dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
+        dynamicListBaseItem.setOnSpanTextClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         dynamicListBaseItem.setOnMenuItemClickLisitener(this);
         dynamicListBaseItem.setOnReSendClickListener(this);
@@ -335,6 +338,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
         GalleryActivity.startToGallery(getContext(), position, imageBeanList,
                 animationRectBeanArrayList);
+    }
+
+    @Override
+    public void setSpanText(TextView view, boolean canNotRead) {
+
     }
 
     /**

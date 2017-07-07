@@ -178,34 +178,23 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mCoordinatorLayout.setEnabled(false);
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        getActivity().finish();
-                    }
-                });
+                .subscribe(aVoid -> getActivity().finish());
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mFollowFansBean != null) {
-                            mPresenter.handleFollowUser(mFollowFansBean);
-                        }
+                .subscribe(aVoid -> {
+                    if (mFollowFansBean != null) {
+                        mPresenter.handleFollowUser(mFollowFansBean);
                     }
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mIlvComment.setVisibility(View.GONE);
-                        mIlvComment.clearFocus();
-                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
-                        mVShadow.setVisibility(View.GONE);
+                .subscribe(aVoid -> {
+                    mIlvComment.setVisibility(View.GONE);
+                    mIlvComment.clearFocus();
+                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                    mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+                    mVShadow.setVisibility(View.GONE);
 
-                    }
                 });
         RxView.clicks(mTvToolbarCenter)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

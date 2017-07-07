@@ -74,6 +74,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
     protected OnUserInfoClickListener mOnUserInfoClickListener; // 用户信息点击监听
 
+    protected TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
+
     public void setOnMenuItemClickLisitener(OnMenuItemClickLisitener onMenuItemClickLisitener) {
         mOnMenuItemClickLisitener = onMenuItemClickLisitener;
     }
@@ -188,6 +190,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 TextView topFlagView = holder.getView(R.id.tv_top_flag);
                 topFlagView.setVisibility(View.GONE);
             } catch (Exception e) {
+
             }
 
             if (TextUtils.isEmpty(content)) {
@@ -201,6 +204,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                                 .color.normal_for_assist_text))
                         .position(0, 50)
                         .maxLines(contentView.getResources().getInteger(R.integer.dynamic_list_content_show_lines))
+                        .onSpanTextClickListener(mOnSpanTextClickListener)
                         .disPlayText(false)
                         .build();
                 contentView.setVisibility(View.VISIBLE);
@@ -409,5 +413,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         return this;
     }
 
+    public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener onSpanTextClickListener) {
+        mOnSpanTextClickListener = onSpanTextClickListener;
+    }
 }
 

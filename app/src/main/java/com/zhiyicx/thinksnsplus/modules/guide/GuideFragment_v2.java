@@ -58,13 +58,8 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     protected void initView(View rootView) {
         RxView.clicks(mGuideText).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mPresenter.checkLogin();
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mPresenter.checkLogin());
     }
 
     @Override
@@ -72,20 +67,12 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         super.onResume();
         subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Long, Boolean>() {
-                    @Override
-                    public Boolean call(Long aLong) {
-                        return mPresenter.getAdvert() != null && mPresenter.getAdvert().getAdverts() != null;
-                    }
-                })
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        if (aBoolean && com.zhiyicx.common.BuildConfig.USE_ADVERT) {
-                            initAdvert();
-                        } else {
-                            mPresenter.checkLogin();
-                        }
+                .map(aLong -> mPresenter.getAdvert() != null && mPresenter.getAdvert().getAdverts() != null)
+                .subscribe(aBoolean -> {
+                    if (aBoolean && com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+                        initAdvert();
+                    } else {
+                        mPresenter.checkLogin();
                     }
                 });
     }

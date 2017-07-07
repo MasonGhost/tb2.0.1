@@ -228,42 +228,31 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private void initWordsToll() {
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
-        RxTextView.textChanges(mEtInput).subscribe(new Action1<CharSequence>() {
-            @Override
-            public void call(CharSequence charSequence) {
-                mRechargeMoneyStr = charSequence.toString();
-                if (TextUtils.isEmpty(mRechargeMoneyStr.replaceAll(" ", ""))) {
-                    return;
-                }
-                mRbDaysGroup.clearCheck();
-                mTollMoney = Double.parseDouble(charSequence.toString());
+        RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
+            mRechargeMoneyStr = charSequence.toString();
+            if (TextUtils.isEmpty(mRechargeMoneyStr.replaceAll(" ", ""))) {
+                return;
             }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                mTollMoney = 0;
-            }
-        });
+            mRbDaysGroup.clearCheck();
+            mTollMoney = Double.parseDouble(charSequence.toString());
+        }, throwable -> mTollMoney = 0);
 
         RxRadioGroup.checkedChanges(mRbDaysGroup)
-                .compose(this.<Integer>bindToLifecycle())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer checkedId) {
-                        if (checkedId != -1) {
-                            setCustomMoneyDefault();
-                        }
-                        switch (checkedId) {
-                            case R.id.rb_one:
-                                mTollMoney = mSelectDays.get(0);
-                                break;
-                            case R.id.rb_two:
-                                mTollMoney = mSelectDays.get(1);
-                                break;
-                            case R.id.rb_three:
-                                mTollMoney = mSelectDays.get(2);
-                                break;
-                        }
+                .compose(this.bindToLifecycle())
+                .subscribe(checkedId -> {
+                    if (checkedId != -1) {
+                        setCustomMoneyDefault();
+                    }
+                    switch (checkedId) {
+                        case R.id.rb_one:
+                            mTollMoney = mSelectDays.get(0);
+                            break;
+                        case R.id.rb_two:
+                            mTollMoney = mSelectDays.get(1);
+                            break;
+                        case R.id.rb_three:
+                            mTollMoney = mSelectDays.get(2);
+                            break;
                     }
                 });
     }
@@ -290,43 +279,32 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        ArrayList<String> photos = new ArrayList<>();
-                        // 最后一张是占位图
-                        for (int i = 0; i < selectedPhotos.size(); i++) {
-                            ImageBean imageBean = selectedPhotos.get(i);
-                            if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
-                                photos.add(imageBean.getImgUrl());
-                            }
+                .item1ClickListener(() -> {
+                    ArrayList<String> photos = new ArrayList<>();
+                    // 最后一张是占位图
+                    for (int i = 0; i < selectedPhotos.size(); i++) {
+                        ImageBean imageBean = selectedPhotos.get(i);
+                        if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                            photos.add(imageBean.getImgUrl());
                         }
-                        mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
-                        mPhotoPopupWindow.hide();
                     }
+                    mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
+                    mPhotoPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        ArrayList<String> photos = new ArrayList<>();
-                        // 最后一张是占位图
-                        for (int i = 0; i < selectedPhotos.size(); i++) {
-                            ImageBean imageBean = selectedPhotos.get(i);
-                            if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
-                                photos.add(imageBean.getImgUrl());
-                            }
+                .item2ClickListener(() -> {
+                    ArrayList<String> photos = new ArrayList<>();
+                    // 最后一张是占位图
+                    for (int i = 0; i < selectedPhotos.size(); i++) {
+                        ImageBean imageBean = selectedPhotos.get(i);
+                        if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                            photos.add(imageBean.getImgUrl());
                         }
-                        // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera(photos);
-                        mPhotoPopupWindow.hide();
                     }
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(photos);
+                    mPhotoPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPhotoPopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
     }
 
     /**
@@ -344,19 +322,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mCanclePopupWindow.hide();
-                        getActivity().finish();
-                    }
+                .item2ClickListener(() -> {
+                    mCanclePopupWindow.hide();
+                    getActivity().finish();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mCanclePopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mCanclePopupWindow.hide()).build();
     }
 
     /**
