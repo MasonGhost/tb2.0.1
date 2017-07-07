@@ -199,14 +199,22 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
-                TextViewUtils.newInstance(contentView, content)
+                TextViewUtils textViewUtils = TextViewUtils.newInstance(contentView, content)
                         .spanTextColor(SkinUtils.getColor(R
                                 .color.normal_for_assist_text))
                         .position(0, 50)
+                        .dynamicPosition(position)
                         .maxLines(contentView.getResources().getInteger(R.integer.dynamic_list_content_show_lines))
                         .onSpanTextClickListener(mOnSpanTextClickListener)
-                        .disPlayText(false)
-                        .build();
+                        .disPlayText(true);
+
+                if (dynamicBean.getPaid_node() != null) {// 有文字收费
+                    textViewUtils.note(dynamicBean.getPaid_node().getNode())
+                            .amount(dynamicBean.getPaid_node().getAmount())
+                            .disPlayText(dynamicBean.getPaid_node().isPaid());
+                }
+                textViewUtils.build();
+
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
