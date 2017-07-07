@@ -48,6 +48,9 @@ public class Toll implements Parcelable, Serializable {
     }
 
     public String getToll_type_string() {
+        if (toll_type_string == null) {
+            toll_type_string = "";
+        }
         return toll_type_string;
     }
 
@@ -83,7 +86,6 @@ public class Toll implements Parcelable, Serializable {
         this.toll_type = toll_type;
         this.toll_money = toll_money;
     }
-
 
 
     public void reset() {
