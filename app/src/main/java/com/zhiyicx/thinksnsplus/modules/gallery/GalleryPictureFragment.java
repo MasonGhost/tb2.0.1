@@ -221,7 +221,7 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                     .with((Activity) context)
                     .item1ClickListener(() -> {
                         mActionPopupWindow.hide();
-                        if (mImageBean.getToll().getToll_type_string().equals(Toll.DOWNLOAD_TOLL_TYPE)
+                        if (mImageBean.getToll() != null && mImageBean.getToll().getToll_type_string().equals(Toll.DOWNLOAD_TOLL_TYPE)
                                 && !mImageBean.getToll().getPaid()) {
                             initCenterPopWindow(R.string.buy_pay_downlaod_desc);
                             return;
