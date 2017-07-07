@@ -185,29 +185,23 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         // 添加聊天点击事件
         RxView.clicks(mLlChatContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        MessageItemBean messageItemBean = new MessageItemBean();
-                        messageItemBean.setUserInfo(mUserInfoBean);
-                        Intent to = new Intent(getActivity(), ChatActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
-                        to.putExtras(bundle);
-                        startActivity(to);
-                    }
+                .subscribe(aVoid -> {
+                    MessageItemBean messageItemBean = new MessageItemBean();
+                    messageItemBean.setUserInfo(mUserInfoBean);
+                    Intent to = new Intent(getActivity(), ChatActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
+                    to.putExtras(bundle);
+                    startActivity(to);
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mIlvComment.setVisibility(View.GONE);
-                        mIlvComment.clearFocus();
-                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                        mVShadow.setVisibility(View.GONE);
+                .subscribe(aVoid -> {
+                    mIlvComment.setVisibility(View.GONE);
+                    mIlvComment.clearFocus();
+                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                    mVShadow.setVisibility(View.GONE);
 
-                    }
                 });
 
         mIlvComment.setOnSendClickListener(this);
