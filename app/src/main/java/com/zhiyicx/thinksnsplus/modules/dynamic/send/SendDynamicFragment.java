@@ -189,13 +189,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void initView(View rootView) {
-
         initSendDynamicBtnState();// 设置右边发布文字监听
         setLeftTextColor();// 设置左边取消文字的颜色为主题色
         initDynamicType();
         setSendDynamicState();
         initWordsToll();
-
     }
 
     @Override
@@ -574,58 +572,55 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             .into(imageView);
 
                 }
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        DeviceUtils.hideSoftKeyboard(getContext(), v);
-                        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                            ArrayList<String> photos = new ArrayList<>();
-                            // 最后一张是占位图
-                            for (int i = 0; i < selectedPhotos.size(); i++) {
-                                ImageBean imageBean = selectedPhotos.get(i);
-                                if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
-                                    photos.add(imageBean.getImgUrl());
-                                }
+                imageView.setOnClickListener(v -> {
+                    DeviceUtils.hideSoftKeyboard(getContext(), v);
+                    if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+                        ArrayList<String> photos = new ArrayList<>();
+                        // 最后一张是占位图
+                        for (int i = 0; i < selectedPhotos.size(); i++) {
+                            ImageBean imageBean1 = selectedPhotos.get(i);
+                            if (!TextUtils.isEmpty(imageBean1.getImgUrl())) {
+                                photos.add(imageBean1.getImgUrl());
                             }
-                            mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
-                        } else {
-                            // 预览图片
-                            ArrayList<String> photos = new ArrayList<>();
-                            // 最后一张是占位图
-                            for (int i = 0; i < selectedPhotos.size(); i++) {
-                                ImageBean imageBean = selectedPhotos.get(i);
-                                if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
-                                    photos.add(imageBean.getImgUrl());
-                                }
-                            }
-                            ArrayList<AnimationRectBean> animationRectBeanArrayList
-                                    = new ArrayList<>();
-                            for (int i = 0; i < photos.size(); i++) {
-
-                                if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
-                                    // 顶部，无法全部看见的图片
-                                    AnimationRectBean rect = new AnimationRectBean();
-                                    animationRectBeanArrayList.add(rect);
-                                } else if (i > gridLayoutManager.findLastVisibleItemPosition()) {
-                                    // 底部，无法完全看见的图片
-                                    AnimationRectBean rect = new AnimationRectBean();
-                                    animationRectBeanArrayList.add(rect);
-                                } else {
-                                    View view = gridLayoutManager
-                                            .getChildAt(i - gridLayoutManager
-                                                    .findFirstVisibleItemPosition());
-                                    ImageView imageView = (ImageView) view.findViewById(R.id
-                                            .iv_dynamic_img);
-                                    // 可以完全看见的图片
-                                    AnimationRectBean rect = AnimationRectBean.buildFromImageView
-                                            (imageView);
-                                    animationRectBeanArrayList.add(rect);
-                                }
-                            }
-                            PhotoViewActivity.startToPhotoView(SendDynamicFragment.this,
-                                    photos, photos, animationRectBeanArrayList, MAX_PHOTOS,
-                                    position, isToll, selectedPhotos);
                         }
+                        mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
+                    } else {
+                        // 预览图片
+                        ArrayList<String> photos = new ArrayList<>();
+                        // 最后一张是占位图
+                        for (int i = 0; i < selectedPhotos.size(); i++) {
+                            ImageBean imageBean1 = selectedPhotos.get(i);
+                            if (!TextUtils.isEmpty(imageBean1.getImgUrl())) {
+                                photos.add(imageBean1.getImgUrl());
+                            }
+                        }
+                        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                                = new ArrayList<>();
+                        for (int i = 0; i < photos.size(); i++) {
+
+                            if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
+                                // 顶部，无法全部看见的图片
+                                AnimationRectBean rect = new AnimationRectBean();
+                                animationRectBeanArrayList.add(rect);
+                            } else if (i > gridLayoutManager.findLastVisibleItemPosition()) {
+                                // 底部，无法完全看见的图片
+                                AnimationRectBean rect = new AnimationRectBean();
+                                animationRectBeanArrayList.add(rect);
+                            } else {
+                                View view = gridLayoutManager
+                                        .getChildAt(i - gridLayoutManager
+                                                .findFirstVisibleItemPosition());
+                                ImageView imageView1 = (ImageView) view.findViewById(R.id
+                                        .iv_dynamic_img);
+                                // 可以完全看见的图片
+                                AnimationRectBean rect = AnimationRectBean.buildFromImageView
+                                        (imageView1);
+                                animationRectBeanArrayList.add(rect);
+                            }
+                        }
+                        PhotoViewActivity.startToPhotoView(SendDynamicFragment.this,
+                                photos, photos, animationRectBeanArrayList, MAX_PHOTOS,
+                                position, isToll, selectedPhotos);
                     }
                 });
             }
