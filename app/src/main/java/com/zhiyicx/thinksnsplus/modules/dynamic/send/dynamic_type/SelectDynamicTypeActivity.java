@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;

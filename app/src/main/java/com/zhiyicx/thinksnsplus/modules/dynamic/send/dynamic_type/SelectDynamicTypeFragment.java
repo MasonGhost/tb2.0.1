@@ -106,21 +106,17 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
                 SendDynamicActivity.startToSendDynamicActivity(getContext(), sendWordsDynamicDataBean);
                 break;
             case R.id.send_image_dynamic:
-
                 clickSendPhotoTextDynamic();
-
 //                SendDynamicDataBean sendImageDynamicDataBean = new SendDynamicDataBean();
 //                sendImageDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
 //                sendImageDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
 //                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendImageDynamicDataBean);
                 break;
             case R.id.im_close_dynamic:
-
+                getActivity().finish();
+                getActivity().overridePendingTransition(0, R.anim.zoom_out);
                 break;
         }
-        getActivity().finish();
-        getActivity().overridePendingTransition(0, R.anim.zoom_out);
-//        getActivity().overridePendingTransition(0, R.anim.slide_out_bottom);
     }
 
     @Override
@@ -131,6 +127,8 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         sendDynamicDataBean.setDynamicPrePhotos(photoList);
         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+        getActivity().finish();
+        getActivity().overridePendingTransition(0, R.anim.zoom_out);
     }
 
     @Override
