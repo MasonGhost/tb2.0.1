@@ -57,7 +57,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     @Override
     public void sendDynamic(DynamicBean dynamicBean) {
         if (dynamicBean.getFeed().getStorages() == null) { // 当没有图片的时候，给一个占位数组
-            dynamicBean.getFeed().setStorages(new ArrayList<ImageBean>());
+            dynamicBean.getFeed().setStorages(new ArrayList<>());
         }
         if (mRootView.hasTollVerify()) {
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
@@ -69,7 +69,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         }
         SendDynamicDataBean sendDynamicDataBean = mRootView.getDynamicSendData();
         int dynamicBelong = sendDynamicDataBean.getDynamicBelong();
-        dynamicBean.setComments(new ArrayList<DynamicCommentBean>());
+        dynamicBean.setComments(new ArrayList<>());
         dynamicBean.setState(DynamicBean.SEND_ING);
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
         // 发送动态
@@ -102,13 +102,17 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
     @Override
     public void sendDynamicV2(DynamicDetailBeanV2 dynamicBean) {
         if (dynamicBean.getImages() == null) { // 当没有图片的时候，给一个占位数组
-            dynamicBean.setImages(new ArrayList<DynamicDetailBeanV2.ImagesBean>());
+            dynamicBean.setImages(new ArrayList<>());
         }
+        // 发送动态 V2 所需要的数据
+        SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
+        mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
+
         if (mRootView.hasTollVerify()) {// 当设置图片收费时，最少配置一张图
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
-        if (mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {// 文字收费金额整数限制
+        if ((sendDynamicDataBeanV2.getPhotos().isEmpty()&&mRootView.getTollMoney() == 0d )|| mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {// 文字收费金额整数限制
             mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.limit_monye));
             return;
         }
@@ -117,10 +121,6 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         int dynamicBelong = sendDynamicDataBean.getDynamicBelong();
 
         dynamicBean.setUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(dynamicBean.getUser_id()));
-
-        // 发送动态 V2 所需要的数据
-        SendDynamicDataBeanV2 sendDynamicDataBeanV2 = SendDynamicDataBeanV2.DynamicDetailBean2SendDynamicDataBeanV2(dynamicBean);
-        mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
 
         // 建立 task
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
