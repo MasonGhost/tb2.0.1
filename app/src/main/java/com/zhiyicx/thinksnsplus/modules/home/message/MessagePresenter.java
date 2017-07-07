@@ -59,9 +59,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
@@ -289,8 +287,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * @param position
      */
     @Override
-    public void deletConversation(int position ) {
-        final MessageItemBean messageItemBean =mRootView.getListDatas().get(position);
+    public void deletConversation(int position) {
+        final MessageItemBean messageItemBean = mRootView.getListDatas().get(position);
         // ts 助手标记为已删除
         Observable.empty()
                 .observeOn(Schedulers.newThread())
@@ -424,7 +422,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST)
     private void onJpushMessageRecieved(JpushMessageBean jpushMessageBean) {
-
+        if (jpushMessageBean.getType() == null) {
+            return;
+        }
         switch (jpushMessageBean.getType()) {
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
                 handleIMPush(jpushMessageBean);
