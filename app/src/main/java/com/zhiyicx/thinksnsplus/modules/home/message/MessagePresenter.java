@@ -505,6 +505,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribe(new BaseSubscribe<List<FlushMessages>>() {
                     @Override
                     protected void onSuccess(List<FlushMessages> data) {
+                        if (data == null) {
+                            return;
+                        }
                         SharePreferenceUtils.saveLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME, System.currentTimeMillis() / 1000);
                         FlushMessages commentFlushMessage = null;
                         FlushMessages diggFlushMessage = null;
