@@ -1,12 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.login;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -58,30 +56,21 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
             return;
         }
         mRootView.setLogining();
-        Subscription subscription = mRepository.login(mContext, phone, password)
+        Subscription subscription = mRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<AuthBean>, Observable<UserInfoBean>>() {
+                .flatMap(new Func1<AuthBean, Observable<UserInfoBean>>() {
                     @Override
-                    public Observable<UserInfoBean> call(BaseJson<AuthBean> authBeanBaseJson) {
+                    public Observable<UserInfoBean> call(AuthBean data) {
                         // 登录成功跳转
-                        mAuthRepository.saveAuthBean(authBeanBaseJson.getData());// 保存auth信息
+                        mAuthRepository.saveAuthBean(data);// 保存auth信息
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
                         // 获取用户信息
                         return mUserInfoRepository.getCurrentLoginUserInfo();
                     }
                 })
-                .flatMap(new Func1<UserInfoBean, Observable<BaseJson<UserInfoBean>>>() {
-                    @Override
-                    public Observable<BaseJson<UserInfoBean>> call(UserInfoBean userInfoBean) {
-                        BaseJson<UserInfoBean> userInfoBeanBaseJson = new BaseJson<>();
-                        userInfoBeanBaseJson.setData(userInfoBean);
-                        userInfoBeanBaseJson.setStatus(true);
-                        return Observable.just(userInfoBeanBaseJson);
-                    }
-                })
-                .subscribe(new BaseSubscribe<UserInfoBean>() {
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);

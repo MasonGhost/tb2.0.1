@@ -15,12 +15,16 @@ import java.io.Serializable;
  */
 public class AuthBean extends CacheBean implements Parcelable, Serializable {
     public static final long serialVersionUID = 536871008l;
-    private Long created_at;// 用户权限token开始时间(单位秒的时间戳)
-    private int expires;// 用户token的有效期(单位:秒)
+
+
     private String token;
     private String refresh_token;
-
     private int user_id;
+    private int expires;// 用户token的有效期(单位:秒)
+    private int state;
+    private int id;
+    private String created_at;// 用户权限token开始时间(单位秒的时间戳)
+    private String updated_at;// 用户权限token开始时间(单位秒的时间戳)
 
     public int getUser_id() {
         return user_id;
@@ -30,11 +34,11 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.user_id = user_id;
     }
 
-    public Long getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Long created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 
@@ -62,6 +66,29 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.refresh_token = refresh_token;
     }
 
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
 
     public AuthBean() {
     }
@@ -69,11 +96,14 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     @Override
     public String toString() {
         return "AuthBean{" +
-                "created_at=" + created_at +
-                ", expires=" + expires +
-                ", token='" + token + '\'' +
+                "token='" + token + '\'' +
                 ", refresh_token='" + refresh_token + '\'' +
                 ", user_id=" + user_id +
+                ", expires=" + expires +
+                ", state=" + state +
+                ", id=" + id +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
                 '}';
     }
 
@@ -84,19 +114,25 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.created_at);
-        dest.writeInt(this.expires);
         dest.writeString(this.token);
         dest.writeString(this.refresh_token);
         dest.writeInt(this.user_id);
+        dest.writeInt(this.expires);
+        dest.writeInt(this.state);
+        dest.writeInt(this.id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
     }
 
     protected AuthBean(Parcel in) {
-        this.created_at = (Long) in.readValue(Long.class.getClassLoader());
-        this.expires = in.readInt();
         this.token = in.readString();
         this.refresh_token = in.readString();
         this.user_id = in.readInt();
+        this.expires = in.readInt();
+        this.state = in.readInt();
+        this.id = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
     }
 
     public static final Creator<AuthBean> CREATOR = new Creator<AuthBean>() {

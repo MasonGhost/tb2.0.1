@@ -43,4 +43,16 @@ public class LoginRepository implements LoginContract.Repository {
         });*/
         return mLoginClient.login("success", phone, password, DeviceUtils.getIMEI(mContext));
     }
+    @Override
+    public Observable<AuthBean> loginV2(final String account, final String password) {
+       /* if(cacheImp==null){
+            cacheImp = new CacheImp<>(new AuthBeanGreenDaoImpl(context));
+        }
+        return cacheImp.load(1483098241l, new NetWorkCache<AuthBean>() {
+            @Override
+            public Observable<BaseJson<AuthBean>> get(Long key) {
+            }
+        });*/
+        return mLoginClient.loginV2(account, password);
+    }
 }

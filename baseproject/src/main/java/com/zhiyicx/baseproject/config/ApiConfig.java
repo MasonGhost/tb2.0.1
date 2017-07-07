@@ -56,6 +56,8 @@ public class ApiConfig {
      * 登录 Login
      */
     public static final String APP_PATH_LOGIN = "api/" + API_VERSION + "/auth";
+
+    public static final String APP_PATH_LOGIN_V2 = "api/" + API_VERSION_2 + "/login";
     /**
      * 密码 PasswordClient
      */

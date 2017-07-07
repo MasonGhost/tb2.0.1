@@ -211,7 +211,7 @@ public class AuthRepository implements IAuthRepository {
         if (authBean == null) {// 没有token，不需要刷新
             return false;
         }
-        long createTime = authBean.getCreated_at();
+        long createTime = TimeUtils.string2MillisDefaultLocal(authBean.getCreated_at());
         int expiers = authBean.getExpires();
         int days = TimeUtils.getifferenceDays((createTime + expiers) * 1000);//表示token过期时间距离现在的时间
         if (expiers == 0) {// 永不过期,不需要刷新token
