@@ -190,77 +190,66 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         photoGridAdapter.setCurrentDirectoryIndex(selected_directory);
         photoGridAdapter.notifyDataSetChanged();
         // 设置图片选择的监听
-        photoGridAdapter.setOnItemCheckListener(new OnItemCheckListener() {
-            @Override
-            public boolean onItemCheck(int position, Photo photo, int selectedItemCount) {
-                boolean isEnable = true;
-                mBtComplete.setEnabled(selectedItemCount > 0);
-                // 设置预览按钮的状态
-                mTvPreview.setEnabled(selectedItemCount > 0);
-                // 单张选择
-                if (maxCount <= 1) {
-                    List<String> photos = photoGridAdapter.getSelectedPhotos();
-                    // 当前选择的图片，没有被选择过
-                    if (!photos.contains(photo.getPath())) {
-                        // 之前已经选择过该图片，就需要 -1 张
-                        if (!photos.isEmpty()) {
-                            selectedItemCount -= 1;
-                        }
-                        photos.clear();
-                        photoGridAdapter.notifyDataSetChanged();
+        photoGridAdapter.setOnItemCheckListener((position, photo, selectedItemCount) -> {
+            boolean isEnable = true;
+            mBtComplete.setEnabled(selectedItemCount > 0);
+            // 设置预览按钮的状态
+            mTvPreview.setEnabled(selectedItemCount > 0);
+            // 单张选择
+            if (maxCount <= 1) {
+                List<String> photos = photoGridAdapter.getSelectedPhotos();
+                // 当前选择的图片，没有被选择过
+                if (!photos.contains(photo.getPath())) {
+                    // 之前已经选择过该图片，就需要 -1 张
+                    if (!photos.isEmpty()) {
+                        selectedItemCount -= 1;
                     }
+                    photos.clear();
+                    photoGridAdapter.notifyDataSetChanged();
+                }
+                // 设置当前选择的数量
+                mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
+                isEnable = true;
+            } else {
+                // 数量超过时，进行提示
+                if (selectedItemCount > maxCount) {
+                    ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
+                    isEnable = false;
+                } else {
                     // 设置当前选择的数量
                     mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
                     isEnable = true;
-                } else {
-                    // 数量超过时，进行提示
-                    if (selectedItemCount > maxCount) {
-                        ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
-                        isEnable = false;
-                    } else {
-                        // 设置当前选择的数量
-                        mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
-                        isEnable = true;
-                    }
                 }
-                return isEnable;
             }
+            return isEnable;
         });
-        photoGridAdapter.setOnCameraClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPhotoSelector.getPhotoFromCamera(originalPhotos);
-            }
-        });
+        photoGridAdapter.setOnCameraClickListener(v -> mPhotoSelector.getPhotoFromCamera(originalPhotos));
         // 设置图片 item 的点击事件
-        photoGridAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
-            @Override
-            public void onClick(View v, int position, boolean showCamera) {
-                int index = showCamera ? position - 1 : position;
-                List<String> allPhotos = photoGridAdapter.getCurrentPhotoPaths();
-                ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
-                ArrayList<AnimationRectBean> animationRectBeanArrayList
-                        = new ArrayList<>();
-                for (int i = 0; i < allPhotos.size(); i++) {
+        photoGridAdapter.setOnPhotoClickListener((v, position, showCamera1) -> {
+            int index = showCamera1 ? position - 1 : position;
+            List<String> allPhotos = photoGridAdapter.getCurrentPhotoPaths();
+            ArrayList<String> selectedPhotos = photoGridAdapter.getSelectedPhotoPaths();
+            ArrayList<AnimationRectBean> animationRectBeanArrayList
+                    = new ArrayList<>();
+            for (int i = 0; i < allPhotos.size(); i++) {
 
-                    if (i < layoutManager.findFirstVisibleItemPosition()) {
-                        // 顶部，无法看见的图片
-                        animationRectBeanArrayList.add(null);
-                    } else if (i > layoutManager.findLastVisibleItemPosition()) {
-                        // 底部，无法看见的图片
-                        animationRectBeanArrayList.add(null);
-                    } else {
+                if (i < layoutManager.findFirstVisibleItemPosition()) {
+                    // 顶部，无法看见的图片
+                    animationRectBeanArrayList.add(null);
+                } else if (i > layoutManager.findLastVisibleItemPosition()) {
+                    // 底部，无法看见的图片
+                    animationRectBeanArrayList.add(null);
+                } else {
 //                        View view = layoutManager
 //                                .getChildAt(i - layoutManager.findFirstVisibleItemPosition() + (showCamera ? 1 : 0));// 照相机占位
-                        ImageView imageView = (ImageView) v;
-                        // 可以完全看见的图片
-                        AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
-                        animationRectBeanArrayList.add(rect);
-                    }
+                    ImageView imageView = (ImageView) v;
+                    // 可以完全看见的图片
+                    AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+                    animationRectBeanArrayList.add(rect);
                 }
-                PhotoViewActivity.startToPhotoView(PhotoAlbumDetailsFragment.this, (ArrayList<String>) allPhotos
-                        , selectedPhotos, animationRectBeanArrayList, maxCount, index,false,new ArrayList<ImageBean>());
             }
+            PhotoViewActivity.startToPhotoView(PhotoAlbumDetailsFragment.this, (ArrayList<String>) allPhotos
+                    , selectedPhotos, animationRectBeanArrayList, maxCount, index,false,new ArrayList<ImageBean>());
         });
     }
 
@@ -305,7 +294,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                     animationRectBeanArrayList.add(null);
                 }
                 PhotoViewActivity.startToPhotoView(this, allPhotos, selectedPhoto,
-                        animationRectBeanArrayList, maxCount, 0,false,new ArrayList<ImageBean>());
+                        animationRectBeanArrayList, maxCount, 0,false,new ArrayList<>());
                 break;
             case R.id.bt_complete:
                 Intent it = new Intent();

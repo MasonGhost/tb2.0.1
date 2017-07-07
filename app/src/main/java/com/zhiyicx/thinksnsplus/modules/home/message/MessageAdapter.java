@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
@@ -32,8 +31,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -99,7 +96,8 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                         .url(userIconUrl)
                         .transformation(new GlideCircleTransform(mContext))
                         .errorPic(R.mipmap.pic_default_portrait1)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                        .placeholder(R.mipmap.pic_default_portrait1)
+                        .imagerView(holder.getView(R.id.iv_headpic))
                         .build()
                 );
                 holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
@@ -147,25 +145,19 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
         });
         RxView.clicks(holder.getView(R.id.tv_right))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnSwipItemClickListener != null) {
-                            mOnSwipItemClickListener.onRightClick(position);
-                        }
-                        mItemManger.closeAllItems();
+                .subscribe(aVoid -> {
+                    if (mOnSwipItemClickListener != null) {
+                        mOnSwipItemClickListener.onRightClick(position);
                     }
+                    mItemManger.closeAllItems();
                 });
         RxView.clicks(holder.getView(R.id.rl_left))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnSwipItemClickListener != null && !mItemManger.isOpen(position)) {
-                            mOnSwipItemClickListener.onLeftClick(position);
-                        }
-                        mItemManger.closeAllItems();
+                .subscribe(aVoid -> {
+                    if (mOnSwipItemClickListener != null && !mItemManger.isOpen(position)) {
+                        mOnSwipItemClickListener.onLeftClick(position);
                     }
+                    mItemManger.closeAllItems();
                 });
         mItemManger.bindView(holder.getConvertView(), position);
 
@@ -174,12 +166,9 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
         RxView.clicks(v)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnUserInfoClickListener != null) {
-                            mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnUserInfoClickListener != null) {
+                        mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
                     }
                 });
     }

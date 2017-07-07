@@ -1,12 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,7 +26,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 
@@ -38,7 +35,7 @@ import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_D
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelectorImpl.IPhotoBackListener{
+public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelectorImpl.IPhotoBackListener {
 
     @BindView(R.id.send_words_dynamic)
     IconTextView mSendWordsDynamic;
@@ -110,12 +107,12 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
                 break;
             case R.id.send_image_dynamic:
 
-//                clickSendPhotoTextDynamic();
+                clickSendPhotoTextDynamic();
 
-                SendDynamicDataBean sendImageDynamicDataBean = new SendDynamicDataBean();
-                sendImageDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
-                sendImageDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
-                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendImageDynamicDataBean);
+//                SendDynamicDataBean sendImageDynamicDataBean = new SendDynamicDataBean();
+//                sendImageDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+//                sendImageDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+//                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendImageDynamicDataBean);
                 break;
             case R.id.im_close_dynamic:
 
@@ -129,11 +126,11 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
-//        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-//        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
-//        sendDynamicDataBean.setDynamicPrePhotos(photoList);
-//        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
-//        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
     }
 
     @Override
@@ -145,9 +142,9 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // 获取图片选择器返回结果
-//        if (mPhotoSelector != null) {
-//            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
-//        }
+        if (mPhotoSelector != null) {
+            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void clickSendPhotoTextDynamic() {
