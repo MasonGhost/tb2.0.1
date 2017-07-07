@@ -207,6 +207,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .onSpanTextClickListener(mOnSpanTextClickListener)
                         .disPlayText(false)
                         .build();
+
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
