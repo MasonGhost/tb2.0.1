@@ -82,7 +82,6 @@ public class ActivityHandler {
         if (activity != null) {
             activityStack.remove(activity);
             activity.finish();
-            activity = null;
         }
     }
 
@@ -93,6 +92,7 @@ public class ActivityHandler {
         for (Activity activity : activityStack) {
             if (activity.getClass().equals(cls)) {
                 removeActivity(activity);
+                break;
             }
         }
     }
@@ -105,6 +105,7 @@ public class ActivityHandler {
         for (int i = 0; i < activityStack.size(); i++) {
             if (null != activityStack.get(i) && activityStack.get(i) != activity) {
                 activityStack.get(i).finish();
+                break;
             }
         }
     }
