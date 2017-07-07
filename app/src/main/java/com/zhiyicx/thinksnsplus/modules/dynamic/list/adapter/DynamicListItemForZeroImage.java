@@ -19,7 +19,7 @@ public class DynamicListItemForZeroImage extends DynamicListBaseItem {
 
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getFeed_mark() != null && (item.getImages() == null||item.getImages().isEmpty());
+        return item.getFeed_mark() != null && (item.getImages() == null || item.getImages().isEmpty());
     }
 
 }

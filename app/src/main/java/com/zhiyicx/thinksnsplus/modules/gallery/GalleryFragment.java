@@ -250,8 +250,10 @@ public class GalleryFragment extends TSFragment {
             bgAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    getActivity().finish();
-                    getActivity().overridePendingTransition(-1, -1);
+                    if (getActivity() != null) {// 防止空指针
+                        getActivity().finish();
+                        getActivity().overridePendingTransition(-1, -1);
+                    }
                 }
             });
             fragment.animationExit(bgAnim);
