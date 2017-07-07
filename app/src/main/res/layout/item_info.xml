@@ -18,7 +18,7 @@
         android:layout_marginLeft="@dimen/spacing_mid"
         android:layout_centerVertical="true"
         android:scaleType="centerCrop"
-        android:src="@mipmap/npc"/>
+        android:src="@drawable/shape_default_image"/>
 
     <LinearLayout
         android:layout_toLeftOf="@+id/item_info_imag"

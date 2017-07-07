@@ -62,37 +62,29 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     @Override
     public void getAreaData() {
         Subscription subscription = mRepository.getAreaList()
-                .subscribe(new Action1<ArrayList<AreaBean>>() {
-                    @Override
-                    public void call(ArrayList<AreaBean> areaBean) {
-                        ArrayList<ArrayList<AreaBean>> areaBeenChildList = new
-                                ArrayList<ArrayList<AreaBean>>();
-                        ArrayList<ArrayList<ArrayList<AreaBean>>> areaBeenChildList1 = new
-                                ArrayList<ArrayList<ArrayList<AreaBean>>>();
-                        // 处理第二级联动
-                        for (AreaBean areaBean1 : areaBean) {
-                            ArrayList<AreaBean> areaBean1List = areaBean1.getChild();
-                            areaBeenChildList.add(areaBean1List);
-                            // 处理第三级连动
-                            if (areaBean1List != null) {
-                                ArrayList<ArrayList<AreaBean>> arrayListArrayList = new
-                                        ArrayList<ArrayList<AreaBean>>();
-                                for (AreaBean areaBean2 : areaBean1List) {
-                                    ArrayList<AreaBean> areaBean2List = areaBean2.getChild();
-                                    arrayListArrayList.add(areaBean2List);
-                                }
-                                areaBeenChildList1.add(arrayListArrayList);
+                .subscribe(areaBean -> {
+                    ArrayList<ArrayList<AreaBean>> areaBeenChildList = new
+                            ArrayList<>();
+                    ArrayList<ArrayList<ArrayList<AreaBean>>> areaBeenChildList1 = new
+                            ArrayList<>();
+                    // 处理第二级联动
+                    for (AreaBean areaBean1 : areaBean) {
+                        ArrayList<AreaBean> areaBean1List = areaBean1.getChild();
+                        areaBeenChildList.add(areaBean1List);
+                        // 处理第三级连动
+                        if (areaBean1List != null) {
+                            ArrayList<ArrayList<AreaBean>> arrayListArrayList = new
+                                    ArrayList<>();
+                            for (AreaBean areaBean2 : areaBean1List) {
+                                ArrayList<AreaBean> areaBean2List = areaBean2.getChild();
+                                arrayListArrayList.add(areaBean2List);
                             }
+                            areaBeenChildList1.add(arrayListArrayList);
                         }
-                        mRootView.setAreaData(areaBean, areaBeenChildList, areaBeenChildList1);
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        com.zhiyicx.common.utils.log.LogUtils.e(throwable, mContext.getString(R
-                                .string.data_load_error));
-                    }
-                });
+                    mRootView.setAreaData(areaBean, areaBeenChildList, areaBeenChildList1);
+                }, throwable -> LogUtils.e(throwable, mContext.getString(R
+                        .string.data_load_error)));
         addSubscrebe(subscription);
     }
 
@@ -100,7 +92,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     public void changeUserHeadIcon(String filePath) {
         mRootView.setUpLoadHeadIconState(0, 0);
         BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFile(
+        Subscription subscription = mIUploadRepository.upLoadSingleFileV2(
                 filePath, options.outMimeType, true, options.outWidth, options.outHeight)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

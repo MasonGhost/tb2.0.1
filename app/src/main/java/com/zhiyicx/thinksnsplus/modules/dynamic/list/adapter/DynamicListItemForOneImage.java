@@ -7,22 +7,15 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -92,7 +85,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
             Glide.with(mContext)
                     .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), with, height, proportion, AppApplication.getTOKEN()))
                     .override(with, height)
-                    .placeholder(R.drawable.shape_default_image)
+                    .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.mipmap.pic_locked)
                     .into(view);
@@ -102,7 +95,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
                     .override(with, height)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.mipmap.pic_locked)
+                    .error(R.drawable.shape_default_image)
                     .into(view);
         }
 
@@ -111,12 +104,9 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnImageClickListener != null) {
+                        mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
                     }
                 });
     }

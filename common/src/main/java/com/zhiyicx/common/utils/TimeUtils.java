@@ -465,7 +465,7 @@ public class TimeUtils {
     public static String string2_ToDya_Yesterday_Week(String timeStr) {
         long time = utc2LocalLong(timeStr);
         Date otherDay = new Date(time);
-        int intervalDays = getifferenceDays(time);
+        int intervalDays = Math.abs(getifferenceDays(time));
         String[] weeks = {"周日", "周一", "周二", "周三", "周四", "周五", "周六", "今天", "昨天"};
         Calendar cal = Calendar.getInstance();
         cal.setTime(otherDay);
