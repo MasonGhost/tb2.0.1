@@ -80,4 +80,10 @@ public interface IAuthRepository {
     IMConfig getIMConfig();
 
     void loginIM();
+
+    /**
+     * token 是否过期
+     * @return
+     */
+     boolean isNeededRefreshToken();
 }

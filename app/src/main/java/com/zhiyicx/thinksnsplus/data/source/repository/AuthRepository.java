@@ -104,7 +104,7 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public void refreshToken() {
         AuthBean authBean = getAuthBean();
-        if (!isNeededRefreshToken(authBean)) {
+        if (!isNeededRefreshToken()) {
             return;
         }
         CommonClient commonClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
@@ -207,7 +207,9 @@ public class AuthRepository implements IAuthRepository {
      *
      * @return
      */
-    private boolean isNeededRefreshToken(AuthBean authBean) {
+    @Override
+    public boolean isNeededRefreshToken() {
+        AuthBean authBean = getAuthBean();
         if (authBean == null) {// 没有token，不需要刷新
             return false;
         }

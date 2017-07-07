@@ -140,7 +140,13 @@ public class AppApplication extends TSApplication {
                 } catch (JsonSyntaxException e) {
 //                    LogUtils.e("Invalid Json length:::"+httpResult.length());
                 }
-
+                if (response.code() == 401) {
+                    if (mAuthRepository.isNeededRefreshToken()) {
+                        handleAuthFail(getString(R.string.auth_fail_relogin));
+                    } else {
+                        handleAuthFail(getString(R.string.code_1015));
+                    }
+                }
                 String tipStr = null;
                 if (baseJson != null) {
                     switch (baseJson.getCode()) {
@@ -357,7 +363,7 @@ public class AppApplication extends TSApplication {
     }
 
     public static String getTOKEN() {
-        return "Bearer "+(AppApplication.mCurrentLoginAuth==null?"":AppApplication.mCurrentLoginAuth.getToken());
+        return "Bearer " + (AppApplication.mCurrentLoginAuth == null ? "" : AppApplication.mCurrentLoginAuth.getToken());
     }
 
     public static HttpProxyCacheServer getProxy() {
