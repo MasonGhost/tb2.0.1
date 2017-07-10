@@ -38,6 +38,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
@@ -82,9 +83,10 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
-
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
     @Inject
     AuthRepository mAuthRepository;
     @Inject
@@ -308,10 +310,12 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(position));
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC_V2);
         HashMap<String, Object> params = new HashMap<>();
         // feed_mark作为参数
         params.put("params", mRootView.getListDatas().get(position).getFeed_mark());
+        params.put("sendDynamicDataBean", mSendDynamicDataBeanV2GreenDao.getSendDynamicDataBeanV2ByFeedMark
+                (String.valueOf(mRootView.getListDatas().get(position).getFeed_mark())));
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }

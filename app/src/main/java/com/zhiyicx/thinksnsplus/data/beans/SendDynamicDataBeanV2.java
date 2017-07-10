@@ -4,9 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.common.utils.ConvertUtils;
+
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Author Jliuer
@@ -14,6 +22,7 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@Entity
 public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
     private static final long serialVersionUID = 4113706643912669235L;
 
@@ -28,17 +37,42 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
      * feed_geohash : GdUDHyfghjd==
      * amount : 450
      */
-
+    @Id(autoincrement = true)
+    private Long id;
     private String feed_title;
     private String feed_content;
     private String feed_from;
+    @Unique
     private String feed_mark;
     private String feed_latitude;
     private String feed_longtitude;
     private String feed_geohash;
     private Float amount;
+    @Convert(columnType =String.class ,converter = StorygeConvert.class)
     private List<StorageTaskBean> images;
+    @Convert(converter = ImageBeanConvert.class,columnType = String.class)
     private List<ImageBean> photos;
+
+    @Generated(hash = 1460122068)
+    public SendDynamicDataBeanV2(Long id, String feed_title, String feed_content, String feed_from,
+            String feed_mark, String feed_latitude, String feed_longtitude, String feed_geohash, Float amount,
+            List<StorageTaskBean> images, List<ImageBean> photos) {
+        this.id = id;
+        this.feed_title = feed_title;
+        this.feed_content = feed_content;
+        this.feed_from = feed_from;
+        this.feed_mark = feed_mark;
+        this.feed_latitude = feed_latitude;
+        this.feed_longtitude = feed_longtitude;
+        this.feed_geohash = feed_geohash;
+        this.amount = amount;
+        this.images = images;
+        this.photos = photos;
+    }
+
+    @Generated(hash = 2015642899)
+    public SendDynamicDataBeanV2() {
+    }
 
     public List<ImageBean> getPhotos() {
         return photos;
@@ -200,6 +234,61 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         return sendDynamicDataBeanV2;
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<StorageTaskBean> getImages() {
+        return this.images;
+    }
+
+    public void setImages(List<StorageTaskBean> images) {
+        this.images = images;
+    }
+
+
+
+    public static class StorygeConvert implements PropertyConverter<List<StorageTaskBean>,String>{
+        @Override
+        public List<StorageTaskBean> convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(List<StorageTaskBean> entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
+    public static class ImageBeanConvert implements PropertyConverter<List<ImageBean>,String>{
+        @Override
+        public List<ImageBean> convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(List<ImageBean> entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -207,6 +296,7 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
         dest.writeString(this.feed_title);
         dest.writeString(this.feed_content);
         dest.writeString(this.feed_from);
@@ -214,14 +304,13 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         dest.writeString(this.feed_latitude);
         dest.writeString(this.feed_longtitude);
         dest.writeString(this.feed_geohash);
-        dest.writeFloat(this.amount);
+        dest.writeValue(this.amount);
         dest.writeTypedList(this.images);
-    }
-
-    public SendDynamicDataBeanV2() {
+        dest.writeTypedList(this.photos);
     }
 
     protected SendDynamicDataBeanV2(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_title = in.readString();
         this.feed_content = in.readString();
         this.feed_from = in.readString();
@@ -229,8 +318,9 @@ public class SendDynamicDataBeanV2 implements Serializable, Parcelable {
         this.feed_latitude = in.readString();
         this.feed_longtitude = in.readString();
         this.feed_geohash = in.readString();
-        this.amount = in.readFloat();
+        this.amount = (Float) in.readValue(Float.class.getClassLoader());
         this.images = in.createTypedArrayList(StorageTaskBean.CREATOR);
+        this.photos = in.createTypedArrayList(ImageBean.CREATOR);
     }
 
     public static final Creator<SendDynamicDataBeanV2> CREATOR = new Creator<SendDynamicDataBeanV2>() {
