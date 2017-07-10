@@ -264,7 +264,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             if (showCommentList) {
                 // 设置评论内容
                 DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-                if (dynamicBean.getComments() == null || dynamicBean.getComments().size() == 0) {
+                if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
                     comment.setVisibility(View.GONE);
                 } else {
                     comment.setVisibility(View.VISIBLE);

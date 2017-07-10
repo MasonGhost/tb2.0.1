@@ -71,59 +71,41 @@ public class DynamicListCommentView extends LinearLayout {
     private void setListener() {
         RxView.clicks(mMoreComment)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // JITTER_SPACING_TIME秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnMoreCommentClickListener != null) {
-                            mOnMoreCommentClickListener.onMoreCommentClick(mMoreComment, mDynamicBean);
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnMoreCommentClickListener != null) {
+                        mOnMoreCommentClickListener.onMoreCommentClick(mMoreComment, mDynamicBean);
                     }
                 });
-        mDynamicNoPullRecycleView.setOnUserNameClickListener(new DynamicNoPullRecycleView.OnUserNameClickListener() {
-            @Override
-            public void onUserNameClick(UserInfoBean userInfoBean) {
+        mDynamicNoPullRecycleView.setOnUserNameClickListener(userInfoBean -> {
 
-                if (!mIsUserNameClick) {
-                    if (mOnCommentClickListener != null) {
-                        mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
-                        mIsUserNameClick = true;
-                    }
-                }
-            }
-        });
-        mDynamicNoPullRecycleView.setOnIitemClickListener(new SimpleTextNoPullRecycleView.OnIitemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-
-                if (!mIsUserNameClick) {
-                    if (mOnCommentClickListener != null) {
-                        mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
-                    }
-                } else {
-                    mIsUserNameClick = false;
-
-                }
-            }
-        });
-        mDynamicNoPullRecycleView.setOnUserNameLongClickListener(new DynamicNoPullRecycleView.OnUserNameLongClickListener() {
-            @Override
-            public void onUserNameLongClick(UserInfoBean userInfoBean) {
-                if (!mIsUserNameClick) {
+            if (!mIsUserNameClick) {
+                if (mOnCommentClickListener != null) {
+                    mOnCommentClickListener.onCommentUserInfoClick(userInfoBean);
                     mIsUserNameClick = true;
                 }
             }
         });
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mDynamicNoPullRecycleView.setOnIitemClickListener((view, position) -> {
+
+            if (!mIsUserNameClick) {
+                if (mOnCommentClickListener != null) {
+                    mOnCommentClickListener.onCommentContentClick(mDynamicBean, position);
+                }
+            } else {
+                mIsUserNameClick = false;
+
             }
         });
-        mDynamicNoPullRecycleView.setOnCommentStateClickListener(new DynamicNoPullRecycleView.OnCommentStateClickListener() {
-            @Override
-            public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
-                if (mOnCommentStateClickListener != null) {
-                    mOnCommentStateClickListener.onCommentStateClick(dynamicCommentBean, position);
-                }
+        mDynamicNoPullRecycleView.setOnUserNameLongClickListener(userInfoBean -> {
+            if (!mIsUserNameClick) {
+                mIsUserNameClick = true;
+            }
+        });
+        setOnClickListener(v -> {
+        });
+        mDynamicNoPullRecycleView.setOnCommentStateClickListener((dynamicCommentBean, position) -> {
+            if (mOnCommentStateClickListener != null) {
+                mOnCommentStateClickListener.onCommentStateClick(dynamicCommentBean, position);
             }
         });
     }
@@ -136,7 +118,7 @@ public class DynamicListCommentView extends LinearLayout {
     public void setData(DynamicDetailBeanV2 dynamicBean) {
         mDynamicBean = dynamicBean;
         List<DynamicCommentBean> data = new ArrayList<>();
-        if (dynamicBean.getComments() != null) {
+        if (dynamicBean.getComments() != null && !dynamicBean.getComments().isEmpty()) {
             if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
                 for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
                     data.add(dynamicBean.getComments().get(i));
