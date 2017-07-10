@@ -206,70 +206,53 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         RxView.clicks(mBtRechargeStyle)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        DeviceUtils.hideSoftKeyboard(getContext(), mBtRechargeStyle);
-                        initPayStylePop();
-                    }
+                .subscribe(aVoid -> {
+                    DeviceUtils.hideSoftKeyboard(getContext(), mBtRechargeStyle);
+                    initPayStylePop();
                 });
         // 确认
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mPresenter.getPayStr(mPayType, mRechargeMoney * MONEY_UNIT);
-                    }
-                });
+                .subscribe(aVoid -> mPresenter.getPayStr(mPayType, mRechargeMoney * MONEY_UNIT));
 
-        RxTextView.textChanges(mEtInput).subscribe(new Action1<CharSequence>() {
-            @Override
-            public void call(CharSequence charSequence) {
-                String mRechargeMoneyStr = charSequence.toString();
-                if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0) {
-                    mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
-                    if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
-                        mRbDaysGroup.clearCheck();
-                    }
-                } else {
-                    mRechargeMoney = 0;
+        RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
+            String mRechargeMoneyStr = charSequence.toString();
+            if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0) {
+                mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
+                if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
+                    mRbDaysGroup.clearCheck();
                 }
-                configSureButton();
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                throwable.printStackTrace();
-                setCustomMoneyDefault();
+            } else {
                 mRechargeMoney = 0;
-                configSureButton();
             }
+            configSureButton();
+        }, throwable -> {
+            throwable.printStackTrace();
+            setCustomMoneyDefault();
+            mRechargeMoney = 0;
+            configSureButton();
         });
 
         RxRadioGroup.checkedChanges(mRbDaysGroup)
                 .compose(this.<Integer>bindToLifecycle())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer checkedId) {
-                        if (checkedId != -1) {
-                            setCustomMoneyDefault();
-                        }
-                        switch (checkedId) {
-                            case R.id.rb_one:
-                                mRechargeMoney = mRechargeLables.get(0);
-                                break;
-                            case R.id.rb_two:
-                                mRechargeMoney = mRechargeLables.get(1);
-                                break;
-                            case R.id.rb_three:
-                                mRechargeMoney = mRechargeLables.get(2);
-                                break;
-                        }
-                        if (checkedId != -1) {
-                            configSureButton();
-                        }
+                .subscribe(checkedId -> {
+                    if (checkedId != -1) {
+                        setCustomMoneyDefault();
+                    }
+                    switch (checkedId) {
+                        case R.id.rb_one:
+                            mRechargeMoney = mRechargeLables.get(0);
+                            break;
+                        case R.id.rb_two:
+                            mRechargeMoney = mRechargeLables.get(1);
+                            break;
+                        case R.id.rb_three:
+                            mRechargeMoney = mRechargeLables.get(2);
+                            break;
+                    }
+                    if (checkedId != -1) {
+                        configSureButton();
                     }
                 });
 
@@ -303,30 +286,19 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPayType = TSPayClient.CHANNEL_ALIPAY;
-                        mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.alipay)));
-                        mPayStylePopupWindow.hide();
-                        configSureButton();
-                    }
+                .item2ClickListener(() -> {
+                    mPayType = TSPayClient.CHANNEL_ALIPAY;
+                    mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.alipay)));
+                    mPayStylePopupWindow.hide();
+                    configSureButton();
                 })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPayType = TSPayClient.CHANNEL_WXPAY;
-                        mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
-                        mPayStylePopupWindow.hide();
-                        configSureButton();
-                    }
+                .item3ClickListener(() -> {
+                    mPayType = TSPayClient.CHANNEL_WXPAY;
+                    mBtRechargeStyle.setRightText(getString(R.string.choose_recharge_style_formart, getString(R.string.wxpay)));
+                    mPayStylePopupWindow.hide();
+                    configSureButton();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPayStylePopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mPayStylePopupWindow.hide())
                 .build();
         mPayStylePopupWindow.show();
     }
@@ -348,12 +320,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mRechargeInstructionsPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mRechargeInstructionsPopupWindow.hide())
                 .build();
         mRechargeInstructionsPopupWindow.show();
     }

@@ -126,6 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginTop="@dimen/spacing_normal"
+                android:id="@+id/tv_word_limit"
                 android:text="@string/dynamic_send_toll_notes"
                 android:textColor="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_content_comment"/>

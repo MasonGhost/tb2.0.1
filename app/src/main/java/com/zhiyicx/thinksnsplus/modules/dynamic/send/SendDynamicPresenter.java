@@ -1,19 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -109,11 +104,18 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         mRootView.packageDynamicStorageDataV2(sendDynamicDataBeanV2);
 
         if (mRootView.hasTollVerify()) {// 当设置图片收费时，最少配置一张图
-            mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.dynamic_send_toll_toll_verify));
+            mRootView.initInstructionsPop("说明",mContext.getString(R.string.dynamic_send_toll_toll_verify));
+//            mRootView.showSnackErrorMessage(mContext.getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
-        if ((sendDynamicDataBeanV2.getPhotos().isEmpty()&&mRootView.getTollMoney() == 0d )|| mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {// 文字收费金额整数限制
-            mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.limit_monye));
+        if (mRootView.wordsNumLimit() && sendDynamicDataBeanV2.getFeed_content().length() <= 50) {
+            mRootView.initInstructionsPop("说明",String.format(mContext.getString(R.string.dynamic_send_toll_notes), 50));
+//            mRootView.showSnackErrorMessage(String.format(mContext.getString(R.string.dynamic_send_toll_notes), 50));
+            return;
+        }
+        if ((sendDynamicDataBeanV2.getPhotos().isEmpty() && mRootView.getTollMoney() == 0d) || mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {// 文字收费金额整数限制
+            mRootView.initInstructionsPop("说明",mContext.getResources().getString(R.string.limit_monye));
+//            mRootView.showSnackErrorMessage(mContext.getResources().getString(R.string.limit_monye));
             return;
         }
 

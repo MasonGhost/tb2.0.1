@@ -38,6 +38,7 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -91,6 +92,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     LinearLayout ll_send_dynamic;
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
+    @BindView(R.id.tv_word_limit)
+    TextView mTvWordsLimit;
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
     @BindView(R.id.rb_two)
@@ -119,6 +122,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     private double mTollMoney;
     private String mRechargeMoneyStr;
+
+    private ActionPopupWindow mInstructionsPopupWindow;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -225,6 +230,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void initWordsToll() {
+        mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), 50));
         mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             mRechargeMoneyStr = charSequence.toString();
@@ -399,6 +405,35 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mPresenter.sendDynamicV2(packageDynamicData());
     }
 
+    /**
+     * 封装动态上传的数据
+     */
+    @Override
+    public void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
+        List<SendDynamicDataBeanV2.StorageTaskBean> storage_task = new ArrayList<>();
+        List<ImageBean> photos = new ArrayList<>();
+        if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
+            for (int i = 0; i < selectedPhotos.size(); i++) {
+                if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
+                    SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
+                    ImageBean imageBean = selectedPhotos.get(i);
+                    photos.add(imageBean);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? imageBean.getToll_monye() : null);
+                    taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
+                            ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
+                    storage_task.add(taskBean);
+                }
+            }
+        }
+        sendDynamicDataBeanV2.setPhotos(photos);
+        sendDynamicDataBeanV2.setStorage_task(storage_task);
+    }
+
+    @Override
+    public boolean wordsNumLimit() {
+        return mLLToll.getVisibility() == View.VISIBLE;
+    }
+
     private void setLeftTextColor() {
         mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
     }
@@ -488,30 +523,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     /**
-     * 封装动态上传的数据
-     */
-    @Override
-    public void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
-        List<SendDynamicDataBeanV2.StorageTaskBean> storage_task = new ArrayList<>();
-        List<ImageBean> photos = new ArrayList<>();
-        if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
-            for (int i = 0; i < selectedPhotos.size(); i++) {
-                if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
-                    SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
-                    ImageBean imageBean = selectedPhotos.get(i);
-                    photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye()>0?imageBean.getToll_monye():null);
-                    taskBean.setType(imageBean.getToll_monye()*imageBean.getToll_type()>0
-                            ?(imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE):null);
-                    storage_task.add(taskBean);
-                }
-            }
-        }
-        sendDynamicDataBeanV2.setPhotos(photos);
-        sendDynamicDataBeanV2.setStorage_task(storage_task);
-    }
-
-    /**
      * 初始化图片列表
      */
     private void initPhotoList(Bundle bundle) {
@@ -568,7 +579,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                             .load(imageBean.getImgUrl())
                             .placeholder(R.drawable.shape_default_image)
                             .error(R.drawable.shape_default_image)
-                            .override(convertView.getLayoutParams().width,convertView.getLayoutParams().height)
+                            .override(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
                             .into(imageView);
 
                 }
@@ -694,6 +705,26 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 return false;
             }
         }
+    }
+
+    @Override
+    public void initInstructionsPop(String title, String des) {
+        if (mInstructionsPopupWindow != null) {
+            mInstructionsPopupWindow.newBuilder().item1Str(title).desStr(des);
+            mInstructionsPopupWindow.show();
+            return;
+        }
+        mInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(title)
+                .desStr(des)
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                .build();
+        mInstructionsPopupWindow.show();
     }
 
 }
