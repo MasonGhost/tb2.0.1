@@ -64,7 +64,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DEL
 
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean>
         implements DynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
-        OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener ,DynamicDetailHeader.OnImageClickLisenter {
+        OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, DynamicDetailHeader.OnImageClickLisenter {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
@@ -140,6 +140,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    protected boolean needCenterLoadingDialog() {
+        return true;
+    }
+
+    @Override
     protected int getstatusbarAndToolbarHeight() {
         return 0;
     }
@@ -198,24 +203,16 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 });
         RxView.clicks(mTvToolbarCenter)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        onUserInfoClick(mDynamicBean.getUserInfoBean());
-                    }
-                });
+                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
         mIlvComment.setOnSendClickListener(this);
-        mToolbar.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility) {
+        mToolbar.setOnSystemUiVisibilityChangeListener(visibility -> {
 
-            }
         });
     }
 
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mDynamicDetailHeader = new DynamicDetailHeader(getContext(),mPresenter.getAdvert());
+        mDynamicDetailHeader = new DynamicDetailHeader(getContext(), mPresenter.getAdvert());
         mDynamicDetailHeader.setOnImageClickLisenter(this);
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
         View mFooterView = new View(getContext());
@@ -277,8 +274,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void onImageClick(int iamgePosition, double amount,int note) {
-        initImageCenterPopWindow(iamgePosition,(float) amount,note);
+    public void onImageClick(int iamgePosition, double amount, int note) {
+        initImageCenterPopWindow(iamgePosition, (float) amount, note);
     }
 
     public static DynamicDetailFragment initFragment(Bundle bundle) {
@@ -298,8 +295,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
         Glide.with(getContext())
                 .load(ImageUtils.imagePathConvertV2(Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar())
-                        ,headIconWidth
-                        ,headIconWidth
+                        , headIconWidth
+                        , headIconWidth
                         , ImageZipConfig.IMAGE_26_ZIP))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
                 .placeholder(R.mipmap.pic_default_portrait1)
@@ -343,6 +340,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public DynamicDetailBeanV2 getCurrentDynamic() {
         return mDynamicBean;
+    }
+
+    @Override
+    public void updateDynamic(DynamicDetailBeanV2 detailBeanV2) {
+        mDynamicBean = detailBeanV2;
+        reLaodImage();
     }
 
     @Override
@@ -457,37 +460,34 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * 设置底部工具栏的点击事件
      */
     private void initBottomToolListener() {
-        mDdDynamicTool.setItemOnClick(new DynamicDetailMenuView.OnItemClickListener() {
-            @Override
-            public void onItemClick(ViewGroup parent, View v, int postion) {
-                mDdDynamicTool.getTag(R.id.view_data);
-                switch (postion) {
-                    case DynamicDetailMenuView.ITEM_POSITION_0:
-                        // 处理喜欢逻辑，包括服务器，数据库，ui
-                        mPresenter.handleLike(!mDynamicBean.isHas_digg(),
-                                mDynamicBean.getId(), mDynamicBean);
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_1:
-                        // 评论
-                        showCommentView();
-                        mReplyUserId = 0;
-                        mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_2:
-                        // 分享
-                        mPresenter.shareDynamic(getCurrentDynamic(),mDynamicDetailHeader.getSharBitmap());
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_3:
-                        // 处理喜欢逻辑，包括服务器，数据库，ui
-                        if (mDynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-                            initMyDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
-                            mMyDynamicPopWindow.show();
-                        } else {
-                            initOtherDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
-                            mOtherDynamicPopWindow.show();
-                        }
-                        break;
-                }
+        mDdDynamicTool.setItemOnClick((parent, v, postion) -> {
+            mDdDynamicTool.getTag(R.id.view_data);
+            switch (postion) {
+                case DynamicDetailMenuView.ITEM_POSITION_0:
+                    // 处理喜欢逻辑，包括服务器，数据库，ui
+                    mPresenter.handleLike(!mDynamicBean.isHas_digg(),
+                            mDynamicBean.getId(), mDynamicBean);
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_1:
+                    // 评论
+                    showCommentView();
+                    mReplyUserId = 0;
+                    mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_2:
+                    // 分享
+                    mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_3:
+                    // 处理喜欢逻辑，包括服务器，数据库，ui
+                    if (mDynamicBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                        initMyDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
+                        mMyDynamicPopWindow.show();
+                    } else {
+                        initOtherDynamicPopupWindow(mDynamicBean, mDynamicBean.getHas_collect());
+                        mOtherDynamicPopWindow.show();
+                    }
+                    break;
             }
         });
     }
@@ -578,19 +578,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                        mPresenter.deleteCommentV2(comment_id, commentPosition);
-                    }
+                .item1ClickListener(() -> {
+                    mDeletCommentPopWindow.hide();
+                    mPresenter.deleteCommentV2(comment_id, commentPosition);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
     }
 
@@ -609,26 +601,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 收藏
-                        mPresenter.handleCollect(dynamicBean);
-                        mOtherDynamicPopWindow.hide();
-                    }
+                .item1ClickListener(() -> {// 收藏
+                    mPresenter.handleCollect(dynamicBean);
+                    mOtherDynamicPopWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 分享
-                        mPresenter.shareDynamic(getCurrentDynamic(),mDynamicDetailHeader.getSharBitmap());
-                        mOtherDynamicPopWindow.hide();
-                    }
+                .item2ClickListener(() -> {// 分享
+                    mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
+                    mOtherDynamicPopWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mOtherDynamicPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mOtherDynamicPopWindow.hide())
                 .build();
     }
 
@@ -648,33 +629,21 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 收藏
-                        mPresenter.handleCollect(dynamicBean);
-                        mMyDynamicPopWindow.hide();
-                    }
+                .item1ClickListener(() -> {// 收藏
+                    mPresenter.handleCollect(dynamicBean);
+                    mMyDynamicPopWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 删除
-                        EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
-                        mMyDynamicPopWindow.hide();
-                        getActivity().finish();
-                    }
+                .item2ClickListener(() -> {// 删除
+                    EventBus.getDefault().post(dynamicBean, DYNAMIC_LIST_DELETE_UPDATE);
+                    mMyDynamicPopWindow.hide();
+                    getActivity().finish();
                 })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 分享
-                        mPresenter.shareDynamic(getCurrentDynamic(),mDynamicDetailHeader.getSharBitmap());
-                        mMyDynamicPopWindow.hide();
-                    }
+                .item3ClickListener(() -> {// 分享
+                    mPresenter.shareDynamic(getCurrentDynamic(), mDynamicDetailHeader.getSharBitmap());
+                    mMyDynamicPopWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {//取消
-                        mMyDynamicPopWindow.hide();
-                    }
+                .bottomClickListener(() -> {//取消
+                    mMyDynamicPopWindow.hide();
                 })
                 .build();
     }
@@ -700,21 +669,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
-                .buildCenterPopWindowItem1ClickListener(new PayPopWindow
-                        .CenterPopWindowItem1ClickListener() {
-                    @Override
-                    public void onClicked() {
-                        mPresenter.payNote(imagePosition, note);
-                        mPayImagePopWindow.hide();
-                    }
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(imagePosition, note);
+                    mPayImagePopWindow.hide();
                 })
-                .buildCenterPopWindowItem2ClickListener(new PayPopWindow
-                        .CenterPopWindowItem2ClickListener() {
-                    @Override
-                    public void onClicked() {
-                        mPayImagePopWindow.hide();
-                    }
-                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
                 .buildCenterPopWindowLinkClickListener(new PayPopWindow
                         .CenterPopWindowLinkClickListener() {
                     @Override

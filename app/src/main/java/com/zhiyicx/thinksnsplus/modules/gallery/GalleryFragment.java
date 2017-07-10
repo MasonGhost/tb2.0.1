@@ -174,7 +174,6 @@ public class GalleryFragment extends TSFragment {
             // Return a PlaceholderFragment (defined as a static inner class below).
             GalleryPictureContainerFragment fragment = fragmentMap.get(position);
             if (fragment == null) {
-
                 boolean animateIn = (currentItem == position) && !alreadyAnimateIn;
                 allImages.get(position).setPosition(position);
                 fragment = GalleryPictureContainerFragment

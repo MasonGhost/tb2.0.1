@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -55,7 +56,6 @@ public class DynamicDetailHeader {
     private int screenWidth;
     private int picWidth;
     private Bitmap sharBitmap;
-    private int position;
 
     private OnImageClickLisenter mOnImageClickLisenter;
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
@@ -91,13 +91,7 @@ public class DynamicDetailHeader {
         }
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(adverts);
-        mDynamicDetailAdvertHeader.setOnItemClickListener(new DynamicDetailAdvertHeader
-                .OnItemClickListener() {
-            @Override
-            public void onItemClik(View v, int position, String url) {
-                ToastUtils.showToast(position + "");
-            }
-        });
+        mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) -> ToastUtils.showToast(position1 + ""));
     }
 
     /**
@@ -144,6 +138,7 @@ public class DynamicDetailHeader {
 
     public void updateImage(DynamicDetailBeanV2 dynamicBean) {
         List<DynamicDetailBeanV2.ImagesBean> photoList = dynamicBean.getImages();
+        mPhotoContainer.removeAllViews();
         for (int i = 0; i < photoList.size(); i++) {
             showContentImage(mContext, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
         }
@@ -179,16 +174,13 @@ public class DynamicDetailHeader {
         dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);
 
         // 设置跳转到点赞列表
-        dynamicHorizontalStackIconView.setDigContainerClickListener(new DynamicHorizontalStackIconView.DigContainerClickListener() {
-            @Override
-            public void digContainerClick(View digContainer) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(DigListFragment.DIG_LIST_DATA, dynamicBean);
-                Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity
-                        .class);
-                intent.putExtras(bundle);
-                mDynamicDetailHeader.getContext().startActivity(intent);
-            }
+        dynamicHorizontalStackIconView.setDigContainerClickListener(digContainer -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(DigListFragment.DIG_LIST_DATA, dynamicBean);
+            Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity
+                    .class);
+            intent.putExtras(bundle);
+            mDynamicDetailHeader.getContext().startActivity(intent);
         });
         if (dynamicBean.getFeed_comment_count() <= 0) {
             fl_comment_count_container.setVisibility(View.GONE);
@@ -230,13 +222,18 @@ public class DynamicDetailHeader {
                 imageView.setLayoutParams(layoutParams);
             }
             imageView.setLayoutParams(layoutParams);
-            Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), picWidth, height, part, AppApplication.getTOKEN()))
-                    .override(picWidth, height)
-                    .placeholder(R.drawable.shape_default_image)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.mipmap.pic_locked)
-                    .into(imageView);
+            DrawableRequestBuilder requestBuilder =
+                    Glide.with(mContext)
+                            .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), picWidth,
+                                    height, part, AppApplication.getTOKEN()))
+                            .override(picWidth, height)
+                            .placeholder(R.drawable.shape_default_image)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .error(R.mipmap.pic_locked);
+            if (!canLook) {// 切换展位图防止闪屏
+                requestBuilder.placeholder(R.mipmap.pic_locked);
+            }
+            requestBuilder.into(imageView);
         } else {
             Glide.with(mContext)
                     .load(imageBean.getImgUrl())
@@ -258,44 +255,41 @@ public class DynamicDetailHeader {
         final List<ImageBean> imageBeanList = new ArrayList<>();
         for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
             final View photoView = mPhotoContainer.getChildAt(i);
-            position = i;
+            int imagePosition = i;
             ImageView imageView = (ImageView) photoView.findViewById(R.id.dynamic_content_img);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    animationRectBeanArrayList.clear();
-                    DynamicDetailBeanV2.ImagesBean img = photoList.get(position);
-                    Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
-                    if (!canLook) {
-                        mOnImageClickLisenter.onImageClick(position, img.getAmount(),photoList.get(position).getPaid_node());
-                        return;
-                    }
-
-                    for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
-                        View photoView = mPhotoContainer.getChildAt(i);
-                        ImageView imageView = (ImageView) photoView.findViewById(R.id
-                                .dynamic_content_img);
-                        DynamicDetailBeanV2.ImagesBean task = photoList.get(i);
-                        ImageBean imageBean = new ImageBean();
-                        imageBean.setImgUrl(task.getImgUrl());
-                        Toll toll = new Toll();
-                        toll.setPaid(task.isPaid());
-                        toll.setToll_money((float) task.getAmount());
-                        toll.setToll_type_string(task.getType());
-                        toll.setPaid_node(task.getPaid_node());
-                        imageBean.setToll(toll);
-                        imageBean.setFeed_id(dynamicBean.getId());
-                        imageBean.setWidth(task.getWidth());
-                        imageBean.setHeight(task.getHeight());
-                        imageBean.setStorage_id(task.getFile());
-                        imageBeanList.add(imageBean);
-                        AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
-                        animationRectBeanArrayList.add(rect);
-                    }
-
-                    GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild
-                            (photoView), imageBeanList, animationRectBeanArrayList);
+            imageView.setOnClickListener(v -> {
+                animationRectBeanArrayList.clear();
+                DynamicDetailBeanV2.ImagesBean img = photoList.get(imagePosition);
+                Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
+                if (!canLook) {
+                    mOnImageClickLisenter.onImageClick(imagePosition, img.getAmount(), photoList.get(imagePosition).getPaid_node());
+                    return;
                 }
+
+                for (int i1 = 0; i1 < mPhotoContainer.getChildCount(); i1++) {
+                    View photoView1 = mPhotoContainer.getChildAt(i1);
+                    ImageView imageView1 = (ImageView) photoView1.findViewById(R.id
+                            .dynamic_content_img);
+                    DynamicDetailBeanV2.ImagesBean task = photoList.get(i1);
+                    ImageBean imageBean = new ImageBean();
+                    imageBean.setImgUrl(task.getImgUrl());// 本地地址，也许有
+                    Toll toll = new Toll(); // 收费信息
+                    toll.setPaid(task.isPaid());// 是否已經付費
+                    toll.setToll_money((float) task.getAmount());// 付费金额
+                    toll.setToll_type_string(task.getType());// 付费类型
+                    toll.setPaid_node(task.getPaid_node());// 付费节点
+                    imageBean.setToll(toll);
+                    imageBean.setFeed_id(dynamicBean.getId());// 动态id
+                    imageBean.setWidth(task.getWidth());// 图片宽高
+                    imageBean.setHeight(task.getHeight());
+                    imageBean.setStorage_id(task.getFile());// 图片附件id
+                    imageBeanList.add(imageBean);
+                    AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView1);// 动画矩形
+                    animationRectBeanArrayList.add(rect);
+                }
+
+                GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild
+                        (photoView), imageBeanList, animationRectBeanArrayList);
             });
         }
     }
@@ -309,7 +303,7 @@ public class DynamicDetailHeader {
     }
 
     public interface OnImageClickLisenter {
-        void onImageClick(int iamgePosition, double amount,int note);
+        void onImageClick(int iamgePosition, double amount, int note);
     }
 
 }

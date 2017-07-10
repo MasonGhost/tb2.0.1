@@ -608,6 +608,12 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     }
 
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
+    public void updateDynamic(Bundle data) {
+        DynamicDetailBeanV2 dynamicBean = data.getParcelable(DYNAMIC_DETAIL_DATA);
+        mRootView.updateDynamic(dynamicBean);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -656,15 +662,15 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     }
 
                     @Override
-                    protected void onFailure(String message, int code) {
-                        super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage(message);
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
 
                     @Override
-                    protected void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override

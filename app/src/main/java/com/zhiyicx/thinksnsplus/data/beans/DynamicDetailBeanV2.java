@@ -526,6 +526,25 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
                 return new ImagesBean[size];
             }
         };
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ImagesBean that = (ImagesBean) o;
+
+            if (file != that.file) return false;
+            return paid_node == that.paid_node;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = file;
+            result = 31 * result + paid_node;
+            return result;
+        }
     }
 
     public static class PaidNote implements Serializable, Parcelable {
