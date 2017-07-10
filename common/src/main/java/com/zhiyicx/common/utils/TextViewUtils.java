@@ -122,7 +122,7 @@ public class TextViewUtils {
 
         if (mTextView.getLineCount() > mMaxLineNums) {
             int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-            mOriMsg = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
+            mOriMsg = mOriMsg.subSequence(50, endOfLastLine - 2) + "...";
         }
         if (!mCanRead) {
             mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效

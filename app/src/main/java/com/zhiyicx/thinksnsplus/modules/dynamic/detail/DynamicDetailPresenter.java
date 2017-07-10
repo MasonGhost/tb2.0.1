@@ -656,8 +656,11 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     protected void onSuccess(BaseJsonV2 data) {
                         mRootView.hideCenterLoading();
                         mRootView.getCurrentDynamic().getImages().get(imagePosition).setPaid(true);
-                        mRootView.reLaodImage();
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
+                        bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
+                        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
                     }
 

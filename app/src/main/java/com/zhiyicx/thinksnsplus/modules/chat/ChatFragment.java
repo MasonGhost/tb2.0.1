@@ -115,24 +115,21 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                        LogUtils.i(TAG + "---RxView   " + aBoolean);
-                        if (aBoolean) {
-                            if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
-                                mMessageList.scrollToBottom();
-                            }
-                            mKeyboradIsOpen = true;
-                        } else {
-                            //键盘隐藏
-                            mKeyboradIsOpen = false;
-//                            mIlvContainer.clearFocus();// 主动失去焦点
+                .subscribe(aBoolean -> {
+                    //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                    LogUtils.i(TAG + "---RxView   " + aBoolean);
+                    if (aBoolean) {
+                        if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
+                            mMessageList.scrollToBottom();
                         }
+                        mKeyboradIsOpen = true;
+                    } else {
+                        //键盘隐藏
+                        mKeyboradIsOpen = false;
+//                            mIlvContainer.clearFocus();// 主动失去焦点
+                    }
 //                        mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen);//      不需要隐藏
 
-                    }
                 });
         mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
         // 软键盘异常解决方案： 1： 使用      android:fitsSystemWindows="true"  2:        AndroidBug5497Workaround.assistActivity(getActivity());
@@ -319,20 +316,12 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        onResendClick(chatItemBean);
-                        mDeletCommentPopWindow.hide();
+                .item1ClickListener(() -> {
+                    onResendClick(chatItemBean);
+                    mDeletCommentPopWindow.hide();
 
-                    }
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
     }
 

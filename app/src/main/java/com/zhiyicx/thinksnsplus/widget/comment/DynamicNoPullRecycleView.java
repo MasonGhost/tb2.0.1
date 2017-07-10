@@ -23,7 +23,6 @@ import java.util.List;
  * @Date 2017/3/6
  * @Contact master.jungle68@gmail.com
  */
-
 public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<DynamicCommentBean> {
 
     private OnUserNameClickListener mOnUserNameClickListener;
@@ -51,33 +50,23 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         }
         holder.setText(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, setShowText(dynamicCommentBean, position));
         // Add the links and make the links clickable
-        ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_simple_text_comment), setLiknks(dynamicCommentBean, position));
+        ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_simple_text_comment), setLiknks(dynamicCommentBean, position));
 
-        holder.setOnClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnIitemClickListener != null) {
-                    mOnIitemClickListener.onItemClick(v, position);
-                }
+        holder.setOnClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, v -> {
+            if (mOnIitemClickListener != null) {
+                mOnIitemClickListener.onItemClick(v, position);
             }
         });
-        holder.setOnLongClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (mOnIitemLongClickListener != null) {
-                    mOnIitemLongClickListener.onItemLongClick(v, position);
-                }
-
-                return false;
+        holder.setOnLongClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, v -> {
+            if (mOnIitemLongClickListener != null) {
+                mOnIitemLongClickListener.onItemLongClick(v, position);
             }
 
+            return false;
         });
-        holder.setOnClickListener(com.zhiyicx.baseproject.R.id.iv_hint_img, new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnCommentStateClickListener != null) {
-                    mOnCommentStateClickListener.onCommentStateClick(dynamicCommentBean, position);
-                }
+        holder.setOnClickListener(com.zhiyicx.baseproject.R.id.iv_hint_img, v -> {
+            if (mOnCommentStateClickListener != null) {
+                mOnCommentStateClickListener.onCommentStateClick(dynamicCommentBean, position);
             }
         });
     }
@@ -88,50 +77,41 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
 
     protected List<Link> setLiknks(final DynamicCommentBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        Link commentNameLink = new Link(dynamicCommentBean.getCommentUser().getName())
-                .setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
-                .setHighlightAlpha(.8f)                                     // optional, defaults to .15f
-                .setUnderlined(false)                                       // optional, defaults to true
-                .setOnLongClickListener(new Link.OnLongClickListener() {
-                    @Override
-                    public void onLongClick(String clickedText) {
+        if (dynamicCommentBean.getCommentUser() != null) {// 我也不知道这个怎么会是 null
+            Link commentNameLink = new Link(dynamicCommentBean.getCommentUser().getName())
+                    .setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
+                    .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                    .setHighlightAlpha(.8f)                                     // optional, defaults to .15f
+                    .setUnderlined(false)                                       // optional, defaults to true
+                    .setOnLongClickListener(clickedText -> {
                         if (mOnUserNameLongClickListener != null) {
                             mOnUserNameLongClickListener.onUserNameLongClick(dynamicCommentBean.getReplyUser());
                         }
-                    }
-                })
-                .setOnClickListener(new Link.OnClickListener() {
-                    @Override
-                    public void onClick(String clickedText) {
+                    })
+                    .setOnClickListener(clickedText -> {
                         // single clicked
                         if (mOnUserNameClickListener != null) {
                             mOnUserNameClickListener.onUserNameClick(dynamicCommentBean.getCommentUser());
                         }
-                    }
-                });
-        links.add(commentNameLink);
+                    });
+            links.add(commentNameLink);
+        }
+
         if (dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReplyUser().getName() != null) {
             Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
                     .setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
-                    .setOnLongClickListener(new Link.OnLongClickListener() {
-                        @Override
-                        public void onLongClick(String clickedText) {
-                            if (mOnUserNameLongClickListener != null) {
-                                mOnUserNameLongClickListener.onUserNameLongClick(dynamicCommentBean.getReplyUser());
-                            }
+                    .setOnLongClickListener(clickedText -> {
+                        if (mOnUserNameLongClickListener != null) {
+                            mOnUserNameLongClickListener.onUserNameLongClick(dynamicCommentBean.getReplyUser());
                         }
                     })
-                    .setOnClickListener(new Link.OnClickListener() {
-                        @Override
-                        public void onClick(String clickedText) {
-                            // single clicked
-                            if (mOnUserNameClickListener != null) {
-                                mOnUserNameClickListener.onUserNameClick(dynamicCommentBean.getReplyUser());
-                            }
+                    .setOnClickListener(clickedText -> {
+                        // single clicked
+                        if (mOnUserNameClickListener != null) {
+                            mOnUserNameClickListener.onUserNameClick(dynamicCommentBean.getReplyUser());
                         }
                     });
             links.add(replyNameLink);

@@ -64,6 +64,9 @@ public class ConvertUtils {
      * @param links
      */
     public static void stringLinkConvert(TextView textView, List<Link> links) {
+        if (links.isEmpty()) {
+            return;
+        }
         LinkBuilder.on(textView)
                 .setFindOnlyFirstMatchesForAnyLink(true)
                 .addLinks(links)

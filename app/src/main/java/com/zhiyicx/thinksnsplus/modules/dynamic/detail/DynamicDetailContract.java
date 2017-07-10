@@ -91,8 +91,6 @@ public interface DynamicDetailContract {
          */
         void dynamicHasBeDeleted();
 
-        void reLaodImage();
-
         void updateDynamic(DynamicDetailBeanV2 detailBeanV2);
 
     }

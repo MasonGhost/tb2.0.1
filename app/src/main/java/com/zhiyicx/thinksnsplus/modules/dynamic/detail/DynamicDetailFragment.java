@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
@@ -345,7 +344,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void updateDynamic(DynamicDetailBeanV2 detailBeanV2) {
         mDynamicBean = detailBeanV2;
-        reLaodImage();
+        mDynamicDetailHeader.updateImage(mDynamicBean);
     }
 
     @Override
@@ -399,11 +398,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mTvToolbarRight.setVisibility(View.GONE);
         mTvToolbarCenter.setVisibility(View.GONE);
         showLoadViewLoadErrorDisableClick();
-    }
-
-    @Override
-    public void reLaodImage() {
-        mDynamicDetailHeader.updateImage(getCurrentDynamic());
     }
 
     private void setAllData() {
