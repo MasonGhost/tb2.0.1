@@ -107,14 +107,23 @@ public class TextViewUtils {
         if (mTextView == null) {
             throw new IllegalArgumentException("textView not be null");
         }
-        handleTextDisplay();
+        try {
+            handleTextDisplay();
+        } catch (Exception e) {
+            mTextView.setVisibility(View.VISIBLE);
+            mTextView.setText(mOriMsg);
+        }
         return this;
     }
 
 
-    private void handleTextDisplay() {
+    private void handleTextDisplay() throws Exception {
         mTextView.setVisibility(View.INVISIBLE);
-        mTextView.setText(getSpannableString(mOriMsg));
+
+        if (mTextView.getLineCount() > mMaxLineNums) {
+            int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
+            mOriMsg = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
+        }
         if (!mCanRead) {
             mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
             ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
@@ -123,18 +132,13 @@ public class TextViewUtils {
                 public void onGlobalLayout() {
                     ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
                     viewTreeObserver.removeOnGlobalLayoutListener(this);
-                    if (mTextView.getLineCount() > mMaxLineNums) {
-                        int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-                        try {
-                            mOriMsg = mTextView.getText().subSequence(0, endOfLastLine - 2) + "...";
-                        }catch (Exception e){
-
-                        }
-                        mTextView.setText(getSpannableString(mOriMsg));
-                        mTextView.setVisibility(View.VISIBLE);
-                    }
+                    mTextView.setText(getSpannableString(mOriMsg));
+                    mTextView.setVisibility(View.VISIBLE);
                 }
             });
+        }else{
+            mTextView.setVisibility(View.VISIBLE);
+            mTextView.setText(mOriMsg);
         }
     }
 
@@ -166,7 +170,7 @@ public class TextViewUtils {
         SpannableString spanableInfo = new SpannableString(temp);
         try {
             spanableInfo.setSpan(new SpanTextClickable(), mStartPos, mEndPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        }catch (Exception e){
+        } catch (Exception e) {
             spanableInfo.setSpan(new SpanTextClickable(), 0, temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return spanableInfo;
