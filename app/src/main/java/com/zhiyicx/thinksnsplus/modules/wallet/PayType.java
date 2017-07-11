@@ -22,4 +22,17 @@ public enum PayType {
     public String getAcount() {
         return value;
     }
+
+    public static String getValue(String s) {
+        String result = "";
+        switch (s) {
+            case "alipay":
+                result = ALIPAY.getAcount();
+                break;
+            case "wx":
+                result = WX.getAcount();
+                break;
+        }
+        return result;
+    }
 }

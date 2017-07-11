@@ -271,7 +271,7 @@
     <string name="transaction_account">交易账户</string>
     <string name="transaction_time">交易时间</string>
     <string name="transaction_success">交易成功</string>
-    <string name="bill_doing">操作中&#8230;</string>
+    <string name="bill_doing">操作中</string>
     <string name="transaction_fail">交易失败</string>
     <string name="transaction_doing">交易中&#8230;</string>
 
