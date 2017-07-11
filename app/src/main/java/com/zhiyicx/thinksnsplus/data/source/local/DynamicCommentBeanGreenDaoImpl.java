@@ -128,6 +128,9 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
     }
 
     public void insertOrReplace(List<DynamicCommentBean> newData) {
+        if (newData == null || newData.isEmpty()) {
+            return;
+        }
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         dynamicCommentBeanDao.insertOrReplaceInTx(newData);
     }
