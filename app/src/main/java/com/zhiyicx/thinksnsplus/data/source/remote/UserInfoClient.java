@@ -173,9 +173,19 @@ public interface UserInfoClient {
 
     /**
      * 读取通知
+     *
      * @param notificationId
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_NOTIFICATION_DETIAL)
     Observable<Void> getNotificationDetail(@Path("notification") String notificationId);
+
+    /**
+     * 标记通知阅读
+     *
+     * @param notificationId 通知ID，可以是由 , 拼接的 IDs 组，也可以是 Array
+     * @return
+     */
+    @PATCH(ApiConfig.APP_PATH_MAKE_NOTIFICAITON_READED)
+    Observable<Void> makeNotificationReaded(@Query("notification") String notificationId);
 }

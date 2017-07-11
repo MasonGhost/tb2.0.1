@@ -101,6 +101,12 @@ public interface MessageContract {
          */
         Observable<Void> getNotificationDetail(String notificationId);
 
+        /**
+         * 标记通知阅读
+         * @param notificationId
+         * @return
+         */
+        Observable<Void> makeNotificationReaded( String notificationId);
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
