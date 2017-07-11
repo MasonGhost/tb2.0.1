@@ -136,7 +136,7 @@ public class TextViewUtils {
                     mTextView.setVisibility(View.VISIBLE);
                 }
             });
-        }else{
+        } else {
             mTextView.setVisibility(View.VISIBLE);
             mTextView.setText(mOriMsg);
         }
@@ -168,6 +168,9 @@ public class TextViewUtils {
 
     private SpannableString getSpannableString(CharSequence temp) {
         SpannableString spanableInfo = new SpannableString(temp);
+        if (mEndPos > temp.length()) {
+            mEndPos = temp.length();
+        }
         try {
             spanableInfo.setSpan(new SpanTextClickable(), mStartPos, mEndPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         } catch (Exception e) {
