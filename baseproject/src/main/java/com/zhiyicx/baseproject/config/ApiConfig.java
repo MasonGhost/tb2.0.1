@@ -87,6 +87,8 @@ public class ApiConfig {
      */
     // 未读通知数量检查
     public static final String APP_PATH_GET_CKECK_UNREAD_NOTIFICATION = "api/" + API_VERSION_2 + "/user/notifications";
+    // 通知列表
+    public static final String APP_PATH_GET_NOTIFICATION_LIST = "api/" + API_VERSION_2 + "/user/notifications";
 
 
     /**

@@ -60,7 +60,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
@@ -113,6 +112,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
         super(repository, rootView);
+        checkUnreadNotification();
+    }
+
+    /**
+     * 检测未读消息数
+     */
+    private void checkUnreadNotification() {
         mRepository.ckeckUnreadNotification()
                 .subscribe(new BaseSubscribeForV2<Void>() {
                     @Override
@@ -274,18 +280,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
                     return mRootView.getListDatas();
                 })
-                .subscribe(new Action1<List<MessageItemBean>>() {
-                    @Override
-                    public void call(List<MessageItemBean> data) {
-                        mRootView.refreshData();
-                        checkBottomMessageTip();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                .subscribe(data -> {
+                    mRootView.refreshData();
+                    checkBottomMessageTip();
+                }, throwable -> throwable.printStackTrace());
         addSubscrebe(represhSu);
     }
 

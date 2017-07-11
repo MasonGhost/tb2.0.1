@@ -81,6 +81,17 @@ public interface MessageContract {
          * @return
          */
         Observable<Void> ckeckUnreadNotification();
+
+        /**
+         * 获取通知列表
+         * @param notification
+         * @param type
+         * @param limit
+         * @param offset
+         * @return
+         */
+        Observable<Void> getNotificationList(String notification, String type, Integer limit, Integer offset);
+
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {

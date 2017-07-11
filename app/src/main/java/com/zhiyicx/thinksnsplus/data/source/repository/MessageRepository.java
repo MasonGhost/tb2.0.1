@@ -264,5 +264,12 @@ public class MessageRepository implements MessageContract.Repository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    @Override
+    public Observable<Void> getNotificationList(String notification, String type, Integer limit, Integer offset) {
+        return mUserInfoClient.getNotificationList(notification,type,limit,offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 
 }
