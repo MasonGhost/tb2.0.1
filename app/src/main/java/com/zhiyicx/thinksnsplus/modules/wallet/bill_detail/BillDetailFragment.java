@@ -89,6 +89,8 @@ public class BillDetailFragment extends TSFragment {
         mBillDesc.setText(mBillDetailBean.getBody());
         mBillTime.setText(TimeUtils.string2_Dya_Week_Time(mBillDetailBean.getCreated_at()));
 
+        if (!is_user)
+            return;
         dealUserInfo(mBillDetailBean.getUserInfoBean());
     }
 
