@@ -84,6 +84,7 @@ public interface MessageContract {
 
         /**
          * 获取通知列表
+         *
          * @param notification
          * @param type
          * @param limit
@@ -91,6 +92,14 @@ public interface MessageContract {
          * @return
          */
         Observable<Void> getNotificationList(String notification, String type, Integer limit, Integer offset);
+
+        /**
+         * 读取通知
+         *
+         * @param notificationId
+         * @return
+         */
+        Observable<Void> getNotificationDetail(String notificationId);
 
     }
 

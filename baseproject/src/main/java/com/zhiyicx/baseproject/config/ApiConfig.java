@@ -89,7 +89,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_CKECK_UNREAD_NOTIFICATION = "api/" + API_VERSION_2 + "/user/notifications";
     // 通知列表
     public static final String APP_PATH_GET_NOTIFICATION_LIST = "api/" + API_VERSION_2 + "/user/notifications";
-
+    // 读取通知
+    public static final String APP_PATH_GET_NOTIFICATION_DETIAL = "api/" + API_VERSION_2 + "/user/notifications/{notification}";
 
     /**
      * 聊天相关

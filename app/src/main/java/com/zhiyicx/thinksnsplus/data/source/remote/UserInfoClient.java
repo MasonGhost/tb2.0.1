@@ -160,14 +160,22 @@ public interface UserInfoClient {
 
     /**
      * 通知列表
-     * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md#%E9%80%9A%E7%9F%A5%E5%88%97%E8%A1%A8}
      *
      * @param notification 检索具体通知，可以是由 , 拼接的 IDs 组，也可以是 Array
-     * @param type  	    获取通知类型，可选 all,read,unread 默认 all
+     * @param type         获取通知类型，可选 all,read,unread 默认 all
      * @param limit        获取条数，默认 20
      * @param offset       数据偏移量，默认 0
      * @return
+     * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md#%E9%80%9A%E7%9F%A5%E5%88%97%E8%A1%A8}
      */
     @GET(ApiConfig.APP_PATH_GET_NOTIFICATION_LIST)
     Observable<Void> getNotificationList(@Query("notification") String notification, @Query("type") String type, @Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * 读取通知
+     * @param notificationId
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_NOTIFICATION_DETIAL)
+    Observable<Void> getNotificationDetail(@Path("notification") String notificationId);
 }
