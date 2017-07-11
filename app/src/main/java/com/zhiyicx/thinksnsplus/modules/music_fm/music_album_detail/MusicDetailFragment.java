@@ -606,20 +606,22 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 mPresenter.shareMusicAlbum(mBgBitmap);
                 break;
             case R.id.fragment_music_detail_comment:
-                Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
-                Bundle musicBundle = new Bundle();
-                MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
-                headerInfo.setCommentCount(mMusicAlbumListBean.getComment_count());
-                headerInfo.setId(mMusicAlbumListBean.getId());
-                headerInfo.setTitle(mMusicAlbumListBean.getTitle());
-                headerInfo.setLitenerCount(mMusicAlbumListBean.getTaste_count() + "");
-                headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mMusicAlbumListBean.getStorage().getId()
-                        , mMusicAlbumListBean.getStorage().getWidth()
-                        , mMusicAlbumListBean.getStorage().getHeight()
-                        , ImageZipConfig.IMAGE_70_ZIP));
-                musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
-                intent.putExtra(CURRENT_COMMENT, musicBundle);
-                startActivity(intent);
+                if (!mPresenter.handleTouristControl()) {
+                    Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
+                    Bundle musicBundle = new Bundle();
+                    MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
+                    headerInfo.setCommentCount(mMusicAlbumListBean.getComment_count());
+                    headerInfo.setId(mMusicAlbumListBean.getId());
+                    headerInfo.setTitle(mMusicAlbumListBean.getTitle());
+                    headerInfo.setLitenerCount(mMusicAlbumListBean.getTaste_count() + "");
+                    headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mMusicAlbumListBean.getStorage().getId()
+                            , mMusicAlbumListBean.getStorage().getWidth()
+                            , mMusicAlbumListBean.getStorage().getHeight()
+                            , ImageZipConfig.IMAGE_70_ZIP));
+                    musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
+                    intent.putExtra(CURRENT_COMMENT, musicBundle);
+                    startActivity(intent);
+                }
                 break;
             case R.id.fragment_music_detail_favorite:
                 if (!mPresenter.handleTouristControl()) {
