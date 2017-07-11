@@ -202,7 +202,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 TextViewUtils textViewUtils = TextViewUtils.newInstance(contentView, content)
                         .spanTextColor(SkinUtils.getColor(R
                                 .color.normal_for_assist_text))
-                        .position(0, 50)
+                        .position(50, content.length())
                         .dynamicPosition(position)
                         .maxLines(contentView.getResources().getInteger(R.integer.dynamic_list_content_show_lines))
                         .onSpanTextClickListener(mOnSpanTextClickListener)
@@ -268,12 +268,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     comment.setVisibility(View.GONE);
                 } else {
                     comment.setVisibility(View.VISIBLE);
-
-                    comment.setData(dynamicBean);
-                    comment.setOnCommentClickListener(mOnCommentClickListener);
-                    comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
-                    comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
                 }
+
+                comment.setData(dynamicBean);
+                comment.setOnCommentClickListener(mOnCommentClickListener);
+                comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+                comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
 
             }
 
