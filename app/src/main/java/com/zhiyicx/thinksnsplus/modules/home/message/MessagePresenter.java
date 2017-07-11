@@ -424,6 +424,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     }
 
     /**
+     * 未读数获取到
+     *
+     * @param unreadNum  unread  notificaiton nums
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT)
+    private void onCheckUnreadNotifyRecieved(String unreadNum) {
+
+    }
+
+    /**
      * 推送相关
      *
      * @param jpushMessageBean

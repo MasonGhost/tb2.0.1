@@ -105,4 +105,9 @@ public class EventBusTagConfig {
      */
     public static final String EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST = "onJpushMessageRecievedUpdateMessageList";
 
+    /**
+     * 消息通知
+     */
+    public static final String EVENT_UNREAD_NOTIFICATION_LIMIT="unread-notification-limit";
+
 }

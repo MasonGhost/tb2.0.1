@@ -32,6 +32,7 @@ import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -41,6 +42,8 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+
+import org.simple.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -198,8 +201,8 @@ public class AppApplication extends TSApplication {
     }
 
     private void handleHeadRequest(Response originalResponse) {
-        if(originalResponse!=null&&originalResponse.header("unread-notification-limit")!=null){
-            LogUtils.d(TAG, "Received response  notifationc %s", originalResponse.header("unread-notification-limit"));
+        if(originalResponse!=null&&originalResponse.header("unread-notification-limit")!=null){ // 未读数处理
+            EventBus.getDefault().post(originalResponse.header("unread-notification-limit"), EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT);
         }
 
     }
