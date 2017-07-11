@@ -112,9 +112,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
 
     @Override
     public void handleCollect(boolean isUnCollected, String special_id) {
-        if (AppApplication.getmCurrentLoginAuth() == null) {
-            return;
-        }
+
         int is_collect = mRootView.getCurrentAblum().getIs_collection() == 0 ? 1 : 0;
         mRootView.getCurrentAblum().setIs_collection(is_collect);
         mRootView.getmMusicAlbumListBean().setIs_collection(is_collect);

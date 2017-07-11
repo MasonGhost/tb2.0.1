@@ -622,7 +622,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 startActivity(intent);
                 break;
             case R.id.fragment_music_detail_favorite:
-                mPresenter.handleCollect(mAlbumDetailsBean.getIs_collection() == 0, mAlbumDetailsBean.getId() + "");
+                if (!mPresenter.handleTouristControl()) {
+                    mPresenter.handleCollect(mAlbumDetailsBean.getIs_collection() == 0, mAlbumDetailsBean.getId() + "");
+                }
                 break;
             case R.id.fragment_music_detail_back:
                 getActivity().finish();
