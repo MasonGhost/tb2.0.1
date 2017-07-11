@@ -111,7 +111,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
             mRootView.initInstructionsPop("说明",String.format(mContext.getString(R.string.dynamic_send_toll_notes), 50));
             return;
         }
-        if ((sendDynamicDataBeanV2.getPhotos().isEmpty() && mRootView.getTollMoney() == 0d) || mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {// 文字收费金额整数限制
+        if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() == 0d) || mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {// 文字收费金额整数限制
             mRootView.initInstructionsPop("说明",mContext.getResources().getString(R.string.limit_monye));
             return;
         }
