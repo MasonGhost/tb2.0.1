@@ -9,6 +9,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
@@ -112,6 +113,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
         super(repository, rootView);
+        mRepository.ckeckUnreadNotification()
+                .subscribe(new BaseSubscribeForV2<Void>() {
+                    @Override
+                    protected void onSuccess(Void data) {
+                        LogUtils.i("test notification",data);
+                    }
+                });
     }
 
 

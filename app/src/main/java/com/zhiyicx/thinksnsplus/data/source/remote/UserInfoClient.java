@@ -18,6 +18,7 @@ import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -68,17 +69,19 @@ public interface UserInfoClient {
 
     /**
      * 获取指定用户信息  其中 following、follower 是可选参数，验证用户我是否关注以及是否关注我的用户 id ，默认为当前登陆用户。
-     * @param userId  the specified user id
-     * @param followingUserId  following user id
-     * @param followerUserId   follow user id
+     *
+     * @param userId          the specified user id
+     * @param followingUserId following user id
+     * @param followerUserId  follow user id
      * @return
      */
     @GET(APP_PATH_GET_SPECIFIED_USER_INFO)
-    Observable<UserInfoBean> getSpecifiedUserInfo(@Path("user_id") long userId, @Query("following")Long followingUserId, @Query("follower")Long followerUserId);
+    Observable<UserInfoBean> getSpecifiedUserInfo(@Path("user_id") long userId, @Query("following") Long followingUserId, @Query("follower") Long followerUserId);
 
     /**
      * 批量获取指定用户的用户信息
-     * @param user_ids   user 可以是一个值，或者多个值，多个值的时候用英文半角 , 分割。
+     *
+     * @param user_ids user 可以是一个值，或者多个值，多个值的时候用英文半角 , 分割。
      * @return
      */
     @GET(APP_PATH_GET_BATCH_SPECIFIED_USER_INFO)
@@ -86,6 +89,7 @@ public interface UserInfoClient {
 
     /**
      * 获取 IM 信息
+     *
      * @return
      */
     @GET(APP_PATH_GET_IM_INFO)
@@ -144,5 +148,14 @@ public interface UserInfoClient {
     @GET(ApiConfig.APP_PATH_GET_MY_FLUSHMESSAGES)
     Observable<BaseJson<List<FlushMessages>>> getMyFlushMessages(@Query("time") long time,
                                                                  @Query("key") String key);
+
+    /**
+     * 未读通知数量检查
+     *
+     * @return
+     * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md#%E9%80%9A%E7%9F%A5%E5%88%97%E8%A1%A8}
+     */
+    @HEAD(ApiConfig.APP_PATH_GET_CKECK_UNREAD_NOTIFICATION)
+    Observable<Void> ckeckUnreadNotification();
 
 }

@@ -83,6 +83,13 @@ public class ApiConfig {
     public static final String FLUSHMESSAGES_KEY_NOTICES = "notices";
 
     /**
+     * 消息通知
+     */
+    // 未读通知数量检查
+    public static final String APP_PATH_GET_CKECK_UNREAD_NOTIFICATION = "api/" + API_VERSION_2 + "/user/notifications";
+
+
+    /**
      * 聊天相关
      */
     public static final String APP_PATH_CREATE_CONVERSAITON = "api/" + API_VERSION + "/im/conversations";// 创建对话

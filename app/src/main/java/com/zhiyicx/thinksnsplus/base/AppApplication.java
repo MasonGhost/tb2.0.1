@@ -131,7 +131,9 @@ public class AppApplication extends TSApplication {
         return new RequestInterceptListener() {
             @Override
             public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response
-                    response) {
+                    originalResponse) {
+                // 处理 head请求
+                handleHeadRequest(originalResponse);
                 // 这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
                 // token过期，调到登陆页面重新请求token,
                 BaseJson baseJson = null;
@@ -140,7 +142,7 @@ public class AppApplication extends TSApplication {
                 } catch (JsonSyntaxException e) {
 //                    LogUtils.e("Invalid Json length:::"+httpResult.length());
                 }
-                if (response.code() == 401) {
+                if (originalResponse.code() == 401) {
                     if (mAuthRepository.isNeededRefreshToken()) {
                         handleAuthFail(getString(R.string.auth_fail_relogin));
                     } else {
@@ -174,7 +176,7 @@ public class AppApplication extends TSApplication {
                         handleAuthFail(tipStr);
                     }
                 }
-                return response;
+                return originalResponse;
             }
 
             @Override
@@ -193,6 +195,13 @@ public class AppApplication extends TSApplication {
                 }
             }
         };
+    }
+
+    private void handleHeadRequest(Response originalResponse) {
+        if(originalResponse!=null&&originalResponse.header("unread-notification-limit")!=null){
+            LogUtils.d(TAG, "Received response  notifationc %s", originalResponse.header("unread-notification-limit"));
+        }
+
     }
 
     /**

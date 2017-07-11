@@ -74,6 +74,13 @@ public interface MessageContract {
          * @return
          */
         Observable<BaseJson<MessageItemBean>> getSingleConversation(int cid);
+
+        /**
+         * 未读通知数量检查
+         *
+         * @return
+         */
+        Observable<Void> ckeckUnreadNotification();
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {

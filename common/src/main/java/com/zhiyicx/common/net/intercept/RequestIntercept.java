@@ -17,7 +17,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
-import okio.ByteString;
 
 /**
  * @Describe
