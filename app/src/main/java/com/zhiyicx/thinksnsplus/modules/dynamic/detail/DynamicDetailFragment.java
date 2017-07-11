@@ -292,8 +292,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
         final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
+        int headImageId = dynamicBean.getUserInfoBean().getAvatar().isEmpty() ? -1 : Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar());
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvertV2(Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar())
+                .load(ImageUtils.imagePathConvertV2(headImageId
                         , headIconWidth
                         , headIconWidth
                         , ImageZipConfig.IMAGE_26_ZIP))
