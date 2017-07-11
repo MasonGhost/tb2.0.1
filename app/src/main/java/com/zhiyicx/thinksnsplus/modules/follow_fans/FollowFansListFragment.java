@@ -99,12 +99,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
-    public void setPresenter(FollowFansListContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-
-    @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         mPresenter.requestNetData(maxId, isLoadMore, userId, pageType);
     }
@@ -122,7 +116,17 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     public void upDateFollowFansState(int index) {
-        refreshData(index);
+        if (getPageType() == FOLLOW_FRAGMENT_PAGE && mListDatas.get(index).getOrigin_follow_status() == 0) { // 关注页面,并且取消了关注则删除该条 item
+            mListDatas.remove(index);
+            refreshData();
+//            for (int i = 0; i < mListDatas.size(); i++) {
+//                if(mListDatas.get(i).getOrigin_follow_status() == 0){
+//
+//                }
+//            }
+        } else {
+            refreshData(index);
+        }
     }
 
     @Override
