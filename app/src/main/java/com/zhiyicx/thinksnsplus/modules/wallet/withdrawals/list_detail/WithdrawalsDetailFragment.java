@@ -12,6 +12,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
+import com.zhiyicx.thinksnsplus.modules.wallet.PayType;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill_detail.BillDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill_detail.BillDetailBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -69,8 +70,10 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
                 int status = withdrawal.getStatus();
                 boolean status_success = status == 1;
                 desc.setEnabled(status_success);
+
                 desc.setText(status_success ? "- " + withdrawal.getValue() : (getString(status == 0 ? R.string.bill_doing : R.string.transaction_fail)));
-                account.setText(String.format(getString(R.string.withdraw_money_done), withdrawal.getAccount()));
+                account.setText(String.format(getString(R.string.withdraw_money_done),
+                        PayType.valueOf(withdrawal.getType().toUpperCase())));
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(withdrawal.getCreated_at()));
 
             }

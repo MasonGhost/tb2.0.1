@@ -8,14 +8,18 @@ package com.zhiyicx.thinksnsplus.modules.wallet;
  */
 
 public enum PayType {
-    ALIPAY(1),
-    WX(2);
+    ALIPAY("支付宝"),
+    WX("微信");
 
-    public int value;
+    public String value;
 
-    PayType(int value)
+    PayType(String value)
 
     {
         this.value = value;
+    }
+
+    public String getAcount() {
+        return value;
     }
 }

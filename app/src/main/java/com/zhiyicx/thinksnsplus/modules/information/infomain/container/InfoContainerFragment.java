@@ -143,12 +143,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
             mInfoTypeBean = data.getBundleExtra(SUBSCRIBE_EXTRA).getParcelable(SUBSCRIBE_EXTRA);
 
             Observable.from(mInfoTypeBean.getMy_cates())
-                    .subscribe(new Action1<InfoTypeMyCatesBean>() {
-                        @Override
-                        public void call(InfoTypeMyCatesBean myCatesBean) {
-                            mTitle.add(myCatesBean.getName());
-                            mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
-                        }
+                    .subscribe(myCatesBean -> {
+                        mTitle.add(myCatesBean.getName());
+                        mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
                     });
             mMyAdapter.notifyDataSetChanged();
             mCommonNavigator.notifyDataSetChanged();
@@ -244,12 +241,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources
                         ().getInteger(DEFAULT_TAB_TEXTSIZE));
 
-                simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mFragmentInfocontainerContent.setCurrentItem(index);
-                    }
-                });
+                simplePagerTitleView.setOnClickListener(v -> mFragmentInfocontainerContent.setCurrentItem(index));
                 return simplePagerTitleView;
             }
 
