@@ -66,7 +66,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 int action = recharge.getAction();
                 desc.setEnabled(status_success);
 
-                desc.setText(status_success ? (action > 1 ? "- " + recharge.getAmount() : "+ " + recharge.getAmount()) : getString(R.string.bill_doing));
+                desc.setText(status_success ? (action == 0 ? "- " + recharge.getAmount() : "+ " + recharge.getAmount()) : getString(R.string.bill_doing));
                 account.setText(recharge.getSubject() + " " + recharge.getBody());
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
             }
@@ -141,32 +141,23 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 .item1Str(getString(R.string.withdraw_all))
                 .item2Str(getString(R.string.withdraw_out))
                 .item3Str(getString(R.string.withdraw_in))
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mToolbarCenter.setText(getString(R.string.withdraw_all));
-                        mPresenter.selectAll();
-                        mBillType = mBillTypes[0];
-                        mActionPopupWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    mToolbarCenter.setText(getString(R.string.withdraw_all));
+                    mPresenter.selectAll();
+                    mBillType = mBillTypes[0];
+                    mActionPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mToolbarCenter.setText(getString(R.string.withdraw_out));
-                        mPresenter.selectBillByAction(2);
-                        mBillType = mBillTypes[2];
-                        mActionPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    mToolbarCenter.setText(getString(R.string.withdraw_out));
+                    mPresenter.selectBillByAction(0);
+                    mBillType = mBillTypes[2];
+                    mActionPopupWindow.hide();
                 })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mToolbarCenter.setText(getString(R.string.withdraw_in));
-                        mPresenter.selectBillByAction(1);
-                        mBillType = mBillTypes[1];
-                        mActionPopupWindow.hide();
-                    }
+                .item3ClickListener(() -> {
+                    mToolbarCenter.setText(getString(R.string.withdraw_in));
+                    mPresenter.selectBillByAction(1);
+                    mBillType = mBillTypes[1];
+                    mActionPopupWindow.hide();
                 })
                 .dismissListener(new ActionPopupWindow.ActionPopupWindowShowOrDismissListener() {
                     @Override

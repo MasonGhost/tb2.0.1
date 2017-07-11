@@ -80,7 +80,7 @@ public class BillDetailFragment extends TSFragment {
             e.printStackTrace();
         }
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
-        String moneyStr = (status == 1 ? (action > 1 ? "- " : "+ ") : "") + String.valueOf(mBillDetailBean.getAmount());
+        String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.valueOf(mBillDetailBean.getAmount());
         mTvMineMoney.setText(moneyStr);
         mBillUserContainer.setVisibility(is_user ? View.VISIBLE : View.GONE);
         mBillAccountContainer.setVisibility(is_user ? View.GONE : View.VISIBLE);
