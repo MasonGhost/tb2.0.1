@@ -131,6 +131,7 @@
                 tools:text="@string/transaction_description"/>
 
             <TextView
+                android:gravity="center"
                 android:id="@+id/bill_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

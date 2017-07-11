@@ -90,12 +90,9 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                     }
                 });
         Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
-                .doAfterTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.handleLoading(false);
-                        mIsUsreInfoRequseted = true;
-                    }
+                .doAfterTerminate(() -> {
+                    mRootView.handleLoading(false);
+                    mIsUsreInfoRequseted = true;
                 })
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
@@ -160,12 +157,9 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
     private void getWalletConfigFromServer(final int tag, final boolean isNeedTip) {
 
         final Subscription walletConfigSub = mRepository.getWalletConfig()
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (isNeedTip) {
-                            mRootView.showSnackLoadingMessage(mContext.getString(R.string.wallet_config_info_get_loading_tip));
-                        }
+                .doOnSubscribe(() -> {
+                    if (isNeedTip) {
+                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.wallet_config_info_get_loading_tip));
                     }
                 })
                 .subscribe(new BaseSubscribeForV2<WalletConfigBean>() {

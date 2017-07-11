@@ -104,12 +104,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (mPresenter.checkIsNeedTipPop()) {
-            getView().post(new Runnable() {
-                @Override
-                public void run() {
-                    showRulePopupWindow();
-                }
-            });
+            getView().post(() -> showRulePopupWindow());
         }
     }
 
@@ -123,33 +118,18 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         // 充值
         RxView.clicks(mBtReCharge)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE);
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_RECHARGE));
         // 提现
         RxView.clicks(mBtWithdraw)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW);
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mPresenter.checkWalletConfig(WalletPresenter.TAG_WITHDRAW));
         // 充值提现规则
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        CustomWEBActivity.startToWEBActivity(getContext(), "http://www.baidu.com");
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), "http://www.baidu.com"));
     }
 
     /**
@@ -170,12 +150,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
                 .animationStyle(R.style.style_actionPopupAnimation)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .buildCenterPopWindowItem1ClickListener(new CenterInfoPopWindow.CenterPopWindowItem1ClickListener() {
-                    @Override
-                    public void onClicked() {
-                        mRulePop.hide();
-                    }
-                })
+                .buildCenterPopWindowItem1ClickListener(() -> mRulePop.hide())
                 .parentView(getView())
                 .build();
         mRulePop.show();
@@ -203,12 +178,6 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
      */
     @Override
     public void walletConfigCallBack(WalletConfigBean walletConfigBean, int tag) {
-//        just for test
-//        List<Integer> labes = new ArrayList<>();
-//        labes.add(10);
-//        labes.add(100);
-//        labes.add(1000);
-//        walletConfigBean.setLabels(labes);
         Bundle bundle = new Bundle();
         switch (tag) {
             case WalletPresenter.TAG_RECHARGE:

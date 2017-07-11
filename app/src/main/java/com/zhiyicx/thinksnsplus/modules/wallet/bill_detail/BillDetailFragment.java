@@ -6,11 +6,18 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import butterknife.BindView;
 
@@ -44,7 +51,6 @@ public class BillDetailFragment extends TSFragment {
     TextView mBillTime;
 
     private BillDetailBean mBillDetailBean;
-    private int userId;
 
     public static BillDetailFragment getInstance(Bundle bundle) {
         BillDetailFragment billDetailFragment = new BillDetailFragment();
@@ -72,13 +78,8 @@ public class BillDetailFragment extends TSFragment {
         mBillDetailBean = getArguments().getParcelable(BILL_INFO);
         int action = mBillDetailBean.getAction();
         int status = mBillDetailBean.getStatus();
-        boolean is_user = true;
-        try {
-            userId = Integer.valueOf(mBillDetailBean.getAccount());
-        } catch (NumberFormatException e) {
-            is_user = false;
-            e.printStackTrace();
-        }
+        boolean is_user = mBillDetailBean.getUserInfoBean() != null;
+        mBillUser.setText(getString(action == 0 ? R.string.account_to_name : R.string.account_form_name));
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
         String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.valueOf(mBillDetailBean.getAmount());
         mTvMineMoney.setText(moneyStr);
@@ -87,11 +88,32 @@ public class BillDetailFragment extends TSFragment {
         mBillAccount.setText(TextUtils.isEmpty(mBillDetailBean.getAccount()) ? mBillDetailBean.getChannel() : mBillDetailBean.getAccount());
         mBillDesc.setText(mBillDetailBean.getBody());
         mBillTime.setText(TimeUtils.string2_Dya_Week_Time(mBillDetailBean.getCreated_at()));
+
+        dealUserInfo(mBillDetailBean.getUserInfoBean());
     }
 
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_account;
+    }
+
+    private void dealUserInfo(UserInfoBean userInfoBean) {
+        mBillUserHead.setText(userInfoBean.getName());
+        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
+
+        Glide.with(getContext())
+                .load(ImageUtils.imagePathConvertV2(Integer.parseInt(userInfoBean.getAvatar()), headIconWidth, headIconWidth
+                        , ImageZipConfig.IMAGE_26_ZIP))
+                .bitmapTransform(new GlideCircleTransform(getContext()))
+                .placeholder(R.mipmap.pic_default_portrait1)
+                .error(R.mipmap.pic_default_portrait1)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
+                        mBillUserHead.setCompoundDrawables(resource, null, null, null);
+                    }
+                });
     }
 
 }
