@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
-import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -60,8 +57,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -87,7 +82,6 @@ public class AppApplication extends TSApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        FreelineCore.init(this);
         initComponent();
         // IM
         if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
