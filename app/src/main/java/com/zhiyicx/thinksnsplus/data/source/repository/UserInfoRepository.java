@@ -40,7 +40,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -403,8 +402,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                             List<Object> userIds = new ArrayList();
                             for (CommentedBean commentedBean : listBaseJson.getData()) {
                                 userIds.add(commentedBean.getUser_id());
-                                userIds.add(commentedBean.getTo_user_id());
-                                userIds.add(commentedBean.getReply_to_user_id());
+                                userIds.add(commentedBean.getTarget_user());
+                                userIds.add(commentedBean.getReply_user());
                             }
                             return getUserInfo(userIds)
                                     .map(userinfobeans -> {
@@ -415,13 +414,13 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                             }
                                             for (CommentedBean commentedBean : listBaseJson.getData()) {
                                                 commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get(commentedBean.getUser_id().intValue()));
-                                                commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get(commentedBean.getTo_user_id().intValue()));
-                                                if (commentedBean.getReply_to_user_id() == 0) { // 用于占位
+                                                commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get(commentedBean.getTarget_user().intValue()));
+                                                if (commentedBean.getReply_user() == 0) { // 用于占位
                                                     UserInfoBean userinfo = new UserInfoBean();
                                                     userinfo.setUser_id(0L);
                                                     commentedBean.setReplyUserInfo(userinfo);
                                                 } else {
-                                                    commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_to_user_id().intValue()));
+                                                    commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_user().intValue()));
                                                 }
                                             }
                                             mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());

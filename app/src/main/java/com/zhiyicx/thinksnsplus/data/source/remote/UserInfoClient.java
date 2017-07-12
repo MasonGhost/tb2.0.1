@@ -126,12 +126,12 @@ public interface UserInfoClient {
     /**
      * 获取用户收到的评论
      *
-     * @param max_id 用来翻页数据体记录id
+     * @param after 用来翻页数据体记录 id
      * @param limit  返回数据条数 默认15条
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
-    Observable<BaseJson<List<CommentedBean>>> getMyComments(@Query("max_id") int max_id,
+    Observable<BaseJson<List<CommentedBean>>> getMyComments(@Query("after") int after,
                                                             @Query("limit") int limit);
 
     /**

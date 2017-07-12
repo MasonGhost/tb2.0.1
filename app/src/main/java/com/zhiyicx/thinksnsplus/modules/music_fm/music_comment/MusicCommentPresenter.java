@@ -120,10 +120,10 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 //                                for (int i = 0; i < localComment.size(); i++) {
 //                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
 //                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
-//                                    if (localComment.get(i).getReply_to_user_id() != 0) {
+//                                    if (localComment.get(i).getReply_user() != 0) {
 //                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
 //                                                .getSingleDataFromCache((long) localComment.get(i)
-//                                                        .getReply_to_user_id()));
+//                                                        .getReply_user()));
 //                                    }
 //                                }
 //                                localComment.addAll(data);

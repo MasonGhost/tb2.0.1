@@ -68,6 +68,7 @@ public class CommentRepository implements ICommentRepository {
                         path = String.format(ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT, source_id);
                         break;
                     default:
+                        path = String.format(ApiConfig.APP_PATH_MUSIC_COMMENT_FORMAT, source_id);
                         break;
                 }
                 break;
