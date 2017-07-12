@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
@@ -41,7 +42,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription commentSub = mRepository.getMyComments(maxId.intValue())
-                .subscribe(new BaseSubscribe<List<CommentedBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<CommentedBean>>() {
                     @Override
                     protected void onSuccess(List<CommentedBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);

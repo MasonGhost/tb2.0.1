@@ -74,7 +74,7 @@ public class ApiConfig {
     public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION + "/users";// 修改用户信息
     public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION + "/im/users";// 获取 IM 帐号信息
     public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION + "/users/mydiggs"; // 获取用户收到的点赞
-    public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION_2 + "/users/comments"; // 获取用户收到的评论
+    public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION_2 + "/user/comments"; // 获取用户收到的评论
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     public static final String FLUSHMESSAGES_KEY_DIGGS = "diggs";
     public static final String FLUSHMESSAGES_KEY_COMMENTS = "comments";

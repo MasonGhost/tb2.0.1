@@ -391,16 +391,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id) {
+    public Observable<List<CommentedBean>> getMyComments(int max_id) {
         return mUserInfoClient.getMyComments(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<CommentedBean>>, Observable<BaseJson<List<CommentedBean>>>>() {
+                .flatMap(new Func1<List<CommentedBean>, Observable<List<CommentedBean>>>() {
                     @Override
-                    public Observable<BaseJson<List<CommentedBean>>> call(final BaseJson<List<CommentedBean>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
+                    public Observable<List<CommentedBean>> call(final List<CommentedBean> data) {
                             List<Object> userIds = new ArrayList();
-                            for (CommentedBean commentedBean : listBaseJson.getData()) {
+                            for (CommentedBean commentedBean : data) {
                                 userIds.add(commentedBean.getUser_id());
                                 userIds.add(commentedBean.getTarget_user());
                                 userIds.add(commentedBean.getReply_user());
@@ -412,7 +411,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                             for (UserInfoBean userInfoBean : userinfobeans.getData()) {
                                                 userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                             }
-                                            for (CommentedBean commentedBean : listBaseJson.getData()) {
+                                            for (CommentedBean commentedBean : data) {
                                                 commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get(commentedBean.getUser_id().intValue()));
                                                 commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get(commentedBean.getTarget_user().intValue()));
                                                 if (commentedBean.getReply_user() == 0) { // 用于占位
@@ -424,15 +423,9 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                 }
                                             }
                                             mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                        } else {
-                                            listBaseJson.setStatus(userinfobeans.isStatus());
-                                            listBaseJson.setCode(userinfobeans.getCode());
-                                            listBaseJson.setMessage(userinfobeans.getMessage());
                                         }
-                                        return listBaseJson;
+                                        return data;
                                     });
-                        }
-                        return Observable.just(listBaseJson);
                     }
                 });
     }

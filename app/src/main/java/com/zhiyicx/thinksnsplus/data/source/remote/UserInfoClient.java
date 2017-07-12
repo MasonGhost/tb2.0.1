@@ -131,7 +131,7 @@ public interface UserInfoClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
-    Observable<BaseJson<List<CommentedBean>>> getMyComments(@Query("after") int after,
+    Observable<List<CommentedBean>> getMyComments(@Query("after") int after,
                                                             @Query("limit") int limit);
 
     /**
