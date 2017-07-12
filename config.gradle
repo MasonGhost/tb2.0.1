@@ -34,6 +34,7 @@ ext {
     jUnitVersion = '4.12'
     assertJVersion = '1.7.1'
     mockitoVersion = '1.9.5'
+    dexmakerVersion = '1.1'
     dexmakerVersion = '1.0'
     espressoVersion = '2.2.2'
     runnerVersion = '0.5'
@@ -137,6 +138,8 @@ ext {
             androidJUnitRunner  : "android.support.test.runner.AndroidJUnitRunner",
             assertj             : "org.assertj:assertj-core:${assertJVersion}",
             mockito             : "org.mockito:mockito-core:${mockitoVersion}",
+            dexmaker            : "com.google.dexmaker:dexmaker:${dexmakerVersion}",
+            dexmakerMockito     : "com.google.dexmaker:dexmaker-mockito:${dexmakerVersion}",
             robolectric         : "org.robolectric:robolectric:${robolectricVersion}",
             multidexTest        : "org.robolectric:shadows-multidex:${robolectricVersion}",
             espresso            : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
