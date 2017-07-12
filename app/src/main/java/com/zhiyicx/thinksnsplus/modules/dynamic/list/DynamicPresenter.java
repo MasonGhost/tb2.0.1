@@ -173,13 +173,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 break;
             case ApiConfig.DYNAMIC_TYPE_HOTS:
                 datas = mDynamicDetailBeanV2GreenDao.getHotDynamicList(maxId);
-                datas.addAll(0,mTopDynamicBeanGreenDao.getMultiConvertDataFromCache());
+//                datas.addAll(0,mTopDynamicBeanGreenDao.getMultiConvertDataFromCache());
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 if (!isLoadMore) {// 刷新
                     datas = getDynamicBeenFromDBV2();
                     datas.addAll(mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId));
-                    datas.addAll(0,mTopDynamicBeanGreenDao.getMultiConvertDataFromCache());
+//                    datas.addAll(0,mTopDynamicBeanGreenDao.getMultiConvertDataFromCache());
                 } else {
                     datas = mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId);
                 }

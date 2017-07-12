@@ -792,13 +792,11 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(dynamicBeanV2 -> {
                     List<DynamicDetailBeanV2> topData = dynamicBeanV2.getPinned();
-                    List<BaseListBean> topDataC =new ArrayList<>();
                     if (topData != null && !topData.isEmpty()) {
                         for (DynamicDetailBeanV2 data : topData) {
                             data.setTop(DynamicDetailBeanV2.TOP_SUCCESS);
                         }
-                        topDataC.addAll(topData);
-                        mTopDynamicBeanGreenDao.saveMultiDataConvert(topDataC);
+//                        mTopDynamicBeanGreenDao.saveMultiDataConvert(topData);
                         dynamicBeanV2.getFeeds().addAll(0, topData);
                     }
                     return dynamicBeanV2.getFeeds();

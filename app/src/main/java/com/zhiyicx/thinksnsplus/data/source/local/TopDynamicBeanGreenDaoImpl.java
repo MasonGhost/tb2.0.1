@@ -39,13 +39,15 @@ public class TopDynamicBeanGreenDaoImpl extends CommonCacheImpl<TopDynamicBean> 
         mTopDynamicBeanDao.insertOrReplaceInTx(multiData);
     }
 
-    public void saveMultiDataConvert(List<BaseListBean> multiData) {
+    public void saveMultiDataConvert(List<DynamicDetailBeanV2> multiData) {
+        List<BaseListBean> convertData = new ArrayList<>();
         List<TopDynamicBean> realData = new ArrayList<>();
-        for (BaseListBean data : multiData) {
+        convertData.addAll(multiData);
+        for (BaseListBean data : convertData) {
             TopDynamicBean test = (TopDynamicBean) data;
             realData.add(test);
         }
-        mTopDynamicBeanDao.insertOrReplaceInTx(realData);
+        saveMultiData(realData);
     }
 
     @Override
@@ -99,4 +101,8 @@ public class TopDynamicBeanGreenDaoImpl extends CommonCacheImpl<TopDynamicBean> 
     public long insertOrReplace(TopDynamicBean newData) {
         return mTopDynamicBeanDao.insertOrReplace(newData);
     }
+
+//    public DynamicDetailBeanV2 topDynamic2normal(){
+//
+//    }
 }
