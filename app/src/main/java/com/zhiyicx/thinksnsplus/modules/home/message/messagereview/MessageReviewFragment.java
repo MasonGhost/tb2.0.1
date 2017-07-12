@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
@@ -24,6 +26,8 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -118,7 +122,17 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
                 holder.setVisible(R.id.iv_detail_image, View.GONE);
                 holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-                holder.setText(R.id.tv_deatil, topDynamicCommentBean.getComment().getContent());
+                holder.setText(R.id.tv_deatil, topDynamicCommentBean.getFeed().getContent());
+
+                String content = String.format(getString(R.string.review_description), (float) topDynamicCommentBean.getAmount(),
+                        topDynamicCommentBean.getComment().getContent());
+
+                holder.setText(R.id.tv_content, content);
+                List<Link> links = setLiknks(holder, String.format(getString(R.string.dynamic_send_toll_select_money),
+                        (float) topDynamicCommentBean.getAmount()), topDynamicCommentBean.getComment().getContent());
+                if (!links.isEmpty()) {
+                    ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
+                }
 
                 holder.setText(R.id.tv_name, topDynamicCommentBean.getUserInfoBean().getName());
                 holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(topDynamicCommentBean.getCreated_at()));
@@ -185,5 +199,24 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 .bottomClickListener(() -> mReviewPopWindow.hide())
                 .build();
         mReviewPopWindow.show();
+    }
+
+    private List<Link> setLiknks(ViewHolder holder, final String money, final String comment) {
+        List<Link> links = new ArrayList<>();
+        Link moneyLink = new Link(money)
+                .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_note))                  // optional, defaults to holo blue
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                .setHighlightAlpha(.5f)
+                .setUnderlined(false);
+
+        Link commentLink = new Link(comment)
+                .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.normal_for_disable_button_text))                  // optional, defaults to holo blue
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                .setHighlightAlpha(.5f)
+                .setUnderlined(false);
+
+        links.add(moneyLink);
+        links.add(commentLink);
+        return links;
     }
 }

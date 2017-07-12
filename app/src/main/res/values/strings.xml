@@ -15,6 +15,7 @@
     <string name="like">赞</string>
     <string name="review">置顶审核</string>
     <string name="review_approved">同意置顶</string>
+    <string name="review_description">支付¥%1$.2f申请置顶评论“%2$s”</string>
     <string name="review_refuse">拒绝置顶</string>
     <string name="liked">赞过的</string>
     <string name="like_me">赞了我</string>
