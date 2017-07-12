@@ -14,6 +14,8 @@
     <string name="comment">评论</string>
     <string name="like">赞</string>
     <string name="review">置顶审核</string>
+    <string name="review_approved">同意置顶</string>
+    <string name="review_refuse">拒绝置顶</string>
     <string name="liked">赞过的</string>
     <string name="like_me">赞了我</string>
     <string name="comment_me">评论了我</string>

@@ -119,6 +119,7 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_NEW = "new"; // 最新动态
     public static final String DYNAMIC_TYPE_FOLLOWS = "follow"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hot"; // 热门动态
+    public static final String DYNAMIC_TYPE_USERS = "users"; // 用户动态
     public static final String DYNAMIC_TYPE_SOMEONE = "users/%s"; // 某个人的动态列表,%s表示用户id
     public static final String DYNAMIC_TYPE_MY_COLLECTION = "collections";// 我收藏的动态列表
     // 点赞一条动态,取消点赞
