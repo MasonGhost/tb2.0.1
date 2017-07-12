@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.personal_center.portrait;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -17,13 +18,21 @@ import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -32,6 +41,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -52,8 +62,10 @@ import static com.zhiyicx.thinksnsplus.modules.personal_center.portrait.HeadPort
  */
 
 public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContract.Presenter>
-        implements HeadPortraitViewContract.View {
+        implements HeadPortraitViewContract.View, PhotoSelectorImpl.IPhotoBackListener {
 
+    public static final String USER_STORAGE_TASK_ID = "storage_task_id";
+    public static final String USER_LOCAL_IMG_PATH = "localImgPath";
 
     @BindView(R.id.iv_portrait_preview)
     ImageView mIvPortraitPreview;
@@ -64,6 +76,11 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
 
     private UserInfoBean mUserInfoBean;
     private boolean mIsLoginUser;
+    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private PhotoSelectorImpl mPhotoSelector;
+    private String path;// 上传成功的图片本地路径
+    private TSnackbar mTSnackbarUploadIcon;
+    private int upDateHeadIconStorageId = 0;// 上传成功返回的图片id
 
     public static HeadPortraitViewFragment instance(Bundle bundle) {
         HeadPortraitViewFragment fragment = new HeadPortraitViewFragment();
@@ -74,13 +91,26 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
     @Override
     protected void initView(View rootView) {
         mIvPortraitPreview.getLayoutParams().width = UIUtils.getWindowWidth(getContext());
-        mIvPortraitPreview.getLayoutParams().height = UIUtils.getWindowHeight(getContext()) / 2;
+        mIvPortraitPreview.getLayoutParams().height = UIUtils.getWindowHeight(getContext()) * 2 / 3;
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .SHAPE_SQUARE))
+                .build()
+                .photoSelectorImpl();
+        initPhotoPopupWindow();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPhotoSelector.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void initData() {
         int width = UIUtils.getWindowWidth(getContext());
-        int height = UIUtils.getWindowHeight(getContext()) / 2;
+        int height = UIUtils.getWindowHeight(getContext()) * 2 / 3;
         mUserInfoBean = (UserInfoBean) getArguments().getSerializable(BUNDLE_USER_INFO);
         if (mUserInfoBean == null) {
             mUserInfoBean = mPresenter.getCurrentUser(AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -108,21 +138,21 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                     .error(R.mipmap.pic_locked)
                     .into(mIvPortraitPreview);
         }
-        if (!mIsLoginUser){
+        if (!mIsLoginUser) {
             //  如果非登陆用户，则保存图片
             mBtnChangePortrait.setText(getString(R.string.save_to_photo));
         }
         initListener();
     }
 
-    private void initListener(){
+    private void initListener() {
         RxView.clicks(mBtnChangePortrait)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (mIsLoginUser){
+                    if (mIsLoginUser) {
                         // Todo 修改头像
-
+                        mPhotoPopupWindow.show();
                     } else {
                         // 保存图片
                         saveImage();
@@ -137,7 +167,7 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                   // 全屏查看
+                    // 全屏查看
                     List<ImageBean> imageBeanList = new ArrayList<>();
                     ArrayList<AnimationRectBean> animationRectBeanArrayList
                             = new ArrayList<>();
@@ -145,7 +175,7 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                     int avatar = 0;
                     try {
                         avatar = Integer.parseInt(mUserInfoBean.getAvatar());
-                    } catch (NumberFormatException e){
+                    } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
                     // 这个付费才能查看他人的头像吗？
@@ -155,6 +185,8 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                     toll.setToll_type_string("");// 付费类型
                     toll.setPaid_node(0);// 付费节点
                     imageBean.setToll(toll);
+                    imageBean.setWidth(UIUtils.getWindowWidth(getContext()));
+                    imageBean.setHeight(UIUtils.getWindowWidth(getContext()));
                     imageBean.setStorage_id(avatar);
                     imageBeanList.add(imageBean);
                     AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvPortraitPreview);
@@ -179,14 +211,19 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
         return true;
     }
 
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
     public void saveImage() {
         // 通过Glide获取bitmap,有缓存读缓存
         int width = UIUtils.getWindowWidth(getContext());
-        int height = UIUtils.getWindowHeight(getContext()) / 2;
+        int height = UIUtils.getWindowHeight(getContext()) * 2 / 3;
         int avatar = 0;
         try {
             avatar = Integer.parseInt(mUserInfoBean.getAvatar());
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         GlideUrl glideUrl = ImageUtils.imagePathConvertV2(avatar, width, height
@@ -242,5 +279,106 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                             .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
                             .show();
                 });
+    }
+
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initPhotoPopupWindow() {
+        if (mPhotoPopupWindow != null) {
+            return;
+        }
+        mPhotoPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.choose_from_photo))
+                .item2Str(getString(R.string.choose_from_camera))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    // 选择相册，单张
+                    mPhotoSelector.getPhotoListFromSelector(1, null);
+                    mPhotoPopupWindow.hide();
+                })
+                .item2ClickListener(() -> {
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(null);
+                    mPhotoPopupWindow.hide();
+                })
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        if (photoList.isEmpty()) {
+            return;
+        }
+        path = photoList.get(0).getImgUrl();
+        // 开始上传
+        mPresenter.changeUserHeadIcon(path);
+        // 加载本地图片
+        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                .url(path)
+                .imagerView(mIvPortraitPreview)
+                .placeholder(R.drawable.shape_default_image_circle)
+                .errorPic(R.drawable.shape_default_image_circle)
+                .build());
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+        ToastUtils.showToast(errorMsg);
+    }
+
+    @Override
+    public void setUpLoadHeadIconState(int upLoadState, int taskId) {
+        // 上传成功，可以进行修改
+        switch (upLoadState) {
+            case -1:
+                TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
+                        getString(R.string.update_head_failure), TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.ERROR)
+                        .show();
+                break;
+            case 0:
+                mIvPortraitPreview.setClickable(false);
+                mTSnackbarUploadIcon = TSnackbar.make(mSnackRootView, R.string.update_head_ing, TSnackbar.LENGTH_INDEFINITE)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .addIconProgressLoading(0, true, false);
+                mTSnackbarUploadIcon.show();
+                break;
+            case 1:
+                upDateHeadIconStorageId = taskId;
+                mPresenter.updateUserInfo(upDateHeadIconStorageId);
+                break;
+            case 2:
+                mIvPortraitPreview.setClickable(true);
+                TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
+                        getString(R.string.update_head_success), TSnackbar.LENGTH_SHORT)
+                        .setPromptThemBackground(Prompt.SUCCESS)
+                        .show();
+                break;
+            default:
+        }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    /**
+     * 用户头像再上传图片后自动提交修改，不和用户信息一起提交
+     *
+     * @return
+     */
+    private HashMap<String, String> packageUserHeadIcon() {
+        HashMap<String, String> fieldMap = new HashMap<>();
+        // avatar
+        fieldMap.put(USER_STORAGE_TASK_ID, upDateHeadIconStorageId + "");
+        fieldMap.put(USER_LOCAL_IMG_PATH, path);// 本地图片的路径，因为没有返回storage_id,用来更新图片
+        return fieldMap;
     }
 }

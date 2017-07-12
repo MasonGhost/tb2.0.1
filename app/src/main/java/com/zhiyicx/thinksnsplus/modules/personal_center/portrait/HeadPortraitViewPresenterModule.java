@@ -34,4 +34,9 @@ public class HeadPortraitViewPresenterModule {
     public HeadPortraitViewContract.Repository provideHeadPortraitRepository(HeadPortraitRepository repository) {
         return repository;
     }
+
+    @Provides
+    IUploadRepository provideIUploadRepository(ServiceManager serviceManager, Application application) {
+        return new UpLoadRepository(serviceManager, application);
+    }
 }
