@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ImageView
+            android:id="@+id/iv_portrait_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/default_pic_personal"
+            android:scaleType="centerCrop"/>
+
+    <!--更换头像-->
+    <Button
+            android:id="@+id/btn_change_portrait"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_25"
+            android:layout_below="@+id/iv_portrait_preview"
+            android:layout_marginLeft="@dimen/margin_12"
+            android:layout_marginRight="@dimen/margin_12"
+            android:background="@drawable/selector_button_corner_solid_small"
+            android:text="@string/change_head_icon"/>
+
+    <!--退出-->
+    <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/margin_34"
+            android:layout_marginLeft="@dimen/margin_12"
+            android:layout_marginRight="@dimen/margin_12"
+            android:background="@drawable/selector_button_corner_solid_small"
+            android:text="@string/cancel"/>
+
+</RelativeLayout>

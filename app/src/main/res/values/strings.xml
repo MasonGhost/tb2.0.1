@@ -72,6 +72,7 @@
     <string name="clean_cache">清理缓存</string>
     <string name="is_sure_clean_cache">确定清理缓存？</string>
     <string name="about_us">关于我们</string>
+    <string name="check_version">版本更新</string>
     <string name="login_out">退出登录</string>
     <string name="login_out_sure">退出</string>
     <string name="is_sure_login_out">确定退出登录？</string>
