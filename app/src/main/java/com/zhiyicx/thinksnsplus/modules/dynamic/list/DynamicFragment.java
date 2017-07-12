@@ -341,7 +341,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount,TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
         initImageCenterPopWindow(position, position, (float) amount,
                 note, R.string.buy_pay_words_desc, false);
     }
@@ -613,7 +613,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void initDeletCommentPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int
             dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R.string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -701,7 +701,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
 //                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)// 付费评论功能 移除
-                .item4Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_dynamic) : null)
+                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R.string.dynamic_list_top_dynamic) : null)
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
