@@ -128,8 +128,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, final boolean isLoadMore) {
-        return dealWithDynamicListV2(mDynamicClient.getDynamicListV2(type, after, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE)),
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after,Long user_id, final boolean isLoadMore) {
+        return dealWithDynamicListV2(mDynamicClient.getDynamicListV2(type, after,null, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE)),
                 type, isLoadMore);
     }
 

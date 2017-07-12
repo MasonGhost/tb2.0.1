@@ -251,6 +251,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe() {
+
                     @Override
                     protected void onSuccess(Object data) {
                         // 修改成功后，关闭页面
@@ -433,7 +434,8 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     @Override
     public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
-        mRepository.sendComment(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(), commentBean.getComment_mark());
+        mRepository.sendComment(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
+                commentBean.getComment_mark());
         mRootView.refreshData();
     }
 

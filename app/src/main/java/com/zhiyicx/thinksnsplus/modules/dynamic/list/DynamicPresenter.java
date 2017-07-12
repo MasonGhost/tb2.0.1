@@ -116,7 +116,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
-        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, isLoadMore)
+        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), null,maxId, isLoadMore)
                 .map(listBaseJson -> {
                     insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
                     if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
