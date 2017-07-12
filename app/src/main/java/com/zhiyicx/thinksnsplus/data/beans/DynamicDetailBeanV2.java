@@ -35,6 +35,10 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     public static final int SEND_ING = 1;
     public static final int SEND_SUCCESS = 2;
 
+    public static final int TOP_SUCCESS = 1;
+    public static final int TOP_REVIEW = -1;
+
+
     /**
      * id : 13
      * created_at : 2017-06-21 01:54:52
@@ -96,6 +100,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
     private boolean isFollowed;// 是否关注了该条动态（用户）
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
+    private int top;// 置顶状态 0：无置顶状态 1：置顶成功 -1：置顶审核中
 
     @Convert(converter = DynamicBean.DataConverter.class, columnType = String.class)
     private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
@@ -471,8 +476,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         }
 
 
-
-
         @Override
         public String toString() {
             return "付费：" + paid;
@@ -802,13 +805,13 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
     }
 
-    @Generated(hash = 938959960)
-    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at,
-                               Long user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
-                               int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
-                               int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, double amount,
-                               boolean paid, List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node,
-                               Long hot_creat_time, boolean isFollowed, int state, List<FollowFansBean> digUserInfoList) {
+    @Generated(hash = 544784438)
+    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id,
+            String feed_content, int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count,
+            String feed_latitude, String feed_longtitude, String feed_geohash, int audit_status, Long feed_mark,
+            boolean has_digg, boolean has_collect, double amount, boolean paid, List<ImagesBean> images,
+            List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
+            List<FollowFansBean> digUserInfoList) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -834,6 +837,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.hot_creat_time = hot_creat_time;
         this.isFollowed = isFollowed;
         this.state = state;
+        this.top = top;
         this.digUserInfoList = digUserInfoList;
     }
 
@@ -875,6 +879,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    public int getTop() {
+        return this.top;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
     }
 
     /** called by internal mechanisms, do not call yourself. */

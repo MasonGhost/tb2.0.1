@@ -15,6 +15,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean.TOP_REVIEWING;
 
 /**
  * @Author Jliuer
@@ -46,6 +48,8 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     private ImageLoader mImageLoader;
 
     private ActionPopupWindow mReviewPopWindow;
+
+    private TopDynamicCommentBean mTopDynamicCommentBean;
 
     public MessageReviewFragment() {
     }
@@ -129,6 +133,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                         topDynamicCommentBean.getComment().getContent());
 
                 TextView contentView = holder.getView(R.id.tv_content);
+                TextView flagView = holder.getView(R.id.tv_review);
                 contentView.setText(content);
                 List<Link> links = setLiknks(holder, String.format(getString(R.string.dynamic_send_toll_select_money),
                         (float) topDynamicCommentBean.getAmount()), topDynamicCommentBean.getComment().getContent());
@@ -136,6 +141,10 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 if (!links.isEmpty()) {
                     ConvertUtils.stringLinkConvert(contentView, links);
                 }
+                flagView.setTextColor(SkinUtils.getColor(topDynamicCommentBean.getComment().isPinned()
+                        ? R.color.general_for_hint : R.color.dyanmic_top_flag));
+                flagView.setText(getString(topDynamicCommentBean.getComment().isPinned() ? R.string.review_approved :
+                        (topDynamicCommentBean.getState() == TOP_REVIEWING ? R.string.review_ing : R.string.review_refuse)));
 
                 holder.setText(R.id.tv_name, topDynamicCommentBean.getUserInfoBean().getName());
                 holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(topDynamicCommentBean.getCreated_at()));
@@ -148,7 +157,10 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                         .subscribe(aVoid -> toUserCenter(topDynamicCommentBean.getUserInfoBean()));
                 RxView.clicks(holder.getConvertView())
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(aVoid -> initReviewPopWindow(topDynamicCommentBean));
+                        .subscribe(aVoid -> {
+                            mTopDynamicCommentBean = topDynamicCommentBean;
+                            initReviewPopWindow(topDynamicCommentBean);
+                        });
             }
         };
         adapter.setOnItemClickListener(this);
@@ -163,6 +175,11 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
 
+    }
+
+    @Override
+    public TopDynamicCommentBean getCurrentComment() {
+        return mTopDynamicCommentBean;
     }
 
     @Override

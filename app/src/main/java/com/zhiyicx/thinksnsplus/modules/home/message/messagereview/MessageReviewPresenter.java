@@ -64,7 +64,7 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         if (isLoadMore) {
             return new ArrayList<>();
         }
-        return null;
+        return mTopDynamicCommentBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override
@@ -82,7 +82,10 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         Subscription subscription = mRepository.approvedTopComment(feed_id, comment_id, pinned_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
             @Override
             protected void onSuccess(BaseJsonV2 data) {
-
+                mRootView.getCurrentComment().getComment().setPinned(true);
+                mRootView.getCurrentComment().setState(TopDynamicCommentBean.TOP_SUCCESS);
+                mTopDynamicCommentBeanGreenDao.insertOrReplace(mRootView.getCurrentComment());
+                mRootView.refreshData(mRootView.getListDatas().indexOf(mRootView.getCurrentComment()));
             }
 
             @Override
@@ -103,7 +106,9 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         Subscription subscription = mRepository.refuseTopComment(pinned_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
             @Override
             protected void onSuccess(BaseJsonV2 data) {
-
+                mRootView.getCurrentComment().setState(TopDynamicCommentBean.TOP_REFUSE);
+                mTopDynamicCommentBeanGreenDao.insertOrReplace(mRootView.getCurrentComment());
+                mRootView.refreshData(mRootView.getListDatas().indexOf(mRootView.getCurrentComment()));
             }
 
             @Override

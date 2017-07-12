@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -38,6 +39,9 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+
+    @Inject
     SystemRepository mSystemRepository;
 
     @Inject
@@ -65,6 +69,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
+                        mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));
                     }
 
