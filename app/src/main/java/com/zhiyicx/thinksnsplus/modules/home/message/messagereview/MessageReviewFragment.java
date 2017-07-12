@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
@@ -127,11 +128,13 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 String content = String.format(getString(R.string.review_description), (float) topDynamicCommentBean.getAmount(),
                         topDynamicCommentBean.getComment().getContent());
 
-                holder.setText(R.id.tv_content, content);
+                TextView contentView = holder.getView(R.id.tv_content);
+                contentView.setText(content);
                 List<Link> links = setLiknks(holder, String.format(getString(R.string.dynamic_send_toll_select_money),
                         (float) topDynamicCommentBean.getAmount()), topDynamicCommentBean.getComment().getContent());
+                contentView.setLinksClickable(false);// 不能消费了点击事件啊
                 if (!links.isEmpty()) {
-                    ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
+                    ConvertUtils.stringLinkConvert(contentView, links);
                 }
 
                 holder.setText(R.id.tv_name, topDynamicCommentBean.getUserInfoBean().getName());

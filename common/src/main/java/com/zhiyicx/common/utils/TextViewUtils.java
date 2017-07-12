@@ -112,7 +112,7 @@ public class TextViewUtils {
     }
 
 
-    private void handleTextDisplay() {
+    private void handleTextDisplay(){
         mTextView.setVisibility(View.INVISIBLE);
         mTextView.setText(mOriMsg);
         if (!mCanRead) {
@@ -125,7 +125,7 @@ public class TextViewUtils {
                     viewTreeObserver.removeOnGlobalLayoutListener(this);
                     if (mTextView.getLineCount() > mMaxLineNums) {
                         int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-                        String result = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
+                        String result = mTextView.getText().subSequence(0, endOfLastLine - 2) + "...";
                         mTextView.setText(getSpannableString(result));
                         mTextView.setVisibility(View.VISIBLE);
                     }
