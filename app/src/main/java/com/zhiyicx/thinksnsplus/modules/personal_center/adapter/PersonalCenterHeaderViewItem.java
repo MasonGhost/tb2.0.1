@@ -36,9 +36,11 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.modules.personal_center.portrait.HeadPortraitViewActivity;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import static com.zhiyicx.baseproject.utils.ImageUtils.imagePathConvertV2;
+import static com.zhiyicx.thinksnsplus.modules.personal_center.portrait.HeadPortraitViewActivity.BUNDLE_USER_INFO;
 
 /**
  * @author LiuChao
@@ -291,11 +293,13 @@ public class PersonalCenterHeaderViewItem {
             }
         });
         // 点击头像
-        iv_head_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
+        iv_head_icon.setOnClickListener(v -> {
+            // 跳转查看头像页面
+            Intent intent = new Intent(mActivity, HeadPortraitViewActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BUNDLE_USER_INFO, userInfoBean);
+            intent.putExtra(BUNDLE_USER_INFO, bundle);
+            mActivity.startActivity(intent);
         });
         // 跳转到粉丝列表
         tv_user_fans.setOnClickListener(new View.OnClickListener() {
