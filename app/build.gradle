@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'jacoco' //测试报告
 apply from: "$rootDir/jacocoCoverage.gradle"
-apply plugin: 'com.antfortune.freeline'
 apply plugin: 'me.tatarka.retrolambda'
 jacoco {
     toolVersion = "0.7.8"
     reportsDir = file("$buildDir/customJacocoReportDir")
 }
+
 android {
     def gConfig = rootProject.extensions.getByName("ext")
     compileSdkVersion gConfig["compileSdkVersion"]
