@@ -622,9 +622,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
-                    intent.putExtra(TOP_DYNAMIC_ID, dynamicBean
+                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, dynamicBean
                             .getComments().get(commentPosition).getComment_id());
-                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, dynamicBean.getId());
+                    intent.putExtra(TOP_DYNAMIC_ID, dynamicBean.getId());
                     mDeletCommentPopWindow.hide();
                     startActivity(intent);
 //                        initCommentCenterPopWindow();

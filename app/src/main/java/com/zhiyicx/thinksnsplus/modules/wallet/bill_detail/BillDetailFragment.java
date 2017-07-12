@@ -70,7 +70,6 @@ public class BillDetailFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
-
     }
 
     @Override

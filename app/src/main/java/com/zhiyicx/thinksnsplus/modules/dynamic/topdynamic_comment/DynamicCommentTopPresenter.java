@@ -60,7 +60,7 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_comment_top_success));
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
                     }
 
                     @Override

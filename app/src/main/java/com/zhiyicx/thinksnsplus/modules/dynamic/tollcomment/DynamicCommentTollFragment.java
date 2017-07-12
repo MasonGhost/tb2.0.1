@@ -117,7 +117,7 @@ public class DynamicCommentTollFragment extends TSFragment<DynamicCommentTollCon
     private void initListener() {
 
         RxRadioGroup.checkedChanges(mRbDaysGroup)
-                .compose(this.<Integer>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(checkedId -> {
                     if (checkedId != -1) {
                         resetEtInput();
