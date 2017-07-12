@@ -15,7 +15,7 @@ public class TopDynamicCommentBeanTest extends AbstractDaoTestLongPk<TopDynamicC
         entity.setId(12l);
         entity.setAmount(12);
         entity.setDay(12);
-        entity.setUser_id(123);
+        entity.setUser_id(123L);
         return entity;
     }
 

@@ -103,28 +103,13 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter(digedBean.getDigUserInfo());
-                    }
-                });
+                .subscribe(aVoid -> toUserCenter(digedBean.getDigUserInfo()));
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter(digedBean.getDigUserInfo());
-                    }
-                });
+                .subscribe(aVoid -> toUserCenter(digedBean.getDigUserInfo()));
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toDetail(digedBean);
-                    }
-                });
+                .subscribe(aVoid -> toDetail(digedBean));
     }
 
 

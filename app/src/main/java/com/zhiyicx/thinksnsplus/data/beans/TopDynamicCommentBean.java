@@ -9,10 +9,12 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
 
 /**
  * @Author Jliuer
@@ -38,13 +40,41 @@ public class TopDynamicCommentBean extends BaseListBean {
     private Long id;
     private int amount;
     private int day;
-    private int user_id;
+    private Long user_id;
     private String expires_at;
     private String created_at;
     @Convert(converter = CommentConvert.class, columnType = String.class)
     private CommentBean comment;
     @Convert(converter = FeedConvert.class, columnType = String.class)
     private FeedBean feed;
+    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
+    private UserInfoBean userInfoBean;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 2083937831)
+    private transient TopDynamicCommentBeanDao myDao;
+
+    @Generated(hash = 1068484610)
+    public TopDynamicCommentBean(Long id, int amount, int day, Long user_id,
+            String expires_at, String created_at, CommentBean comment, FeedBean feed) {
+        this.id = id;
+        this.amount = amount;
+        this.day = day;
+        this.user_id = user_id;
+        this.expires_at = expires_at;
+        this.created_at = created_at;
+        this.comment = comment;
+        this.feed = feed;
+    }
+
+    @Generated(hash = 2134686559)
+    public TopDynamicCommentBean() {
+    }
+
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
 
     public int getAmount() {
         return amount;
@@ -60,14 +90,6 @@ public class TopDynamicCommentBean extends BaseListBean {
 
     public void setDay(int day) {
         this.day = day;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
     }
 
     public String getExpires_at() {
@@ -268,24 +290,6 @@ public class TopDynamicCommentBean extends BaseListBean {
         };
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeInt(this.amount);
-        dest.writeInt(this.day);
-        dest.writeInt(this.user_id);
-        dest.writeString(this.expires_at);
-        dest.writeString(this.created_at);
-        dest.writeParcelable(this.comment, flags);
-        dest.writeParcelable(this.feed, flags);
-    }
-
     public Long getId() {
         return this.id;
     }
@@ -294,45 +298,78 @@ public class TopDynamicCommentBean extends BaseListBean {
         this.id = id;
     }
 
-    public TopDynamicCommentBean() {
+    public Long getUser_id() {
+        return this.user_id;
     }
 
-    protected TopDynamicCommentBean(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.amount = in.readInt();
-        this.day = in.readInt();
-        this.user_id = in.readInt();
-        this.expires_at = in.readString();
-        this.created_at = in.readString();
-        this.comment = in.readParcelable(CommentBean.class.getClassLoader());
-        this.feed = in.readParcelable(FeedBean.class.getClassLoader());
-    }
-
-    @Generated(hash = 1519258651)
-    public TopDynamicCommentBean(Long id, int amount, int day, int user_id, String expires_at,
-            String created_at, CommentBean comment, FeedBean feed) {
-        this.id = id;
-        this.amount = amount;
-        this.day = day;
+    public void setUser_id(Long user_id) {
         this.user_id = user_id;
-        this.expires_at = expires_at;
-        this.created_at = created_at;
-        this.comment = comment;
-        this.feed = feed;
     }
 
-    public static final Creator<TopDynamicCommentBean> CREATOR = new Creator<TopDynamicCommentBean>() {
-        @Override
-        public TopDynamicCommentBean createFromParcel(Parcel source) {
-            return new TopDynamicCommentBean(source);
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1288178437)
+    public UserInfoBean getUserInfoBean() {
+        Long __key = this.user_id;
+        if (userInfoBean__resolvedKey == null || !userInfoBean__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean userInfoBeanNew = targetDao.load(__key);
+            synchronized (this) {
+                userInfoBean = userInfoBeanNew;
+                userInfoBean__resolvedKey = __key;
+            }
         }
+        return userInfoBean;
+    }
 
-        @Override
-        public TopDynamicCommentBean[] newArray(int size) {
-            return new TopDynamicCommentBean[size];
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 251524817)
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        synchronized (this) {
+            this.userInfoBean = userInfoBean;
+            user_id = userInfoBean == null ? null : userInfoBean.getUser_id();
+            userInfoBean__resolvedKey = user_id;
         }
-    };
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
 
     public static class CommentConvert implements PropertyConverter<CommentBean, String> {
         @Override
@@ -369,4 +406,55 @@ public class TopDynamicCommentBean extends BaseListBean {
             return ConvertUtils.object2Base64Str(entityProperty);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeInt(this.amount);
+        dest.writeInt(this.day);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.expires_at);
+        dest.writeString(this.created_at);
+        dest.writeParcelable(this.comment, flags);
+        dest.writeParcelable(this.feed, flags);
+        dest.writeParcelable(this.userInfoBean, flags);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 2079522954)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getTopDynamicCommentBeanDao() : null;
+    }
+
+    protected TopDynamicCommentBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.amount = in.readInt();
+        this.day = in.readInt();
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.expires_at = in.readString();
+        this.created_at = in.readString();
+        this.comment = in.readParcelable(CommentBean.class.getClassLoader());
+        this.feed = in.readParcelable(FeedBean.class.getClassLoader());
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+    }
+
+    public static final Creator<TopDynamicCommentBean> CREATOR = new Creator<TopDynamicCommentBean>() {
+        @Override
+        public TopDynamicCommentBean createFromParcel(Parcel source) {
+            return new TopDynamicCommentBean(source);
+        }
+
+        @Override
+        public TopDynamicCommentBean[] newArray(int size) {
+            return new TopDynamicCommentBean[size];
+        }
+    };
 }

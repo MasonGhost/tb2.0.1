@@ -107,19 +107,14 @@ public class TextViewUtils {
         if (mTextView == null) {
             throw new IllegalArgumentException("textView not be null");
         }
-        try {
-            handleTextDisplay();
-        } catch (Exception e) {
-            mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText(mOriMsg);
-        }
+        handleTextDisplay();
         return this;
     }
 
 
-    private void handleTextDisplay() throws Exception {
+    private void handleTextDisplay() {
         mTextView.setVisibility(View.INVISIBLE);
-
+        mTextView.setText(mOriMsg);
         if (!mCanRead) {
             mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
             ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
@@ -128,19 +123,14 @@ public class TextViewUtils {
                 public void onGlobalLayout() {
                     ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
                     viewTreeObserver.removeOnGlobalLayoutListener(this);
-
                     if (mTextView.getLineCount() > mMaxLineNums) {
                         int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-                        mOriMsg = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
+                        String result = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
+                        mTextView.setText(getSpannableString(result));
+                        mTextView.setVisibility(View.VISIBLE);
                     }
-
-                    mTextView.setText(getSpannableString(mOriMsg));
-                    mTextView.setVisibility(View.VISIBLE);
                 }
             });
-        } else {
-            mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText(mOriMsg);
         }
     }
 

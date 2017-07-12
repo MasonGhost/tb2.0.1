@@ -116,7 +116,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
-        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, isLoadMore)
+        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), null,maxId, isLoadMore)
                 .map(listBaseJson -> {
                     insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
                     if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
@@ -193,15 +193,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         return datas;
     }
 
-    /**
-     * 动态数据库更新
-     *
-     * @param data
-     */
-    private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
-        mRepository.updateOrInsertDynamic(data, mRootView.getDynamicType());
-    }
-
     private void insertOrUpdateDynamicDBV2(@NotNull List<DynamicDetailBeanV2> data) {
         mRepository.updateOrInsertDynamicV2(data, mRootView.getDynamicType());
     }
@@ -235,26 +226,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             }
         }
         return -1;
-    }
-
-    @NonNull
-    private List<DynamicBean> getDynamicBeenFromDB() {
-        if (AppApplication.getmCurrentLoginAuth() == null) {
-            return new ArrayList<>();
-        }
-        List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
-        msendingStatus.clear();
-        for (int i = 0; i < datas.size(); i++) {
-            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
-                datas.get(i).setState(DynamicBean.SEND_ERROR);
-            }
-            msendingStatus.put(i, datas.get(i).getFeed_mark());
-        }
-        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
-            mDynamicBeanGreenDao.insertOrReplace(datas);
-        }
-
-        return datas;
     }
 
     @NonNull
@@ -343,7 +314,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
-        mRepository.sendComment(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(), commentBean.getComment_mark());
+        mRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
+                commentBean.getComment_mark());
         mRootView.refreshData();
     }
 

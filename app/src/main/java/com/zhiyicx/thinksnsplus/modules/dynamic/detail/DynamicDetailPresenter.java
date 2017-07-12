@@ -172,7 +172,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     @Override
     public void getCurrentDynamic(final long feed_id) {
         Subscription subscription = mRepository.getDynamicListV2(ApiConfig.DYNAMIC_TYPE_NEW,
-                DEFAULT_PAGE_MAX_ID, false)
+                DEFAULT_PAGE_MAX_ID,null, false)
                 .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
                     @Override
                     protected void onSuccess(List<DynamicDetailBeanV2> data) {

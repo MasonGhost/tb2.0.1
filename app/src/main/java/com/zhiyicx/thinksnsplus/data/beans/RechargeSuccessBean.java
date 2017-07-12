@@ -57,7 +57,7 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
     private String updated_at;
     private String deleted_at;
 
-    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
+    @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
