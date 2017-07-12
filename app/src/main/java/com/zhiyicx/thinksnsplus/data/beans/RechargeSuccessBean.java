@@ -8,7 +8,9 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.DaoException;
 
 /**
  * @Author Jliuer
@@ -40,7 +42,7 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
     private Long _id;
     @Unique
     private int id;
-    private int user_id;
+    private Long user_id;
     private String channel;
     private String account;
     private String charge_id;
@@ -55,11 +57,20 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
     private String updated_at;
     private String deleted_at;
 
-    @Generated(hash = 719075135)
-    public RechargeSuccessBean(Long _id, int id, int user_id, String channel, String account,
-                               String charge_id, int action, int amount, String currency, String subject,
-                               String body, String transaction_no, int status, String created_at,
-                               String updated_at, String deleted_at) {
+    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
+    private UserInfoBean userInfoBean;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1729717820)
+    private transient RechargeSuccessBeanDao myDao;
+
+    @Generated(hash = 287155188)
+    public RechargeSuccessBean(Long _id, int id, Long user_id, String channel,
+            String account, String charge_id, int action, int amount,
+            String currency, String subject, String body, String transaction_no,
+            int status, String created_at, String updated_at, String deleted_at) {
         this._id = _id;
         this.id = id;
         this.user_id = user_id;
@@ -82,6 +93,9 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
     public RechargeSuccessBean() {
     }
 
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
+
     @Override
     public Long getMaxId() {
         return (long) this.id;
@@ -95,13 +109,6 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         this.id = id;
     }
 
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
 
     public String getChannel() {
         return channel;
@@ -215,6 +222,86 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         this._id = _id;
     }
 
+    @Override
+    public String toString() {
+        return "id=" + id + "\n" +
+                "action=" + action + "\n" +
+                "status=" + status + "\n";
+    }
+
+    public Long getUser_id() {
+        return this.user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1288178437)
+    public UserInfoBean getUserInfoBean() {
+        Long __key = this.user_id;
+        if (userInfoBean__resolvedKey == null
+                || !userInfoBean__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean userInfoBeanNew = targetDao.load(__key);
+            synchronized (this) {
+                userInfoBean = userInfoBeanNew;
+                userInfoBean__resolvedKey = __key;
+            }
+        }
+        return userInfoBean;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 251524817)
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        synchronized (this) {
+            this.userInfoBean = userInfoBean;
+            user_id = userInfoBean == null ? null : userInfoBean.getUser_id();
+            userInfoBean__resolvedKey = user_id;
+        }
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
 
     @Override
     public int describeContents() {
@@ -226,7 +313,7 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         super.writeToParcel(dest, flags);
         dest.writeValue(this._id);
         dest.writeInt(this.id);
-        dest.writeInt(this.user_id);
+        dest.writeValue(this.user_id);
         dest.writeString(this.channel);
         dest.writeString(this.account);
         dest.writeString(this.charge_id);
@@ -240,13 +327,21 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeString(this.deleted_at);
+        dest.writeParcelable(this.userInfoBean, flags);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 2001597343)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getRechargeSuccessBeanDao() : null;
     }
 
     protected RechargeSuccessBean(Parcel in) {
         super(in);
         this._id = (Long) in.readValue(Long.class.getClassLoader());
         this.id = in.readInt();
-        this.user_id = in.readInt();
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.channel = in.readString();
         this.account = in.readString();
         this.charge_id = in.readString();
@@ -260,6 +355,7 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.deleted_at = in.readString();
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
     public static final Creator<RechargeSuccessBean> CREATOR = new Creator<RechargeSuccessBean>() {
@@ -273,11 +369,4 @@ public class RechargeSuccessBean extends BaseListBean implements Parcelable {
             return new RechargeSuccessBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "id=" + id + "\n" +
-                "action=" + action + "\n" +
-                "status=" + status + "\n";
-    }
 }

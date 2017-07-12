@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic;
 
 
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -58,20 +59,25 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
             return;
         }
         Subscription subscription = mRepository.stickTop(feed_id, (int) mRootView.getInputMoney(), mRootView.getTopDyas())
+                .doOnSubscribe(() ->
+                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
+                )
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
                     }
                 });
 

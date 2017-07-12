@@ -120,10 +120,6 @@ public class TextViewUtils {
     private void handleTextDisplay() throws Exception {
         mTextView.setVisibility(View.INVISIBLE);
 
-        if (mTextView.getLineCount() > mMaxLineNums) {
-            int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-            mOriMsg = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
-        }
         if (!mCanRead) {
             mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
             ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
@@ -132,6 +128,12 @@ public class TextViewUtils {
                 public void onGlobalLayout() {
                     ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
                     viewTreeObserver.removeOnGlobalLayoutListener(this);
+
+                    if (mTextView.getLineCount() > mMaxLineNums) {
+                        int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
+                        mOriMsg = mOriMsg.subSequence(0, endOfLastLine - 2) + "...";
+                    }
+
                     mTextView.setText(getSpannableString(mOriMsg));
                     mTextView.setVisibility(View.VISIBLE);
                 }
