@@ -36,7 +36,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     public static final int SEND_SUCCESS = 2;
 
     public static final int TOP_SUCCESS = 1;
-    public static final int TOP_REVIEW = -1;
+    public static final int TOP_NONE = 0;
+    public static final int TOP_REVIEW = 2;
 
 
     /**
@@ -83,6 +84,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     private boolean has_digg;
     private boolean has_collect;
     private double amount;
+    @Convert(converter = LikeBeanConvert.class, columnType = String.class)
+    private List<DynamicLikeBean> likes;
     private boolean paid;
     @Convert(converter = ImagesBeansVonvert.class, columnType = String.class)
     private List<ImagesBean> images;
@@ -100,7 +103,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
     private Long hot_creat_time;// 标记热门，已及创建时间，用户数据库查询
     private boolean isFollowed;// 是否关注了该条动态（用户）
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
-    private int top;// 置顶状态 0：无置顶状态 1：置顶成功 -1：置顶审核中
+    private int top = TOP_NONE;// 置顶状态 0：无置顶状态 1：置顶成功 -1：置顶审核中
 
     @Convert(converter = DynamicBean.DataConverter.class, columnType = String.class)
     private List<FollowFansBean> digUserInfoList;// 点赞用户的信息列表
@@ -678,6 +681,24 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         }
     }
 
+    public static class LikeBeanConvert implements PropertyConverter<List<DynamicLikeBean>, String> {
+        @Override
+        public List<DynamicLikeBean> convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(List<DynamicLikeBean> entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
 
     @Override
     public int describeContents() {
@@ -805,13 +826,12 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
     }
 
-    @Generated(hash = 544784438)
-    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id,
-            String feed_content, int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count,
-            String feed_latitude, String feed_longtitude, String feed_geohash, int audit_status, Long feed_mark,
-            boolean has_digg, boolean has_collect, double amount, boolean paid, List<ImagesBean> images,
-            List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
-            List<FollowFansBean> digUserInfoList) {
+    @Generated(hash = 2066961681)
+    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content,
+            int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude,
+            String feed_longtitude, String feed_geohash, int audit_status, Long feed_mark, boolean has_digg, boolean has_collect,
+            double amount, List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs,
+            PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top, List<FollowFansBean> digUserInfoList) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -830,6 +850,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
         this.has_digg = has_digg;
         this.has_collect = has_collect;
         this.amount = amount;
+        this.likes = likes;
         this.paid = paid;
         this.images = images;
         this.diggs = diggs;
@@ -887,6 +908,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
 
     public void setTop(int top) {
         this.top = top;
+    }
+
+    public List<DynamicLikeBean> getLikes() {
+        return this.likes;
+    }
+
+    public void setLikes(List<DynamicLikeBean> likes) {
+        this.likes = likes;
     }
 
     /** called by internal mechanisms, do not call yourself. */

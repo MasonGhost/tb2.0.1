@@ -24,6 +24,8 @@ public interface DynamicTopContract {
         int getTopDyas();
 
         float getInputMoney();
+
+        void topSuccess();
     }
 
     interface Presenter extends IBasePresenter {

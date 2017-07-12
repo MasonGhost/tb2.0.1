@@ -2,9 +2,9 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-public class TopDynamicCommentBeanTest extends AbstractDaoTestLongPk<TopDynamicCommentBeanDao, TopDynamicCommentBean> {
+public class TopDynamicBeanCommentBeanTest extends AbstractDaoTestLongPk<TopDynamicCommentBeanDao, TopDynamicCommentBean> {
 
-    public TopDynamicCommentBeanTest() {
+    public TopDynamicBeanCommentBeanTest() {
         super(TopDynamicCommentBeanDao.class);
     }
 

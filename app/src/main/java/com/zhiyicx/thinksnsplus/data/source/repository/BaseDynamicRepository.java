@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
@@ -31,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -78,6 +80,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+    @Inject
+    TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
 
     @Inject
     public BaseDynamicRepository(ServiceManager serviceManager) {
@@ -128,8 +132,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after,Long user_id, final boolean isLoadMore) {
-        return dealWithDynamicListV2(mDynamicClient.getDynamicListV2(type, after,null, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE)),
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore) {
+        return dealWithDynamicListV2(mDynamicClient.getDynamicListV2(type, after, null, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE)),
                 type, isLoadMore);
     }
 
@@ -786,7 +790,19 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
             (Observable<DynamicBeanV2> observable, final String type, final boolean isLoadMore) {
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(dynamicBeanV2 -> dynamicBeanV2.getFeeds())
+                .map(dynamicBeanV2 -> {
+                    List<DynamicDetailBeanV2> topData = dynamicBeanV2.getPinned();
+                    List<BaseListBean> topDataC =new ArrayList<>();
+                    if (topData != null && !topData.isEmpty()) {
+                        for (DynamicDetailBeanV2 data : topData) {
+                            data.setTop(DynamicDetailBeanV2.TOP_SUCCESS);
+                        }
+                        topDataC.addAll(topData);
+                        mTopDynamicBeanGreenDao.saveMultiDataConvert(topDataC);
+                        dynamicBeanV2.getFeeds().addAll(0, topData);
+                    }
+                    return dynamicBeanV2.getFeeds();
+                })
                 .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<List<DynamicDetailBeanV2>>>() {
                     @Override
                     public Observable<List<DynamicDetailBeanV2>> call(final List<DynamicDetailBeanV2> listBaseJson) {
