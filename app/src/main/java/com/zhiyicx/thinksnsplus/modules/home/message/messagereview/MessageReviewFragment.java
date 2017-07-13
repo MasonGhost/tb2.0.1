@@ -39,16 +39,9 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         return fragment;
     }
 
-    
-
     @Override
     protected String setCenterTitle() {
         return getString(R.string.review);
-    }
-
-    @Override
-    protected void initView(View rootView) {
-        super.initView(rootView);
     }
 
     @Override
@@ -64,11 +57,6 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     @Override
     protected boolean isNeedRefreshAnimation() {
         return false;
-    }
-
-    @Override
-    protected void initData() {
-        super.initData();
     }
 
     @Override
