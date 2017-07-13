@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget.comment;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -48,10 +49,13 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         } else {
             holder.setVisible(com.zhiyicx.baseproject.R.id.iv_hint_img, INVISIBLE);
         }
+        TextView contentTextView = holder.getView(com.zhiyicx.baseproject.R.id.tv_simple_text_comment);
         holder.setText(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, setShowText(dynamicCommentBean, position));
         // Add the links and make the links clickable
-        ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_simple_text_comment), setLiknks(dynamicCommentBean, position));
-
+        ConvertUtils.stringLinkConvert(contentTextView, setLiknks(dynamicCommentBean, position));
+        Drawable top_drawable = contentTextView.getResources().getDrawable(R.mipmap.label_zhiding);
+        contentTextView.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                dynamicCommentBean.getPinned() == 1 ? top_drawable : null, null);
         holder.setOnClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, v -> {
             if (mOnIitemClickListener != null) {
                 mOnIitemClickListener.onItemClick(v, position);

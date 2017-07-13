@@ -1,5 +1,6 @@
-package com.zhiyicx.thinksnsplus.modules.wallet.bill;
+package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 
 import java.util.Comparator;
@@ -10,7 +11,7 @@ import java.util.Comparator;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class TimeStringSortClass implements Comparator<RechargeSuccessBean> {
+public class TimeStringSortClass implements Comparator<DynamicCommentBean> {
 
     private boolean reversed = true;
 
@@ -22,7 +23,7 @@ public class TimeStringSortClass implements Comparator<RechargeSuccessBean> {
     }
 
     @Override
-    public int compare(RechargeSuccessBean t1, RechargeSuccessBean t2) {
+    public int compare(DynamicCommentBean t1, DynamicCommentBean t2) {
         if (reversed) {
             return t2.getCreated_at().compareTo(t1.getCreated_at());
         } else {

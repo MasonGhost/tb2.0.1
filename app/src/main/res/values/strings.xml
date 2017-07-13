@@ -181,13 +181,14 @@
     <string name="totop_vrify">此动态正在审核置顶中请勿重复提交</string>
     <string name="et_top_input">输入金额</string>
     <string name="et_top_total">总金额</string>
+    <string name="words_holder">囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧</string>
     <string name="to_top">申请置顶</string>
     <string name="to_recharge">余额不足，去充值</string>
     <string name="sticktop_instructions">置顶说明</string>
     <string name="sticktop_instructions_detail">置顶金额必须是整数，不能出现小数</string>
     <string name="dynamic_list_top_dynamic">申请动态置顶</string>
     <string name="dynamic_list_top_dynamic_success">申请动态置顶成功</string>
-    <string name="to_top_description">当前置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
+    <string name="to_top_description">当前平均置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
 
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>

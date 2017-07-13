@@ -201,6 +201,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
+                if (content.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean.getPaid_node().isPaid()) {
+                    content += mContext.getString(R.string.words_holder);
+                    contentView.setLinksClickable(false);
+                }
                 TextViewUtils textViewUtils = TextViewUtils.newInstance(contentView, content)
                         .spanTextColor(SkinUtils.getColor(R
                                 .color.normal_for_assist_text))

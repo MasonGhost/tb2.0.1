@@ -47,6 +47,7 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -130,6 +131,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                                 data.addAll(myComments);
                             }
                         }
+                        Collections.sort(data,new TimeStringSortClass());
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
