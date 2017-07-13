@@ -31,7 +31,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
@@ -61,6 +60,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_HOT;
+import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
@@ -173,13 +174,19 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 break;
             case ApiConfig.DYNAMIC_TYPE_HOTS:
                 datas = mDynamicDetailBeanV2GreenDao.getHotDynamicList(maxId);
-//                datas.addAll(0,mTopDynamicBeanGreenDao.getMultiConvertDataFromCache());
+                List<DynamicDetailBeanV2> topHotDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_HOT);
+                if (topHotDynamics != null) {
+                    datas.addAll(0, topHotDynamics);
+                }
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 if (!isLoadMore) {// 刷新
                     datas = getDynamicBeenFromDBV2();
                     datas.addAll(mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId));
-//                    datas.addAll(0,mTopDynamicBeanGreenDao.getMultiConvertDataFromCache());
+                    List<DynamicDetailBeanV2> topNewDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_NEW);
+                    if (topNewDynamics != null) {
+                        datas.addAll(0, topNewDynamics);
+                    }
                 } else {
                     datas = mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId);
                 }

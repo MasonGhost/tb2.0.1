@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
@@ -50,6 +51,9 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_HOT;
+import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
 
 
 /**
@@ -796,8 +800,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         for (DynamicDetailBeanV2 data : topData) {
                             data.setTop(DynamicDetailBeanV2.TOP_SUCCESS);
                         }
-//                        mTopDynamicBeanGreenDao.saveMultiDataConvert(topData);
-                        dynamicBeanV2.getFeeds().addAll(0, topData);
+                        if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {// 置顶只有 热门、最新
+                            TopDynamicBean topDynamicBean = new TopDynamicBean();
+                            topDynamicBean.setType(type.equals(ApiConfig.DYNAMIC_TYPE_NEW) ? TYPE_NEW : TYPE_HOT);
+                            topDynamicBean.setTopDynamics(topData);
+                            mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
+                            dynamicBeanV2.getFeeds().addAll(0, topData);
+                        }
+
                     }
                     return dynamicBeanV2.getFeeds();
                 })

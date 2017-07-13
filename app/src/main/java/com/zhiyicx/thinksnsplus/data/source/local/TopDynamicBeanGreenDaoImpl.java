@@ -2,13 +2,11 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
-import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,17 +37,6 @@ public class TopDynamicBeanGreenDaoImpl extends CommonCacheImpl<TopDynamicBean> 
         mTopDynamicBeanDao.insertOrReplaceInTx(multiData);
     }
 
-    public void saveMultiDataConvert(List<DynamicDetailBeanV2> multiData) {
-        List<BaseListBean> convertData = new ArrayList<>();
-        List<TopDynamicBean> realData = new ArrayList<>();
-        convertData.addAll(multiData);
-        for (BaseListBean data : convertData) {
-            TopDynamicBean test = (TopDynamicBean) data;
-            realData.add(test);
-        }
-        saveMultiData(realData);
-    }
-
     @Override
     public boolean isInvalide() {
         return false;
@@ -63,18 +50,6 @@ public class TopDynamicBeanGreenDaoImpl extends CommonCacheImpl<TopDynamicBean> 
     @Override
     public List<TopDynamicBean> getMultiDataFromCache() {
         return mTopDynamicBeanDao.loadAll();
-    }
-
-    public List<DynamicDetailBeanV2> getMultiConvertDataFromCache() {
-        List<TopDynamicBean> localData = mTopDynamicBeanDao.loadAll();
-        List<BaseListBean> multiData = new ArrayList<>();
-        List<DynamicDetailBeanV2> resultData = new ArrayList<>();
-        multiData.addAll(localData);
-        for (BaseListBean data : multiData) {
-            DynamicDetailBeanV2 test = (DynamicDetailBeanV2) data;
-            resultData.add(test);
-        }
-        return resultData;
     }
 
     @Override
@@ -102,7 +77,11 @@ public class TopDynamicBeanGreenDaoImpl extends CommonCacheImpl<TopDynamicBean> 
         return mTopDynamicBeanDao.insertOrReplace(newData);
     }
 
-//    public DynamicDetailBeanV2 topDynamic2normal(){
-//
-//    }
+    public List<DynamicDetailBeanV2> getTopDynamicByType(Long type) {
+        if (getSingleDataFromCache(type) == null) {
+            return null;
+        }
+        return getSingleDataFromCache(type).getTopDynamics();
+    }
+
 }

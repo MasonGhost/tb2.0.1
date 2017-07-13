@@ -2,16 +2,19 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-public class TopDynamicBeanTest extends AbstractDaoTestLongPk<TopDynamicDao, TopDynamicBean> {
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBeanDao;
+
+public class TopDynamicBeanTest extends AbstractDaoTestLongPk<TopDynamicBeanDao, TopDynamicBean> {
 
     public TopDynamicBeanTest() {
-        super(TopDynamicDao.class);
+        super(TopDynamicBeanDao.class);
     }
 
     @Override
     protected TopDynamicBean createEntity(Long key) {
         TopDynamicBean entity = new TopDynamicBean();
-        entity.setFeed_mark(key);
+        entity.setType(1L);
         return entity;
     }
 
