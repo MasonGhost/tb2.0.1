@@ -5,16 +5,19 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.DynamicImagesBeanConvert;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
+import java.util.List;
 
 /**
  * @Author Jliuer
@@ -24,6 +27,10 @@ import org.greenrobot.greendao.DaoException;
  */
 @Entity
 public class TopDynamicCommentBean extends BaseListBean {
+
+    public static final int TOP_REFUSE = 0;
+    public static final int TOP_REVIEWING = 1;
+    public static final int TOP_SUCCESS = 2;
 
     /**
      * id : 2
@@ -37,44 +44,31 @@ public class TopDynamicCommentBean extends BaseListBean {
      * feed : {"id":1,"content":"动态内容"}
      */
     @Id
+    @Unique
     private Long id;
     private int amount;
     private int day;
     private Long user_id;
     private String expires_at;
     private String created_at;
+    private int state = TOP_REVIEWING;// 置顶状态 0：置顶被拒绝 1：置顶审核中 2：置顶成功
     @Convert(converter = CommentConvert.class, columnType = String.class)
     private CommentBean comment;
     @Convert(converter = FeedConvert.class, columnType = String.class)
     private FeedBean feed;
-    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
+    @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 2083937831)
-    private transient TopDynamicCommentBeanDao myDao;
+    @ToOne(joinProperty = "id")
+    private DynamicDetailBeanV2 mDynamicDetailBeanV2;
 
-    @Generated(hash = 1068484610)
-    public TopDynamicCommentBean(Long id, int amount, int day, Long user_id,
-            String expires_at, String created_at, CommentBean comment, FeedBean feed) {
-        this.id = id;
-        this.amount = amount;
-        this.day = day;
-        this.user_id = user_id;
-        this.expires_at = expires_at;
-        this.created_at = created_at;
-        this.comment = comment;
-        this.feed = feed;
+
+    public int getState() {
+        return this.state;
     }
 
-    @Generated(hash = 2134686559)
-    public TopDynamicCommentBean() {
+    public void setState(int state) {
+        this.state = state;
     }
-
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
 
     public int getAmount() {
         return amount;
@@ -240,6 +234,7 @@ public class TopDynamicCommentBean extends BaseListBean {
 
         private int id;
         private String content;
+        private List<DynamicDetailBeanV2.ImagesBean> images;
 
         public int getId() {
             return id;
@@ -267,6 +262,7 @@ public class TopDynamicCommentBean extends BaseListBean {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
             dest.writeString(this.content);
+            dest.writeTypedList(this.images);
         }
 
         public FeedBean() {
@@ -275,6 +271,7 @@ public class TopDynamicCommentBean extends BaseListBean {
         protected FeedBean(Parcel in) {
             this.id = in.readInt();
             this.content = in.readString();
+            this.images = in.createTypedArrayList(DynamicDetailBeanV2.ImagesBean.CREATOR);
         }
 
         public static final Creator<FeedBean> CREATOR = new Creator<FeedBean>() {
@@ -306,7 +303,41 @@ public class TopDynamicCommentBean extends BaseListBean {
         this.user_id = user_id;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 2083937831)
+    private transient TopDynamicCommentBeanDao myDao;
+
+    @Generated(hash = 28345850)
+    public TopDynamicCommentBean(Long id, int amount, int day, Long user_id, String expires_at, String created_at,
+                                 int state, CommentBean comment, FeedBean feed) {
+        this.id = id;
+        this.amount = amount;
+        this.day = day;
+        this.user_id = user_id;
+        this.expires_at = expires_at;
+        this.created_at = created_at;
+        this.state = state;
+        this.comment = comment;
+        this.feed = feed;
+    }
+
+    @Generated(hash = 2134686559)
+    public TopDynamicCommentBean() {
+    }
+
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1288178437)
     public UserInfoBean getUserInfoBean() {
         Long __key = this.user_id;
@@ -325,7 +356,9 @@ public class TopDynamicCommentBean extends BaseListBean {
         return userInfoBean;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 251524817)
     public void setUserInfoBean(UserInfoBean userInfoBean) {
         synchronized (this) {
@@ -421,9 +454,39 @@ public class TopDynamicCommentBean extends BaseListBean {
         dest.writeValue(this.user_id);
         dest.writeString(this.expires_at);
         dest.writeString(this.created_at);
+        dest.writeInt(this.state);
         dest.writeParcelable(this.comment, flags);
         dest.writeParcelable(this.feed, flags);
         dest.writeParcelable(this.userInfoBean, flags);
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1468529555)
+    public DynamicDetailBeanV2 getMDynamicDetailBeanV2() {
+        Long __key = this.id;
+        if (mDynamicDetailBeanV2__resolvedKey == null || !mDynamicDetailBeanV2__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            DynamicDetailBeanV2Dao targetDao = daoSession.getDynamicDetailBeanV2Dao();
+            DynamicDetailBeanV2 mDynamicDetailBeanV2New = targetDao.load(__key);
+            synchronized (this) {
+                mDynamicDetailBeanV2 = mDynamicDetailBeanV2New;
+                mDynamicDetailBeanV2__resolvedKey = __key;
+            }
+        }
+        return mDynamicDetailBeanV2;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 128069292)
+    public void setMDynamicDetailBeanV2(DynamicDetailBeanV2 mDynamicDetailBeanV2) {
+        synchronized (this) {
+            this.mDynamicDetailBeanV2 = mDynamicDetailBeanV2;
+            id = mDynamicDetailBeanV2 == null ? null : mDynamicDetailBeanV2.getFeed_mark();
+            mDynamicDetailBeanV2__resolvedKey = id;
+        }
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -441,6 +504,7 @@ public class TopDynamicCommentBean extends BaseListBean {
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.expires_at = in.readString();
         this.created_at = in.readString();
+        this.state = in.readInt();
         this.comment = in.readParcelable(CommentBean.class.getClassLoader());
         this.feed = in.readParcelable(FeedBean.class.getClassLoader());
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
@@ -457,4 +521,6 @@ public class TopDynamicCommentBean extends BaseListBean {
             return new TopDynamicCommentBean[size];
         }
     };
+    @Generated(hash = 1412668450)
+    private transient Long mDynamicDetailBeanV2__resolvedKey;
 }

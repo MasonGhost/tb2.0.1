@@ -20,7 +20,7 @@ import rx.Observable;
 public interface MessageReviewContract {
 
     interface View extends ITSListView<TopDynamicCommentBean, Presenter> {
-
+        TopDynamicCommentBean getCurrentComment();
     }
 
     interface Repository {
