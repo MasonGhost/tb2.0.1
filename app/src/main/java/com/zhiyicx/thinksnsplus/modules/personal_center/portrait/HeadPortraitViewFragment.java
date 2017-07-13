@@ -351,7 +351,7 @@ public class HeadPortraitViewFragment extends TSFragment<HeadPortraitViewContrac
                 break;
             case 1:
                 upDateHeadIconStorageId = taskId;
-                mPresenter.updateUserInfo(upDateHeadIconStorageId);
+                mPresenter.updateUserInfo(packageUserHeadIcon(), upDateHeadIconStorageId);
                 break;
             case 2:
                 mIvPortraitPreview.setClickable(true);

@@ -2,16 +2,19 @@ package com.zhiyicx.thinksnsplus.modules.personal_center.portrait;
 
 import android.graphics.BitmapFactory;
 
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 
@@ -40,6 +43,9 @@ public class HeadPortraitViewPresenter extends BasePresenter<HeadPortraitViewCon
 
     @Inject
     IUploadRepository mIUploadRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public HeadPortraitViewPresenter(HeadPortraitViewContract.Repository repository, HeadPortraitViewContract.View rootView) {
@@ -81,8 +87,36 @@ public class HeadPortraitViewPresenter extends BasePresenter<HeadPortraitViewCon
 
     @Override
     public void updateUserInfo(HashMap<String, String> userInfo, int id) {
+        Subscription subscription = mUserInfoRepository.changeUserInfo(userInfo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<BaseJson>() {
+
+                    @Override
+                    protected void onSuccess(BaseJson data) {
+                        // 修改成功后，关闭页面
+                        mRootView.setUpLoadHeadIconState(2, 0);
+                        EventBus.getDefault().post(EventBusTagConfig.EVENT_USERINFO_UPDATE);
+                        upDateUserInfo(id);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        // 修改失败，好尴尬
+                        mRootView.setUpLoadHeadIconState(-1, 0);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.setUpLoadHeadIconState(-1, 0);
+                    }
+                });
+        addSubscrebe(subscription);
+
+    }
+
+    private void upDateUserInfo(int id) {
         long user_id = AppApplication.getmCurrentLoginAuth().getUser_id();
-        LogUtils.d("Cathy", "user_id --> " + user_id);
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(user_id);
         if (userInfoBean != null && id != 0){
             userInfoBean.setAvatar(String.valueOf(id));
@@ -91,7 +125,6 @@ public class HeadPortraitViewPresenter extends BasePresenter<HeadPortraitViewCon
             userInfoBeanList.add(userInfoBean);
             EventBus.getDefault().post(userInfoBeanList, EventBusTagConfig.EVENT_USERINFO_UPDATE);
             mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
-            mRootView.setUpLoadHeadIconState(2, 0);
         } else {
             mRootView.setUpLoadHeadIconState(-1, 0);
         }
