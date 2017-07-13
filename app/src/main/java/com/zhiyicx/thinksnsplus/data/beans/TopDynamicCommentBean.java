@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.DynamicImagesBeanConvert;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
@@ -16,6 +17,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Author Jliuer
@@ -232,6 +234,7 @@ public class TopDynamicCommentBean extends BaseListBean {
 
         private int id;
         private String content;
+        private List<DynamicDetailBeanV2.ImagesBean> images;
 
         public int getId() {
             return id;
@@ -259,6 +262,7 @@ public class TopDynamicCommentBean extends BaseListBean {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.id);
             dest.writeString(this.content);
+            dest.writeTypedList(this.images);
         }
 
         public FeedBean() {
@@ -267,6 +271,7 @@ public class TopDynamicCommentBean extends BaseListBean {
         protected FeedBean(Parcel in) {
             this.id = in.readInt();
             this.content = in.readString();
+            this.images = in.createTypedArrayList(DynamicDetailBeanV2.ImagesBean.CREATOR);
         }
 
         public static final Creator<FeedBean> CREATOR = new Creator<FeedBean>() {
