@@ -6,8 +6,10 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.TimeStringSortClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -146,6 +148,7 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
                 .where(DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark), DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
                 .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
                 .list());
+        Collections.sort(dynamicCommentBeen,new TimeStringSortClass());
         return dynamicCommentBeen;
     }
 

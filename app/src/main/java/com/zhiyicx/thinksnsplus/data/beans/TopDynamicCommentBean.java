@@ -236,6 +236,14 @@ public class TopDynamicCommentBean extends BaseListBean {
         private String content;
         private List<DynamicDetailBeanV2.ImagesBean> images;
 
+        public List<DynamicDetailBeanV2.ImagesBean> getImages() {
+            return images;
+        }
+
+        public void setImages(List<DynamicDetailBeanV2.ImagesBean> images) {
+            this.images = images;
+        }
+
         public int getId() {
             return id;
         }

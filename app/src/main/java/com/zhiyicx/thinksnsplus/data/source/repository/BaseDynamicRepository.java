@@ -722,7 +722,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                                 dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
                                                             }
                                                         }
-
                                                         mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                                     }
                                                     return dynamicBean;
