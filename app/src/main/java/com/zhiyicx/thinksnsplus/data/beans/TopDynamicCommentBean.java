@@ -54,8 +54,10 @@ public class TopDynamicCommentBean extends BaseListBean {
     private CommentBean comment;
     @Convert(converter = FeedConvert.class, columnType = String.class)
     private FeedBean feed;
-    @ToOne(joinProperty = "user_id")// DynamicBean 的 user_id作为外键
+    @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
+    @ToOne(joinProperty = "id")
+    private DynamicDetailBeanV2 mDynamicDetailBeanV2;
 
 
     public int getState() {
@@ -453,6 +455,35 @@ public class TopDynamicCommentBean extends BaseListBean {
         dest.writeParcelable(this.userInfoBean, flags);
     }
 
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1468529555)
+    public DynamicDetailBeanV2 getMDynamicDetailBeanV2() {
+        Long __key = this.id;
+        if (mDynamicDetailBeanV2__resolvedKey == null || !mDynamicDetailBeanV2__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            DynamicDetailBeanV2Dao targetDao = daoSession.getDynamicDetailBeanV2Dao();
+            DynamicDetailBeanV2 mDynamicDetailBeanV2New = targetDao.load(__key);
+            synchronized (this) {
+                mDynamicDetailBeanV2 = mDynamicDetailBeanV2New;
+                mDynamicDetailBeanV2__resolvedKey = __key;
+            }
+        }
+        return mDynamicDetailBeanV2;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 128069292)
+    public void setMDynamicDetailBeanV2(DynamicDetailBeanV2 mDynamicDetailBeanV2) {
+        synchronized (this) {
+            this.mDynamicDetailBeanV2 = mDynamicDetailBeanV2;
+            id = mDynamicDetailBeanV2 == null ? null : mDynamicDetailBeanV2.getFeed_mark();
+            mDynamicDetailBeanV2__resolvedKey = id;
+        }
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2079522954)
     public void __setDaoSession(DaoSession daoSession) {
@@ -485,4 +516,6 @@ public class TopDynamicCommentBean extends BaseListBean {
             return new TopDynamicCommentBean[size];
         }
     };
+    @Generated(hash = 1412668450)
+    private transient Long mDynamicDetailBeanV2__resolvedKey;
 }

@@ -29,8 +29,8 @@ import java.util.List;
  * @Description 动态详情 V2
  */
 @Entity
-public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
-
+public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Serializable {
+    private static final Long serialVersionUID = 123453L;
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
     public static final int SEND_SUCCESS = 2;
@@ -828,10 +828,10 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable {
 
     @Generated(hash = 2066961681)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content,
-            int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude,
-            String feed_longtitude, String feed_geohash, int audit_status, Long feed_mark, boolean has_digg, boolean has_collect,
-            double amount, List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs,
-            PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top, List<FollowFansBean> digUserInfoList) {
+                               int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude,
+                               String feed_longtitude, String feed_geohash, int audit_status, Long feed_mark, boolean has_digg, boolean has_collect,
+                               double amount, List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs,
+                               PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top, List<FollowFansBean> digUserInfoList) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;

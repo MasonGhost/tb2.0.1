@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
-import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
@@ -800,14 +799,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         for (DynamicDetailBeanV2 data : topData) {
                             data.setTop(DynamicDetailBeanV2.TOP_SUCCESS);
                         }
-                        if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {// 置顶只有 热门、最新
-                            TopDynamicBean topDynamicBean = new TopDynamicBean();
-                            topDynamicBean.setType(type.equals(ApiConfig.DYNAMIC_TYPE_NEW) ? TYPE_NEW : TYPE_HOT);
-                            topDynamicBean.setTopDynamics(topData);
-                            mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
-                            dynamicBeanV2.getFeeds().addAll(0, topData);
-                        }
-
+                        dynamicBeanV2.getFeeds().addAll(0, topData);
                     }
                     return dynamicBeanV2.getFeeds();
                 })
@@ -843,6 +835,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 .map(userinfobeans -> {
                                     if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        List<DynamicDetailBeanV2> topData = new ArrayList<>();
                                         for (UserInfoBean userInfoBean : userinfobeans.getData()) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
@@ -858,7 +851,15 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                     dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
                                                 }
                                             }
-
+                                            if (dynamicBean.getTop() == DynamicDetailBeanV2.TOP_SUCCESS) {
+                                                topData.add(dynamicBean);
+                                            }
+                                        }
+                                        if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {// 置顶只有 热门、最新
+                                            TopDynamicBean topDynamicBean = new TopDynamicBean();
+                                            topDynamicBean.setType(type.equals(ApiConfig.DYNAMIC_TYPE_NEW) ? TYPE_NEW : TYPE_HOT);
+                                            topDynamicBean.setTopDynamics(topData);
+                                            mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
                                         }
                                         mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                     }

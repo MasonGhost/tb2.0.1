@@ -14,6 +14,8 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.NotNull;
 
+import java.io.Serializable;
+
 /**
  * @author LiuChao
  * @describe 动态评论的实体类
@@ -21,7 +23,8 @@ import org.greenrobot.greendao.annotation.NotNull;
  * @contact email:450127106@qq.com
  */
 @Entity
-public class DynamicCommentBean extends BaseListBean implements Parcelable {
+public class DynamicCommentBean extends BaseListBean implements Parcelable,Serializable {
+    private static final long serialVersionUID = 536871008;
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
     public static final int SEND_SUCCESS = 2;

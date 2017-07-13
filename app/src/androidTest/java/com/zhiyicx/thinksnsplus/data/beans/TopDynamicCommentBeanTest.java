@@ -15,9 +15,9 @@ public class TopDynamicCommentBeanTest extends AbstractDaoTestLongPk<TopDynamicC
     protected TopDynamicCommentBean createEntity(Long key) {
         TopDynamicCommentBean entity = new TopDynamicCommentBean();
         entity.setId(key);
-        entity.setAmount();
-        entity.setDay();
-        entity.setState();
+        entity.setAmount(1);
+        entity.setDay(5);
+        entity.setState(2);
         return entity;
     }
 
