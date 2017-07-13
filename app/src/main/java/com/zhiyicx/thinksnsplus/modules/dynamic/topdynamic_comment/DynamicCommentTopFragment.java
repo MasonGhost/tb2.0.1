@@ -125,6 +125,11 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
         return mCurrentDays;
     }
 
+    @Override
+    public void topSuccess() {
+        getActivity().finish();
+    }
+
     private void initListener() {
         mRbDaysGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {

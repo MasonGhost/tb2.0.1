@@ -37,9 +37,11 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.TimeStringSortClass;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -467,6 +469,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     @Override
                     public Observable<List<DynamicCommentBean>> call(final DynamicCommentBeanV2 listBaseJson) {
                         final List<Object> user_ids = new ArrayList<>();
+                        Collections.sort(listBaseJson.getComments(),new TimeStringSortClass());
                         listBaseJson.getPinned().addAll(listBaseJson.getComments());
                         for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinned()) {
                             user_ids.add(dynamicCommentBean.getUser_id());

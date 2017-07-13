@@ -131,7 +131,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                                 data.addAll(myComments);
                             }
                         }
-                        Collections.sort(data,new TimeStringSortClass());
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 

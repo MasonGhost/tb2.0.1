@@ -37,12 +37,23 @@ public class CommentRepository implements ICommentRepository {
 
 
     @Override
-    public Observable<BaseJson<Object>> sendComment(String comment_content, long reply_to_user_id, long comment_mark, String path) {
+    public Observable<BaseJson<Object>> sendComment(String comment_content, long reply_to_user_id, long comment_mark,String path) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("comment_content", comment_content);
         params.put("reply_to_user_id", reply_to_user_id);
         params.put("comment_mark", comment_mark);
         return mCommonClient.handleBackGroundTaskPost(path, UpLoadFile.upLoadFileAndParams(null, params))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> sendCommentV2(String comment_content, long reply_to_user_id, long comment_mark, String path) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("comment_content", comment_content);
+        params.put("reply_to_user_id", reply_to_user_id);
+        params.put("comment_mark", comment_mark);
+        return mCommonClient.handleBackGroundTaskPostV2(path, UpLoadFile.upLoadFileAndParams(null, params))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -54,7 +65,7 @@ public class CommentRepository implements ICommentRepository {
         }
         switch (component_type) {
             case ApiConfig.APP_COMPONENT_FEED:
-                path = String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT, source_id);
+                path = String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT_V2, source_id);
 
                 break;
             case ApiConfig.APP_COMPONENT_MUSIC:

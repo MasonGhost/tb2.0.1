@@ -61,6 +61,7 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
                         mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+                        mRootView.topSuccess();
                     }
 
                     @Override
