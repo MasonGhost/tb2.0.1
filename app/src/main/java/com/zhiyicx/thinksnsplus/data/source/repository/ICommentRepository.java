@@ -20,6 +20,6 @@ public interface ICommentRepository {
 
     Observable<PurChasesBean> checkNote(int note);
 
-    Observable<BaseJsonV2> paykNote(int note);
+    Observable<BaseJsonV2<String>> paykNote(int note);
 
 }

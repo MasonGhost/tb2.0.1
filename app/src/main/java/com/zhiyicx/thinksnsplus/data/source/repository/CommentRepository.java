@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -88,7 +89,7 @@ public class CommentRepository implements ICommentRepository {
     }
 
     @Override
-    public Observable<BaseJsonV2> paykNote(int note) {
+    public Observable<BaseJsonV2<String>> paykNote(int note) {
         return mCommonClient.payNote(note)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
