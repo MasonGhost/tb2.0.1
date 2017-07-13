@@ -43,6 +43,21 @@
         android:textSize="@dimen/size_icon_assist"
         tools:text="4分钟前"/>
 
+    <TextView
+        android:id="@+id/tv_top_flag"
+        android:visibility="gone"
+        android:layout_width="@dimen/dynamic_top_flag_width"
+        android:layout_height="@dimen/dynamic_top_flag_height"
+        android:layout_alignBaseline="@id/tv_name"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_toLeftOf="@+id/tv_time"
+        android:background="@drawable/shape_dynamic_top_flag"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/dyanmic_top_flag"
+        android:textSize="@dimen/size_advert_launche"
+        tools:text="@string/dynamic_top_flag"/>
+
 
     <TextView
         android:id="@+id/tv_content"

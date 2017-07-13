@@ -92,16 +92,18 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
 
         holder.setVisible(R.id.iv_detail_image, View.GONE);
         holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-        holder.setText(R.id.tv_deatil, topDynamicCommentBean.getFeed().getContent());
+        TopDynamicCommentBean.FeedBean feedBean = topDynamicCommentBean.getFeed();
+        TopDynamicCommentBean.CommentBean commentBean = topDynamicCommentBean.getComment();
+        holder.setText(R.id.tv_deatil, feedBean == null ? getString(R.string.review_dynamic_deleted) : topDynamicCommentBean.getFeed().getContent());
 
         String content = String.format(getString(R.string.review_description), (float) topDynamicCommentBean.getAmount(),
-                topDynamicCommentBean.getComment().getContent());
+                commentBean == null ? " " : topDynamicCommentBean.getComment().getContent());
 
         TextView contentView = holder.getView(R.id.tv_content);
         TextView flagView = holder.getView(R.id.tv_review);
         contentView.setText(content);
         List<Link> links = setLiknks(holder, String.format(getString(R.string.dynamic_send_toll_select_money),
-                (float) topDynamicCommentBean.getAmount()), topDynamicCommentBean.getComment().getContent());
+                (float) topDynamicCommentBean.getAmount()), commentBean == null ? " " : topDynamicCommentBean.getComment().getContent());
         contentView.setLinksClickable(false);// 不能消费了点击事件啊
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(contentView, links);
@@ -109,7 +111,8 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
         flagView.setTextColor(SkinUtils.getColor(topDynamicCommentBean.getComment().isPinned()
                 ? R.color.general_for_hint : R.color.dyanmic_top_flag));
         flagView.setText(getString(topDynamicCommentBean.getComment().isPinned() ? R.string.review_approved :
-                (topDynamicCommentBean.getState() == TOP_REVIEWING ? R.string.review_ing : R.string.review_refuse)));
+                ((topDynamicCommentBean.getExpires_at() == null ||
+                        topDynamicCommentBean.getState() == TOP_REVIEWING) ? R.string.review_ing : R.string.review_refuse)));
 
         holder.setText(R.id.tv_name, topDynamicCommentBean.getUserInfoBean().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(topDynamicCommentBean.getCreated_at()));
@@ -125,7 +128,7 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
                 .subscribe(aVoid -> toDetail(topDynamicCommentBean));
     }
 
-    private String getString(int resId){
+    private String getString(int resId) {
         return mContext.getString(resId);
     }
 

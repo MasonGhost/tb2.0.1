@@ -111,9 +111,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             getDynamicDigList(mRootView.getCurrentDynamic().getId(), maxId);
         }
         // 更新评论列表
-        mRepository.getDynamicCommentList(mRootView.getCurrentDynamic().getFeed_mark(), mRootView
+        mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), mRootView
                 .getCurrentDynamic().getId(), maxId)
-                .subscribe(new BaseSubscribe<List<DynamicCommentBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<DynamicCommentBean>>() {
                     @Override
                     protected void onSuccess(List<DynamicCommentBean> data) {
                         if (!isLoadMore) { // 刷新时，把自己还未发送成功的评论加载到前面

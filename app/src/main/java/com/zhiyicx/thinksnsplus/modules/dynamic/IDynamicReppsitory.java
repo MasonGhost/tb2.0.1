@@ -138,8 +138,6 @@ public interface IDynamicReppsitory {
      * @param max_id    max_id
      * @return
      */
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark, Long feed_id, Long max_id);
-
     Observable<List<DynamicCommentBean>> getDynamicCommentListV2(Long feed_mark, Long feed_id, Long max_id);
 
     /**

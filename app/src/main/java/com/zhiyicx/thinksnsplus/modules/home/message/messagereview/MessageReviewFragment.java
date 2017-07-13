@@ -8,6 +8,7 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -26,6 +27,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
 
     private ActionPopupWindow mReviewPopWindow;
+    private ActionPopupWindow mInstructionsPopupWindow;
 
     private TopDynamicCommentBean mTopDynamicCommentBean;
 
@@ -75,6 +77,10 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         mTopDynamicCommentBean = mListDatas.get(position);
+        if (mTopDynamicCommentBean.getComment() == null || mTopDynamicCommentBean.getFeed() == null) {
+            initInstructionsPop(R.string.review_dynamic_deleted);
+            return;
+        }
         initReviewPopWindow(mTopDynamicCommentBean);
     }
 
@@ -115,5 +121,24 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         mReviewPopWindow.show();
     }
 
-
+    public void initInstructionsPop(int resDesStr) {
+        if (mInstructionsPopupWindow != null) {
+            mInstructionsPopupWindow = mInstructionsPopupWindow.newBuilder()
+                    .desStr(getString(resDesStr))
+                    .build();
+            mInstructionsPopupWindow.show();
+            return;
+        }
+        mInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.withdrawal_instructions))
+                .desStr(getString(resDesStr))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                .build();
+        mInstructionsPopupWindow.show();
+    }
 }
