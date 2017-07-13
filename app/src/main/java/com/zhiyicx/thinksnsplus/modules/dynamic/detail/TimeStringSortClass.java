@@ -13,7 +13,7 @@ import java.util.Comparator;
  */
 public class TimeStringSortClass implements Comparator<DynamicCommentBean> {
 
-    private boolean reversed = false;
+    private boolean reversed = true;
 
     public TimeStringSortClass(boolean reversed) {
         this.reversed = reversed;

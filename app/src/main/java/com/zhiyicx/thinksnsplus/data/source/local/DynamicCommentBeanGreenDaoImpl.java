@@ -141,16 +141,36 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
      * 获取最新的动态列表
      */
     public List<DynamicCommentBean> getLocalComments(Long feedMark) {
-        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+//        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
-        List<DynamicCommentBean> topDynamicCommentBeen = new ArrayList<>();
+
+        dynamicCommentBeen.addAll(getLocalCommentsByTop());
         dynamicCommentBeen.addAll(getMySendingComment(feedMark));
-        dynamicCommentBeen.addAll(dynamicCommentBeanDao.queryBuilder()
-                .where(DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark), DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
-                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
-                .list());
-        Collections.sort(dynamicCommentBeen,new TimeStringSortClass());
+        dynamicCommentBeen.addAll(getLocalCommentsByNotTop());
+//        dynamicCommentBeen.addAll(dynamicCommentBeanDao.queryBuilder()
+//                .where(DynamicCommentBeanDao.Properties.Feed_mark.eq(feedMark), DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
+//                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
+//                .list());
+
         return dynamicCommentBeen;
+    }
+
+    public List<DynamicCommentBean> getLocalCommentsByTop() {
+        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+        return dynamicCommentBeanDao.queryBuilder()
+                .where(DynamicCommentBeanDao.Properties.Pinned.eq(1), DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
+                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
+                .list();
+    }
+
+    public List<DynamicCommentBean> getLocalCommentsByNotTop() {
+        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
+        List<DynamicCommentBean> normalData = dynamicCommentBeanDao.queryBuilder()
+                .where(DynamicCommentBeanDao.Properties.Pinned.notEq(1))
+                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
+                .list();
+        Collections.sort(normalData, new TimeStringSortClass());
+        return normalData;
     }
 
     /**
