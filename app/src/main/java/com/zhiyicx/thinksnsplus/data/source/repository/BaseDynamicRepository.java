@@ -469,7 +469,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     @Override
                     public Observable<List<DynamicCommentBean>> call(final DynamicCommentBeanV2 listBaseJson) {
                         final List<Object> user_ids = new ArrayList<>();
-                        Collections.sort(listBaseJson.getComments(),new TimeStringSortClass());
+                        if (listBaseJson.getComments()!=null&&listBaseJson.getComments().size()>1){
+                            Collections.sort(listBaseJson.getComments(),new TimeStringSortClass());
+                        }
                         listBaseJson.getPinned().addAll(listBaseJson.getComments());
                         for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinned()) {
                             user_ids.add(dynamicCommentBean.getUser_id());

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanDao;
@@ -166,10 +167,12 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
     public List<DynamicCommentBean> getLocalCommentsByNotTop() {
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         List<DynamicCommentBean> normalData = dynamicCommentBeanDao.queryBuilder()
-                .where(DynamicCommentBeanDao.Properties.Pinned.notEq(1))
+                .where(DynamicCommentBeanDao.Properties.Pinned.notEq(1),DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
                 .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
                 .list();
-        Collections.sort(normalData, new TimeStringSortClass());
+        if (normalData != null && normalData.size() > 1) {
+            Collections.sort(normalData, new TimeStringSortClass());
+        }
         return normalData;
     }
 
