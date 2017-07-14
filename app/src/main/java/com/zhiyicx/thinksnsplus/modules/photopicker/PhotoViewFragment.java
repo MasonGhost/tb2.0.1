@@ -170,34 +170,39 @@ public class PhotoViewFragment extends TSFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                String path = allPaths.get(mViewPager.getCurrentItem());
-                // 达到最大选择数量，添加新的图片，进行提示
-                if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path) && isChecked) {
-                    ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
-                    mRbSelectPhoto.setChecked(false);
-                    return;
-                }
-                if (isChecked) {
-                    // 当前选择该图片，如果还没有添加过，就进行添加
-                    if (!seletedPaths.contains(path)) {
-                        seletedPaths.add(path);
-                        tolls.add(mImageBean);
-                    }
-                } else {
-                    // 当前取消选择改图片，直接移除
-                    seletedPaths.remove(path);
+            }
+        });
+        mRbSelectPhoto.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            String path = allPaths.get(mViewPager.getCurrentItem());
+            // 达到最大选择数量，添加新的图片，进行提示
+            if (seletedPaths.size() >= maxCount && !seletedPaths.contains(path) && isChecked) {
+                ToastUtils.showToast(getString(R.string.choose_max_photos, maxCount));
+                mRbSelectPhoto.setChecked(false);
+                return;
+            }
+            if (isChecked) {
+                // 当前选择该图片，如果还没有添加过，就进行添加
+                if (!seletedPaths.contains(path)) {
+                    seletedPaths.add(path);
+                    tolls.add(mImageBean);
+                }else{
                     tolls.remove(mImageBean);
                 }
-                // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
-                mBtComplete.setEnabled(seletedPaths.size() > 0);
-                // 重置当前的选择数量
-                mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
-                        maxCount));
-                // 通知图片列表进行刷新
-                // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
-                // EventBus.getDefault().post(seletedPaths, EventBusTagConfig
-                // .EVENT_SELECTED_PHOTO_UPDATE);
+            } else {
+                // 当前取消选择改图片，直接移除
+                seletedPaths.remove(path);
+                tolls.remove(mImageBean);
             }
+            // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
+            mBtComplete.setEnabled(seletedPaths.size() > 0);
+            // 重置当前的选择数量
+            mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
+                    maxCount));
+            // 通知图片列表进行刷新
+            // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
+            // EventBus.getDefault().post(seletedPaths, EventBusTagConfig
+            // .EVENT_SELECTED_PHOTO_UPDATE);
         });
     }
 

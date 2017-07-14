@@ -260,13 +260,10 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
             Bundle mediaStoreArgs = new Bundle();
             mediaStoreArgs.putBoolean(EXTRA_SHOW_GIF, true);
             MediaStoreHelper.getPhotoDirs(getActivity(), mediaStoreArgs,
-                    new MediaStoreHelper.PhotosResultCallback() {
-                        @Override
-                        public void onResultCallback(List<PhotoDirectory> dirs) {
-                            directories.clear();
-                            directories.addAll(dirs);
-                            photoGridAdapter.notifyDataSetChanged();
-                        }
+                    dirs -> {
+                        directories.clear();
+                        directories.addAll(dirs);
+                        photoGridAdapter.notifyDataSetChanged();
                     });
         }
         int selectedCount = photoGridAdapter.getSelectedPhotoPaths().size();
