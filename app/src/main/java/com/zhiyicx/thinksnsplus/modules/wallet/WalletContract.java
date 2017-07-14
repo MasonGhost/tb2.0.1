@@ -56,6 +56,8 @@ public interface WalletContract {
          */
         boolean checkIsNeedTipPop();
 
+        String getTipPopRule();
+
         /**
          * check wallet config info, if walletconfig has cach used it or get it from server
          *

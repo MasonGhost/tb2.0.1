@@ -190,6 +190,6 @@ public interface DynamicDetailContract {
 
         void checkNote(int note);
 
-        void payNote(int imagePosition,int note);
+        void payNote(int imagePosition,int note,boolean isImage);
     }
 }

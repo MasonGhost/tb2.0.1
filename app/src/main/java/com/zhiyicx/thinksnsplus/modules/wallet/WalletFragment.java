@@ -142,7 +142,7 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         }
         mRulePop = CenterInfoPopWindow.builder()
                 .titleStr(getString(R.string.recharge_and_withdraw_rule))
-                .desStr(getString(R.string.recharge_and_withdraw_rule_detail))
+                .desStr(mPresenter.getTipPopRule())
                 .item1Str(getString(R.string.get_it))
                 .item1Color(R.color.themeColor)
                 .isOutsideTouch(true)

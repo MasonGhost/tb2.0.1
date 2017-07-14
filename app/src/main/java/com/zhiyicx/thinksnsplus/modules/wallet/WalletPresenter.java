@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet;
 
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
@@ -9,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -21,7 +23,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 
 import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 
@@ -55,6 +56,9 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+
+    @Inject
+    WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
     private boolean mIsUsreInfoRequseted = false;// 用户信息是否拿到了
 
@@ -97,7 +101,6 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
-
                         mUserInfoBeanGreenDao.insertOrReplace(data);
                         if (data.getWallet() != null) {
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
@@ -147,6 +150,10 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
 
     }
 
+    @Override
+    public String getTipPopRule() {
+        return mWalletConfigBeanGreenDao.getSingleDataFromCache(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "")).getRule();
+    }
 
     /**
      * get wallet config info from server
@@ -166,6 +173,8 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                     @Override
                     protected void onSuccess(WalletConfigBean data) {
                         mWalletConfigBean = data;
+                        data.setUser_id(Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + ""));
+                        mWalletConfigBeanGreenDao.insertOrReplace(data);
                         if (isNeedTip) {
                             mRootView.showSnackSuccessMessage(mContext.getString(R.string.get_success));
                         }
