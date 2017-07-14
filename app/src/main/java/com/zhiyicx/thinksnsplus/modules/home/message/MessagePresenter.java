@@ -361,13 +361,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         switch (key) {
             case NOTIFICATION_KEY_FEED_COMMENTS:
             case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
-                notificationIds = getNotificationIds(mCommentsNoti,notificationIds);
+                notificationIds = getNotificationIds(mCommentsNoti, notificationIds);
                 break;
             case NOTIFICATION_KEY_FEED_DIGGS:
-                notificationIds = getNotificationIds(mDiggNoti,notificationIds);
+                notificationIds = getNotificationIds(mDiggNoti, notificationIds);
                 break;
             case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                notificationIds = getNotificationIds(mReviewNoti,notificationIds);
+                notificationIds = getNotificationIds(mReviewNoti, notificationIds);
                 break;
             default:
         }
@@ -381,7 +381,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 });
     }
 
-    private String getNotificationIds(List<TSPNotificationBean> datas,String notificationIds) {
+    private String getNotificationIds(List<TSPNotificationBean> datas, String notificationIds) {
         for (TSPNotificationBean tspNotificationBean : datas) {
             if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) { //代表未读
                 notificationIds += tspNotificationBean.getId() + ",";
@@ -536,7 +536,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         if (last_request_time != 0) { // 当等于 0 时 ，服务器返回历史的用户信息
             last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         }
-        mRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_UNREAD, mUnreadNotificationTotalNums == 0 ? DEFAULT_MAX_REQUEST_UNREAD_NUM : mUnreadNotificationTotalNums, 0)
+        mRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_ALL, mUnreadNotificationTotalNums == 0 ? DEFAULT_MAX_REQUEST_UNREAD_NUM : mUnreadNotificationTotalNums, 0)
                 .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {
                     @Override
                     protected void onSuccess(List<TSPNotificationBean> data) {
@@ -562,9 +562,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         /**
                          * 设置未读数
                          */
-                        mItemBeanComment.setUnReadMessageNums(mCommentsNoti.size());
-                        mItemBeanDigg.setUnReadMessageNums(mDiggNoti.size());
-                        mItemBeanReview.setUnReadMessageNums(mReviewNoti.size());
+                        mItemBeanComment.setUnReadMessageNums(getUnreadNums(mCommentsNoti));
+                        mItemBeanDigg.setUnReadMessageNums(getUnreadNums(mDiggNoti));
+                        mItemBeanReview.setUnReadMessageNums(getUnreadNums(mReviewNoti));
 
                         /**
                          * 设置时间
@@ -615,6 +615,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 });
 
+    }
+
+    private int getUnreadNums(List<TSPNotificationBean> datas) {
+        int nums = 0;
+        for (TSPNotificationBean tspNotificationBean : datas) {
+            if (tspNotificationBean.getRead_at() == null) {
+                nums++;
+            }
+        }
+        return nums;
     }
 
     private String getItemTipStr(List<TSPNotificationBean> commentsNoti, int max_num) {
