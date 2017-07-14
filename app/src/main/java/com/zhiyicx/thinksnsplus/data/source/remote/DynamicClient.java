@@ -79,6 +79,10 @@ public interface DynamicClient {
     Observable<DynamicBeanV2> getDynamicListV2(@Query("type") String type, @Query
             ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
 
+    @GET(ApiConfig.APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2)
+    Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query
+            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
+
     /**
      * #点赞一条动态
      *

@@ -53,6 +53,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.DYNAMIC_TYPE_MY_COLLECTION;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_HOT;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
 
@@ -138,8 +139,21 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
     @Override
     public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore) {
-        return dealWithDynamicListV2(mDynamicClient.getDynamicListV2(type, after, user_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE)),
-                type, isLoadMore);
+        Observable<DynamicBeanV2> observable;
+        if (type.equals(DYNAMIC_TYPE_MY_COLLECTION)) {// 收藏的动态地址和返回大不一样，真滴难受
+            observable = mDynamicClient.getCollectDynamicListV2(after, user_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                    .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<DynamicBeanV2>>() {
+                        @Override
+                        public Observable<DynamicBeanV2> call(List<DynamicDetailBeanV2> detailBeanV2) {
+                            DynamicBeanV2 data = new DynamicBeanV2();
+                            data.setFeeds(detailBeanV2);
+                            return Observable.just(data);
+                        }
+                    });
+        } else {
+            observable = mDynamicClient.getDynamicListV2(type, after, user_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
+        }
+        return dealWithDynamicListV2(observable, type, isLoadMore);
     }
 
     /**
@@ -469,8 +483,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     @Override
                     public Observable<List<DynamicCommentBean>> call(final DynamicCommentBeanV2 listBaseJson) {
                         final List<Object> user_ids = new ArrayList<>();
-                        if (listBaseJson.getComments()!=null&&listBaseJson.getComments().size()>1){
-                            Collections.sort(listBaseJson.getComments(),new TimeStringSortClass());
+                        if (listBaseJson.getComments() != null && listBaseJson.getComments().size() > 1) {
+                            Collections.sort(listBaseJson.getComments(), new TimeStringSortClass());
                         }
                         listBaseJson.getPinned().addAll(listBaseJson.getComments());
                         for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinned()) {
