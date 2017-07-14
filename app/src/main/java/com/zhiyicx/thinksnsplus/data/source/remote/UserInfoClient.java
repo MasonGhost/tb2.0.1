@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.HashMap;
@@ -169,7 +170,7 @@ public interface UserInfoClient {
      * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md#%E9%80%9A%E7%9F%A5%E5%88%97%E8%A1%A8}
      */
     @GET(ApiConfig.APP_PATH_GET_NOTIFICATION_LIST)
-    Observable<Void> getNotificationList(@Query("notification") String notification, @Query("type") String type, @Query("limit") Integer limit, @Query("offset") Integer offset);
+    Observable<List<TSPNotificationBean>> getNotificationList(@Query("notification") String notification, @Query("type") String type, @Query("limit") Integer limit, @Query("offset") Integer offset);
 
     /**
      * 读取通知
@@ -178,7 +179,7 @@ public interface UserInfoClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_NOTIFICATION_DETIAL)
-    Observable<Void> getNotificationDetail(@Path("notification") String notificationId);
+    Observable<TSPNotificationBean> getNotificationDetail(@Path("notification") String notificationId);
 
     /**
      * 标记通知阅读
@@ -187,5 +188,5 @@ public interface UserInfoClient {
      * @return
      */
     @PATCH(ApiConfig.APP_PATH_MAKE_NOTIFICAITON_READED)
-    Observable<Void> makeNotificationReaded(@Query("notification") String notificationId);
+    Observable<Object> makeNotificationReaded(@Query("notification") String notificationId);
 }

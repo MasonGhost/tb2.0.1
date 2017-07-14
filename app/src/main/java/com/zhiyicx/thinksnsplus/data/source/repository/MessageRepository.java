@@ -12,6 +12,7 @@ import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
@@ -265,21 +266,21 @@ public class MessageRepository implements MessageContract.Repository {
     }
 
     @Override
-    public Observable<Void> getNotificationList(String notification, String type, Integer limit, Integer offset) {
+    public Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset) {
         return mUserInfoClient.getNotificationList(notification,type,limit,offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<Void> getNotificationDetail(String notificationId) {
+    public Observable<TSPNotificationBean> getNotificationDetail(String notificationId) {
         return mUserInfoClient.getNotificationDetail(notificationId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<Void> makeNotificationReaded(String notificationId) {
+    public Observable<Object> makeNotificationReaded(String notificationId) {
         return mUserInfoClient.makeNotificationReaded(notificationId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

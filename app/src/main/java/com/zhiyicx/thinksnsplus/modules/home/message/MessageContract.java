@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public interface MessageContract {
          * @param offset
          * @return
          */
-        Observable<Void> getNotificationList(String notification, String type, Integer limit, Integer offset);
+        Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset);
 
         /**
          * 读取通知
@@ -99,14 +100,14 @@ public interface MessageContract {
          * @param notificationId
          * @return
          */
-        Observable<Void> getNotificationDetail(String notificationId);
+        Observable<TSPNotificationBean> getNotificationDetail(String notificationId);
 
         /**
          * 标记通知阅读
          * @param notificationId
          * @return
          */
-        Observable<Void> makeNotificationReaded( String notificationId);
+        Observable<Object> makeNotificationReaded( String notificationId);
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
