@@ -25,7 +25,6 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
         TopDynamicCommentBean> implements MessageReviewContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
-
     private ActionPopupWindow mReviewPopWindow;
     private ActionPopupWindow mInstructionsPopupWindow;
 
@@ -39,6 +38,11 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -78,7 +82,11 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         mTopDynamicCommentBean = mListDatas.get(position);
         if (mTopDynamicCommentBean.getComment() == null || mTopDynamicCommentBean.getFeed() == null) {
-            initInstructionsPop(R.string.review_dynamic_deleted);
+            if (mTopDynamicCommentBean.getComment() == null) {
+                initInstructionsPop(R.string.review_comment_deleted);
+            } else {
+                initInstructionsPop(R.string.review_dynamic_deleted);
+            }
             return;
         }
         initReviewPopWindow(mTopDynamicCommentBean);
@@ -95,10 +103,6 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     private void initReviewPopWindow(TopDynamicCommentBean topDynamicCommentBean) {
-        if (mReviewPopWindow != null) {
-            mReviewPopWindow.show();
-            return;
-        }
         mReviewPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.review_approved))
                 .item2Str(getString(R.string.review_refuse))
@@ -130,7 +134,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
             return;
         }
         mInstructionsPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.withdrawal_instructions))
+                .item1Str(getString(R.string.instructions))
                 .desStr(getString(resDesStr))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

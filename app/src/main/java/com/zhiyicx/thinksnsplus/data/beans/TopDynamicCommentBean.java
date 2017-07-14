@@ -61,6 +61,10 @@ public class TopDynamicCommentBean extends BaseListBean {
     @ToOne(joinProperty = "id")
     private DynamicDetailBeanV2 mDynamicDetailBeanV2;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
 
     public int getState() {
         return this.state;

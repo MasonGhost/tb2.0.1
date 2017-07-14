@@ -71,9 +71,9 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
                     }
 
                     @Override
-                    protected void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mRootView.showSnackErrorMessage(e.getMessage());
                     }
                 });
 
