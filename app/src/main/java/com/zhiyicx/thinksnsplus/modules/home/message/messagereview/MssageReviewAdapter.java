@@ -7,9 +7,10 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -20,12 +21,9 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -34,17 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.functions.Action1;
-
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_COMPONENT_SOURCE_TABLE_MUSICS;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean.TOP_REVIEWING;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_ABLUM;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_MUSIC;
 
 /**
  * @Author Jliuer
@@ -92,16 +82,29 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
 
         holder.setVisible(R.id.iv_detail_image, View.GONE);
         holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-        holder.setText(R.id.tv_deatil, topDynamicCommentBean.getFeed().getContent());
+        TopDynamicCommentBean.FeedBean feedBean = topDynamicCommentBean.getFeed();
+        TopDynamicCommentBean.CommentBean commentBean = topDynamicCommentBean.getComment();
+        holder.setText(R.id.tv_deatil, feedBean == null ? getString(R.string.review_dynamic_deleted) : topDynamicCommentBean.getFeed().getContent());
+        if (feedBean != null && !feedBean.getImages().isEmpty()) {
+            int w = mContext.getResources().getDimensionPixelOffset(R.dimen.rec_image_for_list);
+            Glide.with(mContext)
+                    .load(ImageUtils.imagePathConvertV2(true, feedBean.getImages().get(0).getFile(),
+                            w, w, ImageZipConfig.IMAGE_50_ZIP, AppApplication.getTOKEN()))
+                    .override(w, w)
+                    .placeholder(R.drawable.shape_default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.shape_default_image)
+                    .into(holder.getImageViwe(R.id.iv_detail_image));
+        }
 
         String content = String.format(getString(R.string.review_description), (float) topDynamicCommentBean.getAmount(),
-                topDynamicCommentBean.getComment().getContent());
+                commentBean == null ? " " : topDynamicCommentBean.getComment().getContent());
 
         TextView contentView = holder.getView(R.id.tv_content);
         TextView flagView = holder.getView(R.id.tv_review);
         contentView.setText(content);
         List<Link> links = setLiknks(holder, String.format(getString(R.string.dynamic_send_toll_select_money),
-                (float) topDynamicCommentBean.getAmount()), topDynamicCommentBean.getComment().getContent());
+                (float) topDynamicCommentBean.getAmount()), commentBean == null ? " " : topDynamicCommentBean.getComment().getContent());
         contentView.setLinksClickable(false);// 不能消费了点击事件啊
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(contentView, links);
@@ -109,7 +112,8 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
         flagView.setTextColor(SkinUtils.getColor(topDynamicCommentBean.getComment().isPinned()
                 ? R.color.general_for_hint : R.color.dyanmic_top_flag));
         flagView.setText(getString(topDynamicCommentBean.getComment().isPinned() ? R.string.review_approved :
-                (topDynamicCommentBean.getState() == TOP_REVIEWING ? R.string.review_ing : R.string.review_refuse)));
+                ((topDynamicCommentBean.getExpires_at() == null ||
+                        topDynamicCommentBean.getState() == TOP_REVIEWING) ? R.string.review_ing : R.string.review_refuse)));
 
         holder.setText(R.id.tv_name, topDynamicCommentBean.getUserInfoBean().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(topDynamicCommentBean.getCreated_at()));
@@ -125,7 +129,7 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
                 .subscribe(aVoid -> toDetail(topDynamicCommentBean));
     }
 
-    private String getString(int resId){
+    private String getString(int resId) {
         return mContext.getString(resId);
     }
 

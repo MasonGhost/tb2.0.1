@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 
@@ -72,6 +73,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private Long user_id;
     private String feed_content;
     private int feed_from;
+    @SerializedName("like_count")
     private int feed_digg_count;
     private int feed_view_count;
     private int feed_comment_count;
@@ -81,6 +83,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private int audit_status;
     @Id
     private Long feed_mark;
+    @SerializedName("has_like")
     private boolean has_digg;
     private boolean has_collect;
     private double amount;

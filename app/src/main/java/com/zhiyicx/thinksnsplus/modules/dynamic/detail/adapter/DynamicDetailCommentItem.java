@@ -76,9 +76,12 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
                 mOnCommentTextClickListener.onCommentTextClick(position);
             }
         });
+        TextView topFlag=holder.getView(R.id.tv_top_flag);
+        topFlag.setVisibility(dynamicCommentBean.getPinned() == 0 ? View.GONE : View.VISIBLE);
+        topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));
         List<Link> links = setLiknks(holder, dynamicCommentBean, position);
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert( holder.getView(R.id.tv_content), links);
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
         int storegeId;
         String userIconUrl;

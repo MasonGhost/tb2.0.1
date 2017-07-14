@@ -1,10 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
@@ -18,6 +20,7 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 
 /**
  * @Describe
@@ -80,13 +83,12 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
         CommentedBean currentCommentBean = mRootView.getListDatas().get(mCurrentPostion);
         String path = CommentRepository.getCommentPath(currentCommentBean.getSource_id(), currentCommentBean.getComponent(), currentCommentBean.getSource_table());
-        Subscription commentSub = mCommentRepository.sendComment(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
+        Subscription commentSub = mCommentRepository.sendCommentV2(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Object>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(Object data) {
-
+                    protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
                     }
 

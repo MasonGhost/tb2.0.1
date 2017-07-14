@@ -146,42 +146,28 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     private void initListener() {
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-                        mPresenter.withdraw(mWithdrawalsMoney * mWalletConfigBean.getRatio()
-                                , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
-                    }
+                .subscribe(aVoid -> {
+                    DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
+                    mPresenter.withdraw(mWithdrawalsMoney * mWalletConfigBean.getRatio()
+                            , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
                 });
 
-        RxView.clicks(mBtWithdrawStyle).subscribe(new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-                initWithDrawalsStylePop();
-            }
+        RxView.clicks(mBtWithdrawStyle).subscribe(aVoid -> {
+            DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
+            initWithDrawalsStylePop();
         });
 
         Observable.combineLatest(RxTextView.textChanges(mEtWithdrawInput), RxTextView.textChanges(mEtWithdrawAccountInput),
                 RxTextView.textChanges(mBtWithdrawStyle.getCombinedButtonRightTextView()),
-                new Func3<CharSequence, CharSequence, CharSequence, Boolean>() {
-                    @Override
-                    public Boolean call(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) {
-                        String mWithdrawalsMoneyStr = charSequence.toString();
-                        if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0 && !mWithdrawalsMoneyStr.contains(".")) {
-                            mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
-                        } else {
-                            mWithdrawalsMoney = 0;
-                        }
-                        return mWithdrawalsMoney > 0 && !TextUtils.isEmpty(charSequence2) && !TextUtils.isEmpty(charSequence3);
+                (charSequence, charSequence2, charSequence3) -> {
+                    String mWithdrawalsMoneyStr = charSequence.toString();
+                    if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0 && !mWithdrawalsMoneyStr.contains(".")) {
+                        mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
+                    } else {
+                        mWithdrawalsMoney = 0;
                     }
-                }).subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean aBoolean) {
-                mBtSure.setEnabled(aBoolean);
-            }
-        });
+                    return mWithdrawalsMoney > 0 && !TextUtils.isEmpty(charSequence2) && !TextUtils.isEmpty(charSequence3);
+                }).subscribe(aBoolean -> mBtSure.setEnabled(aBoolean));
     }
 
     @Override
@@ -201,12 +187,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mWithdrawalsInstructionsPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mWithdrawalsInstructionsPopupWindow.hide())
                 .build();
         mWithdrawalsInstructionsPopupWindow.show();
     }
@@ -226,28 +207,17 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 .isFocus(true)
                 .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mWithdrawalsType = WithdrawType.ALIWITHDRAW.type;
-                        mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)));
-                        mActionPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    mWithdrawalsType = WithdrawType.ALIWITHDRAW.type;
+                    mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.alipay)));
+                    mActionPopupWindow.hide();
                 })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mWithdrawalsType = WithdrawType.WXWITHDRAW.type;
-                        mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)));
-                        mActionPopupWindow.hide();
-                    }
+                .item3ClickListener(() -> {
+                    mWithdrawalsType = WithdrawType.WXWITHDRAW.type;
+                    mBtWithdrawStyle.setRightText(getString(R.string.choose_withdrawals_style_formart, getString(R.string.wxpay)));
+                    mActionPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mActionPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mActionPopupWindow.hide())
                 .build();
         mActionPopupWindow.show();
     }

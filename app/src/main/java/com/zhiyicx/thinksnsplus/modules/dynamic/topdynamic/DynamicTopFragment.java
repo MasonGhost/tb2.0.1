@@ -66,6 +66,11 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     }
 
     @Override
+    protected void initData() {
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getBalance()));
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.to_top);
     }
@@ -83,11 +88,6 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
         mSelectDays.add(10);
         initSelectDays(mSelectDays);
         initListener();
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     @Override
@@ -170,7 +170,6 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
         if (!enable)
             return;
         mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), mInputMoney / mCurrentDays, mPresenter.getBalance()));
     }
 
     @Override

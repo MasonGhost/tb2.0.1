@@ -16,8 +16,10 @@
         android:visibility="invisible"/>
 
     <TextView
+        android:drawableRight="@mipmap/label_zhiding"
+        android:drawablePadding="@dimen/spacing_tiny"
         android:id="@+id/tv_simple_text_comment"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_small_4dp"
         android:gravity="center|left"
