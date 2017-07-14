@@ -20,6 +20,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -34,6 +35,8 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -186,6 +189,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             String content = dynamicBean.getFeed_content();
             TextView contentView = holder.getView(R.id.tv_content);
+
             try { // 置顶标识 ,防止没有置顶布局错误
                 TextView topFlagView = holder.getView(R.id.tv_top_flag);
                 topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_NONE ? View.GONE : View.VISIBLE);
@@ -203,7 +207,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 }
                 if (content.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean.getPaid_node().isPaid()) {
                     content += mContext.getString(R.string.words_holder);
-                    contentView.setLinksClickable(false);
+
                 }
                 TextViewUtils textViewUtils = TextViewUtils.newInstance(contentView, content)
                         .spanTextColor(SkinUtils.getColor(R
@@ -220,7 +224,6 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .disPlayText(dynamicBean.getPaid_node().isPaid());
                 }
                 textViewUtils.build();
-
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);

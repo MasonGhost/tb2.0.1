@@ -156,6 +156,7 @@ public class ApiConfig {
 
     // 获取动态列表 V2
     public static final String APP_PATH_GET_DYNAMIC_LIST_V2 = "api/" + API_VERSION_2 + "/feeds";//
+    public static final String APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/collections";
 
     // 设置动态评论收费 V2
     public static final String APP_PATH_COMMENT_PAID_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comment-paid";

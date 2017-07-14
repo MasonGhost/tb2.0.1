@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import com.tbruyelle.rxpermissions.Permission;
 import com.yalantis.ucrop.UCrop;
@@ -33,8 +32,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import me.iwf.photopicker.PhotoPicker;
 import rx.functions.Action1;
@@ -73,6 +74,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private ArrayList<ImageBean> photosList;// 存储已选择图片
     private ActionPopupWindow mActionPopupWindow;
     private ArrayList<ImageBean> mTolls = new ArrayList<>();
+    private ArrayList<ImageBean> mOldTolls = new ArrayList<>();
 
     public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, BaseFragment mFragment, int
             cropShape) {
@@ -260,7 +262,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                     mTolls.clear();
                     mTolls.addAll(tolls);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    try {
+                        tolls = data.getBundleExtra("tollBundle").getParcelableArrayList("tollBundle");
+                        mTolls.clear();
+                        mTolls.addAll(tolls);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+
                 }
                 ArrayList<String> photos = data.getStringArrayListExtra("photos");
                 String craftPath = "";
@@ -272,13 +281,21 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 if (isNeededCraft(craftPath)) {
                     startToCraft(craftPath);
                 } else {
+                    Map<String, ImageBean> tollMap = new HashMap<>();
+
+                    for (ImageBean oldImage : mTolls) {
+                        if (oldImage.getToll() != null) {
+                            tollMap.put(oldImage.getImgUrl(), oldImage);
+                        }
+                    }
+
                     for (int i = 0; i < photos.size(); i++) {
                         ImageBean imageBean = new ImageBean();
                         imageBean.setImgUrl(photos.get(i));
-                        try {
-                            imageBean.setToll(mTolls.get(i).getToll());
-                        } catch (Exception e) {
-                            LogUtils.d("第"+i+"张图片没有设置收费");
+                        if (tollMap.containsKey(photos.get(i))) {
+                            imageBean.setToll(tollMap.get(photos.get(i)).getToll());
+                        } else {
+                            LogUtils.d("第" + i + "张图片没有设置收费");
                         }
                         photosList.add(imageBean);
                     }

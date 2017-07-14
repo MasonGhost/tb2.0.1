@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -80,16 +81,21 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
                 .imagerView(holder.getView(R.id.iv_headpic))
                 .build());
 
-        holder.setVisible(R.id.iv_detail_image, View.GONE);
-        holder.setVisible(R.id.tv_deatil, View.VISIBLE);
         TopDynamicCommentBean.FeedBean feedBean = topDynamicCommentBean.getFeed();
         TopDynamicCommentBean.CommentBean commentBean = topDynamicCommentBean.getComment();
+        boolean hasImage = feedBean != null && !feedBean.getImages().isEmpty();
+
+
+        holder.setVisible(R.id.iv_detail_image, hasImage ? View.VISIBLE : View.GONE);
+        holder.setVisible(R.id.tv_deatil, !hasImage ? View.VISIBLE : View.GONE);
+
         holder.setText(R.id.tv_deatil, feedBean == null ? getString(R.string.review_dynamic_deleted) : topDynamicCommentBean.getFeed().getContent());
-        if (feedBean != null && !feedBean.getImages().isEmpty()) {
+        if (hasImage) {
             int w = mContext.getResources().getDimensionPixelOffset(R.dimen.rec_image_for_list);
+            GlideUrl url = ImageUtils.imagePathConvertV2(true, feedBean.getImages().get(0).getFile(),
+                    w, w, ImageZipConfig.IMAGE_50_ZIP, AppApplication.getTOKEN());
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(true, feedBean.getImages().get(0).getFile(),
-                            w, w, ImageZipConfig.IMAGE_50_ZIP, AppApplication.getTOKEN()))
+                    .load(url)
                     .override(w, w)
                     .placeholder(R.drawable.shape_default_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -109,11 +115,17 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(contentView, links);
         }
-        flagView.setTextColor(SkinUtils.getColor(topDynamicCommentBean.getComment().isPinned()
-                ? R.color.general_for_hint : R.color.dyanmic_top_flag));
-        flagView.setText(getString(topDynamicCommentBean.getComment().isPinned() ? R.string.review_approved :
-                ((topDynamicCommentBean.getExpires_at() == null ||
-                        topDynamicCommentBean.getState() == TOP_REVIEWING) ? R.string.review_ing : R.string.review_refuse)));
+
+        flagView.setTextColor(SkinUtils.getColor((commentBean == null || feedBean == null)
+                ? R.color.important_for_note : (topDynamicCommentBean.getExpires_at() != null ? R.color.general_for_hint : R.color.dyanmic_top_flag)));
+
+
+        flagView.setText(getString((commentBean == null) ? R.string.review_comment_deleted :
+                (commentBean.isPinned() ? R.string.review_approved : ((topDynamicCommentBean.getExpires_at() == null &&
+                        topDynamicCommentBean.getState() == TOP_REVIEWING) ? R.string.review_ing : R.string.review_refuse))));
+        if (feedBean == null) {
+            flagView.setText("");
+        }
 
         holder.setText(R.id.tv_name, topDynamicCommentBean.getUserInfoBean().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(topDynamicCommentBean.getCreated_at()));
@@ -124,9 +136,16 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> toUserCenter(topDynamicCommentBean.getUserInfoBean()));
+
         RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> toDetail(topDynamicCommentBean));
+                .subscribe(aVoid -> {
+                    if (feedBean == null) {
+                        holder.getConvertView().performClick();
+                        return;
+                    }
+                    toDetail(topDynamicCommentBean);
+                });
     }
 
     private String getString(int resId) {

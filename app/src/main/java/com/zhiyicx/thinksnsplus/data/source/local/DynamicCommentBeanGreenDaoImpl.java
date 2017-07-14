@@ -160,7 +160,7 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         return dynamicCommentBeanDao.queryBuilder()
                 .where(DynamicCommentBeanDao.Properties.Pinned.eq(1), DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
-                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
+                .orderAsc(DynamicCommentBeanDao.Properties.Comment_id)
                 .list();
     }
 
@@ -168,11 +168,8 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
         DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         List<DynamicCommentBean> normalData = dynamicCommentBeanDao.queryBuilder()
                 .where(DynamicCommentBeanDao.Properties.Pinned.notEq(1),DynamicCommentBeanDao.Properties.Comment_id.isNotNull())
-                .orderDesc(DynamicCommentBeanDao.Properties.Comment_id)
+                .orderAsc(DynamicCommentBeanDao.Properties.Comment_id)
                 .list();
-        if (normalData != null && normalData.size() > 1) {
-            Collections.sort(normalData, new TimeStringSortClass());
-        }
         return normalData;
     }
 
