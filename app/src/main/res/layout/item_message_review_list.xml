@@ -85,6 +85,20 @@
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
 
+    <TextView
+        android:id="@+id/tv_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_content"
+        android:layout_toLeftOf="@id/fl_detial"
+        android:maxLines="1"
+        android:paddingRight="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_small"
+        android:textColor="@color/dyanmic_top_flag"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="6分钟前"/>
+
     <View
         android:id="@+id/v_bottom_line"
         style="@style/style_divider_horizontal_light"

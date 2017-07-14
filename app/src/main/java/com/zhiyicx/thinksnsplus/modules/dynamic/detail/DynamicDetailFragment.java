@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +24,7 @@ import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -34,6 +36,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
+import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
@@ -53,6 +56,8 @@ import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_COMMENT_ID;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_ID;
 
 /**
  * @author LiuChao
@@ -534,7 +539,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
             if (mListDatas.get(position).getComment_id() != null) {
-                initLoginOutPopupWindow(mListDatas.get(position).getComment_id(), position);
+                initDeleteComentPopupWindow(mListDatas.get(position).getComment_id(), position);
                 mDeletCommentPopWindow.show();
             }
         } else {
@@ -564,9 +569,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      * @param comment_id      dynamic comment id
      * @param commentPosition current comment position
      */
-    private void initLoginOutPopupWindow(final long comment_id, final int commentPosition) {
+    private void initDeleteComentPopupWindow(final long comment_id, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_theme))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -574,6 +580,13 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
+                    Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
+                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, comment_id);
+                    intent.putExtra(TOP_DYNAMIC_ID, getCurrentDynamic().getId());
+                    mDeletCommentPopWindow.hide();
+                    startActivity(intent);
+                })
+                .item2ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
                     mPresenter.deleteCommentV2(comment_id, commentPosition);
                 })

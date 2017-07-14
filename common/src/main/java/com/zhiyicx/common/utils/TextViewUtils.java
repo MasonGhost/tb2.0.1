@@ -67,6 +67,11 @@ public class TextViewUtils {
         return this;
     }
 
+    public TextViewUtils oriMsg(String oriMsg) {
+        this.mOriMsg = oriMsg;
+        return this;
+    }
+
     public TextViewUtils alpha(int alpha) {
         mAlpha = alpha;
         return this;

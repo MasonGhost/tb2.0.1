@@ -819,46 +819,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
     }
 
-//    private void initWordsCenterPopWindow() {
-//        if (mPayWordsPopWindow != null) {
-//            mPayWordsPopWindow.show();
-//            return;
-//        }
-//        mPayWordsPopWindow = PayPopWindow.builder()
-//                .with(getActivity())
-//                .isWrap(true)
-//                .isFocus(true)
-//                .isOutsideTouch(true)
-//                .buildLinksColor1(R.color.themeColor)
-//                .buildLinksColor2(R.color.important_for_content)
-//                .contentView(R.layout.ppw_for_center)
-//                .backgroundAlpha(POPUPWINDOW_ALPHA)
-//                .buildDescrStr(String.format(getString(R.string.stick_comment_desc) + getString(R
-//                        .string.buy_pay_member), 4.4))
-//                .buildLinksStr(getString(R.string.buy_pay_member))
-//                .buildTitleStr(getString(R.string.buy_pay))
-//                .buildItem1Str(getString(R.string.buy_pay_in))
-//                .buildItem2Str(getString(R.string.buy_pay_out))
-//                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), 4.4))
-//                .buildCenterPopWindowItem1ClickListener(() -> mPayWordsPopWindow.hide())
-//                .buildCenterPopWindowItem2ClickListener(() -> mPayWordsPopWindow.hide())
-//                .buildCenterPopWindowLinkClickListener(new PayPopWindow
-//                        .CenterPopWindowLinkClickListener() {
-//                    @Override
-//                    public void onLongClick() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onClicked() {
-//
-//                    }
-//                })
-//                .build();
-//        mPayWordsPopWindow.show();
-//
-//    }
-
     /**
      * 初始化重发评论选择弹框
      */

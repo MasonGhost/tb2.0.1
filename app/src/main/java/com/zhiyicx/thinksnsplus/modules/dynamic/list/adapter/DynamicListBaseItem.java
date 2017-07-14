@@ -188,7 +188,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             TextView contentView = holder.getView(R.id.tv_content);
             try { // 置顶标识 ,防止没有置顶布局错误
                 TextView topFlagView = holder.getView(R.id.tv_top_flag);
-                topFlagView.setVisibility(View.GONE);
+                topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_NONE ? View.GONE : View.VISIBLE);
+                topFlagView.setText(mContext.getString(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_REVIEW ?
+                        R.string.review_ing : R.string.dynamic_top_flag));
             } catch (Exception e) {
 
             }
@@ -198,6 +200,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             } else {
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
+                }
+                if (content.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean.getPaid_node().isPaid()) {
+                    content += mContext.getString(R.string.words_holder);
+                    contentView.setLinksClickable(false);
                 }
                 TextViewUtils textViewUtils = TextViewUtils.newInstance(contentView, content)
                         .spanTextColor(SkinUtils.getColor(R

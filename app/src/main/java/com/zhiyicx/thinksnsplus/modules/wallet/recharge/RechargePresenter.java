@@ -39,12 +39,9 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
             mRootView.initmRechargeInstructionsPop();
             return;
         }
-        mSystemRepository.getPayStr(channel, amount).doOnSubscribe(new Action0() {
-            @Override
-            public void call() {
-                mRootView.configSureBtn(false);
-                mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
-            }
+        mSystemRepository.getPayStr(channel, amount).doOnSubscribe(() -> {
+            mRootView.configSureBtn(false);
+            mRootView.showSnackLoadingMessage(mContext.getString(R.string.recharge_credentials_ing));
         }).subscribe(new BaseSubscribeForV2<PayStrBean>() {
             @Override
             protected void onSuccess(PayStrBean data) {
@@ -73,6 +70,16 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
             @Override
             protected void onSuccess(RechargeSuccessBean data) {
                 rechargeSuccessCallBack(data.getId() + "");
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
             }
         });
     }

@@ -13,10 +13,6 @@
     <string name="critical">评论的</string>
     <string name="comment">评论</string>
     <string name="like">赞</string>
-    <string name="review">置顶审核</string>
-    <string name="review_approved">同意置顶</string>
-    <string name="review_description">支付¥%1$.2f申请置顶评论“%2$s”</string>
-    <string name="review_refuse">拒绝置顶</string>
     <string name="liked">赞过的</string>
     <string name="like_me">赞了我</string>
     <string name="comment_me">评论了我</string>
@@ -142,6 +138,7 @@
     <string name="dynamic_send_toll_notes">注：超过%1$d字部分内容收费</string>
     <string name="dynamic_send_toll_select_money">¥%1$.2f</string>
     <string name="dynamic_send_toll_toll_verify">应配置至少一张图片费用</string>
+    <string name="instructions">说明</string>
 
 
     <!--动态详情-->
@@ -184,13 +181,14 @@
     <string name="totop_vrify">此动态正在审核置顶中请勿重复提交</string>
     <string name="et_top_input">输入金额</string>
     <string name="et_top_total">总金额</string>
+    <string name="words_holder">囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧</string>
     <string name="to_top">申请置顶</string>
     <string name="to_recharge">余额不足，去充值</string>
     <string name="sticktop_instructions">置顶说明</string>
     <string name="sticktop_instructions_detail">置顶金额必须是整数，不能出现小数</string>
     <string name="dynamic_list_top_dynamic">申请动态置顶</string>
     <string name="dynamic_list_top_dynamic_success">申请动态置顶成功</string>
-    <string name="to_top_description">当前置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
+    <string name="to_top_description">当前平均置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
 
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
@@ -201,6 +199,13 @@
     <string name="dynamic_comment_toll_money">设置评论收费金额</string>
 
     <!--置顶评论-->
+    <string name="review">置顶审核</string>
+    <string name="review_ing">待审核</string>
+    <string name="review_approved">同意置顶</string>
+    <string name="review_dynamic_deleted">该动态已被删除</string>
+    <string name="review_comment_deleted">该评论已被删除</string>
+    <string name="review_description">支付¥%1$.2f申请置顶评论“%2$s”</string>
+    <string name="review_refuse">拒绝置顶</string>
     <string name="stick_dynamic_comment">置顶评论收费</string>
     <string name="dynamic_comment_top_success">置顶评论成功</string>
     <string name="dynamic_comment_top_money">设置评论置顶金额</string>

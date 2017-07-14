@@ -220,7 +220,7 @@ public interface CommonClient {
     Observable<PurChasesBean> checkNote(@Path("note") int note);
 
     @POST(APP_PATH_CHECK_NOTE)
-    Observable<BaseJsonV2> payNote(@Path("note") int note);
+    Observable<BaseJsonV2<String>> payNote(@Path("note") int note);
 
     /**
      * 通过Post方法上传文件

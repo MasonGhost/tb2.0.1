@@ -126,10 +126,10 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/" + API_VERSION + "/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/" + API_VERSION + "/feeds/%s/digg";
 
-    public static final String APP_PATH_DYNAMIC_CLICK_LIKE_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/diggs";
-    public static final String APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/undigg";
-    public static final String APP_PATH_DYNAMIC_CLICK_LIKE_FORMAT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/diggs";
-    public static final String APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_FORMAT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/undigg";
+    public static final String APP_PATH_DYNAMIC_CLICK_LIKE_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/like";
+    public static final String APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/unlike";
+    public static final String APP_PATH_DYNAMIC_CLICK_LIKE_FORMAT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/like";
+    public static final String APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_FORMAT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/unlike";
 
     // 删除一条评论评论
     public static final String APP_PATH_DYNAMIC_DELETE_COMMENT = "api/" + API_VERSION + "/feeds/%s/comment/%s";
@@ -139,7 +139,7 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/comments";
     // 获取点赞列表
     public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/diggusers";
-    public static final String APP_PATH_DYNAMIC_DIG_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/diggs";
+    public static final String APP_PATH_DYNAMIC_DIG_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/likes";
     // 一条动态的评论列表
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/comments";
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comments";

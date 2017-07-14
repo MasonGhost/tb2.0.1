@@ -97,7 +97,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
 
     @Override
     protected void initData() {
-
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getBalance()));
     }
 
     @Override
@@ -123,6 +123,11 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
     @Override
     public int getTopDyas() {
         return mCurrentDays;
+    }
+
+    @Override
+    public void topSuccess() {
+        getActivity().finish();
     }
 
     private void initListener() {
@@ -176,7 +181,6 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
         if (!enable)
             return;
         mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), mInputMoney / mCurrentDays, mPresenter.getBalance()));
     }
 
     @Override

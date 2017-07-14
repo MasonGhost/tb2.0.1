@@ -22,7 +22,6 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -121,30 +120,14 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
         mTvToolBarCenter.setText(R.string.comment);
         mTvToolBarLeft.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), setLeftImg
                 ()), null, null, null);
-        mTvToolBarLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setLeftClick();
-            }
-        });
+        mTvToolBarLeft.setOnClickListener(v -> setLeftClick());
     }
 
     private void initInputView() {
-        mVShadow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeInputView();
-            }
-        });
+        mVShadow.setOnClickListener(v -> closeInputView());
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        closeInputView();
-
-                    }
-                });
+                .subscribe(aVoid -> closeInputView());
         mIlvComment.setOnSendClickListener(this);
     }
 
