@@ -181,10 +181,24 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     @Override
-    public void showSnackMessage(String message, Prompt prompt) {
+    public void showSnackMessage(String message, final Prompt prompt) {
         TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
                 .setPromptThemBackground(prompt)
+                .setCallback(new TSnackbar.Callback() {
+                    @Override
+                    public void onDismissed(TSnackbar TSnackbar, @DismissEvent int event) {
+                        super.onDismissed(TSnackbar, event);
+                        switch (event) {
+                            case DISMISS_EVENT_TIMEOUT:
+                                snackViewDismissWhenTimeOut(prompt);
+                                break;
+                        }
+                    }
+                })
                 .show();
+    }
+
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
     }
 
     @Override

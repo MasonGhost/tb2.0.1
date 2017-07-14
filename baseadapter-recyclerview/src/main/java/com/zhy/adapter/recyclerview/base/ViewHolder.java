@@ -77,6 +77,10 @@ public class ViewHolder extends RecyclerView.ViewHolder
         return getView(id);
     }
 
+    public TextView getTextView(int id){
+        return getView(id);
+    }
+
 
     /****以下为辅助方法*****/
 
