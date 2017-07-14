@@ -110,6 +110,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     private int mUnreadNotificationTotalNums; // 未读消息总数
 
+    List<TSPNotificationBean> mCommentsNoti = new ArrayList<TSPNotificationBean>();
+    List<TSPNotificationBean> mDiggNoti = new ArrayList<TSPNotificationBean>();
+    List<TSPNotificationBean> mReviewNoti = new ArrayList<TSPNotificationBean>();
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -354,7 +357,37 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Override
     public void readMessageByKey(String key) {
-        mFlushMessageBeanGreenDao.readMessageByKey(key);
+        String notificationIds = "";
+        switch (key) {
+            case NOTIFICATION_KEY_FEED_COMMENTS:
+            case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+                notificationIds = getNotificationIds(mCommentsNoti,notificationIds);
+                break;
+            case NOTIFICATION_KEY_FEED_DIGGS:
+                notificationIds = getNotificationIds(mDiggNoti,notificationIds);
+                break;
+            case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                notificationIds = getNotificationIds(mReviewNoti,notificationIds);
+                break;
+            default:
+        }
+
+        mRepository.makeNotificationReaded(notificationIds)
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+
+                    }
+                });
+    }
+
+    private String getNotificationIds(List<TSPNotificationBean> datas,String notificationIds) {
+        for (TSPNotificationBean tspNotificationBean : datas) {
+            if (TextUtils.isEmpty(tspNotificationBean.getRead_at())) { //代表未读
+                notificationIds += tspNotificationBean.getId() + ",";
+            }
+        }
+        return notificationIds;
     }
 
     /*******************************************
@@ -510,20 +543,18 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         if (data.isEmpty()) {
                             return;
                         }
-                        List<TSPNotificationBean> commentsNoti = new ArrayList<TSPNotificationBean>();
-                        List<TSPNotificationBean> diggNoti = new ArrayList<TSPNotificationBean>();
-                        List<TSPNotificationBean> reviewNoti = new ArrayList<TSPNotificationBean>();
+
                         for (TSPNotificationBean tspNotificationBean : data) {
                             switch (tspNotificationBean.getData().getChannel()) {
                                 case NOTIFICATION_KEY_FEED_COMMENTS:
                                 case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
-                                    commentsNoti.add(tspNotificationBean);
+                                    mCommentsNoti.add(tspNotificationBean);
                                     break;
                                 case NOTIFICATION_KEY_FEED_DIGGS:
-                                    diggNoti.add(tspNotificationBean);
+                                    mDiggNoti.add(tspNotificationBean);
                                     break;
                                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                                    reviewNoti.add(tspNotificationBean);
+                                    mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
                             }
@@ -531,23 +562,23 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         /**
                          * 设置未读数
                          */
-                        mItemBeanComment.setUnReadMessageNums(commentsNoti.size());
-                        mItemBeanDigg.setUnReadMessageNums(diggNoti.size());
-                        mItemBeanReview.setUnReadMessageNums(reviewNoti.size());
+                        mItemBeanComment.setUnReadMessageNums(mCommentsNoti.size());
+                        mItemBeanDigg.setUnReadMessageNums(mDiggNoti.size());
+                        mItemBeanReview.setUnReadMessageNums(mReviewNoti.size());
 
                         /**
                          * 设置时间
                          */
-                        mItemBeanComment.getConversation().setLast_message_time(commentsNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(commentsNoti.get(0).getCreated_at()));
-                        mItemBeanDigg.getConversation().setLast_message_time(diggNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(diggNoti.get(0).getCreated_at()));
-                        mItemBeanReview.getConversation().setLast_message_time(reviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(reviewNoti.get(0).getCreated_at()));
+                        mItemBeanComment.getConversation().setLast_message_time(mCommentsNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(mCommentsNoti.get(0).getCreated_at()));
+                        mItemBeanDigg.getConversation().setLast_message_time(mDiggNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(mDiggNoti.get(0).getCreated_at()));
+                        mItemBeanReview.getConversation().setLast_message_time(mReviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(mReviewNoti.get(0).getCreated_at()));
 
                         /**
                          * 设置提示内容
                          * mContext.getString(R.string.has_no_body)
                          + mContext.getString(R.string.comment_me)
                          */
-                        String commentTip = getItemTipStr(commentsNoti, MAX_USER_NUMS_COMMENT);
+                        String commentTip = getItemTipStr(mCommentsNoti, MAX_USER_NUMS_COMMENT);
                         if (!TextUtils.isEmpty(commentTip)) {
                             commentTip += mContext.getString(R.string.comment_me);
                         } else {
@@ -557,7 +588,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mItemBeanComment.getConversation().getLast_message().setTxt(
                                 commentTip);
 
-                        String diggTip = getItemTipStr(diggNoti, MAX_USER_NUMS_DIGG);
+                        String diggTip = getItemTipStr(mDiggNoti, MAX_USER_NUMS_DIGG);
                         if (!TextUtils.isEmpty(diggTip)) {
                             diggTip += mContext.getString(R.string.like_me);
                         } else {
@@ -567,7 +598,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mItemBeanDigg.getConversation().getLast_message().setTxt(
                                 diggTip);
 
-                        String reviewTip = getItemTipStr(reviewNoti, MAX_USER_NUMS_COMMENT);
+                        String reviewTip = getItemTipStr(mReviewNoti, MAX_USER_NUMS_COMMENT);
                         if (!TextUtils.isEmpty(reviewTip)) {
                             reviewTip += mContext.getString(R.string.recieved_review);
                         } else {
@@ -576,7 +607,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         }
                         mItemBeanReview.getConversation().getLast_message().setTxt(
                                 reviewTip);
-
 
 
                         mRootView.updateLikeItemData(mItemBeanDigg);

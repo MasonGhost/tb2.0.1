@@ -157,7 +157,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      * @param headerview
      */
     private void updateHeaderViewData(View headerview, MessageItemBean commentItemData,
-                                      MessageItemBean likedItemData,MessageItemBean
+                                      MessageItemBean likedItemData, MessageItemBean
                                               reviewItemBean) {
         View rlCritical = null;
         View liked;
@@ -250,6 +250,22 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         }
         tvHeaderLikeTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert
                 (likedItemData.getUnReadMessageNums())));
+
+// 审核
+        tvHeaderReviewContent.setText(reviewItemBean.getConversation().getLast_message().getTxt());
+        if (reviewItemBean.getConversation().getLast_message_time() == 0 || reviewItemBean
+                .getConversation().getLast_message().getTxt().contains(getString(R.string
+                        .has_no_body))) {
+            tvHeaderReviewTime.setVisibility(View.INVISIBLE);
+        } else {
+            tvHeaderReviewTime.setVisibility(View.VISIBLE);
+            tvHeaderReviewTime.setText(TimeUtils.getTimeFriendlyNormal(reviewItemBean
+                    .getConversation().getLast_message_time()));
+        }
+        tvHeaderReviewTip.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert
+                (reviewItemBean.getUnReadMessageNums())));
+
+
         refreshData();
     }
 
@@ -270,7 +286,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         startActivity(to);
     }
 
-    private void toReviewList(){
+    private void toReviewList() {
         Intent to = new Intent(getActivity(), MessageReviewActivity.class);
         startActivity(to);
     }
@@ -278,21 +294,21 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void updateCommnetItemData(MessageItemBean messageItemBean) {
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
-                .updateLikeItemData(),mPresenter.updateReviewItemData());
+                .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
 
     @Override
     public void updateLikeItemData(MessageItemBean messageItemBean) {
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
-                .updateLikeItemData(),mPresenter.updateReviewItemData());
+                .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
 
     @Override
     public void updateReviewItemData(MessageItemBean messageItemBean) {
         updateHeaderViewData(mHeaderView, mPresenter.updateCommnetItemData(), mPresenter
-                .updateLikeItemData(),mPresenter.updateReviewItemData());
+                .updateLikeItemData(), mPresenter.updateReviewItemData());
         refreshData();
     }
 
