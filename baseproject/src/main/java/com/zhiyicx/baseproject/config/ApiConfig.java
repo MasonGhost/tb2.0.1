@@ -104,6 +104,12 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NOTIFICATION_DETIAL = "api/" + API_VERSION_2 + "/user/notifications/{notification}";
     // 标记通知阅读
     public static final String APP_PATH_MAKE_NOTIFICAITON_READED = "api/" + API_VERSION_2 + "/user/notifications/";
+    // type  获取通知类型，可选 all,read,unread 默认 all
+
+    public static final String NOTIFICATION_TYPE_ALL="all";
+    public static final String NOTIFICATION_TYPE_READ="read";
+    public static final String NOTIFICATION_TYPE_UNREAD="unread ";
+
 
     /**
      * 聊天相关

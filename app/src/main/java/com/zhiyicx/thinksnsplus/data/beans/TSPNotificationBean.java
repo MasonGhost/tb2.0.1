@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import com.google.gson.Gson;
 import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.DaoException;
@@ -9,13 +10,17 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS;
 import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
 
 /**
  * @Describe detail to @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md#%E9%80%9A%E7%9F%A5%E5%88%97%E8%A1%A8}
@@ -35,23 +40,27 @@ public class TSPNotificationBean {
      */
     @Id
     private Long _id;
+    @Unique
     private String id;
     private String read_at;
     private String created_at;
     @Convert(converter = DataBeanParamsConverter.class, columnType = String.class)
     private DataBean data;
     private long user_id;// 这条通知的操作者
-    @ToOne(joinProperty ="user_id")
+    @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfo;
 
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 523085633)
     private transient TSPNotificationBeanDao myDao;
-
 
 
     @Generated(hash = 1589879726)
@@ -70,7 +79,6 @@ public class TSPNotificationBean {
 
     @Generated(hash = 2066097151)
     private transient Long userInfo__resolvedKey;
-
 
 
     public String getId() {
@@ -118,14 +126,30 @@ public class TSPNotificationBean {
             return user_id;
         }
         if (data != null) {
+            Gson gson = new Gson();
             switch (data.getChannel()) {
                 case NOTIFICATION_KEY_FEED_COMMENTS:
+                case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+
+                    try {
+                        JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
+                        user_id = (long) jsonObject.getDouble("user_id");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     break;
                 case NOTIFICATION_KEY_FEED_DIGGS:
                     break;
                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-
+                    try {
+                        JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
+                        user_id = (long) jsonObject.getDouble("user_id");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     break;
+                default:
 
             }
         }
@@ -141,7 +165,9 @@ public class TSPNotificationBean {
 
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 669954399)
     public UserInfoBean getUserInfo() {
         long __key = this.user_id;
@@ -160,7 +186,9 @@ public class TSPNotificationBean {
         return userInfo;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1286036388)
     public void setUserInfo(@NotNull UserInfoBean userInfo) {
         if (userInfo == null) {
@@ -209,13 +237,6 @@ public class TSPNotificationBean {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 2063187465)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getTSPNotificationBeanDao() : null;
-    }
-
     public static class DataBean implements Serializable {
         private static final long serialVersionUID = 6464434974795251975L;
         /**
@@ -261,6 +282,16 @@ public class TSPNotificationBean {
         public void setExtra(Object extra) {
             this.extra = extra;
         }
+
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "channel='" + channel + '\'' +
+                    ", target=" + target +
+                    ", content='" + content + '\'' +
+                    ", extra=" + extra +
+                    '}';
+        }
     }
 
     /**
@@ -285,5 +316,26 @@ public class TSPNotificationBean {
         }
     }
 
+    @Override
+    public String toString() {
+        return "TSPNotificationBean{" +
+                "_id=" + _id +
+                ", id='" + id + '\'' +
+                ", read_at='" + read_at + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", data=" + data +
+                ", user_id=" + user_id +
+                ", userInfo=" + userInfo +
+                ", daoSession=" + daoSession +
+                ", myDao=" + myDao +
+                ", userInfo__resolvedKey=" + userInfo__resolvedKey +
+                '}';
+    }
 
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 2063187465)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getTSPNotificationBeanDao() : null;
+    }
 }

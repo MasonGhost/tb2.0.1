@@ -26,14 +26,10 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
-import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
-import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
@@ -62,8 +58,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_NOTICES;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
@@ -76,6 +74,7 @@ import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 public class MessagePresenter extends AppBasePresenter<MessageContract.Repository, MessageContract.View> implements MessageContract.Presenter {
     private static final int MAX_USER_NUMS_COMMENT = 2;
     private static final int MAX_USER_NUMS_DIGG = 3;
+    public static final int DEFAULT_MAX_REQUEST_UNREAD_NUM = 100;
 
     @Inject
     ChatContract.Repository mChatRepository;
@@ -104,9 +103,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Inject
     SystemRepository mSystemRepository;
 
+
     private MessageItemBean mItemBeanComment; // 评论的
     private MessageItemBean mItemBeanDigg;    // 点赞的
-    private MessageItemBean mItemBeanTop;    // 评论置顶的
+    private MessageItemBean mItemBeanReview;    // 评论置顶的
 
     private int mUnreadNotificationTotalNums; // 未读消息总数
 
@@ -227,7 +227,8 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             return new ArrayList<>();
         }
         initHeaderItemData();
-        handleFlushMessageForItem(mFlushMessageBeanGreenDao.getMultiDataFromCache()); // 处理本地消息
+        // 处理本地通知数据
+
         mRootView.updateLikeItemData(mItemBeanDigg);
         List<MessageItemBean> cacheData = mChatRepository.getConversionListData(mAuthRepository.getAuthBean().getUser_id());
         return cacheData;
@@ -259,7 +260,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Override
     public MessageItemBean updateReviewItemData() {
-        return mItemBeanTop;
+        return mItemBeanReview;
     }
 
     /**
@@ -502,247 +503,109 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         if (last_request_time != 0) { // 当等于 0 时 ，服务器返回历史的用户信息
             last_request_time++;//  由于请求接口数据时间是以秒级时间戳 建议调用传入时间间隔1秒以上 以防止数据重复
         }
-        mUserInfoRepository.getMyFlushMessage(last_request_time, "")
-                .doOnSubscribe(() -> mRootView.showTopRightLoading()).subscribeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate(() -> mRootView.closeTopRightLoading())
-                .subscribe(new BaseSubscribe<List<FlushMessages>>() {
+        mRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_UNREAD, mUnreadNotificationTotalNums == 0 ? DEFAULT_MAX_REQUEST_UNREAD_NUM : mUnreadNotificationTotalNums, 0)
+                .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {
                     @Override
-                    protected void onSuccess(List<FlushMessages> data) {
-                        if (data == null) {
+                    protected void onSuccess(List<TSPNotificationBean> data) {
+                        if (data.isEmpty()) {
                             return;
                         }
-                        SharePreferenceUtils.saveLong(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME, System.currentTimeMillis() / 1000);
-                        FlushMessages commentFlushMessage = null;
-                        FlushMessages diggFlushMessage = null;
-                        FlushMessages reviewFlushMessage = null;
-                        FlushMessages followFlushMessage = null;
-                        FlushMessages noticeFlushMessage = null;
-
-                        List<FlushMessages> flushMessagesList = mFlushMessageBeanGreenDao.getMultiDataFromCache();
-                        if (!flushMessagesList.isEmpty()) {
-                            for (FlushMessages flushMessages : flushMessagesList) {
-                                switch (flushMessages.getKey()) {
-                                    case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
-                                        commentFlushMessage = flushMessages;
-                                        break;
-                                    case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
-                                        diggFlushMessage = flushMessages;
-                                        break;
-                                    case ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                                        reviewFlushMessage = flushMessages;
-                                        break;
-                                    case ApiConfig.NOTIFICATION_KEY_FOLLOWS:
-                                        followFlushMessage = flushMessages;
-                                        break;
-                                    case NOTIFICATION_KEY_NOTICES:
-                                        noticeFlushMessage = flushMessages;
-                                        break;
-                                    default:
-                                        break;
-                                }
+                        List<TSPNotificationBean> commentsNoti = new ArrayList<TSPNotificationBean>();
+                        List<TSPNotificationBean> diggNoti = new ArrayList<TSPNotificationBean>();
+                        List<TSPNotificationBean> reviewNoti = new ArrayList<TSPNotificationBean>();
+                        for (TSPNotificationBean tspNotificationBean : data) {
+                            switch (tspNotificationBean.getData().getChannel()) {
+                                case NOTIFICATION_KEY_FEED_COMMENTS:
+                                case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+                                    commentsNoti.add(tspNotificationBean);
+                                    break;
+                                case NOTIFICATION_KEY_FEED_DIGGS:
+                                    diggNoti.add(tspNotificationBean);
+                                    break;
+                                case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                                    reviewNoti.add(tspNotificationBean);
+                                    break;
+                                default:
                             }
-                            for (FlushMessages flushMessage : data) {
-//                                if (flushMessage.getCount() == 0) {
-//                                    continue;
-//                                }
-                                switch (flushMessage.getKey()) {
-                                    case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
-                                        MessagePresenter.this.handleFlushMessage(flushMessage, commentFlushMessage);
-                                        break;
-                                    case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
-                                        MessagePresenter.this.handleFlushMessage(flushMessage, diggFlushMessage);
-                                        break;
-                                    case ApiConfig.NOTIFICATION_KEY_FOLLOWS:
-                                        MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
-                                        break;
-                                    case ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                                        MessagePresenter.this.handleFlushMessage(flushMessage, reviewFlushMessage);
-                                        break;
-                                    case NOTIFICATION_KEY_NOTICES:
-                                        MessagePresenter.this.handleFlushMessage(flushMessage, noticeFlushMessage);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            handleFlushMessageForItem(flushMessagesList);
-                        } else {
-                            handleFlushMessageForItem(data);
                         }
+                        /**
+                         * 设置未读数
+                         */
+                        mItemBeanComment.setUnReadMessageNums(commentsNoti.size());
+                        mItemBeanDigg.setUnReadMessageNums(diggNoti.size());
+                        mItemBeanReview.setUnReadMessageNums(reviewNoti.size());
+
+                        /**
+                         * 设置时间
+                         */
+                        mItemBeanComment.getConversation().setLast_message_time(commentsNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(commentsNoti.get(0).getCreated_at()));
+                        mItemBeanDigg.getConversation().setLast_message_time(diggNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(diggNoti.get(0).getCreated_at()));
+                        mItemBeanReview.getConversation().setLast_message_time(reviewNoti.isEmpty() ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(reviewNoti.get(0).getCreated_at()));
+
+                        /**
+                         * 设置提示内容
+                         * mContext.getString(R.string.has_no_body)
+                         + mContext.getString(R.string.comment_me)
+                         */
+                        String commentTip = getItemTipStr(commentsNoti, MAX_USER_NUMS_COMMENT);
+                        if (!TextUtils.isEmpty(commentTip)) {
+                            commentTip += mContext.getString(R.string.comment_me);
+                        } else {
+                            commentTip = mContext.getString(R.string.has_no_body)
+                                    + mContext.getString(R.string.comment_me);
+                        }
+                        mItemBeanComment.getConversation().getLast_message().setTxt(
+                                commentTip);
+
+                        String diggTip = getItemTipStr(diggNoti, MAX_USER_NUMS_DIGG);
+                        if (!TextUtils.isEmpty(diggTip)) {
+                            diggTip += mContext.getString(R.string.like_me);
+                        } else {
+                            diggTip = mContext.getString(R.string.has_no_body)
+                                    + mContext.getString(R.string.like_me);
+                        }
+                        mItemBeanDigg.getConversation().getLast_message().setTxt(
+                                diggTip);
+
+                        String reviewTip = getItemTipStr(reviewNoti, MAX_USER_NUMS_COMMENT);
+                        if (!TextUtils.isEmpty(reviewTip)) {
+                            reviewTip += mContext.getString(R.string.recieved_review);
+                        } else {
+                            reviewTip = mContext.getString(R.string.has_no_body)
+                                    + mContext.getString(R.string.recieved_review);
+                        }
+                        mItemBeanReview.getConversation().getLast_message().setTxt(
+                                reviewTip);
+
+
+
                         mRootView.updateLikeItemData(mItemBeanDigg);
                         // 更新我的消息提示
                         EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
-
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-
                     }
                 });
 
     }
 
-    private void handleFlushMessageForItem(List<FlushMessages> flushMessages) {
-        for (FlushMessages flushMessage : flushMessages) {
-//            if (flushMessage.getCount() == 0) {
-//                continue;
-//            }
-            mFlushMessageBeanGreenDao.insertOrReplace(flushMessage);
-            switch (flushMessage.getKey()) {
-                case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
-                    handleItemBean(mItemBeanComment, flushMessage);
-                    break;
-                case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
-                    handleItemBean(mItemBeanDigg, flushMessage);
-                    break;
-                case ApiConfig.NOTIFICATION_KEY_FOLLOWS:
-                    break;
-                case NOTIFICATION_KEY_NOTICES:
-                    break;
-                default:
-                    break;
-            }
-        }
-
-    }
-
-    /**
-     * 头部信息和 TS 助手数据赋值
-     *
-     * @param messageItemBean
-     * @param flushMessage
-     */
-    private void handleItemBean(MessageItemBean messageItemBean, FlushMessages flushMessage) {
-        String textEndTip = "";
-        int max_user_nums = MAX_USER_NUMS_COMMENT;
-        switch (flushMessage.getKey()) {
-            case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
-                textEndTip = mContext.getString(R.string.comment_me);
-                max_user_nums = MAX_USER_NUMS_COMMENT;
-                CommentedBean lastCommentedBean = mCommentedBeanGreenDao.getLastData();
-                if (lastCommentedBean != null && flushMessage.getMax_id() != 0 && lastCommentedBean.getId() > flushMessage.getMax_id()) {// 如果本地查看的数据 id 已经大于 新消息的 id 说明已经读取过了
-                    flushMessage.setCount(0);
-                }
-                break;
-            case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
-                textEndTip = mContext.getString(R.string.like_me);
-                max_user_nums = MAX_USER_NUMS_DIGG;
-                DigedBean lastDiggBend = mDigedBeanGreenDao.getLastData();
-                if (lastDiggBend != null && flushMessage.getMax_id() != 0 && lastDiggBend.getId() > flushMessage.getMax_id()) {
-                    flushMessage.setCount(0);
-                }
-
-                break;
-            case NOTIFICATION_KEY_NOTICES:
-                SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getLastData();
-                if (systemConversationBean == null) {
-                    textEndTip = mContext.getString(R.string.ts_helper_default_tip);
+    private String getItemTipStr(List<TSPNotificationBean> commentsNoti, int max_num) {
+        String tip = "";
+        for (int i = 0; i < commentsNoti.size(); i++) {
+            if (i < max_num) {
+                if (tip.contains(commentsNoti.get(i).getUserInfo().getName())) {
+                    max_num++;
                 } else {
-                    textEndTip = systemConversationBean.getContent();
+                    tip += commentsNoti.get(i).getUserInfo().getName() + "、";
                 }
-
-            case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                textEndTip = mContext.getString(R.string.like_me);
-                max_user_nums = MAX_USER_NUMS_DIGG;
-                DigedBean lasstDiggBend = mDigedBeanGreenDao.getLastData();
-                if (lasstDiggBend != null && flushMessage.getMax_id() != 0 && lasstDiggBend.getId
-                        () > flushMessage.getMax_id()) {
-                    flushMessage.setCount(0);
-                }
-
+            } else {
                 break;
-            default:
-                break;
-        }
-        if (messageItemBean == null) {
-            messageItemBean = new MessageItemBean();
-            Conversation commentMessage = new Conversation();
-            Message message = new Message();
-            commentMessage.setLast_message(message);
-            messageItemBean.setConversation(commentMessage);
-        }
-        messageItemBean.setUnReadMessageNums(flushMessage.getCount());
-        messageItemBean.getConversation().setLast_message_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
-        messageItemBean.getConversation().getLast_message().setCreate_time(TextUtils.isEmpty(flushMessage.getTime()) ? System.currentTimeMillis() : TimeUtils.utc2LocalLong(flushMessage.getTime()));
-        String text = mContext.getString(R.string.has_no_body);
-        if (flushMessage != null && flushMessage.getUids() != null && !flushMessage.getUids().isEmpty()) {
-            text = "";
-            List<Long> uids = new ArrayList<>();
-            for (Long aLong : flushMessage.getUids()) {
-                if (!uids.contains(aLong)) {
-                    uids.add(aLong);
-                }
-            }
-            int i = 0;
-            for (Long s : uids) {
-                if (i++ < max_user_nums) {
-                    try {
-                        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(s);
-                        text += userInfoBean.getName() + "、";
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            switch (flushMessage.getKey()) { // 超过限定的人数才显示 “等人"
-                case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
-                    if (uids.size() > MAX_USER_NUMS_COMMENT) {
-                        text += mContext.getString(R.string.comment_digg_much_hint);
-                    }
-                    break;
-                case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
-                    if (uids.size() > MAX_USER_NUMS_DIGG) {
-                        text += mContext.getString(R.string.comment_digg_much_hint);
-                    }
-                    break;
-                default:
-                    break;
-
             }
         }
-        if (text.endsWith("、")) {
-            text = text.substring(0, text.length() - 1);
+        if (tip.endsWith("、")) {
+            tip = tip.substring(0, tip.length() - 1);
         }
-        if (flushMessage.getKey().equals(NOTIFICATION_KEY_NOTICES)) {
-            messageItemBean.getConversation().getLast_message().setTxt(
-                    textEndTip);
-        } else {
-            messageItemBean.getConversation().getLast_message().setTxt(text
-                    + textEndTip);
-        }
-        checkBottomMessageTip();
+        return tip;
     }
 
-    /**
-     * @param netFlushMessage   from net
-     * @param localFlushMessage from local
-     */
-    private void handleFlushMessage(FlushMessages netFlushMessage, FlushMessages localFlushMessage) {
-        if (netFlushMessage == null) {
-            return;
-        }
-        if (localFlushMessage == null) {
-            mFlushMessageBeanGreenDao.insertOrReplace(netFlushMessage);
-            return;
-        }
-        localFlushMessage.setCount(netFlushMessage.getCount() + localFlushMessage.getCount());
-        localFlushMessage.setTime(netFlushMessage.getTime());
-        localFlushMessage.setMax_id(netFlushMessage.getMax_id());
-        if (netFlushMessage.getCount() >= MAX_USER_NUMS_COMMENT) {
-            localFlushMessage.setUids(netFlushMessage.getUids());
-        } else {
-            List<Long> tmp = new ArrayList<>();
-            tmp.addAll(netFlushMessage.getUids());
-            tmp.addAll(localFlushMessage.getUids());
-            localFlushMessage.setUids(tmp);
-        }
-    }
 
     /**
      * 初始化 header 数据
@@ -764,12 +627,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         mItemBeanDigg.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
                 + mContext.getString(R.string.like_me));
 
-        mItemBeanTop = new MessageItemBean();
+        mItemBeanReview = new MessageItemBean();
         Conversation reviewConveration = new Conversation();
         Message reviewmessage = new Message();
         reviewConveration.setLast_message(reviewmessage);
-        mItemBeanTop.setConversation(reviewConveration);
-        mItemBeanTop.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
+        mItemBeanReview.setConversation(reviewConveration);
+        mItemBeanReview.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
                 + mContext.getString(R.string.like_me));
     }
 

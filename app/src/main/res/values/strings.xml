@@ -17,6 +17,7 @@
     <string name="liked">赞过的</string>
     <string name="like_me">赞了我</string>
     <string name="comment_me">评论了我</string>
+    <string name="recieved_review">提交了审核</string>
     <string name="comment_success">评论成功</string>
     <string name="comment_digg_much_hint">等人</string>
     <string name="comment_fail">评论失败</string>
