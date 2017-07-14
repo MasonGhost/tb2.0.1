@@ -142,7 +142,7 @@ public class TextViewUtils {
                     }
                 }
             });
-//            dealTextViewClickEvent();
+            dealTextViewClickEvent();
         } else {
             mTextView.setText(mOriMsg);
         }
@@ -189,7 +189,6 @@ public class TextViewUtils {
         mTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                boolean consume = false;
                 CharSequence text = ((TextView) v).getText();
                 Spannable stext = Spannable.Factory.getInstance().newSpannable(text);
                 TextView widget = (TextView) v;
@@ -216,10 +215,10 @@ public class TextViewUtils {
                         if (action == MotionEvent.ACTION_UP) {
                             link[0].onClick(widget);
                         }
-                        consume = true;
+                        return true;
                     }
                 }
-                return consume;
+                return false;
             }
         });
     }

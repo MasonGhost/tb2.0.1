@@ -56,6 +56,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_MAX_ID;
@@ -644,14 +645,36 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public void payNote(final int imagePosition, int note) {
+    public void payNote(final int imagePosition, int note,boolean isImage) {
         mCommentRepository.paykNote(note)
                 .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2 data) {
+                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
+                        if (isImage){
+                            return Observable.just(stringBaseJsonV2);
+                        }
+                        return mRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic().getId())
+                                .flatMap(new Func1<DynamicDetailBeanV2, Observable<BaseJsonV2<String>>>() {
+                                    @Override
+                                    public Observable<BaseJsonV2<String>> call(DynamicDetailBeanV2 detailBeanV2) {
+                                        stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
+                                        return Observable.just(stringBaseJsonV2);
+                                    }
+                                });
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
-                        mRootView.getCurrentDynamic().getImages().get(imagePosition).setPaid(true);
+                        if (isImage) {
+                            mRootView.getCurrentDynamic().getImages().get(imagePosition).setPaid(true);
+                        }else {
+                            mRootView.getCurrentDynamic().getPaid_node().setPaid(true);
+                            mRootView.getCurrentDynamic().setFeed_content(data.getData());
+                        }
+
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
                         Bundle bundle = new Bundle();
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mRootView.getCurrentDynamic();

@@ -26,6 +26,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -68,7 +69,8 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.Dynami
 
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean>
         implements DynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
-        OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, DynamicDetailHeader.OnImageClickLisenter {
+        OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, DynamicDetailHeader.OnImageClickLisenter,
+        TextViewUtils.OnSpanTextClickListener{
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
@@ -279,7 +281,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onImageClick(int iamgePosition, double amount, int note) {
-        initImageCenterPopWindow(iamgePosition, (float) amount, note);
+        initImageCenterPopWindow(iamgePosition, (float) amount, note,R.string.buy_pay_words_desc,true);
     }
 
     public static DynamicDetailFragment initFragment(Bundle bundle) {
@@ -329,6 +331,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
         mDynamicBean.setDigUserInfoList(userInfoBeanList);
         updateCommentCountAndDig();
+    }
+
+    @Override
+    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+        initImageCenterPopWindow(position, (float) amount,
+                note, R.string.buy_pay_words_desc, false);
     }
 
     @Override
@@ -656,7 +664,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .build();
     }
 
-    private void initImageCenterPopWindow(final int imagePosition, float amout, final int note) {
+    /**
+     * @param imagePosition   图片位置
+     * @param amout           费用
+     * @param note            支付节点
+     * @param strRes          文字说明
+     * @param isImage         是否是图片收费
+     */
+    private void initImageCenterPopWindow(final int imagePosition, float amout,
+                                          final int note, int strRes, final boolean isImage) {
 //        if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();
 //            return;
@@ -670,7 +686,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .buildLinksColor2(R.color.important_for_content)
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildDescrStr(String.format(getString(R.string.buy_pay_desc) + getString(R
+                .buildDescrStr(String.format(getString(strRes) + getString(R
                         .string.buy_pay_member), amout))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
@@ -678,7 +694,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .buildItem2Str(getString(R.string.buy_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mPresenter.payNote(imagePosition, note);
+                    mPresenter.payNote(imagePosition, note, isImage);
                     mPayImagePopWindow.hide();
                 })
                 .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())

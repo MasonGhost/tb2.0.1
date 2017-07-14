@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +23,8 @@ import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -59,6 +62,7 @@ public class DynamicDetailHeader {
 
     private OnImageClickLisenter mOnImageClickLisenter;
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
+    private TextViewUtils.OnSpanTextClickListener mOnSpanTextClickListener;
 
     public View getDynamicDetailHeader() {
         return mDynamicDetailHeader;
@@ -110,6 +114,8 @@ public class DynamicDetailHeader {
         if (TextUtils.isEmpty(contentText)) {
             mContent.setVisibility(View.GONE);
         } else {
+//            dealTollWords(dynamicBean, contentText);// 处理文字收费
+            mContent.setVisibility(View.VISIBLE);
             mContent.setText(contentText);
         }
 
@@ -130,6 +136,27 @@ public class DynamicDetailHeader {
                     .getDrawable(), R.mipmap.icon_256);
             setImageClickListener(photoList, dynamicBean);
         }
+    }
+
+    private void dealTollWords(DynamicDetailBeanV2 dynamicBean, String contentText) {
+        if (contentText.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean.getPaid_node().isPaid()) {
+            contentText += mContext.getString(R.string.words_holder);
+        }
+
+        TextViewUtils textViewUtils = TextViewUtils.newInstance(mContent, contentText)
+                .spanTextColor(SkinUtils.getColor(R
+                        .color.normal_for_assist_text))
+                .position(50, contentText.length())
+                .maxLines(mContext.getResources().getInteger(R.integer.dynamic_list_content_show_lines))
+                .onSpanTextClickListener(mOnSpanTextClickListener)
+                .disPlayText(true);
+
+        if (dynamicBean.getPaid_node() != null) {// 有文字收费
+            textViewUtils.note(dynamicBean.getPaid_node().getNode())
+                    .amount(dynamicBean.getPaid_node().getAmount())
+                    .disPlayText(dynamicBean.getPaid_node().isPaid());
+        }
+        textViewUtils.build();
     }
 
     public Bitmap getSharBitmap() {

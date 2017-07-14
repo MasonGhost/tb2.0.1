@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -117,7 +118,15 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
 
     @Override
     public void topSuccess() {
-        getActivity().finish();
+
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.SUCCESS) {
+            getActivity().finish();
+        }
     }
 
     private void initListener() {

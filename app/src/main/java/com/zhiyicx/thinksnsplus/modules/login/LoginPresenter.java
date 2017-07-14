@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import javax.inject.Inject;
@@ -46,6 +47,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    @Inject
+    WalletRepository mWalletRepository;
 
     @Override
     public void login(String phone, String password) {
@@ -66,6 +69,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                         mAuthRepository.saveAuthBean(data);// 保存auth信息
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
+                        // 钱包信息我也不知道在哪儿获取
+                        mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id()+""));
                         // 获取用户信息
                         return mUserInfoRepository.getCurrentLoginUserInfo();
                     }

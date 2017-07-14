@@ -432,7 +432,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
 
-        goDynamicDetail(position, false);
+//        goDynamicDetail(position, false);
 
     }
 

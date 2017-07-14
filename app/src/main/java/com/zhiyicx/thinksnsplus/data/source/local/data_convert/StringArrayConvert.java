@@ -6,5 +6,5 @@ package com.zhiyicx.thinksnsplus.data.source.local.data_convert;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class WalletConfigBeanConvert extends BaseConvert<String[]> {
+public class StringArrayConvert extends BaseConvert<String[]> {
 }
