@@ -9,7 +9,6 @@ import com.zhiyicx.baseproject.config.SystemConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
@@ -32,7 +31,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,7 +39,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_INTERVAL_TIME;
@@ -296,16 +293,13 @@ public class SystemRepository implements ISystemRepository {
         return mCommonClient.getSystemConversations(max_id, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<BaseJson<List<SystemConversationBean>>, BaseJson<List<SystemConversationBean>>>() {
-                    @Override
-                    public BaseJson<List<SystemConversationBean>> call(BaseJson<List<SystemConversationBean>> listBaseJson) {
-                        if (listBaseJson.isStatus()) {
+                .map(listBaseJson -> {
+                    if (listBaseJson.isStatus()) {
 //                            descNetSystemConversation(listBaseJson.getData());
-                            mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
-                            handleTsHelperUserInfo(listBaseJson.getData());
-                        }
-                        return listBaseJson;
+                        mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
+                        handleTsHelperUserInfo(listBaseJson.getData());
                     }
+                    return listBaseJson;
                 });
     }
 
@@ -315,12 +309,7 @@ public class SystemRepository implements ISystemRepository {
      * @param datas 对话信息
      */
     private void descNetSystemConversation(List<SystemConversationBean> datas) {
-        Collections.sort(datas, new Comparator<SystemConversationBean>() { // 排序，最大的放在最后面
-            @Override
-            public int compare(SystemConversationBean o1, SystemConversationBean o2) {
-                return o1.getId().intValue() - o2.getId().intValue();
-            }
-        });
+        Collections.sort(datas, (o1, o2) -> o1.getId().intValue() - o2.getId().intValue());
     }
 
     /**

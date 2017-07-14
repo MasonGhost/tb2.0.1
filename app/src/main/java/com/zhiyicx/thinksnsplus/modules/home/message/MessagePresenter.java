@@ -1,9 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
-import android.nfc.FormatException;
 import android.text.TextUtils;
 
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -64,8 +62,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_NOTICES;
 import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_NOTICES;
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
@@ -465,29 +463,10 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG:
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_FOLLOW:
                     case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_NOTICE:
-                        mSystemRepository.getSystemConversations(System.currentTimeMillis(), TSListFragment.DEFAULT_PAGE_SIZE)
-                                .subscribe(new BaseSubscribe<List<SystemConversationBean>>() {
-                                    @Override
-                                    protected void onSuccess(List<SystemConversationBean> data) {
-                                        // 服务器同步未读评论和点赞消息
-                                        handleFlushMessage();
-                                    }
-
-                                    @Override
-                                    protected void onFailure(String message, int code) {
-
-                                    }
-
-                                    @Override
-                                    protected void onException(Throwable throwable) {
-
-                                    }
-                                });
-                        break;
-                    default:
                         // 服务器同步未读评论和点赞消息
                         handleFlushMessage();
                         break;
+                    default:
                 }
                 break;
 
