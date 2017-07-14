@@ -346,16 +346,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id) {
+    public Observable<List<DigedBean>> getMyDiggs(int max_id) {
         return mUserInfoClient.getMyDiggs(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<DigedBean>>, Observable<BaseJson<List<DigedBean>>>>() {
+                .flatMap(new Func1<List<DigedBean>, Observable<List<DigedBean>>>() {
                     @Override
-                    public Observable<BaseJson<List<DigedBean>>> call(final BaseJson<List<DigedBean>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
+                    public Observable<List<DigedBean>> call(final List<DigedBean> data) {
                             List<Object> userIds = new ArrayList();
-                            for (DigedBean digedBean : listBaseJson.getData()) {
+                            for (DigedBean digedBean : data) {
                                 userIds.add(digedBean.getUser_id());
                                 userIds.add(digedBean.getTo_user_id());
                             }
@@ -366,20 +365,14 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                             for (UserInfoBean userInfoBean : userinfobeans.getData()) {
                                                 userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                             }
-                                            for (DigedBean digedBean : listBaseJson.getData()) {
+                                            for (DigedBean digedBean : data) {
                                                 digedBean.setDigUserInfo(userInfoBeanSparseArray.get(digedBean.getUser_id().intValue()));
                                                 digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTo_user_id().intValue()));
                                             }
                                             mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                        } else {
-                                            listBaseJson.setStatus(userinfobeans.isStatus());
-                                            listBaseJson.setCode(userinfobeans.getCode());
-                                            listBaseJson.setMessage(userinfobeans.getMessage());
                                         }
-                                        return listBaseJson;
+                                        return data;
                                     });
-                        }
-                        return Observable.just(listBaseJson);
                     }
                 });
     }

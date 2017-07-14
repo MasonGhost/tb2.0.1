@@ -115,19 +115,19 @@ public interface UserInfoClient {
     /**
      * 获取用户收到的点赞
      *
-     * @param max_id 用来翻页数据体记录id
-     * @param limit  返回数据条数 默认15条
+     * @param after 用来翻页数据体记录 id
+     * @param limit  返回数据条数 默认 20 条
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MY_DIGGS)
-    Observable<BaseJson<List<DigedBean>>> getMyDiggs(@Query("max_id") int max_id,
+    Observable<List<DigedBean>> getMyDiggs(@Query("after") int after,
                                                      @Query("limit") int limit);
 
     /**
      * 获取用户收到的评论
      *
      * @param after 用来翻页数据体记录 id
-     * @param limit  返回数据条数 默认15条
+     * @param limit  返回数据条数 默认 20 条
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
