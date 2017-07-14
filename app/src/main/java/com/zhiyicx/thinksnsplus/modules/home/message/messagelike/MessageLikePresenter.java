@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 
@@ -34,7 +34,7 @@ public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.R
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription commentSub = mRepository.getMyDiggs(maxId.intValue())
-                .subscribe(new BaseSubscribe<List<DigedBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<DigedBean>>() {
                     @Override
                     protected void onSuccess(List<DigedBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
