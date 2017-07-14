@@ -80,7 +80,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     @Override
     public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
         CommentedBean currentCommentBean = mRootView.getListDatas().get(mCurrentPostion);
-        String path = CommentRepository.getCommentPath(currentCommentBean.getTarget_id(), currentCommentBean.getChannel(), null);
+        String path = CommentRepository.getCommentPath(currentCommentBean.getTarget_id(), currentCommentBean.getChannel());
         Subscription commentSub = mCommentRepository.sendCommentV2(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
                 .subscribeOn(AndroidSchedulers.mainThread())

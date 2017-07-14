@@ -332,11 +332,16 @@ public class ApiConfig {
     public static final String APP_COMPONENT_FEED = "feed";
     public static final String APP_COMPONENT_MUSIC = "music";
     public static final String APP_COMPONENT_NEWS = "news";
-    //     feeds musics music_specials news
-    public static final String APP_COMPONENT_SOURCE_TABLE_FEEDS = "feeds";
-    public static final String APP_COMPONENT_SOURCE_TABLE_MUSICS = "musics";
-    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_specials";
-    public static final String APP_COMPONENT_SOURCE_TABLE_NEWS = "news";
+    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_special";
+    /**
+     * @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/likes.md}
+     */
+    public static final String APP_LIKE_FEED = "feeds";
+    public static final String APP_LIKE_MUSIC = "musics";
+    public static final String APP_LIKE_NEWS = "news";
+
+
+
 
 
     /*******************************************  API V2  *********************************************/

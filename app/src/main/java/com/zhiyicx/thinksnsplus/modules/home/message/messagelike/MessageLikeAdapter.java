@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -27,16 +26,14 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_COMPONENT_FEED;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_COMPONENT_MUSIC;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_COMPONENT_NEWS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_COMPONENT_SOURCE_TABLE_MUSICS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_ABLUM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_MUSIC;
 
 /**
@@ -81,21 +78,21 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .imagerView(holder.getView(R.id.iv_headpic))
                 .build());
-//        if (digedBean.getSource_cover() != 0) {
-//            holder.setVisible(R.id.tv_deatil, View.GONE);
-//            holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
-//            mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-//                    .url(ImageUtils.imagePathConvertV2(digedBean.getSource_cover()
-//                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-//                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-//                            , ImageZipConfig.IMAGE_50_ZIP))
-//                    .imagerView(holder.getView(R.id.iv_detail_image))
-//                    .build());
-//        } else {
-//            holder.setVisible(R.id.iv_detail_image, View.GONE);
-//            holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-//            holder.setText(R.id.tv_deatil, digedBean.getSource_content());
-//        }
+        if (digedBean.getSource_cover() != null) {
+            holder.setVisible(R.id.tv_deatil, View.GONE);
+            holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
+            mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
+                    .url(ImageUtils.imagePathConvertV2(digedBean.getSource_cover().intValue()
+                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                            , ImageZipConfig.IMAGE_50_ZIP))
+                    .imagerView(holder.getView(R.id.iv_detail_image))
+                    .build());
+        } else {
+            holder.setVisible(R.id.iv_detail_image, View.GONE);
+            holder.setVisible(R.id.tv_deatil, View.VISIBLE);
+            holder.setText(R.id.tv_deatil, digedBean.getSource_content());
+        }
 
         holder.setText(R.id.tv_name, digedBean.getDigUserInfo().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(digedBean.getUpdated_at()));
@@ -130,16 +127,16 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         bundle.putLong(BUNDLE_SOURCE_ID, digedBean.getLikeable_id());
         switch (digedBean.getLikeable_type()) {
 
-            case APP_COMPONENT_FEED:
+            case APP_LIKE_FEED:
                 intent = new Intent(mContext, DynamicDetailActivity.class);
                 intent.putExtras(bundle);
                 break;
-            case APP_COMPONENT_MUSIC:
+            case APP_LIKE_MUSIC:
                 intent = new Intent(mContext, MusicDetailActivity.class);
-                bundle.putString(CURRENT_COMMENT_TYPE, digedBean.getLikeable_type().equals(APP_COMPONENT_SOURCE_TABLE_MUSICS) ? CURRENT_COMMENT_TYPE_MUSIC : CURRENT_COMMENT_TYPE_ABLUM);
+                bundle.putString(CURRENT_COMMENT_TYPE, CURRENT_COMMENT_TYPE_MUSIC);
                 intent.putExtra(CURRENT_COMMENT, bundle);
                 break;
-            case APP_COMPONENT_NEWS:
+            case APP_LIKE_NEWS:
                 intent = new Intent(mContext, InfoDetailsActivity.class);
                 intent.putExtra(BUNDLE_INFO, bundle);
                 break;

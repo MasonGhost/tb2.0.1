@@ -1,16 +1,24 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.BaseListBean;
-import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.converter.PropertyConverter;
+import org.greenrobot.greendao.annotation.Transient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
+
+import static android.R.id.list;
+import static com.umeng.analytics.pro.x.J;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
 
 /**
  * @Describe {@see https://github.com/zhiyicx/plus-likeable_type-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%B5%9E%E5%88%97%E8%A1%A8.md}
@@ -44,21 +52,27 @@ public class DigedBean extends BaseListBean {
     private String updated_at;
     private String likeable_type; // 数据所属扩展包名 目前可能的参数有 feed
     private Long likeable_id; // 关联资源 id
-    //
-//    private int source_cover; // 封面 id
-//    private String source_content; // 资源描述
-//    @Convert(converter = ObjectParamsConverter.class, columnType = String.class)
-//    private Object likeable;
-    /** Used to resolve relations */
+
+    @Transient
+    private Object likeable;
+
+    private Long source_cover;
+
+    private String source_content;
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 2113720789)
     private transient DigedBeanDao myDao;
 
-
-    @Generated(hash = 353304193)
-    public DigedBean(Long id, Long user_id, Long target_user, String created_at, String updated_at, String likeable_type, Long likeable_id) {
+    @Generated(hash = 798365238)
+    public DigedBean(Long id, Long user_id, Long target_user, String created_at, String updated_at, String likeable_type, Long likeable_id, Long source_cover,
+                     String source_content) {
         this.id = id;
         this.user_id = user_id;
         this.target_user = target_user;
@@ -66,18 +80,18 @@ public class DigedBean extends BaseListBean {
         this.updated_at = updated_at;
         this.likeable_type = likeable_type;
         this.likeable_id = likeable_id;
+        this.source_cover = source_cover;
+        this.source_content = source_content;
     }
 
     @Generated(hash = 1958494079)
     public DigedBean() {
     }
 
-
     @Generated(hash = 81788119)
     private transient Long digUserInfo__resolvedKey;
     @Generated(hash = 1719103363)
     private transient Long digedUserInfo__resolvedKey;
-
 
     @Override
     public Long getMaxId() {
@@ -140,7 +154,84 @@ public class DigedBean extends BaseListBean {
         this.updated_at = updated_at;
     }
 
-    /** To-one relationship, resolved on first access. */
+    public Object getLikeable() {
+        return likeable;
+    }
+
+    public void setLikeable(Object likeable) {
+        this.likeable = likeable;
+    }
+
+    public Long getSource_cover() {
+        if (source_cover != null) {
+           return source_cover;
+        }
+
+        switch (likeable_type) {
+            case APP_LIKE_FEED:
+                DynamicDetailBeanV2 dynamicDetailBeanV2 = new Gson().fromJson(new Gson().toJson(likeable), DynamicDetailBeanV2.class);
+                if (dynamicDetailBeanV2 != null) {
+                    List<DynamicDetailBeanV2.ImagesBean> list = dynamicDetailBeanV2.getImages();
+                    if (list != null && list.size() > 0) {
+                        source_cover = (long) dynamicDetailBeanV2.getImages().get(0).getFile();
+                    }
+                }
+                break;
+            case APP_LIKE_MUSIC:
+
+                break;
+            case APP_LIKE_NEWS:
+
+                break;
+
+        }
+
+        return source_cover;
+    }
+
+    public void setSource_cover(Long source_cover) {
+        if (source_cover != null) {
+            this.source_cover = source_cover;
+        } else {
+            this.source_cover = getSource_cover();
+        }
+    }
+
+    public String getSource_content() {
+        if (source_content != null) {
+            return source_content;
+        }
+
+        switch (likeable_type) {
+            case APP_LIKE_FEED:
+                DynamicDetailBeanV2 dynamicDetailBeanV2 = new Gson().fromJson(new Gson().toJson(likeable), DynamicDetailBeanV2.class);
+                if (dynamicDetailBeanV2 != null) {
+                    source_content = dynamicDetailBeanV2.getFeed_content();
+                }
+                break;
+            case APP_LIKE_MUSIC:
+
+                break;
+            case APP_LIKE_NEWS:
+
+                break;
+
+        }
+
+        return source_content;
+    }
+
+    public void setSource_content(String source_content) {
+        if (source_content != null) {
+            this.source_content = source_content;
+        } else {
+            this.source_content = getSource_content();
+        }
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1880931547)
     public UserInfoBean getDigUserInfo() {
         Long __key = this.user_id;
@@ -159,7 +250,9 @@ public class DigedBean extends BaseListBean {
         return digUserInfo;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 272986475)
     public void setDigUserInfo(UserInfoBean digUserInfo) {
         synchronized (this) {
@@ -169,7 +262,9 @@ public class DigedBean extends BaseListBean {
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 316022512)
     public UserInfoBean getDigedUserInfo() {
         Long __key = this.target_user;
@@ -188,7 +283,9 @@ public class DigedBean extends BaseListBean {
         return digedUserInfo;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 744662438)
     public void setDigedUserInfo(UserInfoBean digedUserInfo) {
         synchronized (this) {
@@ -241,27 +338,5 @@ public class DigedBean extends BaseListBean {
         myDao = daoSession != null ? daoSession.getDigedBeanDao() : null;
     }
 
-
-    /**
-     * Object 转 String 形式存入数据库
-     */
-    static class ObjectParamsConverter implements PropertyConverter<Object, String> {
-
-        @Override
-        public List<String> convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(Object entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
 
 }
