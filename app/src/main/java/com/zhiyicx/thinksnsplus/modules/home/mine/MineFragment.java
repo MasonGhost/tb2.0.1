@@ -168,7 +168,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     protected void setRightClick() {
         super.setRightClick();
         startActivity(new Intent(getActivity(), SystemConversationActivity.class));
-        mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_NOTICES);
+        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})

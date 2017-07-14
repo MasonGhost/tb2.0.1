@@ -31,8 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.functions.Action1;
-
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -184,7 +182,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
                         toCommentList();
-                        mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_COMMENTS);
+                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS);
                         mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateCommnetItemData());
 
@@ -195,7 +193,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
                         toLikeList();
-                        mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_DIGGS);
+                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_DIGGS);
                         mPresenter.updateLikeItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateLikeItemData());
                     });
@@ -205,7 +203,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
                         toReviewList();
-                        mPresenter.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_REVIEWS);
+                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
                         mPresenter.updateReviewItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateReviewItemData());
                     });

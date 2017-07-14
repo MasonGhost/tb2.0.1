@@ -76,11 +76,22 @@ public class ApiConfig {
     public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION + "/users/mydiggs"; // 获取用户收到的点赞
     public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION + "/users/mycomments"; // 获取用户收到的评论
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
-    public static final String FLUSHMESSAGES_KEY_DIGGS = "diggs";
-    public static final String FLUSHMESSAGES_KEY_COMMENTS = "comments";
-    public static final String FLUSHMESSAGES_KEY_REVIEWS = "reviews";
-    public static final String FLUSHMESSAGES_KEY_FOLLOWS = "follows";
-    public static final String FLUSHMESSAGES_KEY_NOTICES = "notices";
+    /**
+     * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
+     * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md}
+     * <p>
+     * feed:comment 动态被评论
+     * feed:reply-comment 动态评论被回复
+     * feed:pinned-comment 动态评论申请置顶
+     * feed:digg 动态被点赞
+     *
+     */
+    public static final String NOTIFICATION_KEY_FEED_DIGGS = "feed:digg";
+    public static final String NOTIFICATION_KEY_FEED_COMMENTS = "feed:comment";
+    public static final String NOTIFICATION_KEY_FEED_REPLY_COMMENTS = "feed:reply-comment";
+    public static final String NOTIFICATION_KEY_FEED_PINNED_COMMENT = "feed:pinned-comment";
+    public static final String NOTIFICATION_KEY_FOLLOWS = "follows";
+    public static final String NOTIFICATION_KEY_NOTICES = "notices";
 
     /**
      * 消息通知

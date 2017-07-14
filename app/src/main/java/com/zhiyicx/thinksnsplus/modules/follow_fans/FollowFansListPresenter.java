@@ -133,7 +133,7 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
 
     @Override
     public void cleanNewFans() {
-        mFlushMessageBeanGreenDao.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
+        mFlushMessageBeanGreenDao.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FOLLOWS);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)

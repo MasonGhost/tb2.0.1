@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
+import android.nfc.FormatException;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -63,8 +64,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_NOTICES;
-import static com.zhiyicx.baseproject.config.ApiConfig.FLUSHMESSAGES_KEY_REVIEWS;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_NOTICES;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
@@ -109,6 +110,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     private MessageItemBean mItemBeanDigg;    // 点赞的
     private MessageItemBean mItemBeanTop;    // 评论置顶的
 
+    private int mUnreadNotificationTotalNums; // 未读消息总数
+
+
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
         super(repository, rootView);
@@ -123,7 +127,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribe(new BaseSubscribeForV2<Void>() {
                     @Override
                     protected void onSuccess(Void data) {
-                        LogUtils.i("test notification",data);
+                        LogUtils.i("test notification", data);
                     }
                 });
     }
@@ -424,10 +428,14 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     /**
      * 未读数获取到
      *
-     * @param unreadNum  unread  notificaiton nums
+     * @param unreadNum unread  notificaiton nums
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT)
     private void onCheckUnreadNotifyRecieved(String unreadNum) {
+        try {
+            mUnreadNotificationTotalNums = Integer.parseInt(unreadNum);
+        } catch (Exception e) {
+        }
 
     }
 
@@ -535,19 +543,19 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         if (!flushMessagesList.isEmpty()) {
                             for (FlushMessages flushMessages : flushMessagesList) {
                                 switch (flushMessages.getKey()) {
-                                    case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                                    case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
                                         commentFlushMessage = flushMessages;
                                         break;
-                                    case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                                    case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
                                         diggFlushMessage = flushMessages;
                                         break;
-                                    case ApiConfig.FLUSHMESSAGES_KEY_REVIEWS:
+                                    case ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT:
                                         reviewFlushMessage = flushMessages;
                                         break;
-                                    case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                                    case ApiConfig.NOTIFICATION_KEY_FOLLOWS:
                                         followFlushMessage = flushMessages;
                                         break;
-                                    case FLUSHMESSAGES_KEY_NOTICES:
+                                    case NOTIFICATION_KEY_NOTICES:
                                         noticeFlushMessage = flushMessages;
                                         break;
                                     default:
@@ -559,19 +567,19 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 //                                    continue;
 //                                }
                                 switch (flushMessage.getKey()) {
-                                    case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                                    case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, commentFlushMessage);
                                         break;
-                                    case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                                    case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, diggFlushMessage);
                                         break;
-                                    case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                                    case ApiConfig.NOTIFICATION_KEY_FOLLOWS:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, followFlushMessage);
                                         break;
-                                    case ApiConfig.FLUSHMESSAGES_KEY_REVIEWS:
+                                    case ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, reviewFlushMessage);
                                         break;
-                                    case FLUSHMESSAGES_KEY_NOTICES:
+                                    case NOTIFICATION_KEY_NOTICES:
                                         MessagePresenter.this.handleFlushMessage(flushMessage, noticeFlushMessage);
                                         break;
                                     default:
@@ -608,15 +616,15 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 //            }
             mFlushMessageBeanGreenDao.insertOrReplace(flushMessage);
             switch (flushMessage.getKey()) {
-                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
                     handleItemBean(mItemBeanComment, flushMessage);
                     break;
-                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
                     handleItemBean(mItemBeanDigg, flushMessage);
                     break;
-                case ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS:
+                case ApiConfig.NOTIFICATION_KEY_FOLLOWS:
                     break;
-                case FLUSHMESSAGES_KEY_NOTICES:
+                case NOTIFICATION_KEY_NOTICES:
                     break;
                 default:
                     break;
@@ -635,7 +643,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         String textEndTip = "";
         int max_user_nums = MAX_USER_NUMS_COMMENT;
         switch (flushMessage.getKey()) {
-            case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+            case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
                 textEndTip = mContext.getString(R.string.comment_me);
                 max_user_nums = MAX_USER_NUMS_COMMENT;
                 CommentedBean lastCommentedBean = mCommentedBeanGreenDao.getLastData();
@@ -643,7 +651,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     flushMessage.setCount(0);
                 }
                 break;
-            case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+            case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
                 textEndTip = mContext.getString(R.string.like_me);
                 max_user_nums = MAX_USER_NUMS_DIGG;
                 DigedBean lastDiggBend = mDigedBeanGreenDao.getLastData();
@@ -652,7 +660,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 }
 
                 break;
-            case FLUSHMESSAGES_KEY_NOTICES:
+            case NOTIFICATION_KEY_NOTICES:
                 SystemConversationBean systemConversationBean = mSystemConversationBeanGreenDao.getLastData();
                 if (systemConversationBean == null) {
                     textEndTip = mContext.getString(R.string.ts_helper_default_tip);
@@ -660,7 +668,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     textEndTip = systemConversationBean.getContent();
                 }
 
-            case FLUSHMESSAGES_KEY_REVIEWS:
+            case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
                 textEndTip = mContext.getString(R.string.like_me);
                 max_user_nums = MAX_USER_NUMS_DIGG;
                 DigedBean lasstDiggBend = mDigedBeanGreenDao.getLastData();
@@ -704,12 +712,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 }
             }
             switch (flushMessage.getKey()) { // 超过限定的人数才显示 “等人"
-                case ApiConfig.FLUSHMESSAGES_KEY_COMMENTS:
+                case ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS:
                     if (uids.size() > MAX_USER_NUMS_COMMENT) {
                         text += mContext.getString(R.string.comment_digg_much_hint);
                     }
                     break;
-                case ApiConfig.FLUSHMESSAGES_KEY_DIGGS:
+                case ApiConfig.NOTIFICATION_KEY_FEED_DIGGS:
                     if (uids.size() > MAX_USER_NUMS_DIGG) {
                         text += mContext.getString(R.string.comment_digg_much_hint);
                     }
@@ -722,7 +730,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         if (text.endsWith("、")) {
             text = text.substring(0, text.length() - 1);
         }
-        if (flushMessage.getKey().equals(FLUSHMESSAGES_KEY_NOTICES)) {
+        if (flushMessage.getKey().equals(NOTIFICATION_KEY_NOTICES)) {
             messageItemBean.getConversation().getLast_message().setTxt(
                     textEndTip);
         } else {
