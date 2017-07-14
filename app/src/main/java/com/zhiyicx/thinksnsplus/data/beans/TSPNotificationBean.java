@@ -2,10 +2,13 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import com.zhiyicx.common.utils.ConvertUtils;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
@@ -38,20 +41,36 @@ public class TSPNotificationBean {
     @Convert(converter = DataBeanParamsConverter.class, columnType = String.class)
     private DataBean data;
     private long user_id;// 这条通知的操作者
+    @ToOne(joinProperty ="user_id")
+    private UserInfoBean userInfo;
 
 
-    @Generated(hash = 917704485)
-    public TSPNotificationBean(Long _id, String id, String read_at, String created_at, DataBean data) {
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 523085633)
+    private transient TSPNotificationBeanDao myDao;
+
+
+
+    @Generated(hash = 1589879726)
+    public TSPNotificationBean(Long _id, String id, String read_at, String created_at, DataBean data, long user_id) {
         this._id = _id;
         this.id = id;
         this.read_at = read_at;
         this.created_at = created_at;
         this.data = data;
+        this.user_id = user_id;
     }
 
     @Generated(hash = 1606766504)
     public TSPNotificationBean() {
     }
+
+    @Generated(hash = 2066097151)
+    private transient Long userInfo__resolvedKey;
+
 
 
     public String getId() {
@@ -120,6 +139,81 @@ public class TSPNotificationBean {
             this.user_id = getUser_id();
         }
 
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 669954399)
+    public UserInfoBean getUserInfo() {
+        long __key = this.user_id;
+        if (userInfo__resolvedKey == null || !userInfo__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean userInfoNew = targetDao.load(__key);
+            synchronized (this) {
+                userInfo = userInfoNew;
+                userInfo__resolvedKey = __key;
+            }
+        }
+        return userInfo;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1286036388)
+    public void setUserInfo(@NotNull UserInfoBean userInfo) {
+        if (userInfo == null) {
+            throw new DaoException("To-one property 'user_id' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.userInfo = userInfo;
+            user_id = userInfo.getUser_id();
+            userInfo__resolvedKey = user_id;
+        }
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 2063187465)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getTSPNotificationBeanDao() : null;
     }
 
     public static class DataBean implements Serializable {

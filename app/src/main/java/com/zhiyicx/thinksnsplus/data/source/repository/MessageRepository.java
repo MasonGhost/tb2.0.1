@@ -267,16 +267,59 @@ public class MessageRepository implements MessageContract.Repository {
 
     @Override
     public Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset) {
-        return mUserInfoClient.getNotificationList(notification,type,limit,offset)
+        return mUserInfoClient.getNotificationList(notification, type, limit, offset)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<TSPNotificationBean>, Observable<List<TSPNotificationBean>>>() {
+                    @Override
+                    public Observable<List<TSPNotificationBean>> call(List<TSPNotificationBean> datas) {
+                        if (datas.isEmpty()) {
+                            return Observable.just(datas);
+                        }
+                        final List<Object> user_ids = new ArrayList<>();
+                        String userIds = "";
+                        for (TSPNotificationBean tspNotificationBean : datas) {
+                            user_ids.add(tspNotificationBean.getUser_id());
+                            userIds += tspNotificationBean.getUser_id() + ",";
+                        }
+                        if (userIds.length() > 1) {
+                            userIds = userIds.substring(0, userIds.length() - 1);
+                        }
+                        return mUserInfoRepository.getBatchSpecifiedUserInfo(userIds)
+                                .subscribeOn(Schedulers.io())
+                                .map(userInfoBeens -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userInfoBeens) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (int i = 0; i < datas.size(); i++) {
+                                        datas.get(i).setUserInfo(userInfoBeanSparseArray.get((int) datas.get(i).getUser_id()));
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeens);
+                                    return datas;
+                                });
+                    }
+                });
     }
 
     @Override
     public Observable<TSPNotificationBean> getNotificationDetail(String notificationId) {
         return mUserInfoClient.getNotificationDetail(notificationId)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<TSPNotificationBean, Observable<TSPNotificationBean>>() {
+                    @Override
+                    public Observable<TSPNotificationBean> call(TSPNotificationBean tspNotificationBeen) {
+
+                        return mUserInfoRepository.getBatchSpecifiedUserInfo(String.valueOf(tspNotificationBeen.getUser_id()))
+                                .subscribeOn(Schedulers.io())
+                                .map(userInfoBeens -> {
+                                    tspNotificationBeen.setUserInfo(userInfoBeens.get(0));
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeens);
+                                    return tspNotificationBeen;
+                                });
+                    }
+                });
     }
 
     @Override
