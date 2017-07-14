@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 
 /**
  * @Describe
@@ -82,12 +81,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
         CommentedBean currentCommentBean = mRootView.getListDatas().get(mCurrentPostion);
         String path = CommentRepository.getCommentPath(currentCommentBean.getSource_id(), currentCommentBean.getComponent(), currentCommentBean.getSource_table());
         Subscription commentSub = mCommentRepository.sendComment(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
-                    }
-                })
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
