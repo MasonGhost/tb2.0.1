@@ -38,23 +38,8 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     @Override
     public void getInfoType() {
         Observable.just(mInfoTypeBeanGreenDao)
-                .map(new Func1<InfoTypeBeanGreenDaoImpl, InfoTypeBean>() {
-                    @Override
-                    public InfoTypeBean call(InfoTypeBeanGreenDaoImpl infoTypeBeanGreenDao) {
-                        return infoTypeBeanGreenDao.getSingleDataFromCache(1L);
-                    }
-                })
-                .filter(new Func1<InfoTypeBean, Boolean>() {
-                    @Override
-                    public Boolean call(InfoTypeBean infoTypeBean) {
-                        return infoTypeBean != null;
-                    }
-                }).subscribe(new Action1<InfoTypeBean>() {
-            @Override
-            public void call(InfoTypeBean infoTypeBean) {
-                mRootView.setInfoType(infoTypeBean);
-            }
-        });
+                .map(infoTypeBeanGreenDao -> infoTypeBeanGreenDao.getSingleDataFromCache(1L))
+                .filter(infoTypeBean -> infoTypeBean != null).subscribe(infoTypeBean -> mRootView.setInfoType(infoTypeBean));
 
         Subscription subscription = mRepository.getInfoType()
                 .subscribeOn(Schedulers.io())

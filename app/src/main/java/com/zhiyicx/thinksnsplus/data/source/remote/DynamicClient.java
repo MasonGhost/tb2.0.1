@@ -77,7 +77,11 @@ public interface DynamicClient {
 
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST_V2)
     Observable<DynamicBeanV2> getDynamicListV2(@Query("type") String type, @Query
-            ("after") Long after, @Query("limit") Long limit);
+            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
+
+    @GET(ApiConfig.APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2)
+    Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query
+            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
 
     /**
      * #点赞一条动态
@@ -227,8 +231,8 @@ public interface DynamicClient {
      *
      * @return
      */
-    @DELETE(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2> refuseTopComment(int pinned_id);
+    @DELETE(ApiConfig.APP_PATH_REFUSE_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2> refuseTopComment(@Path("pinned_id")int pinned_id);
 
     /**
      * 动态评论置顶审核通过 V2

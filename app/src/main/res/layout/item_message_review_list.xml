@@ -1,9 +1,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:paddingLeft="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_mid"
@@ -11,29 +11,30 @@
 
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
         android:id="@+id/iv_headpic"
-        app:pressShape="circle"
         android:layout_width="@dimen/headpic_for_list"
-        android:layout_marginRight="@dimen/spacing_mid"
         android:layout_height="@dimen/headpic_for_list"
+        android:layout_marginRight="@dimen/spacing_mid"
+        app:pressShape="circle"
         tools:src="@mipmap/ic_launcher"/>
 
     <FrameLayout
         android:id="@+id/fl_detial"
         android:layout_width="@dimen/rec_image_for_list"
-        android:layout_marginRight="@dimen/spacing_normal"
         android:layout_height="@dimen/rec_image_for_list"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_mid"
         android:background="@color/bgColor">
 
         <TextView
             android:id="@+id/tv_deatil"
             android:layout_width="match_parent"
-            android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/spacing_tiny"
-            android:textSize="@dimen/size_note_assist"
             android:gravity="center"
+            android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
+            android:textSize="@dimen/size_note_assist"
             tools:text="点点滴滴的撒范德萨范德萨范德萨多少撒 "/>
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
@@ -48,36 +49,60 @@
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/iv_like"
+        android:layout_marginTop="@dimen/textview_spacing_offset_height"
         android:layout_toRightOf="@id/iv_headpic"
         android:ellipsize="end"
+        android:includeFontPadding="false"
         android:maxLines="1"
         android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content"
+        android:textSize="@dimen/size_content_comment"
         tools:text="张三 "/>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_toLeftOf="@id/fl_detial"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:paddingTop="@dimen/spacing_small"
+        android:textColor="@color/important_for_content"
+        android:textSize="@dimen/size_content"
+        tools:text="我送第几个 "/>
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_name"
-        android:layout_toLeftOf="@id/iv_like"
+        android:layout_below="@id/tv_content"
         android:layout_toRightOf="@id/iv_headpic"
-        android:ellipsize="end"
         android:maxLines="1"
-        android:paddingTop="@dimen/spacing_small"
         android:paddingBottom="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_small"
         android:textColor="@color/general_for_hint"
+        android:textSize="@dimen/size_icon_assist"
+        tools:text="6分钟前"/>
+
+    <TextView
+        android:id="@+id/tv_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_content"
+        android:layout_toLeftOf="@id/fl_detial"
+        android:maxLines="1"
+        android:paddingRight="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_small"
+        android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
 
     <View
         android:id="@+id/v_bottom_line"
         style="@style/style_divider_horizontal_light"
-        android:layout_toRightOf="@+id/iv_headpic"
         android:layout_below="@+id/tv_time"
+        android:layout_toRightOf="@+id/iv_headpic"
         />
-
 </RelativeLayout>

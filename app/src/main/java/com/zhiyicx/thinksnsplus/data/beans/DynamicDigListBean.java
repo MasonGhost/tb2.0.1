@@ -5,26 +5,28 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Keep;
-import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.NotNull;
-
 /**
  * @author LiuChao
- * @describe 动态点赞列表,存在数据库中
+ * @describe 动态点赞列表, 存在数据库中
  * @date 2017/3/2
  * @contact email:450127106@qq.com
  */
 public class DynamicDigListBean extends BaseListBean implements Parcelable {
+
     private long feed_digg_id; // 服务器返回的maxId
+    private long id; // 服务器返回的maxId
     private long user_id;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public long getFeed_digg_id() {
-        return feed_digg_id;
+        return feed_digg_id > id ? feed_digg_id : id;
     }
 
     public void setFeed_digg_id(long feed_digg_id) {

@@ -60,7 +60,8 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_comment_top_success));
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+                        mRootView.topSuccess();
                     }
 
                     @Override
@@ -70,9 +71,9 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
                     }
 
                     @Override
-                    protected void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mRootView.showSnackErrorMessage(e.getMessage());
                     }
                 });
 

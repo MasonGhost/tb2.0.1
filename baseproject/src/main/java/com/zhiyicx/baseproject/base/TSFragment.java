@@ -149,8 +149,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
-        if (needCenterLoadingDialog()){
-            mCenterLoadingDialog=new LoadingDialog(getActivity());
+        if (needCenterLoadingDialog()) {
+            mCenterLoadingDialog = new LoadingDialog(getActivity());
         }
         return linearLayout;
     }
@@ -181,10 +181,24 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     @Override
-    public void showSnackMessage(String message, Prompt prompt) {
+    public void showSnackMessage(String message, final Prompt prompt) {
         TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
                 .setPromptThemBackground(prompt)
+                .setCallback(new TSnackbar.Callback() {
+                    @Override
+                    public void onDismissed(TSnackbar TSnackbar, @DismissEvent int event) {
+                        super.onDismissed(TSnackbar, event);
+                        switch (event) {
+                            case DISMISS_EVENT_TIMEOUT:
+                                snackViewDismissWhenTimeOut(prompt);
+                                break;
+                        }
+                    }
+                })
                 .show();
+    }
+
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
     }
 
     @Override
@@ -222,7 +236,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             view.setTranslationX(0);
         }
         if (WindowUtils.getIsPause()) {
-            WindowUtils.setWindowDismisslistener(null);
+            WindowUtils.removeWindowDismisslistener(this);
         }
     }
 
@@ -417,20 +431,20 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 音乐悬浮窗是否正在显示
      */
-/*    protected void musicWindowsStatus(boolean isShow) {
-        final View view = getLeftViewOfMusicWindow();
-        if (isShow && !rightViewHadTranslated) {
-            if (view.getVisibility() == View.VISIBLE) {
-                // 向左移动一定距离
-                int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-                view.setTranslationX(-rightX);
-                rightViewHadTranslated = true;
-            } else {
-                view.setTranslationX(0);
-                rightViewHadTranslated = false;
-            }
-        }
-    }*/
+//    protected void musicWindowsStatus(boolean isShow) {
+//        final View view = getLeftViewOfMusicWindow();
+//        if (view != null && isShow && !rightViewHadTranslated) {
+//            if (view.getVisibility() == View.VISIBLE) {
+//                // 向左移动一定距离
+//                int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+//                view.setTranslationX(-rightX);
+//                rightViewHadTranslated = true;
+//            } else {
+//                view.setTranslationX(0);
+//                rightViewHadTranslated = false;
+//            }
+//        }
+//    }
     protected void musicWindowsStatus(final boolean isShow) {
         WindowUtils.changeToBlackIcon();
         final View view = getLeftViewOfMusicWindow();
@@ -439,13 +453,28 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
-                            if (view != null && isShow) {
+
+                            if (view != null && isShow && !rightViewHadTranslated) {
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
                                     int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
                                     view.setTranslationX(-rightX);
+                                    rightViewHadTranslated = true;
+                                } else {
+                                    view.setTranslationX(0);
+                                    rightViewHadTranslated = false;
                                 }
                             }
+
+//                            if (view != null && isShow) {
+//                                if (view.getVisibility() == View.VISIBLE) {
+//                                    // 向左移动一定距离
+//                                    int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+//                                    view.setTranslationX(-rightX);
+//                                }
+//                            } else if (view != null) {
+//                                view.setTranslationX(0);
+//                            }
 //                            if (mViewTreeSubscription != null) {
 //                                mViewTreeSubscription.unsubscribe();
 //                            }
@@ -458,9 +487,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return mToolbarRight;
     }
 
-    protected boolean needCenterLoadingDialog(){
+    protected boolean needCenterLoadingDialog() {
         return false;
     }
+
     /**
      * 是否显示分割线,默认显示
      */
@@ -690,7 +720,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         intent.setType("text/plain");
         // Verify that the intent will resolve to an activity
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-            startActivityForResult(intent,0);
+            startActivityForResult(intent, 0);
         }
     }
 

@@ -217,16 +217,13 @@ public class DynamicDetailHeader {
             }
             Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
             if (!canLook) {
-                layoutParams.width = picWidth;
                 layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                imageView.setLayoutParams(layoutParams);
             }
             imageView.setLayoutParams(layoutParams);
             DrawableRequestBuilder requestBuilder =
                     Glide.with(mContext)
                             .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), picWidth,
                                     height, part, AppApplication.getTOKEN()))
-                            .override(picWidth, height)
                             .placeholder(R.drawable.shape_default_image)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .error(R.mipmap.pic_locked);

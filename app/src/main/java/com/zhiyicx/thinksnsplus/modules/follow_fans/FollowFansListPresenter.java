@@ -152,7 +152,7 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
                 break;
             }
             // 遍历到最后一条数据，仍然不存在该用户，并且，当前订阅页面是关注页面，需要添加item
-            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
+            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE&&followFansBean.getOrigin_follow_status()!=0) {
                 followFansBeanList.add(0, followFansBean);
                 mRootView.upDateFollowFansState();
             }

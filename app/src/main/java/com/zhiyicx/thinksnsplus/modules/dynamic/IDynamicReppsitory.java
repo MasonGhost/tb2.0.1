@@ -52,7 +52,7 @@ public interface IDynamicReppsitory {
      */
     Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page, String feed_ids, boolean isLoadMore);
 
-    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, boolean isLoadMore);
+    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id,boolean isLoadMore);
 
     /**
      * 动态点赞
@@ -138,8 +138,6 @@ public interface IDynamicReppsitory {
      * @param max_id    max_id
      * @return
      */
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark, Long feed_id, Long max_id);
-
     Observable<List<DynamicCommentBean>> getDynamicCommentListV2(Long feed_mark, Long feed_id, Long max_id);
 
     /**

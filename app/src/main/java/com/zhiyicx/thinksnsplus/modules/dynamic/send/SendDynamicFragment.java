@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,7 +21,6 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -35,7 +33,6 @@ import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -43,11 +40,7 @@ import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
@@ -55,12 +48,10 @@ import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
@@ -376,6 +367,15 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         super.onActivityResult(requestCode, resultCode, data);
         // 获取图片选择器返回结果
         if (mPhotoSelector != null) {
+            if (data != null) {// 图片选择器界面数据保存操作
+                Bundle tollBundle = new Bundle();
+                data.putExtra("tollBundle", tollBundle);
+                List<ImageBean> oldData = mCommonAdapter.getDatas();
+                if (oldData == null) {
+                    oldData = new ArrayList<>();
+                }
+                tollBundle.putParcelableArrayList("tollBundle", new ArrayList<>(oldData));
+            }
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
         }
     }

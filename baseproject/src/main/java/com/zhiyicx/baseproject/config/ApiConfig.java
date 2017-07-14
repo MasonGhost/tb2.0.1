@@ -148,16 +148,17 @@ public class ApiConfig {
     public static final String DYNAMIC_TYPE_NEW = "new"; // 最新动态
     public static final String DYNAMIC_TYPE_FOLLOWS = "follow"; // 关注动态
     public static final String DYNAMIC_TYPE_HOTS = "hot"; // 热门动态
+    public static final String DYNAMIC_TYPE_USERS = "users"; // 用户动态
     public static final String DYNAMIC_TYPE_SOMEONE = "users/%s"; // 某个人的动态列表,%s表示用户id
     public static final String DYNAMIC_TYPE_MY_COLLECTION = "collections";// 我收藏的动态列表
     // 点赞一条动态,取消点赞
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE = "api/" + API_VERSION + "/feeds/{feed_id}/digg";
     public static final String APP_PATH_DYNAMIC_HANDLE_LIKE_FORMAT = "api/" + API_VERSION + "/feeds/%s/digg";
 
-    public static final String APP_PATH_DYNAMIC_CLICK_LIKE_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/diggs";
-    public static final String APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/undigg";
-    public static final String APP_PATH_DYNAMIC_CLICK_LIKE_FORMAT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/diggs";
-    public static final String APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_FORMAT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/undigg";
+    public static final String APP_PATH_DYNAMIC_CLICK_LIKE_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/like";
+    public static final String APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/unlike";
+    public static final String APP_PATH_DYNAMIC_CLICK_LIKE_FORMAT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/like";
+    public static final String APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_FORMAT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/unlike";
 
     // 删除一条评论评论
     public static final String APP_PATH_DYNAMIC_DELETE_COMMENT = "api/" + API_VERSION + "/feeds/%s/comment/%s";
@@ -167,7 +168,7 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/comments";
     // 获取点赞列表
     public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/diggusers";
-    public static final String APP_PATH_DYNAMIC_DIG_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/diggs";
+    public static final String APP_PATH_DYNAMIC_DIG_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/likes";
     // 一条动态的评论列表
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/comments";
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comments";
@@ -184,6 +185,7 @@ public class ApiConfig {
 
     // 获取动态列表 V2
     public static final String APP_PATH_GET_DYNAMIC_LIST_V2 = "api/" + API_VERSION_2 + "/feeds";//
+    public static final String APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/collections";
 
     // 设置动态评论收费 V2
     public static final String APP_PATH_COMMENT_PAID_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/comment-paid";

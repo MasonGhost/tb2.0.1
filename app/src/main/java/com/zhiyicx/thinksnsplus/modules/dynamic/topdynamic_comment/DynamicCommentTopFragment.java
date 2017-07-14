@@ -5,20 +5,17 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import java.util.ArrayList;
@@ -97,7 +94,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
 
     @Override
     protected void initData() {
-
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getBalance()));
     }
 
     @Override
@@ -123,6 +120,19 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
     @Override
     public int getTopDyas() {
         return mCurrentDays;
+    }
+
+    @Override
+    public void topSuccess() {
+
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.SUCCESS) {
+            getActivity().finish();
+        }
     }
 
     private void initListener() {
@@ -161,7 +171,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mPresenter.topDynamicComment(getArguments().getLong(TOP_DYNAMIC_ID),
-                        getArguments().getLong(TOP_DYNAMIC_COMMENT_ID),(int)mInputMoney,mCurrentDays));
+                        getArguments().getLong(TOP_DYNAMIC_COMMENT_ID), (int) mInputMoney, mCurrentDays));
     }
 
     private void initSelectDays(List<Integer> mSelectDays) {
@@ -176,7 +186,6 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
         if (!enable)
             return;
         mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), mInputMoney / mCurrentDays, mPresenter.getBalance()));
     }
 
     @Override

@@ -341,7 +341,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
-    public void setSpanText(int position, int note, int amount,TextView view, boolean canNotRead) {
+    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
         initImageCenterPopWindow(position, position, (float) amount,
                 note, R.string.buy_pay_words_desc, false);
     }
@@ -613,7 +613,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void initDeletCommentPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int
             dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R.string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -622,9 +622,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
-                    intent.putExtra(TOP_DYNAMIC_ID, dynamicBean
+                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, dynamicBean
                             .getComments().get(commentPosition).getComment_id());
-                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, dynamicBean.getId());
+                    intent.putExtra(TOP_DYNAMIC_ID, dynamicBean.getId());
                     mDeletCommentPopWindow.hide();
                     startActivity(intent);
 //                        initCommentCenterPopWindow();
@@ -701,7 +701,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
 //                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)// 付费评论功能 移除
-                .item4Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_dynamic) : null)
+                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R.string.dynamic_list_top_dynamic) : null)
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -818,46 +818,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mPayImagePopWindow.show();
 
     }
-
-//    private void initWordsCenterPopWindow() {
-//        if (mPayWordsPopWindow != null) {
-//            mPayWordsPopWindow.show();
-//            return;
-//        }
-//        mPayWordsPopWindow = PayPopWindow.builder()
-//                .with(getActivity())
-//                .isWrap(true)
-//                .isFocus(true)
-//                .isOutsideTouch(true)
-//                .buildLinksColor1(R.color.themeColor)
-//                .buildLinksColor2(R.color.important_for_content)
-//                .contentView(R.layout.ppw_for_center)
-//                .backgroundAlpha(POPUPWINDOW_ALPHA)
-//                .buildDescrStr(String.format(getString(R.string.stick_comment_desc) + getString(R
-//                        .string.buy_pay_member), 4.4))
-//                .buildLinksStr(getString(R.string.buy_pay_member))
-//                .buildTitleStr(getString(R.string.buy_pay))
-//                .buildItem1Str(getString(R.string.buy_pay_in))
-//                .buildItem2Str(getString(R.string.buy_pay_out))
-//                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), 4.4))
-//                .buildCenterPopWindowItem1ClickListener(() -> mPayWordsPopWindow.hide())
-//                .buildCenterPopWindowItem2ClickListener(() -> mPayWordsPopWindow.hide())
-//                .buildCenterPopWindowLinkClickListener(new PayPopWindow
-//                        .CenterPopWindowLinkClickListener() {
-//                    @Override
-//                    public void onLongClick() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onClicked() {
-//
-//                    }
-//                })
-//                .build();
-//        mPayWordsPopWindow.show();
-//
-//    }
 
     /**
      * 初始化重发评论选择弹框

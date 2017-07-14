@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
@@ -64,7 +65,7 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         if (isLoadMore) {
             return new ArrayList<>();
         }
-        return null;
+        return mTopDynamicCommentBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override
@@ -79,22 +80,30 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
 
     @Override
     public void approvedTopComment(Long feed_id, int comment_id, int pinned_id) {
-        Subscription subscription = mRepository.approvedTopComment(feed_id, comment_id, pinned_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
-            @Override
-            protected void onSuccess(BaseJsonV2 data) {
+        Subscription subscription = mRepository.approvedTopComment(feed_id, comment_id, pinned_id)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2 data) {
+                        mRootView.getCurrentComment().getComment().setPinned(true);
+                        mRootView.getCurrentComment().setExpires_at(TimeUtils.getCurrenZeroTimeStr());
+                        mRootView.getCurrentComment().setState(TopDynamicCommentBean.TOP_SUCCESS);
+                        mTopDynamicCommentBeanGreenDao.insertOrReplace(mRootView.getCurrentComment());
+                        mRootView.refreshData(mRootView.getListDatas().indexOf(mRootView.getCurrentComment()));
+                    }
 
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-            }
-        });
+                });
         addSubscrebe(subscription);
     }
 
@@ -103,17 +112,22 @@ public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContra
         Subscription subscription = mRepository.refuseTopComment(pinned_id).subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
             @Override
             protected void onSuccess(BaseJsonV2 data) {
-
+                mRootView.getCurrentComment().setState(TopDynamicCommentBean.TOP_REFUSE);
+                mRootView.getCurrentComment().setExpires_at(TimeUtils.getCurrenZeroTimeStr());
+                mTopDynamicCommentBeanGreenDao.insertOrReplace(mRootView.getCurrentComment());
+                mRootView.refreshData(mRootView.getListDatas().indexOf(mRootView.getCurrentComment()));
             }
 
             @Override
             protected void onFailure(String message, int code) {
                 super.onFailure(message, code);
+                mRootView.showSnackErrorMessage(message);
             }
 
             @Override
-            public void onError(Throwable e) {
-                super.onError(e);
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.showSnackErrorMessage(throwable.getMessage());
             }
         });
         addSubscrebe(subscription);

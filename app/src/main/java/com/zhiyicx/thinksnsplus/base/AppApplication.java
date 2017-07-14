@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
-import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -63,8 +60,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -90,7 +85,6 @@ public class AppApplication extends TSApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        FreelineCore.init(this);
         initComponent();
         // IM
         if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
@@ -217,62 +211,43 @@ public class AppApplication extends TSApplication {
         // 通过rxjava在主线程处理弹框
         Observable.empty()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(new Action0() {
-                    @Override
-                    public void call() {
-                        if ((alertDialog != null && alertDialog.isShowing()) || ActivityHandler
-                                .getInstance().currentActivity() instanceof LoginActivity) { // 认证失败，弹框去重
-                            return;
-                        }
-                        alertDialog = new AlertDialog.Builder(ActivityHandler
-                                .getInstance().currentActivity(), R.style.TSWarningAlertDialogStyle)
-                                .setMessage(tipStr)
-                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
-
-                                    @Override
-                                    public boolean onKey(DialogInterface dialog, int keyCode,
-                                                         KeyEvent event) {
-                                        if (alertDialog.isShowing() && keyCode == KeyEvent.KEYCODE_BACK
-                                                && event.getRepeatCount() == 0) {
-                                            return true;
-                                        }
-                                        return false;
-                                    }
-                                })
-                                .setPositiveButton(R.string.sure, new
-                                        DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface
-                                                                        dialogInterface,
-                                                                int i) {
-                                                // TODO: 2017/2/8  清理登录信息 token 信息
-                                                mAuthRepository.clearAuthBean();
-                                                Intent intent = new Intent
-                                                        (getContext(),
-                                                                LoginActivity
-                                                                        .class);
-                                                ActivityHandler.getInstance()
-                                                        .currentActivity()
-                                                        .startActivity
-                                                                (intent);
-                                                alertDialog.dismiss();
-                                            }
-                                        })
-                                .create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        try {
-                            alertDialog.show();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                .doOnCompleted(() -> {
+                    if ((alertDialog != null && alertDialog.isShowing()) || ActivityHandler
+                            .getInstance().currentActivity() instanceof LoginActivity) { // 认证失败，弹框去重
+                        return;
+                    }
+                    alertDialog = new AlertDialog.Builder(ActivityHandler
+                            .getInstance().currentActivity(), R.style.TSWarningAlertDialogStyle)
+                            .setMessage(tipStr)
+                            .setOnKeyListener((dialog, keyCode, event) -> {
+                                if (alertDialog.isShowing() && keyCode == KeyEvent.KEYCODE_BACK
+                                        && event.getRepeatCount() == 0) {
+                                    return true;
+                                }
+                                return false;
+                            })
+                            .setPositiveButton(R.string.sure, (dialogInterface, i) -> {
+                                // TODO: 2017/2/8  清理登录信息 token 信息
+                                mAuthRepository.clearAuthBean();
+                                Intent intent = new Intent
+                                        (getContext(),
+                                                LoginActivity
+                                                        .class);
+                                ActivityHandler.getInstance()
+                                        .currentActivity()
+                                        .startActivity
+                                                (intent);
+                                alertDialog.dismiss();
+                            })
+                            .create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    try {
+                        alertDialog.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                })
+                .doOnError(throwable -> throwable.printStackTrace())
                 .subscribe();
     }
 
@@ -283,12 +258,7 @@ public class AppApplication extends TSApplication {
      */
     @Override
     protected ResponseErroListener getResponseErroListener() {
-        return new ResponseErroListener() {
-            @Override
-            public void handleResponseError(Context context, Throwable e) {
-                LogUtils.d(TAG, "------------>" + e.getMessage());
-            }
-        };
+        return (context, e) -> LogUtils.d(TAG, "------------>" + e.getMessage());
     }
 
     /**
@@ -439,12 +409,9 @@ public class AppApplication extends TSApplication {
                             sPlaybackManager.getState() == PlaybackStateCompat.STATE_ERROR) {
                         Observable.timer(5, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Long>() {
-                                    @Override
-                                    public void call(Long aLong) {
-                                        WindowUtils.setIsPause(true);
-                                        WindowUtils.hidePopupWindow();
-                                    }
+                                .subscribe(aLong -> {
+                                    WindowUtils.setIsPause(true);
+                                    WindowUtils.hidePopupWindow();
                                 });
                     }
                 }

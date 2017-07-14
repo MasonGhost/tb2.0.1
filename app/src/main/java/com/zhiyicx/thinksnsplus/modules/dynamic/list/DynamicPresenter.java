@@ -27,7 +27,6 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
@@ -39,6 +38,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
@@ -58,8 +58,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_HOT;
+import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
@@ -87,6 +90,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
+    @Inject
+    TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
     @Inject
@@ -116,7 +121,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
 
-        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, isLoadMore)
+        Subscription dynamicLisSub = mRepository.getDynamicListV2(mRootView.getDynamicType(), maxId, null, isLoadMore)
                 .map(listBaseJson -> {
                     insertOrUpdateDynamicDBV2(listBaseJson); // 更新数据库
                     if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
@@ -170,11 +175,19 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 break;
             case ApiConfig.DYNAMIC_TYPE_HOTS:
                 datas = mDynamicDetailBeanV2GreenDao.getHotDynamicList(maxId);
+                List<DynamicDetailBeanV2> topHotDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_HOT);
+                if (topHotDynamics != null) {
+                    datas.addAll(0, topHotDynamics);
+                }
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
                 if (!isLoadMore) {// 刷新
                     datas = getDynamicBeenFromDBV2();
                     datas.addAll(mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId));
+                    List<DynamicDetailBeanV2> topNewDynamics = mTopDynamicBeanGreenDao.getTopDynamicByType(TYPE_NEW);
+                    if (topNewDynamics != null) {
+                        datas.addAll(0, topNewDynamics);
+                    }
                 } else {
                     datas = mDynamicDetailBeanV2GreenDao.getNewestDynamicList(maxId);
                 }
@@ -191,15 +204,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         }
         LogUtils.i("requestCacheData DYNAMIC_TYPE_MY_COLLECTION:" + datas.size());
         return datas;
-    }
-
-    /**
-     * 动态数据库更新
-     *
-     * @param data
-     */
-    private void insertOrUpdateDynamicDB(@NotNull List<DynamicBean> data) {
-        mRepository.updateOrInsertDynamic(data, mRootView.getDynamicType());
     }
 
     private void insertOrUpdateDynamicDBV2(@NotNull List<DynamicDetailBeanV2> data) {
@@ -238,31 +242,12 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     }
 
     @NonNull
-    private List<DynamicBean> getDynamicBeenFromDB() {
-        if (AppApplication.getmCurrentLoginAuth() == null) {
-            return new ArrayList<>();
-        }
-        List<DynamicBean> datas = mDynamicBeanGreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
-        msendingStatus.clear();
-        for (int i = 0; i < datas.size(); i++) {
-            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
-                datas.get(i).setState(DynamicBean.SEND_ERROR);
-            }
-            msendingStatus.put(i, datas.get(i).getFeed_mark());
-        }
-        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
-            mDynamicBeanGreenDao.insertOrReplace(datas);
-        }
-
-        return datas;
-    }
-
-    @NonNull
     private List<DynamicDetailBeanV2> getDynamicBeenFromDBV2() {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
         List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+
         msendingStatus.clear();
         for (int i = 0; i < datas.size(); i++) {
             if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
@@ -343,7 +328,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public void reSendComment(DynamicCommentBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
-        mRepository.sendComment(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(), commentBean.getComment_mark());
+        mRepository.sendCommentV2(commentBean.getComment_content(), feed_id, commentBean.getReply_to_user_id(),
+                commentBean.getComment_mark());
         mRootView.refreshData();
     }
 
@@ -530,15 +516,32 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 //        }
         mCommentRepository.paykNote(note)
                 .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2 data) {
+                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
+                        if (isImage){
+                            return Observable.just(stringBaseJsonV2);
+                        }
+                        return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
+                                .flatMap(new Func1<DynamicDetailBeanV2, Observable<BaseJsonV2<String>>>() {
+                                    @Override
+                                    public Observable<BaseJsonV2<String>> call(DynamicDetailBeanV2 detailBeanV2) {
+                                        stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
+                                        return Observable.just(stringBaseJsonV2);
+                                    }
+                                });
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
                         mRootView.paySuccess();
                         if (isImage) {
                             mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
                         } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
+                            mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                         }
                         mRootView.refreshData(dynamicPosition);
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));

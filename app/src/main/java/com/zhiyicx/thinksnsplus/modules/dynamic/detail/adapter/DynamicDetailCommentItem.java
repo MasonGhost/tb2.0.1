@@ -70,18 +70,18 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         holder.setText(R.id.tv_name, dynamicCommentBean.getCommentUser().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(dynamicCommentBean, position));
-        holder.getView(R.id.tv_content).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LogUtils.d("-----dy------onClick----------------");
-                if (mOnCommentTextClickListener != null) {
-                    mOnCommentTextClickListener.onCommentTextClick(position);
-                }
+        holder.getView(R.id.tv_content).setOnClickListener(v -> {
+            LogUtils.d("-----dy------onClick----------------");
+            if (mOnCommentTextClickListener != null) {
+                mOnCommentTextClickListener.onCommentTextClick(position);
             }
         });
+        TextView topFlag=holder.getView(R.id.tv_top_flag);
+        topFlag.setVisibility(dynamicCommentBean.getPinned() == 0 ? View.GONE : View.VISIBLE);
+        topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));
         List<Link> links = setLiknks(holder, dynamicCommentBean, position);
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content), links);
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
         int storegeId;
         String userIconUrl;
@@ -109,12 +109,9 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
     }
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
-        RxView.clicks(v).subscribe(new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                if (mOnUserInfoClickListener != null) {
-                    mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
-                }
+        RxView.clicks(v).subscribe(aVoid -> {
+            if (mOnUserInfoClickListener != null) {
+                mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
             }
         });
     }
@@ -131,22 +128,16 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
-                    .setOnLongClickListener(new Link.OnLongClickListener() {
-                        @Override
-                        public void onLongClick(String clickedText) {
-                            if (mOnUserInfoLongClickListener != null) {
-                                mOnUserInfoLongClickListener.onUserInfoLongClick(dynamicCommentBean.getReplyUser());
-                            }
+                    .setOnLongClickListener(clickedText -> {
+                        if (mOnUserInfoLongClickListener != null) {
+                            mOnUserInfoLongClickListener.onUserInfoLongClick(dynamicCommentBean.getReplyUser());
                         }
                     })
-                    .setOnClickListener(new Link.OnClickListener() {
-                        @Override
-                        public void onClick(String clickedText) {
-                            LogUtils.d("-----dy------setOnClickListener----------------");
-                            // single clicked
-                            if (mOnUserInfoClickListener != null) {
-                                mOnUserInfoClickListener.onUserInfoClick(dynamicCommentBean.getReplyUser());
-                            }
+                    .setOnClickListener(clickedText -> {
+                        LogUtils.d("-----dy------setOnClickListener----------------");
+                        // single clicked
+                        if (mOnUserInfoClickListener != null) {
+                            mOnUserInfoClickListener.onUserInfoClick(dynamicCommentBean.getReplyUser());
                         }
                     });
             links.add(replyNameLink);

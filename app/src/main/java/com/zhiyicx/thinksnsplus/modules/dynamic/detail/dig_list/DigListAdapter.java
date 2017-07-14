@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,9 +24,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.functions.Action1;
-
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -105,12 +101,7 @@ public class DigListAdapter extends CommonAdapter<FollowFansBean> {
             RxView.clicks(iv_follow)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     //.compose(.<Void>bindToLifecycle())
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            mPresenter.handleFollowUser(position, followFansBean);
-                        }
-                    });
+                    .subscribe(aVoid -> mPresenter.handleFollowUser(position, followFansBean));
         }
 
     }

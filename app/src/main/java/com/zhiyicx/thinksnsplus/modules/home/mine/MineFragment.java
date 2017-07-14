@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;

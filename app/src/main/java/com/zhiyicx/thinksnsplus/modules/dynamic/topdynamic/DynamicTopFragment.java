@@ -33,7 +33,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter> implements DynamicTopContract.View {
 
-    public static final String FEEDID="feed_id";
+    public static final String FEEDID = "feed_id";
 
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
@@ -58,11 +58,16 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
     public static DynamicTopFragment newInstance(long feed_id) {
-        DynamicTopFragment dynamicTopFragment=new DynamicTopFragment();
-        Bundle bundle=new Bundle();
-        bundle.putLong(FEEDID,feed_id);
+        DynamicTopFragment dynamicTopFragment = new DynamicTopFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(FEEDID, feed_id);
         dynamicTopFragment.setArguments(bundle);
         return dynamicTopFragment;
+    }
+
+    @Override
+    protected void initData() {
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getBalance()));
     }
 
     @Override
@@ -83,11 +88,6 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
         mSelectDays.add(10);
         initSelectDays(mSelectDays);
         initListener();
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     @Override
@@ -113,6 +113,11 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     @Override
     public int getTopDyas() {
         return mCurrentDays;
+    }
+
+    @Override
+    public void topSuccess() {
+        getActivity().finish();
     }
 
     private void initListener() {
@@ -165,7 +170,6 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
         if (!enable)
             return;
         mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), mInputMoney / mCurrentDays, mPresenter.getBalance()));
     }
 
     @Override

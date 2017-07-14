@@ -1,11 +1,14 @@
 package com.zhiyicx.common.utils;
 
 import android.graphics.BlurMaskFilter;
+import android.text.Layout;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
@@ -67,6 +70,11 @@ public class TextViewUtils {
         return this;
     }
 
+    public TextViewUtils oriMsg(String oriMsg) {
+        this.mOriMsg = oriMsg;
+        return this;
+    }
+
     public TextViewUtils alpha(int alpha) {
         mAlpha = alpha;
         return this;
@@ -107,37 +115,35 @@ public class TextViewUtils {
         if (mTextView == null) {
             throw new IllegalArgumentException("textView not be null");
         }
-        try {
-            handleTextDisplay();
-        } catch (Exception e) {
-            mTextView.setVisibility(View.VISIBLE);
-            mTextView.setText(mOriMsg);
-        }
+        handleTextDisplay();
         return this;
     }
 
 
-    private void handleTextDisplay() throws Exception {
+    private void handleTextDisplay() {
         mTextView.setVisibility(View.INVISIBLE);
-
-        if (mTextView.getLineCount() > mMaxLineNums) {
-            int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-            mOriMsg = mOriMsg.subSequence(50, endOfLastLine - 2) + "...";
-        }
         if (!mCanRead) {
-            mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
+            mTextView.setText(getSpannableString(mOriMsg));
+            //mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
             ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
                     viewTreeObserver.removeOnGlobalLayoutListener(this);
-                    mTextView.setText(getSpannableString(mOriMsg));
-                    mTextView.setVisibility(View.VISIBLE);
+                    if (mTextView.getLineCount() > mMaxLineNums) {
+                        int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
+                        String result = mTextView.getText().subSequence(0, endOfLastLine) + "";
+                        mTextView.setText(getSpannableString(result));
+                        mTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        mTextView.setText(getSpannableString(mTextView.getText()));
+                        mTextView.setVisibility(View.VISIBLE);
+                    }
                 }
             });
-        }else{
-            mTextView.setVisibility(View.VISIBLE);
+//            dealTextViewClickEvent();
+        } else {
             mTextView.setText(mOriMsg);
         }
     }
@@ -168,12 +174,54 @@ public class TextViewUtils {
 
     private SpannableString getSpannableString(CharSequence temp) {
         SpannableString spanableInfo = new SpannableString(temp);
+        if (mEndPos > temp.length()) {
+            mEndPos = temp.length();
+        }
         try {
             spanableInfo.setSpan(new SpanTextClickable(), mStartPos, mEndPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         } catch (Exception e) {
             spanableInfo.setSpan(new SpanTextClickable(), 0, temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return spanableInfo;
+    }
+
+    private void dealTextViewClickEvent() {
+        mTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                boolean consume = false;
+                CharSequence text = ((TextView) v).getText();
+                Spannable stext = Spannable.Factory.getInstance().newSpannable(text);
+                TextView widget = (TextView) v;
+                int action = event.getAction();
+
+                if (action == MotionEvent.ACTION_UP ||
+                        action == MotionEvent.ACTION_DOWN) {
+                    int x = (int) event.getX();
+                    int y = (int) event.getY();
+
+                    x -= widget.getTotalPaddingLeft();
+                    y -= widget.getTotalPaddingTop();
+
+                    x += widget.getScrollX();
+                    y += widget.getScrollY();
+
+                    Layout layout = widget.getLayout();
+                    int line = layout.getLineForVertical(y);
+                    int off = layout.getOffsetForHorizontal(line, x);
+
+                    ClickableSpan[] link = stext.getSpans(off, off, ClickableSpan.class);
+
+                    if (link.length != 0) {
+                        if (action == MotionEvent.ACTION_UP) {
+                            link[0].onClick(widget);
+                        }
+                        consume = true;
+                    }
+                }
+                return consume;
+            }
+        });
     }
 
     public interface OnSpanTextClickListener {

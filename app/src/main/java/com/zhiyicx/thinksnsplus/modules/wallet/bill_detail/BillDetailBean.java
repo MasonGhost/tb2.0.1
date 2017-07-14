@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WithdrawalsListBean;
 
 /**
@@ -20,6 +21,15 @@ public class BillDetailBean implements Parcelable{
     private String body;
     private String created_at;
     private String channel;
+    private UserInfoBean mUserInfoBean;
+
+    public UserInfoBean getUserInfoBean() {
+        return mUserInfoBean;
+    }
+
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        mUserInfoBean = userInfoBean;
+    }
 
     public String getChannel() {
         return channel;
@@ -89,6 +99,7 @@ public class BillDetailBean implements Parcelable{
         billDetailBean.setChannel(rechargeSuccessBean.getChannel());
         billDetailBean.setCreated_at(rechargeSuccessBean.getCreated_at());
         billDetailBean.setStatus(rechargeSuccessBean.getStatus());
+        billDetailBean.setUserInfoBean(rechargeSuccessBean.getUserInfoBean());
         return billDetailBean;
     }
 
@@ -119,6 +130,7 @@ public class BillDetailBean implements Parcelable{
         dest.writeString(this.body);
         dest.writeString(this.created_at);
         dest.writeString(this.channel);
+        dest.writeParcelable(this.mUserInfoBean, flags);
     }
 
     protected BillDetailBean(Parcel in) {
@@ -129,6 +141,7 @@ public class BillDetailBean implements Parcelable{
         this.body = in.readString();
         this.created_at = in.readString();
         this.channel = in.readString();
+        this.mUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
     public static final Creator<BillDetailBean> CREATOR = new Creator<BillDetailBean>() {

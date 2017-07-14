@@ -6,13 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
  * @Author Jliuer
@@ -21,7 +23,12 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Description
  */
 public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
-        TopDynamicCommentBean> implements MessageReviewContract.View,MultiItemTypeAdapter.OnItemClickListener {
+        TopDynamicCommentBean> implements MessageReviewContract.View, MultiItemTypeAdapter.OnItemClickListener {
+
+    private ActionPopupWindow mReviewPopWindow;
+    private ActionPopupWindow mInstructionsPopupWindow;
+
+    private TopDynamicCommentBean mTopDynamicCommentBean;
 
     public MessageReviewFragment() {
     }
@@ -34,13 +41,13 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     @Override
-    protected String setCenterTitle() {
-        return getString(R.string.review);
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
-    protected void initView(View rootView) {
-        super.initView(rootView);
+    protected String setCenterTitle() {
+        return getString(R.string.review);
     }
 
     @Override
@@ -59,20 +66,9 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     @Override
-    protected void initData() {
-        super.initData();
-    }
-
-    @Override
     protected CommonAdapter<TopDynamicCommentBean> getAdapter() {
-        CommonAdapter<TopDynamicCommentBean> adapter=new CommonAdapter<TopDynamicCommentBean>
-                (getContext(),R.layout.item_message_review_list,mListDatas) {
-            @Override
-            protected void convert(ViewHolder holder, TopDynamicCommentBean
-                    topDynamicCommentBean, int position) {
-
-            }
-        };
+        CommonAdapter<TopDynamicCommentBean> adapter = new MssageReviewAdapter
+                (getContext(), R.layout.item_message_review_list, mListDatas);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -84,11 +80,69 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        mTopDynamicCommentBean = mListDatas.get(position);
+        if (mTopDynamicCommentBean.getComment() == null || mTopDynamicCommentBean.getFeed() == null) {
+            if (mTopDynamicCommentBean.getComment() == null) {
+                initInstructionsPop(R.string.review_comment_deleted);
+            } else {
+                initInstructionsPop(R.string.review_dynamic_deleted);
+            }
+            return;
+        }
+        initReviewPopWindow(mTopDynamicCommentBean);
+    }
 
+    @Override
+    public TopDynamicCommentBean getCurrentComment() {
+        return mTopDynamicCommentBean;
     }
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         return false;
+    }
+
+    private void initReviewPopWindow(TopDynamicCommentBean topDynamicCommentBean) {
+        mReviewPopWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.review_approved))
+                .item2Str(getString(R.string.review_refuse))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mPresenter.approvedTopComment((long) topDynamicCommentBean.getFeed().getId(),
+                            topDynamicCommentBean.getComment().getId(), topDynamicCommentBean.getId().intValue());
+                    mReviewPopWindow.hide();
+                })
+                .item2ClickListener(() -> {
+                    mPresenter.refuseTopComment(topDynamicCommentBean.getId().intValue());
+                    mReviewPopWindow.hide();
+                })
+                .bottomClickListener(() -> mReviewPopWindow.hide())
+                .build();
+        mReviewPopWindow.show();
+    }
+
+    public void initInstructionsPop(int resDesStr) {
+        if (mInstructionsPopupWindow != null) {
+            mInstructionsPopupWindow = mInstructionsPopupWindow.newBuilder()
+                    .desStr(getString(resDesStr))
+                    .build();
+            mInstructionsPopupWindow.show();
+            return;
+        }
+        mInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.instructions))
+                .desStr(getString(resDesStr))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                .build();
+        mInstructionsPopupWindow.show();
     }
 }

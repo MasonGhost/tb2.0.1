@@ -15,7 +15,7 @@ public class RechargeSuccessBeanTest extends AbstractDaoTestLongPk<RechargeSucce
     protected RechargeSuccessBean createEntity(Long key) {
         RechargeSuccessBean entity = new RechargeSuccessBean();
         entity.setId(0);
-        entity.setUser_id(3);
+        entity.setUser_id(3L);
         entity.setAction(1);
         entity.setAmount(1);
         entity.setStatus(1);
