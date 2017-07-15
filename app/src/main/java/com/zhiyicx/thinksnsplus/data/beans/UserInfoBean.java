@@ -43,7 +43,7 @@ public class UserInfoBean implements Parcelable, Serializable {
     @Transient
     private String sexString;// sex编号对应的具体值，不保存到数据库中
     private String name;
-    private String avatar;  // 投降 id
+    private String avatar;  // 头像 id
     private String phone;
     private String email;
     private String intro;

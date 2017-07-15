@@ -284,7 +284,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                     Map<String, ImageBean> tollMap = new HashMap<>();
 
                     for (ImageBean oldImage : mTolls) {
-                        if (oldImage.getToll() != null) {
+                        if (oldImage != null && oldImage.getToll() != null) {
                             tollMap.put(oldImage.getImgUrl(), oldImage);
                         }
                     }
