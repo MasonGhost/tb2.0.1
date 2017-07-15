@@ -661,6 +661,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
     public void updateDynamic(Bundle data) {
+        LogUtils.e("updateDynamic::EVENT_UPDATE_DYNAMIC");
         Observable.just(data)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

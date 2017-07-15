@@ -15,8 +15,10 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.TimeStringSortClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -118,6 +120,7 @@ public class DynamicListCommentView extends LinearLayout {
     public void setData(DynamicDetailBeanV2 dynamicBean) {
         mDynamicBean = dynamicBean;
         List<DynamicCommentBean> data = new ArrayList<>();
+
         if (dynamicBean.getComments() != null && !dynamicBean.getComments().isEmpty()) {
             if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
                 for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
