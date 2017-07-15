@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -36,7 +37,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -124,6 +124,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
     @Override
     public void payCredentialsResult(PayStrBean payStrBean) {
         mPayChargeId = payStrBean.getId() + "";
+        LogUtils.i("--------------------"+ConvertUtils.object2JsonStr(payStrBean.getCharge()));
         TSPayClient.pay(ConvertUtils.object2JsonStr(payStrBean.getCharge()), getActivity());
     }
 
@@ -148,6 +149,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                  */
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                System.out.println("errorMsg = " + errorMsg);
                 int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
                 if (result.contains("success")){
                     showSnackSuccessMessage(getString(id));

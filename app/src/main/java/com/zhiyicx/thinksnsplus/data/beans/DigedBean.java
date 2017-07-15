@@ -9,11 +9,13 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
+import static android.R.attr.data;
 import static android.R.id.list;
 import static com.umeng.analytics.pro.x.J;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
@@ -163,18 +165,18 @@ public class DigedBean extends BaseListBean {
     }
 
     public Long getSource_cover() {
-        if (source_cover != null) {
-           return source_cover;
+        if (source_cover != null || likeable == null) {
+            return source_cover;
         }
-
+        Gson gson = new Gson();
         switch (likeable_type) {
             case APP_LIKE_FEED:
-                DynamicDetailBeanV2 dynamicDetailBeanV2 = new Gson().fromJson(new Gson().toJson(likeable), DynamicDetailBeanV2.class);
-                if (dynamicDetailBeanV2 != null) {
-                    List<DynamicDetailBeanV2.ImagesBean> list = dynamicDetailBeanV2.getImages();
-                    if (list != null && list.size() > 0) {
-                        source_cover = (long) dynamicDetailBeanV2.getImages().get(0).getFile();
-                    }
+                try {
+                    JSONObject jsonObject = new JSONObject(gson.toJson(likeable));
+                    JSONArray jsonArray = jsonObject.getJSONArray("images");
+                    source_cover = (long) jsonArray.getJSONObject(0).getDouble("file_id");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case APP_LIKE_MUSIC:
@@ -331,7 +333,9 @@ public class DigedBean extends BaseListBean {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1633631379)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

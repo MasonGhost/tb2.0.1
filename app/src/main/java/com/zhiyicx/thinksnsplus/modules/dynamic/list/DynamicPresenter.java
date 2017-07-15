@@ -515,7 +515,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 //            return;
 //        }
         mCommentRepository.paykNote(note)
-                .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {

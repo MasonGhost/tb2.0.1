@@ -11,7 +11,6 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -30,10 +29,8 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -63,8 +60,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -137,21 +132,31 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         }
         Subscription subscription = mRepository.getDynamicListForSomeone(user_id, maxId)
                 .subscribeOn(Schedulers.io())
+                .map(dynamicDetailBeanV2s -> {
+                    List<DynamicDetailBeanV2> result = new ArrayList<>();
+
+                    for (int i = 0; i < dynamicDetailBeanV2s.size(); i++) {
+                        if (dynamicDetailBeanV2s.get(i).getUser_id() == user_id) {
+                            result.add(dynamicDetailBeanV2s.get(i));
+                        }
+                    }
+                    return result;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(listBaseJson -> {
-                        if (!isLoadMore && AppApplication.getmCurrentLoginAuth().getUser_id() == user_id) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                            List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
-                            mRootView.updateDynamicCounts(data.size());//修改动态条数
-                            data.addAll(listBaseJson);
+                    if (!isLoadMore && AppApplication.getmCurrentLoginAuth().getUser_id() == user_id) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                        List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
+                        mRootView.updateDynamicCounts(data.size());//修改动态条数
+                        data.addAll(listBaseJson);
+                    }
+                    for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                        List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i).getFeed_mark());
+                        if (!dynamicCommentBeen.isEmpty()) {
+                            dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
+                            listBaseJson.get(i).getComments().clear();
+                            listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
                         }
-                        for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<DynamicCommentBean> dynamicCommentBeen = mDynamicCommentBeanGreenDao.getMySendingComment(listBaseJson.get(i).getFeed_mark());
-                            if (!dynamicCommentBeen.isEmpty()) {
-                                dynamicCommentBeen.addAll(listBaseJson.get(i).getComments());
-                                listBaseJson.get(i).getComments().clear();
-                                listBaseJson.get(i).getComments().addAll(dynamicCommentBeen);
-                            }
-                        }
+                    }
 
                     return listBaseJson;
                 }).subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
@@ -161,6 +166,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                         allready();
                     }
+
                     @Override
                     protected void onFailure(String message, int code) {
                         if (mInterfaceNum >= NEED_INTERFACE_NUM) {
@@ -579,7 +585,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public void payNote(int dynamicPosition, int imagePosition, int note,boolean isImage) {
+    public void payNote(int dynamicPosition, int imagePosition, int note, boolean isImage) {
         mCommentRepository.paykNote(note)
                 .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {

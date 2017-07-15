@@ -22,7 +22,6 @@ import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
@@ -47,7 +46,6 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -649,7 +647,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     @Override
     public void payNote(final int imagePosition, int note,boolean isImage) {
         mCommentRepository.paykNote(note)
-                .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
