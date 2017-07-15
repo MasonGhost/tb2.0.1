@@ -119,12 +119,12 @@ public class TextViewUtils {
         return this;
     }
 
-
-    private void handleTextDisplay() {
+    // 同步处理，不然访问太频繁 mCanRead 这个值有问题
+    private synchronized void handleTextDisplay() {
         mTextView.setVisibility(View.INVISIBLE);
         if (!mCanRead) {
             mTextView.setText(getSpannableString(mOriMsg));
-            //mTextView.setMovementMethod(LinkMovementMethod.getInstance());//必须设置否则无效
+            //mTextView.setMovementMethod(LinkMovementMethod.getInstance());// 已经交给上级分发处理 dealTextViewClickEvent
             ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -185,6 +185,7 @@ public class TextViewUtils {
         return spanableInfo;
     }
 
+    // clickSpan 的点击事件分发处理
     private void dealTextViewClickEvent() {
         mTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
