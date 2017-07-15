@@ -42,8 +42,11 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 动态列表适配器基类
- * requirement document :{@see https://github.com/zhiyicx/thinksns-plus-document/blob/master/document/%E5%8A%A8%E6%80%81%E6%A8%A1%E5%9D%97.md}
- * design document  {@see https://github.com/zhiyicx/thinksns-plus-document/blob/master/document/TS%2B%E8%A7%86%E8%A7%89%E8%A7%84%E8%8C%83%202.0/TS%2B%E8%A7%86%E8%A7%89%E8%A7%84%E8%8C%83%202.0.pdf}
+ * requirement document :{@see https://github
+ * .com/zhiyicx/thinksns-plus-document/blob/master/document/%E5%8A%A8%E6%80%81%E6%A8%A1%E5%9D%97.md}
+ * design document  {@see https://github
+ * .com/zhiyicx/thinksns-plus-document/blob/master/document/TS%2B%E8%A7%86%E8%A7%89%E8%A7%84%E8
+ * %8C%83%202.0/TS%2B%E8%A7%86%E8%A7%89%E8%A7%84%E8%8C%83%202.0.pdf}
  * @Author Jungle68
  * @Date 2017/1/6
  * @Contact master.jungle68@gmail.com
@@ -142,7 +145,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     @Override
     public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return item.getFeed_mark() != null && (item.getImages() != null && item.getImages().size() == getImageCounts());
+        return item.getFeed_mark() != null && (item.getImages() != null && item.getImages().size
+                () == getImageCounts());
     }
 
     /**
@@ -192,8 +196,10 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
             try { // 置顶标识 ,防止没有置顶布局错误
                 TextView topFlagView = holder.getView(R.id.tv_top_flag);
-                topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_NONE ? View.GONE : View.VISIBLE);
-                topFlagView.setText(mContext.getString(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_REVIEW ?
+                topFlagView.setVisibility(dynamicBean.getTop() == DynamicDetailBeanV2.TOP_NONE ?
+                        View.GONE : View.VISIBLE);
+                topFlagView.setText(mContext.getString(dynamicBean.getTop() ==
+                        DynamicDetailBeanV2.TOP_REVIEW ?
                         R.string.review_ing : R.string.dynamic_top_flag));
             } catch (Exception e) {
 
@@ -205,22 +211,28 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
-                if (content.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean.getPaid_node().isPaid()) {
+                if (content.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean
+                        .getPaid_node().isPaid()) {
                     content += mContext.getString(R.string.words_holder);
                 }
+
+                boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
+                        .getPaid_node().isPaid();
+
                 TextViewUtils textViewUtils = TextViewUtils.newInstance(contentView, content)
                         .spanTextColor(SkinUtils.getColor(R
                                 .color.normal_for_assist_text))
                         .position(50, content.length())
                         .dynamicPosition(position)
-                        .maxLines(contentView.getResources().getInteger(R.integer.dynamic_list_content_show_lines))
+                        .maxLines(contentView.getResources().getInteger(R.integer
+                                .dynamic_list_content_show_lines))
                         .onSpanTextClickListener(mOnSpanTextClickListener)
                         .disPlayText(true);
 
-                if (dynamicBean.getPaid_node() != null) {// 有文字收费
+                if (!canLookWords) {// 有文字收费
                     textViewUtils.note(dynamicBean.getPaid_node().getNode())
                             .amount(dynamicBean.getPaid_node().getAmount())
-                            .disPlayText(dynamicBean.getPaid_node().isPaid());
+                            .disPlayText(false);
                 }
                 textViewUtils.build();
                 contentView.setVisibility(View.VISIBLE);
@@ -309,16 +321,19 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      * @param positon     image item position
      * @param part        this part percent of imageContainer
      */
-    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, ImageView view, final
+    DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
         int propPart = getProportion(view, dynamicBean, part);
         int w, h;
         w = h = getCurrenItemWith(part);
         if (dynamicBean.getImages() != null && dynamicBean.getImages().size() > 0) {
             DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(positon);
             if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+                Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() &&
+                        imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
                 Glide.with(mContext)
-                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h, propPart, AppApplication.getTOKEN()))
+                        .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), w, h,
+                                propPart, AppApplication.getTOKEN()))
                         .override(w, h)
                         .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -382,7 +397,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
      */
     protected int getCurrenItemWith(int part) {
         try {
-            return (mImageContainerWith - (getCurrenCloums() - 1) * mDiverwith) / getCurrenCloums() * part;
+            return (mImageContainerWith - (getCurrenCloums() - 1) * mDiverwith) / getCurrenCloums
+                    () * part;
         } catch (Exception e) {
             LogUtils.d("获取当前 item 的宽 = 0");
         }
@@ -431,7 +447,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
         return this;
     }
 
-    public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener onSpanTextClickListener) {
+    public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener
+                                                   onSpanTextClickListener) {
         mOnSpanTextClickListener = onSpanTextClickListener;
     }
 }
