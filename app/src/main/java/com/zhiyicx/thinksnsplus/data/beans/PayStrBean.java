@@ -88,7 +88,7 @@ public class PayStrBean {
         private Object failure_code;
         private Object failure_msg;
         private MetadataBean metadata;
-        private CredentialBean credential;
+        private Object credential;
         private Object description;
 
         public String getId() {
@@ -291,11 +291,11 @@ public class PayStrBean {
             this.metadata = metadata;
         }
 
-        public CredentialBean getCredential() {
+        public Object getCredential() {
             return credential;
         }
 
-        public void setCredential(CredentialBean credential) {
+        public void setCredential(Object credential) {
             this.credential = credential;
         }
 

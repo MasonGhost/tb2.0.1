@@ -44,7 +44,7 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
             mRootView.minMoneyLimit();
             return;
         }
-        value = (value / mRootView.getWalletConfigBean().getRatio()) * 100;
+        value = (value / mRootView.getWalletConfigBean().getRatio());
         Subscription subscribe = mRepository.withdraw(value, type, account)
                 .compose(mSchedulersTransformer)
                 .doOnSubscribe(new Action0() {
