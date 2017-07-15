@@ -11,100 +11,58 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
 /**
- * @Describe  {@see  https://github.com/zhiyicx/plus-component-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%AF%84%E8%AE%BA%E5%88%97%E8%A1%A8.md}
+ * @Describe {@see https://github.com/zhiyicx/plus-component-feed/blob/master/documents/%E6%88%91%E6%94%B6%E5%88%B0%E7%9A%84%E8%AF%84%E8%AE%BA%E5%88%97%E8%A1%A8.md}
  * @Author Jungle68
  * @Date 2017/4/12
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class CommentedBean extends BaseListBean{
+public class CommentedBean extends BaseListBean {
 
     /**
-     * id : 1
-     * component : feed
-     * comment_table : feed_comments
-     * source_table : feeds
-     * source_id : 17
-     * comment_id : 45
-     * user_id : 1
-     * to_user_id : 1
-     * reply_to_user_id : 0
-     * created_at : 2017-04-11 02:49:02
-     * updated_at : 2017-04-11 02:49:02
+     * "id": 5, // 评论 ID
+     * "user_id": 1, // 评论发送用户
+     * "target_user": 1, // 目标用户
+     * "reply_user": 0, // 被回复用户
+     * "channel": "feed", // 评论来自频道
+     * "target": "8", // 来自频道目标id 例如 channel = feed 则 target 就是 feed 频道评论 ID,
+     * "created_at": "2017-07-11 09:53:21", // 评论时间
+     * "updated_at": "2017-07-11 09:53:21", // 更新时间
+     * "comment_content": "测试一些评论发送", // 评论内容
+     * "target_image": 0, // 目标频道图片 ID
+     * "target_title": "动态内容", // 目标频道标题
+     * "target_id": 1 // 目标频道ID，例如 channel = feed 则 target_id 就是 feed_id
      */
     @Id
     private Long id; // 数据体 id
-    private String component; // 数据所属扩展包名 目前可能的参数有 feed music news
+    private String channel; // 数据所属扩展包名 目前可能的参数有 feed music news
+
     private String comment_table; // 评论所属数据表 目前可能的参数有 feed_comments music_comments news_comments
-    private String source_table; // 关联评论 id
-    private Long source_id; // 关联资源 id
-    private Long comment_id; // 关联评论 id
+
+    private Long target_id;
+    private Long target;
+
+    private String comment_content; // 评论类容
+    private String target_title;
+    private int target_image; // 封面 id
     private Long user_id; // 评论者 id
-    @ToOne(joinProperty ="user_id")
+    @ToOne(joinProperty = "user_id")
     private UserInfoBean commentUserInfo;
-    private Long to_user_id; // 资源作者 id
-    @ToOne(joinProperty ="to_user_id")
+    private Long target_user; // 资源作者 id
+    @ToOne(joinProperty = "target_user")
     private UserInfoBean sourceUserInfo;
-    private Long reply_to_user_id;  // 被回复着 id
-    @ToOne(joinProperty ="reply_to_user_id")
+    private Long reply_user;  // 被回复着 id
+    @ToOne(joinProperty = "reply_user")
     private UserInfoBean replyUserInfo;
     private String created_at;
     private String updated_at;
 
-    private int source_cover; // 封面 id
-    private String source_content; // 资源描述
-    private String comment_content; // 评论类容
-
-
-
-    @Override
-    public String toString() {
-        return "CommentedBean{" +
-                "id=" + id +
-                ", component='" + component + '\'' +
-                ", comment_table='" + comment_table + '\'' +
-                ", source_table='" + source_table + '\'' +
-                ", source_id=" + source_id +
-                ", comment_id=" + comment_id +
-                ", user_id=" + user_id +
-                ", to_user_id=" + to_user_id +
-                ", reply_to_user_id=" + reply_to_user_id +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                '}';
-    }
 
     @Override
     public Long getMaxId() {
         return this.id;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeString(this.component);
-        dest.writeString(this.comment_table);
-        dest.writeString(this.source_table);
-        dest.writeValue(this.source_id);
-        dest.writeValue(this.comment_id);
-        dest.writeValue(this.user_id);
-        dest.writeParcelable(this.commentUserInfo, flags);
-        dest.writeValue(this.to_user_id);
-        dest.writeParcelable(this.sourceUserInfo, flags);
-        dest.writeValue(this.reply_to_user_id);
-        dest.writeParcelable(this.replyUserInfo, flags);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeInt(this.source_cover);
-        dest.writeString(this.source_content);
-        dest.writeString(this.comment_content);
-    }
 
     public Long getId() {
         return this.id;
@@ -114,13 +72,14 @@ public class CommentedBean extends BaseListBean{
         this.id = id;
     }
 
-    public String getComponent() {
-        return this.component;
+    public String getChannel() {
+        return this.channel;
     }
 
-    public void setComponent(String component) {
-        this.component = component;
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
+
 
     public String getComment_table() {
         return this.comment_table;
@@ -130,28 +89,21 @@ public class CommentedBean extends BaseListBean{
         this.comment_table = comment_table;
     }
 
-    public String getSource_table() {
-        return this.source_table;
+
+    public Long getTarget_id() {
+        return this.target_id;
     }
 
-    public void setSource_table(String source_table) {
-        this.source_table = source_table;
+    public void setTarget_id(Long target_id) {
+        this.target_id = target_id;
     }
 
-    public Long getSource_id() {
-        return this.source_id;
+    public Long getTarget() {
+        return target;
     }
 
-    public void setSource_id(Long source_id) {
-        this.source_id = source_id;
-    }
-
-    public Long getComment_id() {
-        return this.comment_id;
-    }
-
-    public void setComment_id(Long comment_id) {
-        this.comment_id = comment_id;
+    public void setTarget(Long target) {
+        this.target = target;
     }
 
     public Long getUser_id() {
@@ -162,20 +114,20 @@ public class CommentedBean extends BaseListBean{
         this.user_id = user_id;
     }
 
-    public Long getTo_user_id() {
-        return this.to_user_id;
+    public Long getTarget_user() {
+        return this.target_user;
     }
 
-    public void setTo_user_id(Long to_user_id) {
-        this.to_user_id = to_user_id;
+    public void setTarget_user(Long target_user) {
+        this.target_user = target_user;
     }
 
-    public Long getReply_to_user_id() {
-        return this.reply_to_user_id;
+    public Long getReply_user() {
+        return this.reply_user;
     }
 
-    public void setReply_to_user_id(Long reply_to_user_id) {
-        this.reply_to_user_id = reply_to_user_id;
+    public void setReply_user(Long reply_user) {
+        this.reply_user = reply_user;
     }
 
     public String getCreated_at() {
@@ -194,20 +146,12 @@ public class CommentedBean extends BaseListBean{
         this.updated_at = updated_at;
     }
 
-    public int getSource_cover() {
-        return this.source_cover;
+    public int getTarget_image() {
+        return this.target_image;
     }
 
-    public void setSource_cover(int source_cover) {
-        this.source_cover = source_cover;
-    }
-
-    public String getSource_content() {
-        return this.source_content;
-    }
-
-    public void setSource_content(String source_content) {
-        this.source_content = source_content;
+    public void setTarget_image(int target_image) {
+        this.target_image = target_image;
     }
 
     public String getComment_content() {
@@ -218,134 +162,38 @@ public class CommentedBean extends BaseListBean{
         this.comment_content = comment_content;
     }
 
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 418864499)
-    public UserInfoBean getCommentUserInfo() {
-        Long __key = this.user_id;
-        if (commentUserInfo__resolvedKey == null || !commentUserInfo__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean commentUserInfoNew = targetDao.load(__key);
-            synchronized (this) {
-                commentUserInfo = commentUserInfoNew;
-                commentUserInfo__resolvedKey = __key;
-            }
-        }
-        return commentUserInfo;
+    public String getTarget_title() {
+        return target_title;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 28373690)
-    public void setCommentUserInfo(UserInfoBean commentUserInfo) {
-        synchronized (this) {
-            this.commentUserInfo = commentUserInfo;
-            user_id = commentUserInfo == null ? null : commentUserInfo.getUser_id();
-            commentUserInfo__resolvedKey = user_id;
-        }
+    public void setTarget_title(String target_title) {
+        this.target_title = target_title;
     }
 
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1720386870)
-    public UserInfoBean getSourceUserInfo() {
-        Long __key = this.to_user_id;
-        if (sourceUserInfo__resolvedKey == null || !sourceUserInfo__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean sourceUserInfoNew = targetDao.load(__key);
-            synchronized (this) {
-                sourceUserInfo = sourceUserInfoNew;
-                sourceUserInfo__resolvedKey = __key;
-            }
-        }
-        return sourceUserInfo;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1172655311)
-    public void setSourceUserInfo(UserInfoBean sourceUserInfo) {
-        synchronized (this) {
-            this.sourceUserInfo = sourceUserInfo;
-            to_user_id = sourceUserInfo == null ? null : sourceUserInfo.getUser_id();
-            sourceUserInfo__resolvedKey = to_user_id;
-        }
-    }
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 59687787)
-    public UserInfoBean getReplyUserInfo() {
-        Long __key = this.reply_to_user_id;
-        if (replyUserInfo__resolvedKey == null || !replyUserInfo__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean replyUserInfoNew = targetDao.load(__key);
-            synchronized (this) {
-                replyUserInfo = replyUserInfoNew;
-                replyUserInfo__resolvedKey = __key;
-            }
-        }
-        return replyUserInfo;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1841591919)
-    public void setReplyUserInfo(UserInfoBean replyUserInfo) {
-        synchronized (this) {
-            this.replyUserInfo = replyUserInfo;
-            reply_to_user_id = replyUserInfo == null ? null : replyUserInfo.getUser_id();
-            replyUserInfo__resolvedKey = reply_to_user_id;
-        }
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1828279436)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getCommentedBeanDao() : null;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.channel);
+        dest.writeString(this.comment_table);
+        dest.writeValue(this.target_id);
+        dest.writeValue(this.target);
+        dest.writeString(this.comment_content);
+        dest.writeString(this.target_title);
+        dest.writeInt(this.target_image);
+        dest.writeValue(this.user_id);
+        dest.writeParcelable(this.commentUserInfo, flags);
+        dest.writeValue(this.target_user);
+        dest.writeParcelable(this.sourceUserInfo, flags);
+        dest.writeValue(this.reply_user);
+        dest.writeParcelable(this.replyUserInfo, flags);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
     }
 
     public CommentedBean() {
@@ -354,41 +202,40 @@ public class CommentedBean extends BaseListBean{
     protected CommentedBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.component = in.readString();
+        this.channel = in.readString();
         this.comment_table = in.readString();
-        this.source_table = in.readString();
-        this.source_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.comment_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.target_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.target = (Long) in.readValue(Long.class.getClassLoader());
+        this.comment_content = in.readString();
+        this.target_title = in.readString();
+        this.target_image = in.readInt();
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.commentUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.to_user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.target_user = (Long) in.readValue(Long.class.getClassLoader());
         this.sourceUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.reply_to_user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.reply_user = (Long) in.readValue(Long.class.getClassLoader());
         this.replyUserInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.created_at = in.readString();
         this.updated_at = in.readString();
-        this.source_cover = in.readInt();
-        this.source_content = in.readString();
-        this.comment_content = in.readString();
     }
 
-    @Generated(hash = 2049548015)
-    public CommentedBean(Long id, String component, String comment_table, String source_table, Long source_id, Long comment_id, Long user_id, Long to_user_id,
-            Long reply_to_user_id, String created_at, String updated_at, int source_cover, String source_content, String comment_content) {
+
+    @Generated(hash = 270334609)
+    public CommentedBean(Long id, String channel, String comment_table, Long target_id, Long target, String comment_content, String target_title, int target_image,
+            Long user_id, Long target_user, Long reply_user, String created_at, String updated_at) {
         this.id = id;
-        this.component = component;
+        this.channel = channel;
         this.comment_table = comment_table;
-        this.source_table = source_table;
-        this.source_id = source_id;
-        this.comment_id = comment_id;
+        this.target_id = target_id;
+        this.target = target;
+        this.comment_content = comment_content;
+        this.target_title = target_title;
+        this.target_image = target_image;
         this.user_id = user_id;
-        this.to_user_id = to_user_id;
-        this.reply_to_user_id = reply_to_user_id;
+        this.target_user = target_user;
+        this.reply_user = reply_user;
         this.created_at = created_at;
         this.updated_at = updated_at;
-        this.source_cover = source_cover;
-        this.source_content = source_content;
-        this.comment_content = comment_content;
     }
 
     public static final Creator<CommentedBean> CREATOR = new Creator<CommentedBean>() {
@@ -414,4 +261,166 @@ public class CommentedBean extends BaseListBean{
     private transient Long sourceUserInfo__resolvedKey;
     @Generated(hash = 214417853)
     private transient Long replyUserInfo__resolvedKey;
+
+    @Override
+    public String toString() {
+        return "CommentedBean{" +
+                "id=" + id +
+                ", channel='" + channel + '\'' +
+                ", comment_table='" + comment_table + '\'' +
+                ", target_id=" + target_id +
+                ", target=" + target +
+                ", comment_content='" + comment_content + '\'' +
+                ", target_title='" + target_title + '\'' +
+                ", target_image=" + target_image +
+                ", user_id=" + user_id +
+                ", commentUserInfo=" + commentUserInfo +
+                ", target_user=" + target_user +
+                ", sourceUserInfo=" + sourceUserInfo +
+                ", reply_user=" + reply_user +
+                ", replyUserInfo=" + replyUserInfo +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                '}';
+    }
+
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 418864499)
+    public UserInfoBean getCommentUserInfo() {
+        Long __key = this.user_id;
+        if (commentUserInfo__resolvedKey == null || !commentUserInfo__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean commentUserInfoNew = targetDao.load(__key);
+            synchronized (this) {
+                commentUserInfo = commentUserInfoNew;
+                commentUserInfo__resolvedKey = __key;
+            }
+        }
+        return commentUserInfo;
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 28373690)
+    public void setCommentUserInfo(UserInfoBean commentUserInfo) {
+        synchronized (this) {
+            this.commentUserInfo = commentUserInfo;
+            user_id = commentUserInfo == null ? null : commentUserInfo.getUser_id();
+            commentUserInfo__resolvedKey = user_id;
+        }
+    }
+
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1491152852)
+    public UserInfoBean getSourceUserInfo() {
+        Long __key = this.target_user;
+        if (sourceUserInfo__resolvedKey == null || !sourceUserInfo__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean sourceUserInfoNew = targetDao.load(__key);
+            synchronized (this) {
+                sourceUserInfo = sourceUserInfoNew;
+                sourceUserInfo__resolvedKey = __key;
+            }
+        }
+        return sourceUserInfo;
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 672311628)
+    public void setSourceUserInfo(UserInfoBean sourceUserInfo) {
+        synchronized (this) {
+            this.sourceUserInfo = sourceUserInfo;
+            target_user = sourceUserInfo == null ? null : sourceUserInfo.getUser_id();
+            sourceUserInfo__resolvedKey = target_user;
+        }
+    }
+
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1858190697)
+    public UserInfoBean getReplyUserInfo() {
+        Long __key = this.reply_user;
+        if (replyUserInfo__resolvedKey == null || !replyUserInfo__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean replyUserInfoNew = targetDao.load(__key);
+            synchronized (this) {
+                replyUserInfo = replyUserInfoNew;
+                replyUserInfo__resolvedKey = __key;
+            }
+        }
+        return replyUserInfo;
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1797342590)
+    public void setReplyUserInfo(UserInfoBean replyUserInfo) {
+        synchronized (this) {
+            this.replyUserInfo = replyUserInfo;
+            reply_user = replyUserInfo == null ? null : replyUserInfo.getUser_id();
+            replyUserInfo__resolvedKey = reply_user;
+        }
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1828279436)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getCommentedBeanDao() : null;
+    }
 }

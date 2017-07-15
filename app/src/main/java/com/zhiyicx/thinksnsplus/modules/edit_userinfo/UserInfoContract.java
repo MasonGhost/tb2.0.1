@@ -135,7 +135,7 @@ public interface UserInfoContract {
          * @param max_id
          * @return
          */
-        Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id);
+        Observable<List<DigedBean>> getMyDiggs(int max_id);
 
 
         /**
@@ -144,7 +144,7 @@ public interface UserInfoContract {
          * @param max_id
          * @return
          */
-        Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id);
+        Observable<List<CommentedBean>> getMyComments(int max_id);
 
 
         /**

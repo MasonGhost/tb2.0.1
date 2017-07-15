@@ -5,7 +5,6 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
@@ -20,7 +19,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 
 /**
  * @Describe
@@ -43,7 +41,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription commentSub = mRepository.getMyComments(maxId.intValue())
-                .subscribe(new BaseSubscribe<List<CommentedBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<CommentedBean>>() {
                     @Override
                     protected void onSuccess(List<CommentedBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -82,7 +80,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
     @Override
     public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
         CommentedBean currentCommentBean = mRootView.getListDatas().get(mCurrentPostion);
-        String path = CommentRepository.getCommentPath(currentCommentBean.getSource_id(), currentCommentBean.getComponent(), currentCommentBean.getSource_table());
+        String path = CommentRepository.getCommentPath(currentCommentBean.getTarget_id(), currentCommentBean.getChannel());
         Subscription commentSub = mCommentRepository.sendCommentV2(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
                 .subscribeOn(AndroidSchedulers.mainThread())

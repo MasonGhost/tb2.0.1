@@ -40,7 +40,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -347,40 +346,33 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id) {
+    public Observable<List<DigedBean>> getMyDiggs(int max_id) {
         return mUserInfoClient.getMyDiggs(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<DigedBean>>, Observable<BaseJson<List<DigedBean>>>>() {
+                .flatMap(new Func1<List<DigedBean>, Observable<List<DigedBean>>>() {
                     @Override
-                    public Observable<BaseJson<List<DigedBean>>> call(final BaseJson<List<DigedBean>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Object> userIds = new ArrayList();
-                            for (DigedBean digedBean : listBaseJson.getData()) {
-                                userIds.add(digedBean.getUser_id());
-                                userIds.add(digedBean.getTo_user_id());
-                            }
-                            return getUserInfo(userIds)
-                                    .map(userinfobeans -> {
-                                        if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                            }
-                                            for (DigedBean digedBean : listBaseJson.getData()) {
-                                                digedBean.setDigUserInfo(userInfoBeanSparseArray.get(digedBean.getUser_id().intValue()));
-                                                digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTo_user_id().intValue()));
-                                            }
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                        } else {
-                                            listBaseJson.setStatus(userinfobeans.isStatus());
-                                            listBaseJson.setCode(userinfobeans.getCode());
-                                            listBaseJson.setMessage(userinfobeans.getMessage());
-                                        }
-                                        return listBaseJson;
-                                    });
+                    public Observable<List<DigedBean>> call(final List<DigedBean> data) {
+                        List<Object> userIds = new ArrayList();
+                        for (DigedBean digedBean : data) {
+                            userIds.add(digedBean.getUser_id());
+                            userIds.add(digedBean.getTarget_user());
                         }
-                        return Observable.just(listBaseJson);
+                        return getUserInfo(userIds)
+                                .map(userinfobeans -> {
+                                    if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (DigedBean digedBean : data) {
+                                            digedBean.setDigUserInfo(userInfoBeanSparseArray.get(digedBean.getUser_id().intValue()));
+                                            digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTarget_user().intValue()));
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                    }
+                                    return data;
+                                });
                     }
                 });
     }
@@ -392,48 +384,41 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id) {
+    public Observable<List<CommentedBean>> getMyComments(int max_id) {
         return mUserInfoClient.getMyComments(max_id, TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<CommentedBean>>, Observable<BaseJson<List<CommentedBean>>>>() {
+                .flatMap(new Func1<List<CommentedBean>, Observable<List<CommentedBean>>>() {
                     @Override
-                    public Observable<BaseJson<List<CommentedBean>>> call(final BaseJson<List<CommentedBean>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Object> userIds = new ArrayList();
-                            for (CommentedBean commentedBean : listBaseJson.getData()) {
-                                userIds.add(commentedBean.getUser_id());
-                                userIds.add(commentedBean.getTo_user_id());
-                                userIds.add(commentedBean.getReply_to_user_id());
-                            }
-                            return getUserInfo(userIds)
-                                    .map(userinfobeans -> {
-                                        if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                            }
-                                            for (CommentedBean commentedBean : listBaseJson.getData()) {
-                                                commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get(commentedBean.getUser_id().intValue()));
-                                                commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get(commentedBean.getTo_user_id().intValue()));
-                                                if (commentedBean.getReply_to_user_id() == 0) { // 用于占位
-                                                    UserInfoBean userinfo = new UserInfoBean();
-                                                    userinfo.setUser_id(0L);
-                                                    commentedBean.setReplyUserInfo(userinfo);
-                                                } else {
-                                                    commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_to_user_id().intValue()));
-                                                }
-                                            }
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                        } else {
-                                            listBaseJson.setStatus(userinfobeans.isStatus());
-                                            listBaseJson.setCode(userinfobeans.getCode());
-                                            listBaseJson.setMessage(userinfobeans.getMessage());
-                                        }
-                                        return listBaseJson;
-                                    });
+                    public Observable<List<CommentedBean>> call(final List<CommentedBean> data) {
+                        List<Object> userIds = new ArrayList();
+                        for (CommentedBean commentedBean : data) {
+                            userIds.add(commentedBean.getUser_id());
+                            userIds.add(commentedBean.getTarget_user());
+                            userIds.add(commentedBean.getReply_user());
                         }
-                        return Observable.just(listBaseJson);
+                        return getUserInfo(userIds)
+                                .map(userinfobeans -> {
+                                    if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (CommentedBean commentedBean : data) {
+                                            commentedBean.setCommentUserInfo(userInfoBeanSparseArray.get(commentedBean.getUser_id().intValue()));
+                                            commentedBean.setSourceUserInfo(userInfoBeanSparseArray.get(commentedBean.getTarget_user().intValue()));
+                                            if (commentedBean.getReply_user() == 0) { // 用于占位
+                                                UserInfoBean userinfo = new UserInfoBean();
+                                                userinfo.setUser_id(0L);
+                                                commentedBean.setReplyUserInfo(userinfo);
+                                            } else {
+                                                commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_user().intValue()));
+                                            }
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                    }
+                                    return data;
+                                });
                     }
                 });
     }

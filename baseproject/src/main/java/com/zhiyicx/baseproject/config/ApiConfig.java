@@ -73,8 +73,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_USER_INFO = "api/" + API_VERSION + "/users";// 获取用户信息
     public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION + "/users";// 修改用户信息
     public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION + "/im/users";// 获取 IM 帐号信息
-    public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION + "/users/mydiggs"; // 获取用户收到的点赞
-    public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION + "/users/mycomments"; // 获取用户收到的评论
+    public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION_2 + "/user/likes"; // 获取用户收到的点赞
+    public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION_2 + "/user/comments"; // 获取用户收到的评论
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
@@ -362,11 +362,16 @@ public class ApiConfig {
     public static final String APP_COMPONENT_FEED = "feed";
     public static final String APP_COMPONENT_MUSIC = "music";
     public static final String APP_COMPONENT_NEWS = "news";
-    //     feeds musics music_specials news
-    public static final String APP_COMPONENT_SOURCE_TABLE_FEEDS = "feeds";
-    public static final String APP_COMPONENT_SOURCE_TABLE_MUSICS = "musics";
-    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_specials";
-    public static final String APP_COMPONENT_SOURCE_TABLE_NEWS = "news";
+    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_special";
+    /**
+     * @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/likes.md}
+     */
+    public static final String APP_LIKE_FEED = "feeds";
+    public static final String APP_LIKE_MUSIC = "musics";
+    public static final String APP_LIKE_NEWS = "news";
+
+
+
 
 
     /*******************************************  API V2  *********************************************/
