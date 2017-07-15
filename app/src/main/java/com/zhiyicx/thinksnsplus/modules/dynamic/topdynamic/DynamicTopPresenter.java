@@ -114,6 +114,9 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
             WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
+            if (walletBean == null) {
+                return 0;
+            }
             int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
             return (float) walletBean.getBalance() * (ratio / MONEY_UNIT);
         }
