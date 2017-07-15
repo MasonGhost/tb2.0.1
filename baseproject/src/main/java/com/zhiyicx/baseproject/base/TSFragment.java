@@ -216,12 +216,18 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         showSnackMessage(message, Prompt.WARNING);
     }
 
+
     @Override
     public void showSnackLoadingMessage(String message) {
         TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_INDEFINITE)
                 .setPromptThemBackground(Prompt.SUCCESS)
                 .addIconProgressLoading(0, true, false)
                 .show();
+    }
+
+    @Override
+    public void goRecharge(Class<?> cls) {
+        startActivity(new Intent(getActivity(),cls));
     }
 
     @Override

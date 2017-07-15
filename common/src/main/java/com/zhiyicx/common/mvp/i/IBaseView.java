@@ -66,4 +66,9 @@ public interface IBaseView<VP> {
 
     void hideCenterLoading();
 
+    /**
+     * 去充值
+     */
+    void  goRecharge(Class<?> cls);
+
 }

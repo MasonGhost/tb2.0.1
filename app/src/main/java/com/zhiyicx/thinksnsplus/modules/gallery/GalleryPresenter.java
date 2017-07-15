@@ -5,12 +5,16 @@ import android.os.Bundle;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.ICommentRepository;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import org.simple.eventbus.EventBus;
 
@@ -31,6 +35,8 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
     CommentRepository mCommentRepository;
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public GalleryPresenter(GalleryConstract.View rootView) {
@@ -49,6 +55,17 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
 
     @Override
     public void payNote(final Long feed_id, final int imagePosition, int note) {
+        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        double balance = 0;
+        if (userInfo != null && userInfo.getWallet() != null) {
+            balance = userInfo.getWallet().getBalance();
+        }
+        DynamicDetailBeanV2 dynamicDetail= mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
+        double amount =dynamicDetail.getImages().get(imagePosition).getAmount();
+        if (balance < amount) {
+            mRootView.goRecharge(WalletActivity.class);
+            return;
+        }
         mCommentRepository.paykNote(note)
                 .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {

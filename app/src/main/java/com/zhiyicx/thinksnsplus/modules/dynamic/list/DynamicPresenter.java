@@ -43,6 +43,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -500,26 +501,22 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void payNote(final int dynamicPosition, final int imagePosition, int note, final boolean isImage) {
-//        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
-
-//        double balance = userInfo.getWallet().getBalance();
-//        double amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
-//        if (balance < amount) {
-//            mRootView.showSnackErrorMessage("余额不足请充值");
-//            Observable.timer(1, TimeUnit.SECONDS).subscribe(new Action1<Long>() {
-//                @Override
-//                public void call(Long aLong) {
-//
-//                }
-//            });
-//            return;
-//        }
+        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        double balance = 0;
+        if (userInfo != null &&userInfo.getWallet() != null) {
+            balance = userInfo.getWallet().getBalance();
+        }
+        double amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
+        if (balance < amount) {
+            mRootView.goRecharge(WalletActivity.class);
+            return;
+        }
         mCommentRepository.paykNote(note)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                        if (isImage){
+                        if (isImage) {
                             return Observable.just(stringBaseJsonV2);
                         }
                         return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
