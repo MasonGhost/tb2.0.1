@@ -197,7 +197,7 @@
             app:pressShape="circle"
             android:layout_width="@dimen/headpic_for_list"
             android:layout_height="@dimen/headpic_for_list"
-            android:src="@mipmap/ico_message_good"/>
+            android:src="@mipmap/ico_message_check"/>
         <TextView
             android:id="@+id/tv_header_review_name"
             android:layout_width="wrap_content"

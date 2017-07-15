@@ -673,7 +673,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         reviewConveration.setLast_message(reviewmessage);
         mItemBeanReview.setConversation(reviewConveration);
         mItemBeanReview.getConversation().getLast_message().setTxt(mContext.getString(R.string.has_no_body)
-                + mContext.getString(R.string.like_me));
+                + mContext.getString(R.string.recieved_review));
     }
 
 
