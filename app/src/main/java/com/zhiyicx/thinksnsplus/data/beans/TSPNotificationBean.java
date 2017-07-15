@@ -140,6 +140,13 @@ public class TSPNotificationBean {
 
                     break;
                 case NOTIFICATION_KEY_FEED_DIGGS:
+                    try {
+                        JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
+                        user_id = (long) jsonObject.getDouble("user_id");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     break;
                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
                     try {
