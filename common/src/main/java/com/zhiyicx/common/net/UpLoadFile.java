@@ -96,7 +96,8 @@ public class UpLoadFile {
                     File file = new File(filePathList.get(fileParam));//filePath 图片地址
                     String mimeType = FileUtils.getMimeTypeByFile(file);
                     RequestBody imageBody = RequestBody.create(
-                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
+//                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
+                            MediaType.parse( "multipart/form-data" ), file);
                     builder.addFormDataPart(fileParam, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
                 } catch (NullPointerException e) {
                     e.printStackTrace();

@@ -747,11 +747,12 @@ public class BackgroundTaskHandler {
         final SendDynamicDataBeanV2 sendDynamicDataBean = (SendDynamicDataBeanV2) params.get("sendDynamicDataBean");
         final DynamicDetailBeanV2 detailBeanV2;
         detailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(feedMark);
-        mSendDynamicDataBeanV2Dao.insertOrReplace(sendDynamicDataBean);
-        if (detailBeanV2 == null) {
+
+        if (sendDynamicDataBean==null||detailBeanV2 == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
+        mSendDynamicDataBeanV2Dao.insertOrReplace(sendDynamicDataBean);
         detailBeanV2.setState(DynamicDetailBeanV2.SEND_ING);
 
 
