@@ -79,6 +79,10 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
                 .imagerView(holder.getView(R.id.iv_headpic))
                 .build());
         if (digedBean.getSource_cover() != null) {
+            System.out.println("1111111111111111111111 = " + ImageUtils.imagePathConvertV2(digedBean.getSource_cover().intValue()
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                    , ImageZipConfig.IMAGE_50_ZIP));
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()

@@ -34,6 +34,7 @@ import org.simple.eventbus.EventBus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -371,6 +372,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                         }
                                         mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                                     }
+                                    Collections.sort(data, (o1, o2) -> (int) (o2.getId() - o1.getId()));
                                     return data;
                                 });
                     }
