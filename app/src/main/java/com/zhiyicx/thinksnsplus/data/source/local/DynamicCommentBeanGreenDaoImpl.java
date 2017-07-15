@@ -94,12 +94,7 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
     public void deleteCacheByFeedMark(Long feedMark) {
         Observable.from(getLocalComments(feedMark))
                 .subscribeOn(Schedulers.io())
-                .filter(new Func1<DynamicCommentBean, Boolean>() {
-                    @Override
-                    public Boolean call(DynamicCommentBean dynamicCommentBean) {
-                        return dynamicCommentBean.getComment_id() != null && dynamicCommentBean.getComment_id() != 0;
-                    }
-                }).subscribe(new Observer<DynamicCommentBean>() {
+                .filter(dynamicCommentBean -> dynamicCommentBean.getComment_id() != null && dynamicCommentBean.getComment_id() != 0).subscribe(new Observer<DynamicCommentBean>() {
             @Override
             public void onCompleted() {
 
