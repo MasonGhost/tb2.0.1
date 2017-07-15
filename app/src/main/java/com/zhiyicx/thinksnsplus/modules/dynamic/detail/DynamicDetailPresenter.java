@@ -202,11 +202,12 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public void getCurrentDynamicDetail(final long feed_id) {
+    public void getCurrentDynamicDetail(final long feed_id,int topFlag) {
         Subscription subscription = mRepository.getDynamicDetailBeanV2(feed_id)
                 .subscribe(new BaseSubscribeForV2<DynamicDetailBeanV2>() {
                     @Override
                     protected void onSuccess(DynamicDetailBeanV2 data) {
+                        data.setTop(topFlag);
                         mRootView.initDynamicDetial(data);
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(data);
                         mDynamicCommentBeanGreenDao.insertOrReplace(data.getComments());
@@ -227,7 +228,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public void getDetailAll(final Long feed_id, Long max_id, final String user_ids) {
+    public void getDetailAll(final Long feed_id, Long max_id, final String user_ids, final int
+            topFlag) {
         Subscription subscription = Observable.zip(mRepository.getDynamicDigListV2(feed_id, max_id)
                 , mRepository.getUserFollowState(user_ids)
                 , mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(),

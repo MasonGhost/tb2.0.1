@@ -702,45 +702,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeString(this.deleted_at);
-        dest.writeValue(this.user_id);
-        dest.writeString(this.feed_content);
-        dest.writeInt(this.feed_from);
-        dest.writeInt(this.feed_digg_count);
-        dest.writeInt(this.feed_view_count);
-        dest.writeInt(this.feed_comment_count);
-        dest.writeString(this.feed_latitude);
-        dest.writeString(this.feed_longtitude);
-        dest.writeString(this.feed_geohash);
-        dest.writeInt(this.audit_status);
-        dest.writeValue(this.feed_mark);
-        dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
-        dest.writeDouble(this.amount);
-        dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.images);
-        dest.writeList(this.diggs);
-        dest.writeParcelable(this.paid_node, flags);
-        dest.writeParcelable(this.userInfoBean, flags);
-        dest.writeTypedList(this.comments);
-        dest.writeValue(this.hot_creat_time);
-        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.state);
-        dest.writeTypedList(this.digUserInfoList);
-    }
-
     public PaidNote getPaid_node() {
         return this.paid_node;
     }
@@ -796,39 +757,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     public DynamicDetailBeanV2() {
     }
 
-    protected DynamicDetailBeanV2(Parcel in) {
-        super(in);
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.deleted_at = in.readString();
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_content = in.readString();
-        this.feed_from = in.readInt();
-        this.feed_digg_count = in.readInt();
-        this.feed_view_count = in.readInt();
-        this.feed_comment_count = in.readInt();
-        this.feed_latitude = in.readString();
-        this.feed_longtitude = in.readString();
-        this.feed_geohash = in.readString();
-        this.audit_status = in.readInt();
-        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.has_digg = in.readByte() != 0;
-        this.has_collect = in.readByte() != 0;
-        this.amount = in.readDouble();
-        this.paid = in.readByte() != 0;
-        this.images = in.createTypedArrayList(ImagesBean.CREATOR);
-        this.diggs = new ArrayList<Integer>();
-        in.readList(this.diggs, Integer.class.getClassLoader());
-        this.paid_node = in.readParcelable(PaidNote.class.getClassLoader());
-        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
-        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
-        this.isFollowed = in.readByte() != 0;
-        this.state = in.readInt();
-        this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
-    }
-
     @Generated(hash = 2066961681)
     public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id, String feed_content,
                                int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count, String feed_latitude,
@@ -865,17 +793,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.digUserInfoList = digUserInfoList;
     }
 
-    public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
-        @Override
-        public DynamicDetailBeanV2 createFromParcel(Parcel source) {
-            return new DynamicDetailBeanV2(source);
-        }
-
-        @Override
-        public DynamicDetailBeanV2[] newArray(int size) {
-            return new DynamicDetailBeanV2[size];
-        }
-    };
     /**
      * Used to resolve relations
      */
@@ -921,10 +838,97 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.likes = likes;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.deleted_at);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.feed_content);
+        dest.writeInt(this.feed_from);
+        dest.writeInt(this.feed_digg_count);
+        dest.writeInt(this.feed_view_count);
+        dest.writeInt(this.feed_comment_count);
+        dest.writeString(this.feed_latitude);
+        dest.writeString(this.feed_longtitude);
+        dest.writeString(this.feed_geohash);
+        dest.writeInt(this.audit_status);
+        dest.writeValue(this.feed_mark);
+        dest.writeByte(this.has_digg ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
+        dest.writeDouble(this.amount);
+        dest.writeTypedList(this.likes);
+        dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.images);
+        dest.writeList(this.diggs);
+        dest.writeParcelable(this.paid_node, flags);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeTypedList(this.comments);
+        dest.writeValue(this.hot_creat_time);
+        dest.writeByte(this.isFollowed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.state);
+        dest.writeInt(this.top);
+        dest.writeTypedList(this.digUserInfoList);
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1467065995)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDynamicDetailBeanV2Dao() : null;
     }
+
+    protected DynamicDetailBeanV2(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.deleted_at = in.readString();
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_content = in.readString();
+        this.feed_from = in.readInt();
+        this.feed_digg_count = in.readInt();
+        this.feed_view_count = in.readInt();
+        this.feed_comment_count = in.readInt();
+        this.feed_latitude = in.readString();
+        this.feed_longtitude = in.readString();
+        this.feed_geohash = in.readString();
+        this.audit_status = in.readInt();
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.has_digg = in.readByte() != 0;
+        this.has_collect = in.readByte() != 0;
+        this.amount = in.readDouble();
+        this.likes = in.createTypedArrayList(DynamicLikeBean.CREATOR);
+        this.paid = in.readByte() != 0;
+        this.images = in.createTypedArrayList(ImagesBean.CREATOR);
+        this.diggs = new ArrayList<Integer>();
+        in.readList(this.diggs, Integer.class.getClassLoader());
+        this.paid_node = in.readParcelable(PaidNote.class.getClassLoader());
+        this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.comments = in.createTypedArrayList(DynamicCommentBean.CREATOR);
+        this.hot_creat_time = (Long) in.readValue(Long.class.getClassLoader());
+        this.isFollowed = in.readByte() != 0;
+        this.state = in.readInt();
+        this.top = in.readInt();
+        this.digUserInfoList = in.createTypedArrayList(FollowFansBean.CREATOR);
+    }
+
+    public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
+        @Override
+        public DynamicDetailBeanV2 createFromParcel(Parcel source) {
+            return new DynamicDetailBeanV2(source);
+        }
+
+        @Override
+        public DynamicDetailBeanV2[] newArray(int size) {
+            return new DynamicDetailBeanV2[size];
+        }
+    };
 }

@@ -70,14 +70,21 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment.TOLL_DYNAMIC_COMMENT;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .DYNAMIC_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .DYNAMIC_DETAIL_DATA_POSITION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .DYNAMIC_DETAIL_DATA_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment
+        .LOOK_COMMENT_MORE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.tollcomment.DynamicCommentTollFragment
+        .TOLL_DYNAMIC_COMMENT;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic.DynamicTopFragment.FEEDID;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_COMMENT_ID;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopFragment.TOP_DYNAMIC_ID;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment
+        .DynamicCommentTopFragment.TOP_DYNAMIC_COMMENT_ID;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment
+        .DynamicCommentTopFragment.TOP_DYNAMIC_ID;
 
 /**
  * @Describe 动态列表
@@ -303,10 +310,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
-        Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
+        Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
+                .LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean.getImages().get(position).getAmount(),
-                    dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc, true);
+            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean
+                            .getImages().get(position).getAmount(),
+                    dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc,
+                    true);
             return;
         }
 
@@ -424,10 +434,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             return;
         }
         DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(position);
-        boolean canNotLookWords = detailBeanV2.getPaid_node() != null && !detailBeanV2.getPaid_node().isPaid()
-                && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth().getUser_id();
+        boolean canNotLookWords = detailBeanV2.getPaid_node() != null &&
+                !detailBeanV2.getPaid_node().isPaid()
+                && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth()
+                .getUser_id();
         if (canNotLookWords) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) detailBeanV2.getPaid_node().getAmount(),
+            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float)
+                            detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
         }
@@ -613,7 +626,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private void initDeletCommentPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int
             dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicBean
+                        .SEND_SUCCESS &&dynamicBean
+                        .getComments().get(commentPosition).getPinned()!=1&&
+                        !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R
+                        .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -650,7 +667,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position,
+    private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int
+            position,
                                              boolean isCollected, final Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
@@ -700,8 +718,11 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item2Str(getString(feedIdIsNull ? R.string.empty :
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
-//                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)// 付费评论功能 移除
-                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R.string.dynamic_list_top_dynamic) : null)
+//                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) :
+// null)// 付费评论功能 移除
+                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig
+                        .DYNAMIC_TYPE_FOLLOWS) ? getString(R.string.dynamic_list_top_dynamic) :
+                        null)
                 .item5Str(getString(R.string.dynamic_list_delete_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -775,7 +796,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      * @param strRes          文字说明
      * @param isImage         是否是图片收费
      */
-    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition, float amout,
+    private void initImageCenterPopWindow(final int dynamicPosition, final int imagePosition,
+                                          float amout,
                                           final int note, int strRes, final boolean isImage) {
 //        if (mPayImagePopWindow != null) {
 //            mPayImagePopWindow.show();

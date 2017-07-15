@@ -56,7 +56,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         }
         TextView contentTextView = holder.getView(com.zhiyicx.baseproject.R.id
                 .tv_simple_text_comment);
-        contentTextView.setText(setShowText(dynamicCommentBean, position));
+        contentTextView.setText(setShowText(dynamicCommentBean, contentTextView));
         // Add the links and make the links clickable
         ConvertUtils.stringLinkConvert(contentTextView, setLiknks(dynamicCommentBean, position));
 
@@ -86,15 +86,14 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
     }
 
 
-    protected CharSequence setShowText(DynamicCommentBean dynamicCommentBean, int position) {
+    protected CharSequence setShowText(DynamicCommentBean dynamicCommentBean, TextView contentTextView) {
         String content = handleName(dynamicCommentBean);
         if (dynamicCommentBean.getPinned() != 1) {// 不是置顶的评论则不用处理
             return content;
         } else if (mTopFlagPosition == TopFlagPosition.WORDS_RIGHT) {
             int lenght = content.length();
             Drawable top_drawable = getResources().getDrawable(R.mipmap.label_zhiding);
-            top_drawable.setBounds(0, 0, top_drawable.getIntrinsicWidth(), top_drawable
-                    .getIntrinsicHeight());
+            top_drawable.setBounds(0, 0,(int)(contentTextView.getTextSize()*2),contentTextView.getLineHeight());
 
             ImageSpan imgSpan = new CenterImageSpan(top_drawable);
             SpannableString spannableString = SpannableString.valueOf(content + "T");

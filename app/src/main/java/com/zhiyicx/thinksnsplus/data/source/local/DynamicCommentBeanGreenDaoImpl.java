@@ -144,7 +144,6 @@ public class DynamicCommentBeanGreenDaoImpl extends CommonCacheImpl<DynamicComme
     public List<DynamicCommentBean> getLocalComments(Long feedMark) {
 //        DynamicCommentBeanDao dynamicCommentBeanDao = getWDaoSession().getDynamicCommentBeanDao();
         List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
-
         dynamicCommentBeen.addAll(getLocalCommentsByTop(feedMark));
         dynamicCommentBeen.addAll(getMySendingComment(feedMark));
         dynamicCommentBeen.addAll(getLocalCommentsByNotTop(feedMark));

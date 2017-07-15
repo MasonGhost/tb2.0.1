@@ -6,12 +6,13 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+
+import com.zhiyicx.common.utils.log.LogUtils;
 
 /**
  * @Describe for TextView click spannable  and Blur effect
@@ -124,9 +125,11 @@ public class TextViewUtils {
         mTextView.setVisibility(View.INVISIBLE);
         if (!mCanRead) {
             mTextView.setText(getSpannableString(mOriMsg));
-            //mTextView.setMovementMethod(LinkMovementMethod.getInstance());// 已经交给上级分发处理 dealTextViewClickEvent
+            //mTextView.setMovementMethod(LinkMovementMethod.getInstance());// 已经交给上级分发处理
+            // dealTextViewClickEvent
             ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver
+                    .OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
@@ -152,7 +155,8 @@ public class TextViewUtils {
         @Override
         public void onClick(View widget) {
             if (mSpanTextClickListener != null) {
-                mSpanTextClickListener.setSpanText(mDynamicPosition, mNote, mAmount, mTextView, canNotRead);
+                mSpanTextClickListener.setSpanText(mDynamicPosition, mNote, mAmount, mTextView,
+                        canNotRead);
             }
         }
 
@@ -164,7 +168,8 @@ public class TextViewUtils {
             ds.setAlpha(mAlpha > 0 ? mAlpha : 0xff);
             ds.setUnderlineText(false);    //去除超链接的下划线
             if (canNotRead) {
-                BlurMaskFilter blurMaskFilter = new BlurMaskFilter(mTextView.getTextSize() / 3, BlurMaskFilter.Blur.NORMAL);
+                BlurMaskFilter blurMaskFilter = new BlurMaskFilter(mTextView.getTextSize() / 3,
+                        BlurMaskFilter.Blur.NORMAL);
                 ds.setMaskFilter(blurMaskFilter);
             } else {
                 ds.setMaskFilter(null);
@@ -178,9 +183,11 @@ public class TextViewUtils {
             mEndPos = temp.length();
         }
         try {
-            spanableInfo.setSpan(new SpanTextClickable(), mStartPos, mEndPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spanableInfo.setSpan(new SpanTextClickable(), mStartPos + getLetterLenght(temp)/2,
+                    mEndPos,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         } catch (Exception e) {
-            spanableInfo.setSpan(new SpanTextClickable(), 0, temp.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spanableInfo.setSpan(new SpanTextClickable(), 0, temp.length(), Spanned
+                    .SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return spanableInfo;
     }
@@ -222,6 +229,32 @@ public class TextViewUtils {
                 return false;
             }
         });
+    }
+
+    public static int getStringLenght(String src) {
+        int count = 0;
+        char[] chars = src.toCharArray();
+        for (char c : chars) {
+            if (c < 128) {// 英文ascii码值都是128以下
+                count += 1;
+            }
+        }
+        return src.length() - count;
+    }
+
+    /**
+     * @param src
+     * @return 字母个数
+     */
+    public static int getLetterLenght(CharSequence src) {
+        int count = 0;
+        char[] chars = src.toString().toCharArray();
+        for (char c : chars) {
+            if (c < 128) {// 英文ascii码值都是128以下
+                count += 1;
+            }
+        }
+        return count;
     }
 
     public interface OnSpanTextClickListener {

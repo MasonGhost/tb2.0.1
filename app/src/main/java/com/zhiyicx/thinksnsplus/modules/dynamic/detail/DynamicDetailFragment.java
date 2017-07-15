@@ -159,10 +159,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     protected void setLoadingViewHolderClick() {
         super.setLoadingViewHolderClick();
         if (mDynamicBean == null) {
-            mPresenter.getCurrentDynamicDetail(getArguments().getLong(MessageCommentAdapter.BUNDLE_SOURCE_ID));
+            mPresenter.getCurrentDynamicDetail(getArguments().getLong(MessageCommentAdapter
+                    .BUNDLE_SOURCE_ID),0);
         } else {
             mPresenter.getDetailAll(mDynamicBean.getId(), DEFAULT_PAGE_MAX_ID, mDynamicBean
-                    .getUser_id() + "");
+                    .getUser_id() + "",mDynamicBean.getTop());
         }
     }
 
@@ -236,9 +237,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mIsLookMore = bundle.getBoolean(LOOK_COMMENT_MORE);
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
             if (mDynamicBean == null) {
-                mPresenter.getCurrentDynamicDetail(bundle.getLong(MessageCommentAdapter.BUNDLE_SOURCE_ID));
+                mPresenter.getCurrentDynamicDetail(bundle.getLong(MessageCommentAdapter
+                        .BUNDLE_SOURCE_ID),0);
             } else {
-                mPresenter.getCurrentDynamicDetail(mDynamicBean.getId());
+                mPresenter.getCurrentDynamicDetail(mDynamicBean.getId(),mDynamicBean.getTop());
             }
         }
     }
@@ -252,7 +254,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
         if (mDynamicBean.getDigUserInfoList() == null) {
             mPresenter.getDetailAll(mDynamicBean.getId(), DEFAULT_PAGE_MAX_ID, mDynamicBean
-                    .getUser_id() + "");
+                    .getUser_id() + "",mDynamicBean.getTop());
         } else {
             allDataReady();
         }

@@ -167,6 +167,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     @Override
     public void convert(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2
             lastT, final int position, int itemCounts) {
+
         try {
             int storegeId;
             String userIconUrl;
@@ -211,7 +212,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 if (content.length() > mContentMaxShowNum) {
                     content = content.substring(0, mContentMaxShowNum) + "...";
                 }
-                if (content.length() == 50 && dynamicBean.getPaid_node() != null && !dynamicBean
+                if (dynamicBean.getPaid_node() != null && !dynamicBean
                         .getPaid_node().isPaid()) {
                     content += mContext.getString(R.string.words_holder);
                 }
@@ -235,6 +236,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .disPlayText(false);
                 }
                 textViewUtils.build();
+
                 contentView.setVisibility(View.VISIBLE);
             }
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);

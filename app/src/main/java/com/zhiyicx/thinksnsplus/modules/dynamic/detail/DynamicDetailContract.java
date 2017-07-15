@@ -119,12 +119,12 @@ public interface DynamicDetailContract {
          *
          * @param feed_id
          */
-        void getCurrentDynamicDetail(long feed_id);
+        void getCurrentDynamicDetail(long feed_id,int topFlag);
 
         /**
          * 获取当前动态的点赞列表
          */
-        void getDetailAll(Long feed_id, Long max_id, String user_ids);
+        void getDetailAll(Long feed_id, Long max_id, String user_ids,int topFlag);
 
         /**
          * 获取当前动态的点赞列表
