@@ -333,9 +333,7 @@ public class DigedBean extends BaseListBean {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1633631379)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
