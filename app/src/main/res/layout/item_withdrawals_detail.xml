@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_marginRight="@dimen/spacing_normal"
+        android:singleLine="true"
+        android:maxLines="1"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"/>
 
