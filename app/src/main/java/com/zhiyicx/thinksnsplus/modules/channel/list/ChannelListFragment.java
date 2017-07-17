@@ -168,6 +168,11 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
+    public List<GroupInfoBean> getGroupList() {
+        return mListDatas;
+    }
+
+    @Override
     public void gotoAllChannel() {
         ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
         if (channelListViewPagerFragment != null) {

@@ -42,6 +42,8 @@ public interface ChannelListContract {
          */
         List<ChannelSubscripBean> getChannelListData();
 
+        List<GroupInfoBean> getGroupList();
+
         void gotoAllChannel();
 
     }
@@ -53,6 +55,8 @@ public interface ChannelListContract {
         void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean);
 
         List<SystemConfigBean.Advert> getAdvert();
+
+        void handleGroupJoin(int position, GroupInfoBean groupInfoBean);
     }
 
     interface Repository extends IBaseChannelRepository {

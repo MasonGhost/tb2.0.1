@@ -357,8 +357,13 @@ public class ApiConfig {
     public static final String APP_PATH_GET_CHANNEL_DYNAMIC_LIST = "api/" + API_VERSION + "/channels/{channel_id}/feeds";
 
     /** 圈子相关 */
-    public static final String APP_PATH_GET_ALL_GROUP = "api/" + API_VERSION_2 + "/groups";// 所有的圈子列表
+    public static final String APP_PATH_GET_ALL_GROUP = "api/" + API_VERSION_2 + "/groups";// 所有的圈子列表/如果是post,则是创建圈子
     public static final String APP_PATH_GET_USER_JOINED_GROUP = "api/" + API_VERSION_2 + "/groups/joined";// 用户加入的圈子
+    public static final String APP_PATH_JOIN_GROUP = "api/" + API_VERSION_2 +  "/groups/{group}/join"; // 加入/退出圈子
+    public static final String APP_PATH_JOIN_GROUP_S = "api/" + API_VERSION_2 +  "/groups/%s/join"; // 加入/退出圈子
+    public static final String APP_PATH_GET_GROUP_DETAIL = "api/" + API_VERSION_2 +  "/groups/{group}"; // 圈子详情
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}"; // 动态详情
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts"; // 动态列表
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）

@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -50,6 +51,9 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
     @Inject
     protected ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
+
+//    @Inject
+//    private GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
 
     @Inject
     public BaseChannelRepository(ServiceManager serviceManager) {
@@ -94,24 +98,21 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
             // 未订阅，变为已订阅
             observable = mChannelClient.subscribChannel(channelId);
         }
-        return observable.doOnNext(new Action1<BaseJson<Object>>() {
-            @Override
-            public void call(BaseJson<Object> objectBaseJson) {
-                if (objectBaseJson.isStatus() || objectBaseJson.getCode() == 0) {
-                    // 服务器返回正常状态：操作数据库，数据源
-                    ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
-                    if (subscribState) {
-                        channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() - 1);// 订阅数-1
-                    } else {
-                        channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() + 1);// 订阅数+1
-                    }
-                    // 更改数据源，切换订阅状态
-                    channelSubscripBean.setChannelSubscriped(!channelSubscripBean.getChannelSubscriped());
-                    // 更新数据库
-                    mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBean);
+        return observable.doOnNext(objectBaseJson -> {
+            if (objectBaseJson.isStatus() || objectBaseJson.getCode() == 0) {
+                // 服务器返回正常状态：操作数据库，数据源
+                ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
+                if (subscribState) {
+                    channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() - 1);// 订阅数-1
                 } else {
-                    // 返回错误状态，表明订阅或者取消订阅失败，不要改变当前状态
+                    channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() + 1);// 订阅数+1
                 }
+                // 更改数据源，切换订阅状态
+                channelSubscripBean.setChannelSubscriped(!channelSubscripBean.getChannelSubscriped());
+                // 更新数据库
+                mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBean);
+            } else {
+                // 返回错误状态，表明订阅或者取消订阅失败，不要改变当前状态
             }
         });
     }
@@ -204,5 +205,39 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                 });
                     }
                 });
+    }
+
+    @Override
+    public void handleGroupJoin(GroupInfoBean groupInfoBean) {
+        // 发送订阅后台处理任务
+        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        boolean isJoined = groupInfoBean.getIs_audit() == 1;
+        if (isJoined) {
+            // 已经订阅，变为未订阅
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
+            groupInfoBean.setMembers_count(groupInfoBean.getMembers_count() - 1);// 订阅数-1
+        } else {
+            // 未订阅，变为已订阅
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
+            groupInfoBean.setMembers_count(groupInfoBean.getMembers_count() + 1);// 订阅数+1
+        }
+        // 设置请求路径
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_JOIN_GROUP_S, String.valueOf(groupInfoBean.getId())));
+        // 启动后台任务
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        // 更改数据源，切换订阅状态
+        groupInfoBean.setIs_audit(isJoined ? 0 : 1);
+        // 更新数据库
+//        mGroupInfoBeanGreenDao.insertOrReplace(groupInfoBean);
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> handleGroupJoinByFragment(GroupInfoBean groupInfoBean) {
+        if (groupInfoBean.getIs_audit() == 1){
+            return mChannelClient.quitGroup(groupInfoBean.getId());
+        } else {
+            return mChannelClient.joinGroup(groupInfoBean.getId());
+        }
     }
 }

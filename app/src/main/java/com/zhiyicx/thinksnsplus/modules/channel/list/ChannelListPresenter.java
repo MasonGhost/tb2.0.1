@@ -69,10 +69,10 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
                     mRootView.gotoAllChannel();
                     return;
                 }
-                observable = mRepository.getAllGroupList(maxId);
+                observable = mRepository.getUserJoinedGroupList(maxId);
                 break;
             case ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST:
-                observable = mRepository.getUserJoinedGroupList(maxId);
+                observable = mRepository.getAllGroupList(maxId);
                 break;
             default:
         }
@@ -154,6 +154,22 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
             }
         }
         return imageAdvert;
+    }
+
+    @Override
+    public void handleGroupJoin(int position, GroupInfoBean groupInfoBean) {
+        mRepository.handleGroupJoin(groupInfoBean);
+        EventBus.getDefault().post(groupInfoBean, EventBusTagConfig.EVENT_GROUP_JOIN);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_GROUP_JOIN)
+    public void changeJoinState(GroupInfoBean groupInfoBean){
+        List<GroupInfoBean> list = mRootView.getGroupList();
+        int position = list.indexOf(groupInfoBean);
+        if (position > -1){
+            list.set(position, groupInfoBean);
+            mRootView.refreshData(position);
+        }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB)

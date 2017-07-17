@@ -4,14 +4,12 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
 import java.util.List;
 
 import retrofit2.http.DELETE;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -70,4 +68,20 @@ public interface ChannelClient {
      */
     @GET(ApiConfig.APP_PATH_GET_USER_JOINED_GROUP)
     Observable<BaseJsonV2<List<GroupInfoBean>>> getUserJoinedGroupList(@Query("limit") int limit, @Query("after") long max_id);
+
+    /**
+     * 加入圈子
+     *
+     * @param groupId 圈子id
+     */
+    @POST(ApiConfig.APP_PATH_JOIN_GROUP)
+    Observable<BaseJsonV2<Object>> joinGroup(@Path("group") long groupId);
+
+    /**
+     * 退出圈子
+     *
+     * @param groupId 圈子id
+     */
+    @DELETE(ApiConfig.APP_PATH_JOIN_GROUP)
+    Observable<BaseJsonV2<Object>> quitGroup(@Path("group") long groupId);
 }
