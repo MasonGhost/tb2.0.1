@@ -276,7 +276,7 @@ public class DynamicDetailHeader {
     private void setImageClickListener(final List<DynamicDetailBeanV2.ImagesBean> photoList, final DynamicDetailBeanV2 dynamicBean) {
         final ArrayList<AnimationRectBean> animationRectBeanArrayList
                 = new ArrayList<>();
-        final List<ImageBean> imageBeanList = new ArrayList<>();
+        final List<ImageBean> imageBeans = new ArrayList<>();
         for (int i = 0; i < mPhotoContainer.getChildCount(); i++) {
             final View photoView = mPhotoContainer.getChildAt(i);
             int imagePosition = i;
@@ -289,7 +289,7 @@ public class DynamicDetailHeader {
                     mOnImageClickLisenter.onImageClick(imagePosition, img.getAmount(), photoList.get(imagePosition).getPaid_node());
                     return;
                 }
-
+                imageBeans.clear();
                 for (int i1 = 0; i1 < mPhotoContainer.getChildCount(); i1++) {
                     View photoView1 = mPhotoContainer.getChildAt(i1);
                     ImageView imageView1 = (ImageView) photoView1.findViewById(R.id
@@ -307,13 +307,13 @@ public class DynamicDetailHeader {
                     imageBean.setWidth(task.getWidth());// 图片宽高
                     imageBean.setHeight(task.getHeight());
                     imageBean.setStorage_id(task.getFile());// 图片附件id
-                    imageBeanList.add(imageBean);
+                    imageBeans.add(imageBean);
                     AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView1);// 动画矩形
                     animationRectBeanArrayList.add(rect);
                 }
 
                 GalleryActivity.startToGallery(mContext, mPhotoContainer.indexOfChild
-                        (photoView), imageBeanList, animationRectBeanArrayList);
+                        (photoView), imageBeans, animationRectBeanArrayList);
             });
         }
     }
