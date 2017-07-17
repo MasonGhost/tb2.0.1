@@ -149,7 +149,6 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
                  */
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
-                System.out.println("errorMsg = " + errorMsg);
                 int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
                 if (result.contains("success")){
                     showSnackSuccessMessage(getString(id));

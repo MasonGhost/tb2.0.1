@@ -908,7 +908,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.likes = in.createTypedArrayList(DynamicLikeBean.CREATOR);
         this.paid = in.readByte() != 0;
         this.images = in.createTypedArrayList(ImagesBean.CREATOR);
-        this.diggs = new ArrayList<Integer>();
+        this.diggs = new ArrayList<>();
         in.readList(this.diggs, Integer.class.getClassLoader());
         this.paid_node = in.readParcelable(PaidNote.class.getClassLoader());
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());

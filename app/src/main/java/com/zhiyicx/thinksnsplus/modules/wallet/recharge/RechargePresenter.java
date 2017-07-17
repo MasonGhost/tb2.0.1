@@ -1,14 +1,20 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.recharge;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT;
 
 /**
  * @Describe
@@ -79,8 +85,8 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
             }
 
             @Override
-            public void onError(Throwable e) {
-                super.onError(e);
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
             }
         });
     }
@@ -93,10 +99,28 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
                 try {
                     mRootView.rechargeSuccess(data);
                 } catch (Exception e) {
-
+                    addTo(charge);
                 }
+            }
 
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+                addTo(charge);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                addTo(charge);
             }
         });
+    }
+
+    private void addTo(String charge){
+        BackgroundRequestTaskBean backgroundRequestTaskBean=new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setUser_id((long)AppApplication.getmCurrentLoginAuth().getUser_id());
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.GET);
+        backgroundRequestTaskBean.setPath(ApiConfig.APP_DOMAIN+String.format(ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT,charge));
     }
 }
