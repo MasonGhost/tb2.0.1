@@ -28,7 +28,7 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.subscrip_channel), getString(R.string.all_channel));
+        return Arrays.asList(getString(R.string.joined_group), getString(R.string.all_group));
     }
 
     @Override

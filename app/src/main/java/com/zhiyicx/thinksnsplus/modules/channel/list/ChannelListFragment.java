@@ -8,6 +8,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +26,7 @@ import static com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListViewPager
  * @contact email:450127106@qq.com
  */
 
-public class ChannelListFragment extends TSListFragment<ChannelListContract.Presenter, ChannelSubscripBean>
+public class ChannelListFragment extends TSListFragment<ChannelListContract.Presenter, GroupInfoBean>
         implements ChannelListContract.View {
     @Inject
     ChannelListPresenter mChannelListPresenter;
@@ -71,7 +72,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
         closeLoadingView();
         if (mListDatas.isEmpty()) {
             // 如果界面数据为空,加载数据到界面
@@ -90,7 +91,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
-    public void onCacheResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+    public void onCacheResponseSuccess(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
         super.onCacheResponseSuccess(data, isLoadMore);
         if (mListDatas.isEmpty()) {
             // 数据库数据为空，还需要从网络请求数据，这时还不能够关闭loadingview
@@ -163,7 +164,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     public List<ChannelSubscripBean> getChannelListData() {
-        return mListDatas;
+        return null;
     }
 
     @Override

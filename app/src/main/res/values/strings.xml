@@ -46,6 +46,7 @@
     <string name="buy_goods">购物</string>
     <string name="find_person">找人</string>
     <string name="near_person">附件的人</string>
+    <string name="group">圈子</string>
 
     <!--个人资料-->
     <string name="user_info">个人资料</string>
@@ -161,7 +162,9 @@
 
     <!--频道-->
     <string name="subscrip_channel">我订阅的</string>
+    <string name="joined_group">我加入的</string>
     <string name="all_channel">全部频道</string>
+    <string name="all_group">全部圈子</string>
     <string name="channel_share">分享</string>
     <string name="channel_follow">订阅</string>
     <string name="channel_followed">已订阅</string>
