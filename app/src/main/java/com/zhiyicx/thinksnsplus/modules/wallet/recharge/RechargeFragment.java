@@ -220,7 +220,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.getPayStr(mPayType, mRechargeMoney * MONEY_UNIT));
+                .subscribe(aVoid -> mPresenter.getPayStr(mPayType, mRechargeMoney * MONEY_UNIT));// 传入的是真实货币
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String mRechargeMoneyStr = charSequence.toString();

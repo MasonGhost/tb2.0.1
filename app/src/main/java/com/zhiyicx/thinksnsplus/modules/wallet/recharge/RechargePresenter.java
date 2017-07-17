@@ -10,9 +10,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
 
-import rx.functions.Action0;
-import rx.functions.Action1;
-
 /**
  * @Describe
  * @Author Jungle68
@@ -45,7 +42,11 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
         }).subscribe(new BaseSubscribeForV2<PayStrBean>() {
             @Override
             protected void onSuccess(PayStrBean data) {
-                mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_credentials_succes));
+                try {
+                    mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_credentials_succes));
+                }catch (Exception e){
+                }
+
                 mRootView.payCredentialsResult(data);
             }
 
@@ -89,7 +90,12 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
         mRepository.rechargeSuccessCallBack(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
             @Override
             protected void onSuccess(RechargeSuccessBean data) {
-                mRootView.rechargeSuccess(data);
+                try {
+                    mRootView.rechargeSuccess(data);
+                } catch (Exception e) {
+
+                }
+
             }
         });
     }

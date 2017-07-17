@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.wallet.withdrawals;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -10,8 +9,8 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -22,16 +21,12 @@ import com.zhiyicx.thinksnsplus.data.beans.WithdrawResultBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity;
 import com.zhiyicx.tspay.TSPayClient;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func3;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -148,7 +143,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-                    mPresenter.withdraw(mWithdrawalsMoney * mWalletConfigBean.getRatio()
+//                    mPresenter.withdraw(mWithdrawalsMoney * mWalletConfigBean.getRatio() // 传入的虚拟货币
+                    mPresenter.withdraw(mWithdrawalsMoney * PayConfig.MONEY_UNIT // 传入的真实货币
                             , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
                 });
 
