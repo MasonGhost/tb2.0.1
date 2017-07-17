@@ -1,18 +1,25 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.util.SparseArray;
+
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -22,8 +29,10 @@ import javax.inject.Inject;
 
 import retrofit2.http.Path;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -33,7 +42,10 @@ import rx.functions.Func1;
  */
 
 public class BaseChannelRepository extends BaseDynamicRepository implements IBaseChannelRepository {
+
     protected ChannelClient mChannelClient;
+    @Inject
+    protected UserInfoRepository mUserInfoRepository;
     @Inject
     protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
     @Inject
@@ -43,7 +55,6 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     public BaseChannelRepository(ServiceManager serviceManager) {
         super(serviceManager);
         mChannelClient = serviceManager.getChannelClient();
-
     }
 
     @Override
@@ -155,5 +166,43 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     @Override
     public Observable<List<DynamicDetailBeanV2>> getDynamicListFromChannelV2(long channel_id, long max_id) {
         return null;
+    }
+
+    @Override
+    public Observable<BaseJsonV2<List<GroupInfoBean>>> getGroupList(int type, long max_id) {
+        Observable<BaseJsonV2<List<GroupInfoBean>>> observable;
+        if (type == 0) {
+            observable = mChannelClient.getAllGroupList(TSListFragment.DEFAULT_PAGE_SIZE, max_id);
+        } else {
+            observable = mChannelClient.getUserJoinedGroupList(TSListFragment.DEFAULT_PAGE_SIZE, max_id);
+        }
+        return observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<BaseJsonV2<List<GroupInfoBean>>, Observable<BaseJsonV2<List<GroupInfoBean>>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<List<GroupInfoBean>>> call(BaseJsonV2<List<GroupInfoBean>> listBaseJsonV2) {
+                        List<Object> user_ids = new ArrayList<>();
+                        for (GroupInfoBean groupInfoBean : listBaseJsonV2.getData()) {
+                            for (GroupManagerBean groupManagerBean : groupInfoBean.getManagers()) {
+                                user_ids.add(groupManagerBean.getUser_id());
+                            }
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(listBaseJson -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (int i = 0; i < listBaseJsonV2.getData().size(); i++) {
+                                        for (int j = 0; j < listBaseJsonV2.getData().get(i).getManagers().size(); j++) {
+                                            listBaseJsonV2.getData().get(i).getManagers().get(j).
+                                                    setUserInfoBean(userInfoBeanSparseArray.get(
+                                                            (int) listBaseJsonV2.getData().get(i).getManagers().get(j).getUser_id()));
+                                        }
+                                    }
+                                    return listBaseJsonV2;
+                                });
+                    }
+                });
     }
 }

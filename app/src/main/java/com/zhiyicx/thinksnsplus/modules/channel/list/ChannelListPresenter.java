@@ -1,16 +1,20 @@
 package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +46,8 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
     ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
 
     @Inject
     public ChannelListPresenter(ChannelListContract.Repository repository, ChannelListContract.View rootView) {
@@ -56,46 +62,41 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         int pageType = mRootView.getPageType();
-        Observable<BaseJson<List<ChannelSubscripBean>>> observable = null;
+        Observable<BaseJsonV2<List<GroupInfoBean>>> observable = null;
         switch (pageType) {
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
                 if (istourist()) {
                     mRootView.gotoAllChannel();
                     return;
                 }
-                observable = mRepository.getMySubscribChannelList()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
+                observable = mRepository.getAllGroupList(maxId);
                 break;
             case ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST:
-                observable = mRepository.getAllChannelList()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
+                observable = mRepository.getUserJoinedGroupList(maxId);
                 break;
             default:
         }
-        dealWithChannelNetData(maxId, isLoadMore, observable);
-
+        dealWithGroupNetData(maxId, isLoadMore, observable);
     }
 
     @Override
-    public List<ChannelSubscripBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<GroupInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         int pageType = mRootView.getPageType();
-        List<ChannelSubscripBean> channelSubscripBeanList = null;
+        List<GroupInfoBean> groupInfoBeanList = null;
         switch (pageType) {
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
-                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getSomeOneSubscribChannelList(AppApplication.getMyUserIdWithdefault());
+                groupInfoBeanList = mGroupInfoBeanGreenDao.getUserJoinedGroup();
                 break;
             case ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST:
-                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getAllChannelList(AppApplication.getMyUserIdWithdefault());
+                groupInfoBeanList = mGroupInfoBeanGreenDao.getMultiDataFromCache();
                 break;
             default:
         }
-        return channelSubscripBeanList;
+        return groupInfoBeanList;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
         // 在repository中进行了清空表，和添加数据的操作
         return true;
     }
@@ -104,7 +105,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
         Subscription subscription = observable.subscribe(new BaseSubscribe<List<ChannelSubscripBean>>() {
             @Override
             protected void onSuccess(List<ChannelSubscripBean> data) {
-                mRootView.onNetResponseSuccess(data, isLoadMore);
+//                mRootView.onNetResponseSuccess(data, isLoadMore);
             }
 
             @Override
@@ -115,6 +116,23 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
 
             @Override
             protected void onException(Throwable throwable) {
+                mRootView.onResponseError(throwable, isLoadMore);
+            }
+        });
+        addSubscrebe(subscription);
+    }
+
+    private void dealWithGroupNetData(Long maxId, final boolean isLoadMore, Observable<BaseJsonV2<List<GroupInfoBean>>> observable){
+        Subscription subscription = observable.subscribe(new BaseSubscribeForV2<BaseJsonV2<List<GroupInfoBean>>>() {
+            @Override
+            protected void onSuccess(BaseJsonV2<List<GroupInfoBean>> data) {
+                mRootView.onNetResponseSuccess(data.getData(), isLoadMore);
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+                Throwable throwable = new Throwable(message);
                 mRootView.onResponseError(throwable, isLoadMore);
             }
         });

@@ -2,9 +2,11 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
 import java.util.List;
 
@@ -26,17 +28,12 @@ import rx.Observable;
 public interface ChannelClient {
     /**
      * 订阅某个频道
-     *
-     * @param channel_id
-     * @return
      */
     @POST(ApiConfig.APP_PATH_HANDLE_SUBSCRIB_CHANNEL)
     Observable<BaseJson<Object>> subscribChannel(@Path("channel_id") long channel_id);
 
     /**
      * 取消某个频道的订阅
-     *
-     * @return
      */
     @DELETE(ApiConfig.APP_PATH_HANDLE_SUBSCRIB_CHANNEL)
     Observable<BaseJson<Object>> cancleSubscribChannel(@Path("channel_id") long channel_id);
@@ -45,17 +42,32 @@ public interface ChannelClient {
      * 获取频道列表
      *
      * @param type 频道类型 “”表示所有的频道  “my”表示我关注的频道
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_CHANNEL)
     Observable<BaseJson<List<ChannelInfoBean>>> getChannelList(@Path("type") String type);
 
     /**
      * 获取频道的动态列表
-     *
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_CHANNEL_DYNAMIC_LIST)
     Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(@Path("channel_id") long channel_id,
                                                                       @Query("limit") int limit, @Query("max_id") long max_id);
+
+    /**
+     * 获取所有圈子列表的接口
+     *
+     * @param limit  限制条数
+     * @param max_id max_id
+     */
+    @GET(ApiConfig.APP_PATH_GET_ALL_GROUP)
+    Observable<BaseJsonV2<List<GroupInfoBean>>> getAllGroupList(@Query("limit") int limit, @Query("after") long max_id);
+
+    /**
+     * 获取用户加入的圈子列表
+     *
+     * @param limit  限制条数
+     * @param max_id max_id
+     */
+    @GET(ApiConfig.APP_PATH_GET_USER_JOINED_GROUP)
+    Observable<BaseJsonV2<List<GroupInfoBean>>> getUserJoinedGroupList(@Query("limit") int limit, @Query("after") long max_id);
 }

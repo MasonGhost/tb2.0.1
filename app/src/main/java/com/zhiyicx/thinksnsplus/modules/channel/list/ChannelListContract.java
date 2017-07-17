@@ -3,7 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.channel.list;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 
@@ -19,11 +21,9 @@ import rx.Observable;
  */
 
 public interface ChannelListContract {
-    interface View extends ITSListView<ChannelSubscripBean, ChannelListContract.Presenter> {
+    interface View extends ITSListView<GroupInfoBean, ChannelListContract.Presenter> {
         /**
          * 获取页面类型
-         *
-         * @return
          */
         int getPageType();
 
@@ -46,7 +46,7 @@ public interface ChannelListContract {
 
     }
 
-    interface Presenter extends ITSListPresenter<ChannelSubscripBean> {
+    interface Presenter extends ITSListPresenter<GroupInfoBean> {
         /**
          * 处理用户订阅状态
          */
@@ -58,16 +58,24 @@ public interface ChannelListContract {
     interface Repository extends IBaseChannelRepository {
         /**
          * 获取我订阅的频道
-         *
-         * @return
          */
         Observable<BaseJson<List<ChannelSubscripBean>>> getMySubscribChannelList();
 
+
         /**
          * 获取所有的频道
-         *
-         * @return
          */
         Observable<BaseJson<List<ChannelSubscripBean>>> getAllChannelList();
+
+
+        /**
+         * 获取全部圈子列表
+         */
+        Observable<BaseJsonV2<List<GroupInfoBean>>> getAllGroupList(long max_id);
+
+        /**
+         * 获取用户加入的圈子
+         */
+        Observable<BaseJsonV2<List<GroupInfoBean>>> getUserJoinedGroupList(long max_id);
     }
 }

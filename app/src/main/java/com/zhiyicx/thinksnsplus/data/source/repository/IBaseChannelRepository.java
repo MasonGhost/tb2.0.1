@@ -1,9 +1,11 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -51,5 +53,7 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
      */
     Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id, long max_id);
     Observable<List<DynamicDetailBeanV2>> getDynamicListFromChannelV2(long channel_id, long max_id);
+
+    Observable<BaseJsonV2<List<GroupInfoBean>>> getGroupList(int type, long max_id);
 
 }
