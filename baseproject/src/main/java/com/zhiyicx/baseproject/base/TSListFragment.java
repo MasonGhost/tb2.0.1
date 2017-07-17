@@ -524,7 +524,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void refreshData(int index) {
         setEmptyView();
-        mHeaderAndFooterWrapper.notifyItemChanged(index + mHeaderAndFooterWrapper.getHeadersCount());
+        int position = index + mHeaderAndFooterWrapper.getHeadersCount();
+        mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 
     @Override

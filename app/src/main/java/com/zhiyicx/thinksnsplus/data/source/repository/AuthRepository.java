@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
@@ -53,6 +54,8 @@ public class AuthRepository implements IAuthRepository {
     Application mContext;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
     @Inject
@@ -149,6 +152,7 @@ public class AuthRepository implements IAuthRepository {
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
+        mDynamicDetailBeanV2GreenDao.clearTable();
         mDynamicDetailBeanGreenDao.clearTable();
         mDynamicToolBeanGreenDao.clearTable();
         mDigedBeanGreenDao.clearTable();
