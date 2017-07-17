@@ -136,9 +136,9 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                 .map(dynamicDetailBeanV2s -> {
                     List<DynamicDetailBeanV2> result = new ArrayList<>();
 
-                    for (int i = 0; i < dynamicDetailBeanV2s.size(); i++) {
-                        if (dynamicDetailBeanV2s.get(i).getUser_id() == user_id) {
-                            result.add(dynamicDetailBeanV2s.get(i));
+                    for (DynamicDetailBeanV2 detailBeanV2 : dynamicDetailBeanV2s) {
+                        if (detailBeanV2.getUser_id() == user_id) {
+                            result.add(detailBeanV2);
                         }
                     }
                     return result;
@@ -589,7 +589,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     public void payNote(int dynamicPosition, int imagePosition, int note, boolean isImage) {
         UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
-        if (userInfo != null &&userInfo.getWallet() != null) {
+        if (userInfo != null && userInfo.getWallet() != null) {
             balance = userInfo.getWallet().getBalance();
         }
         double amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
