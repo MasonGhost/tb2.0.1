@@ -197,5 +197,8 @@ dependencies {
 
     compile dataDependences.greendaoSqlcipher
     compile(name: 'lint-library-release', ext: 'aar')
+
+    // update
+    compile dataDependences.update
 }
 
