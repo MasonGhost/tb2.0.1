@@ -177,7 +177,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         } else {
             observable = mChannelClient.getUserJoinedGroupList(TSListFragment.DEFAULT_PAGE_SIZE, max_id);
         }
-        return observable/*.subscribeOn(Schedulers.io())
+        return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<List<GroupInfoBean>, Observable<List<GroupInfoBean>>>() {
                     @Override
@@ -185,6 +185,9 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                         List<Object> user_ids = new ArrayList<>();
                         for (GroupInfoBean groupInfoBean : groupInfoBeen) {
                             for (GroupManagerBean groupManagerBean : groupInfoBean.getManagers()) {
+                                user_ids.add(groupManagerBean.getUser_id());
+                            }
+                            for (GroupManagerBean groupManagerBean : groupInfoBean.getMembers()) {
                                 user_ids.add(groupManagerBean.getUser_id());
                             }
                         }
@@ -195,17 +198,21 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
                                     for (int i = 0; i < groupInfoBeen.size(); i++) {
-                                        if (groupInfoBeen.get(i).getManagers() != null){
+                                        if (groupInfoBeen.get(i).getManagers() != null) {
                                             for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
                                                 groupInfoBeen.get(i).getManagers().get(j).setUserInfoBean(
                                                         userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getManagers().get(j).getUser_id()));
+                                            }
+                                            for (int m = 0; m < groupInfoBeen.get(i).getMembers().size(); m++) {
+                                                groupInfoBeen.get(i).getMembers().get(m).setUserInfoBean(
+                                                        userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getMembers().get(m).getUser_id()));
                                             }
                                         }
                                     }
                                     return groupInfoBeen;
                                 });
                     }
-                })*/;
+                });
     }
 
     @Override
