@@ -45,6 +45,10 @@ public interface MineContract {
          */
         void readMessageByKey(String key);
 
+        /**
+         * 更新用户信息
+         */
+        void updateUserInfo();
     }
 
     interface Repository {

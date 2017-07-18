@@ -19,7 +19,6 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -116,6 +115,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && mPresenter != null) {
             mPresenter.getUserInfoFromDB();
+            mPresenter.updateUserInfo();
         }
     }
 
