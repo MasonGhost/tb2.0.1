@@ -53,7 +53,7 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
      *
      * @param type 0-全部 1-加入的
      */
-    Observable<BaseJsonV2<List<GroupInfoBean>>> getGroupList(int type, long max_id);
+    Observable<List<GroupInfoBean>> getGroupList(int type, long max_id);
 
     void handleGroupJoin(GroupInfoBean groupInfoBean);
 

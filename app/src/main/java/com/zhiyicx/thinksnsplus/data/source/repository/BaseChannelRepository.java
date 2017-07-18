@@ -170,20 +170,20 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
-    public Observable<BaseJsonV2<List<GroupInfoBean>>> getGroupList(int type, long max_id) {
-        Observable<BaseJsonV2<List<GroupInfoBean>>> observable;
+    public Observable<List<GroupInfoBean>> getGroupList(int type, long max_id) {
+        Observable<List<GroupInfoBean>> observable;
         if (type == 0) {
             observable = mChannelClient.getAllGroupList(TSListFragment.DEFAULT_PAGE_SIZE, max_id);
         } else {
             observable = mChannelClient.getUserJoinedGroupList(TSListFragment.DEFAULT_PAGE_SIZE, max_id);
         }
-        return observable.subscribeOn(Schedulers.io())
+        return observable/*.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJsonV2<List<GroupInfoBean>>, Observable<BaseJsonV2<List<GroupInfoBean>>>>() {
+                .flatMap(new Func1<List<GroupInfoBean>, Observable<List<GroupInfoBean>>>() {
                     @Override
-                    public Observable<BaseJsonV2<List<GroupInfoBean>>> call(BaseJsonV2<List<GroupInfoBean>> listBaseJsonV2) {
+                    public Observable<List<GroupInfoBean>> call(List<GroupInfoBean> groupInfoBeen) {
                         List<Object> user_ids = new ArrayList<>();
-                        for (GroupInfoBean groupInfoBean : listBaseJsonV2.getData()) {
+                        for (GroupInfoBean groupInfoBean : groupInfoBeen) {
                             for (GroupManagerBean groupManagerBean : groupInfoBean.getManagers()) {
                                 user_ids.add(groupManagerBean.getUser_id());
                             }
@@ -194,17 +194,18 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                     for (UserInfoBean userInfoBean : listBaseJson.getData()) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
-                                    for (int i = 0; i < listBaseJsonV2.getData().size(); i++) {
-                                        for (int j = 0; j < listBaseJsonV2.getData().get(i).getManagers().size(); j++) {
-                                            listBaseJsonV2.getData().get(i).getManagers().get(j).
-                                                    setUserInfoBean(userInfoBeanSparseArray.get(
-                                                            (int) listBaseJsonV2.getData().get(i).getManagers().get(j).getUser_id()));
+                                    for (int i = 0; i < groupInfoBeen.size(); i++) {
+                                        if (groupInfoBeen.get(i).getManagers() != null){
+                                            for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
+                                                groupInfoBeen.get(i).getManagers().get(j).setUserInfoBean(
+                                                        userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getManagers().get(j).getUser_id()));
+                                            }
                                         }
                                     }
-                                    return listBaseJsonV2;
+                                    return groupInfoBeen;
                                 });
                     }
-                });
+                })*/;
     }
 
     @Override
@@ -212,29 +213,23 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         // 发送订阅后台处理任务
         BackgroundRequestTaskBean backgroundRequestTaskBean = null;
         backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-        boolean isJoined = groupInfoBean.getIs_audit() == 1;
+        boolean isJoined = groupInfoBean.getIs_member() == 1;
         if (isJoined) {
             // 已经订阅，变为未订阅
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            groupInfoBean.setMembers_count(groupInfoBean.getMembers_count() - 1);// 订阅数-1
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST_V2);
         } else {
             // 未订阅，变为已订阅
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-            groupInfoBean.setMembers_count(groupInfoBean.getMembers_count() + 1);// 订阅数+1
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE_V2);
         }
         // 设置请求路径
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_JOIN_GROUP_S, String.valueOf(groupInfoBean.getId())));
         // 启动后台任务
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        // 更改数据源，切换订阅状态
-        groupInfoBean.setIs_audit(isJoined ? 0 : 1);
-        // 更新数据库
-//        mGroupInfoBeanGreenDao.insertOrReplace(groupInfoBean);
     }
 
     @Override
     public Observable<BaseJsonV2<Object>> handleGroupJoinByFragment(GroupInfoBean groupInfoBean) {
-        if (groupInfoBean.getIs_audit() == 1){
+        if (groupInfoBean.getIs_audit() == 1) {
             return mChannelClient.quitGroup(groupInfoBean.getId());
         } else {
             return mChannelClient.joinGroup(groupInfoBean.getId());

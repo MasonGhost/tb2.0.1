@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -58,7 +60,7 @@ public interface ChannelClient {
      * @param max_id max_id
      */
     @GET(ApiConfig.APP_PATH_GET_ALL_GROUP)
-    Observable<BaseJsonV2<List<GroupInfoBean>>> getAllGroupList(@Query("limit") int limit, @Query("after") long max_id);
+    Observable<List<GroupInfoBean>> getAllGroupList(@Query("limit") int limit, @Query("after") long max_id);
 
     /**
      * 获取用户加入的圈子列表
@@ -67,7 +69,7 @@ public interface ChannelClient {
      * @param max_id max_id
      */
     @GET(ApiConfig.APP_PATH_GET_USER_JOINED_GROUP)
-    Observable<BaseJsonV2<List<GroupInfoBean>>> getUserJoinedGroupList(@Query("limit") int limit, @Query("after") long max_id);
+    Observable<List<GroupInfoBean>> getUserJoinedGroupList(@Query("limit") int limit, @Query("after") long max_id);
 
     /**
      * 加入圈子
