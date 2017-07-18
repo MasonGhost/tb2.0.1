@@ -35,7 +35,7 @@ public class GroupInfoBeanGreenDaoImpl extends CommonCacheImpl<GroupInfoBean> {
 
     @Override
     public void saveMultiData(List<GroupInfoBean> multiData) {
-
+        mGroupInfoBeanDao.insertOrReplaceInTx(multiData);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class GroupInfoBeanGreenDaoImpl extends CommonCacheImpl<GroupInfoBean> {
      */
     public List<GroupInfoBean> getUserJoinedGroup() {
         List<GroupInfoBean> list = null;
-        list = mGroupInfoBeanDao.queryBuilder().where(GroupInfoBeanDao.Properties.Is_audit.eq(1)).list();
+        list = mGroupInfoBeanDao.queryBuilder().where(GroupInfoBeanDao.Properties.Is_member.eq(1)).list();
         return list;
     }
 }

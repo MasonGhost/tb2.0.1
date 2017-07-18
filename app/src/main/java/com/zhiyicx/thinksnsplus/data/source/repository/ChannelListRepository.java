@@ -43,12 +43,12 @@ public class ChannelListRepository extends BaseChannelRepository implements Chan
     }
 
     @Override
-    public Observable<BaseJsonV2<List<GroupInfoBean>>> getAllGroupList(long max_id) {
+    public Observable<List<GroupInfoBean>> getAllGroupList(long max_id) {
         return getGroupList(0, max_id);
     }
 
     @Override
-    public Observable<BaseJsonV2<List<GroupInfoBean>>> getUserJoinedGroupList(long max_id) {
+    public Observable<List<GroupInfoBean>> getUserJoinedGroupList(long max_id) {
         return getGroupList(1, max_id);
     }
 

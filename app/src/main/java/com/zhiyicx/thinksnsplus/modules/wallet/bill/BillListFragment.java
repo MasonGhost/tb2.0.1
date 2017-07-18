@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.wallet.bill;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -67,7 +68,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 desc.setEnabled(status_success);
 
                 desc.setText(status_success ? (action == 0 ? "- " + recharge.getAmount() : "+ " + recharge.getAmount()) : getString(R.string.bill_doing));
-                account.setText(recharge.getSubject() + " " + recharge.getBody());
+                account.setText(getDes(recharge));
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
             }
         };
@@ -87,6 +88,34 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
             }
         });
         return adapter;
+    }
+
+    @NonNull
+    private String getDes(RechargeSuccessBean recharge) {
+
+        String result = "";
+        switch (recharge.getChannel()) {
+            case "alipay":
+            case "alipay_wap":
+            case "alipay_pc_direct":
+            case "alipay_qr":
+                result = getString(R.string.alipay) + " " + recharge.getBody();
+                break;
+            case "wx":
+            case "wx_pub":
+            case "wx_pub_qr":
+            case "wx_wap":
+            case "wx_lite":
+                result = getString(R.string.wxpay) + " " + recharge.getBody();
+                break;
+            case "applepay_upacp":
+                result = getString(R.string.apple_pay_upacp) + " " + recharge.getBody();
+                break;
+            default:
+                result = recharge.getBody();
+
+        }
+        return result;
     }
 
     @Override

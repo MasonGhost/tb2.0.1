@@ -75,11 +75,11 @@ public interface ChannelListContract {
         /**
          * 获取全部圈子列表
          */
-        Observable<BaseJsonV2<List<GroupInfoBean>>> getAllGroupList(long max_id);
+        Observable<List<GroupInfoBean>> getAllGroupList(long max_id);
 
         /**
          * 获取用户加入的圈子
          */
-        Observable<BaseJsonV2<List<GroupInfoBean>>> getUserJoinedGroupList(long max_id);
+        Observable<List<GroupInfoBean>> getUserJoinedGroupList(long max_id);
     }
 }

@@ -33,16 +33,16 @@ Gradle 版本
 
 ## 分支使用说明
 
-分支命名方式为`主分支名称_子分支名称_特性名称_作者名称`
+分支命名方式以`git`工作流为准
 
 示例:
 
 ```shell
 master ( 主分支 )
 developer (开发分支 )
-future_add_image ( 特性分支 )
-future_add_image_lip ( 作者分支 )
-fixbug (bug 修复分支)
+feature/add_image  ( 特性分支 )
+feature/add_image_jungle68 ( 个人开发可以加上作者 )
+hotfix/pay_fail ( 修复分支 )
 
 ```
 

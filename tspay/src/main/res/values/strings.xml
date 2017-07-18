@@ -3,4 +3,5 @@
     <string name="choose_pay_style_formart">%s支付</string>
     <string name="alipay">支付宝</string>
     <string name="wxpay">微信</string>
+    <string name="apple_pay_upacp">Apple Pay</string>
 </resources>

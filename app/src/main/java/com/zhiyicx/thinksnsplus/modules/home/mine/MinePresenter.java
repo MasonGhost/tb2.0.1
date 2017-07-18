@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
@@ -13,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -41,6 +43,9 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
 
     @Inject
     SystemRepository mSystemRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public MinePresenter(MineContract.Repository repository, MineContract.View rootView) {
@@ -99,7 +104,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         // 系统消息
         FlushMessages systemInfoFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
         mRootView.setNewSystemInfo(systemInfoFlushMessages != null && systemInfoFlushMessages.getCount() > 0);
-        //更新底部红点
+        // 更新底部红点
         EventBus.getDefault().post((followFlushMessages != null && followFlushMessages.getCount() > 0) || (systemInfoFlushMessages != null && systemInfoFlushMessages.getCount() > 0), EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
     }
 
@@ -107,4 +112,20 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     public void readMessageByKey(String key) {
         mFlushMessageBeanGreenDao.readMessageByKey(key);
     }
+
+    /**
+     * 更新用户信息
+     */
+    @Override
+    public void updateUserInfo() {
+        mUserInfoRepository.getCurrentLoginUserInfo()
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                    @Override
+                    protected void onSuccess(UserInfoBean data) {
+                        mUserInfoBeanGreenDao.insertOrReplace(data);
+                        mRootView.setUserInfo(data);
+                    }
+                });
+    }
+
 }

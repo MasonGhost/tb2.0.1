@@ -117,22 +117,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
         super(repository, rootView);
-        checkUnreadNotification();
     }
-
-    /**
-     * 检测未读消息数
-     */
-    private void checkUnreadNotification() {
-        mRepository.ckeckUnreadNotification()
-                .subscribe(new BaseSubscribeForV2<Void>() {
-                    @Override
-                    protected void onSuccess(Void data) {
-                        LogUtils.i("test notification", data);
-                    }
-                });
-    }
-
 
     @Override
     protected boolean useEventBus() {
@@ -526,6 +511,20 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     }
 
     /**
+     * 检测未读消息数
+     */
+    @Override
+    public void checkUnreadNotification() {
+        mRepository.ckeckUnreadNotification()
+                .subscribe(new BaseSubscribeForV2<Void>() {
+                    @Override
+                    protected void onSuccess(Void data) {
+                        LogUtils.i("test notification", data);
+                    }
+                });
+    }
+
+    /**
      * 处理 获取用户收到的最新消息
      *
      * @return
@@ -614,6 +613,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         EventBus.getDefault().post(true, EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE);
                     }
                 });
+        mUnreadNotificationTotalNums = 0;
 
     }
 
