@@ -29,7 +29,10 @@ public class ApiConfig {
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
+
+
+    //    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
 //
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
@@ -78,13 +81,13 @@ public class ApiConfig {
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
+     *
      * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md}
      * <p>
      * feed:comment 动态被评论
      * feed:reply-comment 动态评论被回复
      * feed:pinned-comment 动态评论申请置顶
      * feed:digg 动态被点赞
-     *
      */
     public static final String NOTIFICATION_KEY_FEED_DIGGS = "feed:digg";
     public static final String NOTIFICATION_KEY_FEED_COMMENTS = "feed:comment";
@@ -106,9 +109,9 @@ public class ApiConfig {
     public static final String APP_PATH_MAKE_NOTIFICAITON_READED = "api/" + API_VERSION_2 + "/user/notifications/";
     // type  获取通知类型，可选 all,read,unread 默认 all
 
-    public static final String NOTIFICATION_TYPE_ALL="all";
-    public static final String NOTIFICATION_TYPE_READ="read";
-    public static final String NOTIFICATION_TYPE_UNREAD="unread ";
+    public static final String NOTIFICATION_TYPE_ALL = "all";
+    public static final String NOTIFICATION_TYPE_READ = "read";
+    public static final String NOTIFICATION_TYPE_UNREAD = "unread ";
 
 
     /**
@@ -356,25 +359,27 @@ public class ApiConfig {
     // 获取频道的动态列表
     public static final String APP_PATH_GET_CHANNEL_DYNAMIC_LIST = "api/" + API_VERSION + "/channels/{channel_id}/feeds";
 
-    /** 圈子相关 */
+    /**
+     * 圈子相关
+     */
     public static final String APP_PATH_GET_ALL_GROUP = "api/" + API_VERSION_2 + "/groups";// 所有的圈子列表/如果是post,则是创建圈子
     public static final String APP_PATH_GET_USER_JOINED_GROUP = "api/" + API_VERSION_2 + "/groups/joined";// 用户加入的圈子
-    public static final String APP_PATH_JOIN_GROUP = "api/" + API_VERSION_2 +  "/groups/{group}/join"; // 加入/退出圈子
-    public static final String APP_PATH_JOIN_GROUP_S = "api/" + API_VERSION_2 +  "/groups/%s/join"; // 加入/退出圈子
-    public static final String APP_PATH_GET_GROUP_DETAIL = "api/" + API_VERSION_2 +  "/groups/{group}"; // 圈子详情
-    public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}"; // 动态详情
-    public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts"; // 动态列表
+    public static final String APP_PATH_JOIN_GROUP = "api/" + API_VERSION_2 + "/groups/{group}/join"; // 加入/退出圈子
+    public static final String APP_PATH_JOIN_GROUP_S = "api/" + API_VERSION_2 + "/groups/%s/join"; // 加入/退出圈子
+    public static final String APP_PATH_GET_GROUP_DETAIL = "api/" + API_VERSION_2 + "/groups/{group}"; // 圈子详情
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}"; // 动态详情
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts"; // 动态列表
 
-    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/collections";// 收藏圈子动态的
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
-    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 +  "/groups/posts/collections";// 我收藏的圈子动态列表
-    public static final String APP_PATH_DELETE_MYCOLLECT_GROUP_DYNAMIC_DIGG = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/digg";// 取消点赞
-    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/digg";// 点赞
-    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/diggs";// 点赞列表
-    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comment";// 创建圈子动态评论
-    public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
-    public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts";// 创建圈子动态
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collections";// 收藏圈子动态的
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
+    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/posts/collections";// 我收藏的圈子动态列表
+    public static final String APP_PATH_DELETE_MYCOLLECT_GROUP_DYNAMIC_DIGG = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 取消点赞
+    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 点赞
+    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/diggs";// 点赞列表
+    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comment";// 创建圈子动态评论
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
+    public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts";// 创建圈子动态
 
 
     /**
@@ -390,9 +395,6 @@ public class ApiConfig {
     public static final String APP_LIKE_FEED = "feeds";
     public static final String APP_LIKE_MUSIC = "musics";
     public static final String APP_LIKE_NEWS = "news";
-
-
-
 
 
     /*******************************************  API V2  *********************************************/
