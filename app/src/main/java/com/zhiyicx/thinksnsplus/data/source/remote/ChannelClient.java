@@ -87,4 +87,12 @@ public interface ChannelClient {
      */
     @DELETE(ApiConfig.APP_PATH_JOIN_GROUP)
     Observable<BaseJsonV2<Object>> quitGroup(@Path("group") long groupId);
+
+    /**
+     * 圈子详情
+     * @param group_id 圈子id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_GROUP_DETAIL)
+    Observable<GroupInfoBean> getGroupDetail(@Path("group") long group_id);
 }

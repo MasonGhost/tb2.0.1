@@ -10,8 +10,11 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
+
+import rx.Observable;
 
 /**
  * @author LiuChao
@@ -55,7 +58,7 @@ public interface ChannelDetailContract {
     }
 
     interface Repository extends IBaseChannelRepository {
-
+        Observable<GroupInfoBean> getGroupDetail(long group_id);
     }
 
     interface Presenter extends ITSListPresenter<GroupDynamicListBean> {
@@ -63,6 +66,8 @@ public interface ChannelDetailContract {
          * 处理用户订阅状态
          */
         void handleChannelSubscrib(ChannelSubscripBean channelSubscripBean);
+
+        void getGroupDetails(long group_id);
 
         /**
          * handle like status

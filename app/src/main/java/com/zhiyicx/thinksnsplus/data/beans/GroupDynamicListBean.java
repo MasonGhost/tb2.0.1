@@ -7,12 +7,15 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
 
 import java.io.Serializable;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
 
 /**
  * @Author Jliuer
@@ -20,8 +23,11 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@Entity
 public class GroupDynamicListBean extends BaseListBean {
-
+    public static final int SEND_ERROR = 0;
+    public static final int SEND_ING = 1;
+    public static final int SEND_SUCCESS = 2;
     /**
      * id : 2
      * title : hehehsdfasdfasdf
@@ -58,6 +64,15 @@ public class GroupDynamicListBean extends BaseListBean {
     private List<ImagesBean> images;
     @Convert(converter = GroupDynamicCommentConvert.class,columnType = String.class)
     private List<GroupDynamicCommentListBean> commentslist;
+    private int state=SEND_ING;
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     @Override
     public Long getMaxId() {
@@ -323,6 +338,7 @@ public class GroupDynamicListBean extends BaseListBean {
         dest.writeString(this.content);
         dest.writeInt(this.group_id);
         dest.writeInt(this.views);
+        dest.writeInt(this.state);
         dest.writeInt(this.diggs);
         dest.writeInt(this.collections);
         dest.writeInt(this.comments);
@@ -335,6 +351,57 @@ public class GroupDynamicListBean extends BaseListBean {
         dest.writeTypedList(this.commentslist);
     }
 
+    public List<GroupDynamicCommentListBean> getCommentslist() {
+        return this.commentslist;
+    }
+
+    public void setCommentslist(List<GroupDynamicCommentListBean> commentslist) {
+        this.commentslist = commentslist;
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1201375789)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getGroupDynamicListBeanDao() : null;
+    }
+
     public GroupDynamicListBean() {
     }
 
@@ -345,6 +412,7 @@ public class GroupDynamicListBean extends BaseListBean {
         this.content = in.readString();
         this.group_id = in.readInt();
         this.views = in.readInt();
+        this.state = in.readInt();
         this.diggs = in.readInt();
         this.collections = in.readInt();
         this.comments = in.readInt();
@@ -355,6 +423,25 @@ public class GroupDynamicListBean extends BaseListBean {
         this.updated_at = in.readString();
         this.images = in.createTypedArrayList(ImagesBean.CREATOR);
         this.commentslist = in.createTypedArrayList(GroupDynamicCommentListBean.CREATOR);
+    }
+
+    @Generated(hash = 809178076)
+    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int collections, int comments, Long user_id, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, int state) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.group_id = group_id;
+        this.views = views;
+        this.diggs = diggs;
+        this.collections = collections;
+        this.comments = comments;
+        this.user_id = user_id;
+        this.is_audit = is_audit;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.images = images;
+        this.commentslist = commentslist;
+        this.state = state;
     }
 
     public static final Creator<GroupDynamicListBean> CREATOR = new Creator<GroupDynamicListBean>() {
@@ -368,4 +455,12 @@ public class GroupDynamicListBean extends BaseListBean {
             return new GroupDynamicListBean[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 699919709)
+    private transient GroupDynamicListBeanDao myDao;
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
 }
