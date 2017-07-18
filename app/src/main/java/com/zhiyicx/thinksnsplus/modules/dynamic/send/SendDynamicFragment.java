@@ -41,6 +41,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
@@ -350,7 +352,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void addPlaceHolder() {
-        if (selectedPhotos.size() < MAX_PHOTOS) {
+        if (selectedPhotos.size() < MAX_PHOTOS && mTvToll.getVisibility() == View.GONE) {// 这个需求是真的怪，打开收费时隐藏添加图片
             // 占位缺省图
             ImageBean camera = new ImageBean();
             selectedPhotos.add(camera);
@@ -402,7 +404,12 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void setRightClick() {
-        mPresenter.sendDynamicV2(packageDynamicData());
+        if (mEtDynamicTitle.getVisibility() == View.VISIBLE) {// 圈子
+            mPresenter.sendGroupDynamic(packageGroupDynamicData());
+        } else {
+            mPresenter.sendDynamicV2(packageDynamicData());
+        }
+
     }
 
     /**
@@ -427,6 +434,24 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         }
         sendDynamicDataBeanV2.setPhotos(photos);
         sendDynamicDataBeanV2.setStorage_task(storage_task);
+    }
+
+    @Override
+    public void packageGroupDynamicStorageData(GroupSendDynamicDataBean sendDynamicDataBeanV2) {
+        List<ImageBean> photos = new ArrayList<>();
+        if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
+            for (int i = 0; i < selectedPhotos.size(); i++) {
+                if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
+                    SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
+                    ImageBean imageBean = selectedPhotos.get(i);
+                    photos.add(imageBean);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? imageBean.getToll_monye() : null);
+                    taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
+                            ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
+                }
+            }
+        }
+        sendDynamicDataBeanV2.setPhotos(photos);
     }
 
     @Override
@@ -458,6 +483,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 sl_send_dynamic.smoothScrollTo(0, 0);
             } else {
+                mTvToll.setVisibility(mTvToll.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
                 mCommonAdapter.notifyDataSetChanged();
             }
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
@@ -520,6 +546,41 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         }
 
         return dynamicDetailBeanV2;
+    }
+
+    private GroupDynamicListBean packageGroupDynamicData() {
+        GroupDynamicListBean groupSendDynamicDataBean = new GroupDynamicListBean();
+        long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication
+                .getmCurrentLoginAuth().getUser_id() : 0;
+
+        groupSendDynamicDataBean.setViews(1);
+        groupSendDynamicDataBean.setGroup_id(1);
+        groupSendDynamicDataBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+        groupSendDynamicDataBean.setContent(mEtDynamicContent.getInputContent());
+        groupSendDynamicDataBean.setTitle(mEtDynamicTitle.getInputContent());
+        groupSendDynamicDataBean.setNew_comments(new ArrayList<>());
+        groupSendDynamicDataBean.setUser_id(userId);
+
+
+        if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
+            List<GroupDynamicListBean.ImagesBean> images = new ArrayList<>();
+            // 最后一张占位图，扔掉
+            for (int i = 0; i < selectedPhotos.size(); i++) {
+                if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
+                    GroupDynamicListBean.ImagesBean imagesBean = new GroupDynamicListBean.ImagesBean();
+                    imagesBean.setImgUrl(selectedPhotos.get(i).getImgUrl());
+                    BitmapFactory.Options options = DrawableProvider.getPicsWHByFile
+                            (selectedPhotos.get(i).getImgUrl());
+                    imagesBean.setHeight(options.outHeight);
+                    imagesBean.setWidth(options.outWidth);
+                    imagesBean.setImgMimeType(options.outMimeType);
+                    images.add(imagesBean);
+                }
+            }
+            groupSendDynamicDataBean.setImages(images);
+        }
+
+        return groupSendDynamicDataBean;
     }
 
     /**
@@ -653,6 +714,9 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             if (originPhotos != null) {
                 selectedPhotos = new ArrayList<>(MAX_PHOTOS);
                 selectedPhotos.addAll(originPhotos);
+            }
+            if (sendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.CHANNEL_DYNAMIC) {
+                mEtDynamicTitle.setVisibility(View.VISIBLE);
             }
         }
         switch (dynamicType) {

@@ -47,13 +47,22 @@ public interface DynamicClient {
     Observable<BaseJson<Object>> sendDynamic(@Body RequestBody body);
 
     /**
-     * 发布动态
+     * 发布动态 v2 接口
      *
      * @return
      */
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_SEND_DYNAMIC_V2)
     Observable<BaseJsonV2<Object>> sendDynamicV2(@Body RequestBody body);
+
+    /**
+     * 发布动态 v2 接口--圈子
+     *
+     * @return
+     */
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(ApiConfig.APP_PATH_SEND_GROUP_DYNAMIC)
+    Observable<BaseJsonV2<Object>> sendGroupDynamic(@Path("group") int group, @Body RequestBody body);
 
     /**
      * 发布动态到频道
@@ -77,11 +86,11 @@ public interface DynamicClient {
 
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST_V2)
     Observable<DynamicBeanV2> getDynamicListV2(@Query("type") String type, @Query
-            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
+            ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit);
 
     @GET(ApiConfig.APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2)
     Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query
-            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
+                                                                          ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit);
 
     /**
      * #点赞一条动态
@@ -232,7 +241,7 @@ public interface DynamicClient {
      * @return
      */
     @DELETE(ApiConfig.APP_PATH_REFUSE_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2> refuseTopComment(@Path("pinned_id")int pinned_id);
+    Observable<BaseJsonV2> refuseTopComment(@Path("pinned_id") int pinned_id);
 
     /**
      * 动态评论置顶审核通过 V2

@@ -21,7 +21,8 @@ public enum BackgroundTaskRequestMethodConfig {
     SEND_DYNAMIC_V2(9),
     TOLL_DYNAMIC_COMMENT_V2(10),
     POST_V2(11),
-    DELETE_V2(12);
+    SEND_GROUP_DYNAMIC(12),
+    DELETE_V2(13);
 
     public final int id;
 
