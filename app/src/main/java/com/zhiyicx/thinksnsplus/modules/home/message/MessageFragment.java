@@ -116,7 +116,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         super.initData();// 需要在 dagger 注入后
-        mPresenter.handleFlushMessage();
     }
 
     @Override
@@ -125,6 +124,15 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         // 刷新信息内容
         mPresenter.refreshConversationReadMessage();
         updateCommnetItemData(mPresenter.updateCommnetItemData());
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            mPresenter.checkUnreadNotification();
+            mPresenter.handleFlushMessage();
+        }
     }
 
     @Override
