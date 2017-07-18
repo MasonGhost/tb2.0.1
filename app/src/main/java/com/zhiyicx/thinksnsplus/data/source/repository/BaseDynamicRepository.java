@@ -710,6 +710,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                                               final String type, final boolean isLoadMore) {
         return observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<List<GroupDynamicListBean>, Observable<List<GroupDynamicListBean>>>() {
                     @Override
                     public Observable<List<GroupDynamicListBean>> call(List<GroupDynamicListBean> groupDynamicList) {

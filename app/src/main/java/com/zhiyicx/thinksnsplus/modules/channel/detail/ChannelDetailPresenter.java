@@ -11,8 +11,6 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.baseproject.utils.ImageUtils;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -31,18 +29,10 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoimpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
@@ -63,8 +53,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -100,8 +90,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
 
     }
 
-    private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
-    SparseArray<Long> msendingStatus = new SparseArray<>();
+//    private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
+//    SparseArray<Long> msendingStatus = new SparseArray<>();
 
     @Inject
     public ChannelDetailPresenter(ChannelDetailContract.Repository repository, ChannelDetailContract.View rootView) {
@@ -115,11 +105,54 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             return;
         }
         long channel_id = mRootView.getChannelId();
-        Subscription subscription = mRepository.getDynamicListFromGroup(channel_id, maxId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(listBaseJson -> {
 
+        if (!isLoadMore) {
+            Observable.zip(mRepository.getGroupDetail(maxId), mRepository.getDynamicListFromGroup(channel_id, maxId)
+                    , new Func2<GroupInfoBean, List<GroupDynamicListBean>, GroupZipBean>() {
+                        @Override
+                        public GroupZipBean call(GroupInfoBean groupInfoBean, List<GroupDynamicListBean> groupDynamicListBeen) {
+                            return new GroupZipBean(groupInfoBean, groupDynamicListBeen);
+                        }
+                    })
+                    .map(new Func1<GroupZipBean, GroupZipBean>() {
+                        @Override
+                        public GroupZipBean call(GroupZipBean groupZipBean) {
+                            List<GroupDynamicListBean> data = groupZipBean.getGroupDynamicList();
+                            for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
+                                List<GroupDynamicCommentListBean> dynamicCommentBeen = mDynamicCommentBeanGreenDaoImpl.getMySendingComment(data.get(i).getMaxId().intValue());
+                                if (!dynamicCommentBeen.isEmpty()) {
+                                    dynamicCommentBeen.addAll(data.get(i).getNew_comments());
+                                    data.get(i).getNew_comments().clear();
+                                    data.get(i).getNew_comments().addAll(dynamicCommentBeen);
+                                }
+                            }
+                            return groupZipBean;
+                        }
+                    })
+                    .subscribe(new BaseSubscribeForV2<GroupZipBean>() {
+                        @Override
+                        protected void onSuccess(GroupZipBean zipData) {
+//                            mInterfaceNum++;
+//                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                            allready();
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                        }
+                    });
+        } else {
+
+        }
+
+        Subscription subscription = mRepository.getDynamicListFromGroup(channel_id, maxId)
+                .map(listBaseJson -> {
                     if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                         List<GroupDynamicListBean> data = getGroupDynamicBeenFromDB();
                         data.addAll(listBaseJson);
@@ -139,27 +172,31 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                 .subscribe(new BaseSubscribeForV2<List<GroupDynamicListBean>>() {
                     @Override
                     protected void onSuccess(List<GroupDynamicListBean> data) {
-                        mInterfaceNum++;
+//                        mInterfaceNum++;
 //                        mRootView.onNetResponseSuccess(data, isLoadMore);
                         allready();
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
-                            mRootView.showMessage(message);
-                        } else {
-                            mRootView.loadAllError();
-                        }
+//                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
+//                            mRootView.showMessage(message);
+//                        } else {
+//                            mRootView.loadAllError();
+//                        }
+
+                        mRootView.loadAllError();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
-                            mRootView.onResponseError(throwable, isLoadMore);
-                        } else {
-                            mRootView.loadAllError();
-                        }
+//                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
+//                            mRootView.onResponseError(throwable, isLoadMore);
+//                        } else {
+//                            mRootView.loadAllError();
+//                        }
+
+                        mRootView.loadAllError();
                     }
                 });
         addSubscrebe(subscription);
@@ -192,10 +229,10 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             return new ArrayList<>();
         }
         List<GroupDynamicListBean> datas = mGroupDynamicListBeanGreenDaoimpl.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
-        msendingStatus.clear();
-        for (int i = 0; i < datas.size(); i++) {
-            msendingStatus.put(i, datas.get(i).getId());
-        }
+//        msendingStatus.clear();
+//        for (int i = 0; i < datas.size(); i++) {
+//            msendingStatus.put(i, datas.get(i).getId());
+//        }
         return datas;
     }
 
@@ -205,9 +242,10 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     }
 
     private void allready() {
-        if (mInterfaceNum == NEED_INTERFACE_NUM) {
-            mRootView.allDataReady();
-        }
+//        if (mInterfaceNum == NEED_INTERFACE_NUM) {
+//            mRootView.allDataReady();
+//        }
+        mRootView.allDataReady();
     }
 
     /**
