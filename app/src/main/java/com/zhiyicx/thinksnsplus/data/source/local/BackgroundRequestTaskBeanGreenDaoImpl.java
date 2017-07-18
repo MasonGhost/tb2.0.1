@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBeanDao;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 public class BackgroundRequestTaskBeanGreenDaoImpl extends CommonCacheImpl<BackgroundRequestTaskBean> {
     @Inject
-    public BackgroundRequestTaskBeanGreenDaoImpl(Context context) {
+    public BackgroundRequestTaskBeanGreenDaoImpl(Application context) {
         super(context);
     }
 

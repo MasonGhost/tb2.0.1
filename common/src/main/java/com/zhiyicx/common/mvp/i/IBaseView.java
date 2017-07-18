@@ -54,4 +54,21 @@ public interface IBaseView<VP> {
      */
     void showSnackLoadingMessage(String message);
 
+    /**
+     * 显示登录提示框
+     */
+    void showLoginPop();
+
+    /**
+     * 屏幕中间带文字的 loading 窗口
+     */
+    void showCenterLoading(String msg);
+
+    void hideCenterLoading();
+
+    /**
+     * 去充值
+     */
+    void  goRecharge(Class<?> cls);
+
 }

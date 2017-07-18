@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,6 +49,15 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
                 .channelListPresenterModule(new ChannelListPresenterModule(this))
                 .build().inject(this);
         super.initView(rootView);
+        initAdvert();
+    }
+
+    private void initAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
+            return;
+
+        ChannelAdvertHeader advertHeader = new ChannelAdvertHeader(getActivity(), mPresenter.getAdvert());
+        mHeaderAndFooterWrapper.addHeaderView(advertHeader.getRootView());
     }
 
     /**
@@ -154,5 +164,13 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     @Override
     public List<ChannelSubscripBean> getChannelListData() {
         return mListDatas;
+    }
+
+    @Override
+    public void gotoAllChannel() {
+        ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
+        if (channelListViewPagerFragment != null) {
+            channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
+        }
     }
 }

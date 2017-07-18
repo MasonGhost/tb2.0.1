@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import solid.ren.skinlibrary.base.SkinBaseActivity;
+import skin.support.app.SkinCompatActivity;
 
 /**
  * @Describe Activity 基类
@@ -23,7 +23,7 @@ import solid.ren.skinlibrary.base.SkinBaseActivity;
  * @Contact 335891510@qq.com
  */
 
-public abstract class BaseActivity<P extends BasePresenter> extends SkinBaseActivity implements
+public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatActivity implements
         IBaseActivity {
     protected final String TAG = this.getClass().getSimpleName();
 

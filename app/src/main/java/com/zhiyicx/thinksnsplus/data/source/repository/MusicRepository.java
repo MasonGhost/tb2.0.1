@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
@@ -24,12 +23,12 @@ import rx.Observable;
 
 public class MusicRepository implements MusicContract.Repository {
     protected MusicClient mMusicClient;
+    @Inject
     protected MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
 
     @Inject
     public MusicRepository(ServiceManager serviceManager) {
         mMusicClient = serviceManager.getMusicClient();
-        mMusicAlbumListDao = AppApplication.AppComponentHolder.getAppComponent().musicAlbumListBeanGreenDaoImpl();
     }
 
     @Override

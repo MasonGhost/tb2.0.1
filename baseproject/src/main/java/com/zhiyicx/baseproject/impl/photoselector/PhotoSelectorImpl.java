@@ -3,9 +3,12 @@ package com.zhiyicx.baseproject.impl.photoselector;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -23,13 +26,16 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import me.iwf.photopicker.PhotoPicker;
 import rx.functions.Action1;
@@ -54,6 +60,9 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private static final int SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
     private static final int CAMERA_PHOTO_CODE = 8888;
 
+    public static final String TOLL_TYPE = "toll_type";
+    public static final String TOLL = "toll";
+    public static final String TOLL_MONEY = "toll_money";
 
     private IPhotoBackListener mTIPhotoBackListener;
     private BaseFragment mFragment;
@@ -64,9 +73,13 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     private int maxCount;// 可选的最大图片数量
     private ArrayList<ImageBean> photosList;// 存储已选择图片
     private ActionPopupWindow mActionPopupWindow;
+    private ArrayList<ImageBean> mTolls = new ArrayList<>();
+    private ArrayList<ImageBean> mOldTolls = new ArrayList<>();
 
-    public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, BaseFragment mFragment, int cropShape) {
-        takePhotoFolder = new File(Environment.getExternalStorageDirectory(), PathConfig.CAMERA_PHOTO_PATH);
+    public PhotoSelectorImpl(IPhotoBackListener iPhotoBackListener, BaseFragment mFragment, int
+            cropShape) {
+        takePhotoFolder = new File(Environment.getExternalStorageDirectory(), PathConfig
+                .CAMERA_PHOTO_PATH);
         mTIPhotoBackListener = iPhotoBackListener;
         this.mFragment = mFragment;
         this.mContext = mFragment.getContext();
@@ -79,10 +92,10 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         this.maxCount = maxCount;
         // 选择相册
         PhotoPicker.builder()
-                .setPreviewEnabled(maxCount == 1 ? false : true) // 是否可预览
+                .setPreviewEnabled(maxCount != 1) // 是否可预览
                 .setGridColumnCount(PHOTO_CLUMS_SIZE)      // 每行的图片数量
                 .setPhotoCount(maxCount)    //  每次能够选择的最
-                .setShowCamera(false)        // 是否需要展示相机
+                .setShowCamera(true)        // 是否需要展示相机
                 .setSelected(selectedPhotos)// 已经选择的图片
                 .start(mContext, mFragment);
     }
@@ -123,18 +136,30 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         mTakePhotoPath = toFile.getAbsolutePath();
         if (suc) {
             photosList.clear();// 清空之前的图片，重新装载
-            // 添加已选择的图片，防止丢失
-            if (selectedPhotos != null) {
-                for (String pic : selectedPhotos) {
-                    ImageBean imageBean = new ImageBean();
-                    imageBean.setImgUrl(pic);
-                    photosList.add(imageBean);
+            // 添加已选择的图片，防止丢失 --->>> 这样数据会重复的
+//            if (selectedPhotos != null) {
+//                for (String pic : selectedPhotos) {
+//                    ImageBean imageBean = new ImageBean();
+//                    imageBean.setImgUrl(pic);
+//                    photosList.add(imageBean);
+//                }
+//            }
+
+            Uri mTakePhotoUri = FileProvider.getUriForFile(mFragment.getContext(),
+                    "ThinkSNSFileProvider", toFile);
+            Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTakePhotoUri);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                captureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            } else {
+                List<ResolveInfo> resInfoList = mContext.getPackageManager().queryIntentActivities(captureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                for (ResolveInfo resolveInfo : resInfoList) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    mContext.grantUriPermission(packageName, mTakePhotoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
             }
 
-            Uri mTakePhotoUri = FileProvider.getUriForFile(mFragment.getContext(), "ThinkSNSFileProvider", toFile);
-            Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mTakePhotoUri);
             mFragment.startActivityForResult(captureIntent, CAMERA_PHOTO_CODE);
 
         } else {
@@ -147,7 +172,8 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     @Override
     public void startToCraft(String imgPath) {
         String destinationFileName = "SampleCropImage" + format() + ".jpg";
-        UCrop uCrop = UCrop.of(Uri.fromFile(new File(imgPath)), Uri.fromFile(new File(mFragment.getActivity().getCacheDir(), destinationFileName)));
+        UCrop uCrop = UCrop.of(Uri.fromFile(new File(imgPath)), Uri.fromFile(new File(mFragment
+                .getActivity().getCacheDir(), destinationFileName)));
         UCrop.Options options = new UCrop.Options();
         initCropShape(uCrop, options);
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
@@ -230,6 +256,21 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
             // 从本地相册获取图片
             if (requestCode == 1000) {
                 photosList.clear();// 清空之前的图片，重新装载
+                ArrayList<ImageBean> tolls;
+                try {
+                    tolls = data.getBundleExtra(TOLL).getParcelableArrayList(TOLL);
+                    mTolls.clear();
+                    mTolls.addAll(tolls);
+                } catch (Exception e) {
+                    try {
+                        tolls = data.getBundleExtra("tollBundle").getParcelableArrayList("tollBundle");
+                        mTolls.clear();
+                        mTolls.addAll(tolls);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+
+                }
                 ArrayList<String> photos = data.getStringArrayListExtra("photos");
                 String craftPath = "";
                 if (photos == null || photos.isEmpty()) {
@@ -240,9 +281,22 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 if (isNeededCraft(craftPath)) {
                     startToCraft(craftPath);
                 } else {
-                    for (String imgUrl : photos) {
+                    Map<String, ImageBean> tollMap = new HashMap<>();
+
+                    for (ImageBean oldImage : mTolls) {
+                        if (oldImage != null && oldImage.getToll() != null) {
+                            tollMap.put(oldImage.getImgUrl(), oldImage);
+                        }
+                    }
+
+                    for (int i = 0; i < photos.size(); i++) {
                         ImageBean imageBean = new ImageBean();
-                        imageBean.setImgUrl(imgUrl);
+                        imageBean.setImgUrl(photos.get(i));
+                        if (tollMap.containsKey(photos.get(i))) {
+                            imageBean.setToll(tollMap.get(photos.get(i)).getToll());
+                        } else {
+                            LogUtils.d("第" + i + "张图片没有设置收费");
+                        }
                         photosList.add(imageBean);
                     }
                     // 需要注意的是：用户有可能清空之前选择的所有图片，然后返回，这样就没有图片了
@@ -332,14 +386,14 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 .item2Str(mFragment.getString(R.string.setting_permission))
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         DeviceUtils.openAppDetail(mFragment.getContext());
                         mActionPopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mActionPopupWindow.hide();
                     }
                 })

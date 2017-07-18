@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -96,13 +97,15 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
         // 设置订阅状态
         tv_channel_subscrib.setChecked(channelSubscripBean.getChannelSubscriped());
         tv_channel_subscrib.setText(channelSubscripBean.getChannelSubscriped() ? getContext().getString(R.string.channel_followed) : getContext().getString(R.string.channel_follow));
-        tv_channel_subscrib.setPadding(channelSubscripBean.getChannelSubscriped() ?getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small):getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+        tv_channel_subscrib.setPadding(channelSubscripBean.getChannelSubscriped() ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         RxView.clicks(tv_channel_subscrib)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        mPresenter.handleChannelSubscrib(position, channelSubscripBean);
+                        if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
+                            mPresenter.handleChannelSubscrib(position, channelSubscripBean);
+                        }
                     }
                 });
 
@@ -111,7 +114,9 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        toChannelDetailPage(getContext(), channelSubscripBean);
+                        if (TouristConfig.CHENNEL_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                            toChannelDetailPage(getContext(), channelSubscripBean);
+                        }
                     }
                 });
     }

@@ -8,16 +8,14 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -50,8 +48,8 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
 
     @Override
-    public void convert(ViewHolder holder, final DynamicBean dynamicBean, DynamicBean lastT, int position,int itemCounts) {
-        super.convert(holder, dynamicBean, lastT, position,itemCounts);
+    public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
+        super.convert(holder, dynamicBean, lastT, position, itemCounts);
         initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 
@@ -64,7 +62,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
      * @param part        this part percent of imageContainer
      */
     @Override
-    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicBean dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */
@@ -72,38 +70,43 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         int height;
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
-        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
-        ImageBean imageBean = imageBeanList.get(positon);
+        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
         with = currentWith;
-        height = (int) (with * imageBean.getHeight() / imageBean.getWidth());
+        height = (with * imageBean.getHeight() / imageBean.getWidth());
         height = height > mImageMaxHeight ? mImageMaxHeight : height;
-        proportion = (int) ((with / imageBean.getWidth()) * 100);
-        view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
-        String url;
-        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            url = String.format(ApiConfig.IMAGE_PATH, imageBean.getStorage_id(), proportion);
-        } else {
-            url = imageBean.getImgUrl();
+        proportion = ((with / imageBean.getWidth()) * 100);
+        if (with * height == 0) {// 就怕是 0
+            with = height = 100;
         }
-        Glide.with(mContext)
-                .load(url)
-                .asBitmap()
-                .override(with, height)
-                .placeholder(R.drawable.shape_default_image)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.shape_default_image)
-                .into(view);
-        if (dynamicBean.getFeed().getStorages() != null) {
-            dynamicBean.getFeed().getStorages().get(positon).setPart(proportion);
+        view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
+
+        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+            Glide.with(mContext)
+                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), with, height, proportion, AppApplication.getTOKEN()))
+                    .override(with, height)
+                    .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.mipmap.pic_locked)
+                    .into(view);
+        } else {
+            Glide.with(mContext)
+                    .load(imageBean.getImgUrl())
+                    .override(with, height)
+                    .placeholder(R.drawable.shape_default_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.shape_default_image)
+                    .into(view);
+        }
+
+        if (dynamicBean.getImages() != null) {
+            dynamicBean.getImages().get(positon).setPropPart(proportion);
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnImageClickListener != null) {
+                        mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
                     }
                 });
     }

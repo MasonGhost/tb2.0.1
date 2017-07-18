@@ -29,6 +29,33 @@
         />
 
     <TextView
+        android:id="@+id/tv_pop_item4"
+        style="@style/style_action_list_item"
+        android:layout_marginTop="@dimen/spacing_line"
+        tools:text="@string/choose_from_photo"
+        />
+
+    <TextView
+        android:id="@+id/tv_pop_item5"
+        style="@style/style_action_list_item"
+        android:layout_marginTop="@dimen/spacing_line"
+        tools:text="@string/choose_from_camera"
+        />
+    <TextView
+        android:id="@+id/tv_pop_des"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_normal_large"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@color/white"
+        android:textSize="@dimen/size_content"
+        android:textColor="@color/normal_for_assist_text"
+        tools:text="@string/choose_from_camera"
+        />
+
+    <TextView
         android:id="@+id/tv_pop_bottom"
         style="@style/style_action_list_item"
         android:layout_marginTop="@dimen/spacing_small"

@@ -111,6 +111,10 @@ public class PagerRecyclerView extends RecyclerView {
         a.recycle();
     }
 
+    /**
+     * 惯性速率
+     * @param flingFactor
+     */
     public void setFlingFactor(float flingFactor) {
         mFlingFactor = flingFactor;
     }
@@ -119,6 +123,10 @@ public class PagerRecyclerView extends RecyclerView {
         return mFlingFactor;
     }
 
+    /**
+     * 划出多少触发下一页
+     * @param triggerOffset
+     */
     public void setTriggerOffset(float triggerOffset) {
         mTriggerOffset = triggerOffset;
     }
@@ -633,10 +641,23 @@ public class PagerRecyclerView extends RecyclerView {
     }
 
     public interface OnPageChangedListener {
+        /**
+         * 页面变换
+         * @param oldPosition
+         * @param newPosition
+         */
         void OnPageChanged(int oldPosition, int newPosition);
 
+        /**
+         * 拖动中
+         * @param downPosition
+         */
         void OnDragging(int downPosition);
 
+        /**
+         * 滑动停止
+         * @param position
+         */
         void OnIdle(int position);
 
     }

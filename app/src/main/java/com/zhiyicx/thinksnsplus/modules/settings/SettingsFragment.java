@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -124,7 +125,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        startActivity(new Intent(getActivity(), CustomWEBActivity.class));
+                        CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala");
                     }
                 });
         // 退出登录
@@ -158,14 +159,14 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .with(getActivity())
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         mPresenter.cleanCache();
                         mCleanCachePopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mCleanCachePopupWindow.hide();
                     }
                 }).build();
@@ -182,7 +183,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         mLoginoutPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.is_sure_login_out))
                 .item2Str(getString(R.string.login_out_sure))
-                .item2StrColor(ContextCompat.getColor(getContext(), R.color.important_for_note))
+                .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -190,7 +191,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .with(getActivity())
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         if (mPresenter.loginOut()) {
                             startActivity(new Intent(getActivity(), LoginActivity.class));
                         }
@@ -199,7 +200,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mLoginoutPopupWindow.hide();
                     }
                 }).build();

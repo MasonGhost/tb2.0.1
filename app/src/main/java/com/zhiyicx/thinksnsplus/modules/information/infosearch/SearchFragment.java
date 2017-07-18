@@ -2,27 +2,23 @@ package com.zhiyicx.thinksnsplus.modules.information.infosearch;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -30,14 +26,12 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -46,7 +40,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Description
  */
 public class SearchFragment extends TSListFragment<SearchContract.Presenter, InfoListDataBean>
-        implements SearchContract.View{
+        implements SearchContract.View {
 
     @BindView(R.id.fragment_info_search_back)
     ImageView mFragmentInfoSearchBack;
@@ -57,11 +51,14 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     @BindView(R.id.fragment_info_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
 
-    private ImageLoader mImageLoader;
-
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_info_search;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
@@ -77,16 +74,13 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     protected void initView(View rootView) {
         super.initView(rootView);
         mEmptyView.setVisibility(View.GONE);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         mFragmentInfoSearchEdittext.setOnEditorActionListener(
-                new TextView.OnEditorActionListener() {
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                            requestNetData(0L, false);
-                            return true;
-                        }
-                        return false;
+                (v, actionId, event) -> {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        requestNetData(0L, false);
+                        return true;
                     }
+                    return false;
                 });
     }
 
@@ -121,28 +115,36 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
                             .getColor(R.color.normal_for_assist_text));
                 }
                 title.setText(realData.getTitle());
-                String url = String.format(ApiConfig.IMAGE_PATH, realData.getStorage().getId(), 50);
-                mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
-                        .url(url)
-                        .imagerView(imageView)
-                        .build());
+
+                if (realData.getStorage() == null) {
+                    imageView.setVisibility(View.GONE);
+                } else {
+                    imageView.setVisibility(View.VISIBLE);
+                    AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
+                            .url(ImageUtils.imagePathConvertV2(realData.getStorage().getId()
+                                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
+                                    , ImageZipConfig.IMAGE_50_ZIP))
+                            .placeholder(R.drawable.shape_default_image)
+                            .errorPic(R.drawable.shape_default_image)
+                            .imagerView(imageView)
+                            .build());
+                }
+
                 holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
                         .getUpdated_at()));
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!AppApplication.sOverRead.contains(position + "")) {
-                            AppApplication.sOverRead.add(position + "");
-                        }
-                        title.setTextColor(getResources()
-                                .getColor(R.color.normal_for_assist_text));
-                        Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(BUNDLE_INFO, realData);
-                        intent.putExtra(BUNDLE_INFO, bundle);
-                        startActivity(intent);
+                holder.itemView.setOnClickListener(v -> {
+                    if (!AppApplication.sOverRead.contains(position + "")) {
+                        AppApplication.sOverRead.add(position + "");
                     }
+                    title.setTextColor(getResources()
+                            .getColor(R.color.normal_for_assist_text));
+                    Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_INFO, realData);
+                    intent.putExtra(BUNDLE_INFO, bundle);
+                    startActivity(intent);
                 });
             }
         };

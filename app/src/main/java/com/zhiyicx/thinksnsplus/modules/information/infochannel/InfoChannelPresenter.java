@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
-import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
@@ -17,7 +17,7 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoChannelPresenter extends BasePresenter<InfoChannelConstract.Reppsitory,
+public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.Reppsitory,
         InfoChannelConstract.View> implements InfoChannelConstract.Presenter {
 
     @Inject

@@ -12,12 +12,23 @@ public class BaseJson<T> {
      * {"message":"","data":{"key":"success"},"status":true,"code":0}
      */
 
-    private boolean status;
-    private String message;
-    private int code;
+    protected boolean status;
+    protected int code;
+    protected int id = -1;
     private T data;
+    private String message;
 
     public BaseJson() {
+    }
+
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isStatus() {
@@ -56,6 +67,7 @@ public class BaseJson<T> {
     public String toString() {
         return "BaseJson{" +
                 "status=" + status +
+                ", id=" + id +
                 ", message='" + message + '\'' +
                 ", code=" + code +
                 ", data=" + data +

@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -11,6 +11,8 @@ import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author LiuChao
  * @describe
@@ -19,7 +21,9 @@ import java.util.List;
  */
 
 public class FollowFansBeanGreenDaoImpl extends CommonCacheImpl<FollowFansBean> {
-    public FollowFansBeanGreenDaoImpl(Context context) {
+
+    @Inject
+    public FollowFansBeanGreenDaoImpl(Application context) {
         super(context);
     }
 

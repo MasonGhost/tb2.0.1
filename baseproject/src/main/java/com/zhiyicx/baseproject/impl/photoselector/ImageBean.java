@@ -11,8 +11,8 @@ import java.io.Serializable;
  * @date 2017/1/13
  * @contact email:450127106@qq.com
  */
-
-public class ImageBean implements Parcelable, Serializable {  //Serializable 用于 DynamicDetailBean中 Convert base64
+public class ImageBean implements Parcelable, Serializable {
+    private static final long serialVersionUID = 7077767228027093637L;  //Serializable 用于 DynamicDetailBean中 Convert base64
 
     /**
      * storage_id : 2
@@ -20,11 +20,72 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
      * height : 1701.0
      */
     private String imgUrl;// 图片的地址
+    private Long feed_id;
     private int storage_id;
+    private int position;// 图片位置
+    private int dynamicPosition;// 动态位置
+    private int toll_type;
+    private float toll_monye;
     private double width;
     private double height;
     private int part;// 图片压缩比例
     private String imgMimeType;// 图片类型
+    private Toll toll;
+
+    public Toll getToll() {
+        return toll;
+    }
+
+    public void setToll(Toll toll) {
+        this.toll = toll;
+        if (toll == null) {
+            setToll_type(0);
+            setToll_monye(0);
+            return;
+        }
+        setToll_type(toll.toll_type);
+        setToll_monye(toll.toll_money > toll.custom_money ? toll.toll_money : toll.custom_money);
+    }
+
+    public int getDynamicPosition() {
+        return dynamicPosition;
+    }
+
+    public void setDynamicPosition(int dynamicPosition) {
+        this.dynamicPosition = dynamicPosition;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public Long getFeed_id() {
+        return feed_id;
+    }
+
+    public void setFeed_id(Long feed_id) {
+        this.feed_id = feed_id;
+    }
+
+    public int getToll_type() {
+        return toll_type;
+    }
+
+    public void setToll_type(int toll_way) {
+        this.toll_type = toll_way;
+    }
+
+    public float getToll_monye() {
+        return toll_monye;
+    }
+
+    public void setToll_monye(float toll_monye) {
+        this.toll_monye = toll_monye;
+    }
 
     public int getPart() {
         return part;
@@ -87,11 +148,14 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
                 ", height=" + height +
                 ", part=" + part +
                 ", imgMimeType='" + imgMimeType + '\'' +
+                "\n" + "toll_type=" + toll_type +
+                "\n" + "toll_monye=" + toll_monye + "\n" +
                 '}';
     }
 
     public ImageBean() {
     }
+
 
     @Override
     public int describeContents() {
@@ -101,20 +165,30 @@ public class ImageBean implements Parcelable, Serializable {  //Serializable 用
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.imgUrl);
+        dest.writeValue(this.feed_id);
         dest.writeInt(this.storage_id);
+        dest.writeInt(this.position);
+        dest.writeInt(this.toll_type);
+        dest.writeFloat(this.toll_monye);
         dest.writeDouble(this.width);
         dest.writeDouble(this.height);
         dest.writeInt(this.part);
         dest.writeString(this.imgMimeType);
+        dest.writeParcelable(this.toll, flags);
     }
 
     protected ImageBean(Parcel in) {
         this.imgUrl = in.readString();
+        this.feed_id = (Long) in.readValue(Long.class.getClassLoader());
         this.storage_id = in.readInt();
+        this.position = in.readInt();
+        this.toll_type = in.readInt();
+        this.toll_monye = in.readFloat();
         this.width = in.readDouble();
         this.height = in.readDouble();
         this.part = in.readInt();
         this.imgMimeType = in.readString();
+        this.toll = in.readParcelable(Toll.class.getClassLoader());
     }
 
     public static final Creator<ImageBean> CREATOR = new Creator<ImageBean>() {

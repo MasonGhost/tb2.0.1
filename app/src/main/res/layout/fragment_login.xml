@@ -67,24 +67,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginRight="@dimen/spacing_mid"
-                android:layout_marginTop="@dimen/spacing_mid"
+
                 >
                 <!--随便逛逛-->
                 <TextView
                     android:id="@+id/tv_look_around"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/spacing_mid"
+                    android:paddingBottom="@dimen/spacing_mid"
                     android:text="@string/no_login"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_content_comment"
-                    android:visibility="invisible"/>
+                    />
                 <!--忘记密码-->
                 <TextView
                     android:id="@+id/tv_forget_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:paddingTop="@dimen/spacing_mid"
                     android:text="@string/forget_password"
+                    android:paddingBottom="@dimen/spacing_mid"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_content_comment"/>
             </RelativeLayout>

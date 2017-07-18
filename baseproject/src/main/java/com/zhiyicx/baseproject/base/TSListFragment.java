@@ -7,6 +7,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.wcy.overscroll.OverScrollCheckListener;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -157,10 +161,12 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
                 // SCROLL_STATE_FLING; //屏幕处于甩动状态
                 // SCROLL_STATE_IDLE; //停止滑动状态
                 // SCROLL_STATE_TOUCH_SCROLL;// 手指接触状态
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Glide.with(getContext()).resumeRequests();
-                } else {
-                    Glide.with(getContext()).pauseRequests();
+                if (AndroidLifecycleUtils.canLoadImage(getContext())) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        Glide.with(getContext()).resumeRequests();
+                    } else {
+                        Glide.with(getContext()).pauseRequests();
+                    }
                 }
             }
 
@@ -223,6 +229,10 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     private void getLastItemVisibility(RecyclerView recyclerView) {
         //得到当前显示的最后一个item的view
         View lastChildView = recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount() - 1);
+        if (lastChildView == null) {
+            mIsLastVisiable = false;
+            return;
+        }
         //得到lastChildView的bottom坐标值
         int lastChildBottom = lastChildView.getBottom();
         //得到Recyclerview的底部坐标减去底部padding值，也就是显示内容最底部的坐标
@@ -300,6 +310,15 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @return
      */
     protected boolean sethasFixedSize() {
+        return false;
+    }
+
+    /**
+     * 当列表数据少于一页时，是否显示无更多数据
+     *
+     * @return
+     */
+    protected boolean showNoMoreData() {
         return false;
     }
 
@@ -403,6 +422,11 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mTvTopTip.setText(text);
     }
 
+    protected void setTopTipHtmlText(@NotNull String text) {
+        Spanned html = Html.fromHtml(text);
+        mTvTopTip.setText(html);
+    }
+
     /**
      * Set the visibility state of this view.
      *
@@ -423,6 +447,13 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         mIsTipMessageSticky = true;
         setTopTipVisible(View.VISIBLE);
         setTopTipText(text);
+    }
+
+    @Override
+    public void showStickyHtmlMessage(@NotNull String html) {
+        mIsTipMessageSticky = true;
+        setTopTipVisible(View.VISIBLE);
+        setTopTipHtmlText(html);
     }
 
     /**
@@ -493,7 +524,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
     @Override
     public void refreshData(int index) {
         setEmptyView();
-        mHeaderAndFooterWrapper.notifyItemChanged(index);
+        int position = index + mHeaderAndFooterWrapper.getHeadersCount();
+        mHeaderAndFooterWrapper.notifyItemChanged(position);
     }
 
     @Override
@@ -506,16 +538,30 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         return mListDatas;
     }
 
-
+    /**
+     * 下拉刷新
+     */
     @Override
     public void onRefresh() {
+        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.istourist() && !mListDatas.isEmpty()) { // 游客不可以加载更多；并且当前是游客；并且当前已经加载了数据了；再次下拉就触发登录
+            hideLoading();
+            showLoginPop();
+            return;
+        }
         mMaxId = DEFAULT_PAGE_MAX_ID;
         mPage = DEFAULT_PAGE;
         requestNetData(mMaxId, false);
     }
 
+    /**
+     * 上拉加载
+     */
     @Override
     public void onLoadMore() {
+        if (!TouristConfig.LIST_CAN_LOAD_MORE && mPresenter.handleTouristControl()) { // 游客加载跟多处理
+            hideLoading();
+            return;
+        }
         mPage++;
         requestNetData(mMaxId, true);
     }
@@ -546,8 +592,8 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
             handleReceiveData(data, isLoadMore, true);
             // 如果需要刷新数据，就进行刷新，因为数据库一般都会比服务器先加载完数据，
             // 这样就能实现，数据库先加载到界面，随后刷新服务器数据的效果
-            if (isNeedRefreshDataWhenComeIn()) {
-                getNewDataFromNet();
+            if ((!mPresenter.istourist() || mListDatas.isEmpty()) && isNeedRefreshDataWhenComeIn()) {
+                getNewDataFromNet();// 如果不是游客 >> 进入界面刷新， 如果是游客 >> 数据为空刷新
             }
         }
     }
@@ -618,7 +664,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
         // 数据加载后，所有的数据数量小于一页，说明没有更多数据了，就不要上拉加载了(除开缓存)
         if (!isFromCache && (data == null || data.size() < DEFAULT_PAGE_SIZE)) {
             mRefreshlayout.setLoadMoreEnabled(false);
-            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE) {// 当前数量大于一页显示数量时，显示加载更多
+            if (mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE || showNoMoreData()) {// mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE 当前数量大于一页显示数量时，显示加载更多
                 mTvNoMoredataText.setVisibility(View.VISIBLE);
             }
         }

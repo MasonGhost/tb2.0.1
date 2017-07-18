@@ -1,10 +1,11 @@
 package com.zhiyicx.thinksnsplus;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import org.junit.Assert;
@@ -15,8 +16,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.FuncN;
+import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.DEFAULT_LOADING_SHOW_TIME;
 
 /**
  * @Describe
@@ -139,13 +147,40 @@ public class JavaTest {
 
     @Test
     public void jsonObject2map() {
-        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
-        Map<String, Object> retMap = new Gson().fromJson(jsonstr,
-                new TypeToken<Map<String, Object>>() {
-                }.getType());
-        for (Map.Entry<String, Object> entry : retMap.entrySet()) {
-            LogUtils.d(TAG, "Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        }
+//        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
+//
+//        Map<String, Object> retMap = new Gson().fromJson(jsonstr,
+//                new TypeToken<Map<String, Object>>() {
+//                }.getType());
+//        for (Map.Entry<String, Object> entry : retMap.entrySet()) {
+//            System.out.println( "Key = " + entry.getKey() + ", Value = " + entry.getValue());
+//        }
+//        String jsonstr2 = "{\n" +
+//                "    \"phone\": [\n" +
+//                "        \"手机号码错误\"\n" +
+//                "    ],\n" +
+//                "    \"password\": [\n" +
+//                "        \"用户密码错误\"\n" +
+//                "    ]\n" +
+//                "}";
+//
+//        Map<String, String[]> retMap2 = new Gson().fromJson(jsonstr2,
+//                new TypeToken<Map<String, String[]>>() {
+//                }.getType());
+//        for (Map.Entry<String, String[]> entry : retMap2.entrySet()) {
+//            System.out.println("Key2 = " + entry.getKey() + ", Value2 = " + entry.getValue()[0]);
+//        }
+        String test = "{\n" +
+                "    \"im:serve\": \"127.0.0.1:9900\", \n" +
+                "    \"im:helper\": [ \n" +
+                "        {\n" +
+                "            \"uid\": \"1\", \n" +
+                "            \"url\": \"https://plus.io/users/1\"\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+        System.out.println("---- = " + new Gson().fromJson(test, SystemConfigBean.class).toString());
+
     }
 
     @Test
@@ -156,6 +191,100 @@ public class JavaTest {
                 "            \"x:resource\":\"MjAxNy8wNC8yOC8wNzAxLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw==\"\n" +
                 "        }";
         LogUtils.d(TAG, "object = " + object.toString());
+    }
+
+    @Test
+    public void rxZipTest() {
+        List<Observable<String>> datas = new ArrayList<>();
+//        datas.add(Observable.just("123"));
+//        datas.add(Observable.just("456"));
+//        datas.add(Observable.just("789"));
+
+        Observable.zip(datas, new FuncN<String>() {
+            @Override
+            public String call(Object... args) {
+                for (Object arg : args) {
+                    System.out.println("args = " + arg.toString());
+                }
+                System.out.println("args = -----------------------");
+                return "12123";
+            }
+        })
+                .subscribe(new BaseSubscribeForV2<String>() {
+                    @Override
+                    protected void onSuccess(String data) {
+                        System.out.println(" hello world : " + data);
+                    }
+                })
+        ;
+    }
+
+    @Test
+    public void rxEmptyTest() {
+        Observable.empty()
+                .observeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("Sys -----1-------= " + Thread.currentThread().getName());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println("Sys = -----2-------" + Thread.currentThread().getName());
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        System.out.println("o = -----1-------" + o);
+                        System.out.println("Sys = -----3-------" + Thread.currentThread().getName());
+                    }
+                });
+        System.out.println("Sys = " + Thread.currentThread().getName());
+    }
+
+    @Test
+    public void rxTimerTest() {
+        Observable.timer(DEFAULT_LOADING_SHOW_TIME, TimeUnit.SECONDS)
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("aLong = onCompleted ");
+                        Assert.assertTrue(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Assert.assertFalse(false);
+                        System.out.println("aLong = onError ");
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        Assert.assertTrue(aLong == DEFAULT_LOADING_SHOW_TIME);
+                        System.out.println("aLong = " + aLong);
+                    }
+                });
+    }
+
+    @Test
+    public void tryCatchTest() {
+        String[] a = {"123", "4569"};
+        String b = null;
+        String c = null;
+        String d = null;
+        try {
+            b = a[0].toString();
+            c = a[1].toString();
+            d = a[5].toString();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
+        Assert.assertTrue(a[1].equals("4569"));
+        Assert.assertTrue(b.equals("123"));
+        Assert.assertTrue(c.equals("4569"));
+        Assert.assertTrue(d == null);
     }
 
 }

@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
+import com.zhiyicx.common.utils.log.LogUtils;
+
 /**
  * @Author Jliuer
  * @Date 2017/3/2/11:22
@@ -121,7 +123,11 @@ public class TGridDecoration extends RecyclerView.ItemDecoration {
                               int childCount) {
         RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
-            childCount = childCount - childCount % spanCount;
+            if (childCount % spanCount == 0) {
+                childCount = childCount - spanCount;
+            } else {
+                childCount = childCount - childCount % spanCount;
+            }
             if (pos >= childCount)// 如果是最后一行，则不需要绘制底部
                 return true;
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
@@ -160,13 +166,14 @@ public class TGridDecoration extends RecyclerView.ItemDecoration {
             width = mDivider.getIntrinsicWidth();
             height = mDivider.getIntrinsicHeight();
         }
-        
-        if (mFullPadding){
+
+        if (mFullPadding) {
             outRect.set(0, 0, width,
                     height);
-        }else {
+        } else {
             if (isLastRaw(parent, itemPosition, spanCount, childCount))// 如果是最后一行，则不需要绘制底部
             {
+                LogUtils.d("最后一行::" + itemPosition);
                 outRect.set(0, 0, width, 0);
             } else if (isLastColum(parent, itemPosition, spanCount, childCount))// 如果是最后一列，则不需要绘制右边
             {

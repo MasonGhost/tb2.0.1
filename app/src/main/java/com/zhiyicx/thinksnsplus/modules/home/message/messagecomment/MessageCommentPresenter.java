@@ -1,10 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
@@ -18,7 +19,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 
 /**
  * @Describe
@@ -27,7 +27,7 @@ import rx.functions.Action0;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessageCommentPresenter extends BasePresenter<MessageCommentContract.Repository, MessageCommentContract.View> implements MessageCommentContract.Presenter {
+public class MessageCommentPresenter extends AppBasePresenter<MessageCommentContract.Repository, MessageCommentContract.View> implements MessageCommentContract.Presenter {
     @Inject
     CommentRepository mCommentRepository;
     @Inject
@@ -41,7 +41,7 @@ public class MessageCommentPresenter extends BasePresenter<MessageCommentContrac
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription commentSub = mRepository.getMyComments(maxId.intValue())
-                .subscribe(new BaseSubscribe<List<CommentedBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<CommentedBean>>() {
                     @Override
                     protected void onSuccess(List<CommentedBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -80,19 +80,13 @@ public class MessageCommentPresenter extends BasePresenter<MessageCommentContrac
     @Override
     public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
         CommentedBean currentCommentBean = mRootView.getListDatas().get(mCurrentPostion);
-        String path = CommentRepository.getCommentPath(currentCommentBean.getSource_id(), currentCommentBean.getComponent(), currentCommentBean.getSource_table());
-        Subscription commentSub = mCommentRepository.sendComment(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
-                    }
-                })
+        String path = CommentRepository.getCommentPath(currentCommentBean.getTarget_id(), currentCommentBean.getChannel());
+        Subscription commentSub = mCommentRepository.sendCommentV2(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Object>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(Object data) {
-
+                    protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
                     }
 

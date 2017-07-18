@@ -25,15 +25,17 @@ public class EventBusTagConfig {
     public static final String EVENT_SEND_DYNAMIC_TO_LIST = "event_send_dynamic_to_List";
     // 发送动态到频道动态列表
 
-    public static final String EVENT_SEND_DYNAMIC_TO_CHANNEL="event_send_dynamic_to_channel";
+    public static final String EVENT_SEND_DYNAMIC_TO_CHANNEL = "event_send_dynamic_to_channel";
     // 收藏动态
-    public static final String EVENT_COLLECT_DYNAMIC="event_collect_dynamic";
+    public static final String EVENT_COLLECT_DYNAMIC = "event_collect_dynamic";
     //更新动态列表
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
     // 详情界面删除内容通知
     public static final String DYNAMIC_LIST_DELETE_UPDATE = "dynamic_list_delete_update";
     // 动态列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_to_List";
+    // 动态图片付费
+    public static final String EVENT_DYNAMIC_TOLL_PICTRUE = "event_dynamic_toll_pictrue";
     // 资讯列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_INFO_LIST = "event_send_info_to_List";
 
@@ -75,6 +77,12 @@ public class EventBusTagConfig {
     public static final String EVENT_MUSIC_CHANGE = "event_music_change";
 
     /**
+     * 钱包相关
+     */
+    // 钱包余额充值成功后更新钱包界面
+    public static final String EVENT_WALLET_RECHARGE = "event_wallet_recharge";
+
+    /**
      * IM 相关
      */
     public static final String EVENT_IM_ONMESSAGERECEIVED = "onMessageReceived";
@@ -96,5 +104,10 @@ public class EventBusTagConfig {
      * Jpush  推送相关
      */
     public static final String EVENT_JPUSH_RECIEVED_MESSAGE_UPDATE_MESSAGE_LIST = "onJpushMessageRecievedUpdateMessageList";
+
+    /**
+     * 消息通知
+     */
+    public static final String EVENT_UNREAD_NOTIFICATION_LIMIT="unread-notification-limit";
 
 }

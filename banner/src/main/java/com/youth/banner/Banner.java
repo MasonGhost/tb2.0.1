@@ -43,6 +43,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
     private int scrollTime = BannerConfig.DURATION;
     private boolean isAutoPlay = BannerConfig.IS_AUTO_PLAY;
     private boolean isScroll = BannerConfig.IS_SCROLL;
+    private boolean isEnableScroll = BannerConfig.IS_ENABLE_SCROLL;
     private int mIndicatorSelectedResId = R.drawable.gray_radius;
     private int mIndicatorUnselectedResId = R.drawable.white_radius;
     private int titleHeight;
@@ -106,7 +107,8 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         delayTime = typedArray.getInt(R.styleable.Banner_delay_time, BannerConfig.TIME);
         scrollTime = typedArray.getInt(R.styleable.Banner_scroll_time, BannerConfig.DURATION);
         isAutoPlay = typedArray.getBoolean(R.styleable.Banner_is_auto_play, BannerConfig.IS_AUTO_PLAY);
-        titleBackground = typedArray.getColor(R.styleable.Banner_title_background, BannerConfig.TITLE_BACKGROUND);
+        isEnableScroll = typedArray.getBoolean(R.styleable.Banner_is_enable_scroll, BannerConfig.IS_ENABLE_SCROLL);
+        titleBackground = typedArray.getResourceId(R.styleable.Banner_title_background, BannerConfig.TITLE_BACKGROUND);
         titleHeight = typedArray.getDimensionPixelSize(R.styleable.Banner_title_height, BannerConfig.TITLE_HEIGHT);
         titleTextColor = typedArray.getColor(R.styleable.Banner_title_textcolor, BannerConfig.TITLE_TEXT_COLOR);
         titleTextSize = typedArray.getDimensionPixelSize(R.styleable.Banner_title_textsize, BannerConfig.TITLE_TEXT_SIZE);
@@ -147,6 +149,16 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
     public Banner setImageLoader(ImageLoaderInterface imageLoader) {
         this.imageLoader = imageLoader;
+        return this;
+    }
+
+    public Banner setTitleTextColor(int titleTextColor) {
+        this.titleTextColor = titleTextColor;
+        return this;
+    }
+
+    public Banner setTitleTextSize(int titleTextSize) {
+        this.titleTextSize = titleTextSize;
         return this;
     }
 
@@ -280,7 +292,8 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
             throw new RuntimeException("[Banner] --> The number of titles and images is different");
         }
         if (titleBackground != -1) {
-            titleView.setBackgroundColor(titleBackground);
+            titleView.setBackgroundResource(titleBackground);
+//            titleView.setBackgroundColor(titleBackground);
         }
         if (titleHeight != -1) {
             titleView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, titleHeight));
@@ -430,6 +443,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         currentItem = 1;
         if (adapter == null) {
             adapter = new BannerPagerAdapter();
+
             viewPager.addOnPageChangeListener(this);
         }
         viewPager.setAdapter(adapter);
@@ -448,11 +462,13 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
 
     public void startAutoPlay() {
+        isAutoPlay = true;
         handler.removeCallbacks(task);
         handler.postDelayed(task, delayTime);
     }
 
     public void stopAutoPlay() {
+        isAutoPlay = false;
         handler.removeCallbacks(task);
     }
 
@@ -461,7 +477,6 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
         public void run() {
             if (count > 1 && isAutoPlay) {
                 currentItem = currentItem % (count + 1) + 1;
-//                Log.i(tag, "curr:" + currentItem + " count:" + count);
                 if (currentItem == 1) {
                     viewPager.setCurrentItem(currentItem, false);
                     handler.post(task);
@@ -635,5 +650,13 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
     public void releaseBanner() {
         handler.removeCallbacksAndMessages(null);
+    }
+
+    public int getCurrentItem() {
+        return toRealPosition(currentItem);
+    }
+
+    public int getItemCount() {
+        return imageUrls.size();
     }
 }

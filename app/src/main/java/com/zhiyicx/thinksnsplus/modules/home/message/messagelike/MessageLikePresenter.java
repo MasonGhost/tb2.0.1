@@ -1,8 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagelike;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 
@@ -22,7 +22,7 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class MessageLikePresenter extends BasePresenter<MessageLikeContract.Repository, MessageLikeContract.View> implements MessageLikeContract.Presenter {
+public class MessageLikePresenter extends AppBasePresenter<MessageLikeContract.Repository, MessageLikeContract.View> implements MessageLikeContract.Presenter {
     @Inject
     DigedBeanGreenDaoImpl mDigedBeanGreenDao;
 
@@ -34,7 +34,7 @@ public class MessageLikePresenter extends BasePresenter<MessageLikeContract.Repo
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription commentSub = mRepository.getMyDiggs(maxId.intValue())
-                .subscribe(new BaseSubscribe<List<DigedBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<DigedBean>>() {
                     @Override
                     protected void onSuccess(List<DigedBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);

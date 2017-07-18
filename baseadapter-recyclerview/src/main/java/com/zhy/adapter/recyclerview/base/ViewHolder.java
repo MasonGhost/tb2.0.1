@@ -73,7 +73,13 @@ public class ViewHolder extends RecyclerView.ViewHolder
         return mConvertView;
     }
 
+    public ImageView getImageViwe(int id){
+        return getView(id);
+    }
 
+    public TextView getTextView(int id){
+        return getView(id);
+    }
 
 
     /****以下为辅助方法*****/

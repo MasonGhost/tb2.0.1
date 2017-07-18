@@ -1,9 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
-import android.app.Application;
-import android.support.v4.media.MediaBrowserCompat;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 
 import dagger.Module;
@@ -29,12 +25,7 @@ public class MusicPresenterModule {
     }
 
     @Provides
-    MusicContract.Repository provideMusicRepository(ServiceManager serviceManager) {
-        return new MusicRepository(serviceManager);
-    }
-
-    @Provides
-    MediaBrowserCompat provideMediaBrowserCompat(){
-        return null;
+    MusicContract.Repository provideMusicRepository(MusicRepository musicRepository) {
+        return musicRepository;
     }
 }

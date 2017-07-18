@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.provider.MediaStore;
@@ -32,7 +33,7 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
 
     private MediaBrowserCompat mMediaBrowserCompat;
 
-    private MusicPlayBackFragment mPlayBackFragment;
+//    private MusicPlayBackFragment mPlayBackFragment;
 
     public static final String EXTRA_START_FULLSCREEN =
             "com.zhiyicx.thinksnsplus.EXTRA_START_FULLSCREEN";
@@ -70,12 +71,12 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     @Override
     protected void onStart() {
         super.onStart();
-        mPlayBackFragment = (MusicPlayBackFragment) getSupportFragmentManager().findFragmentById
-                (R.id.fragment_playback_controls);
-        if (mPlayBackFragment == null) {
-            throw new IllegalStateException("Mising fragment with id 'controls'. Cannot continue.");
-        }
-        hidePlaybackControls();
+//        mPlayBackFragment = (MusicPlayBackFragment) getSupportFragmentManager().findFragmentById
+//                (R.id.fragment_playback_controls);
+//        if (mPlayBackFragment == null) {
+//            throw new IllegalStateException("Mising fragment with id 'controls'. Cannot continue.");
+//        }
+//        hidePlaybackControls();
         mMediaBrowserCompat.connect();
     }
 
@@ -109,7 +110,7 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
                     .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |
                             Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     .putExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION,
-                            intent.getParcelableExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION));
+                            (Parcelable) intent.getParcelableExtra(EXTRA_CURRENT_MEDIA_DESCRIPTION));
             startActivity(fullScreenIntent);
         }
     }
@@ -157,9 +158,9 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
     }
 
     protected void hidePlaybackControls() {
-        getSupportFragmentManager().beginTransaction()
-                .hide(mPlayBackFragment)
-                .commit();
+//        getSupportFragmentManager().beginTransaction()
+//                .hide(mPlayBackFragment)
+//                .commit();
     }
 
     protected boolean shouldShowControls() {
@@ -188,9 +189,9 @@ public class MusicDetailActivity extends TSActivity<MusicDetailPresenter, MusicD
         } else {
             hidePlaybackControls();
         }
-        if (mPlayBackFragment != null) {
-            mPlayBackFragment.onConnected();
-        }
+//        if (mPlayBackFragment != null) {
+//            mPlayBackFragment.onConnected();
+//        }
         onMediaControllerConnected();
     }
 

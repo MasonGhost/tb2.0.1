@@ -16,6 +16,7 @@
     <string name="liked">赞过的</string>
     <string name="like_me">赞了我</string>
     <string name="comment_me">评论了我</string>
+    <string name="recieved_review">提交评论置顶</string>
     <string name="comment_success">评论成功</string>
     <string name="comment_digg_much_hint">等人</string>
     <string name="comment_fail">评论失败</string>
@@ -33,8 +34,10 @@
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
     <string name="setting">设置</string>
+    <string name="wallet">钱包</string>
     <string name="follow">关注</string>
     <string name="fans">粉丝</string>
+    <string name="system_info">系统消息</string>
 
     <!--发现-->
     <string name="information">资讯</string>
@@ -90,9 +93,11 @@
     <string name="album_selected">选择</string>
     <string name="save_to_photo">保存至手机相册</string>
     <string name="save_success">图片保存成功:</string>
+    <string name="save_pic_ing">保存中&#8230;</string>
     <string name="save_failure1">图片保存失败</string>
     <string name="save_failure2">sd卡不存在</string>
     <string name="all_photos">所有图片</string>
+    <string name="toll_setting">收费选项</string>
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
@@ -110,15 +115,33 @@
     <string name="dynamic_list_uncollect_dynamic">取消收藏</string>
     <string name="dynamic_list_report_dynamic">举报</string>
     <string name="dynamic_list_delete_comment">删除评论</string>
+    <string name="dynamic_list_top_comment">申请评论置顶</string>
     <string name="dynamic_list_resend_comment">重发评论</string>
     <string name="resend">重新发送</string>
     <string name="reply">回复%s:</string>
     <!--发布动态-->
     <string name="send_dynamic">发布动态</string>
+    <string name="send_words_dynamic">文字</string>
+    <string name="send_image_dynamic">图片</string>
     <string name="dynamic_title_hint">有标题更吸引人</string>
     <string name="dynamic_content_hint">输入要说的话，图文结合更精彩哦</string>
     <string name="dynamic_content_no_pic_hint">输入要说的话</string>
     <string name="dynamic_send_cancel_hint">你还有没有发布的内容，是否放弃发布？</string>
+    <string name="dynamic_send_toll">是否收费</string>
+    <string name="dynamic_send_toll_way">选择图片收费方式</string>
+    <string name="dynamic_send_toll_count">选择图片收费金额</string>
+    <string name="dynamic_send_toll_title">设置图片收费</string>
+    <string name="dynamic_send_toll_reset">重置</string>
+    <string name="dynamic_send_toll_words_count">选择文字收费金额</string>
+    <string name="dynamic_send_toll_money">自定义金额</string>
+    <string name="dynamic_send_toll_look">查看收费</string>
+    <string name="dynamic_send_toll_download">下载收费</string>
+    <string name="dynamic_send_toll_notes">注：超过%1$d字部分内容收费</string>
+    <string name="dynamic_send_toll_select_money">¥%1$.2f</string>
+    <string name="dynamic_send_toll_toll_verify">应配置至少一张图片费用</string>
+    <string name="instructions">说明</string>
+
+
     <!--动态详情-->
     <string name="dynamic_dig_count">%1$s人点赞</string>
     <string name="dynamic_comment_count">%1$s条评论</string>
@@ -151,6 +174,45 @@
     <string name="collect_activity">活动</string>
     <string name="collect_album">专辑</string>
 
+    <!--动态置顶-->
+    <string name="yuan">元</string>
+    <string name="select_day">%1$dd</string>
+    <string name="select_topday">选择置顶天数</string>
+    <string name="totop_money">置顶金额</string>
+    <string name="totop_vrify">此动态正在审核置顶中请勿重复提交</string>
+    <string name="et_top_input">输入金额</string>
+    <string name="et_top_total">总金额</string>
+    <string name="words_holder">囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧囧</string>
+    <string name="to_top">申请置顶</string>
+    <string name="to_recharge">余额不足，去充值</string>
+    <string name="sticktop_instructions">置顶说明</string>
+    <string name="sticktop_instructions_detail">置顶金额必须是整数，不能出现小数</string>
+    <string name="dynamic_list_top_dynamic">申请动态置顶</string>
+    <string name="dynamic_list_top_dynamic_success">申请动态置顶成功</string>
+    <string name="to_top_description">当前平均置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
+
+    <!--设置评论收费-->
+    <string name="apply_doing">申请中&#8230;</string>
+    <string name="dynamic_comment_toll">设置评论收费</string>
+    <string name="limit_monye">金额必须是整数且大于0元，不能出现小数</string>
+    <string name="monye_instructions">金额说明</string>
+    <string name="dynamic_comment_toll_success">设置评论收费成功</string>
+    <string name="dynamic_comment_toll_money">设置评论收费金额</string>
+
+    <!--置顶评论-->
+    <string name="review">审核通知</string>
+    <string name="review_ing">待审核</string>
+    <string name="review_approved">同意置顶</string>
+    <string name="review_dynamic_deleted">该动态已被删除</string>
+    <string name="review_content_deleted">内容已被删除</string>
+    <string name="review_comment_deleted">该评论已被删除</string>
+    <string name="review_description">支付¥%1$.2f申请置顶评论“%2$s”</string>
+    <string name="review_refuse">拒绝置顶</string>
+    <string name="stick_dynamic_comment">置顶评论收费</string>
+    <string name="dynamic_comment_top_success">置顶评论成功</string>
+    <string name="dynamic_comment_top_money">设置评论置顶金额</string>
+    <string name="stick_comment_desc">您只需¥%.2f元就可以置顶评论，\n</string>
+
     <!--代码中的string-->
     <string name="token_expiers">token过期，请重新登陆</string>
     <string name="share">分享</string>
@@ -164,4 +226,77 @@
     <!-- WXPayEntryActivity -->
     <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
     <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
+
+    <!--钱包-->
+    <string name="default_mongy">0.00</string>
+    <string name="account_balance">账户余额(元)</string>
+    <string name="recharge">充值</string>
+    <string name="withdraw">提现</string>
+    <string name="withdraw_doing">提现中&#8230;</string>
+    <string name="withdraw_succes">提现成功</string>
+    <string name="withdraw_failed">提现失败</string>
+    <string name="recharge_and_withdraw_rule">充值提现规则</string>
+    <string name="recharge_instructions">充值说明</string>
+    <string name="withdrawal_instructions">提现说明</string>
+    <string name="recharge_instructions_detail">充值金额必须是整数，不能出现小数</string>
+    <string name="withdrawal_instructions_detail">提现金额必须是整数，不能出现小数</string>
+    <string name="recharge_and_withdraw_rule_detail">充值提现规则:發的卡jfk領導就仨個鏈接東方斯卡拉國家的放大鏡看撒結果來看的啥規律的時間啊趕緊發的司空見慣了肯定撒法結果來看發動機法國警方的思考了趕緊離開范德薩結果來看薩拉看過絕對瘋狂了時間過來看房考慮發過價格浮動考慮時間管理開發的價格</string>
+    <string name="detail">明细</string>
+    <string name="get_it">知道了</string>
+    <string name="choose_recharge_money">选择充值金额</string>
+    <string name="custom_recharge_money">自定义金额</string>
+    <string name="choose_recharge_style">选择充值方式</string>
+    <string name="choose_recharge_style_formart">%s充值</string>
+    <string name="choose_withdrawals_style_formart">%s提现</string>
+
+    <string name="wallet_config_info_get_loading_tip">钱包配置信息获取中&#8230;</string>
+    <string name="get_success">获取成功</string>
+    <string name="pay_fail">支付失败</string>
+    <string name="pay_success">支付成功</string>
+    <string name="pay_cancel">取消支付</string>
+    <string name="pay_invalid">微信客户端未安装</string>
+
+    <!--钱包 之 充值-->
+    <string name="recharge_credentials_ing">获取充值凭证&#8230;</string>
+    <string name="recharge_credentials_succes">获取充值凭证成功</string>
+
+    <!--钱包 之 提现-->
+    <string name="withdraw_money">提现金额</string>
+    <string name="withdraw_money_done">%1$s 账户提现</string>
+    <string name="min_withdraw_money">未满足可提现最低金额</string>
+    <string name="limit_withdraw_count">一月只能提现一次</string>
+    <string name="limit_withdraw_money">金额已超出可提现余额</string>
+    <string name="withdraw_all">全部</string>
+    <string name="withdraw_out">支出</string>
+    <string name="withdraw_in">收入</string>
+    <string name="withdraw_details">提现明细</string>
+    <string name="withdraw_ways">选择提现方式</string>
+    <string name="withdraw_account">提现账户</string>
+    <string name="withdraw_account_input">输入提现账户</string>
+    <!--钱包 之 账户详情-->
+    <string name="account_form_name">付款人</string>
+    <string name="account_detail">账户详情</string>
+    <string name="account_to_name">收款人</string>
+    <string name="transaction_description">交易说明</string>
+    <string name="transaction_account">交易账户</string>
+    <string name="transaction_time">交易时间</string>
+    <string name="transaction_success">交易成功</string>
+    <string name="bill_doing">操作中</string>
+    <string name="transaction_fail">交易失败</string>
+    <string name="transaction_doing">交易中&#8230;</string>
+
+    <!--意见反馈-->
+    <string name="hint_phone_or_email">请输入电话或者邮箱，方便我们与您联系</string>
+    <string name="feed_back">意见反馈</string>
+    <string name="feed_back_ing">反馈中&#8230;</string>
+    <string name="feed_back_success">反馈成功</string>
+    <string name="feed_back_failed">反馈失败</string>
+    <string name="hint_feed_back">请输入反馈，我们将为您不断改进</string>
+    <string name="submit">提交</string>
+    <string name="normal_qustion">常见问题(暂未开放)</string>
+    <string name="normal_qustion_one">不想看到未关注的动态，怎么关闭？</string>
+    <string name="normal_qustion_two">在3G/4G下不能使用ThinkSNS+</string>
+    <string name="normal_qustion_three">怎么更换个人主页相册封面？</string>
+    <string name="input_instructions">输入提示</string>
+    <string name="input_instructions_detail">输入格式错误，手机号码或邮箱仅支持数字或字母</string>
 </resources>

@@ -52,10 +52,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @author LiuChao
@@ -419,8 +420,19 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         // 设置头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        int storegeId;
+        String userIconUrl;
+        try {
+            storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_38_ZIP);
+        } catch (Exception e) {
+            userIconUrl = mUserInfoBean.getAvatar();
+        }
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                .url(userIconUrl)
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .imagerView(mIvHeadIcon)
@@ -527,28 +539,28 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         setGender(UserInfoBean.MALE);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         setGender(UserInfoBean.FEMALE);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
-                    public void onItem3Clicked() {
+                    public void onItemClicked() {
                         setGender(UserInfoBean.SECRET);
                         mGenderPopupWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mGenderPopupWindow.hide();
                     }
                 })
@@ -572,7 +584,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         // 选择相册，单张
                         mPhotoSelector.getPhotoListFromSelector(1, null);
                         mPhotoPopupWindow.hide();
@@ -580,7 +592,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         // 选择相机，拍照
                         mPhotoSelector.getPhotoFromCamera(null);
                         mPhotoPopupWindow.hide();
@@ -588,7 +600,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mPhotoPopupWindow.hide();
                     }
                 }).build();

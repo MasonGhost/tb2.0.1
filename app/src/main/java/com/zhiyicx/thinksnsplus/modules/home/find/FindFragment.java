@@ -10,19 +10,24 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -52,6 +57,9 @@ public class FindFragment extends TSFragment {
 
     private ActionPopupWindow mActionPopupWindow;
 
+    @Inject
+    AuthRepository mAuthRepository;
+
     public FindFragment() {
     }
 
@@ -64,6 +72,7 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initView(View rootView) {
+        AppApplication.AppComponentHolder.getAppComponent().inject(this);
     }
 
     @Override
@@ -78,7 +87,6 @@ public class FindFragment extends TSFragment {
 
     @Override
     protected void initData() {
-
     }
 
     @Override
@@ -116,41 +124,54 @@ public class FindFragment extends TSFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
-                startActivity(new Intent(getActivity(), InfoActivity.class));
+                if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
+                    startActivity(new Intent(getActivity(), InfoActivity.class));
+                } else {
+                    showLoginPop();
+                }
                 break;
             case R.id.find_chanel:
-                startActivity(new Intent(getActivity(), ChannelListActivity.class));
+                if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
+                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
+                } else {
+                    showLoginPop();
+                }
                 break;
             case R.id.find_active:
                 break;
             case R.id.find_music:
-                ActivityManager activityManager = (ActivityManager) getActivity()
-                        .getSystemService(Context.ACTIVITY_SERVICE);
-                List<ActivityManager.RunningAppProcessInfo> infos = activityManager
-                        .getRunningAppProcesses();
+                if (TouristConfig.MUSIC_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
 
-                for (ActivityManager.RunningAppProcessInfo info : infos) {
-                    String name = info.processName;
-                    LogUtils.d(name);
+                    ActivityManager activityManager = (ActivityManager) getActivity()
+                            .getSystemService(Context.ACTIVITY_SERVICE);
+                    List<ActivityManager.RunningAppProcessInfo> infos = activityManager
+                            .getRunningAppProcesses();
 
-                }
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (Settings.canDrawOverlays(getContext())) {
-                        startActivity(new Intent(getActivity(), MusicListActivity.class));
+                    for (ActivityManager.RunningAppProcessInfo info : infos) {
+                        String name = info.processName;
+                        LogUtils.d(name);
+
+                    }
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        if (Settings.canDrawOverlays(getContext())) {
+                            startActivity(new Intent(getActivity(), MusicListActivity.class));
+                        } else {
+                            initPermissionPopUpWindow();
+                            mActionPopupWindow.show();
+                        }
                     } else {
-                        initPermissionPopUpWindow();
-                        mActionPopupWindow.show();
+                        startActivity(new Intent(getActivity(), MusicListActivity.class));
                     }
                 } else {
-                    startActivity(new Intent(getActivity(), MusicListActivity.class));
+                    showLoginPop();
                 }
                 break;
             case R.id.find_buy:
-                Intent intent = new Intent(getActivity(), CustomWEBActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.URL_JIPU_SHOP);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
+                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
+                } else {
+                    showLoginPop();
+                }
                 break;
             case R.id.find_person:
                 break;
@@ -178,7 +199,7 @@ public class FindFragment extends TSFragment {
                 .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         mActionPopupWindow.hide();
                         if (isOppoR9s) {
                             DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
@@ -189,13 +210,13 @@ public class FindFragment extends TSFragment {
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mActionPopupWindow.hide();
                     }
                 })
                 .isFocus(true)
                 .isOutsideTouch(true)
-                .backgroundAlpha(0.8f)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                 .build();
     }
 }

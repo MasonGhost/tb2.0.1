@@ -5,13 +5,15 @@ import android.content.Context;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
-import com.bumptech.glide.load.engine.cache.DiskCache;
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
-import com.bumptech.glide.load.engine.cache.DiskLruCacheWrapper;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
 import com.bumptech.glide.module.GlideModule;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+
+import java.io.InputStream;
 
 /**
  * @Describe Glide配置信息
@@ -25,7 +27,7 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void applyOptions(final Context context, GlideBuilder builder) {
-       /* builder.setDiskCache(new DiskCache.Factory() {
+       /* builder.setDiskCache(new DiskCache.StreamFactory() {
             @Override
             public DiskCache build() {
                 // Careful: the external cache directory doesn't enforce permissions
@@ -48,6 +50,6 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-
+//        glide.register(String.class, InputStream.class, new ImageUtils.V2ImageHeaderedLoader.StreamFactory("Bearer "+AppApplication.getTOKEN()));
     }
 }

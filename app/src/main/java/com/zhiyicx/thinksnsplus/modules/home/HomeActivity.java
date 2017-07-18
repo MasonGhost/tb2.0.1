@@ -13,6 +13,8 @@ import android.text.TextUtils;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.BuildConfig;
+import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 
 import java.io.BufferedReader;
@@ -44,14 +46,23 @@ public class HomeActivity extends TSActivity {
         if (bundle != null) {
             JpushMessageBean jpushMessageBean = bundle.getParcelable(BUNDLE_JPUSH_MESSAGE);
             if (jpushMessageBean != null) {
-                ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MESSAGE);
+                switch (jpushMessageBean.getType()) {
+                    case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_SYSTEM:
+                        ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MINE);
+                        break;
+                    default:
+                        ((HomeContract.View) mContanierFragment).checkBottomItem(HomeFragment.PAGE_MESSAGE);
+                }
+
             }
         }
     }
 
     @Override
     protected void componentInject() {
-        LogUtils.d(TAG, "getDeviceInfo = " + getDeviceInfo(getApplicationContext()));
+        if (BuildConfig.DEBUG) {
+            LogUtils.d(TAG, "getDeviceInfo = " + getDeviceInfo(getApplicationContext()));
+        }
     }
 
     @Override

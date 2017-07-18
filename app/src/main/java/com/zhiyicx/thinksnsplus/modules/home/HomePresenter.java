@@ -31,10 +31,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-
-import static com.umeng.socialize.utils.DeviceConfig.context;
 
 
 /**
@@ -54,15 +51,8 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
-
     public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
         super(repository, rootView);
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
     @Override
@@ -72,10 +62,12 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     @Override
     public void initIM() {
-        mAuthRepository.loginIM();
-        ChatClient.getInstance(mContext).setImMsgReceveListener(this);
-        ChatClient.getInstance(mContext).setImStatusListener(this);
-        ChatClient.getInstance(mContext).setImTimeoutListener(this);
+        if (isLogin()) {
+            mAuthRepository.loginIM();
+            ChatClient.getInstance(mContext).setImMsgReceveListener(this);
+            ChatClient.getInstance(mContext).setImStatusListener(this);
+            ChatClient.getInstance(mContext).setImTimeoutListener(this);
+        }
     }
 
     /*******************************************
@@ -156,23 +148,17 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
      * @param authData
      */
     private void synIMMessage(AuthData authData) {
-        Observable.from(authData.getSeqs()) // 消息同步
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new Action1<AuthData.SeqsBean>() {
-                    @Override
-                    public void call(AuthData.SeqsBean seqsBean) {
+        if (authData.getSeqs() != null) {
+            Observable.from(authData.getSeqs()) // 消息同步
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(seqsBean -> {
                         Message message = MessageDao.getInstance(mContext).getLastMessageByCid(seqsBean.getCid());
                         if (message != null && message.getSeq() < seqsBean.getSeq()) {
                             ZBIMClient.getInstance().syncAsc(message.getCid(), message.getSeq(), seqsBean.getSeq(), (int) System.currentTimeMillis());
                         }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                    }, throwable -> throwable.printStackTrace());
+        }
     }
 
     @Override
@@ -208,5 +194,20 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void onConversationMcTimeout(List<Integer> roomIds) {
 
+    }
+
+    @Override
+    public boolean isLogin() {
+        return mAuthRepository.isLogin();
+    }
+
+    @Override
+    public boolean handleTouristControl() {
+        if (isLogin()) {
+            return false;
+        } else {
+            mRootView.showLoginPop();
+            return true;
+        }
     }
 }

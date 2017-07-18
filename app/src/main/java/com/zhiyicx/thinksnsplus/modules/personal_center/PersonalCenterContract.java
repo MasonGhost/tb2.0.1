@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -23,7 +24,7 @@ import rx.Observable;
 
 public interface PersonalCenterContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<DynamicBean, PersonalCenterContract.Presenter> {
+    interface View extends ITSListView<DynamicDetailBeanV2, PersonalCenterContract.Presenter> {
         /**
          * 设置头部的用户相关信息
          */
@@ -85,7 +86,7 @@ public interface PersonalCenterContract {
         /**
          * 获取某个人的动态列表
          */
-        Observable<BaseJson<List<DynamicBean>>> getDynamicListForSomeone(Long user_id, Long max_id);
+        Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id);
 
         /**
          * 获取用户关注状态
@@ -117,7 +118,7 @@ public interface PersonalCenterContract {
          * @param user_id
          * @return
          */
-        List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore, long user_id);
+        List<DynamicDetailBeanV2> requestCacheData(Long max_Id, boolean isLoadMore, long user_id);
 
         /**
          * 设置进入个人中心是的用户关注状态

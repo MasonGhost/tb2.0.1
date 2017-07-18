@@ -11,9 +11,9 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -22,6 +22,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -29,11 +30,14 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -67,11 +71,13 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.Repository, ChannelDetailContract.View>
+public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContract.Repository, ChannelDetailContract.View>
         implements ChannelDetailContract.Presenter, OnShareCallbackListener {
     private static final int NEED_INTERFACE_NUM = 1;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -131,7 +137,7 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
                     @Override
                     protected void onSuccess(List<DynamicBean> data) {
                         mInterfaceNum++;
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
+//                        mRootView.onNetResponseSuccess(data, isLoadMore);
                         allready();
                     }
 
@@ -157,13 +163,13 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
     }
 
     @Override
-    public List<DynamicBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<DynamicDetailBeanV2> requestCacheData(Long max_Id, boolean isLoadMore) {
         // 频道的动态不要从数据库拉取数据
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<DynamicBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
         return false;
     }
 
@@ -177,6 +183,26 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
         for (int i = 0; i < datas.size(); i++) {
             msendingStatus.put(i, datas.get(i).getFeed_mark());
         }
+        return datas;
+    }
+
+    @NonNull
+    private List<DynamicDetailBeanV2> getDynamicBeenFromDBV2() {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return new ArrayList<>();
+        }
+        List<DynamicDetailBeanV2> datas = mDynamicDetailBeanV2GreenDao.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        msendingStatus.clear();
+        for (int i = 0; i < datas.size(); i++) {
+            if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+                datas.get(i).setState(DynamicDetailBeanV2.SEND_ERROR);
+            }
+            msendingStatus.put(i, datas.get(i).getFeed_mark());
+        }
+        if (mRootView.getListDatas() == null || mRootView.getListDatas().size() == 0) {// 第一次加载的时候将自己没有发送成功的动态状态修改为失败
+            mDynamicDetailBeanV2GreenDao.insertOrReplace(datas);
+        }
+
         return datas;
     }
 
@@ -203,7 +229,7 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
         if (feed_id == null || feed_id == 0) {
             return;
         }
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(postion).getTool());
+//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(postion).getTool());
         mRepository.handleLike(isLiked, feed_id);
 
     }
@@ -213,8 +239,8 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
         if (feed_id == null || feed_id == 0) {
             return;
         }
-        mRootView.getListDatas().get(position).getTool().setFeed_view_count(mRootView.getListDatas().get(position).getTool().getFeed_view_count() + 1);
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getTool());
+//        mRootView.getListDatas().get(position).getTool().setFeed_view_count(mRootView.getListDatas().get(position).getTool().getFeed_view_count() + 1);
+//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getTool());
         mRepository.handleDynamicViewCount(feed_id);
         mRootView.refreshData();
     }
@@ -222,8 +248,8 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
     @Override
     public void reSendDynamic(int position) {
         // 将动态信息存入数据库
-        mDynamicBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position));
-        mDynamicDetailBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getFeed());
+//        mDynamicBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position));
+//        mDynamicDetailBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(position).getFeed());
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
@@ -235,13 +261,23 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
     }
 
     @Override
-    public void deleteComment(DynamicBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
-        mRootView.getListDatas().get(dynamicPosition).getTool().setFeed_comment_count(dynamicBean.getTool().getFeed_comment_count() - 1);
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition).getTool());
+    public void deleteComment(DynamicDetailBeanV2 dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
+        mRootView.getListDatas().get(dynamicPosition).setFeed_comment_count(dynamicBean.getFeed_comment_count() - 1);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
         mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getComments().remove(commentPositon);
-        mRootView.refreshData();
-        mRepository.deleteComment(dynamicBean.getFeed_id(), comment_id);
+        mRootView.refreshData(dynamicPosition);
+        mRepository.deleteComment(dynamicBean.getId(), comment_id);
+    }
+
+    @Override
+    public void deleteCommentV2(DynamicDetailBeanV2 dynamicBean, int dynamicPositon, long comment_id, int commentPosition) {
+        mRootView.getListDatas().get(dynamicPositon).setFeed_comment_count(dynamicBean.getFeed_comment_count() - 1);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPositon));
+        mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPosition));
+        mRootView.getListDatas().get(dynamicPositon).getComments().remove(commentPosition);
+        mRootView.refreshData(dynamicPositon);
+        mRepository.deleteCommentV2(dynamicBean.getId(), comment_id);
     }
 
     @Override
@@ -252,16 +288,16 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
     }
 
     @Override
-    public void deleteDynamic(DynamicBean dynamicBean, int position) {
+    public void deleteDynamic(DynamicDetailBeanV2 dynamicBean, int position) {
 
-        mDynamicBeanGreenDao.deleteSingleCache(dynamicBean);
+        mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
         if (mRootView.getListDatas().isEmpty()) {// 添加暂未图
-            mRootView.getListDatas().add(new DynamicBean());
+//            mRootView.getListDatas().add(new DynamicBean());
         }
         mRootView.refreshData();
-        if (dynamicBean.getFeed_id() != null && dynamicBean.getFeed_id() != 0) {
-            mRepository.deleteDynamic(dynamicBean.getFeed_id());
+        if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
+            mRepository.deleteDynamic(dynamicBean.getId());
         }
 
     }
@@ -297,59 +333,76 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
         commentBeanList.addAll(mRootView.getListDatas().get(mCurrentPostion).getComments());
         mRootView.getListDatas().get(mCurrentPostion).getComments().clear();
         mRootView.getListDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
-        mRootView.getListDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
+//        mRootView.getListDatas().get(mCurrentPostion).getTool().setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getTool().getFeed_comment_count() + 1);
         mRootView.refreshData();
 
-        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion).getTool());
+//        mDynamicToolBeanGreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion).getTool());
         mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
+//        mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getFeed_id(), replyToUserId, creatComment.getComment_mark());
 
     }
 
     @Override
-    public void handleCollect(DynamicBean dynamicBean) {
+    public void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent) {
+
+    }
+
+    @Override
+    public void handleCollect(DynamicDetailBeanV2 dynamicBean) {
         // 收藏
         // 修改数据
-        DynamicToolBean collectToolBean = dynamicBean.getTool();
-        int is_collection = collectToolBean.getIs_collection_feed();// 旧状态
-        // 新状态
-        is_collection = is_collection == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED
-                ? DynamicToolBean.STATUS_COLLECT_FEED_CHECKED : DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED;
-        collectToolBean.setIs_collection_feed(is_collection);
-        boolean newCollectState = is_collection == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED ? false : true;
+        boolean is_collection = dynamicBean.isHas_collect();// 旧状态
+        dynamicBean.setHas_collect(!is_collection);
+        boolean newCollectState = !is_collection;
         // 更新数据库
-        mDynamicToolBeanGreenDao.insertOrReplace(collectToolBean);
+        mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
         // 通知服务器
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("feed_id", dynamicBean.getFeed_id());
+        params.put("feed_id", dynamicBean.getId());
         // 后台处理
         if (newCollectState) {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
         } else {
             backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
         }
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT, dynamicBean.getFeed_id()));
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT,
+                dynamicBean.getId()));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
         EventBus.getDefault().post(dynamicBean, EventBusTagConfig.EVENT_COLLECT_DYNAMIC);
     }
 
     @Override
-    public void shareDynamic(DynamicBean dynamicBean, Bitmap bitmap) {
+    public void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(TextUtils.isEmpty(dynamicBean.getFeed().getTitle()) ? mContext.getString(R.string.share) : dynamicBean.getFeed().getTitle());
-        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed().getContent()) ? mContext.getString(R.string.share_dynamic) : dynamicBean.getFeed().getContent());
-//        if (dynamicBean.getFeed().getStorages() != null && dynamicBean.getFeed().getStorages().size() > 0) {
-//            shareContent.setImage(ImageUtils.imagePathConvert(dynamicBean.getFeed().getStorages().get(0).getStorage_id() + "", 100));
-        if(bitmap!=null){
-            shareContent.setBitmap(bitmap);
-        } else {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
-        }
-        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getFeed_id() == null ? "" : dynamicBean.getFeed_id()));
-        mSharePolicy.setShareContent(shareContent);
-        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+        shareContent.setTitle(mContext.getString(R.string.share));
+        shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed_content()) ? mContext.getString(R.string
+                .share_dynamic) : dynamicBean.getFeed_content());
+            if(bitmap!=null){
+                shareContent.setBitmap(bitmap);
+            } else {
+                shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
+            }
+            shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
+                    == null ? "" : dynamicBean.getId()));
+            mSharePolicy.setShareContent(shareContent);
+            mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public List<SystemConfigBean.Advert> getAdvert() {
+        return null;
+    }
+
+    @Override
+    public void checkNote(int note) {
+
+    }
+
+    @Override
+    public void payNote(int dynamicPosition, int imagePosition, int note,boolean isImage) {
+
     }
 
     @Override
@@ -458,7 +511,7 @@ public class ChannelDetailPresenter extends BasePresenter<ChannelDetailContract.
                     public Integer call(Bundle bundle) {
                         int position = bundle.getInt(DYNAMIC_DETAIL_DATA_POSITION);
                         boolean isNeedRefresh = bundle.getBoolean(DYNAMIC_LIST_NEED_REFRESH);
-                        DynamicBean dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
+                        DynamicDetailBeanV2 dynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
                         int size = mRootView.getListDatas().size();
                         int dynamicPosition = -1;
                         for (int i = 0; i < size; i++) {

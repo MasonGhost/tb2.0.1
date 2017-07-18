@@ -5,14 +5,12 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * @author LiuChao
@@ -23,17 +21,12 @@ import javax.inject.Inject;
 
 public class DigListFragment extends TSListFragment<DigListContract.Presenter, FollowFansBean> implements DigListContract.View {
     public static final String DIG_LIST_DATA = "dig_list_data";// 传入点赞榜的数据
-    @Inject
-    public DigListPresenter mDigListPresenter;
+
     // 从动态详情传递过来的动态数据，已经包括了第一页的点赞列表，所以不需要从数据库拿取
-    private DynamicBean mDynamicBean;
+    private DynamicDetailBeanV2 mDynamicBean;
 
     @Override
     protected void initView(View rootView) {
-        DaggerDigListPresenterComponent.builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .digListPresenterModule(new DigListPresenterModule(this))
-                .build().inject(this);
         super.initView(rootView);
     }
 
@@ -80,7 +73,7 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, mDynamicBean.getFeed_id());
+        mPresenter.requestNetData(maxId, isLoadMore, mDynamicBean.getId());
     }
 
     @Override
@@ -94,7 +87,7 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
     }
 
     @Override
-    public DynamicBean getDynamicBean() {
+    public DynamicDetailBeanV2 getDynamicBean() {
         return mDynamicBean;
     }
 

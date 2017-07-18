@@ -71,7 +71,7 @@ public class UpLoadFile {
                 }
             }
         }
-        return  builder.build().parts();
+        return builder.build().parts();
     }
 
     /**
@@ -96,8 +96,9 @@ public class UpLoadFile {
                     File file = new File(filePathList.get(fileParam));//filePath 图片地址
                     String mimeType = FileUtils.getMimeTypeByFile(file);
                     RequestBody imageBody = RequestBody.create(
-                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
-                    builder.addFormDataPart(fileParam,file.getName(), imageBody);//imgfile 后台接收图片流的参数名
+//                            MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
+                            MediaType.parse( "multipart/form-data" ), file);
+                    builder.addFormDataPart(fileParam, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -105,8 +106,12 @@ public class UpLoadFile {
         }
         // 如果没有任何参数传入，又调用了该方法，需要传一个缺省参数， Multipart body must have at least one part.
         if ((params == null || params.isEmpty()) && (filePathList == null || filePathList.isEmpty())) {
-            builder.addFormDataPart("hehe", "hehe");
+            builder.addFormDataPart("file", "zhiyicx");
         }
         return builder.build().parts();
+    }
+
+    public static List<MultipartBody.Part> upLoadFileAndParams(Map<String, String> filePathList) {
+        return upLoadFileAndParams(filePathList, null);
     }
 }

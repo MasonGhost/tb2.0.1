@@ -24,20 +24,24 @@ import okhttp3.Response;
 
 public class ProgressDataFetcher implements DataFetcher<InputStream> {
     private String photoUrl;
+    private String token;
     private Call progressCall;
     private InputStream resultStream;
     private boolean isCancel;
     private Handler mHandler;
 
-    public ProgressDataFetcher(String photoUrl, Handler handler) {
+    public ProgressDataFetcher(String photoUrl, Handler handler,String token) {
         this.photoUrl = photoUrl;
         mHandler = handler;
+        this.token=token;
     }
 
     @Override
     public InputStream loadData(Priority priority) {
         // 重写Glide图片加载方法
-        Request requst = new Request.Builder().url(photoUrl).build();
+        Request requst = new Request.Builder().url(photoUrl)
+                .header("Authorization", token)
+                .build();
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new ProgressIntercept(getProgressListener()))
                 .build();

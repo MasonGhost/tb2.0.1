@@ -2,8 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchContract;

@@ -21,7 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.LocalPlayback;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
-import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicAblumInfo;
+import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProvider;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaNotificationManager;
@@ -178,7 +178,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
         LogUtils.d("onCustomAction");
         MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable(MUSIC_ACTION);
         if (musicAblum!=null){
-            MusicProvider newMusicProvider = new MusicProvider(new MusicAblumInfo(musicAblum));
+            MusicProvider newMusicProvider = new MusicProvider(new MusicDataConvert(musicAblum));
             newMusicProvider.retrieveMediaAsync(null);// 很重要
             mMusicProvider = newMusicProvider;
             mQueueManager.setMusicProvider(mMusicProvider);

@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -11,6 +13,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
@@ -21,9 +24,10 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
 
 /**
  * @author LiuChao
@@ -33,6 +37,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class LoginFragment extends TSFragment<LoginContract.Presenter> implements LoginContract.View {
+
     @BindView(R.id.et_login_phone)
     EditText mEtLoginPhone;
     @BindView(R.id.et_login_password)
@@ -46,47 +51,64 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @BindView(R.id.tv_forget_password)
     TextView mTvForgetPassword;
 
-    private boolean isPhoneEdited;
-    private boolean isPasswordEdited;
+    private boolean mIsPhoneEdited;
+    private boolean mIsPasswordEdited;
+
+    private boolean mIsToourist;
+
+    public static LoginFragment newInstance(boolean isTourist) {
+        LoginFragment fragment = new LoginFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(BUNDLE_TOURIST_LOGIN, isTourist);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            mIsToourist = getArguments().getBoolean(BUNDLE_TOURIST_LOGIN);
+        }
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     protected void initView(View rootView) {
+        initListenter();
+        // 游客判断
+        mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
+        if (mIsToourist || !mPresenter.istourist()) {
+            setLeftTextColor(R.color.themeColor);
+        }
+    }
+
+    private void initListenter() {
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                    }
+                .subscribe(charSequence -> {
+                    mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)
                 .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        isPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                    }
+                .subscribe(charSequence -> {
+                    mIsPasswordEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
         // 点击登录按钮
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        if (aBoolean) {// 获取到了权限
-                            mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
-                        } else {// 拒绝权限，但是可以再次请求
-                            showErrorTips(getString(R.string.permisson_refused));
-                        }
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {// 获取到了权限
+                        mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
+                    } else {// 拒绝权限，但是可以再次请求
+                        showErrorTips(getString(R.string.permisson_refused));
                     }
                 });
-
     }
 
     @Override
@@ -127,13 +149,21 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), RegisterActivity.class));
+        Intent intent = new Intent(getActivity(), RegisterActivity.class);
+        intent.putExtra(BUNDLE_TOURIST_LOGIN, mIsToourist);
+        startActivity(intent);
     }
 
     @Override
     protected int setLeftImg() {
         return 0;
     }
+
+    @Override
+    protected String setLeftTitle() {
+        return mIsToourist ? getString(R.string.cancel) : "";
+    }
+
 
     @Override
     public void setLogining() {
@@ -152,9 +182,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             mEtLoginPhone.setText("");
             mEtLoginPhone.requestFocus();
             DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPassword);
-            Intent it = new Intent();
-            it.setClass(getActivity(), HomeActivity.class);
-            startActivity(it);
+            if (mIsToourist) {
+                getActivity().setResult(RESULT_OK);
+                getActivity().finish();
+            } else {
+                goHome();
+            }
         }
     }
 
@@ -172,7 +205,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
      * 设置登录按钮是否可点击
      */
     private void setConfirmEnable() {
-        if (isPhoneEdited && isPasswordEdited) {
+        if (mIsPhoneEdited && mIsPasswordEdited) {
             mBtLoginLogin.setEnabled(true);
         } else {
             mBtLoginLogin.setEnabled(false);
@@ -183,12 +216,19 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_look_around:
+                goHome();
                 break;
             case R.id.tv_forget_password:
                 startActivity(new Intent(getActivity(), FindPasswordActivity.class));
                 break;
             default:
         }
+    }
+
+    private void goHome() {
+        ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
+        startActivity(new Intent(getActivity(), HomeActivity.class));
+        getActivity().finish();
     }
 
 }

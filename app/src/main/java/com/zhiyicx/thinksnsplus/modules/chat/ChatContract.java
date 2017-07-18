@@ -155,8 +155,10 @@ public interface ChatContract {
          * 创建对话
          *
          * @param userInfoBean 目标对象的用户信息
-         * @param text    文本消息，单独创建的时候，传空
+         * @param text         文本消息，单独创建的时候，传空
          */
         void createChat(UserInfoBean userInfoBean, String text);
+
+        String checkTShelper(long user_id);
     }
 }

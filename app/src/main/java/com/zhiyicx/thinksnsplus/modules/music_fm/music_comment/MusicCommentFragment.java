@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -87,8 +88,18 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
     }
 
     @Override
@@ -98,6 +109,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
 
     @Override
     protected void initView(View rootView) {
+//        AndroidBug5497Workaround.assistActivity(getActivity());
         super.initView(rootView);
         mIlvComment.setSendButtonVisiable(true);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
@@ -174,6 +186,12 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public void onReSendClick(MusicCommentListBean musicCommentListBean) {
         initReSendCommentPopupWindow(musicCommentListBean);
         mReSendCommentPopWindow.show();
+    }
+
+    @Override
+    public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        super.onResponseError(throwable, isLoadMore);
+        mMusicCommentHeader.hide();
     }
 
     @Override
@@ -320,7 +338,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     private void initDeleteCommentPopupWindow(final MusicCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -328,7 +346,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
                         setHeaderInfo(mHeaderInfo);
                         if (WindowUtils.getAblumHeadInfo() != null) {
@@ -341,7 +359,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                     }
                 })
@@ -351,7 +369,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     private void initReSendCommentPopupWindow(final MusicCommentListBean commentBean) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -359,14 +377,14 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mPresenter.reSendComment(commentBean);
                         mReSendCommentPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                     }
                 })

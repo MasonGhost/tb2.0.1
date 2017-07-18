@@ -2,20 +2,22 @@ package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,12 +34,14 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repository, ChannelListContract.View>
+public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.Repository, ChannelListContract.View>
         implements ChannelListContract.Presenter {
     @Inject
     ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
     @Inject
     ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
+    @Inject
+    SystemRepository mSystemRepository;
 
     @Inject
     public ChannelListPresenter(ChannelListContract.Repository repository, ChannelListContract.View rootView) {
@@ -55,6 +59,10 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
         Observable<BaseJson<List<ChannelSubscripBean>>> observable = null;
         switch (pageType) {
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
+                if (istourist()) {
+                    mRootView.gotoAllChannel();
+                    return;
+                }
                 observable = mRepository.getMySubscribChannelList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
@@ -73,14 +81,13 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
     @Override
     public List<ChannelSubscripBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         int pageType = mRootView.getPageType();
-        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         List<ChannelSubscripBean> channelSubscripBeanList = null;
         switch (pageType) {
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
-                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getSomeOneSubscribChannelList(authBean.getUser_id());
+                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getSomeOneSubscribChannelList(AppApplication.getMyUserIdWithdefault());
                 break;
             case ChannelListViewPagerFragment.PAGE_ALL_CHANNEL_LIST:
-                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getAllChannelList(authBean.getUser_id());
+                channelSubscripBeanList = mChannelSubscripBeanGreenDao.getAllChannelList(AppApplication.getMyUserIdWithdefault());
                 break;
             default:
         }
@@ -118,6 +125,17 @@ public class ChannelListPresenter extends BasePresenter<ChannelListContract.Repo
     public void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean) {
         mRepository.handleSubscribChannel(channelSubscripBean);
         EventBus.getDefault().post(channelSubscripBean, EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB);
+    }
+
+    @Override
+    public List<SystemConfigBean.Advert> getAdvert() {
+        List<SystemConfigBean.Advert> imageAdvert = new ArrayList<>();
+        for (SystemConfigBean.Advert advert : mSystemRepository.getBootstrappersInfoFromLocal().getAdverts()) {
+            if (advert.getImageAdvert() != null) {
+                imageAdvert.add(advert);
+            }
+        }
+        return imageAdvert;
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB)

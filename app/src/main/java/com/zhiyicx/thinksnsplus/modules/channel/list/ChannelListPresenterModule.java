@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.channel.list;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChannelListRepository;
 
 import dagger.Module;
@@ -28,7 +25,7 @@ public class ChannelListPresenterModule {
     }
 
     @Provides
-    public ChannelListContract.Repository provideChannelListContractRepository(ServiceManager serviceManager, Application application) {
-        return new ChannelListRepository(serviceManager, application);
+    public ChannelListContract.Repository provideChannelListContractRepository(ChannelListRepository channelListRepository) {
+        return channelListRepository;
     }
 }

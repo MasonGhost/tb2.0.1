@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tbruyelle.rxpermissions.RxPermissions;
+import com.trello.rxlifecycle.components.support.RxFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -17,7 +18,6 @@ import org.simple.eventbus.EventBus;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import solid.ren.skinlibrary.base.SkinBaseFragment;
 
 /**
  * @Describe Fragment 基类
@@ -25,7 +25,7 @@ import solid.ren.skinlibrary.base.SkinBaseFragment;
  * @Date 2016/12/15
  * @Contact 335891510@qq.com
  */
-public abstract class BaseFragment<P extends IBasePresenter> extends SkinBaseFragment implements IBaseView<P>{
+public abstract class BaseFragment<P extends IBasePresenter> extends RxFragment implements IBaseView<P>{
     protected final String TAG = this.getClass().getSimpleName();
 
     protected View mRootView;

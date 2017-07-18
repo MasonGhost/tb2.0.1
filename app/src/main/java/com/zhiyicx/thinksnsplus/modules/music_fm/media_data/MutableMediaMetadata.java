@@ -27,9 +27,7 @@ public class MutableMediaMetadata {
         if (o == null || o.getClass() != MutableMediaMetadata.class) {
             return false;
         }
-
         MutableMediaMetadata that = (MutableMediaMetadata) o;
-
         return TextUtils.equals(trackId, that.trackId);
     }
 

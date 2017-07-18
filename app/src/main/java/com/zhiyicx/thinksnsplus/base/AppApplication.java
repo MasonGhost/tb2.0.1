@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.base;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,12 +9,14 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
-import com.antfortune.freeline.FreelineCore;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.pingplusplus.android.Pingpp;
 import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.base.TSApplication;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.net.HttpsSSLFactroyUtils;
@@ -29,7 +29,7 @@ import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
-import com.zhiyicx.thinksnsplus.config.PayConfig;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -39,7 +39,8 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.QueueManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
-import com.zhiyicx.tspay.TSPayClient;
+
+import org.simple.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,8 +60,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -79,27 +78,28 @@ public class AppApplication extends TSApplication {
     private static HttpProxyCacheServer mMediaProxyCacheServer;
     private static QueueManager sQueueManager;
     private static PlaybackManager sPlaybackManager;
+    private static String TOKEN = "none";
     public static List<String> sOverRead = new ArrayList<>();
     public int mActivityCount = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        FreelineCore.init(this);
         initComponent();
         // IM
-        if (mSystemRepository.getComponentStatusLocal().isIm()) { // 是否安装了 IM
+        if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
+            LogUtils.d(TAG, "---------------start IM---------------------");
             ZBIMSDK.init(getContext());
         }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
         // 极光推送
-        JPushInterface.setDebugMode(true);
+        JPushInterface.setDebugMode(BuildConfig.USE_LOG);
+        // ping++
+        Pingpp.enableDebugLog(BuildConfig.USE_LOG);
         JPushInterface.init(this);
         // 友盟
         MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
         registerActivityCallBacks();
-        // 支付
-        TSPayClient.init(this, PayConfig.WX_APP_ID);
 
     }
 
@@ -128,11 +128,24 @@ public class AppApplication extends TSApplication {
         return new RequestInterceptListener() {
             @Override
             public Response onHttpResponse(String httpResult, Interceptor.Chain chain, Response
-                    response) {
+                    originalResponse) {
+                // 处理 head请求
+                handleHeadRequest(originalResponse);
                 // 这里可以先客户端一步拿到每一次http请求的结果,可以解析成json,做一些操作,如检测到token过期后
                 // token过期，调到登陆页面重新请求token,
-                LogUtils.i("baseJson-->" + httpResult);
-                BaseJson baseJson = new Gson().fromJson(httpResult, BaseJson.class);
+                BaseJson baseJson = null;
+                try {
+                    baseJson = new Gson().fromJson(httpResult, BaseJson.class);
+                } catch (JsonSyntaxException e) {
+//                    LogUtils.e("Invalid Json length:::"+httpResult.length());
+                }
+                if (originalResponse.code() == 401) {
+                    if (mAuthRepository.isNeededRefreshToken()) {
+                        handleAuthFail(getString(R.string.auth_fail_relogin));
+                    } else {
+                        handleAuthFail(getString(R.string.code_1015));
+                    }
+                }
                 String tipStr = null;
                 if (baseJson != null) {
                     switch (baseJson.getCode()) {
@@ -160,21 +173,32 @@ public class AppApplication extends TSApplication {
                         handleAuthFail(tipStr);
                     }
                 }
-                return response;
+                return originalResponse;
             }
 
             @Override
             public Request onHttpRequestBefore(Interceptor.Chain chain, Request request) {
-                //如果需要再请求服务器之前做一些操作,则重新返回一个做过操作的的requeat如增加header,不做操作则返回request
+                //如果需要再请求服务器之前做一些操作,则重新返回一个做过操作的的 requeat 如增加 header,不做操作则返回 request
                 AuthBean authBean = mAuthRepository.getAuthBean();
                 if (authBean != null) {
-                    return chain.request().newBuilder().header("ACCESS-TOKEN", authBean.getToken())
+                    return chain.request().newBuilder()
+                            .header("Accept", "application/json")
+                            .header((request.url() + "").contains("v1") ? "ACCESS-TOKEN" : "Authorization", (request.url() + "").contains("v1") ? authBean.getToken() : " Bearer " + authBean.getToken())
+                            .build();
+                } else {
+                    return chain.request().newBuilder()
+                            .header("Accept", "application/json")
                             .build();
                 }
-
-                return request;
             }
         };
+    }
+
+    private void handleHeadRequest(Response originalResponse) {
+        if(originalResponse!=null&&originalResponse.header("unread-notification-limit")!=null){ // 未读数处理
+            EventBus.getDefault().post(originalResponse.header("unread-notification-limit"), EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT);
+        }
+
     }
 
     /**
@@ -187,62 +211,43 @@ public class AppApplication extends TSApplication {
         // 通过rxjava在主线程处理弹框
         Observable.empty()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(new Action0() {
-                    @Override
-                    public void call() {
-                        if ((alertDialog != null && alertDialog.isShowing()) || ActivityHandler
-                                .getInstance().currentActivity() instanceof LoginActivity) { // 认证失败，弹框去重
-                            return;
-                        }
-                        alertDialog = new AlertDialog.Builder(ActivityHandler
-                                .getInstance().currentActivity(), R.style.TSWarningAlertDialogStyle)
-                                .setMessage(tipStr)
-                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
-
-                                    @Override
-                                    public boolean onKey(DialogInterface dialog, int keyCode,
-                                                         KeyEvent event) {
-                                        if (alertDialog.isShowing() && keyCode == KeyEvent.KEYCODE_BACK
-                                                && event.getRepeatCount() == 0) {
-                                            return true;
-                                        }
-                                        return false;
-                                    }
-                                })
-                                .setPositiveButton(R.string.sure, new
-                                        DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface
-                                                                        dialogInterface,
-                                                                int i) {
-                                                // TODO: 2017/2/8  清理登录信息 token 信息
-                                                mAuthRepository.clearAuthBean();
-                                                Intent intent = new Intent
-                                                        (getContext(),
-                                                                LoginActivity
-                                                                        .class);
-                                                ActivityHandler.getInstance()
-                                                        .currentActivity()
-                                                        .startActivity
-                                                                (intent);
-                                                alertDialog.dismiss();
-                                            }
-                                        })
-                                .create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        try {
-                            alertDialog.show();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                .doOnCompleted(() -> {
+                    if ((alertDialog != null && alertDialog.isShowing()) || ActivityHandler
+                            .getInstance().currentActivity() instanceof LoginActivity) { // 认证失败，弹框去重
+                        return;
+                    }
+                    alertDialog = new AlertDialog.Builder(ActivityHandler
+                            .getInstance().currentActivity(), R.style.TSWarningAlertDialogStyle)
+                            .setMessage(tipStr)
+                            .setOnKeyListener((dialog, keyCode, event) -> {
+                                if (alertDialog.isShowing() && keyCode == KeyEvent.KEYCODE_BACK
+                                        && event.getRepeatCount() == 0) {
+                                    return true;
+                                }
+                                return false;
+                            })
+                            .setPositiveButton(R.string.sure, (dialogInterface, i) -> {
+                                // TODO: 2017/2/8  清理登录信息 token 信息
+                                mAuthRepository.clearAuthBean();
+                                Intent intent = new Intent
+                                        (getContext(),
+                                                LoginActivity
+                                                        .class);
+                                ActivityHandler.getInstance()
+                                        .currentActivity()
+                                        .startActivity
+                                                (intent);
+                                alertDialog.dismiss();
+                            })
+                            .create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    try {
+                        alertDialog.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                })
+                .doOnError(throwable -> throwable.printStackTrace())
                 .subscribe();
     }
 
@@ -253,12 +258,7 @@ public class AppApplication extends TSApplication {
      */
     @Override
     protected ResponseErroListener getResponseErroListener() {
-        return new ResponseErroListener() {
-            @Override
-            public void handleResponseError(Context context, Throwable e) {
-                LogUtils.d(TAG, "------------>" + e.getMessage());
-            }
-        };
+        return (context, e) -> LogUtils.d(TAG, "------------>" + e.getMessage());
     }
 
     /**
@@ -312,6 +312,22 @@ public class AppApplication extends TSApplication {
     }
 
     /**
+     * 获取我的用户 id ，default = -1;
+     *
+     * @return
+     */
+    public static int getMyUserIdWithdefault() {
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        int userId;
+        if (authBean == null) {
+            userId = -1;
+        } else {
+            userId = authBean.getUser_id();
+        }
+        return userId;
+    }
+
+    /**
      * 在启动页面尝试刷新Token,同时需要刷新im的token
      */
     private void attemptToRefreshToken() {
@@ -324,6 +340,12 @@ public class AppApplication extends TSApplication {
 
     public static void setmCurrentLoginAuth(AuthBean mCurrentLoginAuth) {
         AppApplication.mCurrentLoginAuth = mCurrentLoginAuth;
+        if (mCurrentLoginAuth != null)
+            TOKEN = mCurrentLoginAuth.getToken();
+    }
+
+    public static String getTOKEN() {
+        return "Bearer " + (AppApplication.mCurrentLoginAuth == null ? "" : AppApplication.mCurrentLoginAuth.getToken());
     }
 
     public static HttpProxyCacheServer getProxy() {
@@ -387,12 +409,9 @@ public class AppApplication extends TSApplication {
                             sPlaybackManager.getState() == PlaybackStateCompat.STATE_ERROR) {
                         Observable.timer(5, TimeUnit.SECONDS)
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Action1<Long>() {
-                                    @Override
-                                    public void call(Long aLong) {
-                                        WindowUtils.setIsPause(true);
-                                        WindowUtils.hidePopupWindow();
-                                    }
+                                .subscribe(aLong -> {
+                                    WindowUtils.setIsPause(true);
+                                    WindowUtils.hidePopupWindow();
                                 });
                     }
                 }

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget.chat;
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -17,6 +18,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @Describe 我发送的文本消息
@@ -122,12 +125,23 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             if (chatItemBean.getUserInfo().getName().equals(holder.getConvertView().getContext().getString(R.string.ts_helper))) { // TS 助手
                 ((ImageView) holder.getView(R.id.iv_chat_headpic)).setImageResource(R.mipmap.ico_ts_assistant);
             } else {
+                int storegeId;
+                String userIconUrl;
+                try {
+                    storegeId = Integer.parseInt(chatItemBean.getUserInfo().getAvatar());
+                    userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                            , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , ImageZipConfig.IMAGE_38_ZIP);
+                } catch (Exception e) {
+                    userIconUrl = chatItemBean.getUserInfo().getAvatar();
+                }
                 mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvert(chatItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                        .url(userIconUrl)
                         .placeholder(R.mipmap.pic_default_portrait1)
                         .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
                         .errorPic(R.mipmap.pic_default_portrait1)
-                        .imagerView((ImageView) holder.getView(R.id.iv_chat_headpic))
+                        .imagerView(holder.getView(R.id.iv_chat_headpic))
                         .build()
                 );
             }
@@ -138,40 +152,14 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
         holder.setText(R.id.tv_chat_content, chatItemBean.getLastMessage().getTxt());
         // 响应事件
         if (mMessageListItemClickListener != null) {
-            View.OnClickListener mStatusClick = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mMessageListItemClickListener.onStatusClick(chatItemBean);
-                }
-            };
+            View.OnClickListener mStatusClick = v -> mMessageListItemClickListener.onStatusClick(chatItemBean);
 
-            View.OnClickListener mUserInfoClick = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mMessageListItemClickListener.onUserInfoClick(chatItemBean);
-                }
-            };
+            View.OnClickListener mUserInfoClick = v -> mMessageListItemClickListener.onUserInfoClick(chatItemBean);
 
-            View.OnLongClickListener mUserInfoLongClick = new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    return mMessageListItemClickListener.onUserInfoLongClick(chatItemBean);
-                }
-            };
-            View.OnClickListener mBubbleClick = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mMessageListItemClickListener.onBubbleClick(chatItemBean);
-                }
-            };
+            View.OnLongClickListener mUserInfoLongClick = v -> mMessageListItemClickListener.onUserInfoLongClick(chatItemBean);
+            View.OnClickListener mBubbleClick = v -> mMessageListItemClickListener.onBubbleClick(chatItemBean);
 
-            View.OnLongClickListener mBubbleLongClick = new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    return mMessageListItemClickListener.onBubbleLongClick(chatItemBean);
-
-                }
-            };
+            View.OnLongClickListener mBubbleLongClick = v -> mMessageListItemClickListener.onBubbleLongClick(chatItemBean);
 
             holder.setOnClickListener(R.id.msg_status, mStatusClick);
             holder.setOnClickListener(R.id.tv_chat_name, mUserInfoClick);

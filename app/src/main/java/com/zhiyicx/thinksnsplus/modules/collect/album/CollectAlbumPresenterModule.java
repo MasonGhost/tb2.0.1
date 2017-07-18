@@ -2,10 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.collect.album;
 
 import android.support.v4.media.MediaBrowserCompat;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.MusicRepository;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicContract;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicPresenterModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,8 +27,8 @@ public class CollectAlbumPresenterModule {
     }
 
     @Provides
-    MusicContract.Repository provideMusicRepository(ServiceManager serviceManager) {
-        return new CollectAlbumListRepository(serviceManager);
+    MusicContract.Repository provideMusicRepository(CollectAlbumListRepository collectAlbumListRepository) {
+        return collectAlbumListRepository;
     }
 
     @Provides

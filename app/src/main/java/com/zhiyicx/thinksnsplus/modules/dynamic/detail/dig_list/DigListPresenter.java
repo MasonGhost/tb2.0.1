@@ -1,12 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -26,11 +28,11 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class DigListPresenter extends BasePresenter<DigListContract.Repository, DigListContract.View> implements DigListContract.Presenter {
+public class DigListPresenter extends AppBasePresenter<DigListContract.Repository, DigListContract.View> implements DigListContract.Presenter {
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
-    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;
 
@@ -55,9 +57,9 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data, boolean isLoadMore) {
-        DynamicBean dynamicBean = mRootView.getDynamicBean();
+        DynamicDetailBeanV2 dynamicBean = mRootView.getDynamicBean();
         dynamicBean.setDigUserInfoList(data);
-        return mDynamicBeanGreenDao.insertOrReplace(dynamicBean) >= 0;
+        return mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean) >= 0;
     }
 
     @Override
@@ -68,10 +70,10 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore, long feed_id) {
-        mRepository.getDynamicDigList(feed_id, maxId)
+        mRepository.getDynamicDigListV2(feed_id, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<List<FollowFansBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<FollowFansBean>>() {
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
                         LogUtils.i("digList_netData" + data.toString());
@@ -92,7 +94,7 @@ public class DigListPresenter extends BasePresenter<DigListContract.Repository, 
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicBean dynamicBean) {
+    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicDetailBeanV2 dynamicBean) {
         return dynamicBean.getDigUserInfoList();
     }
 }

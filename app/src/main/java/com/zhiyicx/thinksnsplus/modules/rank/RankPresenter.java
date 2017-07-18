@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.rank;
 
-import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DigRankBeanGreenDaoImpl;
@@ -20,7 +20,7 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 
-public class RankPresenter extends BasePresenter<RankContract.Repository, RankContract.View> implements RankContract.Presenter {
+public class RankPresenter extends AppBasePresenter<RankContract.Repository, RankContract.View> implements RankContract.Presenter {
 
     @Inject
     DigRankBeanGreenDaoImpl mDigBeanGreenDao;

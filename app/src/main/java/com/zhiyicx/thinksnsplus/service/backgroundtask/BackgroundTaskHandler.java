@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
@@ -15,20 +16,26 @@ import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -53,7 +60,6 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
@@ -98,6 +104,12 @@ public class BackgroundTaskHandler {
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
     InfoCommentListBeanDaoImpl mInfoCommentListBeanDao;
+
+    @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
+
+    @Inject
+    SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2Dao;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -170,7 +182,6 @@ public class BackgroundTaskHandler {
             return;
         }
         List<BackgroundRequestTaskBean> cacheDatas = mBackgroundRequestTaskBeanGreenDao.getMultiDataFromCacheByUserId(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
-        LogUtils.d("-------------------cacheDatas = " + cacheDatas.toString());
         if (cacheDatas != null) {
             for (BackgroundRequestTaskBean tmp : cacheDatas) {
                 mTaskBeanConcurrentLinkedQueue.add(tmp);
@@ -238,6 +249,15 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 postMethod(backgroundRequestTaskBean);
                 break;
+
+            case POST_V2:
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                postMethodV2(backgroundRequestTaskBean);
+                break;
             /**
              * 通用 GET 接口处理
              */
@@ -270,6 +290,14 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 deleteMethod(backgroundRequestTaskBean);
                 break;
+            case DELETE_V2:
+                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+                    return;
+                }
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                deleteMethodV2(backgroundRequestTaskBean);
+                break;
             /**
              * 获取 IM 信息，必须保证 header 中已经加入了权限 token
              */
@@ -301,9 +329,21 @@ public class BackgroundTaskHandler {
             case SEND_DYNAMIC:
                 sendDynamic(backgroundRequestTaskBean);
                 break;
+
             /**
-             * 发送动态
+             * 发送动态 V2 api
              */
+            case SEND_DYNAMIC_V2:
+                sendDynamicV2(backgroundRequestTaskBean);
+                break;
+
+            /**
+             * 设置动态评论收费 V2 api
+             */
+            case TOLL_DYNAMIC_COMMENT_V2:
+                setTollDynamicComment(backgroundRequestTaskBean);
+                break;
+
             case SEND_COMMENT:
                 sendComment(backgroundRequestTaskBean);
                 break;
@@ -313,6 +353,48 @@ public class BackgroundTaskHandler {
             default:
         }
 
+    }
+
+    /**
+     * 处理Post请求类型的后台任务
+     */
+    private void postMethodV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        HashMap params = backgroundRequestTaskBean.getParams();
+        if (params == null) {
+            params = new HashMap();
+        }
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) params.get(NET_CALLBACK);
+        params.remove(NET_CALLBACK);
+        mServiceManager.getCommonClient().handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, params))
+                .subscribe(new BaseSubscribeForV2() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        if (callBack != null) {
+                            callBack.onSuccess(data);
+                        }
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        }
+                        if (callBack != null) {
+                            callBack.onFailure(message, code);
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                        if (callBack != null) {
+                            callBack.onException(throwable);
+                        }
+                    }
+                });
     }
 
     /**
@@ -421,6 +503,41 @@ public class BackgroundTaskHandler {
     }
 
     /**
+     * 处理Delete请求类型的后台任务 V2
+     */
+    private void deleteMethodV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        HashMap<String, Object> datas = backgroundRequestTaskBean.getParams();
+        if (datas == null) {
+            datas = new HashMap<>();
+        }
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) datas.get(NET_CALLBACK);
+        datas.remove(NET_CALLBACK);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
+        mServiceManager.getCommonClient().handleBackGroudTaskDeleteV2(backgroundRequestTaskBean.getPath()
+                , body)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<CacheBean>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<CacheBean> data) {
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                    }
+                });
+    }
+
+    /**
      * 获取im信息
      */
     private void getIMInfo(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
@@ -429,10 +546,11 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(IMBean data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        LogUtils.d("-----login-----imConfig--------" + data.toString());
                         IMConfig imConfig = new IMConfig();
                         imConfig.setImUid(data.getUser_id());
                         imConfig.setToken(data.getIm_password());
-                        imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getComponentConfigLocal().get(0).getValue());
+                        imConfig.setWeb_socket_authority("ws://" + mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve());
                         mAuthRepository.saveIMConfig(imConfig);
                         mAuthRepository.loginIM();
                     }
@@ -494,6 +612,34 @@ public class BackgroundTaskHandler {
                 });
     }
 
+    private void setTollDynamicComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long feed_Id = (Long) params.get("feed_id");
+        final int amount = (int) params.get("amount");
+
+        final DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_Id);
+        if (dynamicDetailBeanV2 == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        mSendDynamicRepository.setDynamicCommentToll(feed_Id, amount).subscribe(new BaseSubscribeForV2<DynamicCommentToll>() {
+            @Override
+            protected void onSuccess(DynamicCommentToll data) {
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+            }
+        });
+
+    }
+
     /**
      * 处理动态发送的后台任务
      */
@@ -542,29 +688,21 @@ public class BackgroundTaskHandler {
                 upLoadPics.add(mUpLoadRepository.upLoadSingleFile(filePath, photoMimeType, true, photoWidth, photoHeight));
             }
             observable = // 组合多个图片上传任务
-                    Observable.combineLatest(upLoadPics, new FuncN<List<Integer>>() {
-                        @Override
-                        public List<Integer> call(Object... args) {
-                            // 得到图片上传的结果
-                            List<Integer> integers = new ArrayList<Integer>();
-                            for (Object obj : args) {
-                                BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
-                                if (baseJson.isStatus()) {
-                                    integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-                                } else {
-                                    throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                                }
+                    Observable.combineLatest(upLoadPics, args -> {
+                        // 得到图片上传的结果
+                        List<Integer> integers = new ArrayList<>();
+                        for (Object obj : args) {
+                            BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
+                            if (baseJson.isStatus()) {
+                                integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+                            } else {
+                                throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
                             }
-                            return integers;
                         }
+                        return integers;
                     }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(List<Integer> integers) {
-                            List<ImageBean> imageBeens = new ArrayList<ImageBean>();
-                            // 动态相关图片：图片任务id的数组，将它作为发布动态的参数
-                            for (int i = 0; i < integers.size(); i++) {
-                                imageBeens.add(new ImageBean(integers.get(i)));
-                            }
                             dynamicDetailBean.setStorage_task_ids(integers);
                             return mSendDynamicRepository.sendDynamic(dynamicDetailBean, dynamicBelong, channel_id);// 进行动态发布的请求
                         }
@@ -580,27 +718,136 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         // 发送动态到动态列表：状态为发送成功
-                        sendDynamicByEventBus(dynamicBelong, dynamicBean, true, backgroundRequestTaskBean, data);
+//                        sendDynamicByEventBus(dynamicBelong, dynamicBean, true, backgroundRequestTaskBean, data);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         // 发送动态到动态列表：状态为发送失败
 
-                        sendDynamicByEventBus(dynamicBelong, dynamicBean, false, backgroundRequestTaskBean, null);
+//                        sendDynamicByEventBus(dynamicBelong, dynamicBean, false, backgroundRequestTaskBean, null);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
                         // 发送动态到动态列表：状态为发送失败
-                        sendDynamicByEventBus(dynamicBelong, dynamicBean, false, backgroundRequestTaskBean, null);
+//                        sendDynamicByEventBus(dynamicBelong, dynamicBean, false, backgroundRequestTaskBean, null);
                     }
                 });
 
     }
 
-    private void sendDynamicByEventBus(int dynamicBelong, DynamicBean dynamicBean, boolean sendSuccess
+    /**
+     * 处理动态发送的后台任务 V2
+     */
+    private void sendDynamicV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long feedMark = (Long) params.get("params");
+        final SendDynamicDataBeanV2 sendDynamicDataBean = (SendDynamicDataBeanV2) params.get("sendDynamicDataBean");
+        final DynamicDetailBeanV2 detailBeanV2;
+        detailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(feedMark);
+
+        if (sendDynamicDataBean==null||detailBeanV2 == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        mSendDynamicDataBeanV2Dao.insertOrReplace(sendDynamicDataBean);
+        detailBeanV2.setState(DynamicDetailBeanV2.SEND_ING);
+
+
+        // 存入数据库
+        // ....
+        List<ImageBean> photos = sendDynamicDataBean.getPhotos();
+        Observable<BaseJson<Object>> observable;
+        // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
+        if (photos != null && !photos.isEmpty()) {
+            // 先处理图片上传，图片上传成功后，在进行动态发布
+            List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
+            for (int i = 0; i < photos.size(); i++) {
+                ImageBean imageBean = photos.get(i);
+                String filePath = imageBean.getImgUrl();
+                int photoWidth = (int) imageBean.getWidth();
+                int photoHeight = (int) imageBean.getHeight();
+                String photoMimeType = imageBean.getImgMimeType();
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+            }
+            observable = // 组合多个图片上传任务
+                    Observable.combineLatest(upLoadPics, args -> {
+                        // 得到图片上传的结果
+                        List<Integer> integers = new ArrayList<>();
+                        for (int i = 0; i < args.length; i++) {
+                            BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
+                            if (baseJson.isStatus()) {
+                                sendDynamicDataBean.getStorage_task().get(i).setId(baseJson.getData());
+                                integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+                            } else {
+                                throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                            }
+                        }
+                        return integers;
+                    }).map(integers -> {
+                        sendDynamicDataBean.setPhotos(null);
+                        return sendDynamicDataBean;
+                    }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
+                        @Override
+                        public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
+                            return mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
+                                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                                        @Override
+                                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                                            BaseJson<Object> baseJson = new BaseJson<>();
+                                            baseJson.setData((double) objectBaseJsonV2.getId());
+                                            String msg = objectBaseJsonV2.getMessage().get(0);
+                                            baseJson.setStatus(msg.equals("发布成功"));
+                                            baseJson.setMessage(msg);
+                                            return Observable.just(baseJson);
+                                        }
+                                    });
+                        }
+                    });
+        } else {
+            // 没有图片上传任务，直接发布动态
+            observable = mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
+                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                        @Override
+                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                            BaseJson<Object> baseJson = new BaseJson<>();
+                            baseJson.setData((double) objectBaseJsonV2.getId());
+                            String msg = objectBaseJsonV2.getMessage().get(0);
+                            baseJson.setStatus(msg.equals("发布成功"));
+                            baseJson.setMessage(msg);
+                            return Observable.just(baseJson);
+                        }
+                    });
+        }
+        observable.subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        // 发送动态到动态列表：状态为发送成功
+                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, true, backgroundRequestTaskBean, data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        // 发送动态到动态列表：状态为发送失败
+                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                        // 发送动态到动态列表：状态为发送失败
+                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
+                    }
+                });
+
+    }
+
+    private void sendDynamicByEventBus(int dynamicBelong, DynamicDetailBeanV2 dynamicBean, boolean sendSuccess
             , BackgroundRequestTaskBean backgroundRequestTaskBean, Object data) {
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
@@ -609,11 +856,12 @@ public class BackgroundTaskHandler {
                     // 动态发送成功
                     mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     dynamicBean.setState(DynamicBean.SEND_SUCCESS);
-                    dynamicBean.setFeed_id(((Double) data).longValue());
-                    mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                    dynamicBean.setId(((Double) data).longValue());
+                    mSendDynamicDataBeanV2Dao.delteSendDynamicDataBeanV2ByFeedMark(String.valueOf(dynamicBean.getFeed_mark()));
+                    mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
                 } else {
                     dynamicBean.setState(DynamicBean.SEND_ERROR);
-                    mDynamicBeanGreenDao.insertOrReplace(dynamicBean);
+                    mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
                 }
                 break;
             case SendDynamicDataBean.CHANNEL_DYNAMIC:
@@ -638,13 +886,13 @@ public class BackgroundTaskHandler {
         }
         // 发送动态到动态列表：状态为发送中
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .subscribe(new BaseSubscribe<Object>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(Object data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        dynamicCommentBean.setComment_id(((Double) data).longValue());
+                        dynamicCommentBean.setComment_id((long) data.getId());
                         dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -652,6 +900,7 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -659,6 +908,7 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);

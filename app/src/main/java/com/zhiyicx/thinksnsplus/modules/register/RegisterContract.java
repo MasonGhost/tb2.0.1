@@ -1,10 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.register;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IVertifyCodeRepository;
 
 import rx.Observable;
 
@@ -54,14 +53,7 @@ public interface RegisterContract {
     /**
      * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
      */
-    interface Repository {
-        /**
-         * 获取验证码
-         *
-         * @param phone 注册的手机号码
-         * @return
-         */
-        Observable<BaseJson<CacheBean>> getVertifyCode(String phone, String type);
+    interface Repository  extends IVertifyCodeRepository {
 
         /**
          * 注册
@@ -72,15 +64,14 @@ public interface RegisterContract {
          * @param password    用户密码
          * @return
          */
-        Observable<BaseJson<AuthBean>> register(String phone, String name, String vertifyCode, String password);
+        Observable<AuthBean> register(String phone, String name, String vertifyCode, String password);
 
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends IBaseTouristPresenter {
         void getVertifyCode(String phone);
 
         void register(String name, String phone, String vertifyCode, String password);
     }
 
 }
-

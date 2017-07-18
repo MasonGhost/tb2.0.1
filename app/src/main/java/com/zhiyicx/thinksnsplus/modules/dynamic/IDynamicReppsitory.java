@@ -1,10 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 
 import java.util.List;
 
@@ -29,6 +33,14 @@ public interface IDynamicReppsitory {
     Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean, int dynamicBelong, long channel_id);
 
     /**
+     * publish dynamic V2
+     *
+     * @param dynamicDetailBean dynamic content
+     * @return basejson, object is null
+     */
+    Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean);
+
+    /**
      * get dynamic list
      *
      * @param type       "" 代表最新；follows 代表关注 ； hots 代表热门
@@ -38,7 +50,9 @@ public interface IDynamicReppsitory {
      * @param isLoadMore 是否是刷新
      * @return dynamic list
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page,String feed_ids, boolean isLoadMore);
+    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page, String feed_ids, boolean isLoadMore);
+
+    Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id,boolean isLoadMore);
 
     /**
      * 动态点赞
@@ -63,6 +77,8 @@ public interface IDynamicReppsitory {
      */
     void deleteComment(final Long feed_id, Long comment_id);
 
+    void deleteCommentV2(final Long feed_id, Long comment_id);
+
     /**
      * 发送评论
      *
@@ -73,6 +89,8 @@ public interface IDynamicReppsitory {
      */
     void sendComment(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
+    void sendCommentV2(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
+
     /**
      * 插入或者更新动态列表
      *
@@ -80,6 +98,8 @@ public interface IDynamicReppsitory {
      * @param type
      */
     void updateOrInsertDynamic(List<DynamicBean> datas, String type);
+
+    void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> datas, String type);
 
     /**
      * 取消动态点赞
@@ -108,6 +128,8 @@ public interface IDynamicReppsitory {
      */
     Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id);
 
+    Observable<List<FollowFansBean>> getDynamicDigListV2(Long feed_id, Long max_id);
+
     /**
      * 一条动态的评论列表
      *
@@ -116,7 +138,7 @@ public interface IDynamicReppsitory {
      * @param max_id    max_id
      * @return
      */
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(Long feed_mark, Long feed_id, Long max_id);
+    Observable<List<DynamicCommentBean>> getDynamicCommentListV2(Long feed_mark, Long feed_id, Long max_id);
 
     /**
      * 根据 id 获取评论列表
@@ -125,6 +147,23 @@ public interface IDynamicReppsitory {
      * @return
      */
     Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentIds(String comment_ids);
+
+    /**
+     * 获取动态详情 V2
+     *
+     * @param feed_id 动态id
+     * @return
+     */
+    Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(Long feed_id);
+
+    /**
+     * 设置动态评论收费 V2
+     *
+     * @param feed_id 动态id
+     * @param amout   收费金额
+     * @return
+     */
+    Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id, int amout);
 
     /**
      * 增加动态浏览量

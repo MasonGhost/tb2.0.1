@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
@@ -97,24 +98,17 @@ public class CollectDynamicListFragment extends DynamicFragment {
      * 每次进行动态收藏操作后，都会进行收藏列表的更新
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_COLLECT_DYNAMIC)
-    public void updateDynamicListAfterHandleCollect(DynamicBean dynamicBean) {
-        DynamicToolBean dynamicToolBean = dynamicBean.getTool();
-        final boolean isCollect = dynamicToolBean.getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_UNCHECKED ? false : true;
+    public void updateDynamicListAfterHandleCollect(DynamicDetailBeanV2 dynamicBean) {
+        final boolean isCollect = dynamicBean.isHas_collect();
         LogUtils.i("DynamicBean" + dynamicBean.toString());
         // 存在这样的动态
         if (!isCollect) {// 取消收藏
             LogUtils.i("mListDatas" + mListDatas.contains(dynamicBean));
             mListDatas.remove(dynamicBean);
-
         } else {
             mListDatas.add(dynamicBean);
             // 按动态feedid大小进行逆序排列，防止上啦加载重复
-            Collections.sort(mListDatas, new Comparator<DynamicBean>() {
-                @Override
-                public int compare(DynamicBean o1, DynamicBean o2) {
-                    return o2.getFeed_id().longValue() > o1.getFeed_id().longValue() ? 1 : -1;
-                }
-            });
+            Collections.sort(mListDatas, (o1, o2) -> o2.getId() > o1.getId() ? 1 : -1);
         }
         refreshData();
     }

@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.content.Context;
+import android.app.Application;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -12,14 +12,18 @@ import com.zhiyicx.imsdk.entity.Message;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChatInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageContract;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -37,16 +41,18 @@ public class MessageRepository implements MessageContract.Repository {
     public static final int MAX_RETRY_COUNTS = 3;//重试次数
     public static final int RETRY_DELAY_TIME = 5;// 重试间隔时间,单位 s
     private ChatInfoClient mChatInfoClient;
-    private Context mContext;
-    private UserInfoRepository mUserInfoRepository;
-    private UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    private UserInfoClient mUserInfoClient;
+    @Inject
+    Application mContext;
+    @Inject
+    UserInfoRepository mUserInfoRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
-    public MessageRepository(ServiceManager serviceManager, Context context) {
-        super();
-        this.mContext = context;
+    @Inject
+    public MessageRepository(ServiceManager serviceManager) {
         mChatInfoClient = serviceManager.getChatInfoClient();
-        mUserInfoRepository = AppApplication.AppComponentHolder.getAppComponent().userInfoRepository();
-        mUserInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().userInfoBeanGreenDao();
+        mUserInfoClient = serviceManager.getUserInfoClient();
     }
 
     /**
@@ -74,6 +80,9 @@ public class MessageRepository implements MessageContract.Repository {
                                 if (message != null) {
                                     tmp.setLast_message(message);
                                     tmp.setLast_message_time(message.getCreate_time());
+                                } else {
+                                    // 去除没有聊天消息的
+                                    continue;
                                 }
                                 tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
                                 if (tmp.getType() == Conversation.CONVERSATION_TYPE_PRIVATE) { // 单聊
@@ -90,16 +99,9 @@ public class MessageRepository implements MessageContract.Repository {
                                 ConversationDao.getInstance(mContext).insertOrUpdateConversation(tmp);
                                 String[] uidsTmp = tmp.getUsids().split(",");
                                 UserInfoBean userInfoBean = new UserInfoBean();
-                                for (int i = 0; i < uidsTmp.length; i++) {
-                                    long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
-                                    integers.add(toChatUser_id);
-                                }
-                                try {
-                                    userInfoBean.setUser_id((Long) integers.get(0) == AppApplication.getmCurrentLoginAuth().getUser_id() ? (Long) integers.get(1) : (Long) integers.get(0));//保存聊天对象的 user_id ，如果是群聊暂不处理
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                long toChatUser_id = Long.valueOf((uidsTmp[0].equals(AppApplication.getmCurrentLoginAuth().getUser_id() + "") ? uidsTmp[1] : uidsTmp[0]));
+                                userInfoBean.setUser_id(toChatUser_id);
+                                integers.add(toChatUser_id);
                                 messageItemBean.setUserInfo(userInfoBean);
                                 // 获取未读消息数量
                                 int unreadMessageCount = MessageDao.getInstance(mContext).getUnReadMessageCount(tmp.getCid());
@@ -254,6 +256,77 @@ public class MessageRepository implements MessageContract.Repository {
                          }
 
                 );
+    }
+
+    @Override
+    public Observable<Void> ckeckUnreadNotification() {
+        return mUserInfoClient.ckeckUnreadNotification()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset) {
+        return mUserInfoClient.getNotificationList(notification, type, limit, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<TSPNotificationBean>, Observable<List<TSPNotificationBean>>>() {
+                    @Override
+                    public Observable<List<TSPNotificationBean>> call(List<TSPNotificationBean> datas) {
+                        if (datas.isEmpty()) {
+                            return Observable.just(datas);
+                        }
+                        final List<Object> user_ids = new ArrayList<>();
+                        String userIds = "";
+                        for (TSPNotificationBean tspNotificationBean : datas) {
+                            user_ids.add(tspNotificationBean.getUser_id());
+                            userIds += tspNotificationBean.getUser_id() + ",";
+                        }
+                        if (userIds.length() > 1) {
+                            userIds = userIds.substring(0, userIds.length() - 1);
+                        }
+                        return mUserInfoRepository.getBatchSpecifiedUserInfo(userIds)
+                                .subscribeOn(Schedulers.io())
+                                .map(userInfoBeens -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userInfoBeens) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                    }
+                                    for (int i = 0; i < datas.size(); i++) {
+                                        datas.get(i).setUserInfo(userInfoBeanSparseArray.get((int) datas.get(i).getUser_id()));
+                                    }
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeens);
+                                    return datas;
+                                });
+                    }
+                });
+    }
+
+    @Override
+    public Observable<TSPNotificationBean> getNotificationDetail(String notificationId) {
+        return mUserInfoClient.getNotificationDetail(notificationId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<TSPNotificationBean, Observable<TSPNotificationBean>>() {
+                    @Override
+                    public Observable<TSPNotificationBean> call(TSPNotificationBean tspNotificationBeen) {
+
+                        return mUserInfoRepository.getBatchSpecifiedUserInfo(String.valueOf(tspNotificationBeen.getUser_id()))
+                                .subscribeOn(Schedulers.io())
+                                .map(userInfoBeens -> {
+                                    tspNotificationBeen.setUserInfo(userInfoBeens.get(0));
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeens);
+                                    return tspNotificationBeen;
+                                });
+                    }
+                });
+    }
+
+    @Override
+    public Observable<Object> makeNotificationReaded(String notificationId) {
+        return mUserInfoClient.makeNotificationReaded(notificationId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 

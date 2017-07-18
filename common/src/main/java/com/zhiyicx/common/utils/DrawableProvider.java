@@ -278,6 +278,7 @@ public class DrawableProvider {
     public static String saveBitmap(Bitmap bm, String picName, String imgPath) {
         // 保存在sd卡中
         File dir = new File(Environment.getExternalStorageDirectory(), imgPath);
+
         if (!dir.exists() || !dir.isDirectory()) {
             // 如果没有这样的文件，或者有同名的文件但不是目录，就需要创建这样的目录
             if (!dir.mkdir()) {
@@ -285,7 +286,7 @@ public class DrawableProvider {
             }
         }
         try {
-            File f = new File(dir, picName);
+            File f = new File(dir +"/"+ picName);
             FileOutputStream out = new FileOutputStream(f);
             boolean isSuccess = bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
@@ -296,10 +297,7 @@ public class DrawableProvider {
                 return "-1";
             }
 
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
 

@@ -1,11 +1,13 @@
 package com.zhiyicx.common.base;
 
+import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.R;
 import com.zhiyicx.common.dagger.module.AppModule;
 import com.zhiyicx.common.dagger.module.HttpClientModule;
 import com.zhiyicx.common.dagger.module.ImageModule;
@@ -18,7 +20,10 @@ import java.util.Set;
 import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.Interceptor;
-import solid.ren.skinlibrary.base.SkinBaseApplication;
+import skin.support.SkinCompatManager;
+import skin.support.app.SkinCardViewInflater;
+import skin.support.design.app.SkinMaterialViewInflater;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
  * @Describe Applicaiton 基类
@@ -27,7 +32,7 @@ import solid.ren.skinlibrary.base.SkinBaseApplication;
  * @Contact 335891510@qq.com
  */
 
-public abstract class BaseApplication extends SkinBaseApplication {
+public abstract class BaseApplication extends Application {
     protected final String TAG = this.getClass().getSimpleName();
 
     private static BaseApplication mApplication;
@@ -62,6 +67,17 @@ public abstract class BaseApplication extends SkinBaseApplication {
                 .sslSocketFactory(getSSLSocketFactory())
                 .build();
         this.mAppModule = new AppModule(this);// 提供 application
+        // 换肤支持
+        SkinCompatManager.init(this)                          // 基础控件换肤初始化
+                .addInflater(new SkinMaterialViewInflater())  // material design 控件换肤初始化[可选]
+                .addInflater(new SkinCardViewInflater())      // CardView 控件换肤初始化[可选]
+                .loadSkin();
+        // 字体切换支持
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+//                .setDefaultFontPath("fonts/NotoKufiArabic-Regular.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        );
 
     }
 

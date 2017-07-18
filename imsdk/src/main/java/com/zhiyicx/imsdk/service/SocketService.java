@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -121,6 +122,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
     private static final long DISCONNECT_NOTIFY_TIME = 10 * 1000;//IM超过10s没有连上，通知下发
     private static final long HEART_BEAT_RATE_INTERVAL_FOR_CPU = 500;//心跳，防止cpu占用过高
     private static final long MESSAGE_SEND_INTERVAL_FOR_CPU = 100;//消息发送间隔时间，防止cpu占用过高
+    private static final long DELAY_RECONNECT_TIME = 5000;//消息发送间隔时间，防止cpu占用过高
     private long disconnect_start_time = 0;//重连开始时间
     private int MAX_RESEND_COUNT = 3;//最大的重发次数
 
@@ -330,7 +332,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         mContext = getApplicationContext();
         mService = new ImService();
         initSocketListener();
-
+        LogUtils.debugInfo(TAG, "------------init------------");
     }
 
     /**
@@ -347,6 +349,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private boolean login(IMConfig imConfig) {
+        LogUtils.debugInfo(TAG, "------------login------------" + imConfig.toString());
         mIMConfig = imConfig;
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
@@ -1354,7 +1357,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
         eventContainer.mConversations = conversations;
         if (conversations != null && conversations.size() > 0) {
             Conversation tmp = conversations.get(0);
-            if (mEventContainerCache.get(tmp.getCid())!=null) {
+            if (mEventContainerCache.get(tmp.getCid()) != null) {
                 eventContainer = mEventContainerCache.get(tmp.getCid());
                 tmp.setLast_message_time((eventContainer.mMessageContainer.msg.mid >> 23) + BaseDao.TIME_DEFAULT_ADD);
                 tmp.setIm_uid(mIMConfig.getImUid());
@@ -1393,7 +1396,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
      */
     private EventContainer parseMsgpackDataMessageErrACK(byte[] data, EventContainer eventContainer) {
         List<Value> dst1 = null;
-        LogUtils.debugInfo(TAG,"data ----------= " + new String(data));
+        LogUtils.debugInfo(TAG, "data ----------= " + new String(data));
         try {
             dst1 = new MessagePack().read(MessageHelper.getRecievedBodyByte(data), Templates.tList(Templates.TValue));
             LogUtils.debugInfo(TAG, "------value----" + dst1.toString());
@@ -1530,10 +1533,15 @@ public class SocketService extends BaseService implements ImService.ImListener {
             case WebSocket.ConnectionHandler.CLOSE_NORMAL:
                 break;
             /**
-             * 无法连接到服务器（主要是网络太差出现）
+             * 无法连接到服务器（主要是网络太差出现）,或者服务器拒绝
              */
             case WebSocket.ConnectionHandler.CLOSE_CANNOT_CONNECT:
-                socketReconnect();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        socketReconnect();
+                    }
+                }, DELAY_RECONNECT_TIME);
                 break;
             /**
              * 意外的失去了先前建立的连接

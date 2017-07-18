@@ -2,21 +2,32 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 
 import java.util.List;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_PAID_V2;
 
 /**
  * @author LiuChao
@@ -34,6 +45,15 @@ public interface DynamicClient {
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_SEND_DYNAMIC)
     Observable<BaseJson<Object>> sendDynamic(@Body RequestBody body);
+
+    /**
+     * 发布动态
+     *
+     * @return
+     */
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(ApiConfig.APP_PATH_SEND_DYNAMIC_V2)
+    Observable<BaseJsonV2<Object>> sendDynamicV2(@Body RequestBody body);
 
     /**
      * 发布动态到频道
@@ -55,6 +75,14 @@ public interface DynamicClient {
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST)
     Observable<BaseJson<List<DynamicBean>>> getDynamicList(@Path("type") String type, @Query("max_id") Long max_id, @Query("limit") Long limit, @Query("page") int page, @Query("feed_ids") String feed_ids);
 
+    @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST_V2)
+    Observable<DynamicBeanV2> getDynamicListV2(@Query("type") String type, @Query
+            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
+
+    @GET(ApiConfig.APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2)
+    Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query
+            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
+
     /**
      * #点赞一条动态
      *
@@ -63,6 +91,9 @@ public interface DynamicClient {
      */
     @POST(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE)
     Observable<BaseJson<String>> likeDynamic(@Path("feed_id") Long feed_id);
+
+    @POST(ApiConfig.APP_PATH_DYNAMIC_CLICK_LIKE_V2)
+    Observable<String> likeDynamicV2(@Path("feed_id") Long feed_id);
 
     /**
      * #取消点赞一条动态
@@ -73,6 +104,9 @@ public interface DynamicClient {
     @DELETE(ApiConfig.APP_PATH_DYNAMIC_HANDLE_LIKE)
     Observable<BaseJson<String>> cancleLikeDynamic(@Path("feed_id") Long feed_id);
 
+    @DELETE(ApiConfig.APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_V2)
+    Observable<BaseJson<String>> cancleLikeDynamicV2(@Path("feed_id") Long feed_id);
+
     /**
      * 获取某条动态的点赞用户列表
      *
@@ -82,6 +116,9 @@ public interface DynamicClient {
      */
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST)
     Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Integer limitCount);
+
+    @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST_V2)
+    Observable<List<DynamicDigListBean>> getDynamicDigListV2(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 收藏动态
@@ -109,6 +146,9 @@ public interface DynamicClient {
     @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST)
     Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Long limit);
 
+    @GET(ApiConfig.APP_PATH_DYNAMIC_COMMENT_LIST_V2)
+    Observable<DynamicCommentBeanV2> getDynamicCommentListV2(@Path("feed_id") Long feed_id, @Query("after") Long after, @Query("limit") Long limit);
+
     /**
      * 根据id获取评论列表
      *
@@ -127,4 +167,79 @@ public interface DynamicClient {
     @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
     Observable<BaseJson<Object>> handleDynamicViewCount(@Path("feed_id") Long feed_id);
 
+    /**
+     * 获取动态详情 V2
+     *
+     * @param feed_id 动态id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_DYNAMIC_DETAIL)
+    Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(@Path("feed_id") Long feed_id);
+
+    /**
+     * 设置动态评论收费 V2
+     *
+     * @param feed_id 动态id
+     * @param amount  收费金额
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_COMMENT_PAID_V2)
+    Observable<DynamicCommentToll> setDynamicCommentToll(@Path("feed_id") Long feed_id, @Field("amount") int amount);
+
+    /**
+     * 置顶动态 V2
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_DYNAMIC)
+    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id, @Field("amount") int amount, @Field("day") int day);
+
+
+    /**
+     * 置顶动态评论  V2
+     *
+     * @param feed_id 动态的唯一 id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id, @Path("comment_id") Long comment_id, @Field("amount") int amount, @Field("day") int day);
+
+    /**
+     * 获取动态评论置顶审核列表 V2
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_REVIEW_DYNAMIC_COMMENT)
+    Observable<List<TopDynamicCommentBean>> getReviewComment(@Query("after") int after, @Query("limit")
+            int limit);
+
+    /**
+     * 动态评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @PATCH(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2> approvedTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
+            int comment_id, @Path("pinned_id") int pinned_id);
+
+    /**
+     * 动态评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_REFUSE_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2> refuseTopComment(@Path("pinned_id")int pinned_id);
+
+    /**
+     * 动态评论置顶审核通过 V2
+     *
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
+    Observable<BaseJsonV2> deleteTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
+            int comment_id);
 }

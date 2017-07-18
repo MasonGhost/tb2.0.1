@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -64,8 +65,19 @@ public class MessageSwipeAdapter extends RecyclerSwipeAdapter<MessageSwipeAdapte
     private void setItemData(final MessageListHolder holder, final MessageItemBean messageItemBean, final int position) {
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
+                int storegeId;
+                String userIconUrl;
+                try {
+                    storegeId = Integer.parseInt(messageItemBean.getUserInfo().getAvatar());
+                    userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , ImageZipConfig.IMAGE_38_ZIP);
+                } catch (Exception e) {
+                    userIconUrl = messageItemBean.getUserInfo().getAvatar();
+                }
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvert(messageItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                        .url(userIconUrl)
                         .transformation(new GlideCircleTransform(mContext))
                         .errorPic(R.drawable.shape_default_image_circle)
                         .imagerView(holder.mIvHeadpic)

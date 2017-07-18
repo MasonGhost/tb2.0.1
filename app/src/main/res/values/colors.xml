@@ -5,4 +5,15 @@
     <color name="home_bottom_navigate_text_normal">#707c81</color>
     <!--频道详情，带透明度的白色-->
     <color name="channel_detail_white_alpha">#b3ffffff</color>
+    <!--提现明细操作成功-->
+    <color name="withdrawals_item_enable">#ff9400</color>
+    <!--动态置顶标识-->
+    <color name="dyanmic_top_flag">#4bb893</color>
+    <!--发布动态-->
+    <color name="dyanmic_send">#575757</color>
+
+    <color name="tym">#ddffffff</color>
+
+    <!--意见反馈-常见问题背景-->
+    <color name="feed_back_question">#f4f5f5</color>
 </resources>

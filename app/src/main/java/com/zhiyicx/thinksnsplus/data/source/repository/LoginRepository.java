@@ -1,14 +1,16 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
 import android.content.Context;
 
-import com.zhiyicx.baseproject.cache.CacheImp;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.login.LoginContract;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -21,12 +23,12 @@ import rx.Observable;
 
 public class LoginRepository implements LoginContract.Repository {
     private LoginClient mLoginClient;
-    private CacheImp<AuthBean> cacheImp;
-    private Context mContext;
+    @Inject
+    Application mContext;
 
-    public LoginRepository(ServiceManager serviceManager, Context context) {
+    @Inject
+    public LoginRepository(ServiceManager serviceManager) {
         mLoginClient = serviceManager.getLoginClient();
-        mContext = context;
     }
 
     @Override
@@ -40,5 +42,17 @@ public class LoginRepository implements LoginContract.Repository {
             }
         });*/
         return mLoginClient.login("success", phone, password, DeviceUtils.getIMEI(mContext));
+    }
+    @Override
+    public Observable<AuthBean> loginV2(final String account, final String password) {
+       /* if(cacheImp==null){
+            cacheImp = new CacheImp<>(new AuthBeanGreenDaoImpl(context));
+        }
+        return cacheImp.load(1483098241l, new NetWorkCache<AuthBean>() {
+            @Override
+            public Observable<BaseJson<AuthBean>> get(Long key) {
+            }
+        });*/
+        return mLoginClient.loginV2(account, password);
     }
 }

@@ -2,22 +2,18 @@ package com.zhiyicx.thinksnsplus.modules.register;
 
 import android.os.CountDownTimer;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
-
-import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -30,7 +26,7 @@ import rx.Subscription;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-public class RegisterPresenter extends BasePresenter<RegisterContract.Repository, RegisterContract.View> implements RegisterContract.Presenter {
+public class RegisterPresenter extends AppBasePresenter<RegisterContract.Repository, RegisterContract.View> implements RegisterContract.Presenter {
 
     public static final int S_TO_MS_SPACING = 1000; // s 和 ms 的比例
     public static final int SNS_TIME = 60 * S_TO_MS_SPACING; // 发送短信间隔时间，单位 ms
@@ -83,10 +79,10 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         }
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoadin(true);
-        Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_REGISTER)
-                .subscribe(new BaseSubscribe<CacheBean>() {
+        Subscription getVertifySub = mRepository.getNonMemberVertifyCode(phone)
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
+                    protected void onSuccess(Object data) {
                         mRootView.hideLoading();//隐藏loading
                         timer.start();//开始倒计时
                         mRootView.setVertifyCodeLoadin(false);
@@ -136,7 +132,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         }
         mRootView.setRegisterBtEnabled(false);
         Subscription registerSub = mRepository.register(phone, name, vertifyCode, password)
-                .subscribe(new BaseSubscribe<AuthBean>() {
+                .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
@@ -146,12 +142,9 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
                         registerUserInfo.setName(name);
                         registerUserInfo.setPhone(phone);
                         mUserInfoBeanGreenDao.insertOrReplace(registerUserInfo);
-                        // 获取用户信息
-                        getUserInfo(data);
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
                         mRootView.goHome();
-
                     }
 
                     @Override
@@ -176,13 +169,6 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_IM_INFO));
     }
 
-    private void getUserInfo(AuthBean data) {
-        HashMap<String, Object> userInfoParams = new HashMap<>();
-        userInfoParams.put("user_id", data.getUser_id());
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.GET_USER_INFO, userInfoParams));
-    }
-
-
     /**
      * 错误处理
      *
@@ -200,7 +186,7 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
      * @return
      */
     private boolean checkVertifyLength(String vertifyCode) {
-        if (vertifyCode.length() != mContext.getResources().getInteger(R.integer.vertiry_code_lenght)) {
+        if (vertifyCode.length() < mContext.getResources().getInteger(R.integer.vertiry_code_min_lenght)) {
             mRootView.showMessage(mContext.getString(R.string.vertify_code_input_hint));
             return true;
         }
@@ -255,5 +241,10 @@ public class RegisterPresenter extends BasePresenter<RegisterContract.Repository
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean istourist() {
+        return mAuthRepository.isTourist();
     }
 }

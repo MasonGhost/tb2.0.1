@@ -6,19 +6,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.imsdk.core.autobahn.WampMessage;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
@@ -39,7 +36,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLL
  * @Description 专辑详情
  */
 @FragmentScoped
-public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repository,
+public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.Repository,
         MusicDetailContract.View> implements MusicDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -115,9 +112,7 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void handleCollect(boolean isUnCollected, String special_id) {
-        if (AppApplication.getmCurrentLoginAuth() == null) {
-            return;
-        }
+
         int is_collect = mRootView.getCurrentAblum().getIs_collection() == 0 ? 1 : 0;
         mRootView.getCurrentAblum().setIs_collection(is_collect);
         mRootView.getmMusicAlbumListBean().setIs_collection(is_collect);
@@ -157,7 +152,9 @@ public class MusicDetailPresenter extends BasePresenter<MusicDetailContract.Repo
 
     @Override
     public void onSuccess(Share share) {
-        mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
+        if (!istourist()){
+            mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
+        }
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
     }
 

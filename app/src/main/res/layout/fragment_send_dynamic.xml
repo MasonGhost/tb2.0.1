@@ -1,51 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:overScrollMode="never">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sl_send_dynamic"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:overScrollMode="never">
 
     <LinearLayout
+        android:id="@+id/ll_send_dynamic"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical">
 
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
             android:id="@+id/et_dynamic_title"
+            style="@style/style_edit_cursor"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_normal"
-            style="@style/style_edit_cursor"
             android:layout_marginLeft="@dimen/spacing_normal_large"
             android:layout_marginRight="@dimen/spacing_normal_large"
             android:layout_marginTop="@dimen/spacing_large"
             app:hintContent="@string/dynamic_title_hint"
             app:limitSize="@integer/dynamic_title_max_size"
-            app:showLimitSize="@integer/dynamic_title_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
+            app:showLimitSize="@integer/dynamic_title_input_size"/>
 
         <include
+            android:visibility="gone"
             layout="@layout/include_horizontal_divider_light"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_line"
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_large"
-            ></include>
+            />
 
         <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
             android:id="@+id/et_dynamic_content"
+            style="@style/style_edit_cursor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
-            style="@style/style_edit_cursor"
             android:layout_marginLeft="@dimen/spacing_normal_large"
             android:layout_marginRight="@dimen/spacing_normal_large"
             android:layout_marginTop="@dimen/spacing_large"
             app:hintContent="@string/dynamic_content_hint"
             app:limitSize="@integer/dynamic_content_max_size"
             app:showLimitSize="@integer/dynamic_content_input_size"
-            app:showLines="@integer/dynamic_content_show_lines"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
+            app:showLines="@integer/dynamic_content_show_lines"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_photo_list"
@@ -54,8 +60,76 @@
             android:layout_marginBottom="@dimen/spacing_large"
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_large"
-            android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
+            android:overScrollMode="never"/>
 
-        <include layout="@layout/include_horizontal_divider_light"></include>
+        <include layout="@layout/include_horizontal_divider_light"/>
+
+        <com.zhiyicx.baseproject.widget.button.CombinationButton
+            android:id="@+id/tv_toll"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            android:paddingLeft="@dimen/spacing_normal"
+            app:leftText="@string/dynamic_send_toll"
+            app:rightImage="@mipmap/btn_close"/>
+
+        <LinearLayout
+            android:id="@+id/send_dynamic_ll_toll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <include
+                layout="@layout/view_choose_item"/>
+
+            <View
+                style="@style/style_divider_horizontal_light"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:background="@color/white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/custom_recharge_money"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content"
+                    />
+
+                <EditText
+                    android:id="@+id/et_input"
+                    style="@style/style_dynamic_editext"
+                    android:hint="@string/et_top_input"
+                    tools:hint="输入金额"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yuan"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content"
+                    tools:text="元"/>
+            </LinearLayout>
+
+            <View
+                style="@style/style_divider_horizontal_light"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:id="@+id/tv_word_limit"
+                android:text="@string/dynamic_send_toll_notes"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_comment"/>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

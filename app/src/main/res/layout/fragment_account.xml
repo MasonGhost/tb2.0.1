@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wcy.overscroll.OverScrollLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/bill_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingBottom="@dimen/spacing_big_large"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingTop="@dimen/spacing_big_large"
+            android:text="@string/account_balance"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content"/>
+
+        <TextView
+            android:id="@+id/tv_mine_money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:paddingBottom="@dimen/spacing_large"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:text="@string/account_balance"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/withdrawal_detail_textsize"
+            tools:text="-1288.00"/>
+
+        <LinearLayout
+            android:id="@+id/bill_user_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:id="@+id/bill_user"
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:gravity="left|center"
+                android:text="@string/account_form_name"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/account_form_name"/>
+
+            <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
+                android:id="@+id/bill_user_head"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@mipmap/pic_default_portrait1"
+                android:drawablePadding="@dimen/spacing_small"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/spacing_large"
+                android:text="@string/account_to_name"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                app:compoundDrawableHeight="@dimen/headpic_for_assist"
+                app:compoundDrawableWidth="@dimen/headpic_for_assist"
+                tools:text="@string/account_to_name"/>
+        </LinearLayout>
+
+        <View
+            android:visibility="gone"
+            style="@style/style_divider_horizontal"/>
+
+        <LinearLayout
+            android:id="@+id/bill_account_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dynamice_top_input_height"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/transaction_account"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_account"/>
+
+            <TextView
+                android:id="@+id/bill_account"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/spacing_large"
+                android:text="@string/transaction_account"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_account"/>
+        </LinearLayout>
+
+        <View
+            style="@style/style_divider_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dynamice_top_input_height"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/transaction_description"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_description"/>
+
+            <TextView
+                android:id="@+id/bill_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/spacing_large"
+                android:text="@string/transaction_description"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_description"/>
+        </LinearLayout>
+
+        <View
+            style="@style/style_divider_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamice_top_input_height"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+            <TextView
+                android:layout_width="@dimen/withdrawal_detail_width"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/transaction_time"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/transaction_time"/>
+
+            <TextView
+                android:id="@+id/bill_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing_large"
+                android:text="@string/yuan"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="@string/yuan"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</com.wcy.overscroll.OverScrollLayout>
+
+

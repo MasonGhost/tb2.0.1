@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.password.changepassword;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.ChangePasswordRepository;
 
 import dagger.Module;
@@ -27,8 +26,7 @@ public class ChangePasswordPresenterModule {
 
 
     @Provides
-    ChangePasswordContract.Repository provideChangePasswordContractRepository(ServiceManager serviceManager) {
-        return new ChangePasswordRepository(serviceManager);
+    ChangePasswordContract.Repository provideChangePasswordContractRepository(ChangePasswordRepository changePasswordRepository) {
+        return changePasswordRepository;
     }
 }
-

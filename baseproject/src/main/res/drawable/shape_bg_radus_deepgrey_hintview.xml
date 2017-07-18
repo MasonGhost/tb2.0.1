@@ -3,6 +3,5 @@
        android:shape="rectangle">
     <solid android:color="@color/general_for_bg_light"/>
     <corners
-        android:radius="@dimen/spacing_huge"
-        ></corners>
+        android:radius="@dimen/spacing_huge"/>
 </shape>

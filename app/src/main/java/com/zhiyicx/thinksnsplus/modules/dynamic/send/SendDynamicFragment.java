@@ -8,32 +8,41 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.widget.RxRadioGroup;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
-import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.photopicker.PhotoViewActivity;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -44,6 +53,11 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
+import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
+import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
+
+
 /**
  * @author LiuChao
  * @describe
@@ -51,8 +65,8 @@ import butterknife.BindView;
  * @contact email:450127106@qq.com
  * @See
  */
-
-public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> implements SendDynamicContract.View, PhotoSelectorImpl.IPhotoBackListener {
+public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presenter> implements
+        SendDynamicContract.View, PhotoSelectorImpl.IPhotoBackListener {
     private static final int ITEM_COLUM = 4;// recyclerView的每行item个数
     private static final int MAX_PHOTOS = 9;// 一共可选的图片数量
     @BindView(R.id.rv_photo_list)
@@ -61,6 +75,28 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     UserInfoInroduceInputView mEtDynamicTitle;
     @BindView(R.id.et_dynamic_content)
     UserInfoInroduceInputView mEtDynamicContent;
+    @BindView(R.id.tv_toll)
+    CombinationButton mTvToll;
+    @BindView(R.id.send_dynamic_ll_toll)
+    LinearLayout mLLToll;
+    @BindView(R.id.ll_send_dynamic)
+    LinearLayout ll_send_dynamic;
+    @BindView(R.id.tv_choose_tip)
+    TextView mTvChooseTip;
+    @BindView(R.id.tv_word_limit)
+    TextView mTvWordsLimit;
+    @BindView(R.id.rb_one)
+    RadioButton mRbOne;
+    @BindView(R.id.rb_two)
+    RadioButton mRbTwo;
+    @BindView(R.id.rb_three)
+    RadioButton mRbThree;
+    @BindView(R.id.rb_days_group)
+    RadioGroup mRbDaysGroup;
+    @BindView(R.id.et_input)
+    EditText mEtInput;
+    @BindView(R.id.sl_send_dynamic)
+    ScrollView sl_send_dynamic;
 
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
@@ -69,6 +105,16 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private PhotoSelectorImpl mPhotoSelector;
     private boolean hasContent, hasPics;// 状态值用来判断发送状态
     private int dynamicType;// 需要发送的动态类型
+    private boolean isToll;
+    private boolean hasTollPic;
+    private ArrayList<Float> mSelectDays;
+
+    private int mPayType;
+
+    private double mTollMoney;
+    private String mRechargeMoneyStr;
+
+    private ActionPopupWindow mInstructionsPopupWindow;
 
     public static SendDynamicFragment initFragment(Bundle bundle) {
         SendDynamicFragment sendDynamicFragment = new SendDynamicFragment();
@@ -139,16 +185,78 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     protected void initView(View rootView) {
-
         initSendDynamicBtnState();// 设置右边发布文字监听
         setLeftTextColor();// 设置左边取消文字的颜色为主题色
         initDynamicType();
         setSendDynamicState();
+        initWordsToll();
     }
 
     @Override
     protected void initData() {
+        mSelectDays = new ArrayList<>();
+        mSelectDays.add(1f);
+        mSelectDays.add(5f);
+        mSelectDays.add(10f);
+        initSelectDays(mSelectDays);
+    }
 
+    @Override
+    public double getTollMoney() {
+        return mTollMoney;
+    }
+
+    @Override
+    public boolean hasTollVerify() {
+        return isToll && !hasTollPic;
+    }
+
+    private void initSelectDays(List<Float> mSelectDays) {
+        mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money),
+                mSelectDays.get(0)));
+        mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money),
+                mSelectDays.get(1)));
+        mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money),
+                mSelectDays.get(2)));
+    }
+
+    private void initWordsToll() {
+        mTvWordsLimit.setText(String.format(getString(R.string.dynamic_send_toll_notes), 50));
+        mTvChooseTip.setText(R.string.dynamic_send_toll_words_count);
+        RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
+            mRechargeMoneyStr = charSequence.toString();
+            if (TextUtils.isEmpty(mRechargeMoneyStr.replaceAll(" ", ""))) {
+                return;
+            }
+            mRbDaysGroup.clearCheck();
+            mTollMoney = Double.parseDouble(charSequence.toString());
+        }, throwable -> mTollMoney = 0);
+
+        RxRadioGroup.checkedChanges(mRbDaysGroup)
+                .compose(this.bindToLifecycle())
+                .subscribe(checkedId -> {
+                    if (checkedId != -1) {
+                        setCustomMoneyDefault();
+                    }
+                    switch (checkedId) {
+                        case R.id.rb_one:
+                            mTollMoney = mSelectDays.get(0);
+                            break;
+                        case R.id.rb_two:
+                            mTollMoney = mSelectDays.get(1);
+                            break;
+                        case R.id.rb_three:
+                            mTollMoney = mSelectDays.get(2);
+                            break;
+                    }
+                });
+    }
+
+    /**
+     * 设置自定义金额数量
+     */
+    private void setCustomMoneyDefault() {
+        mEtInput.setText("");
     }
 
     /**
@@ -166,43 +274,32 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItem1Clicked() {
-                        ArrayList<String> photos = new ArrayList<String>();
-                        // 最后一张是占位图
-                        for (int i = 0; i < selectedPhotos.size(); i++) {
-                            ImageBean imageBean = selectedPhotos.get(i);
-                            if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
-                                photos.add(imageBean.getImgUrl());
-                            }
+                .item1ClickListener(() -> {
+                    ArrayList<String> photos = new ArrayList<>();
+                    // 最后一张是占位图
+                    for (int i = 0; i < selectedPhotos.size(); i++) {
+                        ImageBean imageBean = selectedPhotos.get(i);
+                        if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                            photos.add(imageBean.getImgUrl());
                         }
-                        mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
-                        mPhotoPopupWindow.hide();
                     }
+                    mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
+                    mPhotoPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItem2Clicked() {
-                        ArrayList<String> photos = new ArrayList<String>();
-                        // 最后一张是占位图
-                        for (int i = 0; i < selectedPhotos.size(); i++) {
-                            ImageBean imageBean = selectedPhotos.get(i);
-                            if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
-                                photos.add(imageBean.getImgUrl());
-                            }
+                .item2ClickListener(() -> {
+                    ArrayList<String> photos = new ArrayList<>();
+                    // 最后一张是占位图
+                    for (int i = 0; i < selectedPhotos.size(); i++) {
+                        ImageBean imageBean = selectedPhotos.get(i);
+                        if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
+                            photos.add(imageBean.getImgUrl());
                         }
-                        // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera(photos);
-                        mPhotoPopupWindow.hide();
                     }
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(photos);
+                    mPhotoPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onBottomClicked() {
-                        mPhotoPopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
     }
 
     /**
@@ -220,19 +317,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItem2Clicked() {
-                        mCanclePopupWindow.hide();
-                        getActivity().finish();
-                    }
+                .item2ClickListener(() -> {
+                    mCanclePopupWindow.hide();
+                    getActivity().finish();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onBottomClicked() {
-                        mCanclePopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mCanclePopupWindow.hide()).build();
     }
 
     /**
@@ -250,12 +339,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         if (isPhotoListChanged(selectedPhotos, photoList)) {
+            hasTollPic = false;
             selectedPhotos.clear();
             selectedPhotos.addAll(photoList);
             addPlaceHolder();
             setSendDynamicState();// 每次刷新图片后都要判断发布按钮状态
             mCommonAdapter.notifyDataSetChanged();
         }
+
     }
 
     private void addPlaceHolder() {
@@ -268,7 +359,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
     @Override
     public void getPhotoFailure(String errorMsg) {
-
+        ToastUtils.showToast(errorMsg);
     }
 
     @Override
@@ -276,6 +367,15 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         super.onActivityResult(requestCode, resultCode, data);
         // 获取图片选择器返回结果
         if (mPhotoSelector != null) {
+            if (data != null) {// 图片选择器界面数据保存操作
+                Bundle tollBundle = new Bundle();
+                data.putExtra("tollBundle", tollBundle);
+                List<ImageBean> oldData = mCommonAdapter.getDatas();
+                if (oldData == null) {
+                    oldData = new ArrayList<>();
+                }
+                tollBundle.putParcelableArrayList("tollBundle", new ArrayList<>(oldData));
+            }
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -283,21 +383,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void setPresenter(SendDynamicContract.Presenter presenter) {
         mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     @Override
@@ -315,10 +400,38 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         return sendDynamicDataBean;
     }
 
-
     @Override
     protected void setRightClick() {
-        mPresenter.sendDynamic(packageDynamicData());
+        mPresenter.sendDynamicV2(packageDynamicData());
+    }
+
+    /**
+     * 封装动态上传的数据
+     */
+    @Override
+    public void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
+        List<SendDynamicDataBeanV2.StorageTaskBean> storage_task = new ArrayList<>();
+        List<ImageBean> photos = new ArrayList<>();
+        if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
+            for (int i = 0; i < selectedPhotos.size(); i++) {
+                if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
+                    SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
+                    ImageBean imageBean = selectedPhotos.get(i);
+                    photos.add(imageBean);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? imageBean.getToll_monye() : null);
+                    taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
+                            ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
+                    storage_task.add(taskBean);
+                }
+            }
+        }
+        sendDynamicDataBeanV2.setPhotos(photos);
+        sendDynamicDataBeanV2.setStorage_task(storage_task);
+    }
+
+    @Override
+    public boolean wordsNumLimit() {
+        return mLLToll.getVisibility() == View.VISIBLE;
     }
 
     private void setLeftTextColor() {
@@ -329,12 +442,25 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      * 发布按钮的状态监听
      */
     private void initSendDynamicBtnState() {
-        mEtDynamicContent.setContentChangedListener(new UserInfoInroduceInputView.ContentChangedListener() {
-            @Override
-            public void contentChanged(CharSequence s) {
-                hasContent = !TextUtils.isEmpty(s);
-                setSendDynamicState();
+        mEtDynamicTitle.setOnFocusChangeListener((v, hasFocus) -> {
+//                System.out.println("hasFocus = " + hasFocus);
+        });
+
+        mEtDynamicContent.setContentChangedListener(s -> {
+            hasContent = !TextUtils.isEmpty(s);
+            setSendDynamicState();
+        });
+
+        mTvToll.setVisibility(BuildConfig.USE_TOLL ? View.VISIBLE : View.GONE);
+        mTvToll.setRightImageClickListener(v -> {
+            isToll = !isToll;
+            if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
+                mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                sl_send_dynamic.smoothScrollTo(0, 0);
+            } else {
+                mCommonAdapter.notifyDataSetChanged();
             }
+            mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
         });
 
     }
@@ -355,44 +481,45 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     /**
      * 封装动态上传的数据
      */
-    private DynamicBean packageDynamicData() {
-        long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication.getmCurrentLoginAuth().getUser_id() : 0;
+    private DynamicDetailBeanV2 packageDynamicData() {
+
+        DynamicDetailBeanV2 dynamicDetailBeanV2 = new DynamicDetailBeanV2();
+
+        long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication
+                .getmCurrentLoginAuth().getUser_id() : 0;
         String feedMarkString = userId + "" + System.currentTimeMillis();
         long feedMark = Long.parseLong(feedMarkString);
-        DynamicToolBean toolBean=new DynamicToolBean();
-        toolBean.setFeed_mark(feedMark);
-        toolBean.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
-        DynamicDetailBean dynamicDetailBean = new DynamicDetailBean();
-        dynamicDetailBean.setFeed_mark(feedMark);
-        dynamicDetailBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        dynamicDetailBean.setContent(mEtDynamicContent.getInputContent());
-        dynamicDetailBean.setTitle(mEtDynamicTitle.getInputContent());
+
+        dynamicDetailBeanV2.setFeed_view_count(1);// 浏览量没有 0 ，从1 开始
+        dynamicDetailBeanV2.setFeed_mark(feedMark);
+        dynamicDetailBeanV2.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+        dynamicDetailBeanV2.setFeed_content(mEtDynamicContent.getInputContent());
+        dynamicDetailBeanV2.setFeed_from(ApiConfig.ANDROID_PLATFORM);
+        dynamicDetailBeanV2.setIsFollowed(true);// 因为关注里面需要显示我的动态
+        dynamicDetailBeanV2.setState(DynamicDetailBeanV2.SEND_ING);
+        dynamicDetailBeanV2.setComments(new ArrayList<>());
+        dynamicDetailBeanV2.setUser_id(userId);
+        dynamicDetailBeanV2.setAmount(mTollMoney);
+
         if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
-            List<ImageBean> photos = new ArrayList<>();
+            List<DynamicDetailBeanV2.ImagesBean> images = new ArrayList<>();
             // 最后一张占位图，扔掉
             for (int i = 0; i < selectedPhotos.size(); i++) {
                 if (!TextUtils.isEmpty(selectedPhotos.get(i).getImgUrl())) {
-                    ImageBean imageBean = new ImageBean();
-                    imageBean.setImgUrl(selectedPhotos.get(i).getImgUrl());
-                    BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(selectedPhotos.get(i).getImgUrl());
-                    imageBean.setHeight(options.outHeight);
-                    imageBean.setWidth(options.outWidth);
-                    imageBean.setImgMimeType(options.outMimeType);
-                    photos.add(imageBean);
+                    DynamicDetailBeanV2.ImagesBean imagesBean = new DynamicDetailBeanV2.ImagesBean();
+                    imagesBean.setImgUrl(selectedPhotos.get(i).getImgUrl());
+                    BitmapFactory.Options options = DrawableProvider.getPicsWHByFile
+                            (selectedPhotos.get(i).getImgUrl());
+                    imagesBean.setHeight(options.outHeight);
+                    imagesBean.setWidth(options.outWidth);
+                    imagesBean.setImgMimeType(options.outMimeType);
+                    images.add(imagesBean);
                 }
             }
-
-            dynamicDetailBean.setStorages(photos);
+            dynamicDetailBeanV2.setImages(images);
         }
-        dynamicDetailBean.setFeed_from(ApiConfig.ANDROID_PLATFORM);
-        DynamicBean dynamicBean = new DynamicBean();
-        dynamicBean.setIsFollowed(true); // 因为关注里面需要显示我的动态
-        dynamicBean.setFeed(dynamicDetailBean);
-        dynamicBean.setState(DynamicBean.SEND_ING);
-        dynamicBean.setFeed_mark(feedMark);
-        dynamicBean.setUser_id(userId);
-        dynamicBean.setTool(toolBean);
-        return dynamicBean;
+
+        return dynamicDetailBeanV2;
     }
 
     /**
@@ -409,67 +536,102 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         mRvPhotoList.addItemDecoration(new GridDecoration(witdh, witdh));
         // 占位缺省图
         addPlaceHolder();
-        mCommonAdapter = new CommonAdapter<ImageBean>(getContext(), R.layout.item_send_dynamic_photo_list, selectedPhotos) {
+        mCommonAdapter = new CommonAdapter<ImageBean>(getContext(), R.layout
+                .item_send_dynamic_photo_list, selectedPhotos) {
             @Override
-            protected void convert(ViewHolder holder, final ImageBean imageBean, final int position) {
+            protected void convert(ViewHolder holder, final ImageBean imageBean, final int
+                    position) {
                 // 固定每个item的宽高
                 // 屏幕宽高减去左右margin以及item之间的空隙
-                int width = UIUtils.getWindowWidth(getContext()) - getResources().getDimensionPixelSize(R.dimen.spacing_large) * 2
+                int width = UIUtils.getWindowWidth(getContext()) - getResources()
+                        .getDimensionPixelSize(R.dimen.spacing_large) * 2
                         - ConvertUtils.dp2px(getContext(), 5) * (ITEM_COLUM - 1);
                 View convertView = holder.getConvertView();
                 convertView.getLayoutParams().width = width / ITEM_COLUM;
                 convertView.getLayoutParams().height = width / ITEM_COLUM;
                 final ImageView imageView = holder.getView(R.id.iv_dynamic_img);
+                final ImageView paintView = holder.getView(R.id.iv_dynamic_img_paint);
+                final View filterView = holder.getView(R.id.iv_dynamic_img_filter);
                 if (TextUtils.isEmpty(imageBean.getImgUrl())) {
                     // 最后一项作为占位图
+                    paintView.setImageResource(R.mipmap.ico_edit_pen);
+                    filterView.setVisibility(View.GONE);
                     imageView.setImageResource(R.mipmap.img_edit_photo_frame);
                 } else {
-                    ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-                    imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                            .imagerView(imageView)
-                            .url(imageBean.getImgUrl())
-                            .build());
-                }
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        DeviceUtils.hideSoftKeyboard(getContext(), v);
-                        if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-                            initPhotoPopupWindow();
-                            mPhotoPopupWindow.show();
-                        } else {
-                            // 预览图片
-                            ArrayList<String> photos = new ArrayList<String>();
-                            // 最后一张是占位图
-                            for (int i = 0; i < selectedPhotos.size(); i++) {
-                                ImageBean imageBean = selectedPhotos.get(i);
-                                if (!TextUtils.isEmpty(imageBean.getImgUrl())) {
-                                    photos.add(imageBean.getImgUrl());
-                                }
-                            }
-                            ArrayList<AnimationRectBean> animationRectBeanArrayList
-                                    = new ArrayList<AnimationRectBean>();
-                            for (int i = 0; i < photos.size(); i++) {
+                    paintView.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                    filterView.setVisibility(isToll ? View.VISIBLE : View.GONE);
+                    if (!isToll) {
+                        imageBean.setToll(null);
+                    }
+                    if (imageBean.getToll() != null) {
+                        LogUtils.e("imageBean.getToll::" + imageBean.getToll().toString());
+                    }
 
-                                if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
-                                    // 顶部，无法全部看见的图片
-                                    AnimationRectBean rect = new AnimationRectBean();
-                                    animationRectBeanArrayList.add(rect);
-                                } else if (i > gridLayoutManager.findLastVisibleItemPosition()) {
-                                    // 底部，无法完全看见的图片
-                                    AnimationRectBean rect = new AnimationRectBean();
-                                    animationRectBeanArrayList.add(rect);
-                                } else {
-                                    View view = gridLayoutManager
-                                            .getChildAt(i - gridLayoutManager.findFirstVisibleItemPosition());
-                                    ImageView imageView = (ImageView) view.findViewById(R.id.iv_dynamic_img);
-                                    // 可以完全看见的图片
-                                    AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
-                                    animationRectBeanArrayList.add(rect);
-                                }
+                    if (imageBean.getToll_type() > 0) {
+                        hasTollPic = true;
+                        filterView.setVisibility(View.VISIBLE);
+                        paintView.setImageResource(R.mipmap.ico_lock);
+                    } else {
+                        paintView.setImageResource(R.mipmap.ico_edit_pen);
+                        filterView.setVisibility(View.GONE);
+                    }
+                    Glide.with(getContext())
+                            .load(imageBean.getImgUrl())
+                            .placeholder(R.drawable.shape_default_image)
+                            .error(R.drawable.shape_default_image)
+                            .override(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
+                            .into(imageView);
+
+                }
+                imageView.setOnClickListener(v -> {
+                    DeviceUtils.hideSoftKeyboard(getContext(), v);
+                    if (TextUtils.isEmpty(imageBean.getImgUrl())) {
+                        ArrayList<String> photos = new ArrayList<>();
+                        // 最后一张是占位图
+                        for (int i = 0; i < selectedPhotos.size(); i++) {
+                            ImageBean imageBean1 = selectedPhotos.get(i);
+                            if (!TextUtils.isEmpty(imageBean1.getImgUrl())) {
+                                photos.add(imageBean1.getImgUrl());
                             }
-                            PhotoViewActivity.startToPhotoView(SendDynamicFragment.this, photos, photos, animationRectBeanArrayList, MAX_PHOTOS, position);
                         }
+                        mPhotoSelector.getPhotoListFromSelector(MAX_PHOTOS, photos);
+                    } else {
+                        // 预览图片
+                        ArrayList<String> photos = new ArrayList<>();
+                        // 最后一张是占位图
+                        for (int i = 0; i < selectedPhotos.size(); i++) {
+                            ImageBean imageBean1 = selectedPhotos.get(i);
+                            if (!TextUtils.isEmpty(imageBean1.getImgUrl())) {
+                                photos.add(imageBean1.getImgUrl());
+                            }
+                        }
+                        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                                = new ArrayList<>();
+                        for (int i = 0; i < photos.size(); i++) {
+
+                            if (i < gridLayoutManager.findFirstVisibleItemPosition()) {
+                                // 顶部，无法全部看见的图片
+                                AnimationRectBean rect = new AnimationRectBean();
+                                animationRectBeanArrayList.add(rect);
+                            } else if (i > gridLayoutManager.findLastVisibleItemPosition()) {
+                                // 底部，无法完全看见的图片
+                                AnimationRectBean rect = new AnimationRectBean();
+                                animationRectBeanArrayList.add(rect);
+                            } else {
+                                View view = gridLayoutManager
+                                        .getChildAt(i - gridLayoutManager
+                                                .findFirstVisibleItemPosition());
+                                ImageView imageView1 = (ImageView) view.findViewById(R.id
+                                        .iv_dynamic_img);
+                                // 可以完全看见的图片
+                                AnimationRectBean rect = AnimationRectBean.buildFromImageView
+                                        (imageView1);
+                                animationRectBeanArrayList.add(rect);
+                            }
+                        }
+                        PhotoViewActivity.startToPhotoView(SendDynamicFragment.this,
+                                photos, photos, animationRectBeanArrayList, MAX_PHOTOS,
+                                position, isToll, selectedPhotos);
                     }
                 });
             }
@@ -484,7 +646,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     private void initDynamicType() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            SendDynamicDataBean sendDynamicDataBean = bundle.getParcelable(SendDynamicActivity.SEND_DYNAMIC_DATA);
+            SendDynamicDataBean sendDynamicDataBean = bundle.getParcelable(SendDynamicActivity
+                    .SEND_DYNAMIC_DATA);
             dynamicType = sendDynamicDataBean.getDynamicType();
             List<ImageBean> originPhotos = sendDynamicDataBean.getDynamicPrePhotos();
             if (originPhotos != null) {
@@ -499,8 +662,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 initPhotoList(bundle);
                 break;
             case SendDynamicDataBean.TEXT_ONLY_DYNAMIC:
+                hasTollPic = true;
                 mRvPhotoList.setVisibility(View.GONE);// 隐藏图片控件
-                mEtDynamicContent.getEtContent().setHint(getString(R.string.dynamic_content_no_pic_hint));
+                mEtDynamicContent.getEtContent().setHint(getString(R.string
+                        .dynamic_content_no_pic_hint));
                 break;
             default:
         }
@@ -532,7 +697,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 for (int i = 0; i < newList.size(); i++) {
                     ImageBean newImageBean = newList.get(i);
                     ImageBean oldImageBean = oldList.get(i);
-                    if (!newImageBean.getImgUrl().equals(oldImageBean.getImgUrl())) {
+                    if ((!newImageBean.getImgUrl().equals(oldImageBean.getImgUrl()))
+                            || newImageBean.getToll_type() != oldImageBean.getToll_type()) {
                         return true;
                     }
                 }
@@ -540,4 +706,25 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             }
         }
     }
+
+    @Override
+    public void initInstructionsPop(String title, String des) {
+        if (mInstructionsPopupWindow != null) {
+            mInstructionsPopupWindow.newBuilder().item1Str(title).desStr(des);
+            mInstructionsPopupWindow.show();
+            return;
+        }
+        mInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(title)
+                .desStr(des)
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                .build();
+        mInstructionsPopupWindow.show();
+    }
+
 }

@@ -7,6 +7,11 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.functions.Action1;
+
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND_TASK;
 
 /**
@@ -17,6 +22,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_BACKGROUND
  */
 
 public class BackgroundTaskManager {
+    public static final int DEFAULT_SERVICE_START_TIME_WAITING = 10; // 默认Service 启动耗时时间
+
     private static volatile BackgroundTaskManager sBackgroundTaskManager; // context 必须使用 application 否者会造成内存泄漏
     private Context mContext;
     private boolean mIsServiceStart;// Service 是否开启
@@ -43,19 +50,32 @@ public class BackgroundTaskManager {
      *
      * @param backgroundRequestTaskBean 任务
      */
-    public void addBackgroundRequestTask(BackgroundRequestTaskBean backgroundRequestTaskBean) {
-        startBackgroundTask();
-        EventBus.getDefault().post(backgroundRequestTaskBean, EVENT_BACKGROUND_TASK);
+    public void addBackgroundRequestTask(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        if (startBackgroundTask()) {
+            Observable.timer(DEFAULT_SERVICE_START_TIME_WAITING, TimeUnit.SECONDS)
+                    .subscribe(new Action1<Long>() {
+                        @Override
+                        public void call(Long aLong) {
+                            EventBus.getDefault().post(backgroundRequestTaskBean, EVENT_BACKGROUND_TASK);
+                        }
+                    });
+
+        } else {
+            EventBus.getDefault().post(backgroundRequestTaskBean, EVENT_BACKGROUND_TASK);
+        }
     }
 
     /**
      * 开启后台任务，主要处理缓存任务
      */
-    public void startBackgroundTask() {
+    public boolean startBackgroundTask() {
+        boolean start = false;
         if (!mIsServiceStart) {
             mContext.startService(new Intent(mContext, BackgroundTaskHandleService.class));
             mIsServiceStart = true;
+            start = true;
         }
+        return start;
     }
 
     /**

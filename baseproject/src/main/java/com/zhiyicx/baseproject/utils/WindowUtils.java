@@ -21,19 +21,21 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
  * @author legendary_tym
  * @Title SpicyCommunity
  * @Package com.zycx.spicycommunity.utils
- * @Description: 加载弹窗, dialog似乎必须依附于contextwrapper。
+ * @Description: 音乐播放提示窗口, dialog似乎必须依附于contextwrapper。
  * 待优化、单例&判断view
  * @date: 2016-11-22 11:46
  */
-
 public class WindowUtils {
     private static final String LOG_TAG = "WindowUtils";
     public static final boolean CAN_DRAG = false;
@@ -44,8 +46,6 @@ public class WindowUtils {
     private static Boolean isShown = false;
     private static Boolean isPause = false;
     private static WindowManager.LayoutParams mLayoutParams;
-
-    private static OnWindowDismisslistener windowDismisslistener;
 
     private static ImageView mImageView;
     private static RotateAnimation mRotateAnimation;
@@ -62,13 +62,18 @@ public class WindowUtils {
     private static int mAnimatonPeriodTime = 16;
     private static boolean isMove = false;
     private static BigDecimal mStartClickTime;
+    private static CopyOnWriteArrayList<OnWindowDismisslistener> sDismisslistenerLists = new CopyOnWriteArrayList<>();
 
     public interface OnWindowDismisslistener {
         void onDismiss();
     }
 
     public static void setWindowDismisslistener(OnWindowDismisslistener windowDismisslistener) {
-        WindowUtils.windowDismisslistener = windowDismisslistener;
+        sDismisslistenerLists.add(windowDismisslistener);
+    }
+
+    public static void removeWindowDismisslistener(OnWindowDismisslistener windowDismisslistener) {
+        sDismisslistenerLists.remove(windowDismisslistener);
     }
 
     public static void showPopupWindow(final Context context) {
@@ -116,8 +121,10 @@ public class WindowUtils {
      */
     public static void hidePopupWindow() {
         if (isShown && null != mView) {
-            if (windowDismisslistener != null) {
-                windowDismisslistener.onDismiss();
+            for (OnWindowDismisslistener windowDismisslistener : sDismisslistenerLists) {
+                if (windowDismisslistener != null) {
+                    windowDismisslistener.onDismiss();
+                }
             }
             mWindowManager.removeView(mView);
             isShown = false;

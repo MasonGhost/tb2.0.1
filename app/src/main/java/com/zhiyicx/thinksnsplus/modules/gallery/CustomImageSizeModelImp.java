@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bumptech.glide.load.model.GlideUrl;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -37,6 +38,10 @@ public class CustomImageSizeModelImp implements CustomImageSizeModel, Parcelable
         return mImageBean.getImgUrl() == null
                 ? String.format(Locale.getDefault(),ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), mImageBean.getPart())
                 : mImageBean.getImgUrl();
+    }
+
+    public GlideUrl requestGlideUrl() {
+        return null;
     }
 
     @Override

@@ -33,6 +33,20 @@
         tools:text="张三"/>
 
     <TextView
+        android:id="@+id/tv_top_flag"
+        android:layout_width="@dimen/dynamic_top_flag_width"
+        android:layout_height="@dimen/dynamic_top_flag_height"
+        android:layout_alignBaseline="@id/tv_name"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_toLeftOf="@+id/tv_time"
+        android:background="@drawable/shape_dynamic_top_flag"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/dyanmic_top_flag"
+        android:textSize="@dimen/size_advert_launche"
+        tools:text="@string/dynamic_top_flag"/>
+
+    <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,9 +67,9 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
         android:includeFontPadding="false"
+        android:paddingBottom="@dimen/spacing_normal"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_normal"
         android:textColor="@color/themeColor"
         android:textSize="@dimen/size_sub_title"
         tools:text="了解到富士康垃圾管理的高考了了"/>
@@ -67,11 +81,12 @@
         android:layout_below="@+id/tv_title"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic"
-        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:ellipsize="end"
+        android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
         android:maxLines="@integer/dynamic_list_content_show_lines"
-        android:paddingLeft="@dimen/spacing_normal"
+        android:singleLine="false"
         android:paddingBottom="@dimen/dynamic_image_padding_bottom"
+        android:paddingLeft="@dimen/spacing_normal"
         android:textColor="@color/normal_for_dynamic_list_content"
         android:textSize="@dimen/size_content_assist"
         tools:text="了解到富士康垃圾管理的高考了了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是了解到富士康垃圾管理的高考了上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送算了更加都是非法sad个是敢死队风格发生的个发送上了飞机都是垃圾管理当局阿斯利康就够了洒进风口浪尖的萨科了解孤苦伶仃撒酒疯就算了更加都是非法sad个是敢死队风格发生的个发送"

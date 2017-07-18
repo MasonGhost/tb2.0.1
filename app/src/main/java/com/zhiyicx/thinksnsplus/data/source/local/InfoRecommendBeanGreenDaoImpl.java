@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;

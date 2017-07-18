@@ -1,11 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.system_conversation;
 
-import com.zhiyicx.common.mvp.i.IBasePresenter;
-import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhiyicx.baseproject.base.ITSListPresenter;
+import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.ISystemRepository;
-
-import java.util.List;
 
 /**
  * @Describe
@@ -16,49 +14,15 @@ import java.util.List;
 
 public interface SystemConversationContract {
 
-    interface View extends IBaseView<Presenter> {
+    interface View extends ITSListView<SystemConversationBean, Presenter> {
 
-        void updateNetData(List<ChatItemBean> datas);
-
-        void updateCacheData(List<ChatItemBean> datas);
-
-
-        void updateSendText(ChatItemBean chatItemBean);
     }
 
     interface Repository extends ISystemRepository {
 
-
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends ITSListPresenter<SystemConversationBean> {
 
-        /**
-         * 发送文本消息
-         *
-         * @param text 文本内容
-         */
-        void sendTextMessage(String text);
-
-        /**
-         * 重发
-         * @param chatItemBean
-         */
-        void reSendTextMessage(ChatItemBean chatItemBean);
-
-        /**
-         * 请求列表数据
-         *
-         * @param maxId      当前获取到数据的最大 id
-         */
-        void requestNetData(Long maxId);
-
-        /**
-         * 获取本地数据
-         *
-         * @param max_Id
-         * @return
-         */
-        void requestCacheData(long max_Id);
     }
 }

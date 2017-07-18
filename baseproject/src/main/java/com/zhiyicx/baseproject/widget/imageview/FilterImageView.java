@@ -9,9 +9,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
-import com.zhiyicx.common.utils.log.LogUtils;
 
-import static java.lang.Compiler.enable;
 
 /**
  * @Describe show #mPressedColor color when pressed
@@ -42,12 +40,10 @@ public class FilterImageView extends ImageView {
 
     public FilterImageView(Context context) {
         super(context);
-        enable();
     }
 
 
     private void initAttrs(Context context, AttributeSet attrs) {
-        enable();
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FilterImageView);
         mPressedColor = array.getInteger(R.styleable.FilterImageView_pressColor, DEFAULT_PRESSED_COLOR);
         mShape = array.getInteger(R.styleable.FilterImageView_pressShape, SHAPE_SQUARE);
@@ -66,8 +62,7 @@ public class FilterImageView extends ImageView {
                     canvas.drawColor(mPressedColor);
                     break;
                 case SHAPE_CIRLCE: // circle
-                    canvas.getClipBounds(mRect);
-                    canvas.drawCircle(mRect.centerX(), mRect.centerY(), canvas.getWidth() / 2, mPaint);
+                    canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, mPaint);
                     break;
                 default:
 

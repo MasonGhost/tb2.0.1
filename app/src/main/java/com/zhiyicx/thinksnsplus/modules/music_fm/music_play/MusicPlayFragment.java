@@ -9,7 +9,6 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -23,7 +22,6 @@ import android.text.format.DateUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -33,9 +31,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.ValueAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
@@ -75,8 +71,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
@@ -87,7 +81,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicAblumInfo.METADATA_KEY_GENRE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment.MUSIC_INFO;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE;
@@ -100,6 +94,7 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelp
  * @Email Jliuer@aliyun.com
  * @Description 音乐播放主要界面
  */
+@SuppressWarnings("unchecked")
 public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> implements
         MusicPlayContract.View {
 
@@ -239,15 +234,19 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata != null) {
                 mCurrentMediaId = metadata.getDescription().getMediaId();
+                updateCurrentMusic(mCurrentMediaId);
                 EventBus.getDefault().post(Integer.valueOf(mCurrentMediaId), EVENT_MUSIC_CHANGE);
                 if (WindowUtils.getAblumHeadInfo() != null) {
-                    WindowUtils.getAblumHeadInfo().setListenCount(WindowUtils.getAblumHeadInfo().getListenCount() + 1);
+                    WindowUtils.getAblumHeadInfo().setListenCount(WindowUtils.getAblumHeadInfo()
+                            .getListenCount() + 1);
                 }
                 //noinspection ResourceType
-                String musicUrl = metadata.getString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE);
+                String musicUrl = metadata.getString(MusicProviderSource
+                        .CUSTOM_METADATA_TRACK_SOURCE);
                 boolean isCached = AppApplication.getProxy().isCached(musicUrl);
                 if (isCached) {
-                    mFragmentMusicPalyProgress.setSecondaryProgress((int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+                    mFragmentMusicPalyProgress.setSecondaryProgress((int) metadata.getLong
+                            (MediaMetadataCompat.METADATA_KEY_DURATION));
                 }
                 mToolbarCenter.setText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM));
 
@@ -327,6 +326,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     @Override
+    protected String setCenterTitle() {
+        return getString(R.string.music_fm);
+    }
+
+    @Override
     protected boolean useEventBus() {
         return true;
     }
@@ -347,54 +351,27 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     @Override
-    protected String setCenterTitle() {
-        return "氷は雪はなく";
+    protected void initView(View rootView) {
+        initData();
+        initListener();
+        initLyricsAnimation();
+        initFirstMusic();
+        initPlayRecyclerView();
     }
 
     @Override
-    protected void initView(View rootView) {
-        LayoutTransition transition = new LayoutTransition();
-        transition.setDuration(1000);
-        transition.setAnimator(LayoutTransition.APPEARING, AnimatorInflater.loadAnimator(getActivity(), R.animator.view_visible_alpha));
-        transition.setAnimator(LayoutTransition.DISAPPEARING, AnimatorInflater.loadAnimator(getActivity(), R.animator.view_gone_alpha));
-        mFragmentMusicPalyContainer.setLayoutTransition(transition);
-        mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
-
-        initListener();
-        mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription().getTitle());
-        if (getArguments() != null) {
-
-        }
+    protected void initData() {
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();
-
         mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        MediaSessionCompat.QueueItem mCurrentMusic = AppApplication.getmQueueManager().getCurrentMusic();
-        if (mCurrentMusic != null) {
-            mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(mCurrentMusic.getDescription().getMediaId());
-        }
-        mFragmentMusicPalyLrc.setMovementMethod(ScrollingMovementMethod.getInstance());
+
         mListPopupWindow = MusicListPopupWindow.Builder()
                 .with(getActivity())
                 .alpha(0.8f)
                 .data(mMusicList)
                 .adapter(getPopListAdapter())
                 .build();
-
-        mFragmentMusicPalyRv.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
-
-        mFragmentMusicPalyRv.setFlingFactor(3f);
-        mFragmentMusicPalyRv.setTriggerOffset(0.25f);
-        mFragmentMusicPalyRv.setAdapter(getMediaListAdapter());
-        mFragmentMusicPalyRv.setHasFixedSize(true);
-
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     @Override
@@ -407,9 +384,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mPresenter = presenter;
     }
 
-    /**
-     * 各类监听器
-     */
     private void initListener() {
 
         mFragmentMusicPalyProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener
@@ -432,14 +406,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             }
         });
 
-        mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int w = mFragmentMusicPalyPhonographPoint.getWidth();
-                int h = mFragmentMusicPalyPhonographPoint.getHeight();
-                mFragmentMusicPalyPhonographPoint.setPivotX(9 * w / 10);
-                mFragmentMusicPalyPhonographPoint.setPivotY(h / 2);
-            }
+        mFragmentMusicPalyPhonographPoint.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            int w = mFragmentMusicPalyPhonographPoint.getWidth();
+            int h = mFragmentMusicPalyPhonographPoint.getHeight();
+            mFragmentMusicPalyPhonographPoint.setPivotX(9 * w / 10);
+            mFragmentMusicPalyPhonographPoint.setPivotY(h / 2);
         });
 
         mFragmentMusicPalyRv.addOnPageChangedListener(new PagerRecyclerView.OnPageChangedListener
@@ -448,9 +419,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             @Override
             public void OnPageChanged(int oldPosition, int newPosition) {
                 mCurrentValue = 0;
-                int realPosition = newPosition % mMusicList.size();
                 stopAnimation(mCurrentView);
-
                 if (isConnected && !isComplete) {
                     isMediaDataChange = true;
                     if (newPosition > oldPosition) {
@@ -461,12 +430,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                                 .skipToPrevious();
                     }
                 }
-                if (mMusicList.size() == 1) {
-                    mCurrentMusic = mMusicList.get(0);
-                } else {
-                    mCurrentMusic = mMusicList.get(realPosition);
-                }
-                dealCurrentMusic();
             }
 
             @Override
@@ -480,7 +443,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             @Override
             public void OnIdle(int position) {
                 if (isMediaDataChange) {
-                    mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
+                    mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
+                            (mFragmentMusicPalyRv);
                     isMediaDataChange = false;
                 }
                 mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild(mFragmentMusicPalyRv);
@@ -492,6 +456,81 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             }
 
         });
+    }
+
+    private void initPlayRecyclerView() {
+        mFragmentMusicPalyRv.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+
+        mFragmentMusicPalyRv.setFlingFactor(3f);
+        mFragmentMusicPalyRv.setTriggerOffset(0.25f);
+        mFragmentMusicPalyRv.setAdapter(getMediaListAdapter());
+        mFragmentMusicPalyRv.setHasFixedSize(true);
+    }
+
+    private void initFirstMusic() {
+        mFragmentMusicPalyLrc.setMovementMethod(ScrollingMovementMethod.getInstance());
+        mFragmentMusicPalyProgress.setThumb(R.mipmap.music_pic_progressbar_circle);
+        updateCurrentMusic(MediaIDHelper.extractMusicIDFromMediaID(AppApplication
+                .getmQueueManager().getCurrentMusic().getDescription().getMediaId()));
+        mToolbarCenter.setText(AppApplication.getmQueueManager().getCurrentMusic().getDescription
+                ().getTitle());
+    }
+
+    private void initLyricsAnimation() {
+        LayoutTransition transition = new LayoutTransition();
+        transition.setDuration(1000);
+        transition.setAnimator(LayoutTransition.APPEARING, AnimatorInflater.loadAnimator
+                (getActivity(), R.animator.view_visible_alpha));
+        transition.setAnimator(LayoutTransition.DISAPPEARING, AnimatorInflater.loadAnimator
+                (getActivity(), R.animator.view_gone_alpha));
+        mFragmentMusicPalyContainer.setLayoutTransition(transition);
+    }
+
+    private void updateCurrentMusic(final String mediaId) {
+        Observable.from(mMusicList).filter(musicsBean -> {
+            LogUtils.i(musicsBean.getMusic_info().getId() + ":::" + mediaId);
+            return (musicsBean.getMusic_info().getId() + "").equals(mediaId);
+        }).subscribe(musicsBean -> {
+            mCurrentMusic = musicsBean;
+            dealCurrentMusic();
+            mFragmentMusicPalyComment.setEnabled(true);
+        });
+    }
+
+    // 歌曲切换后处理界面显示
+    private void dealCurrentMusic() {
+        MediaControllerCompat controllerCompat = getActivity().getSupportMediaController();
+        if (controllerCompat != null) {
+            PlaybackStateCompat state = controllerCompat.getPlaybackState();
+            if (state.getState() != PlaybackStateCompat.STATE_PLAYING) {
+                mFragmentMusicPalyProgress.setLoading(true);
+            }
+        } else {
+            mFragmentMusicPalyProgress.setLoading(true);
+        }
+
+        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_incomplete);
+            mFragmentMusicPalyCommentCount.setText(String.valueOf(mCurrentMusic.getMusic_info()
+                    .getComment_count()));
+        } else {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_complete);
+            mFragmentMusicPalyCommentCount.setText("");
+        }
+        String lyric = mCurrentMusic.getMusic_info().getLyric();
+        if (TextUtils.isEmpty(lyric)) {
+            lyric = getString(R.string.music_lyric);
+        }
+        mFragmentMusicPalyLrc.setText(lyric);
+
+        if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
+            mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
+        } else {
+            mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
+        }
     }
 
     /**
@@ -546,6 +585,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     .imagerView(mFragmentMusicPalyBg)
                     .url(description.getIconUri() + "")
                     .build());
+
             View item = RecyclerViewUtils
                     .getCenterXChild(mFragmentMusicPalyRv);
 
@@ -558,55 +598,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     .url(description.getIconUri() + "")
                     .build());
 
-            Observable.from(mMusicList).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
-                @Override
-                public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                    return (musicsBean.getId() + "").equals(mCurrentMediaId);
-                }
-            }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
-                @Override
-                public void call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                    mCurrentMusic = musicsBean;
-                    dealCurrentMusic();
-                }
-            });
         }
 
     }
 
-    private void dealCurrentMusic() {
-        MediaControllerCompat controllerCompat = getActivity().getSupportMediaController();
-        if (controllerCompat != null) {
-            PlaybackStateCompat state = controllerCompat.getPlaybackState();
-            if (state.getState() != PlaybackStateCompat.STATE_PLAYING) {
-//                mFragmentMusicPalyProgress.setLoading(true);
-            }
-        } else {
-            mFragmentMusicPalyProgress.setLoading(true);
-        }
-
-        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
-            mFragmentMusicPalyComment.setImageResource(
-                    R.mipmap.music_ico_comment_incomplete);
-            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info().getComment_count());
-        } else {
-            mFragmentMusicPalyComment.setImageResource(
-                    R.mipmap.music_ico_comment_complete);
-            mFragmentMusicPalyCommentCount.setText("");
-        }
-        String lyric = mCurrentMusic.getMusic_info().getLyric();
-        if (TextUtils.isEmpty(lyric)) {
-            lyric = getString(R.string.music_lyric);
-        }
-        mFragmentMusicPalyLrc.setText(lyric);
-
-        if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
-            mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
-        } else {
-            mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
-        }
-    }
-
+    // 更新音乐时长
     private void updateDuration(MediaMetadataCompat metadata) {
         if (metadata == null) {
             return;
@@ -617,6 +613,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mFragmentMusicPalyTotalTime.setText(DateUtils.formatElapsedTime(duration / 1000));
     }
 
+    // 播放状态改变
     private void updatePlaybackState(PlaybackStateCompat state) {
         if (state == null) {
             return;
@@ -646,6 +643,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 break;
             case PlaybackStateCompat.STATE_ERROR:
                 showSnackErrorMessage(getString(R.string.music_not_found));
+                getActivity().finish();
                 break;
             default:
                 break;
@@ -653,9 +651,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     }
 
-    /**
-     * 更新音乐进度
-     */
+    // 开始音乐播放进度
     private void rxStartProgress() {
         if (mProgressObservable == null) {
             mProgressObservable = Observable.interval(PROGRESS_UPDATE_INITIAL_INTERVAL,
@@ -663,20 +659,17 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                             .MILLISECONDS);
         }
         mProgressSubscription = mProgressObservable
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        updateProgress();
-                    }
-                });
+                .subscribe(aLong -> updateProgress());
     }
 
+    // 停止音乐播放进度条
     private void rxStopProgress() {
         if (mProgressSubscription != null) {
             mProgressSubscription.unsubscribe();
         }
     }
 
+    // 更新进度条数据
     private void updateProgress() {
 
         if (mLastPlaybackState == null || mFragmentMusicPalyProgress == null) {
@@ -692,11 +685,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mFragmentMusicPalyProgress.setProgress((int) currentPosition);
     }
 
-    /**
-     * 初始信息
-     *
-     * @param bundle
-     */
+
     private void updateFromParams(Bundle bundle) {
         if (bundle != null) {
             MediaDescriptionCompat description = bundle.getParcelable(MusicDetailActivity
@@ -707,20 +696,24 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         }
     }
 
+    // 缓冲进度
     @Subscriber(tag = EVENT_SEND_MUSIC_CACHE_PROGRESS, mode = ThreadMode.MAIN)
     public void onBufferingUpdate(int progress) {
         mFragmentMusicPalyProgress.setSecondaryProgress(mCurrentDuration * progress / 100);
     }
 
+    // 是否加载中
     @Subscriber(tag = EVENT_SEND_MUSIC_LOAD, mode = ThreadMode.MAIN)
     public void onMusicLoading(int currentDuration) {
         LogUtils.d("MUSIC_LOADING", "" + (currentDuration > 0) + "");
         mFragmentMusicPalyProgress.setLoading(!(currentDuration > 0));
         if (currentDuration > 0) {
-            updateDuration(new MediaMetadataCompat.Builder().putLong(MediaMetadataCompat.METADATA_KEY_DURATION, currentDuration * 1000).build());
+            updateDuration(new MediaMetadataCompat.Builder().putLong(MediaMetadataCompat
+                    .METADATA_KEY_DURATION, currentDuration * 1000).build());
         }
     }
 
+    // 播放结束
     @Subscriber(tag = EVENT_SEND_MUSIC_COMPLETE, mode = ThreadMode.MAIN)
     public void onMusicEnd(int orderType) {
         isComplete = true;
@@ -735,9 +728,24 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         LogUtils.d("MUSIC_END", "" + orderType);
     }
 
-    /**
-     * 指针动画
-     */
+    // 评论数量改变
+    @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
+    public void onCommentCountUpdate(MusicCommentHeader.HeaderInfo headerInfo) {
+        mCurrentMusic.getMusic_info().setComment_count(headerInfo.getCommentCount());
+        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_incomplete);
+            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info()
+                    .getComment_count());
+        } else {
+            mFragmentMusicPalyComment.setImageResource(
+                    R.mipmap.music_ico_comment_complete);
+            mFragmentMusicPalyCommentCount.setText("");
+        }
+        LogUtils.d("EVENT_MUSIC_COMMENT_COUNT");
+    }
+
+    // 指针搭上磁盘动画
     public void doPointInAnimation(int duration, long delay) {
         mPointAnimate = ObjectAnimator.ofFloat(mFragmentMusicPalyPhonographPoint, "Rotation",
                 0,
@@ -749,6 +757,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mPointAnimate.start();
     }
 
+    // 指针滑出磁盘动画
     public void doPointOutAnimation(int duration, long delay) {
         mPointAnimate = ObjectAnimator.ofFloat(mFragmentMusicPalyPhonographPoint, "Rotation",
                 25,
@@ -761,9 +770,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
 
-    /**
-     * 磁盘动画
-     */
+    // 磁盘旋转动画
     public void doPhonographAnimation() {
         doPointInAnimation(500, 0);
         View target;
@@ -782,20 +789,15 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         mPhonographAnimate.setInterpolator(new LinearInterpolator());
         mPhonographAnimate.setRepeatCount(ObjectAnimator.INFINITE);
         // 设置动画监听
-        mPhonographAnimate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                // TODO Auto-generated method stub
-                // 监听动画执行的位置，以便下次开始时，从当前位置开始
-                mCurrentValue = (float) animation.getAnimatedValue();
-            }
+        mPhonographAnimate.addUpdateListener(animation -> {
+            // TODO Auto-generated method stub
+            // 监听动画执行的位置，以便下次开始时，从当前位置开始
+            mCurrentValue = (float) animation.getAnimatedValue();
         });
         mPhonographAnimate.start();
     }
 
-    /**
-     * 停止转盘动画
-     */
+    // 停止转盘动画
     public void stopAnimation(View target) {
         if (target != null && mPhonographAnimate != null) {
             mPhonographAnimate.setDuration(0);
@@ -806,9 +808,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         }
     }
 
-    /**
-     * 暂停转盘动画 *
-     */
+    // 暂停转盘动画
     public void pauseAnimation() {
         if (mCurrentView == null) {
             mCurrentView = (ViewGroup) RecyclerViewUtils.getCenterXChild
@@ -821,6 +821,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         doPointOutAnimation(500, 100);
     }
 
+    // 音乐播放列表适配器
     @NonNull
     private CommonAdapter getPopListAdapter() {
         CommonAdapter adapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity()
@@ -834,11 +835,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 authorName.setText("-" + s.getMusic_info().getSinger().getName());
 
                 if (mCurrentMediaId.equals(s.getMusic_info().getId() + "")) {
-                    musicName.setTextColor(getResources().getColor(R.color.important_for_theme));
-                    authorName.setTextColor(getResources().getColor(R.color.important_for_theme));
+                    musicName.setTextColor(getColor(R.color.important_for_theme));
+                    authorName.setTextColor(getColor(R.color.important_for_theme));
                 } else {
-                    musicName.setTextColor(getResources().getColor(R.color.important_for_content));
-                    authorName.setTextColor(getResources().getColor(R.color
+                    musicName.setTextColor(getColor(R.color.important_for_content));
+                    authorName.setTextColor(getColor(R.color
                             .normal_for_assist_text));
                 }
 
@@ -850,7 +851,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 MusicAlbumDetailsBean.MusicsBean musicsBean = mMusicList.get(position);
                 MediaControllerCompat controllerCompat = getActivity()
                         .getSupportMediaController();
-                String id = MediaIDHelper.createMediaID("" + musicsBean.getMusic_info().getId(), MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+                String id = MediaIDHelper.createMediaID("" + musicsBean.getMusic_info().getId(),
+                        MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
                 controllerCompat.getTransportControls()
                         .playFromMediaId(id, null);
             }
@@ -864,16 +866,19 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         return adapter;
     }
 
+    // 音乐磁盘适配器
     @NonNull
     private CommonAdapter getMediaListAdapter() {
+        final int imageSize = getResources().getDimensionPixelSize(R.dimen.music_play_head);
         mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(),
                 R.layout.item_music_play, mMusicList) {
             @Override
             protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean o, final
             int position) {
                 ImageView image = holder.getView(R.id.fragment_music_paly_img);
-                String imageUrl = String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                        o.getMusic_info().getSinger().getCover().getId(), 50);
+                String imageUrl = ImageUtils.imagePathConvertV2(
+                        o.getMusic_info().getSinger().getCover().getId(), imageSize, imageSize, ImageZipConfig.IMAGE_70_ZIP);
+
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                         .imagerView(image)
                         .errorPic(R.drawable.shape_default_image)
@@ -897,6 +902,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         return mAdapter;
     }
 
+
     private void handleLrc() {
         mFragmentMusicPalyRv.setVisibility(mFragmentMusicPalyLrc.getVisibility() == View
                 .VISIBLE ? View.VISIBLE : View.GONE);
@@ -911,21 +917,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .VISIBLE ? View.INVISIBLE : View.VISIBLE);
     }
 
-    @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
-    public void onCommentCountUpdate(MusicCommentHeader.HeaderInfo headerInfo) {
-        mCurrentMusic.getMusic_info().setComment_count(headerInfo.getCommentCount());
-        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
-            mFragmentMusicPalyComment.setImageResource(
-                    R.mipmap.music_ico_comment_incomplete);
-            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info().getComment_count());
-        } else {
-            mFragmentMusicPalyComment.setImageResource(
-                    R.mipmap.music_ico_comment_complete);
-            mFragmentMusicPalyCommentCount.setText("");
-        }
-        LogUtils.d("EVENT_MUSIC_COMMENT_COUNT");
-    }
-
     @OnClick({R.id.fragment_music_paly_share, R.id.fragment_music_paly_like, R.id
             .fragment_music_paly_comment, R.id.fragment_music_paly_lyrics, R.id
             .fragment_music_paly_order, R.id.fragment_music_paly_preview, R.id
@@ -935,7 +926,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_music_paly_share:// 分享
-                mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),mCurrentImageView.getDrawable(),R.mipmap.icon_256));
+                mPresenter.shareMusic(ConvertUtils.drawable2BitmapWithWhiteBg(getContext(),
+                        mCurrentImageView.getDrawable(), R.mipmap.icon_256));
                 break;
             case R.id.fragment_music_paly_like: // 点赞
                 mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,
@@ -957,8 +949,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 headerInfo.setId(mCurrentMusic.getMusic_id());
                 headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
                 headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
-                headerInfo.setImageUrl(ImageUtils.imagePathConvert(mCurrentMusic.getMusic_info().getSinger().getCover().getId() + "",
-                        ImageZipConfig.IMAGE_70_ZIP));
+                headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mCurrentMusic.getMusic_info()
+                                .getSinger().getCover().getId()
+                        , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , ImageZipConfig.IMAGE_70_ZIP));
                 musicBundle.putSerializable(CURRENT_COMMENT, headerInfo);
                 musicBundle.putString(CURRENT_COMMENT_TYPE, CURRENT_COMMENT_TYPE_MUSIC);
                 intent.putExtra(CURRENT_COMMENT, musicBundle);
@@ -981,6 +976,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
                 break;
             case R.id.fragment_music_paly_preview:// 上一首歌
+                mFragmentMusicPalyComment.setEnabled(false);
                 rxStopProgress();
                 if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
                     pauseAnimation();
@@ -1013,6 +1009,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 }
                 break;
             case R.id.fragment_music_paly_nextview:// 下一首
+                mFragmentMusicPalyComment.setEnabled(false);
                 rxStopProgress();
                 if (mPhonographAnimate != null && mPhonographAnimate.isStarted()) {
                     pauseAnimation();

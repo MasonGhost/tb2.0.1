@@ -1,25 +1,20 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoRecommendBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoRecommendBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,11 +33,8 @@ import rx.schedulers.Schedulers;
  * @Description
  */
 @FragmentScoped
-public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
+public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reppsitory
         , InfoMainContract.InfoListView> implements InfoMainContract.InfoListPresenter {
-
-    @Inject
-    InfoMainRepository mInfoMainRepository;
 
     @Inject
     InfoListBeanGreenDaoImpl mInfoListBeanGreenDao;
@@ -59,16 +51,12 @@ public class InfoListPresenter extends BasePresenter<InfoMainContract.Reppsitory
         super(repository, rootInfoListView);
     }
 
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         String typeString = mRootView.getInfoType();
         final long type = Long.parseLong(typeString);
-        Subscription subscription = mInfoMainRepository.getInfoList(mRootView.getInfoType()
+        Subscription subscription = mRepository.getInfoList(mRootView.getInfoType()
                 , maxId, mRootView.getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

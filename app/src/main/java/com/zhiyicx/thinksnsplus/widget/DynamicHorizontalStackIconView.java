@@ -100,7 +100,10 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                                     .placeholder(R.mipmap.pic_default_portrait2)
                                     .errorPic(R.mipmap.pic_default_portrait2)
                                     .imagerView(mImageViews[i])
-                                    .url(ImageUtils.imagePathConvert(imageBean.getStorage_id()+"", ImageZipConfig.IMAGE_26_ZIP))
+                                    .url(ImageUtils.imagePathConvertV2(imageBean.getStorage_id()
+                                            ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                                            ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                                            ,ImageZipConfig.IMAGE_26_ZIP))
                                     .build()
                             );
                     mImageViews[i].setVisibility(VISIBLE);

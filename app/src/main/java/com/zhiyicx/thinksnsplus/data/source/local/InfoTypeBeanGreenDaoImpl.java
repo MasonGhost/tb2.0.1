@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
@@ -9,7 +9,6 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,7 +25,7 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
     private InfoTypeMoreCatesBeanDao mTypeMoreCatesBeanDao;
 
     @Inject
-    public InfoTypeBeanGreenDaoImpl(Context context) {
+    public InfoTypeBeanGreenDaoImpl(Application context) {
         super(context);
         mInfoTypeMyCatesBeanDao = getWDaoSession().getInfoTypeMyCatesBeanDao();
         mTypeMoreCatesBeanDao = getWDaoSession().getInfoTypeMoreCatesBeanDao();
@@ -83,7 +82,9 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
     @Override
     public void updateSingleData(InfoTypeBean newData) {
         clearTable();
-        mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(newData.getMy_cates());
+        if (!newData.getMy_cates().isEmpty()){
+            mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(newData.getMy_cates());
+        }
         mTypeMoreCatesBeanDao.insertOrReplaceInTx(newData.getMore_cates());
     }
 

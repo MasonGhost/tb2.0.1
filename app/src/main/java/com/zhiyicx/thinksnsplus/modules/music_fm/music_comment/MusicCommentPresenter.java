@@ -3,14 +3,11 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.comment.CommentCore;
-import com.zhiyicx.thinksnsplus.comment.CommentCore_;
 import com.zhiyicx.thinksnsplus.comment.CommonMetadataBean;
 import com.zhiyicx.thinksnsplus.comment.TCommonMetadataProvider;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -21,11 +18,9 @@ import com.zhiyicx.thinksnsplus.data.source.local.MusicCommentListBeanGreenDaoIm
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +44,7 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicComme
  * @Description
  */
 @FragmentScoped
-public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Repository,
+public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract.Repository,
         MusicCommentContract.View> implements MusicCommentContract.Presenter {
 
     @Inject
@@ -125,10 +120,10 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
 //                                for (int i = 0; i < localComment.size(); i++) {
 //                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
 //                                            .getSingleDataFromCache((long) localComment.get(i).getUser_id()));
-//                                    if (localComment.get(i).getReply_to_user_id() != 0) {
+//                                    if (localComment.get(i).getReply_user() != 0) {
 //                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
 //                                                .getSingleDataFromCache((long) localComment.get(i)
-//                                                        .getReply_to_user_id()));
+//                                                        .getReply_user()));
 //                                    }
 //                                }
 //                                localComment.addAll(data);
@@ -330,8 +325,10 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                         headerInfo.setCommentCount(data.getComment_count());
                         headerInfo.setId(data.getId());
                         headerInfo.setLitenerCount(data.getTaste_count() + "");
-                        headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getSinger().getCover().getId() + "",
-                                ImageZipConfig.IMAGE_70_ZIP));
+                        headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(data.getSinger().getCover().getId()
+                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                , ImageZipConfig.IMAGE_70_ZIP));
                         headerInfo.setTitle(data.getTitle());
                         mRootView.setHeaderInfo(headerInfo);
                     }
@@ -358,7 +355,10 @@ public class MusicCommentPresenter extends BasePresenter<MusicCommentContract.Re
                         headerInfo.setCommentCount(data.getComment_count());
                         headerInfo.setId(data.getId());
                         headerInfo.setLitenerCount(data.getTaste_count() + "");
-                        headerInfo.setImageUrl(ImageUtils.imagePathConvert(data.getStorage() + "", ImageZipConfig.IMAGE_70_ZIP));
+                        headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(data.getStorage().getId()
+                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                                , ImageZipConfig.IMAGE_70_ZIP));
                         headerInfo.setTitle(data.getTitle());
                         mRootView.setHeaderInfo(headerInfo);
                     }

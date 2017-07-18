@@ -72,6 +72,32 @@ public class SharePreferenceUtils {
      * @param key
      * @param value
      */
+    public static void saveBoolean(Context context, String key, boolean value) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        mSharedPreferences.edit().putBoolean(key, value).commit();
+    }
+
+    /**
+     * 返回存在 sharedPreferences 的信息
+     *
+     * @param key
+     * @return
+     */
+    public static boolean getBoolean(Context context, String key) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        return mSharedPreferences.getBoolean(key, false);
+    }
+
+    /**
+     * 存储重要信息到 sharedPreferences；
+     *
+     * @param key
+     * @param value
+     */
     public static void setInterger(Context context, String key, int value) {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);

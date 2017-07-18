@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/tv_choose_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingRight="@dimen/spacing_mid"
+        android:text="@string/select_topday"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content_comment"/>
+
+    <RadioGroup
+        android:id="@+id/rb_days_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/select_days_margin_bottom"
+        android:layout_marginTop="@dimen/select_days_margin_top"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingRight="@dimen/spacing_mid">
+
+        <RadioButton
+            android:id="@+id/rb_one"
+            style="@style/style_dynamic_radiobutton"
+            tools:text="ssss"/>
+
+        <RadioButton
+            android:id="@+id/rb_two"
+            style="@style/style_dynamic_radiobutton"
+            android:layout_marginLeft="@dimen/spacing_large"/>
+
+        <RadioButton
+            android:id="@+id/rb_three"
+            style="@style/style_dynamic_radiobutton"
+            android:layout_marginLeft="@dimen/spacing_large"/>
+
+    </RadioGroup>
+</merge>

@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
 
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_ERROR;
 
@@ -77,12 +78,21 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
     public void convert(ViewHolder holder, final MusicCommentListBean musicCommentListBean,
                         MusicCommentListBean lastT, final int position, int itemCounts) {
         if (musicCommentListBean.getFromUserInfoBean() != null) {
+            int storegeId;
+            String userIconUrl;
+            try {
+                storegeId = Integer.parseInt(musicCommentListBean.getFromUserInfoBean().getAvatar());
+                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                        , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , ImageZipConfig.IMAGE_38_ZIP);
+            } catch (Exception e) {
+                userIconUrl = musicCommentListBean.getFromUserInfoBean().getAvatar();
+            }
             AppApplication.AppComponentHolder.getAppComponent()
                     .imageLoader()
                     .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                            .url(ImageUtils.imagePathConvert(musicCommentListBean
-                                    .getFromUserInfoBean()
-                                    .getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
+                            .url(userIconUrl)
                             .placeholder(R.drawable.shape_default_image_circle)
                             .transformation(new GlideCircleTransform(holder.getConvertView()
                                     .getContext()))

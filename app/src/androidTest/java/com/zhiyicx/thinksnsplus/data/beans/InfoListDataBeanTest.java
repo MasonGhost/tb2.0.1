@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
-
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
 public class InfoListDataBeanTest extends AbstractDaoTestLongPk<InfoListDataBeanDao, InfoListDataBean> {

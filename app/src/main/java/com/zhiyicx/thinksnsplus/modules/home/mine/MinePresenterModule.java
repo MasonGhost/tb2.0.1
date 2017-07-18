@@ -25,7 +25,7 @@ public class MinePresenterModule {
     }
 
     @Provides
-    MineContract.Repository provideMineRepository() {
-        return new MineRepository();
+    MineContract.Repository provideMineRepository(MineRepository mineRepository) {
+        return mineRepository;
     }
 }

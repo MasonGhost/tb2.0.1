@@ -32,7 +32,7 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
 
     @Override
     public void getDirCacheSize() {
-        Subscription getCacheDirSizeSub = mRepository.getDirCacheSize(mContext)
+        Subscription getCacheDirSizeSub = mRepository.getDirCacheSize()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
@@ -56,7 +56,7 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
 
     @Override
     public void cleanCache() {
-        Subscription cleanCacheSub = mRepository.cleanCache(mContext)
+        Subscription cleanCacheSub = mRepository.cleanCache()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {

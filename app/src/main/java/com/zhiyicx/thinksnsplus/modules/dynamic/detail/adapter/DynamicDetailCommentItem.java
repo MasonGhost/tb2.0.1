@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -29,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.functions.Action1;
+
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @Describe
@@ -69,28 +70,38 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
         holder.setText(R.id.tv_name, dynamicCommentBean.getCommentUser().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicCommentBean.getCreated_at()));
         holder.setText(R.id.tv_content, setShowText(dynamicCommentBean, position));
-        holder.getView(R.id.tv_content).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LogUtils.d("-----dy------onClick----------------");
-                if(mOnCommentTextClickListener!=null){
-                    mOnCommentTextClickListener.onCommentTextClick(position);
-                }
+        holder.getView(R.id.tv_content).setOnClickListener(v -> {
+            LogUtils.d("-----dy------onClick----------------");
+            if (mOnCommentTextClickListener != null) {
+                mOnCommentTextClickListener.onCommentTextClick(position);
             }
         });
+        TextView topFlag=holder.getView(R.id.tv_top_flag);
+        topFlag.setVisibility(dynamicCommentBean.getPinned() == 0 ? View.GONE : View.VISIBLE);
+        topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));
         List<Link> links = setLiknks(holder, dynamicCommentBean, position);
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content),links);
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
-
+        int storegeId;
+        String userIconUrl;
+        try {
+            storegeId = Integer.parseInt(dynamicCommentBean.getCommentUser().getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_26_ZIP);
+        } catch (Exception e) {
+            userIconUrl = dynamicCommentBean.getCommentUser().getAvatar();
+        }
         AppApplication.AppComponentHolder.getAppComponent()
                 .imageLoader()
                 .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvert(dynamicCommentBean.getCommentUser().getAvatar(), ImageZipConfig.IMAGE_26_ZIP))
+                        .url(userIconUrl)
                         .placeholder(R.mipmap.pic_default_portrait1)
                         .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
                         .errorPic(R.mipmap.pic_default_portrait1)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                        .imagerView(holder.getView(R.id.iv_headpic))
                         .build()
                 );
         setUserInfoClick(holder.getView(R.id.tv_name), dynamicCommentBean.getCommentUser());
@@ -98,12 +109,9 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
     }
 
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
-        RxView.clicks(v).subscribe(new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                if (mOnUserInfoClickListener != null) {
-                    mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
-                }
+        RxView.clicks(v).subscribe(aVoid -> {
+            if (mOnUserInfoClickListener != null) {
+                mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
             }
         });
     }
@@ -114,28 +122,22 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
 
     protected List<Link> setLiknks(ViewHolder holder, final DynamicCommentBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
-        if (dynamicCommentBean.getReplyUser() != null &&  dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser().getName() != null) {
+        if (dynamicCommentBean.getReplyUser() != null && dynamicCommentBean.getReply_to_user_id() != 0 && dynamicCommentBean.getReplyUser().getName() != null) {
             Link replyNameLink = new Link(dynamicCommentBean.getReplyUser().getName())
                     .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
-                    .setOnLongClickListener(new Link.OnLongClickListener() {
-                        @Override
-                        public void onLongClick(String clickedText) {
-                            if (mOnUserInfoLongClickListener != null) {
-                                mOnUserInfoLongClickListener.onUserInfoLongClick(dynamicCommentBean.getReplyUser());
-                            }
+                    .setOnLongClickListener(clickedText -> {
+                        if (mOnUserInfoLongClickListener != null) {
+                            mOnUserInfoLongClickListener.onUserInfoLongClick(dynamicCommentBean.getReplyUser());
                         }
                     })
-                    .setOnClickListener(new Link.OnClickListener() {
-                        @Override
-                        public void onClick(String clickedText) {
-                            LogUtils.d("-----dy------setOnClickListener----------------");
-                            // single clicked
-                            if (mOnUserInfoClickListener != null) {
-                                mOnUserInfoClickListener.onUserInfoClick(dynamicCommentBean.getReplyUser());
-                            }
+                    .setOnClickListener(clickedText -> {
+                        LogUtils.d("-----dy------setOnClickListener----------------");
+                        // single clicked
+                        if (mOnUserInfoClickListener != null) {
+                            mOnUserInfoClickListener.onUserInfoClick(dynamicCommentBean.getReplyUser());
                         }
                     });
             links.add(replyNameLink);

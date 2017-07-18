@@ -1,7 +1,4 @@
 package com.zhiyicx.common.mvp.i;
-
-import rx.Subscription;
-
 /**
  * @Describe presenter 公用接口
  * @Author Jungle68

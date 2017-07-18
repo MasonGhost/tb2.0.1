@@ -11,6 +11,7 @@
     <string name="im_not_work">聊天当前不可用</string>
     <!-- 通用 -->
     <string name="statistical_unit_million">万</string>
+    <string name="statistical_unit_second">秒</string>
     <string name="empty">""</string>
     <string name="cancel">取消</string>
     <string name="delete">删除</string>
@@ -39,7 +40,11 @@
     <string name="change_bg_cover">更换封面</string>
     <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
+    <string name="skip">跳过</string>
     <string name="intro_default">这家伙很懒,什么都没有留下</string>
+    <string name="money_format_with_unit">%.2f元</string>
+    <string name="money_format">%.2f</string>
+    <string name="upload_sucess">上传成功</string>
     <!-- 注册 -->
     <string name="regist">注册</string>
     <string name="username_input_hint">输入2&#8211;8位用户名</string>
@@ -47,7 +52,7 @@
     <string name="username_toast_not_number_start_hint">用户名不能以数字开头</string>
     <string name="username_toast_not_symbol_hint">用户名只能包含数字、字母和下划线</string>
     <string name="immediate_regist">注册</string>
-    <string name="vertify_code_input_hint">输入验证码</string>
+    <string name="vertify_code_input_hint">输入4-6位验证码</string>
     <string name="phone_number_input_hint">输入11位手机号</string>
     <string name="phone_number_toast_hint">请输入正确的手机号</string>
     <string name="password_input_hint">输入6位以上登录密码</string>
@@ -82,9 +87,20 @@
     <string name="share">分享</string>
     <string name="more">更多</string>
     <string name="send_fail">发送失败</string>
-
-
     <string name="see_origin_photo">查看原图</string>
+    <string name="see_origin_photo_vip">会员可免费查看，成为会员？</string>
+    <string name="see_origin_photo_pay">购买查看</string>
+    <string name="dynamic_top_flag">置顶</string>
+
+    <!-- 中间弹窗 -->
+    <string name="buy_pay">购买支付</string>
+    <string name="buy_pay_desc">您只需¥%.2f元就可查看图片\n会员可免费查看，</string>
+    <string name="buy_pay_words_desc">您只需¥%.2f元就可查看\n会员可免费查看，</string>
+    <string name="buy_pay_downlaod_desc">您只需¥%.2f元就可查看图片\n会员可免费下载，</string>
+    <string name="buy_pay_member">成为会员？</string>
+    <string name="buy_pay_money">¥%.2f</string>
+    <string name="buy_pay_in">购买</string>
+    <string name="buy_pay_out">返回</string>
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>

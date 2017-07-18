@@ -3,11 +3,15 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 import android.content.Context;
 
+import com.alipay.android.phone.mrpc.core.HttpException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -39,6 +43,10 @@ import rx.functions.Func1;
 public class UpLoadRepository implements IUploadRepository {
     private CommonClient mCommonClient;
     private Context mContext;
+
+    // 这个用于服务器校检 hash
+    private static final int RETRY_MAX_COUNT = 2; // 最大重试次
+    private static final int RETRY_INTERVAL_TIME = 2; // 循环间隔时间 单位 s
 
     @Inject
     public UpLoadRepository(ServiceManager serviceManager, Application context) {
@@ -91,7 +99,7 @@ public class UpLoadRepository implements IUploadRepository {
                                             }.getType());
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    headerMap = new HashMap<String, String>();
+                                    headerMap = new HashMap<>();
                                 }
 
                                 // 处理 options
@@ -102,10 +110,12 @@ public class UpLoadRepository implements IUploadRepository {
                                             }.getType());
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    optionsMap = new HashMap<String, Object>();
+                                    optionsMap = new HashMap<>();
                                 }
+                                //TODO optionsMap在此处添加图片收费参数
+
                                 // 封装图片File
-                                HashMap<String, String> fileMap = new HashMap<String, String>();
+                                HashMap<String, String> fileMap = new HashMap<>();
                                 fileMap.put(storageTaskBean.getInput(), filePath);
                                 if (method.equalsIgnoreCase("put")) {
                                     // 使用map操作符携带任务id，继续向下传递
@@ -166,6 +176,73 @@ public class UpLoadRepository implements IUploadRepository {
                         }
                     }
                 });
+    }
+
+    @Override
+    public Observable<BaseJson<Integer>> upLoadSingleFileV2(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
+        File file = new File(filePath);
+        // 封装上传文件的参数
+        final HashMap<String, String> paramMap = new HashMap<>();
+        paramMap.put("hash", FileUtils.getFileMD5ToString(file));
+        paramMap.put("origin_filename", file.getName());
+        // 如果是图片就处理图片
+        if (isPic) {
+            paramMap.put("mime_type", mimeType);
+            paramMap.put("width", photoWidth + "");// 如果是图片就选择宽高
+            paramMap.put("height", photoHeight + "");// 如果是图片就选择宽高
+        } else {
+            paramMap.put("mime_type", FileUtils.getMimeType(filePath));
+        }
+        return checkStorageHash(paramMap.get("hash"))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME) {
+                    @Override
+                    protected boolean extraReTryCondition(Throwable throwable) {
+                        return !throwable.toString().contains("404"); // 文件不存在 服务器返回404.
+                    }
+                })
+                .onErrorReturn(throwable -> {
+                    BaseJsonV2 baseJson = new BaseJsonV2();
+                    baseJson.setId(-1);
+                    return baseJson;
+                })
+                .flatMap(new Func1<BaseJsonV2, Observable<BaseJson<Integer>>>() {
+                    @Override
+                    public Observable<BaseJson<Integer>> call(BaseJsonV2 baseJson) {
+                        if (baseJson.getId() != -1) {
+                            BaseJson<Integer> success = new BaseJson<>();
+                            success.setData(baseJson.getId());
+                            success.setStatus(true);
+                            return Observable.just(success);
+                        } else {
+                            // 封装图片File
+                            HashMap<String, String> fileMap = new HashMap<>();
+                            fileMap.put("file", filePath);
+                            return mCommonClient.upLoadFileByPostV2(UpLoadFile.upLoadFileAndParams(fileMap))
+                                    .flatMap(new Func1<BaseJsonV2, Observable<BaseJson<Integer>>>() {
+                                        @Override
+                                        public Observable<BaseJson<Integer>> call(BaseJsonV2 uploadFileResultV2) {
+                                            if (uploadFileResultV2.getMessage().get(0).equals("上传成功")) {
+                                                BaseJson<Integer> success = new BaseJson<>();
+                                                success.setData(uploadFileResultV2.getId());
+                                                success.setStatus(true);
+                                                return Observable.just(success);
+                                            } else {
+                                                BaseJson<Integer> failure = new BaseJson<>();
+                                                failure.setData(uploadFileResultV2.getId());
+                                                failure.setStatus(false);
+                                                return Observable.just(failure);
+                                            }
+                                        }
+                                    });
+
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public Observable<BaseJsonV2> checkStorageHash(String hash) {
+        return mCommonClient.checkStorageHash(hash);
     }
 
     /**

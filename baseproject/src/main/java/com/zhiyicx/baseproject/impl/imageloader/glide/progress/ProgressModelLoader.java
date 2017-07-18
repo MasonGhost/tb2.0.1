@@ -3,6 +3,7 @@ package com.zhiyicx.baseproject.impl.imageloader.glide.progress;
 import android.os.Handler;
 
 import com.bumptech.glide.load.data.DataFetcher;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 
 import java.io.InputStream;
@@ -16,13 +17,14 @@ import java.io.InputStream;
 
 public class ProgressModelLoader implements StreamModelLoader<String> {
     private Handler mHandler;
-
-    public ProgressModelLoader(Handler handler) {
+    private String token;
+    public ProgressModelLoader(Handler handler,String token) {
         mHandler = handler;
+        this.token=token;
     }
 
     @Override
     public DataFetcher<InputStream> getResourceFetcher(String model, int width, int height) {
-        return new ProgressDataFetcher(model,mHandler);
+        return new ProgressDataFetcher(model,mHandler,token);
     }
 }

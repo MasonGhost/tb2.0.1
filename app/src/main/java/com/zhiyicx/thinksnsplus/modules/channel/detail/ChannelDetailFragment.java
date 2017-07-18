@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -32,6 +33,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -86,7 +88,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM
  * @contact email:450127106@qq.com
  */
 
-public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.Presenter, DynamicBean> implements ChannelDetailContract.View, DynamicListBaseItem.OnReSendClickListener,
+public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.Presenter, DynamicDetailBeanV2> implements ChannelDetailContract.View, DynamicListBaseItem.OnReSendClickListener,
         DynamicNoPullRecycleView.OnCommentStateClickListener, DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         DynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener
         , PhotoSelectorImpl.IPhotoBackListener {
@@ -162,6 +164,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mChannelSubscripBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
+    }
+
+    @Override
+    public DynamicDetailBeanV2 getCurrentPayDynamic() {
+        return null;
     }
 
     @Override
@@ -306,9 +313,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<DynamicBean> data, boolean isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<DynamicDetailBeanV2> data, boolean isLoadMore) {
         if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
-            DynamicBean emptyData = new DynamicBean();
+            DynamicDetailBeanV2 emptyData = new DynamicDetailBeanV2();
             data.add(emptyData);
         }
         super.onNetResponseSuccess(data, isLoadMore);
@@ -347,19 +354,27 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
-    public void onImageClick(ViewHolder holder, DynamicBean dynamicBean, int position) {
-        List<ImageBean> imageBeanList = dynamicBean.getFeed().getStorages();
-        ArrayList<AnimationRectBean> animationRectBeanArrayList
-                = new ArrayList<AnimationRectBean>();
-        for (int i = 0; i < imageBeanList.size(); i++) {
-            int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
-            ImageView imageView = holder.getView(id);
-            AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
-            animationRectBeanArrayList.add(rect);
-            LogUtils.i("dynamic_" + i + rect.toString());
+    public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
+        if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
+            return;
         }
 
-        GalleryActivity.startToGallery(getContext(), position, imageBeanList, animationRectBeanArrayList);
+        List<DynamicDetailBeanV2.ImagesBean> task = dynamicBean.getImages();
+        List<ImageBean> imageBeanList = new ArrayList<>();
+        ArrayList<AnimationRectBean> animationRectBeanArrayList
+                = new ArrayList<>();
+        for (int i = 0; i < task.size(); i++) {
+            int id = UIUtils.getResourceByName("siv_" + i, "id", getContext());
+            ImageView imageView = holder.getView(id);
+            ImageBean imageBean = new ImageBean();
+            imageBean.setStorage_id(task.get(i).getFile());
+            imageBeanList.add(imageBean);
+            AnimationRectBean rect = AnimationRectBean.buildFromImageView(imageView);
+            animationRectBeanArrayList.add(rect);
+        }
+
+        GalleryActivity.startToGallery(getContext(), position, imageBeanList,
+                animationRectBeanArrayList);
     }
 
     @Override
@@ -377,7 +392,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
-                if (mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
+                if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
                     return;
                 }
                 handleLike(dataPosition);
@@ -385,7 +400,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
             case 1: // 评论
                 // 还未发送成功的动态列表不查看详情
-                if (mListDatas.get(dataPosition).getFeed_id() == null || mListDatas.get(dataPosition).getFeed_id() == 0) {
+                if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
                     return;
                 }
                 showCommentView();
@@ -401,11 +416,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             case 3: // 更多
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED);
+                            .getHas_collect());
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
-                            .getTool().getIs_collection_feed() == DynamicToolBean.STATUS_COLLECT_FEED_CHECKED,shareBitMap);
+                            .getHas_collect(),shareBitMap);
                     mOtherDynamicPopWindow.show();
                 }
                 break;
@@ -427,10 +442,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
-    public void onCommentContentClick(DynamicBean dynamicBean, int position) {
+    public void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
+//            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
             showCommentView();
@@ -444,14 +459,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
-    public void onMoreCommentClick(View view, DynamicBean dynamicBean) {
+    public void onMoreCommentClick(View view, DynamicDetailBeanV2 dynamicBean) {
         int position = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         goDynamicDetail(position, true);
     }
 
     @Override
     public void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position) {
-        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getFeed_mark())).getFeed_id());
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getFeed_mark())).getId());
         mReSendCommentPopWindow.show();
     }
 
@@ -474,12 +489,12 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      */
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
-        mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
-        mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
-                mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
-        refreshData();
-        mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-                mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
+//        mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
+//        mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
+//                mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
+//        refreshData();
+//        mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
+//                mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
     }
 
     private void showCommentView() {
@@ -497,10 +512,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initDeletDynamicPopupWindow(final DynamicBean dynamicBean, final int position) {
+    private void initDeletDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position) {
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -508,14 +523,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mDeletDynamicPopWindow.hide();
                         mPresenter.deleteDynamic(dynamicBean, position);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletDynamicPopWindow.hide();
                     }
                 })
@@ -528,7 +543,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initReSendCommentPopupWindow(final DynamicCommentBean commentBean, final long feed_id) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -536,14 +551,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                         mPresenter.reSendComment(commentBean, feed_id);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendCommentPopWindow.hide();
                     }
                 })
@@ -556,7 +571,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initReSendDynamicPopupWindow(final int position) {
         mReSendDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.resend))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -564,7 +579,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mReSendDynamicPopWindow.hide();
                         mListDatas.get(position).setState(DynamicBean.SEND_ING);
                         refreshData();
@@ -573,7 +588,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mReSendDynamicPopWindow.hide();
                     }
                 })
@@ -587,10 +602,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * @param dynamicPositon  dynamic comment position
      * @param commentPosition current comment position
      */
-    private void initDeletCommentPopWindow(final DynamicBean dynamicBean, final int dynamicPositon, final int commentPosition) {
+    private void initDeletCommentPopWindow(final DynamicDetailBeanV2 dynamicBean, final int dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -598,14 +613,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                         mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                     }
                 })
@@ -614,10 +629,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     private void goDynamicDetail(int position, boolean isLookMoreComment) {
         // 还未发送成功的动态列表不查看详情
-        if (mListDatas.get(position).getFeed_id() == null || mListDatas.get(position).getFeed_id() == 0) {
+        if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() == 0) {
             return;
         }
-        mPresenter.handleViewCount(mListDatas.get(position).getFeed_id(), position);
+        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
         Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
@@ -741,11 +756,12 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      *
      * @param dynamicBean curent dynamic
      */
-    private void initOtherDynamicPopupWindow(final DynamicBean dynamicBean, boolean isCollected,final Bitmap shareBitmap) {
+    private void initOtherDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, boolean isCollected,final
+    Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .item2Str(getString(R.string.dynamic_list_share_dynamic))
-//                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+//                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -753,7 +769,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {// 收藏
+                    public void onItemClicked() {// 收藏
                         mPresenter.handleCollect(dynamicBean);
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
@@ -761,7 +777,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {// 分享
+                    public void onItemClicked() {// 分享
                         mPresenter.shareDynamic(dynamicBean,shareBitmap);
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
@@ -769,7 +785,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mOtherDynamicPopWindow.hide();
                         showBottomView(true);
                     }
@@ -783,8 +799,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initMyDynamicPopupWindow(final DynamicBean dynamicBean, final int position, boolean isCollected) {
-        Long feed_id = dynamicBean.getFeed_id();
+    private void initMyDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position, boolean isCollected) {
+        Long feed_id = dynamicBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull ? R.string.empty :isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
@@ -797,14 +813,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {// 收藏
+                    public void onItemClicked() {// 收藏
                         mMyDynamicPopWindow.hide();
                         showBottomView(true);
                     }
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {// 删除
+                    public void onItemClicked() {// 删除
                         mMyDynamicPopWindow.hide();
                         mPresenter.deleteDynamic(dynamicBean, position);
                         showBottomView(true);
@@ -812,13 +828,13 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 })
                 .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
                     @Override
-                    public void onItem3Clicked() {// 分享
+                    public void onItemClicked() {// 分享
                         mMyDynamicPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {//取消
+                    public void onItemClicked() {//取消
                         mMyDynamicPopWindow.hide();
                         showBottomView(true);
                     }

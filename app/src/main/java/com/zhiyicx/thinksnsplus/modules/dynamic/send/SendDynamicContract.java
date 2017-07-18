@@ -1,15 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * @author LiuChao
@@ -30,6 +29,15 @@ public interface SendDynamicContract {
          */
         SendDynamicDataBean getDynamicSendData();
 
+        boolean hasTollVerify();
+
+        void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2);
+
+        double getTollMoney();
+
+        boolean wordsNumLimit();
+
+        void initInstructionsPop(String title,String des);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -40,5 +48,6 @@ public interface SendDynamicContract {
 
     interface Presenter extends IBasePresenter {
         void sendDynamic(DynamicBean dynamicBean);
+        void sendDynamicV2(DynamicDetailBeanV2 dynamicBean);
     }
 }

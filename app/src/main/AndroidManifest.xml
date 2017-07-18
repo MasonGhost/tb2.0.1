@@ -20,16 +20,18 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-    <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全-->
+
+    <!-- allowBackup =true  用于 adb backup 与 adb restore;发布后需要关闭，保证数据安全 -->
     <application
         android:name=".base.AppApplication"
         android:allowBackup="false"
-        android:largeHeap="true"
-        tools:replace="android:allowBackup"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/icon_256"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/TSTheme">
+        android:theme="@style/TSTheme"
+        tools:replace="android:allowBackup">
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="ThinkSNSFileProvider"
@@ -76,8 +78,14 @@
         </activity>
         <activity
             android:name=".modules.login.LoginActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="zhiyicx.intent.action.LOGIN"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".modules.chat.ChatActivity"
@@ -165,6 +173,34 @@
             android:name=".modules.rank.RankActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".modules.wallet.WalletActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".modules.dynamic.detail.DynamicDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".modules.dynamic.detail.dig_list.DigListActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".modules.personal_center.PersonalCenterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".modules.music_fm.music_comment.MusicCommentActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".modules.wallet.recharge.RechargeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+        </activity>
 
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
@@ -212,24 +248,6 @@
         <!-- #########################################      后台任务相关service       ################################ -->
         <service android:name=".service.backgroundtask.BackgroundTaskHandleService"/>
 
-        <activity
-            android:name=".modules.dynamic.detail.DynamicDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-        <activity
-            android:name=".modules.dynamic.detail.dig_list.DigListActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".modules.personal_center.PersonalCenterActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-        <activity
-            android:name=".modules.music_fm.music_comment.MusicCommentActivity"
-            android:screenOrientation="portrait">
-        </activity>
         <!-- 新浪分享 -->
         <activity
             android:name=".WBShareActivity"
@@ -241,7 +259,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <!--微信分享结果类-->
+        <!-- 微信分享结果类 -->
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
@@ -253,11 +271,35 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <!--微信支付结果类-->
+
+        <!--Ping++ 支付SDK-->
+        <activity
+            android:name="com.pingplusplus.android.PaymentActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+
+        <!-- 微信支付结果类 -->
         <activity
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"/>
+        <!--支付宝-->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind">
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind">
+        </activity>
+
+        <!--频道-->
         <activity
             android:name=".modules.channel.list.ChannelListActivity"
             android:screenOrientation="portrait">
@@ -265,11 +307,34 @@
         <activity
             android:name=".modules.channel.detail.ChannelDetailActivity"
             android:screenOrientation="portrait">
-
         </activity>
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".modules.dynamic.topdynamic.DynamicTopActivity">
+        </activity>
+        <activity android:name=".modules.wallet.withdrawals.WithdrawalsActivity">
+        </activity>
+        <activity android:name=".modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity">
+        </activity>
+        <activity android:name=".modules.wallet.bill_detail.BillDetailActivity">
+        </activity>
+        <activity
+            android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity"
+            android:theme="@style/DynamciSelectTheme">
+        </activity>
+        <activity android:name=".modules.dynamic.send.picture_toll.PictureTollActivity">
+        </activity>
+        <activity android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity">
+        </activity>
+        <activity android:name=".modules.dynamic.topdynamic_comment.DynamicCommentTopActivity">
+        </activity>
+        <activity android:name=".modules.wallet.bill.BillActivity">
+        </activity>
+        <activity android:name=".modules.feedback.FeedBackActivity">
+        </activity>
+        <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
+        </activity>
     </application>
 
 </manifest>

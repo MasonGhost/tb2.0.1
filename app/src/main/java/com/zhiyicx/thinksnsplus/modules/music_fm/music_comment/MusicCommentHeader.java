@@ -46,7 +46,7 @@ public class MusicCommentHeader {
         mMusicCommentHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mHeadlerClickEvent != null){
+                if (mHeadlerClickEvent != null) {
                     mHeadlerClickEvent.headClick();
                 }
             }
@@ -66,9 +66,18 @@ public class MusicCommentHeader {
         return mMusicCommentHeader;
     }
 
+    public void hide() {
+        mMusicCommentHeader.setVisibility(View.GONE);
+    }
+
+    public void show() {
+        mMusicCommentHeader.setVisibility(View.VISIBLE);
+    }
+
     public void setHeadInfo(HeaderInfo headInfo) {
         if (headInfo == null)
             return;
+        show();
         mTitle.setText(headInfo.getTitle());
         mListenCount.setText(headInfo.getLitenerCount());
         mImageLoader.loadImage(mContext, GlideImageConfig.builder()

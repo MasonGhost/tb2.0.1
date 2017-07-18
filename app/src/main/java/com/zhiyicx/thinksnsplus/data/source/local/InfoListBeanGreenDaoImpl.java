@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -21,14 +20,13 @@ import javax.inject.Inject;
 public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
 
     private InfoListBeanDao mInfoListBeanDao;
-
+    @Inject
     InfoListDataBeanGreenDaoImpl mInfoListDataBeanGreenDao;
 
     @Inject
-    public InfoListBeanGreenDaoImpl(Context context) {
+    public InfoListBeanGreenDaoImpl(Application context) {
         super(context);
         mInfoListBeanDao = getWDaoSession().getInfoListBeanDao();
-        mInfoListDataBeanGreenDao = new InfoListDataBeanGreenDaoImpl((Application) context);
     }
 
     @Override

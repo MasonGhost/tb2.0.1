@@ -4,7 +4,6 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -66,20 +65,17 @@ public class RegisterActivityTest {
      */
     @Test
     public void registerFailure() throws Exception {
-        mRegisterClient.register("failure", USER_PHONE, USER_NAME, "12344", "dsafdsa", "12313")
+        mRegisterClient.registerByPhone( USER_PHONE, USER_NAME, "12344", "dsafdsa")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<AuthBean>>() {
+                .subscribe(new Action1<AuthBean>() {
                     @Override
-                    public void call(BaseJson<AuthBean> integerBaseJson) {
+                    public void call(AuthBean integerBaseJson) {
                         LogUtils.d(integerBaseJson.toString());
-                        if (integerBaseJson.isStatus()) {
+
                             // 成功跳转:当前不可能发生
                             assertFalse(true);
-                        } else {
-                            // 登录失败
-                            assertFalse(false);
-                        }
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -98,20 +94,17 @@ public class RegisterActivityTest {
      */
     @Test
     public void registerSuccess() throws Exception {
-        mRegisterClient.register("success", USER_PHONE, USER_NAME, "1244", "dsafdsa", "12321456")
+        mRegisterClient.registerByPhone( USER_PHONE, USER_NAME, "1244", "dsafdsa" )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<AuthBean>>() {
+                .subscribe(new Action1<AuthBean>() {
                     @Override
-                    public void call(BaseJson<AuthBean> integerBaseJson) {
+                    public void call(AuthBean integerBaseJson) {
                         LogUtils.d(integerBaseJson.toString());
-                        if (integerBaseJson.isStatus()) {
+
                             // 成功跳转:当前不可能发生
                             assertTrue(true);
-                        } else {
-                            // 登录失败
-                            assertFalse(false);
-                        }
+
                     }
                 }, new Action1<Throwable>() {
                     @Override

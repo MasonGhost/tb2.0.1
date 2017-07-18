@@ -1,11 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,17 +43,29 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     @Override
     public void checkLogin() {
         // 系统扩展配置信息处理
-        mSystemRepository.getComponentStatusFromServer();
-        mSystemRepository.getComponentConfigFromServer(ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS_IM);
-
+        mSystemRepository.getBootstrappersInfoFromServer();
         if (mIAuthRepository.isLogin()) {
             // TODO: 2017/2/10 刷新 Token 时间，过期前一天刷新
 //        mIAuthRepository.refreshToken();
-            // IM login
             mRootView.startActivity(HomeActivity.class);
         } else {
             mRootView.startActivity(LoginActivity.class);
         }
+    }
+
+    @Override
+    public void getLaunchAdverts() {
+        mRepository.getLaunchAdverts().subscribe(new BaseSubscribe<List<LaunchAdvertBean>>() {
+            @Override
+            protected void onSuccess(List<LaunchAdvertBean> data) {
+                // 出入数据库
+            }
+        });
+    }
+
+    @Override
+    public SystemConfigBean getAdvert() {
+        return mSystemRepository.getBootstrappersInfoFromLocal();
     }
 }
 

@@ -1,9 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
-import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 
@@ -15,7 +15,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
  */
 
 public interface ChannelDetailContract {
-    interface View extends ITSListView<DynamicBean, Presenter> {
+    interface View extends ITSListView<DynamicDetailBeanV2, Presenter> {
         /**
          * 所有接口都请求完毕后回调
          */
@@ -45,6 +45,8 @@ public interface ChannelDetailContract {
          * 动态已发送的ui通知
          */
         void sendDynamic();
+
+        DynamicDetailBeanV2 getCurrentPayDynamic();
     }
 
     interface Repository extends IBaseChannelRepository {

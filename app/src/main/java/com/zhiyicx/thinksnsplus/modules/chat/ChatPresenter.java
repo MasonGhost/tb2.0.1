@@ -20,6 +20,8 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -30,7 +32,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVERSATIONCRATED;
@@ -45,7 +46,10 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_IM_ONCONVE
 public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatContract.View> implements ChatContract.Presenter {
 
     private SparseArray<UserInfoBean> mUserInfoBeanSparseArray = new SparseArray<>();// 把用户信息存入内存，方便下次使用
-
+    @Inject
+    SystemRepository mSystemRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public ChatPresenter(ChatContract.Repository repository, ChatContract.View rootView) {
@@ -68,14 +72,11 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         Collections.reverse(data);
         Observable.just(data)
                 .observeOn(Schedulers.io())
-                .subscribe(new Action1<List<ChatItemBean>>() {
-                    @Override
-                    public void call(List<ChatItemBean> chatItemBeen) {
-                        for (ChatItemBean chatItemBean : chatItemBeen) {
-                            if (!chatItemBean.getLastMessage().getIs_read()) {
-                                // 把消息更新为已经读
-                                MessageDao.getInstance(mContext).readMessage(chatItemBean.getLastMessage().getMid());
-                            }
+                .subscribe(chatItemBeen -> {
+                    for (ChatItemBean chatItemBean : chatItemBeen) {
+                        if (!chatItemBean.getLastMessage().getIs_read()) {
+                            // 把消息更新为已经读
+                            MessageDao.getInstance(mContext).readMessage(chatItemBean.getLastMessage().getMid());
                         }
                     }
                 });
@@ -158,6 +159,14 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
     }
 
     /**
+     * 检测 ts helper 是否是当前用户
+     */
+    @Override
+    public String checkTShelper(long user_id) {
+        return mSystemRepository.checkTShelper(user_id);
+    }
+
+    /**
      * 收到消息
      *
      * @param message
@@ -172,12 +181,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         // 把消息更新为已经读
         Observable.just(message)
                 .observeOn(Schedulers.io())
-                .subscribe(new Action1<Message>() {
-                    @Override
-                    public void call(Message message) {
-                        MessageDao.getInstance(mContext).readMessage(message.getMid());
-                    }
-                });
+                .subscribe(message1 -> MessageDao.getInstance(mContext).readMessage(message1.getMid()));
 
     }
 
@@ -195,8 +199,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         }
         UserInfoBean userInfoBean = mUserInfoBeanSparseArray.get(message.getUid());
         if (userInfoBean == null) {
-            userInfoBean = AppApplication.AppComponentHolder.getAppComponent()
-                    .userInfoBeanGreenDao().getSingleDataFromCache((long) message.getUid());
+            userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) message.getUid());
             mUserInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
         }
         chatItemBean.setUserInfo(userInfoBean);

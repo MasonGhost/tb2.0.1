@@ -247,7 +247,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mMediaPlayer.pause();
                 mCurrentPosition = mMediaPlayer.getCurrentPosition();
             }
-
             relaxResources(false);
         }
         mState = PlaybackStateCompat.STATE_PAUSED;
@@ -271,6 +270,7 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 mCallback.onPlaybackStatusChanged(mState);
             }
         }
+
     }
 
     @Override
@@ -310,28 +310,27 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     }
 
     private void configMediaPlayerState() {
-        if (mAudioFocus == AUDIO_NO_FOCUS_NO_DUCK) { // 没有焦点并且在播放中
+        if (mAudioFocus == AUDIO_NO_FOCUS_NO_DUCK) {
+            // 没有焦点并且在播放中
             if (mState == PlaybackStateCompat.STATE_PLAYING) {
                 pause();
             }
-        } else {// 播放器有焦点
+        } else {  // 播放器有焦点
             registerAudioNoisyReceiver();
             if (mAudioFocus == AUDIO_NO_FOCUS_CAN_DUCK) {
                 mMediaPlayer.setVolume(VOLUME_DUCK, VOLUME_DUCK);
             } else {
                 if (mMediaPlayer != null) {
                     mMediaPlayer.setVolume(VOLUME_NORMAL, VOLUME_NORMAL);
-                } else {
-                    // TODO ...
                 }
             }
 
             if (mPlayOnFocusGain) {
                 if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
                     if (mCurrentPosition == mMediaPlayer.getCurrentPosition()) {
-                        mMediaPlayer.start(); // 进入界面后是否自动播放
-                        mState = PlaybackStateCompat.STATE_PLAYING;
                         LogUtils.d("mCurrentPosition == mMediaPlayer.start()");
+                        mMediaPlayer.start();
+                        mState = PlaybackStateCompat.STATE_PLAYING;
                     } else {
                         LogUtils.d("mCurrentPosition == mMediaPlayer.seekTo");
                         mMediaPlayer.seekTo(mCurrentPosition);
@@ -368,6 +367,10 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
     @Override
     public void onSeekComplete(MediaPlayer mp) {
         mCurrentPosition = mp.getCurrentPosition();
+        if (mState == PlaybackStateCompat.STATE_PAUSED) {
+            mMediaPlayer.pause();
+            return;
+        }
         if (mState == PlaybackStateCompat.STATE_BUFFERING) {
             registerAudioNoisyReceiver();
             mMediaPlayer.start();
@@ -388,6 +391,10 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onPrepared(MediaPlayer player) {
+        if (mState == PlaybackStateCompat.STATE_PAUSED) {
+            mMediaPlayer.pause();
+            return;
+        }
         EventBus.getDefault().post(player.getDuration() / 1000,
                 EVENT_SEND_MUSIC_LOAD);
         configMediaPlayerState();
@@ -404,7 +411,6 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        LogUtils.d(percent);
         if (!isCached) {
             mCallback.onBuffering(percent);
         }

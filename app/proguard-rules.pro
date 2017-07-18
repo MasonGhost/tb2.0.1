@@ -48,6 +48,24 @@ public static final int *;
 -keep class solid.ren.skinlibrary.** { *; }
 -keep interface  solid.ren.skinlibrary.** { *; }
 
+################tspay (ping++ sdk)###############
+# Ping++ 混淆过滤
+-dontwarn com.pingplusplus.**
+-keep class com.pingplusplus.** {*;}
+
+# 支付宝混淆过滤
+-dontwarn com.alipay.**
+-keep class com.alipay.** {*;}
+
+# 微信或QQ钱包混淆过滤
+-dontwarn  com.tencent.**
+-keep class com.tencent.** {*;}
+
+# 内部WebView混淆过滤
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
 
 ################IM###############
 -keep class com.zhiyicx.imsdk.** { *; } #实体类不参与混淆

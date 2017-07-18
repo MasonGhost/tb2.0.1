@@ -18,4 +18,10 @@
     <!--图片查看器，查看原图按钮-->
     <dimen name="origin_btn_width">76dp</dimen>
     <dimen name="origin_btn_height">26dp</dimen>
+    <!--动态查看大图收费-->
+    <dimen name="dynamic_img_payto_look_width">100dp</dimen>
+    <dimen name="dynamic_img_payto_look_height">35dp</dimen>
+    <!--动态置顶标识-->
+    <dimen name="dynamic_top_flag_width">30dp</dimen>
+    <dimen name="dynamic_top_flag_height">15dp</dimen>
 </resources>

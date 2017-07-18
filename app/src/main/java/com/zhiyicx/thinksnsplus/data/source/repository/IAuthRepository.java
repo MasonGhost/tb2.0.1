@@ -53,22 +53,37 @@ public interface IAuthRepository {
     /**
      * 是否登录过成功了，Token 并未过期
      *
-     * @return
+     * @return  true  ,  is logined
      */
     boolean isLogin();
 
     /**
+     * 是否是游客
+     *
+     * @return true the current login user is tourist
+     */
+    boolean isTourist();
+
+    /**
      * 保存IM 登录配置信息
+     *
      * @param imConfig 配置信息
-     * @return true,保存成功
+     * @return true, 保存成功
      */
     boolean saveIMConfig(IMConfig imConfig);
 
     /**
      * 获取 IM 配置信息
+     *
      * @return 配置信息
      */
     IMConfig getIMConfig();
 
     void loginIM();
+
+    /**
+     * token 是否过期
+     * @return
+     */
+     boolean isNeededRefreshToken();
 }

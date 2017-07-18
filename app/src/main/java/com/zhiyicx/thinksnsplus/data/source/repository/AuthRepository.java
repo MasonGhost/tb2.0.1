@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -23,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
@@ -38,8 +38,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.umeng.socialize.utils.DeviceConfig.context;
-
 /**
  * @Describe
  * @Author Jungle68
@@ -51,10 +49,13 @@ public class AuthRepository implements IAuthRepository {
     public static final int MAX_RETRY_COUNTS = 2;//重试次数
     public static final int RETRY_DELAY_TIME = 1;// 重试间隔时间,单位 s
     private UserInfoClient mUserInfoClient;
-    private CommonClient mCommonClient;
-    private Context mContext;
+
+    @Inject
+    Application mContext;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+    @Inject
+    DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
     @Inject
@@ -71,34 +72,11 @@ public class AuthRepository implements IAuthRepository {
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
 
     @Inject
-    public AuthRepository(ServiceManager serviceManager, Application context) {
+    SystemRepository mSystemRepository;
+
+    @Inject
+    public AuthRepository(ServiceManager serviceManager) {
         mUserInfoClient = serviceManager.getUserInfoClient();
-        mCommonClient = serviceManager.getCommonClient();
-        mContext = context;
-        if (mDynamicBeanGreenDao == null) {
-            mDynamicBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicBeanGreenDao();
-        }
-        if (mDynamicDetailBeanGreenDao == null) {
-            mDynamicDetailBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicDetailBeanGreenDao();
-        }
-        if (mDynamicToolBeanGreenDao == null) {
-            mDynamicToolBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicToolBeanGreenDao();
-        }
-        if (mDynamicCommentBeanGreenDao == null) {
-            mDynamicCommentBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().dynamicCommentBeanGreenDao();
-        }
-        if (mDigedBeanGreenDao == null) {
-            mDigedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().digedBeanGreenDao();
-        }
-        if (mCommentedBeanGreenDao == null) {
-            mCommentedBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().commentedBeanGreenDao();
-        }
-        if (mFlushMessageBeanGreenDao == null) {
-            mFlushMessageBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().flushMessageBeanGreenDao();
-        }
-        if (mSystemConversationBeanGreenDao == null) {
-            mSystemConversationBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().systemConversationBeanGreenDaoImpl();
-        }
     }
 
 
@@ -110,7 +88,9 @@ public class AuthRepository implements IAuthRepository {
 
     @Override
     public AuthBean getAuthBean() {
-        AppApplication.setmCurrentLoginAuth((AuthBean) SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN));
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            AppApplication.setmCurrentLoginAuth((AuthBean) SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN));
+        }
         return AppApplication.getmCurrentLoginAuth();
     }
 
@@ -127,7 +107,7 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public void refreshToken() {
         AuthBean authBean = getAuthBean();
-        if (!isNeededRefreshToken(authBean)) {
+        if (!isNeededRefreshToken()) {
             return;
         }
         CommonClient commonClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
@@ -172,15 +152,21 @@ public class AuthRepository implements IAuthRepository {
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
+        mDynamicDetailBeanV2GreenDao.clearTable();
         mDynamicDetailBeanGreenDao.clearTable();
         mDynamicToolBeanGreenDao.clearTable();
         mDigedBeanGreenDao.clearTable();
         mCommentedBeanGreenDao.clearTable();
         mFlushMessageBeanGreenDao.clearTable();
         mSystemConversationBeanGreenDao.clearTable();
-        MessageDao.getInstance(context).delDataBase();
+        MessageDao.getInstance(mContext).delDataBase();
+        AppApplication.setmCurrentLoginAuth(null);
+        //处理 Ts 助手
+        SystemRepository.resetTSHelper(mContext);
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
-                && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG);
+                && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IMCONFIG)
+                && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_IS_NOT_FIRST_LOOK_WALLET)
+                && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
     }
 
     /**
@@ -190,7 +176,18 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean isLogin() {
-        return getAuthBean() != null && getIMConfig() != null;
+        return !isTourist()
+                && getAuthBean() != null;
+    }
+
+    /**
+     * 是否是游客
+     *
+     * @return true
+     */
+    @Override
+    public boolean isTourist() {
+        return getAuthBean() == null;
     }
 
     @Override
@@ -214,11 +211,13 @@ public class AuthRepository implements IAuthRepository {
      *
      * @return
      */
-    private boolean isNeededRefreshToken(AuthBean authBean) {
+    @Override
+    public boolean isNeededRefreshToken() {
+        AuthBean authBean = getAuthBean();
         if (authBean == null) {// 没有token，不需要刷新
             return false;
         }
-        long createTime = authBean.getCreated_at();
+        long createTime = TimeUtils.string2MillisDefaultLocal(authBean.getCreated_at());
         int expiers = authBean.getExpires();
         int days = TimeUtils.getifferenceDays((createTime + expiers) * 1000);//表示token过期时间距离现在的时间
         if (expiers == 0) {// 永不过期,不需要刷新token

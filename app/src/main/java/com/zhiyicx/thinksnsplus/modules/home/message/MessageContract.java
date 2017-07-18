@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 
 import java.util.List;
@@ -37,6 +38,13 @@ public interface MessageContract {
         void updateLikeItemData(MessageItemBean messageItemBean);
 
         /**
+         * 更新置顶的
+         *
+         * @param messageItemBean
+         */
+        void updateReviewItemData(MessageItemBean messageItemBean);
+
+        /**
          * 显示 右上角的加载动画
          */
         void showTopRightLoading();
@@ -46,12 +54,6 @@ public interface MessageContract {
          */
         void closeTopRightLoading();
 
-        /**
-         * 更新 TS 助手
-         *
-         * @param itemBeanNotices
-         */
-        void updateTSHelper(MessageItemBean itemBeanNotices);
     }
 
     /**
@@ -73,6 +75,39 @@ public interface MessageContract {
          * @return
          */
         Observable<BaseJson<MessageItemBean>> getSingleConversation(int cid);
+
+        /**
+         * 未读通知数量检查
+         *
+         * @return
+         */
+        Observable<Void> ckeckUnreadNotification();
+
+        /**
+         * 获取通知列表
+         *
+         * @param notification
+         * @param type
+         * @param limit
+         * @param offset
+         * @return
+         */
+        Observable<List<TSPNotificationBean>> getNotificationList(String notification, String type, Integer limit, Integer offset);
+
+        /**
+         * 读取通知
+         *
+         * @param notificationId
+         * @return
+         */
+        Observable<TSPNotificationBean> getNotificationDetail(String notificationId);
+
+        /**
+         * 标记通知阅读
+         * @param notificationId
+         * @return
+         */
+        Observable<Object> makeNotificationReaded( String notificationId);
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
@@ -80,7 +115,9 @@ public interface MessageContract {
 
         MessageItemBean updateLikeItemData();
 
-        MessageItemBean updateNoticesItemData();
+        MessageItemBean updateReviewItemData();
+
+//        MessageItemBean updateNoticesItemData();
 
         /**
          * 刷新是否显示底部红点
@@ -91,9 +128,9 @@ public interface MessageContract {
         /**
          * 删除本地对话
          *
-         * @param messageItemBean
+         * @param position
          */
-        void deletConversation(MessageItemBean messageItemBean);
+        void deletConversation(int position);
 
         /**
          * 通过 对话 id 获取对话信息
@@ -118,6 +155,6 @@ public interface MessageContract {
         /**
          * ts 助手配置
          */
-        void configTSHelper();
+        String checkTShelper(long user_id);
     }
 }

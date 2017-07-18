@@ -1,9 +1,16 @@
 package com.zhiyicx.tspay;
 
-import android.content.Context;
+import android.app.Activity;
+import android.support.annotation.RestrictTo;
+import android.support.annotation.StringDef;
+import android.support.v4.util.ArrayMap;
 
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.pingplusplus.android.Pingpp;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /**
  * @Describe
@@ -11,27 +18,46 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
  * @Date 2017/5/15
  * @Contact master.jungle68@gmail.com
  */
-
 public class TSPayClient {
     /**
-     * TS 支付初始化
-     *
-     * @param context
-     * @param wxAppId
+     * 手机支付宝 APP 支付
      */
-    public static void init(Context context, String wxAppId) {
-        initWxPay(context, wxAppId);
+    public static final String CHANNEL_ALIPAY = "alipay";
+    /**
+     * 手机支付宝扫码支付
+     */
+    public static final String CHANNEL_ALIQRPAY = "alipay_qr";
+    /**
+     * 手机网页发起支付宝支付
+     */
+    public static final String CHANNEL_ALIWAPPAY = "alipay_wap";
+    /**
+     * 微信 APP 支付
+     */
+    public static final String CHANNEL_WXPAY = "wx";
+    /**
+     * 手机网页发起微信支付
+     */
+    public static final String CHANNEL_WXWAPPAY = "wx_wap";
+
+    public static final ArrayMap<String, Integer> PAY_KEYS_TYPE;
+
+    static {
+        PAY_KEYS_TYPE = new ArrayMap<>();
+        PAY_KEYS_TYPE.put(CHANNEL_ALIPAY, R.string.alipay);
+        PAY_KEYS_TYPE.put(CHANNEL_ALIQRPAY, R.string.alipay);
+        PAY_KEYS_TYPE.put(CHANNEL_ALIWAPPAY, R.string.alipay);
+        PAY_KEYS_TYPE.put(CHANNEL_WXPAY, R.string.wxpay);
+        PAY_KEYS_TYPE.put(CHANNEL_WXWAPPAY, R.string.wxpay);
     }
 
-    /**
-     * 微信支付初始化
-     *
-     * @param context
-     * @param wxAppId
-     */
-    private static void initWxPay(Context context, String wxAppId) {
-        final IWXAPI msgApi = WXAPIFactory.createWXAPI(context, null);
-        // 将该app注册到微信
-        msgApi.registerApp(wxAppId);
+    @RestrictTo(LIBRARY_GROUP)
+    @StringDef({CHANNEL_ALIPAY, CHANNEL_ALIQRPAY, CHANNEL_ALIWAPPAY, CHANNEL_WXPAY, CHANNEL_WXWAPPAY})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PayKey {
+    }
+
+    public static void pay(String payCredentials, Activity activity) {
+        Pingpp.createPayment(activity, payCredentials);
     }
 }

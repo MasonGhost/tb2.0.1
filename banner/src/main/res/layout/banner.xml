@@ -43,6 +43,7 @@
             android:id="@+id/titleView"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:gravity="bottom"
             android:layout_below="@+id/circleIndicator"
             android:background="#44000000"
             android:orientation="horizontal"
@@ -51,20 +52,20 @@
             <TextView
                 android:id="@+id/bannerTitle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="1000"
-                android:ellipsize="marquee"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
-                android:singleLine="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="#ffffff"
                 android:visibility="gone" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
 

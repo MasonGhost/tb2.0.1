@@ -239,7 +239,6 @@ public class StatusBarUtils {
                 if (layoutParams != null)
                     return STATUS_TYPE_MIUUI;
             } catch (Exception e) {
-                e.printStackTrace();
             }
 
         }

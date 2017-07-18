@@ -1,32 +1,37 @@
 package com.zhiyicx.thinksnsplus.modules.home;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
@@ -42,7 +47,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
@@ -98,6 +103,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private PhotoSelectorImpl mPhotoSelector;
     private JpushAlias mJpushAlias;
 
+    private int mCurrenPage;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
 
@@ -139,29 +145,47 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
-        initViewPager();
-        longClickSendTextDynamic();
-        initPhotoPicker();
-    }
-
-
-    @Override
-    protected void initData() {
         DaggerHomeComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .homePresenterModule(new HomePresenterModule(this))
                 .build()
                 .inject(this);
+        initViewPager();
+        longClickSendTextDynamic();
+        initPhotoPicker();
         initListener();
+    }
+
+
+    @Override
+    protected void initData() {
+        setJpushAlias();
         changeNavigationButton(PAGE_HOME);
-        if (getArguments() != null && getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE) != null) {
-            checkBottomItem(HomeFragment.PAGE_MESSAGE);
-        } else {
-            mVpHome.setCurrentItem(PAGE_HOME, false);
+        setCurrentPage();
+        // 支持魅族手机首页状太栏文字白色问题
+        supportFlymeSutsusbar();
+    }
+
+    private void supportFlymeSutsusbar() {
+        Observable.timer(1500,TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    }
+                });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mPresenter.isLogin() && mVpHome.getChildCount() < PAGE_NUMS) { // 游客登录后的处理
+            initViewPager();
+            mVpHome.setCurrentItem(mCurrenPage, false);
         }
-        mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
-        mJpushAlias.setAlias();
+
+
     }
 
     @Override
@@ -175,25 +199,103 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
             // 点击主页
             case R.id.ll_home:
                 mVpHome.setCurrentItem(PAGE_HOME, false);
+                mCurrenPage = PAGE_HOME;
                 break;
             // 点击发现
             case R.id.ll_find:
-                mVpHome.setCurrentItem(PAGE_FIND, false);
+                if (TouristConfig.FIND_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                    mVpHome.setCurrentItem(PAGE_FIND, false);
+                }
+                mCurrenPage = PAGE_FIND;
                 break;
             // 添加动态
             case R.id.fl_add:
-                initPhotoPopupWindow();
-                mPhotoPopupWindow.show();
+                if (TouristConfig.DYNAMIC_CAN_PUBLISH || !mPresenter.handleTouristControl()) {
+                    Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.zoom_in, 0);
+//
+//                    initPhotoPopupWindow();
+                }
                 break;
             // 点击消息
             case R.id.ll_message:
-                mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+                if (TouristConfig.MESSAGE_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                    mVpHome.setCurrentItem(PAGE_MESSAGE, false);
+                }
+                mCurrenPage = PAGE_MESSAGE;
                 break;
             // 点击我的
             case R.id.ll_mine:
-                mVpHome.setCurrentItem(PAGE_MINE, false);
+                if (TouristConfig.MINE_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                    mVpHome.setCurrentItem(PAGE_MINE, false);
+                }
+                mCurrenPage = PAGE_MINE;
                 break;
             default:
+        }
+
+    }
+
+    @Override
+    public void setMessageTipVisable(boolean tipVisable) {
+        if (tipVisable) {
+            mVMessageTip.setVisibility(View.VISIBLE);
+        } else {
+            mVMessageTip.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+    @Override
+    public void setMineTipVisable(boolean tipVisable) {
+        if (tipVisable) {
+            mVMineTip.setVisibility(View.VISIBLE);
+        } else {
+            mVMineTip.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+
+    @Override
+    public void checkBottomItem(int positon) {
+        mVpHome.setCurrentItem(positon, false);
+    }
+
+    @Override
+    public void getPhotoSuccess(List<ImageBean> photoList) {
+        // 跳转到发送动态页面
+        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+        sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
+        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+    }
+
+    @Override
+    public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 获取图片选择器返回结果
+        if (mPhotoSelector != null) {
+            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onButtonMenuShow(boolean isShow) {
+        if (isShow) {
+            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(aLong -> {
+                mLlBottomContainer.setVisibility(View.VISIBLE);
+                return null;
+            }).subscribe();
+        } else {
+            mLlBottomContainer.setVisibility(View.GONE);
         }
 
     }
@@ -209,9 +311,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         List<Fragment> mFragmentList = new ArrayList<>();
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
-        mFragmentList.add(MessageFragment.newInstance());
-        mFragmentList.add(MineFragment.newInstance());
-        mHomePager.bindData(mFragmentList);//将List设置给adapter
+        if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
+            mFragmentList.add(MessageFragment.newInstance());
+        }
+        if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
+            mFragmentList.add(MineFragment.newInstance());
+        }
+        mHomePager.bindData(mFragmentList);//将 List 设置给 adapter
         mVpHome.setAdapter(mHomePager);
     }
 
@@ -263,46 +369,48 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mTvMine.setTextColor(position == PAGE_MINE ? checkedColor : unckeckedColor);
     }
 
-    @Override
-    public void setMessageTipVisable(boolean tipVisable) {
-        if (tipVisable) {
-            mVMessageTip.setVisibility(View.VISIBLE);
+    /**
+     * 设置当前页
+     */
+    private void setCurrentPage() {
+        if (getArguments() != null && getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE) != null) {
+            switch (((JpushMessageBean) getArguments().getParcelable(BUNDLE_JPUSH_MESSAGE)).getType()) {
+                case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_SYSTEM:
+                    checkBottomItem(HomeFragment.PAGE_MINE);
+                    break;
+                default:
+                    checkBottomItem(HomeFragment.PAGE_MESSAGE);
+            }
         } else {
-            mVMessageTip.setVisibility(View.INVISIBLE);
+            mVpHome.setCurrentItem(PAGE_HOME, false);
         }
-
     }
 
-    @Override
-    public void setMineTipVisable(boolean tipVisable) {
-        if (tipVisable) {
-            mVMineTip.setVisibility(View.VISIBLE);
-        } else {
-            mVMineTip.setVisibility(View.INVISIBLE);
+    /**
+     * 设置极光推送别名
+     */
+    private void setJpushAlias() {
+        if (mPresenter.isLogin()) {
+            mJpushAlias = new JpushAlias(getContext(), AppApplication.getmCurrentLoginAuth().getUser_id() + "");// 设置极光推送别名
+            mJpushAlias.setAlias();
         }
 
-    }
-
-
-    @Override
-    public void checkBottomItem(int positon) {
-        mVpHome.setCurrentItem(positon, false);
     }
 
     /**
      * 长按动态发送按钮，进入纯文字的动态发布
      */
     private void longClickSendTextDynamic() {
-        mFlAdd.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                // 跳转到发送动态页面
-                SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
-                sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
-                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+        mFlAdd.setOnLongClickListener(v -> {
+            // 跳转到发送动态页面
+            if (BuildConfig.USE_TOLL) {
                 return true;
             }
+            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+            return true;
         });
     }
 
@@ -321,51 +429,13 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .build().photoSelectorImpl();
     }
 
-    @Override
-    public void getPhotoSuccess(List<ImageBean> photoList) {
-        // 跳转到发送动态页面
-        SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
-        sendDynamicDataBean.setDynamicPrePhotos(photoList);
-        sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
-        SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-    }
-
-    @Override
-    public void getPhotoFailure(String errorMsg) {
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // 获取图片选择器返回结果
-        if (mPhotoSelector != null) {
-            mPhotoSelector.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
-    public void onButtonMenuShow(boolean isShow) {
-        if (isShow) {
-            Observable.timer(getResources().getInteger(android.R.integer.config_longAnimTime), TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).map(new Func1<Long, Object>() {
-                @Override
-                public Object call(Long aLong) {
-                    mLlBottomContainer.setVisibility(View.VISIBLE);
-                    return null;
-                }
-            }).subscribe();
-        } else {
-            mLlBottomContainer.setVisibility(View.GONE);
-        }
-
-    }
 
     /**
      * 初始化图片选择弹框
      */
     private void initPhotoPopupWindow() {
         if (mPhotoPopupWindow != null) {
+            mPhotoPopupWindow.show();
             return;
         }
         mPhotoPopupWindow = ActionPopupWindow.builder()
@@ -376,27 +446,17 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItem1Clicked() {
-                        clickSendPhotoTextDynamic();
-                        mPhotoPopupWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    clickSendPhotoTextDynamic();
+                    mPhotoPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItem2Clicked() {
-                        // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera(null);
-                        mPhotoPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(null);
+                    mPhotoPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onBottomClicked() {
-                        mPhotoPopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
+        mPhotoPopupWindow.show();
     }
 
 }

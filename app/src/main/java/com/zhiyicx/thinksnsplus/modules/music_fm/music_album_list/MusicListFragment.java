@@ -2,27 +2,19 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -94,6 +86,11 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
     @Override
+    protected boolean showNoMoreData() {
+        return mListDatas.size() >= DEFAULT_ONE_PAGE_SIZE;
+    }
+
+    @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
         return new GridLayoutManager(getContext(), 2);
     }
@@ -110,7 +107,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
 
     @Override
     protected CommonAdapter<MusicAlbumListBean> getAdapter() {
-        final int width = DeviceUtils.getScreenWidth(getActivity()) - 60;
+        final int width = (DeviceUtils.getScreenWidth(getActivity()) - 60) / 2;
         CommonAdapter<MusicAlbumListBean> comAdapter = new CommonAdapter<MusicAlbumListBean>
                 (getActivity(), R.layout.item_music_list, mListDatas) {
             @Override
@@ -118,10 +115,10 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvert(musicListBean.getStorage().getId() + "",
+                        .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width,width,
                                 ImageZipConfig.IMAGE_70_ZIP))
                         .placeholder(R.drawable.shape_default_image)
-                        .override(width / 2, width / 2)
+                        .override(width, width)
                         .error(R.drawable.shape_default_image)
                         .into(imag);
                 holder.setText(R.id.music_list_taste_count, "" + musicListBean.getTaste_count());
@@ -187,6 +184,5 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
                 mHeaderAndFooterWrapper.notifyDataSetChanged();
             }
         });
-        LogUtils.d("EVENT_ABLUM_COLLECT");
     }
 }

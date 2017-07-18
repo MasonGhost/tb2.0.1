@@ -9,10 +9,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -37,23 +42,34 @@ import com.zhiyicx.baseproject.config.PathConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.DrawableProvider;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.utils.TransferImageAnimationUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
+import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -67,8 +83,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @date 2017/3/20
  * @contact email:450127106@qq.com
  */
-
-public class GalleryPictureFragment extends TSFragment implements View.OnLongClickListener, PhotoViewAttacher.OnPhotoTapListener {
+public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presenter> implements View.OnLongClickListener, PhotoViewAttacher.OnPhotoTapListener, GalleryConstract.View {
     @BindView(R.id.iv_orin_pager)
     ImageView mIvOriginPager;
     @BindView(R.id.iv_pager)
@@ -77,17 +92,23 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     ProgressBar mPbProgress;
     @BindView(R.id.tv_origin_photo)
     TextView mTvOriginPhoto;
+    @BindView(R.id.tv_to_pay)
+    TextView mTvToPay;
+    @BindView(R.id.tv_to_vip)
+    TextView mTvToVip;
+    @BindView(R.id.ll_toll)
+    LinearLayout mLlToll;
+    @Inject
+    GalleryPresenter mGalleryPresenter;
 
     private PhotoViewAttacher mPhotoViewAttacherOrigin;
     private PhotoViewAttacher mPhotoViewAttacherNormal;
     private ImageBean mImageBean;
     private ActionPopupWindow mActionPopupWindow;
     private Context context;
-    private double mScreenWith;
-    private double mScreenHeiht;
     private int screenW, screenH;
-
     private boolean hasAnim = false;
+    private PayPopWindow mPayPopWindow;
 
     public static GalleryPictureFragment newInstance(ImageBean imageUrl) {
         final GalleryPictureFragment f = new GalleryPictureFragment();
@@ -98,12 +119,20 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
+    protected boolean needCenterLoadingDialog() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         context = getContext();
         screenW = DeviceUtils.getScreenWidth(context);
         screenH = DeviceUtils.getScreenHeight(context);
-        mScreenWith = DeviceUtils.getScreenWidth(context);
-        mScreenHeiht = DeviceUtils.getScreenHeight(context);
         mPhotoViewAttacherNormal = new PhotoViewAttacher(mIvPager);
         mPhotoViewAttacherOrigin = new PhotoViewAttacher(mIvOriginPager);
         mPhotoViewAttacherNormal.setOnPhotoTapListener(this);
@@ -114,17 +143,20 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
         RxView.clicks(mTvOriginPhoto)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        loadOriginImage(mImageBean);
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> loadOriginImage(mImageBean));
     }
 
     @Override
     protected void initData() {
+        DaggerGalleryComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .galleryPresenterModule(new GalleryPresenterModule(this))
+                .build().inject(this);
+        loadImage_();
+    }
+
+    private void loadImage_() {
         boolean animateIn = getArguments().getBoolean("animationIn");
         final AnimationRectBean rect = getArguments().getParcelable("rect");
         mImageBean = getArguments() != null ? (ImageBean) getArguments().getParcelable("url") : null;
@@ -138,13 +170,23 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
         // 显示图片
         if (mImageBean == null) {
-            mIvPager.setImageResource(R.drawable.shape_default_image);
+            mIvPager.setImageResource(R.mipmap.pic_locked);
         } else {
             boolean canLoadImage = AndroidLifecycleUtils.canLoadImage(context);
             if (canLoadImage) {
                 loadImage(mImageBean, rect, animateIn);
             }
         }
+    }
+
+    @Override
+    public ImageBean getCurrentImageBean() {
+        return mImageBean;
+    }
+
+    @Override
+    public void reLoadImage() {
+        loadImage_();
     }
 
     @Override
@@ -177,21 +219,19 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .isOutsideTouch(true)
                     .isFocus(true)
                     .with((Activity) context)
-                    .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                        @Override
-                        public void onItem1Clicked() {
-                            mActionPopupWindow.hide();
-                            saveImage();
+                    .item1ClickListener(() -> {
+                        mActionPopupWindow.hide();
+                        if (mImageBean.getToll() != null && mImageBean.getToll().getToll_type_string().equals(Toll.DOWNLOAD_TOLL_TYPE)
+                                && !mImageBean.getToll().getPaid()) {
+                            initCenterPopWindow(R.string.buy_pay_downlaod_desc);
+                            return;
                         }
+                        saveImage();
                     })
-                    .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                        @Override
-                        public void onBottomClicked() {
-                            mActionPopupWindow.hide();
-                        }
-                    })
+                    .bottomClickListener(() -> mActionPopupWindow.hide())
                     .build();
         }
+
         mActionPopupWindow.show();
         return false;
     }
@@ -205,7 +245,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         }
     }
 
-    private static final android.view.animation.Interpolator INTERPOLATOR =
+    private static final Interpolator INTERPOLATOR =
             new FastOutSlowInInterpolator();
 
     /**
@@ -228,17 +268,20 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                         .start();
             }
         }
+
     }
 
     public void saveImage() {
         // 通过GLide获取bitmap,有缓存读缓存
+        GlideUrl glideUrl = ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), (int) mImageBean.getWidth(), (int) mImageBean.getHeight()
+                , ImageZipConfig.IMAGE_100_ZIP, AppApplication.getTOKEN());
         Glide.with(getActivity())
-                .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
+                .load(glideUrl)
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        getSaveBitmapResultObservable(resource);
+                        getSaveBitmapResultObservable(resource, glideUrl.toStringUrl());
                     }
                 });
     }
@@ -256,7 +299,18 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
 
     // 加载图片不带监听
     private void loadImage(final ImageBean imageBean, final AnimationRectBean rect, final boolean animationIn) {
-        LogUtils.e("imageBean = " + imageBean.toString()+"------"+animationIn);
+        mLlToll.setVisibility(View.GONE);
+        final int w, h;
+        if (imageBean.getWidth() * imageBean.getHeight() == 0) {
+            // 搞什么飞机，之前的本地规划画布没用了，
+            // 这个画廊界面我本地怎么知道传多少宽高嘛，高矮胖瘦都有。
+            imageBean.setWidth(screenW);
+            imageBean.setHeight(screenH);
+        }
+        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+        h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
+
+        LogUtils.e("imageBean = " + imageBean.toString() + "---animationIn---" + animationIn);
 
         if (imageBean.getImgUrl() != null) {
             int with = 800;// 图片宽度显示的像素：防止图片过大卡顿
@@ -275,17 +329,28 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             // 加载网络图片
             DrawableRequestBuilder thumbnailBuilder = Glide
                     .with(context)
-                    .load(new CustomImageSizeModelImp(imageBean)
-                            .requestCustomSizeUrl())
+                    .load(new CustomImageSizeModelImp(imageBean) {
+                        @Override
+                        public GlideUrl requestGlideUrl() {
+                            final Toll toll = mImageBean.getToll();
+                            final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
+                                    ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN());
+
+                        }
+                    }
+                            .requestGlideUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
+
             // 尝试从缓存获取原图
             Glide.with(context)
                     .using(cacheOnlyStreamLoader)// 不从网络读取原图
-                    .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), mImageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
+                    .load(ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), w, h, ImageZipConfig.IMAGE_100_ZIP))
                     .thumbnail(thumbnailBuilder)// 加载缩略图，上一个页面已经缓存好了，直接读取
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .override(w, h)
                     .placeholder(R.drawable.shape_default_image)
-                    .error(R.drawable.shape_default_image)
+                    .error(R.mipmap.pic_locked_square)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -299,16 +364,57 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                 }
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
+                            final Toll toll = mImageBean.getToll();
+                            final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            if (!canLook) {
+                                if (mTvOriginPhoto != null) {
+                                    mTvOriginPhoto.setVisibility(View.GONE);
+                                }
+
+                                if (mPbProgress != null) {
+                                    mPbProgress.setVisibility(View.GONE);
+                                }
+                                if (mIvPager != null) {
+                                    mIvPager.setImageResource(R.mipmap.pic_locked_square);
+                                }
+                                mPhotoViewAttacherNormal.update();
+                                mLlToll.setVisibility(View.VISIBLE);
+                                return false;
+                            }
+
                             // 原图没有缓存，从cacheOnlyStreamLoader抛出异常，在这儿加载高清图
                             Glide.with(context)
-                                    .using(new CustomImageModelLoader(context))
-                                    .load(new CustomImageSizeModelImp(imageBean))
-                                    .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-                                            imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
+                                    .load(ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
+                                            ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN()))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .placeholder(R.drawable.shape_default_image)
-                                    .error(R.drawable.shape_default_image)
-//                                    .centerCrop()
+                                    .override(w, h)
+                                    .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                                        @Override
+                                        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                            LogUtils.i(TAG + "加载高清图失败:" + e.toString());
+                                            if (mPbProgress != null) {
+                                                mPbProgress.setVisibility(View.GONE);
+                                            }
+                                            if (mIvPager != null) {
+                                                ViewGroup.LayoutParams params = mIvPager.getLayoutParams();
+                                                params.width = w;
+                                                params.height = h;
+                                                mIvPager.setLayoutParams(params);
+                                                mIvPager.setImageResource(R.drawable.shape_default_image);
+                                            }
+                                            mTvOriginPhoto.setText(getString(R.string.see_origin_photos_failure));
+                                            mPhotoViewAttacherNormal.update();
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                            return false;
+                                        }
+                                    })
+                                    .error(R.mipmap.pic_locked_square)
+                                    .centerCrop()
                                     .into(new SimpleTarget<GlideDrawable>() {
                                         @Override
                                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -318,6 +424,7 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                                             }
                                             mPhotoViewAttacherNormal.update();
                                         }
+
                                     });
                             return false;
                         }
@@ -333,16 +440,26 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                     .centerCrop()
                     .into(new GallarySimpleTarget(rect));
 
-
         }
     }
 
     // 加载原图:
     private void loadOriginImage(ImageBean imageBean) {
+        final int w, h;
+        if (imageBean.getWidth() * imageBean.getHeight() == 0) {
+            // 搞什么飞机，之前的本地规划画布没用了，
+            // 这个画廊界面我本地怎么知道传多少宽高嘛，高矮胖瘦都有。
+            imageBean.setWidth(screenW);
+            imageBean.setHeight(screenH);
+        }
+        w = imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth();
+        h = (int) (w * imageBean.getHeight() / imageBean.getWidth());
         // 禁止点击查看原图按钮
         mTvOriginPhoto.setClickable(false);
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
         mTvOriginPhoto.setText("0%");
+        final Toll toll = mImageBean.getToll();
+        final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
         Glide.with(context)
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
@@ -360,10 +477,9 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
                             }
                         }
                     }
-                }))
-                .load(String.format(ApiConfig.IMAGE_PATH.toLowerCase(), imageBean.getStorage_id(), ImageZipConfig.IMAGE_100_ZIP))
-//                .override(imageBean.getWidth() > screenW ? screenW : (int) imageBean.getWidth(),
-//                        imageBean.getHeight() > screenH ? screenH : (int) imageBean.getHeight())
+                }, AppApplication.getTOKEN()))
+                .load(ImageUtils.imagePathConvertV2(imageBean.getStorage_id(), screenW, screenH, ImageZipConfig.IMAGE_100_ZIP))
+                .override(w, h)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
@@ -465,40 +581,55 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
     /**
      * 通过Rxjava在io线程中处理保存图片的逻辑，得到返回结果，否则会阻塞ui
      */
-    private void getSaveBitmapResultObservable(final Bitmap bitmap) {
+    private void getSaveBitmapResultObservable(final Bitmap bitmap, final String url) {
         Observable.just(1)// 不能empty否则map无法进行转换
-                .map(new Func1<Integer, String>() {
-                    @Override
-                    public String call(Integer integer) {
-                        String imgName = System.currentTimeMillis() + ".jpg";
-                        String imgPath = PathConfig.PHOTO_SAVA_PATH;
-                        return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
-                    }
-                })
                 .subscribeOn(Schedulers.io())
+                .doOnSubscribe(() -> {// .subscribeOn(Schedulers.io())  Animators may only be run on Looper threads
+                    TSnackbar.make(mSnackRootView, getString(R.string.save_pic_ing), TSnackbar.LENGTH_INDEFINITE)
+                            .setPromptThemBackground(Prompt.SUCCESS)
+                            .addIconProgressLoading(0, true, false)
+                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
+                            .show();
+                })
+                .map(integer -> {
+                    String imgName = ConvertUtils.getStringMD5(url) + ".jpg";
+                    String imgPath = PathConfig.PHOTO_SAVA_PATH;
+                    return DrawableProvider.saveBitmap(bitmap, imgName, imgPath);
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())// subscribeOn & doOnSubscribe 的特殊性质
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String result) {
-                        switch (result) {
-                            case "-1":
-                                result = getString(R.string.save_failure1);
-                                break;
-                            case "-2":
-                                result = getString(R.string.save_failure2);
-                                break;
-                            default:
-                                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                                        Uri.parse("file://" + result)));// 更新系统相册
+                .subscribe(result -> {
+                    switch (result) {
+                        case "-1":
+                            result = getString(R.string.save_failure1);
+                            break;
+                        case "-2":
+                            result = getString(R.string.save_failure2);
+                            break;
+                        default:
+                            File file = new File(result);
+                            if (file.exists()) {
                                 result = getString(R.string.save_success) + result;
-
-                        }
-                        TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
-                                .setPromptThemBackground(Prompt.SUCCESS)
-                                .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
-                                .show();
+                                FileUtils.insertPhotoToAlbumAndRefresh(context, file);
+                            }
                     }
+                    TSnackbar.make(mSnackRootView, result, TSnackbar.LENGTH_SHORT)
+                            .setPromptThemBackground(Prompt.SUCCESS)
+                            .setMinHeight(0, getResources().getDimensionPixelSize(R.dimen.toolbar_height))
+                            .show();
                 });
+    }
+
+    @OnClick({R.id.tv_to_pay, R.id.tv_to_vip})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_to_pay:
+                initCenterPopWindow(R.string.buy_pay_desc);
+                break;
+            case R.id.tv_to_vip:
+
+                break;
+        }
     }
 
     private class GallarySimpleTarget extends SimpleTarget<GlideDrawable> {
@@ -528,36 +659,31 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
             }
         }
 
+
     }
 
-    private static final StreamModelLoader<String> cacheOnlyStreamLoader = new StreamModelLoader<String>() {
+    private static final StreamModelLoader<String> cacheOnlyStreamLoader = (model, i, i1) -> new DataFetcher<InputStream>() {
         @Override
-        public DataFetcher<InputStream> getResourceFetcher(final String model, int i, int i1) {
-            return new DataFetcher<InputStream>() {
-                @Override
-                public InputStream loadData(Priority priority) throws Exception {
-                    // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
-                    throw new IOException("intercupt net by own");
-                }
+        public InputStream loadData(Priority priority) throws Exception {
+            // 如果是从网络获取图片肯定会走这儿，直接抛出异常，缓存从其他方法获取
+            throw new IOException("intercupt net by own");
+        }
 
-                @Override
-                public void cleanup() {
+        @Override
+        public void cleanup() {
 
-                }
+        }
 
-                @Override
-                public String getId() {
-                    return model;
-                }
+        @Override
+        public String getId() {
+            return model;
+        }
 
-                @Override
-                public void cancel() {
+        @Override
+        public void cancel() {
 
-                }
-            };
         }
     };
-
 
     @Override
     public void onDestroy() {
@@ -565,5 +691,46 @@ public class GalleryPictureFragment extends TSFragment implements View.OnLongCli
         super.onDestroy();
     }
 
+    private void initCenterPopWindow(int resId) {
+        if (mPayPopWindow != null) {
+            mPayPopWindow.show();
+            return;
+        }
+        mPayPopWindow = PayPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(1.0f)
+                .buildDescrStr(String.format(getString(resId) + getString(R
+                        .string.buy_pay_member), mImageBean.getToll().getToll_money()))
+                .buildLinksStr(getString(R.string.buy_pay_member))
+                .buildTitleStr(getString(R.string.buy_pay))
+                .buildItem1Str(getString(R.string.buy_pay_in))
+                .buildItem2Str(getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), mImageBean.getToll().getToll_money()))
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
+                    mPayPopWindow.hide();
+                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayPopWindow.hide())
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
 
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayPopWindow.show();
+
+    }
 }

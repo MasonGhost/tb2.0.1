@@ -1,9 +1,11 @@
 package com.zhiyicx.baseproject.base;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +23,7 @@ import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.common.base.BaseFragment;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -49,10 +52,12 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private static final int DEFAULT_TOOLBAR_LEFT_IMG = R.mipmap.topbar_back;// 默认的toolbar左边的图片，一般是返回键
 
     protected TextView mToolbarLeft;
+    protected View mDriver;
     protected TextView mToolbarRight;
     protected TextView mToolbarCenter;
     protected View mStatusPlaceholderView;
     private View mCenterLoadingView; // 加载
+    private ImageView mIvRefresh; // 头部左边的刷新控件
 
     private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
@@ -60,6 +65,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
     private boolean isFirstIn = true;// 是否是第一次进入页面
     private Subscription mViewTreeSubscription = null;// View 树监听订阅器
+    private LoadingDialog mCenterLoadingDialog;
 
     @Nullable
     @Override
@@ -91,10 +97,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             linearLayout.addView(toolBarContainer);
         }
         if (showToolBarDivider()) {// 在需要显示分割线时，进行添加
-            View divider = new View(getContext());
-            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.divider_line)));
-            divider.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
-            linearLayout.addView(divider);
+            mDriver = new View(getContext());
+            mDriver.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.divider_line)));
+            mDriver.setBackgroundColor(ContextCompat.getColor(getContext(), setToolBarDividerColor()));
+            linearLayout.addView(mDriver);
         }
         if (setUseSatusbar()) {
             // 状态栏顶上去
@@ -143,7 +149,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
         linearLayout.addView(frameLayout);
         mSnackRootView = (ViewGroup) getActivity().findViewById(android.R.id.content).getRootView();
-
+        if (needCenterLoadingDialog()) {
+            mCenterLoadingDialog = new LoadingDialog(getActivity());
+        }
         return linearLayout;
     }
 
@@ -173,10 +181,24 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     @Override
-    public void showSnackMessage(String message, Prompt prompt) {
+    public void showSnackMessage(String message, final Prompt prompt) {
         TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
                 .setPromptThemBackground(prompt)
+                .setCallback(new TSnackbar.Callback() {
+                    @Override
+                    public void onDismissed(TSnackbar TSnackbar, @DismissEvent int event) {
+                        super.onDismissed(TSnackbar, event);
+                        switch (event) {
+                            case DISMISS_EVENT_TIMEOUT:
+                                snackViewDismissWhenTimeOut(prompt);
+                                break;
+                        }
+                    }
+                })
                 .show();
+    }
+
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
     }
 
     @Override
@@ -194,12 +216,18 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         showSnackMessage(message, Prompt.WARNING);
     }
 
+
     @Override
     public void showSnackLoadingMessage(String message) {
         TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_INDEFINITE)
                 .setPromptThemBackground(Prompt.SUCCESS)
                 .addIconProgressLoading(0, true, false)
                 .show();
+    }
+
+    @Override
+    public void goRecharge(Class<?> cls) {
+        startActivity(new Intent(getActivity(),cls));
     }
 
     @Override
@@ -214,7 +242,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
             view.setTranslationX(0);
         }
         if (WindowUtils.getIsPause()) {
-            WindowUtils.setWindowDismisslistener(null);
+            WindowUtils.removeWindowDismisslistener(this);
         }
     }
 
@@ -292,9 +320,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mCenterLoadingView.findViewById(R.id.iv_center_holder).setVisibility(View.VISIBLE);
     }
 
+
+    /**
+     * 登录提示框
+     */
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void showLoginPop() {
+        goLogin();
     }
 
     /**
@@ -316,6 +348,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     protected int getstatusbarAndToolbarHeight() {
         return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelOffset(R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(R.dimen.divider_line);
+    }
+
+    @Override
+    public void showCenterLoading(String msg) {
+        mCenterLoadingDialog.showStateIng(msg);
+    }
+
+    @Override
+    public void hideCenterLoading() {
+        mCenterLoadingDialog.onDestroy();
     }
 
     /**
@@ -395,20 +437,20 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     /**
      * 音乐悬浮窗是否正在显示
      */
-/*    protected void musicWindowsStatus(boolean isShow) {
-        final View view = getLeftViewOfMusicWindow();
-        if (isShow && !rightViewHadTranslated) {
-            if (view.getVisibility() == View.VISIBLE) {
-                // 向左移动一定距离
-                int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-                view.setTranslationX(-rightX);
-                rightViewHadTranslated = true;
-            } else {
-                view.setTranslationX(0);
-                rightViewHadTranslated = false;
-            }
-        }
-    }*/
+//    protected void musicWindowsStatus(boolean isShow) {
+//        final View view = getLeftViewOfMusicWindow();
+//        if (view != null && isShow && !rightViewHadTranslated) {
+//            if (view.getVisibility() == View.VISIBLE) {
+//                // 向左移动一定距离
+//                int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+//                view.setTranslationX(-rightX);
+//                rightViewHadTranslated = true;
+//            } else {
+//                view.setTranslationX(0);
+//                rightViewHadTranslated = false;
+//            }
+//        }
+//    }
     protected void musicWindowsStatus(final boolean isShow) {
         WindowUtils.changeToBlackIcon();
         final View view = getLeftViewOfMusicWindow();
@@ -417,13 +459,28 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
-                            if (view != null && isShow) {
+
+                            if (view != null && isShow && !rightViewHadTranslated) {
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
                                     int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
                                     view.setTranslationX(-rightX);
+                                    rightViewHadTranslated = true;
+                                } else {
+                                    view.setTranslationX(0);
+                                    rightViewHadTranslated = false;
                                 }
                             }
+
+//                            if (view != null && isShow) {
+//                                if (view.getVisibility() == View.VISIBLE) {
+//                                    // 向左移动一定距离
+//                                    int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
+//                                    view.setTranslationX(-rightX);
+//                                }
+//                            } else if (view != null) {
+//                                view.setTranslationX(0);
+//                            }
 //                            if (mViewTreeSubscription != null) {
 //                                mViewTreeSubscription.unsubscribe();
 //                            }
@@ -436,6 +493,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return mToolbarRight;
     }
 
+    protected boolean needCenterLoadingDialog() {
+        return false;
+    }
 
     /**
      * 是否显示分割线,默认显示
@@ -457,7 +517,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarLeft = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_left);
         mToolbarRight = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right);
         mToolbarCenter = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_center);
-
+        mIvRefresh = (ImageView) toolBarContainer.findViewById(R.id.iv_refresh);
         // 如果标题为空，就隐藏它
         mToolbarCenter.setVisibility(TextUtils.isEmpty(setCenterTitle()) ? View.GONE : View.VISIBLE);
         mToolbarCenter.setText(setCenterTitle());
@@ -465,6 +525,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         mToolbarLeft.setText(setLeftTitle());
         mToolbarRight.setVisibility(TextUtils.isEmpty(setRightTitle()) && setRightImg() == 0 ? View.GONE : View.VISIBLE);
         mToolbarRight.setText(setRightTitle());
+
         setToolBarLeftImage(setLeftImg());
         setToolBarRightImage(setRightImg());
         RxView.clicks(mToolbarLeft)
@@ -483,6 +544,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                     @Override
                     public void call(Void aVoid) {
                         setRightClick();
+                    }
+                });
+        RxView.clicks(mToolbarCenter)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        setCenterClick();
                     }
                 });
     }
@@ -520,6 +589,27 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
+     * 显示右上角的加载动画
+     */
+    protected void showLeftTopLoading() {
+        mIvRefresh.setVisibility(View.VISIBLE);
+        ((AnimationDrawable) mIvRefresh.getDrawable()).start();
+    }
+
+    /**
+     * 隐藏右上角的加载动画
+     */
+    protected void hideLeftTopLoading() {
+        mIvRefresh.setVisibility(View.GONE);
+        ((AnimationDrawable) mIvRefresh.getDrawable()).stop();
+    }
+
+
+    protected void setLeftTextColor(@ColorRes int resId) {
+        mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), resId));
+    }
+
+    /**
      * 设置右边的标题
      */
     protected String setRightTitle() {
@@ -553,6 +643,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected void setRightClick() {
     }
 
+    protected void setCenterClick() {
+    }
+
     /**
      * 根据toolbar的背景设置它的文字颜色
      */
@@ -561,10 +654,17 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         if (showToolbar() && ContextCompat.getColor(getContext(), setToolBarBackgroud()) == Color.WHITE) {
             mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
             mToolbarRight.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.selector_text_color));
-
             mToolbarLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
-
         }
+    }
+
+    /**
+     * 设置 title 的文字颜色
+     *
+     * @param resId color  resource id
+     */
+    protected void setCenterTextColor(@ColorRes int resId) {
+        mToolbarCenter.setTextColor(ContextCompat.getColor(getContext(), resId));
     }
 
     /**
@@ -614,4 +714,23 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         }
     }
 
+    /**
+     * 登录跳转
+     */
+    private void goLogin() {
+        //创建一个隐式的 Intent 对象，
+        Intent intent = new Intent();
+        intent.setAction("zhiyicx.intent.action.LOGIN");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.putExtra("bundle_tourist_login", true);
+        intent.setType("text/plain");
+        // Verify that the intent will resolve to an activity
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivityForResult(intent, 0);
+        }
+    }
+
+    protected int getColor(int resId) {
+        return getResources().getColor(resId);
+    }
 }

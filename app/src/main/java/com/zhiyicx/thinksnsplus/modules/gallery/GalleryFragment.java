@@ -173,16 +173,17 @@ public class GalleryFragment extends TSFragment {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             GalleryPictureContainerFragment fragment = fragmentMap.get(position);
-            if (fragment == null) {
 
+            if (fragment == null) {
                 boolean animateIn = (currentItem == position) && !alreadyAnimateIn;
+                allImages.get(position).setPosition(position);
                 fragment = GalleryPictureContainerFragment
                         .newInstance(allImages.get(position), rectList.get(position), animateIn,
                                 currentItem == position);
                 alreadyAnimateIn = true;
                 fragmentMap.put(position, fragment);
             }
-            // PlaceholderFragment.newInstance(imageBeanList.get(position));
+
             return fragment;
         }
 
@@ -240,30 +241,19 @@ public class GalleryFragment extends TSFragment {
     }
 
     public void backPress() {
-
         // 退出隐藏圆点指示器，防止显示在透明背景上
-        //mMiIndicator.setVisibility(View.INVISIBLE);
+        mMiIndicator.setVisibility(View.INVISIBLE);
         GalleryPictureContainerFragment fragment = fragmentMap.get(mVpPhotos.getCurrentItem());
         if (fragment != null && fragment.canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.BLACK);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-            bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    LogUtils.e("onAnimationUpdate");
-//                    DeviceUtils.gc();
-//                    mVpPhotos.setBackground(backgroundColor);
-                    //((PhotoViewActivity)getActivity()).getAppContentView(getActivity()).setBackground(backgroundColor);
-                }
-            });
             bgAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    LogUtils.e("onAnimationEnd");
-                    getActivity().finish();
-                    getActivity().overridePendingTransition(-1, -1);
-
+                    if (getActivity() != null) {// 防止空指针
+                        getActivity().finish();
+                        getActivity().overridePendingTransition(-1, -1);
+                    }
                 }
             });
             fragment.animationExit(bgAnim);
@@ -284,15 +274,9 @@ public class GalleryFragment extends TSFragment {
         circleNavigator.setNormalCircleColor(Color.argb(102, 99, 99, 99));
         circleNavigator.setSelectedCircleColor(Color.argb(255, 99, 99, 99));
         circleNavigator.setFollowTouch(false);
-        circleNavigator.setCircleClickListener(new ScaleCircleNavigator.OnCircleClickListener() {
-            @Override
-            public void onClick(int index) {
-                mVpPhotos.setCurrentItem(index);
-            }
-        });
+        circleNavigator.setCircleClickListener(index -> mVpPhotos.setCurrentItem(index));
         mMiIndicator.setNavigator(circleNavigator);
         ViewPagerHelper.bind(mMiIndicator, mVpPhotos);
-
     }
 
     public void setIndiactorVisible(boolean visible) {

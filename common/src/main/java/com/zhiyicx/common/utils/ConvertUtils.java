@@ -16,9 +16,12 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.zhiyicx.common.config.ConstantConfig;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,7 +31,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import okio.Buffer;
+import okio.BufferedSource;
+import retrofit2.Response;
 
 /**
  * @Describe 转换相关工具类
@@ -52,6 +64,9 @@ public class ConvertUtils {
      * @param links
      */
     public static void stringLinkConvert(TextView textView, List<Link> links) {
+        if (links.isEmpty()) {
+            return;
+        }
         LinkBuilder.on(textView)
                 .setFindOnlyFirstMatchesForAnyLink(true)
                 .addLinks(links)
@@ -87,6 +102,50 @@ public class ConvertUtils {
             return String.valueOf(99);
         }
         return String.valueOf(number);
+    }
+
+    /**
+     * 获取网络返回数据体内容
+     *
+     * @param response 返回体
+     * @return
+     */
+    public static String getResponseBodyString(Response response) throws IOException {
+        ResponseBody responseBody = response.errorBody();
+        BufferedSource source = responseBody.source();
+        source.request(Long.MAX_VALUE); // Buffer the entire body.
+        Buffer buffer = source.buffer();
+        //获取content的压缩类型
+        String encoding = response
+                .headers()
+                .get("Content-Encoding");
+        Buffer clone = buffer.clone();
+        return praseBodyString(responseBody, encoding, clone);
+    }
+
+    /**
+     * 解析返回体数据内容
+     *
+     * @param responseBody 返回体
+     * @param encoding     编码
+     * @param clone        数据
+     * @return
+     */
+    public static String praseBodyString(ResponseBody responseBody, String encoding, Buffer clone) {
+        String bodyString;//解析response content
+        if (encoding != null && encoding.equalsIgnoreCase("gzip")) {//content使用gzip压缩
+            bodyString = ZipHelper.decompressForGzip(clone.readByteArray());//解压
+        } else if (encoding != null && encoding.equalsIgnoreCase("zlib")) {//content使用zlib压缩
+            bodyString = ZipHelper.decompressToStringForZlib(clone.readByteArray());//解压
+        } else {//content没有被压缩
+            Charset charset = Charset.forName("UTF-8");
+            MediaType contentType = responseBody.contentType();
+            if (contentType != null) {
+                charset = contentType.charset(charset);
+            }
+            bodyString = clone.readString(charset);
+        }
+        return bodyString;
     }
 
     /**
@@ -397,6 +456,29 @@ public class ConvertUtils {
         return sb.toString();
     }
 
+    public static String getStringMD5(@NotNull String string) {
+        if (TextUtils.isEmpty(string)) {
+            return "";
+        }
+        MessageDigest md5 = null;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+            byte[] bytes = md5.digest(string.getBytes());
+            String result = "";
+            for (byte b : bytes) {
+                String temp = Integer.toHexString(b & 0xff);
+                if (temp.length() == 1) {
+                    temp = "0" + temp;
+                }
+                result += temp;
+            }
+            return result;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     /**
      * bits 转 bytes
      *
@@ -626,19 +708,25 @@ public class ConvertUtils {
     }
 
     public static Bitmap drawable2BitmapWithWhiteBg(Context context, Drawable drawable, int defaultRes) {
-        // 取 drawable 的长宽
-        int w = drawable.getIntrinsicWidth();
-        int h = drawable.getIntrinsicHeight();
-
-        // 取 drawable 的颜色格式
-        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-                : Bitmap.Config.RGB_565;
         // 建立对应 bitmap
         Bitmap bitmap;
+        int w, h;
+        Bitmap.Config config;
         try {
+            // 取 drawable 的长宽
+            w = drawable.getIntrinsicWidth();
+            h = drawable.getIntrinsicHeight();
+
+            // 取 drawable 的颜色格式
+            config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                    : Bitmap.Config.RGB_565;
             bitmap = Bitmap.createBitmap(w, h, config);
         } catch (Exception e) {
+            config = Bitmap.Config.RGB_565;
             bitmap = BitmapFactory.decodeResource(context.getResources(), defaultRes).copy(config, true);
+            w = bitmap.getWidth();
+            h = bitmap.getHeight();
+            drawable = ConvertUtils.bitmap2Drawable(context.getResources(), bitmap);
         }
         // 建立对应 bitmap 的画布
         Canvas canvas = new Canvas(bitmap);
@@ -790,6 +878,10 @@ public class ConvertUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static <T> String object2JsonStr(T obj) {
+        return new Gson().toJson(obj);
     }
 
 

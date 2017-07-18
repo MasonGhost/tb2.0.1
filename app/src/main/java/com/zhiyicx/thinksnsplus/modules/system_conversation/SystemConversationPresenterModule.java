@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.system_conversation;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemConversationRepository;
 
 import dagger.Module;
@@ -28,7 +25,7 @@ public class SystemConversationPresenterModule {
     }
 
     @Provides
-    SystemConversationContract.Repository provideSystemConversationContractRepository(ServiceManager serviceManager, Application application){
-        return new SystemConversationRepository(serviceManager,application);
+    SystemConversationContract.Repository provideSystemConversationContractRepository(SystemConversationRepository systemConversationRepository){
+        return systemConversationRepository;
     }
 }

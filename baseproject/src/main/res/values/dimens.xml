@@ -51,9 +51,17 @@
     <dimen name="textview_spacing_offset_height">-1.5dp</dimen>
     <!-- 加载更多 -->
     <dimen name="load_more_height">35dp</dimen>
+
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->
     <dimen name="hintview_corner">5dp</dimen>
 
-
+    <!--#########################################      ppw_center尺寸       ################################-->
+    <dimen name="margin_18">18dp</dimen>
+    <dimen name="margin_9">9dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="ppw_center_width">250dp</dimen>
+    <dimen name="ppw_center_scroll_height">220dp</dimen>
+    <dimen name="margin_25">25dp</dimen>
+    <dimen name="margin_34">34dp</dimen>
 </resources>

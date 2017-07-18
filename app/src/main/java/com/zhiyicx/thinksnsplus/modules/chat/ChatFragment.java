@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.chat;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,7 +9,6 @@ import android.widget.RelativeLayout;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
@@ -26,8 +24,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
 import com.zhiyicx.thinksnsplus.widget.chat.ChatMessageList;
 
 import org.jetbrains.annotations.NotNull;
@@ -119,26 +115,24 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                        LogUtils.i(TAG + "---RxView   " + aBoolean);
-                        if (aBoolean) {
-                            if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
-                                mMessageList.scrollToBottom();
-                            }
-                            mKeyboradIsOpen = true;
-                        } else {
-                            //键盘隐藏
-                            mKeyboradIsOpen = false;
-//                            mIlvContainer.clearFocus();// 主动失去焦点
+                .subscribe(aBoolean -> {
+                    //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                    LogUtils.i(TAG + "---RxView   " + aBoolean);
+                    if (aBoolean) {
+                        if (!mKeyboradIsOpen && mMessageItemBean.getConversation() != null) {// 如果对话没有创建，不做处理
+                            mMessageList.scrollToBottom();
                         }
+                        mKeyboradIsOpen = true;
+                    } else {
+                        //键盘隐藏
+                        mKeyboradIsOpen = false;
+//                            mIlvContainer.clearFocus();// 主动失去焦点
+                    }
 //                        mIlvContainer.setSendButtonVisiable(mKeyboradIsOpen);//      不需要隐藏
 
-                    }
                 });
         mIlvContainer.setEtContentHint(getString(R.string.default_input_chat_hint));
+        // 软键盘异常解决方案： 1： 使用      android:fitsSystemWindows="true"  2:        AndroidBug5497Workaround.assistActivity(getActivity());
     }
 
     @Override
@@ -227,22 +221,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
      */
     @Override
     public void onUserInfoClick(ChatItemBean chatItemBean) {
-        if (chatItemBean==null||chatItemBean.getUserInfo()==null||chatItemBean.getUserInfo().getName().equals(getString(R.string.ts_helper))) { // ts 助手;
-            toTSHelper();
-        } else { // 普通用户
-            PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
-        }
-    }
-
-    /**
-     * 前往ts助手开发
-     */
-    private void toTSHelper() {
-        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);
+        PersonalCenterFragment.startToPersonalCenter(getContext(), chatItemBean.getUserInfo());
     }
 
     /**
@@ -337,20 +316,12 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItem1Clicked() {
-                        onResendClick(chatItemBean);
-                        mDeletCommentPopWindow.hide();
+                .item1ClickListener(() -> {
+                    onResendClick(chatItemBean);
+                    mDeletCommentPopWindow.hide();
 
-                    }
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onBottomClicked() {
-                        mDeletCommentPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
     }
 

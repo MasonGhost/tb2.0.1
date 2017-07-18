@@ -5,10 +5,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
@@ -18,6 +18,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -55,7 +56,7 @@ import static com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean.SEND_ING;
  * @Description
  */
 @FragmentScoped
-public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Repository,
+public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.Repository,
         InfoDetailsConstract.View> implements InfoDetailsConstract.Presenter, OnShareCallbackListener {
 
     @Inject
@@ -76,10 +77,7 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         super(repository, rootView);
     }
 
-    @Inject
-    void setupListeners() {
-        mRootView.setPresenter(this);
-    }
+
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
@@ -148,8 +146,11 @@ public class InfoDetailsPresenter extends BasePresenter<InfoDetailsConstract.Rep
         }
 
         if (mRootView.getCurrentInfo().getStorage() != null) {
-            shareContent.setImage(ImageUtils.imagePathConvert(mRootView.getCurrentInfo()
-                    .getStorage().getId() + "", 100));
+            shareContent.setImage(ImageUtils.imagePathConvertV2(mRootView.getCurrentInfo()
+                    .getStorage().getId()
+                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                    , ImageZipConfig.IMAGE_70_ZIP));
         }
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());

@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.photopicker;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,9 +13,12 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -24,6 +29,7 @@ import butterknife.BindView;
 import me.iwf.photopicker.entity.PhotoDirectory;
 import me.iwf.photopicker.utils.MediaStoreHelper;
 
+import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_CAMERA;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_ORIGIN;
 import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
 
@@ -33,7 +39,6 @@ import static me.iwf.photopicker.PhotoPicker.EXTRA_SHOW_GIF;
  * @date 2017/2/6
  * @contact email:450127106@qq.com
  */
-
 public class PhotoAlbumListFragment extends TSFragment {
     // 相册列表被选中的位置
     public static final String SELECTED_DIRECTORY_NUMBER = "selected_directory_number";
@@ -75,7 +80,7 @@ public class PhotoAlbumListFragment extends TSFragment {
 
     @Override
     protected void setRightClick() {
-
+        ActivityHandler.getInstance().removeActivity(PhotoAlbumDetailsActivity.class);
         getActivity().finish();
         getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 //        getActivity().overridePendingTransition(R.anim.slide_from_right_in, R.anim.slide_from_left_out);
@@ -107,6 +112,7 @@ public class PhotoAlbumListFragment extends TSFragment {
                         bundle.putInt(SELECTED_DIRECTORY_NUMBER, position);
                         bundle.putParcelableArrayList(ALL_PHOTOS, directories);
                         bundle.putString(SELECTED_DIRECTORY_NAME, photoDirectory.getName());
+                        bundle.putBoolean(EXTRA_CAMERA, true);
                         bundle.putStringArrayList(EXTRA_ORIGIN, getArguments().getStringArrayList(EXTRA_ORIGIN));
                         Intent intent = new Intent(getActivity(), PhotoAlbumDetailsActivity.class);
                         intent.putExtras(bundle);

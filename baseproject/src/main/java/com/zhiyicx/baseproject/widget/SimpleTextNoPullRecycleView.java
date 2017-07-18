@@ -91,7 +91,6 @@ public abstract class SimpleTextNoPullRecycleView<T> extends NoPullRecycleView {
             @Override
             protected void convert(com.zhy.adapter.recyclerview.base.ViewHolder holder, T t, final int position) {
                 convertData(holder, t, position);
-
             }
         };
         setAdapter(mAdapter);

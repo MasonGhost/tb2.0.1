@@ -74,6 +74,33 @@ public interface UserInfoContract {
          */
         Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids);
 
+
+        /**
+         * <p>获取当前登录用户信息<p>
+         *
+         * @return
+         */
+        Observable<UserInfoBean> getCurrentLoginUserInfo();
+
+        /**
+         * 获取指定用户信息  其中 following、follower 是可选参数，验证用户我是否关注以及是否关注我的用户 id ，默认为当前登陆用户。
+         *
+         * @param userId          the specified user id
+         * @param followingUserId following user id
+         * @param followerUserId  follow user id
+         * @return
+         */
+        Observable<UserInfoBean> getSpecifiedUserInfo(long userId, Long followingUserId, Long followerUserId);
+
+        /**
+         * 批量获取指定用户的用户信息
+         *
+         * @param user_ids user 可以是一个值，或者多个值，多个值的时候用英文半角 , 分割。
+         * @return
+         */
+        Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(String user_ids);
+
+
         /**
          * 获取用户信息,先从本地获取，本地没有再从网络 获取
          *
@@ -108,7 +135,7 @@ public interface UserInfoContract {
          * @param max_id
          * @return
          */
-        Observable<BaseJson<List<DigedBean>>> getMyDiggs(int max_id);
+        Observable<List<DigedBean>> getMyDiggs(int max_id);
 
 
         /**
@@ -117,7 +144,7 @@ public interface UserInfoContract {
          * @param max_id
          * @return
          */
-        Observable<BaseJson<List<CommentedBean>>> getMyComments(int max_id);
+        Observable<List<CommentedBean>> getMyComments(int max_id);
 
 
         /**

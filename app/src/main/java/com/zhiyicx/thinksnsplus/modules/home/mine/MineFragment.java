@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -18,12 +19,13 @@ import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
@@ -31,13 +33,16 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
-
-import org.simple.eventbus.EventBus;
+import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
+import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
 
 /**
  * @Describe 我的页面
@@ -67,6 +72,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     CombinationButton mBtRanking;
     @BindView(R.id.bt_collect)
     CombinationButton mBtCollect;
+    @BindView(R.id.bt_wallet)
+    CombinationButton mBtWallet;
     @BindView(R.id.bt_suggestion)
     CombinationButton mBtSuggestion;
     @BindView(R.id.bt_question_answer)
@@ -107,7 +114,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
+        if (isVisibleToUser && mPresenter != null) {
             mPresenter.getUserInfoFromDB();
         }
     }
@@ -130,7 +137,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected int setRightImg() {
-        return R.mipmap.ico_me_message_normal;
+        return ico_me_message_normal;
     }
 
     @Override
@@ -158,7 +165,14 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         return R.color.white;
     }
 
-    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        startActivity(new Intent(getActivity(), SystemConversationActivity.class));
+        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
+    }
+
+    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -194,33 +208,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 Intent toRank = new Intent(getContext(), RankActivity.class);
                 startActivity(toRank);
 
-                // 加载主题库方法，用于测试主题切换
-               /* SkinManager.getInstance().loadSkin("tsplustheme.skin", new SkinLoaderListener() {
-                    @Override
-                    public void onStart() {
-
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        ToastUtils.showToast("加载成功");
-                    }
-
-                    @Override
-                    public void onFailed(String errMsg) {
-                        ToastUtils.showToast("加载失败-->" + errMsg);
-                    }
-
-                    @Override
-                    public void onProgress(int progress) {
-
-                    }
-                });*/
                 break;
             case R.id.bt_collect:
                 startActivity(new Intent(getActivity(), CollectListActivity.class));
                 break;
+            case R.id.bt_wallet:
+                startActivity(new Intent(getActivity(), WalletActivity.class));
+                break;
             case R.id.bt_suggestion:
+                startActivity(new Intent(getActivity(), FeedBackActivity.class));
                 //LoadingDialogUtils.showStateSuccess(getContext());
                 break;
             case R.id.bt_question_answer:
@@ -239,18 +235,28 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             return;
         }
         this.mUserInfoBean = userInfoBean;
-        if (userInfoBean == null) {
-            return;
-        }
         // 设置用户头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+        int storegeId;
+        String userIconUrl;
+        try {
+            storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
+            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_100_ZIP);
+        } catch (Exception e) {
+            userIconUrl = mUserInfoBean.getAvatar();
+        }
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView(mIvHeadIcon)
-                .url(ImageUtils.imagePathConvert(mUserInfoBean.getAvatar(), ImageZipConfig.IMAGE_60_ZIP))
+                .url(userIconUrl)
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .build());
+
+
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
@@ -261,12 +267,23 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         // 设置关注数
         String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
+        double myMoney = 0;
+        if (userInfoBean.getWallet() != null) {
+
+            myMoney = userInfoBean.getWallet().getBalance();
+        }
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, myMoney));
+
     }
 
     @Override
     public void setNewFollowTip(int count) {
         mVvFansNewCount.setBadgeCount(Integer.parseInt(ConvertUtils.messageNumberConvert(count)));
-        EventBus.getDefault().post(count > 0, EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);
+    }
+
+    @Override
+    public void setNewSystemInfo(boolean isShow) {
+        setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
     }
 
 }

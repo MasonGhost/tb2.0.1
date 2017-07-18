@@ -7,6 +7,9 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -22,7 +25,7 @@ import rx.Observable;
  */
 public interface DynamicContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<DynamicBean, Presenter> {
+    interface View extends ITSListView<DynamicDetailBeanV2, Presenter> {
         /**
          * get dynamic type
          *
@@ -42,6 +45,10 @@ public interface DynamicContract {
          */
         void showNewDynamic(int position);
 
+        void paySuccess();
+
+        DynamicDetailBeanV2 getCurrentPayDynamic();
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -49,7 +56,7 @@ public interface DynamicContract {
         Observable<BaseJson<List<DynamicBean>>> getHistoryDynamicList(String type, long max_id, long limit, long page);
     }
 
-    interface Presenter extends ITSListPresenter<DynamicBean> {
+    interface Presenter extends ITSListPresenter<DynamicDetailBeanV2> {
         /**
          * handle like status
          *
@@ -82,7 +89,8 @@ public interface DynamicContract {
          * @param comment_id      comment's id
          * @param commentPosition comment curren position
          */
-        void deleteComment(DynamicBean dynamicBean, int dynamicPositon, long comment_id, int commentPosition);
+        void deleteComment(DynamicDetailBeanV2 dynamicBean, int dynamicPositon, long comment_id, int commentPosition);
+        void deleteCommentV2(DynamicDetailBeanV2 dynamicBean, int dynamicPositon, long comment_id, int commentPosition);
 
         /**
          * 重发评论
@@ -98,7 +106,7 @@ public interface DynamicContract {
          * @param dynamicBean
          * @param position
          */
-        void deleteDynamic(DynamicBean dynamicBean,int position);
+        void deleteDynamic(DynamicDetailBeanV2 dynamicBean,int position);
 
         /**
          * send a comment
@@ -108,6 +116,8 @@ public interface DynamicContract {
          * @param commentContent  comment content
          */
         void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
+
+        void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent);
 
         /**
          * 通过 feedMark 获取当前数据的位置
@@ -120,11 +130,18 @@ public interface DynamicContract {
         /**
          * 处理收藏逻辑
          */
-        void handleCollect(DynamicBean dynamicBean);
+        void handleCollect(DynamicDetailBeanV2 dynamicBean);
 
         /**
          * 动态分享
          */
-        void shareDynamic(DynamicBean dynamicBean, Bitmap bitmap);
+        void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap);
+
+        List<SystemConfigBean.Advert> getAdvert();
+
+        void checkNote(int note);
+
+        void payNote(int dynamicPosition,int imagePosition,int note,boolean isImage);
+
     }
 }

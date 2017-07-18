@@ -1,8 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.home.HomeContract;
+
+import javax.inject.Inject;
 
 /**
  * @Describe
@@ -12,11 +13,8 @@ import com.zhiyicx.thinksnsplus.modules.home.HomeContract;
  */
 
 public class HomeRepository implements HomeContract.Repository {
-    private CommonClient mCommonClient;
-
+    @Inject
     public HomeRepository(ServiceManager serviceManager) {
-        super();
-        mCommonClient = serviceManager.getCommonClient();
     }
 
 

@@ -21,10 +21,15 @@ public interface MineContract {
         void setUserInfo(UserInfoBean userInfoBean);
 
         /**
-         *
+         * 新的关注
          * @param count
          */
         void setNewFollowTip(int count);
+
+        /**
+         * 是否有新系统消息
+         */
+        void setNewSystemInfo(boolean isShow);
 
     }
 
@@ -33,6 +38,12 @@ public interface MineContract {
          * 从数据库获取当前用户的信息
          */
         void getUserInfoFromDB();
+        /**
+         * 通过 key 标记消息已读
+         *
+         * @param key
+         */
+        void readMessageByKey(String key);
 
     }
 

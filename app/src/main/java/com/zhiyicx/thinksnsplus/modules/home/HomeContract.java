@@ -21,6 +21,7 @@ public interface HomeContract {
          * @param isVisiable
          */
         void setMessageTipVisable(boolean isVisiable);
+
         /**
          * 是否显示我的消息提示
          *
@@ -30,6 +31,7 @@ public interface HomeContract {
 
         /**
          * 选择 item
+         *
          * @param positon
          */
         void checkBottomItem(int positon);
@@ -43,6 +45,19 @@ public interface HomeContract {
     }
 
     interface Presenter extends IBasePresenter {
+        /**
+         * 初始化 im
+         */
         void initIM();
+
+        /**
+         * 是否登录
+         */
+        boolean isLogin();
+
+        /**
+         * 处理游客模式点击处理
+         */
+        boolean handleTouristControl();
     }
 }

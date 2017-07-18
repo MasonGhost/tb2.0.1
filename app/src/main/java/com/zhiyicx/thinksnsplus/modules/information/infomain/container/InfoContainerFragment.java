@@ -11,13 +11,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
-import com.zhiyicx.baseproject.utils.WindowUtils;
-import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
@@ -40,17 +37,13 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -59,7 +52,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Description 资讯的分类
  */
 public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoContainerPresenter>
-        implements InfoMainContract.InfoContainerView{
+        implements InfoMainContract.InfoContainerView {
 
     @BindView(R.id.fragment_infocontainer_indoctor)
     MagicIndicator mFragmentInfocontainerIndoctor;
@@ -129,6 +122,10 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @Override
     protected void setRightClick() {
+
+        if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
+            return;
+        }
         startActivity(new Intent(getActivity(), SearchActivity.class));
     }
 
@@ -146,12 +143,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
             mInfoTypeBean = data.getBundleExtra(SUBSCRIBE_EXTRA).getParcelable(SUBSCRIBE_EXTRA);
 
             Observable.from(mInfoTypeBean.getMy_cates())
-                    .subscribe(new Action1<InfoTypeMyCatesBean>() {
-                        @Override
-                        public void call(InfoTypeMyCatesBean myCatesBean) {
-                            mTitle.add(myCatesBean.getName());
-                            mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
-                        }
+                    .subscribe(myCatesBean -> {
+                        mTitle.add(myCatesBean.getName());
+                        mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
                     });
             mMyAdapter.notifyDataSetChanged();
             mCommonNavigator.notifyDataSetChanged();
@@ -171,6 +165,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @OnClick(R.id.fragment_infocontainer_change)
     public void onClick() {
+        if (mPresenter.handleTouristControl()) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), ChannelActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_INFO_TYPE, mInfoTypeBean);
@@ -185,9 +182,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         mInfoTypeBean = infoType;
         mInfoTypeBean.getMy_cates().add(0, new InfoTypeMyCatesBean(-1L, getString(R.string
                 .info_recommend)));
-        for (InfoTypeMyCatesBean myCatesBean:infoType.getMy_cates()){
+        for (InfoTypeMyCatesBean myCatesBean : infoType.getMy_cates()) {
             if (mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
-                    && !mTitle.contains(myCatesBean.getName())){
+                    && !mTitle.contains(myCatesBean.getName())) {
                 LogUtils.d(myCatesBean.getName());
                 mTitle.add(myCatesBean.getName());
                 mFragments.add(InfoListFragment.newInstance(myCatesBean.getId() + ""));
@@ -244,12 +241,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources
                         ().getInteger(DEFAULT_TAB_TEXTSIZE));
 
-                simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mFragmentInfocontainerContent.setCurrentItem(index);
-                    }
-                });
+                simplePagerTitleView.setOnClickListener(v -> mFragmentInfocontainerContent.setCurrentItem(index));
                 return simplePagerTitleView;
             }
 

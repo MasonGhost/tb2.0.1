@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    >
+    android:fillViewport="true">
 
     <ImageView
         android:id="@+id/iv_orin_pager"
@@ -13,16 +12,14 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/iv_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:gravity="center"
-        />
+        android:gravity="center"/>
 
     <ProgressBar
         android:id="@+id/pb_progress"
@@ -47,4 +44,39 @@
         android:textColor="@color/white"
         android:textSize="@dimen/size_content_assist"
         android:visibility="gone"/>
+
+
+    <LinearLayout
+        android:id="@+id/ll_toll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/spacing_normal_large"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/tv_to_pay"
+            android:layout_width="@dimen/dynamic_img_payto_look_width"
+            android:layout_height="@dimen/dynamic_img_payto_look_height"
+            android:background="@drawable/selector_button_corner_solid_big"
+            android:gravity="center"
+            android:text="@string/see_origin_photo_pay"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_content_assist"/>
+
+        <TextView
+            android:id="@+id/tv_to_vip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:autoLink="all"
+            android:gravity="center"
+            android:text="@string/see_origin_photo_vip"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_content_assist"/>
+    </LinearLayout>
+
 </FrameLayout>

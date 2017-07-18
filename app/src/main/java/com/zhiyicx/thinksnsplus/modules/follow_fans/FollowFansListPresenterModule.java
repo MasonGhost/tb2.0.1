@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.FollowFansListRepository;
 
 import dagger.Module;
@@ -28,8 +25,8 @@ public class FollowFansListPresenterModule {
     }
 
     @Provides
-    FollowFansListContract.Repository provideFollowFansListContractRepository(ServiceManager serviceManager, Application application) {
-        return new FollowFansListRepository(serviceManager,application);
+    FollowFansListContract.Repository provideFollowFansListContractRepository(FollowFansListRepository followFansListRepository) {
+        return followFansListRepository;
     }
 
 }

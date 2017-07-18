@@ -21,7 +21,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.info.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
@@ -332,7 +332,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
-                .item1StrColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
@@ -340,14 +340,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         mPresenter.deleteComment(data);
                         mDeletCommentPopWindow.hide();
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDeletCommentPopWindow.hide();
                     }
                 })
@@ -371,7 +371,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .with(getActivity())
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {// 收藏
+                    public void onItemClicked() {// 收藏
                         mPresenter.handleCollect(infoMation.getIs_collection_news() == 0,
                                 mInfoMation.getId() + "");
                         mDealInfoMationPopWindow.hide();
@@ -379,7 +379,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {// 点赞
+                    public void onItemClicked() {// 点赞
                         mPresenter.handleLike(infoMation.getIs_digg_news() == 0,
                                 mInfoMation.getId() + "");
                         mDealInfoMationPopWindow.hide();
@@ -387,7 +387,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mDealInfoMationPopWindow.hide();
                     }
                 })

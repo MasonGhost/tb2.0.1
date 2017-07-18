@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -24,4 +26,14 @@ public interface IUploadRepository {
      * @return
      */
     Observable<BaseJson<Integer>> upLoadSingleFile( String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
+
+    Observable<BaseJson<Integer>> upLoadSingleFileV2( String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
+
+    /**
+     * 校验文件hash
+     *
+     * @param hash 文件 MD5 hash
+     * @return
+     */
+    Observable<BaseJsonV2> checkStorageHash(String hash);
 }

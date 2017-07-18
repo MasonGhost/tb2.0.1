@@ -24,8 +24,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.functions.Action1;
-
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -56,21 +54,27 @@ public class DigListAdapter extends CommonAdapter<FollowFansBean> {
             tv_content.setText(userInfoBean.getIntro());
             // 显示用户头像
             ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
+            int storegeId;
+            String userIconUrl;
+            try {
+                storegeId = Integer.parseInt(userInfoBean.getAvatar());
+                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                        , ImageZipConfig.IMAGE_38_ZIP);
+            } catch (Exception e) {
+                userIconUrl = userInfoBean.getAvatar();
+            }
             imageLoader.loadImage(filterImageView.getContext(), GlideImageConfig.builder()
                     .imagerView(filterImageView)
                     .transformation(new GlideCircleTransform(filterImageView.getContext()))
-                    .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                    .url(userIconUrl)
                     .placeholder(R.mipmap.pic_default_portrait1)
                     .errorPic(R.mipmap.pic_default_portrait1)
                     .build());
             RxView.clicks(holder.getConvertView())
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            PersonalCenterFragment.startToPersonalCenter(filterImageView.getContext(), userInfoBean);
-                        }
-                    });
+                    .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(filterImageView.getContext(), userInfoBean));
         }
         // 如果当前列表包含了自己，就隐藏该关注按钮
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
@@ -97,12 +101,7 @@ public class DigListAdapter extends CommonAdapter<FollowFansBean> {
             RxView.clicks(iv_follow)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     //.compose(.<Void>bindToLifecycle())
-                    .subscribe(new Action1<Void>() {
-                        @Override
-                        public void call(Void aVoid) {
-                            mPresenter.handleFollowUser(position, followFansBean);
-                        }
-                    });
+                    .subscribe(aVoid -> mPresenter.handleFollowUser(position, followFansBean));
         }
 
     }

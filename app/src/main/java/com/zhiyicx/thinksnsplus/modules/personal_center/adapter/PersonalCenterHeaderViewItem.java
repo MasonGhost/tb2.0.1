@@ -25,6 +25,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -36,6 +37,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import static com.zhiyicx.baseproject.utils.ImageUtils.imagePathConvertV2;
 
 /**
  * @author LiuChao
@@ -216,9 +219,20 @@ public class PersonalCenterHeaderViewItem {
     }
 
     public void initHeaderViewData(final UserInfoBean userInfoBean) {
+        int storegeId;
+        String userIconUrl;
+        try {
+            storegeId = Integer.parseInt(userInfoBean.getAvatar());
+            userIconUrl = imagePathConvertV2(storegeId
+                    , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                    , ImageZipConfig.IMAGE_70_ZIP);
+        } catch (Exception e) {
+            userIconUrl = userInfoBean.getAvatar();
+        }
         // 显示头像
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .url(ImageUtils.imagePathConvert(userInfoBean.getAvatar(), ImageZipConfig.IMAGE_70_ZIP))
+                .url(userIconUrl)
                 .placeholder(R.mipmap.pic_default_portrait2)
                 .errorPic(R.mipmap.pic_default_portrait2)
                 .imagerView(iv_head_icon)
@@ -226,14 +240,11 @@ public class PersonalCenterHeaderViewItem {
                 .build());
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
-        tv_user_name.post(new Runnable() {
-            @Override
-            public void run() {
-                int[] location = new int[2];
-                tv_user_name.getLocationOnScreen(location);
-                userNameFirstY = location[1];
-                LogUtils.i(TAG + "tv_user_name " + userNameFirstY);
-            }
+        tv_user_name.post(() -> {
+            int[] location = new int[2];
+            tv_user_name.getLocationOnScreen(location);
+            userNameFirstY = location[1];
+            LogUtils.i(TAG + "tv_user_name " + userNameFirstY);
         });
         // 标题栏的用户名
         userName.setText(userInfoBean.getName());
@@ -363,7 +374,7 @@ public class PersonalCenterHeaderViewItem {
                 .with(mActivity)
                 .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
                     @Override
-                    public void onItem1Clicked() {
+                    public void onItemClicked() {
                         // 选择相册，单张
                         mPhotoSelector.getPhotoListFromSelector(1, null);
                         mPhotoPopupWindow.hide();
@@ -371,7 +382,7 @@ public class PersonalCenterHeaderViewItem {
                 })
                 .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
                     @Override
-                    public void onItem2Clicked() {
+                    public void onItemClicked() {
                         // 选择相机，拍照
                         mPhotoSelector.getPhotoFromCamera(null);
                         mPhotoPopupWindow.hide();
@@ -379,7 +390,7 @@ public class PersonalCenterHeaderViewItem {
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
                     @Override
-                    public void onBottomClicked() {
+                    public void onItemClicked() {
                         mPhotoPopupWindow.hide();
                     }
                 }).build();
@@ -389,11 +400,19 @@ public class PersonalCenterHeaderViewItem {
      * 设置用户的封面
      */
     private void setUserCover(String coverImage) {
+        try {
+            coverImage = ImageUtils.imagePathConvertV2(Integer.parseInt(coverImage)
+                    , DeviceUtils.getScreenWidth(mActivity)
+                    , iv_background_cover.getHeight()
+                    , ImageZipConfig.IMAGE_100_ZIP);
+        } catch (Exception e) {
+
+        }
         // 设置封面
         mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
                 .placeholder(R.mipmap.default_pic_personal)
                 .errorPic(R.mipmap.default_pic_personal)
-                .url(ImageUtils.imagePathConvert(coverImage, 100))// 显示原图
+                .url(coverImage)// 显示原图
                 .imagerView(iv_background_cover)
                 .build());
     }

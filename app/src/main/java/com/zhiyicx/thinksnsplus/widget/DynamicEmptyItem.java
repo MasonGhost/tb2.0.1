@@ -1,9 +1,6 @@
 package com.zhiyicx.thinksnsplus.widget;
 
-import com.zhiyicx.baseproject.widget.EmptyView;
-import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 
 /**
  * @Describe
@@ -12,10 +9,10 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicEmptyItem extends EmptyItem<DynamicBean> {
+public class DynamicEmptyItem extends EmptyItem<DynamicDetailBeanV2> {
 
     @Override
-    public boolean isForViewType(DynamicBean item, int position) {
+    public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
         return item != null && item.getFeed_mark() == null;
     }
 }

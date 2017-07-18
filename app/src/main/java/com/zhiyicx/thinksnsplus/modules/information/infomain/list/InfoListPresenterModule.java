@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.list;
 
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoMainRepository;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
@@ -28,8 +27,8 @@ public class InfoListPresenterModule {
     }
 
     @Provides
-    InfoMainContract.Reppsitory provideInfoMainRepository(ServiceManager serviceManager) {
-        return new InfoMainRepository(serviceManager);
+    InfoMainContract.Reppsitory provideInfoMainRepository(InfoMainRepository infoMainRepository) {
+        return infoMainRepository;
     }
 
 }

@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import java.util.ArrayList;
+import java.util.List;
 
 import me.iwf.photopicker.utils.PermissionsUtils;
+
 
 /**
  * Created by Donglua on 16/6/25.

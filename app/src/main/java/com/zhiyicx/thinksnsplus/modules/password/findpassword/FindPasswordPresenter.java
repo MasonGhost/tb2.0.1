@@ -8,7 +8,7 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 
 import javax.inject.Inject;
 
@@ -93,6 +93,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
                     @Override
                     protected void onFailure(String message, int code) {
                         mRootView.showMessage(message);
+                        mRootView.setSureBtEnabled(true);
                     }
 
                     @Override
@@ -119,10 +120,10 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
         }
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoading(true);
-        Subscription getVertifySub = mRepository.getVertifyCode(phone, CommonClient.VERTIFY_CODE_TYPE_CHANGE)
-                .subscribe(new BaseSubscribe<CacheBean>() {
+        Subscription getVertifySub = mRepository.getMemberVertifyCode(phone)
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
+                    protected void onSuccess(Object data) {
                         mRootView.hideLoading();//隐藏loading
                         timer.start();//开始倒计时
                         mRootView.setVertifyCodeLoading(false);
@@ -156,7 +157,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
      * @return
      */
     private boolean checkVertifyLength(String vertifyCode) {
-        if (vertifyCode.length() != mContext.getResources().getInteger(R.integer.vertiry_code_lenght)) {
+        if (vertifyCode.length()< mContext.getResources().getInteger(R.integer.vertiry_code_min_lenght)) {
             mRootView.showMessage(mContext.getString(R.string.vertify_code_input_hint));
             return true;
         }

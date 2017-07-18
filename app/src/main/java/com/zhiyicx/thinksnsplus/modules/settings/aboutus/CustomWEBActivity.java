@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.settings.aboutus;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.KeyEvent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
@@ -14,6 +17,22 @@ import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 
 public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFragment> {
 
+
+    public static void startToWEBActivity(Context context, String... args) {
+        Intent intent = new Intent(context, CustomWEBActivity.class);
+        Bundle bundle = new Bundle();
+        if (args.length > 0) {
+            try {
+                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, args[0]);
+                bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, args[1]);
+            } catch (Exception e) {
+            }
+            intent.putExtras(bundle);
+        }
+
+        context.startActivity(intent);
+    }
+
     @Override
     protected void componentInject() {
 
@@ -22,6 +41,12 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
     @Override
     protected CustomWEBFragment getFragment() {
         return CustomWEBFragment.newInstance(getIntent().getExtras());
+    }
+
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
     }
 
     /**

@@ -1,17 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.app.Application;
-import android.content.Context;
-
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
@@ -19,7 +16,6 @@ import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,17 +34,16 @@ import rx.functions.Func1;
 
 public class BaseChannelRepository extends BaseDynamicRepository implements IBaseChannelRepository {
     protected ChannelClient mChannelClient;
-    protected Context mContext;
+    @Inject
     protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
+    @Inject
     protected ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
 
     @Inject
-    public BaseChannelRepository(ServiceManager serviceManager, Application context) {
-        super(serviceManager, context);
+    public BaseChannelRepository(ServiceManager serviceManager) {
+        super(serviceManager);
         mChannelClient = serviceManager.getChannelClient();
-        this.mContext = context;
-        mChannelSubscripBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelSubscripBeanGreenDaoImpl();
-        mChannelInfoBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent().channelInfoBeanGreenDaoImpl();
+
     }
 
     @Override
@@ -157,5 +152,8 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         return dealWithDynamicList(mChannelClient.getDynamicListFromChannel(channel_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id), "", false);
     }
 
-
+    @Override
+    public Observable<List<DynamicDetailBeanV2>> getDynamicListFromChannelV2(long channel_id, long max_id) {
+        return null;
+    }
 }

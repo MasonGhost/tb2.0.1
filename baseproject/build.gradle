@@ -1,14 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 android {
     def gConfig = rootProject.extensions.getByName("ext")
-    compileSdkVersion gConfig.getAt("compileSdkVersion")
-    buildToolsVersion gConfig.getAt("buildToolsVersion")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
     defaultConfig {
-        minSdkVersion gConfig.getAt("minSdkVersion")
-        targetSdkVersion gConfig.getAt("targetSdkVersion")
-        versionCode gConfig.getAt("versionCode")
-        versionName gConfig.getAt("versionName")
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
 
         // 友盟三方key配置
@@ -49,7 +48,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 
@@ -64,7 +62,12 @@ dependencies {
         exclude group: 'javax.inject'
     }
     testCompile testDependences.robolectric
-    androidTestApt dataDependences.daggerCompiler
+    testCompile testDependences.mockito
+    androidTestCompile testDependences.mockito
+    androidTestCompile testDependences.dexmaker
+    androidTestCompile testDependences.dexmakerMockito
+
+    annotationProcessor dataDependences.daggerCompiler
     // Dagger dependencies
     compile dataDependences.dagger
     // 刷新:三方库compat版本过高，使用主工程的版本
@@ -80,7 +83,7 @@ dependencies {
     compile dataDependences.umeng
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
-    apt dataDependences.daggerCompiler
+    annotationProcessor dataDependences.daggerCompiler
     // Project
     compile project(':common')
     compile project(':imsdk')
@@ -89,9 +92,5 @@ dependencies {
     compile project(':pickerview')
     compile project(':PhotoPicker')
     compile 'com.android.support:support-v4:25.0.1'
-    testCompile 'org.mockito:mockito-core:1.9.5'
-    androidTestCompile 'org.mockito:mockito-core:1.9.5'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
     compile project(':overscrolllib')
 }

@@ -3,9 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.follow_fans;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
-import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
@@ -33,10 +32,11 @@ import rx.schedulers.Schedulers;
  * @contact email:450127106@qq.com
  */
 @FragmentScoped
-public class FollowFansListPresenter extends BasePresenter<FollowFansListContract.Repository,
+public class FollowFansListPresenter extends AppBasePresenter<FollowFansListContract.Repository,
         FollowFansListContract.View> implements FollowFansListContract.Presenter {
-    private FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
+    @Inject
+    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -49,8 +49,6 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
     public FollowFansListPresenter(FollowFansListContract.Repository repository,
                                    FollowFansListContract.View rootView) {
         super(repository, rootView);
-        mFollowFansBeanGreenDao = AppApplication.AppComponentHolder.getAppComponent()
-                .followFansBeanGreenDao();
     }
 
     @Override
@@ -135,7 +133,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
 
     @Override
     public void cleanNewFans() {
-        mFlushMessageBeanGreenDao.readMessageByKey(ApiConfig.FLUSHMESSAGES_KEY_FOLLOWS);
+        mFlushMessageBeanGreenDao.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FOLLOWS);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)
@@ -154,7 +152,7 @@ public class FollowFansListPresenter extends BasePresenter<FollowFansListContrac
                 break;
             }
             // 遍历到最后一条数据，仍然不存在该用户，并且，当前订阅页面是关注页面，需要添加item
-            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
+            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE&&followFansBean.getOrigin_follow_status()!=0) {
                 followFansBeanList.add(0, followFansBean);
                 mRootView.upDateFollowFansState();
             }

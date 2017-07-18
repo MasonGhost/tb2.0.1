@@ -1,11 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
@@ -15,7 +12,6 @@ import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
@@ -29,17 +25,14 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBFragment;
+import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.functions.Action1;
-
+import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -52,11 +45,18 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class MessageAdapter extends CommonAdapter<MessageItemBean> implements SwipeItemMangerInterface, SwipeAdapterInterface {
     private SwipeItemMangerImpl mItemManger;
 
+
     public void setOnSwipItemClickListener(OnSwipItemClickListener onSwipItemClickListener) {
         mOnSwipItemClickListener = onSwipItemClickListener;
     }
 
     private OnSwipItemClickListener mOnSwipItemClickListener;
+
+    private OnUserInfoClickListener mOnUserInfoClickListener;
+
+    public void setOnUserInfoClickListener(OnUserInfoClickListener onUserInfoClickListener) {
+        mOnUserInfoClickListener = onUserInfoClickListener;
+    }
 
     public MessageAdapter(Context context, int layoutId, List<MessageItemBean> datas) {
         super(context, layoutId, datas);
@@ -81,11 +81,23 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
 
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
+                int storegeId;
+                String userIconUrl;
+                try {
+                    storegeId = Integer.parseInt(messageItemBean.getUserInfo().getAvatar());
+                    userIconUrl = ImageUtils.imagePathConvertV2(storegeId
+                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
+                            , ImageZipConfig.IMAGE_38_ZIP);
+                } catch (Exception e) {
+                    userIconUrl = messageItemBean.getUserInfo().getAvatar();
+                }
                 AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
-                        .url(ImageUtils.imagePathConvert(messageItemBean.getUserInfo().getAvatar(), ImageZipConfig.IMAGE_38_ZIP))
+                        .url(userIconUrl)
                         .transformation(new GlideCircleTransform(mContext))
                         .errorPic(R.mipmap.pic_default_portrait1)
-                        .imagerView((ImageView) holder.getView(R.id.iv_headpic))
+                        .placeholder(R.mipmap.pic_default_portrait1)
+                        .imagerView(holder.getView(R.id.iv_headpic))
                         .build()
                 );
                 holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
@@ -100,11 +112,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
                 swipeLayout.setSwipeEnabled(true);
                 break;
             default:
-                setTSHelperClick(holder.getView(R.id.tv_name));
-                setTSHelperClick(holder.getView(R.id.iv_headpic));
-                holder.setImageResource(R.id.iv_headpic, R.mipmap.ico_ts_assistant);
-                holder.setText(R.id.tv_name, holder.getConvertView().getResources().getString(R.string.ts_helper));
-                swipeLayout.setSwipeEnabled(false);
+
                 break;
         }
         if (messageItemBean.getConversation().getLast_message() == null) {
@@ -137,25 +145,19 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
         });
         RxView.clicks(holder.getView(R.id.tv_right))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnSwipItemClickListener != null) {
-                            mOnSwipItemClickListener.onRightClick(position);
-                        }
-                        mItemManger.closeAllItems();
+                .subscribe(aVoid -> {
+                    if (mOnSwipItemClickListener != null) {
+                        mOnSwipItemClickListener.onRightClick(position);
                     }
+                    mItemManger.closeAllItems();
                 });
         RxView.clicks(holder.getView(R.id.rl_left))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnSwipItemClickListener != null && !mItemManger.isOpen(position)) {
-                            mOnSwipItemClickListener.onLeftClick(position);
-                        }
-                        mItemManger.closeAllItems();
+                .subscribe(aVoid -> {
+                    if (mOnSwipItemClickListener != null && !mItemManger.isOpen(position)) {
+                        mOnSwipItemClickListener.onLeftClick(position);
                     }
+                    mItemManger.closeAllItems();
                 });
         mItemManger.bindView(holder.getConvertView(), position);
 
@@ -164,41 +166,11 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
     private void setUserInfoClick(View v, final UserInfoBean userInfoBean) {
         RxView.clicks(v)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter(userInfoBean);
+                .subscribe(aVoid -> {
+                    if (mOnUserInfoClickListener != null) {
+                        mOnUserInfoClickListener.onUserInfoClick(userInfoBean);
                     }
                 });
-    }
-
-    private void setTSHelperClick(View v) {
-        RxView.clicks(v)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toTSHelper();
-                    }
-                });
-    }
-
-    /**
-     * 前往ts助手开发
-     */
-    private void toTSHelper() {
-        Intent intent = new Intent(getContext(), CustomWEBActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, ApiConfig.APP_PATH_SHARE_DEFAULT);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);
-    }
-
-    /**
-     * 前往用户个人中心
-     */
-    private void toUserCenter(UserInfoBean userInfoBean) {
-        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     @Override
