@@ -503,10 +503,16 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     public void payNote(final int dynamicPosition, final int imagePosition, int note, final boolean isImage) {
         UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
-        if (userInfo != null &&userInfo.getWallet() != null) {
+        if (userInfo != null && userInfo.getWallet() != null) {
             balance = userInfo.getWallet().getBalance();
         }
-        double amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
+        double amount;
+        if (isImage) {
+            amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
+        } else {
+            amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
+        }
+
         if (balance < amount) {
             mRootView.goRecharge(WalletActivity.class);
             return;

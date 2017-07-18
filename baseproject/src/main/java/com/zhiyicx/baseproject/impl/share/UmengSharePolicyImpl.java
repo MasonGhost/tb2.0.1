@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -26,8 +27,12 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 
 /**
@@ -348,9 +353,11 @@ public class UmengSharePolicyImpl implements SharePolicy, OnShareCallbackListene
                     protected void convert(ViewHolder holder, ShareBean shareBean, final int position) {
                         holder.setImageResource(R.id.iv_share_type_image, shareBean.image);
                         holder.setText(R.id.iv_share_type_name, shareBean.name);
-                        holder.getConvertView().setOnClickListener(new View.OnClickListener() {
+                        RxView.clicks(holder.getConvertView())
+                                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                                .subscribe(new Action1<Void>() {
                             @Override
-                            public void onClick(View v) {
+                            public void call(Void aVoid) {
                                 switch (position) {
                                     case 0:
                                         shareQQ((Activity) mContext, mOnShareCallbackListener);
