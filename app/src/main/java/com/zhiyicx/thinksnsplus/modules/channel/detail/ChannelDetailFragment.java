@@ -26,7 +26,6 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
@@ -35,6 +34,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -119,7 +119,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     ImageView mIvRefresh;
 
     private ItemChannelDetailHeader mItemChannelDetailHeader;
-    private ChannelSubscripBean mChannelSubscripBean;// 从上一个页面传过来的频道信息
+//    private ChannelSubscripBean mChannelSubscripBean;// 从上一个页面传过来的频道信息
+    private GroupInfoBean mGroupInfoBean;
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDeletDynamicPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
@@ -161,7 +162,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     protected void initData() {
-        mChannelSubscripBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
+        mGroupInfoBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
     }
@@ -209,7 +210,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     protected void setLoadingViewHolderClick() {
         super.setLoadingViewHolderClick();
-        mPresenter.requestNetData(0l, false);
+        mPresenter.requestNetData(0L, false);
     }
 
     @Override
@@ -264,8 +265,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mItemChannelDetailHeader.setScrollListenter();
         // 状态栏文字设为白色
         //StatusBarUtils.statusBarDarkMode(mActivity);
-        initSubscribState(mChannelSubscripBean);// 尝试显示订阅按钮
-        mItemChannelDetailHeader.initHeaderViewData(mChannelSubscripBean);
+        initGroupState();// 尝试显示订阅按钮
+        mItemChannelDetailHeader.initHeaderViewData(mGroupInfoBean);
     }
 
     @Override
@@ -284,7 +285,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public long getChannelId() {
-        return mChannelSubscripBean.getId();
+        return mGroupInfoBean.getId();
     }
 
     @Override
@@ -521,19 +522,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletDynamicPopWindow.hide();
-                        mPresenter.deleteDynamic(dynamicBean, position);
-                    }
+                .item1ClickListener(() -> {
+                    mDeletDynamicPopWindow.hide();
+                    mPresenter.deleteDynamic(dynamicBean, position);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletDynamicPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mDeletDynamicPopWindow.hide())
                 .build();
     }
 
@@ -549,19 +542,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendCommentPopWindow.hide();
-                        mPresenter.reSendComment(commentBean, feed_id);
-                    }
+                .item1ClickListener(() -> {
+                    mReSendCommentPopWindow.hide();
+                    mPresenter.reSendComment(commentBean, feed_id);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendCommentPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mReSendCommentPopWindow.hide())
                 .build();
     }
 
@@ -577,21 +562,13 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendDynamicPopWindow.hide();
-                        mListDatas.get(position).setState(DynamicBean.SEND_ING);
-                        refreshData();
-                        mPresenter.reSendDynamic(position);
-                    }
+                .item1ClickListener(() -> {
+                    mReSendDynamicPopWindow.hide();
+                    mListDatas.get(position).setState(DynamicBean.SEND_ING);
+                    refreshData();
+                    mPresenter.reSendDynamic(position);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendDynamicPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mReSendDynamicPopWindow.hide())
                 .build();
     }
 
@@ -611,19 +588,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                        mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
-                    }
+                .item1ClickListener(() -> {
+                    mDeletCommentPopWindow.hide();
+                    mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
     }
 
@@ -653,39 +622,30 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initListener() {
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mIlvComment.setVisibility(View.GONE);
-                        mIlvComment.clearFocus();
-                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                        mVShadow.setVisibility(View.GONE);
+                .subscribe(aVoid -> {
+                    mIlvComment.setVisibility(View.GONE);
+                    mIlvComment.clearFocus();
+                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                    mVShadow.setVisibility(View.GONE);
 
-                    }
                 });
 
         RxView.clicks(mIvSubscribBtn)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        // 进行订阅
-                        mPresenter.handleChannelSubscrib(mChannelSubscripBean);
-                        // 处理订阅ui逻辑：先处理ui,并未可订阅状态的ui，不可点击发送动态
-                        mIvSubscribBtn.setVisibility(View.GONE);
-                        mBtnSendDynamic.setVisibility(View.VISIBLE);
-                        setBtnSendDynamicClickState(false);
-                    }
+                .subscribe(aVoid -> {
+                    // 进行订阅
+//                        mPresenter.handleChannelSubscrib(mGroupInfoBean);
+                    // 处理订阅ui逻辑：先处理ui,并未可订阅状态的ui，不可点击发送动态
+                    mIvSubscribBtn.setVisibility(View.GONE);
+                    mBtnSendDynamic.setVisibility(View.VISIBLE);
+                    setBtnSendDynamicClickState(false);
                 });
 
         RxView.clicks(mBtnSendDynamic)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        // 跳转到发送动态页面
-                        clickSendPhotoTextDynamic();
-                    }
+                .subscribe(aVoid -> {
+                    // 跳转到发送动态页面
+                    clickSendPhotoTextDynamic();
                 });
         longClickSendTextDynamic();
         mIlvComment.setOnSendClickListener(this);
@@ -698,6 +658,24 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initSubscribState(ChannelSubscripBean channelSubscripBean) {
         Boolean subscribState = channelSubscripBean.getChannelSubscriped();
         if (subscribState) {
+            // 订阅后，显示发送动态按钮，隐藏订阅按钮
+            mIvSubscribBtn.setVisibility(View.GONE);
+            mBtnSendDynamic.setVisibility(View.VISIBLE);
+            setBtnSendDynamicClickState(true);
+        } else {
+            // 未订阅，隐藏发送动态的按钮，显示订阅按钮
+            mIvSubscribBtn.setVisibility(View.VISIBLE);
+            mBtnSendDynamic.setVisibility(View.GONE);
+            setBtnSendDynamicClickState(false);
+        }
+    }
+
+    /**
+     * 处理订阅状态对应的不同逻辑:
+     */
+    private void initGroupState() {
+        Boolean isJoined = mGroupInfoBean.getIs_member() == 1;
+        if (isJoined) {
             // 订阅后，显示发送动态按钮，隐藏订阅按钮
             mIvSubscribBtn.setVisibility(View.GONE);
             mBtnSendDynamic.setVisibility(View.VISIBLE);
@@ -742,7 +720,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
         sendDynamicDataBean.setDynamicPrePhotos(photoList);
-        sendDynamicDataBean.setDynamicChannlId(mChannelSubscripBean.getId());
+        sendDynamicDataBean.setDynamicChannlId(mGroupInfoBean.getId());
         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
     }
 
@@ -767,28 +745,19 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 收藏
-                        mPresenter.handleCollect(dynamicBean);
-                        mOtherDynamicPopWindow.hide();
-                        showBottomView(true);
-                    }
+                .item1ClickListener(() -> {// 收藏
+                    mPresenter.handleCollect(dynamicBean);
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 分享
-                        mPresenter.shareDynamic(dynamicBean,shareBitmap);
-                        mOtherDynamicPopWindow.hide();
-                        showBottomView(true);
-                    }
+                .item2ClickListener(() -> {// 分享
+                    mPresenter.shareDynamic(dynamicBean,shareBitmap);
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mOtherDynamicPopWindow.hide();
-                        showBottomView(true);
-                    }
+                .bottomClickListener(() -> {
+                    mOtherDynamicPopWindow.hide();
+                    showBottomView(true);
                 })
                 .build();
     }
@@ -811,33 +780,21 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 收藏
-                        mMyDynamicPopWindow.hide();
-                        showBottomView(true);
-                    }
+                .item1ClickListener(() -> {// 收藏
+                    mMyDynamicPopWindow.hide();
+                    showBottomView(true);
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 删除
-                        mMyDynamicPopWindow.hide();
-                        mPresenter.deleteDynamic(dynamicBean, position);
-                        showBottomView(true);
-                    }
+                .item2ClickListener(() -> {// 删除
+                    mMyDynamicPopWindow.hide();
+                    mPresenter.deleteDynamic(dynamicBean, position);
+                    showBottomView(true);
                 })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 分享
-                        mMyDynamicPopWindow.hide();
-                    }
+                .item3ClickListener(() -> {// 分享
+                    mMyDynamicPopWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {//取消
-                        mMyDynamicPopWindow.hide();
-                        showBottomView(true);
-                    }
+                .bottomClickListener(() -> {//取消
+                    mMyDynamicPopWindow.hide();
+                    showBottomView(true);
                 })
                 .build();
     }
@@ -862,17 +819,14 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * 长按动态发送按钮，进入纯文字的动态发布
      */
     private void longClickSendTextDynamic() {
-        mBtnSendDynamic.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                // 跳转到发送动态页面
-                SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-                sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
-                sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
-                sendDynamicDataBean.setDynamicChannlId(mChannelSubscripBean.getId());
-                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
-                return true;
-            }
+        mBtnSendDynamic.setOnLongClickListener(v -> {
+            // 跳转到发送动态页面
+            SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
+            sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+            sendDynamicDataBean.setDynamicChannlId(mGroupInfoBean.getId());
+            SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
+            return true;
         });
     }
 }

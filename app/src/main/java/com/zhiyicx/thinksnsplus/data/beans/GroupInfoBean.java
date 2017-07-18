@@ -39,6 +39,7 @@ public class GroupInfoBean extends BaseListBean {
     private int posts_count;
     private int members_count;
     private String created_at;
+    private String intro;
     private int is_member;
     @Convert(converter = DataConverter.class, columnType = String.class)
     private GroupCoverBean avatar; // 圈子头像
@@ -119,6 +120,14 @@ public class GroupInfoBean extends BaseListBean {
         this.cover = cover;
     }
 
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
     @Override
     public String toString() {
         return "GroupInfoBean{" +
@@ -128,6 +137,7 @@ public class GroupInfoBean extends BaseListBean {
                 ", posts_count=" + posts_count +
                 ", members_count=" + members_count +
                 ", created_at='" + created_at + '\'' +
+                ", intro='" + intro + '\'' +
                 ", is_member=" + is_member +
                 ", avatar=" + avatar +
                 ", cover=" + cover +
@@ -228,26 +238,6 @@ public class GroupInfoBean extends BaseListBean {
         }
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeLong(this.id);
-        dest.writeString(this.title);
-        dest.writeInt(this.is_audit);
-        dest.writeInt(this.posts_count);
-        dest.writeInt(this.members_count);
-        dest.writeString(this.created_at);
-        dest.writeInt(this.is_member);
-        dest.writeParcelable(this.avatar, flags);
-        dest.writeParcelable(this.cover, flags);
-        dest.writeTypedList(this.managers);
-    }
-
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 1414571368)
     public synchronized void resetManagers() {
@@ -312,6 +302,55 @@ public class GroupInfoBean extends BaseListBean {
         return managers;
     }
 
+    @Generated(hash = 1324884142)
+    public GroupInfoBean(long id, String title, int is_audit, int posts_count, int members_count,
+            String created_at, String intro, int is_member, GroupCoverBean avatar,
+            GroupCoverBean cover) {
+        this.id = id;
+        this.title = title;
+        this.is_audit = is_audit;
+        this.posts_count = posts_count;
+        this.members_count = members_count;
+        this.created_at = created_at;
+        this.intro = intro;
+        this.is_member = is_member;
+        this.avatar = avatar;
+        this.cover = cover;
+    }
+
+    @Generated(hash = 1490267550)
+    public GroupInfoBean() {
+    }
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 2020276714)
+    private transient GroupInfoBeanDao myDao;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeLong(this.id);
+        dest.writeString(this.title);
+        dest.writeInt(this.is_audit);
+        dest.writeInt(this.posts_count);
+        dest.writeInt(this.members_count);
+        dest.writeString(this.created_at);
+        dest.writeString(this.intro);
+        dest.writeInt(this.is_member);
+        dest.writeParcelable(this.avatar, flags);
+        dest.writeParcelable(this.cover, flags);
+        dest.writeTypedList(this.managers);
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1885503356)
     public void __setDaoSession(DaoSession daoSession) {
@@ -327,29 +366,11 @@ public class GroupInfoBean extends BaseListBean {
         this.posts_count = in.readInt();
         this.members_count = in.readInt();
         this.created_at = in.readString();
+        this.intro = in.readString();
         this.is_member = in.readInt();
         this.avatar = in.readParcelable(GroupCoverBean.class.getClassLoader());
         this.cover = in.readParcelable(GroupCoverBean.class.getClassLoader());
         this.managers = in.createTypedArrayList(GroupManagerBean.CREATOR);
-    }
-
-    @Generated(hash = 934108242)
-    public GroupInfoBean(long id, String title, int is_audit, int posts_count,
-            int members_count, String created_at, int is_member, GroupCoverBean avatar,
-            GroupCoverBean cover) {
-        this.id = id;
-        this.title = title;
-        this.is_audit = is_audit;
-        this.posts_count = posts_count;
-        this.members_count = members_count;
-        this.created_at = created_at;
-        this.is_member = is_member;
-        this.avatar = avatar;
-        this.cover = cover;
-    }
-
-    @Generated(hash = 1490267550)
-    public GroupInfoBean() {
     }
 
     public static final Creator<GroupInfoBean> CREATOR = new Creator<GroupInfoBean>() {
@@ -363,12 +384,4 @@ public class GroupInfoBean extends BaseListBean {
             return new GroupInfoBean[size];
         }
     };
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 2020276714)
-    private transient GroupInfoBeanDao myDao;
 }
