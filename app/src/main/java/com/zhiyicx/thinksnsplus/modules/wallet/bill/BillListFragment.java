@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -130,6 +131,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
 
     @Override
     protected String setCenterTitle() {
+        mToolbarCenter.getLayoutParams().width= ViewGroup.LayoutParams.WRAP_CONTENT;
         mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowdown, 0);
         return getString(R.string.detail);
     }
