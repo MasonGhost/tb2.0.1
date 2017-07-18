@@ -120,12 +120,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.getUserInfoFromDB();
-    }
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.mine);
     }
