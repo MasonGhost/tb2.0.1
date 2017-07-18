@@ -11,7 +11,6 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.JoinProperty;
-import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.converter.PropertyConverter;
@@ -47,6 +46,8 @@ public class GroupInfoBean extends BaseListBean {
     private GroupCoverBean cover; // 圈子背景图
     @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "group_id")})
     private List<GroupManagerBean> managers;
+    @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "group_id")})
+    private List<GroupManagerBean> members;
 
     public long getId() {
         return id;
@@ -126,6 +127,10 @@ public class GroupInfoBean extends BaseListBean {
 
     public void setIntro(String intro) {
         this.intro = intro;
+    }
+
+    public void setManagers(List<GroupManagerBean> managers) {
+        this.managers = managers;
     }
 
     @Override
@@ -349,6 +354,34 @@ public class GroupInfoBean extends BaseListBean {
         dest.writeParcelable(this.avatar, flags);
         dest.writeParcelable(this.cover, flags);
         dest.writeTypedList(this.managers);
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1108531735)
+    public List<GroupManagerBean> getMembers() {
+        if (members == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            GroupManagerBeanDao targetDao = daoSession.getGroupManagerBeanDao();
+            List<GroupManagerBean> membersNew = targetDao._queryGroupInfoBean_Members(id);
+            synchronized (this) {
+                if (members == null) {
+                    members = membersNew;
+                }
+            }
+        }
+        return members;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1358688666)
+    public synchronized void resetMembers() {
+        members = null;
     }
 
     /** called by internal mechanisms, do not call yourself. */
