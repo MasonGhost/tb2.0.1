@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
@@ -62,7 +63,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
         int pageType = mRootView.getPageType();
-        Observable<BaseJsonV2<List<GroupInfoBean>>> observable = null;
+        Observable<List<GroupInfoBean>> observable = null;
         switch (pageType) {
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
                 if (istourist()) {
@@ -76,7 +77,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
                 break;
             default:
         }
-        dealWithGroupNetData(maxId, isLoadMore, observable);
+        dealWithGroupNetData(maxId, isLoadMore, pageType, observable);
     }
 
     @Override
@@ -122,20 +123,34 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
         addSubscrebe(subscription);
     }
 
-    private void dealWithGroupNetData(Long maxId, final boolean isLoadMore, Observable<BaseJsonV2<List<GroupInfoBean>>> observable){
-        Subscription subscription = observable.subscribe(new BaseSubscribeForV2<BaseJsonV2<List<GroupInfoBean>>>() {
-            @Override
-            protected void onSuccess(BaseJsonV2<List<GroupInfoBean>> data) {
-                mRootView.onNetResponseSuccess(data.getData(), isLoadMore);
-            }
+    private void dealWithGroupNetData(Long maxId, final boolean isLoadMore, int type, Observable<List<GroupInfoBean>> observable) {
+        Subscription subscription = observable
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<List<GroupInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<GroupInfoBean> data) {
+                        if (type == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST) {
+                            for (GroupInfoBean groupInfoBean : data) {
+                                groupInfoBean.setIs_member(1);
+                            }
+                        }
+                        mGroupInfoBeanGreenDao.saveMultiData(data);
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-                Throwable throwable = new Throwable(message);
-                mRootView.onResponseError(throwable, isLoadMore);
-            }
-        });
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        Throwable throwable = new Throwable(message);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mRootView.onResponseError(e, isLoadMore);
+                    }
+                });
         addSubscrebe(subscription);
     }
 
@@ -158,18 +173,19 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
 
     @Override
     public void handleGroupJoin(int position, GroupInfoBean groupInfoBean) {
+        boolean isJoined = groupInfoBean.getIs_member() == 1;
+        if (isJoined) {
+            // 已经订阅，变为未订阅
+            groupInfoBean.setMembers_count(groupInfoBean.getMembers_count() - 1);// 订阅数-1
+        } else {
+            // 未订阅，变为已订阅
+            groupInfoBean.setMembers_count(groupInfoBean.getMembers_count() + 1);// 订阅数+1
+        }
+        // 更改数据源，切换订阅状态
+        groupInfoBean.setIs_member(isJoined ? 0 : 1);
+        mGroupInfoBeanGreenDao.updateSingleData(groupInfoBean);
         mRepository.handleGroupJoin(groupInfoBean);
         EventBus.getDefault().post(groupInfoBean, EventBusTagConfig.EVENT_GROUP_JOIN);
-    }
-
-    @Subscriber(tag = EventBusTagConfig.EVENT_GROUP_JOIN)
-    public void changeJoinState(GroupInfoBean groupInfoBean){
-        List<GroupInfoBean> list = mRootView.getGroupList();
-        int position = list.indexOf(groupInfoBean);
-        if (position > -1){
-            list.set(position, groupInfoBean);
-            mRootView.refreshData(position);
-        }
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB)

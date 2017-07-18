@@ -7,10 +7,12 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +65,6 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     /**
      * 内容区域在 viewpager 中
-     *
-     * @return
      */
     @Override
     protected int getstatusbarAndToolbarHeight() {
@@ -178,5 +178,31 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         if (channelListViewPagerFragment != null) {
             channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
         }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_GROUP_JOIN)
+    public void changeJoinState(GroupInfoBean groupInfoBean) {
+        // 如果是自己关注的列表 则去掉该项
+        for (int i = 0; i < mListDatas.size(); i++) {
+            if (mListDatas.get(i).getId() == groupInfoBean.getId()){
+                if (pageType == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST
+                        && groupInfoBean.getIs_member() == 0) {
+                    // 如果是自己关注的列表 则去掉该项
+                    mListDatas.remove(i);
+                } else {
+                    mListDatas.set(i, groupInfoBean);
+                }
+            }
+        }
+        if (pageType == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST
+                && groupInfoBean.getIs_member() == 1) {
+            mListDatas.add(groupInfoBean);
+        }
+        refreshData(mListDatas);
     }
 }

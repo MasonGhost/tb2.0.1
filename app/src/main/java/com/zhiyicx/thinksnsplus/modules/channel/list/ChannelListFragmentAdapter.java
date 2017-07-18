@@ -8,10 +8,14 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -62,25 +66,29 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
         GroupInfoBean.GroupCoverBean groupCoverBean = groupInfoBean.getAvatar();
         String[] size = groupCoverBean.getSize().split("x");
         int width = 0;
+        int height = 0;
         if (size.length > 0){
             width = Integer.parseInt(size[0]);
+            height = Integer.parseInt(size[1]);
         }
         // 计算图片压缩比
         int imageViewWidth = getContext().getResources().getDimensionPixelSize(R.dimen.rec_image_for_list_normal);// 获取图片控件宽高
         if (width == 0){
             width = (int) (imageViewWidth * 100.0f);
+            height = (int) (imageViewWidth * 100.0f);;
         }
         int port = (int) (imageViewWidth * 100.0f / width);
         if (port > 100) {
             port = 100;
         }
-        LogUtils.i(TAG + "channelCoverBean  " + groupCoverBean);
-        String imgUrl = String.format(ApiConfig.IMAGE_PATH, groupCoverBean.getFile_id(), port);
+        GlideUrl glideUrl = ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id(), width, height
+                , port, AppApplication.getTOKEN());
+        LogUtils.i(TAG + "channelCoverBean  " + groupCoverBean + "\n url --> " + glideUrl.toStringUrl());
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .placeholder(R.drawable.shape_default_image)
                 .errorPic(R.drawable.shape_default_image)
-                .url(imgUrl)
+                .url(glideUrl.toStringUrl())
                 .imagerView(iv_channel_cover)
                 .build()
         );
@@ -104,15 +112,15 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
         tv_channel_follow_count.setText(followString);
 
         // 设置订阅状态
-        boolean isSubscribe = groupInfoBean.getIs_audit() == 1;
-        tv_channel_subscrib.setChecked(isSubscribe);
-        tv_channel_subscrib.setText(isSubscribe ? getContext().getString(R.string.channel_followed) : getContext().getString(R.string.channel_follow));
-        tv_channel_subscrib.setPadding(isSubscribe ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+        boolean isJoined = groupInfoBean.getIs_member() == 1;
+        tv_channel_subscrib.setChecked(isJoined);
+        tv_channel_subscrib.setText(isJoined ? getContext().getString(R.string.quit_group) : getContext().getString(R.string.join_group));
+        tv_channel_subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         RxView.clicks(tv_channel_subscrib)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
-//                        mPresenter.handleChannelSubscrib(position, groupInfoBean);
+                        mPresenter.handleGroupJoin(position, groupInfoBean);
                     }
                 });
 

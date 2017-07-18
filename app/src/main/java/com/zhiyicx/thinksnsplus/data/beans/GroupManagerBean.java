@@ -32,6 +32,7 @@ public class GroupManagerBean extends BaseListBean {
     @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
     private int founder; // 1-创建者 0-管理者
+    private String created_at;
 
     public long getGroup_id() {
         return group_id;
@@ -65,32 +66,21 @@ public class GroupManagerBean extends BaseListBean {
         this._id = _id;
     }
 
+
+
     public GroupManagerBean() {
     }
 
     @Override
     public String toString() {
         return "GroupManagerBean{" +
-                "group_id=" + group_id +
+                "_id=" + _id +
+                ", group_id=" + group_id +
                 ", user_id=" + user_id +
                 ", userInfoBean=" + userInfoBean +
                 ", founder=" + founder +
+                ", created_at='" + created_at + '\'' +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this._id);
-        dest.writeLong(this.group_id);
-        dest.writeLong(this.user_id);
-        dest.writeParcelable(this.userInfoBean, flags);
-        dest.writeInt(this.founder);
     }
 
     /**
@@ -162,6 +152,50 @@ public class GroupManagerBean extends BaseListBean {
         }
     }
 
+    @Generated(hash = 1094568882)
+    public GroupManagerBean(Long _id, long group_id, long user_id, int founder, String created_at) {
+        this._id = _id;
+        this.group_id = group_id;
+        this.user_id = user_id;
+        this.founder = founder;
+        this.created_at = created_at;
+    }
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 2061380852)
+    private transient GroupManagerBeanDao myDao;
+
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
+        dest.writeLong(this.group_id);
+        dest.writeLong(this.user_id);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeInt(this.founder);
+        dest.writeString(this.created_at);
+    }
+
+    public String getCreated_at() {
+        return this.created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1148365955)
     public void __setDaoSession(DaoSession daoSession) {
@@ -176,14 +210,7 @@ public class GroupManagerBean extends BaseListBean {
         this.user_id = in.readLong();
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.founder = in.readInt();
-    }
-
-    @Generated(hash = 1897532350)
-    public GroupManagerBean(Long _id, long group_id, long user_id, int founder) {
-        this._id = _id;
-        this.group_id = group_id;
-        this.user_id = user_id;
-        this.founder = founder;
+        this.created_at = in.readString();
     }
 
     public static final Creator<GroupManagerBean> CREATOR = new Creator<GroupManagerBean>() {
@@ -197,16 +224,4 @@ public class GroupManagerBean extends BaseListBean {
             return new GroupManagerBean[size];
         }
     };
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 2061380852)
-    private transient GroupManagerBeanDao myDao;
-
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
-
 }
