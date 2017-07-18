@@ -1,9 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.channel.detail;
 
+import android.graphics.Bitmap;
+
+import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 
@@ -15,7 +21,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
  */
 
 public interface ChannelDetailContract {
-    interface View extends ITSListView<DynamicDetailBeanV2, Presenter> {
+    interface View extends ITSListView<GroupDynamicListBean, Presenter> {
         /**
          * 所有接口都请求完毕后回调
          */
@@ -46,18 +52,85 @@ public interface ChannelDetailContract {
          */
         void sendDynamic();
 
-        DynamicDetailBeanV2 getCurrentPayDynamic();
-
     }
 
     interface Repository extends IBaseChannelRepository {
 
     }
 
-    interface Presenter extends DynamicContract.Presenter {
+    interface Presenter extends ITSListPresenter<GroupDynamicListBean> {
         /**
          * 处理用户订阅状态
          */
         void handleChannelSubscrib(ChannelSubscripBean channelSubscripBean);
+
+        /**
+         * handle like status
+         *
+         * @param isLiked true,do like ,or  cancle like
+         * @param feed_id dynamic id
+         * @param postion current item position
+         */
+        void handleLike(boolean isLiked, Long feed_id, int postion);
+
+        /**
+         * add viewcount
+         *
+         * @param feed_id
+         * @param position
+         */
+        void handleViewCount(Long feed_id, int position);
+
+        /**
+         * resend dynamic
+         *
+         * @param position
+         */
+        void reSendDynamic(int position);
+
+        /**
+         * 重发评论
+         *
+         * @param commentBean
+         * @param feed_id
+         */
+        void reSendComment(GroupDynamicCommentListBean commentBean, long feed_id);
+
+        /**
+         * 删除动态
+         *
+         * @param dynamicBean
+         * @param position
+         */
+        void deleteDynamic(GroupDynamicListBean dynamicBean,int position);
+
+        /**
+         * send a comment
+         *
+         * @param mCurrentPostion current dynamic position
+         * @param replyToUserId   comment  to who
+         * @param commentContent  comment content
+         */
+        void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
+
+        /**
+         * 通过 feedMark 获取当前数据的位置
+         *
+         * @param feed_id
+         * @return
+         */
+        int getCurrenPosiotnInDataList(long feed_id);
+
+        /**
+         * 处理收藏逻辑
+         */
+        void handleCollect(GroupDynamicListBean dynamicBean);
+
+        /**
+         * 动态分享
+         */
+        void shareDynamic(GroupDynamicListBean dynamicBean, Bitmap bitmap);
+
+        void deleteComment(GroupDynamicListBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon);
     }
 }

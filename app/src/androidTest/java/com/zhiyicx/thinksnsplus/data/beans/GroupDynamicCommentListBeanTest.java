@@ -15,9 +15,9 @@ public class GroupDynamicCommentListBeanTest extends AbstractDaoTestLongPk<Group
     protected GroupDynamicCommentListBean createEntity(Long key) {
         GroupDynamicCommentListBean entity = new GroupDynamicCommentListBean();
         entity.setId(key);
-        entity.setUser_id();
-        entity.setReply_to_user_id();
-        entity.setTo_user_id();
+        entity.setUser_id(1L);
+        entity.setReply_to_user_id(1L);
+        entity.setTo_user_id(1);
         return entity;
     }
 

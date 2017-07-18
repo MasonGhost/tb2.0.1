@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -160,13 +161,8 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
-    public Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id, long max_id) {
-        return dealWithDynamicList(mChannelClient.getDynamicListFromChannel(channel_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id), "", false);
-    }
-
-    @Override
-    public Observable<List<DynamicDetailBeanV2>> getDynamicListFromChannelV2(long channel_id, long max_id) {
-        return null;
+    public Observable<List<GroupDynamicListBean>> getDynamicListFromGroup(long group_id, long max_id) {
+        return dealWithGroupDynamicList(mChannelClient.getDynamicListFromGroup(group_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id), "", false);
     }
 
     @Override

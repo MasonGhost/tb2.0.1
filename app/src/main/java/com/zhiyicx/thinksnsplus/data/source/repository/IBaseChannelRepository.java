@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
@@ -44,9 +45,7 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
     /**
      * 获取频道的动态列表
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(long channel_id, long max_id);
-
-    Observable<List<DynamicDetailBeanV2>> getDynamicListFromChannelV2(long channel_id, long max_id);
+    Observable<List<GroupDynamicListBean>> getDynamicListFromGroup(long group_id, long max_id);
 
     /**
      * 获取圈子列表

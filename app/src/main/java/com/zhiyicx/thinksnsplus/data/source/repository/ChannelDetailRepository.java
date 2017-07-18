@@ -1,9 +1,15 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import rx.Observable;
 
 /**
  * @author LiuChao

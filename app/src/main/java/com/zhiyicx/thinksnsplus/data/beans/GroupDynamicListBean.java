@@ -59,6 +59,19 @@ public class GroupDynamicListBean extends BaseListBean {
     @Convert(converter = GroupDynamicCommentConvert.class,columnType = String.class)
     private List<GroupDynamicCommentListBean> commentslist;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -296,6 +309,7 @@ public class GroupDynamicListBean extends BaseListBean {
     public static class GroupDynamicImageConvert extends BaseConvert<List<ImagesBean>>{}
     public static class GroupDynamicCommentConvert extends BaseConvert<List<GroupDynamicCommentListBean>>{}
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -312,11 +326,11 @@ public class GroupDynamicListBean extends BaseListBean {
         dest.writeInt(this.diggs);
         dest.writeInt(this.collections);
         dest.writeInt(this.comments);
-        dest.writeLong(this.user_id);
+        dest.writeValue(this.user_id);
+        dest.writeParcelable(this.userInfoBean, flags);
         dest.writeInt(this.is_audit);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
-        dest.writeParcelable(this.userInfoBean, flags);
         dest.writeTypedList(this.images);
         dest.writeTypedList(this.commentslist);
     }
@@ -334,9 +348,9 @@ public class GroupDynamicListBean extends BaseListBean {
         this.diggs = in.readInt();
         this.collections = in.readInt();
         this.comments = in.readInt();
-        this.user_id = in.readLong();
-        this.is_audit = in.readInt();
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.is_audit = in.readInt();
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.images = in.createTypedArrayList(ImagesBean.CREATOR);

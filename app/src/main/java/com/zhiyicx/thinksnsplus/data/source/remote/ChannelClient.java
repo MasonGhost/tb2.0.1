@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
 import java.util.List;
@@ -49,9 +50,9 @@ public interface ChannelClient {
     /**
      * 获取频道的动态列表
      */
-    @GET(ApiConfig.APP_PATH_GET_CHANNEL_DYNAMIC_LIST)
-    Observable<BaseJson<List<DynamicBean>>> getDynamicListFromChannel(@Path("channel_id") long channel_id,
-                                                                      @Query("limit") int limit, @Query("max_id") long max_id);
+    @GET(ApiConfig.APP_PATH_GET_GROUP_DYNAMIC_LIST)
+    Observable<List<GroupDynamicListBean>> getDynamicListFromGroup(@Path("group") long goup_id,
+                                                                   @Query("limit") int limit, @Query("after") long max_id);
 
     /**
      * 获取所有圈子列表的接口
