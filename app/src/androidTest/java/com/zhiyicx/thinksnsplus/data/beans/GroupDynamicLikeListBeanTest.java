@@ -2,9 +2,6 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBeanDao;
-
 public class GroupDynamicLikeListBeanTest extends AbstractDaoTestLongPk<GroupDynamicLikeListBeanDao, GroupDynamicLikeListBean> {
 
     public GroupDynamicLikeListBeanTest() {
@@ -15,7 +12,7 @@ public class GroupDynamicLikeListBeanTest extends AbstractDaoTestLongPk<GroupDyn
     protected GroupDynamicLikeListBean createEntity(Long key) {
         GroupDynamicLikeListBean entity = new GroupDynamicLikeListBean();
         entity.setId(key);
-        entity.setUser_id();
+        entity.setUser_id(123);
         return entity;
     }
 

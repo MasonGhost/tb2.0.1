@@ -219,9 +219,7 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1028792152)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

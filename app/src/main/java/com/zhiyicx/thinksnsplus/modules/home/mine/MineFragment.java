@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -256,10 +255,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         // 设置简介
         mTvUserSignature.setText(userInfoBean.getIntro());
         // 设置粉丝数
-        String followedCount = TextUtils.isEmpty(userInfoBean.getFollowed_count()) ? "0" : userInfoBean.getFollowed_count();
+        String followedCount = String.valueOf(userInfoBean.getExtra().getFollowers_count());
         mTvFansCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followedCount)));
         // 设置关注数
-        String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
+        String followingCount = String.valueOf(userInfoBean.getExtra().getFollowings_count());
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
         double myMoney = 0;
         if (userInfoBean.getWallet() != null) {

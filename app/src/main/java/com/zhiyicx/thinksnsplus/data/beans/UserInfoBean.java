@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -17,72 +18,80 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
 
 /**
- * @author LiuChao
- * @describe 用户信息的实体类  具体查看文档 {@see https://github.com/zhiyicx/thinksns-plus/blob/master/documents/api/v1/%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96.md}
- * @date 2017/1/11
- * @contact email:450127106@qq.com
+ * @Describe 文档查阅 @see{ https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/show.md }
+ * @Author Jungle68
+ * @Date 2017/7/18
+ * @Contact master.jungle68@gmail.com
  */
-
-
 @Entity
-public class UserInfoBean implements Parcelable, Serializable {
+public class UserInfoBean extends CacheBean implements Parcelable, Serializable {
     private static final long serialVersionUID = 536871008;
 
+    /**
+     * {
+     * "id": 1, // 用户id
+     * "name": "创始人", // 用户名
+     * "phone": "187xxxxxxxx", // 用户手机号码
+     * "email": "shiweidu@outlook.com" // 用户邮箱
+     * "bio": "我是大管理员", // 用户简介
+     * "sex": 0, // 用户性别，0 - 未知，1 - 男，2 - 女
+     * "location": "成都市 四川省 中国", // 用户位置
+     * "created_at": "2017-06-02 08:43:54",
+     * "updated_at": "2017-07-06 07:04:06",
+     * "avatar": "http://plus.io/api/v2/users/1/avatar", // 头像
+     * "extra": {
+     * "user_id": 1,
+     * "likes_count": 0, // 被喜欢统计数
+     * "comments_count": 0, // 用户发出的评论统计
+     * "followers_count": 0, // 用户粉丝数
+     * "followings_count": 1, // 用户关注数
+     * "updated_at": "2017-07-16 09:44:25", // 更新时间
+     * "feeds_count": 0 // 发布的动态统计，没有安装 动态应用则不存在
+     * },
+     * "wallet": {
+     * "id": 1,
+     * "user_id": 1,
+     * "balance": 90, // 用户余额
+     * "created_at": "2017-06-02 08:43:54",
+     * "updated_at": "2017-07-05 08:29:49",
+     * "deleted_at": null
+     * }
+     * }
+     */
     // 定义四种性别状态
-    public static final String MALE = "1";
-    public static final String FEMALE = "2";
-    public static final String SECRET = "3";
+    public static final int MALE = 1;
+    public static final int FEMALE = 2;
+    public static final int SECRET = 0;
     @Id
     @SerializedName("id")
     private Long user_id;
-    private String sex;// 1 2 3  1男 2女 3其他
-    @Transient
-    private String sexString;// sex编号对应的具体值，不保存到数据库中
     private String name;
-    private String avatar;  // 头像 id
     private String phone;
     private String email;
+    @SerializedName("bio")
     private String intro;
+    private int sex;            // 1 2 3  1男 2女 3其他
+    @Transient
+    private String sexString;   // sex编号对应的具体值，不保存到数据库中
     private String location;
-    private String province;
-    private String city;
-    private String area;
-    private String education;
+
+    private String province;    // 省
+    private String city;        // 城市
+    private String area;        // 区
+
+
     private String created_at;
     private String updated_at;
-    private String deleted_at;
-    private String diggs_count;// 点赞数量
-    private String following_count;// 关注数量
-    private String followed_count;// 粉丝数量
-    private String feeds_count;// 动态数量
+    private String avatar;      // 头像 地址
     private String cover;// 封面
     @Transient
     private WalletBean wallet;
 
-    /**
-     * id : 9
-     * profile : avatar
-     * profile_name : 用户头像
-     * type : input
-     * default_options :
-     * pivot : {"user_id":5,"user_profile_setting_id":9,"user_profile_setting_data":"50","created_at":1231313123131231,"updated_at":1231313123131231}
-     */
-    @Convert(converter = DataConverter.class, columnType = String.class)
-    private List<DatasBean> datas;
-    /**
-     * id : 2
-     * user_id : 5
-     * key : diggs_count
-     * value : 6
-     * created_at : 1231313123131231
-     * updated_at : 1231313123131231
-     */
-    @Convert(converter = CountConverter.class, columnType = String.class)
-    private List<CountsBean> counts;
+    @Convert(converter = ExtraParamsConverter.class, columnType = String.class)
+    private UserInfoExtraBean extra;
 
 
     public String getSexString() {
@@ -116,94 +125,46 @@ public class UserInfoBean implements Parcelable, Serializable {
     }
 
     public String getName() {
-        return avoidNull(name);
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getCover() {
-        if (cover == null) {
-            cover = getConfigProperty("cover");
-        }
-        return cover;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setCover(String cover) {
-        this.cover = cover;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getDiggs_count() {
-        if (diggs_count == null) {
-            diggs_count = getCountProperty("diggs_count");
-        }
-        return diggs_count;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDiggs_count(String diggs_count) {
-        this.diggs_count = diggs_count;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getFollowing_count() {
-        if (following_count == null) {
-            following_count = getCountProperty("following_count");
-        }
-        return following_count;
+    public String getIntro() {
+        return intro;
     }
 
-    public void setFollowing_count(String following_count) {
-        this.following_count = following_count;
+    public void setIntro(String intro) {
+        this.intro = intro;
     }
 
-    public String getFollowed_count() {
-        if (followed_count == null) {
-            followed_count = getCountProperty("followed_count");
-        }
-        return followed_count;
-    }
-
-    public void setFollowed_count(String followed_count) {
-        this.followed_count = followed_count;
-    }
-
-    public String getFeeds_count() {
-        if (feeds_count == null) {
-            feeds_count = getCountProperty("feeds_count");
-        }
-        return feeds_count;
-    }
-
-    public void setFeeds_count(String feeds_count) {
-        this.feeds_count = feeds_count;
-    }
-
-    public String getSex() {
-        if (sex == null) {
-            sex = getConfigProperty("sex");
-        }
+    public int getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(int sex) {
         this.sex = sex;
     }
 
-    public String getAvatar() {
-        if (avatar == null) {
-            avatar = getConfigProperty("avatar");
-        }
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
     public String getLocation() {
-        if (location == null) {
-            location = getConfigProperty("location");
-        }
         return location;
     }
 
@@ -212,8 +173,11 @@ public class UserInfoBean implements Parcelable, Serializable {
     }
 
     public String getProvince() {
-        if (province == null) {
-            province = getConfigProperty("province");
+        if (TextUtils.isEmpty(province)) {
+            String[] data = location.split(" ");
+            if (data.length > 0) {
+                province = data[0];
+            }
         }
         return province;
     }
@@ -223,9 +187,13 @@ public class UserInfoBean implements Parcelable, Serializable {
     }
 
     public String getCity() {
-        if (city == null) {
-            city = getConfigProperty("city");
+        if (TextUtils.isEmpty(city)) {
+            String[] data = location.split(" ");
+            if (data.length > 1) {
+                city = data[1];
+            }
         }
+
         return city;
     }
 
@@ -234,56 +202,17 @@ public class UserInfoBean implements Parcelable, Serializable {
     }
 
     public String getArea() {
-        if (area == null) {
-            area = getConfigProperty("area");
+        if (TextUtils.isEmpty(area)) {
+            String[] data = location.split(" ");
+            if (data.length > 2) {
+                area = data[2];
+            }
         }
         return area;
     }
 
     public void setArea(String area) {
         this.area = area;
-    }
-
-    public String getEducation() {
-        if (education == null) {
-            education = getConfigProperty("education");
-        }
-        return education;
-    }
-
-    public void setEducation(String education) {
-        this.education = education;
-    }
-
-    public String getIntro() {
-        if (intro == null) {
-            intro = getConfigProperty("intro");
-        }
-        // 如果依然没有简介，那就返回缺省的内容
-        if (TextUtils.isEmpty(intro)) {
-            intro = AppApplication.getContext().getString(R.string.intro_default);
-        }
-        return intro;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
-    }
-
-    public String getEmail() {
-        return avoidNull(email);
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return avoidNull(phone);
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getCreated_at() {
@@ -302,12 +231,20 @@ public class UserInfoBean implements Parcelable, Serializable {
         this.updated_at = updated_at;
     }
 
-    public String getDeleted_at() {
-        return deleted_at;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setDeleted_at(String deleted_at) {
-        this.deleted_at = deleted_at;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     public WalletBean getWallet() {
@@ -318,176 +255,37 @@ public class UserInfoBean implements Parcelable, Serializable {
         this.wallet = wallet;
     }
 
-    public List<DatasBean> getDatas() {
-        datas = datas == null ? new ArrayList<DatasBean>() : datas;
-        return datas;
+    public UserInfoExtraBean getExtra() {
+        return extra;
     }
 
-    public void setDatas(List<DatasBean> datas) {
-        this.datas = datas;
+    public void setExtra(UserInfoExtraBean extra) {
+        this.extra = extra;
     }
 
-    public List<CountsBean> getCounts() {
-        counts = counts == null ? new ArrayList<CountsBean>() : counts;
-        return counts;
+    public UserInfoBean() {
     }
 
-    public void setCounts(List<CountsBean> counts) {
-        this.counts = counts;
-    }
-
-    public static class DatasBean implements Parcelable, Serializable {
-        private static final long serialVersionUID = 536871008L;
-        private int id;
-        private String profile;
-        private String profile_name;
-        private String type;
-        private String default_options;
-        /**
-         * user_id : 5
-         * user_profile_setting_id : 9
-         * user_profile_setting_data : 50
-         * created_at : 1231313123131231
-         * updated_at : 1231313123131231
-         */
-
-        private PivotBean pivot;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getProfile() {
-            return profile;
-        }
-
-        public void setProfile(String profile) {
-            this.profile = profile;
-        }
-
-        public String getProfile_name() {
-            return profile_name;
-        }
-
-        public void setProfile_name(String profile_name) {
-            this.profile_name = profile_name;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getDefault_options() {
-            return default_options;
-        }
-
-        public void setDefault_options(String default_options) {
-            this.default_options = default_options;
-        }
-
-        public PivotBean getPivot() {
-            return pivot;
-        }
-
-        public void setPivot(PivotBean pivot) {
-            this.pivot = pivot;
-        }
-
-
-        public static class PivotBean implements Parcelable, Serializable {
-            private static final long serialVersionUID = 536871009L;
-            private int user_id;
-            private int user_profile_setting_id;
-            private String user_profile_setting_data;
-            private String created_at;
-            private String updated_at;
-
-            public int getUser_id() {
-                return user_id;
-            }
-
-            public void setUser_id(int user_id) {
-                this.user_id = user_id;
-            }
-
-            public int getUser_profile_setting_id() {
-                return user_profile_setting_id;
-            }
-
-            public void setUser_profile_setting_id(int user_profile_setting_id) {
-                this.user_profile_setting_id = user_profile_setting_id;
-            }
-
-            public String getUser_profile_setting_data() {
-                return user_profile_setting_data;
-            }
-
-            public void setUser_profile_setting_data(String user_profile_setting_data) {
-                this.user_profile_setting_data = user_profile_setting_data;
-            }
-
-            public String getCreated_at() {
-                return created_at;
-            }
-
-            public void setCreated_at(String created_at) {
-                this.created_at = created_at;
-            }
-
-            public String getUpdated_at() {
-                return updated_at;
-            }
-
-            public void setUpdated_at(String updated_at) {
-                this.updated_at = updated_at;
-            }
-
-            public PivotBean() {
-            }
-
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-                dest.writeInt(this.user_id);
-                dest.writeInt(this.user_profile_setting_id);
-                dest.writeString(this.user_profile_setting_data);
-                dest.writeString(this.created_at);
-                dest.writeString(this.updated_at);
-            }
-
-            protected PivotBean(Parcel in) {
-                this.user_id = in.readInt();
-                this.user_profile_setting_id = in.readInt();
-                this.user_profile_setting_data = in.readString();
-                this.created_at = in.readString();
-                this.updated_at = in.readString();
-            }
-
-            public static final Creator<PivotBean> CREATOR = new Creator<PivotBean>() {
-                @Override
-                public PivotBean createFromParcel(Parcel source) {
-                    return new PivotBean(source);
-                }
-
-                @Override
-                public PivotBean[] newArray(int size) {
-                    return new PivotBean[size];
-                }
-            };
-        }
+    /**
+     * {
+     * "user_id": 1,
+     * "likes_count": 0, // 被喜欢统计数
+     * "comments_count": 0, // 用户发出的评论统计
+     * "followers_count": 0, // 用户粉丝数
+     * "followings_count": 1, // 用户关注数
+     * "updated_at": "2017-07-16 09:44:25", // 更新时间
+     * "feeds_count": 0 // 发布的动态统计，没有安装 动态应用则不存在
+     * }
+     */
+    public static class UserInfoExtraBean implements Serializable, Parcelable {
+        private static final long serialVersionUID = 8468324804308698269L;
+        private Long user_id;
+        private int likes_count;
+        private int comments_count;
+        private int followers_count;
+        private int followings_count;
+        private int feeds_count;
+        private String updated_at;
 
         @Override
         public int describeContents() {
@@ -496,86 +294,86 @@ public class UserInfoBean implements Parcelable, Serializable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeString(this.profile);
-            dest.writeString(this.profile_name);
-            dest.writeString(this.type);
-            dest.writeString(this.default_options);
-            dest.writeParcelable(this.pivot, flags);
+            dest.writeValue(this.user_id);
+            dest.writeInt(this.likes_count);
+            dest.writeInt(this.comments_count);
+            dest.writeInt(this.followers_count);
+            dest.writeInt(this.followings_count);
+            dest.writeInt(this.feeds_count);
+            dest.writeString(this.updated_at);
         }
 
-        public DatasBean() {
+        public UserInfoExtraBean() {
         }
 
-        protected DatasBean(Parcel in) {
-            this.id = in.readInt();
-            this.profile = in.readString();
-            this.profile_name = in.readString();
-            this.type = in.readString();
-            this.default_options = in.readString();
-            this.pivot = in.readParcelable(PivotBean.class.getClassLoader());
+        protected UserInfoExtraBean(Parcel in) {
+            this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+            this.likes_count = in.readInt();
+            this.comments_count = in.readInt();
+            this.followers_count = in.readInt();
+            this.followings_count = in.readInt();
+            this.feeds_count = in.readInt();
+            this.updated_at = in.readString();
         }
 
-        public static final Creator<DatasBean> CREATOR = new Creator<DatasBean>() {
+        public static final Creator<UserInfoExtraBean> CREATOR = new Creator<UserInfoExtraBean>() {
             @Override
-            public DatasBean createFromParcel(Parcel source) {
-                return new DatasBean(source);
+            public UserInfoExtraBean createFromParcel(Parcel source) {
+                return new UserInfoExtraBean(source);
             }
 
             @Override
-            public DatasBean[] newArray(int size) {
-                return new DatasBean[size];
+            public UserInfoExtraBean[] newArray(int size) {
+                return new UserInfoExtraBean[size];
             }
         };
-    }
 
-    public static class CountsBean implements Parcelable, Serializable {
-        private static final long serialVersionUID = 536871010L;
-        private int id;
-        private int user_id;
-        private String key;
-        private String value;
-        private String created_at;
-        private String updated_at;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getUser_id() {
+        public Long getUser_id() {
             return user_id;
         }
 
-        public void setUser_id(int user_id) {
+        public void setUser_id(Long user_id) {
             this.user_id = user_id;
         }
 
-        public String getKey() {
-            return key;
+        public int getLikes_count() {
+            return likes_count;
         }
 
-        public void setKey(String key) {
-            this.key = key;
+        public void setLikes_count(int likes_count) {
+            this.likes_count = likes_count;
         }
 
-        public String getValue() {
-            return value;
+        public int getComments_count() {
+            return comments_count;
         }
 
-        public void setValue(String value) {
-            this.value = value;
+        public void setComments_count(int comments_count) {
+            this.comments_count = comments_count;
         }
 
-        public String getCreated_at() {
-            return created_at;
+        public int getFollowers_count() {
+            return followers_count;
         }
 
-        public void setCreated_at(String created_at) {
-            this.created_at = created_at;
+        public void setFollowers_count(int followers_count) {
+            this.followers_count = followers_count;
+        }
+
+        public int getFollowings_count() {
+            return followings_count;
+        }
+
+        public void setFollowings_count(int followings_count) {
+            this.followings_count = followings_count;
+        }
+
+        public int getFeeds_count() {
+            return feeds_count;
+        }
+
+        public void setFeeds_count(int feeds_count) {
+            this.feeds_count = feeds_count;
         }
 
         public String getUpdated_at() {
@@ -586,138 +384,18 @@ public class UserInfoBean implements Parcelable, Serializable {
             this.updated_at = updated_at;
         }
 
-
         @Override
-        public int describeContents() {
-            return 0;
+        public String toString() {
+            return "UserInfoExtraBean{" +
+                    "user_id=" + user_id +
+                    ", likes_count=" + likes_count +
+                    ", comments_count=" + comments_count +
+                    ", followers_count=" + followers_count +
+                    ", followings_count=" + followings_count +
+                    ", feeds_count=" + feeds_count +
+                    ", updated_at='" + updated_at + '\'' +
+                    '}';
         }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeInt(this.user_id);
-            dest.writeString(this.key);
-            dest.writeString(this.value);
-            dest.writeString(this.created_at);
-            dest.writeString(this.updated_at);
-        }
-
-        public CountsBean() {
-        }
-
-        protected CountsBean(Parcel in) {
-            this.id = in.readInt();
-            this.user_id = in.readInt();
-            this.key = in.readString();
-            this.value = in.readString();
-            this.created_at = in.readString();
-            this.updated_at = in.readString();
-        }
-
-        public static final Creator<CountsBean> CREATOR = new Creator<CountsBean>() {
-            @Override
-            public CountsBean createFromParcel(Parcel source) {
-                return new CountsBean(source);
-            }
-
-            @Override
-            public CountsBean[] newArray(int size) {
-                return new CountsBean[size];
-            }
-        };
-    }
-
-
-    private String avoidNull(String data) {
-        return data == null ? "" : data;
-    }
-
-    /**
-     * list<DatasBean> 转 String 形式存入数据库
-     */
-    public static class DataConverter implements PropertyConverter<List<DatasBean>, String> {
-
-        @Override
-        public List<DatasBean> convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(List<DatasBean> entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-    /**
-     * list<CountsBean> 转 String 形式存入数据库
-     */
-    public static class CountConverter implements PropertyConverter<List<CountsBean>, String> {
-
-        @Override
-        public List<CountsBean> convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(List<CountsBean> entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-    /**
-     * 获取配置属性
-     *
-     * @param name
-     * @return
-     */
-    private String getConfigProperty(String name) {
-        String result = null;
-        try {
-            datas = getDatas(); // avoid null
-            for (DatasBean data : datas) {
-                if (data.getProfile().equals(name)) {
-                    result = data.getPivot().getUser_profile_setting_data();
-                    break;
-                }
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return result == null ? "" : result;
-    }
-
-    /**
-     * 获取用户相关的数量统计字段
-     *
-     * @param name
-     * @return
-     */
-    private String getCountProperty(String name) {
-        String result = null;
-        try {
-            counts = getCounts(); // avoid null
-            for (CountsBean count : counts) {
-                if (count.getKey().equals(name)) {
-                    result = count.getValue();
-                    break;
-                }
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return result == null ? "" : result;
     }
 
 
@@ -729,87 +407,57 @@ public class UserInfoBean implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.user_id);
-        dest.writeString(this.sex);
-        dest.writeString(this.sexString);
         dest.writeString(this.name);
-        dest.writeString(this.avatar);
         dest.writeString(this.phone);
         dest.writeString(this.email);
         dest.writeString(this.intro);
+        dest.writeInt(this.sex);
+        dest.writeString(this.sexString);
         dest.writeString(this.location);
-        dest.writeString(this.province);
-        dest.writeString(this.city);
-        dest.writeString(this.area);
-        dest.writeString(this.education);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
-        dest.writeString(this.deleted_at);
-        dest.writeString(this.diggs_count);
-        dest.writeString(this.following_count);
-        dest.writeString(this.followed_count);
-        dest.writeString(this.feeds_count);
+        dest.writeString(this.avatar);
         dest.writeString(this.cover);
         dest.writeParcelable(this.wallet, flags);
-        dest.writeTypedList(this.datas);
-        dest.writeTypedList(this.counts);
-    }
-
-    public UserInfoBean() {
+        dest.writeParcelable(this.extra, flags);
     }
 
     protected UserInfoBean(Parcel in) {
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.sex = in.readString();
-        this.sexString = in.readString();
         this.name = in.readString();
-        this.avatar = in.readString();
         this.phone = in.readString();
         this.email = in.readString();
         this.intro = in.readString();
+        this.sex = in.readInt();
+        this.sexString = in.readString();
         this.location = in.readString();
-        this.province = in.readString();
-        this.city = in.readString();
-        this.area = in.readString();
-        this.education = in.readString();
         this.created_at = in.readString();
         this.updated_at = in.readString();
-        this.deleted_at = in.readString();
-        this.diggs_count = in.readString();
-        this.following_count = in.readString();
-        this.followed_count = in.readString();
-        this.feeds_count = in.readString();
+        this.avatar = in.readString();
         this.cover = in.readString();
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
-        this.datas = in.createTypedArrayList(DatasBean.CREATOR);
-        this.counts = in.createTypedArrayList(CountsBean.CREATOR);
+        this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
     }
 
-    @Generated(hash = 1124713812)
-    public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province,
-            String city, String area, String education, String created_at, String updated_at, String deleted_at, String diggs_count, String following_count,
-            String followed_count, String feeds_count, String cover, List<DatasBean> datas, List<CountsBean> counts) {
+    @Generated(hash = 95474078)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
+                        String location, String province, String city, String area, String created_at,
+                        String updated_at, String avatar, String cover, UserInfoExtraBean extra) {
         this.user_id = user_id;
-        this.sex = sex;
         this.name = name;
-        this.avatar = avatar;
         this.phone = phone;
         this.email = email;
         this.intro = intro;
+        this.sex = sex;
         this.location = location;
         this.province = province;
         this.city = city;
         this.area = area;
-        this.education = education;
         this.created_at = created_at;
         this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
-        this.diggs_count = diggs_count;
-        this.following_count = following_count;
-        this.followed_count = followed_count;
-        this.feeds_count = feeds_count;
+        this.avatar = avatar;
         this.cover = cover;
-        this.datas = datas;
-        this.counts = counts;
+        this.extra = extra;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -828,29 +476,43 @@ public class UserInfoBean implements Parcelable, Serializable {
     public String toString() {
         return "UserInfoBean{" +
                 "user_id=" + user_id +
-                ", sex='" + sex + '\'' +
-                ", sexString='" + sexString + '\'' +
                 ", name='" + name + '\'' +
-                ", avatar='" + avatar + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", intro='" + intro + '\'' +
+                ", sex=" + sex +
+                ", sexString='" + sexString + '\'' +
                 ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", education='" + education + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
-                ", deleted_at='" + deleted_at + '\'' +
-                ", diggs_count='" + diggs_count + '\'' +
-                ", following_count='" + following_count + '\'' +
-                ", followed_count='" + followed_count + '\'' +
-                ", feeds_count='" + feeds_count + '\'' +
+                ", avatar='" + avatar + '\'' +
                 ", cover='" + cover + '\'' +
                 ", wallet=" + wallet +
-                ", datas=" + datas +
-                ", counts=" + counts +
+                ", extra=" + extra +
                 '}';
     }
+
+
+    /**
+     * UserInfoExtraBean 转 String 形式存入数据库
+     */
+    public static class ExtraParamsConverter implements PropertyConverter<UserInfoExtraBean, String> {
+
+        @Override
+        public UserInfoExtraBean convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(UserInfoExtraBean entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
 }

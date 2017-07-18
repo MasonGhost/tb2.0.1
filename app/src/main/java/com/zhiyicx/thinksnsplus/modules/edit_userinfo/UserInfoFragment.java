@@ -53,10 +53,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @author LiuChao
@@ -174,20 +172,17 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .debounce(getResources().getInteger(android.R.integer.config_mediumAnimTime), TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                        LogUtils.i(TAG + "---RxView   " + aBoolean);
-                        if (aBoolean) {
-                        } else {
-                            //键盘隐藏,清除焦点
-                            if (mEtUserIntroduce != null && mEtUserIntroduce.getEtContent().hasFocus()) {
-                                mEtUserIntroduce.getEtContent().clearFocus();
-                            }
-                            if (mEtUserName != null && mEtUserName.hasFocus()) {
-                                mEtUserName.clearFocus();
-                            }
+                .subscribe(aBoolean -> {
+                    //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                    LogUtils.i(TAG + "---RxView   " + aBoolean);
+                    if (aBoolean) {
+                    } else {
+                        //键盘隐藏,清除焦点
+                        if (mEtUserIntroduce != null && mEtUserIntroduce.getEtContent().hasFocus()) {
+                            mEtUserIntroduce.getEtContent().clearFocus();
+                        }
+                        if (mEtUserName != null && mEtUserName.hasFocus()) {
+                            mEtUserName.clearFocus();
                         }
                     }
                 });
@@ -204,57 +199,45 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mPresenter.initUserInfo();
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        LogUtils.i("userName-->" + charSequence);
-                        String oldUserName = mUserInfoBean.getName();
-                        if (TextUtils.isEmpty(oldUserName)) {
-                            userNameChanged = !TextUtils.isEmpty(charSequence);
-                        } else {
-                            userNameChanged = !oldUserName.equals(charSequence.toString());
-                        }
-                        canChangerUserInfo();
+                .subscribe(charSequence -> {
+                    LogUtils.i("userName-->" + charSequence);
+                    String oldUserName = mUserInfoBean.getName();
+                    if (TextUtils.isEmpty(oldUserName)) {
+                        userNameChanged = !TextUtils.isEmpty(charSequence);
+                    } else {
+                        userNameChanged = !oldUserName.equals(charSequence.toString());
                     }
+                    canChangerUserInfo();
                 });
         RxTextView.textChanges(mTvSex)
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        String oldSex = mUserInfoBean.getSexString();
-                        if (TextUtils.isEmpty(oldSex)) {
-                            sexChanged = !TextUtils.isEmpty(charSequence);
-                        } else {
-                            sexChanged = !oldSex.equals(charSequence.toString());
-                        }
-                        canChangerUserInfo();
+                .subscribe(charSequence -> {
+                    String oldSex = mUserInfoBean.getSexString();
+                    if (TextUtils.isEmpty(oldSex)) {
+                        sexChanged = !TextUtils.isEmpty(charSequence);
+                    } else {
+                        sexChanged = !oldSex.equals(charSequence.toString());
                     }
+                    canChangerUserInfo();
                 });
         RxTextView.textChanges(mTvCity)
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        String oldLocation = mUserInfoBean.getLocation();
-                        if (TextUtils.isEmpty(oldLocation)) {
-                            cityChanged = !TextUtils.isEmpty(charSequence);
-                        } else {
-                            cityChanged = !oldLocation.equals(charSequence.toString());
-                        }
-                        canChangerUserInfo();
+                .subscribe(charSequence -> {
+                    String oldLocation = mUserInfoBean.getLocation();
+                    if (TextUtils.isEmpty(oldLocation)) {
+                        cityChanged = !TextUtils.isEmpty(charSequence);
+                    } else {
+                        cityChanged = !oldLocation.equals(charSequence.toString());
                     }
+                    canChangerUserInfo();
                 });
         RxTextView.textChanges(mEtUserIntroduce.getEtContent())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        String oldIntroduce = getIntro(mUserInfoBean);
-                        if (TextUtils.isEmpty(oldIntroduce)) {
-                            introduceChanged = !TextUtils.isEmpty(charSequence);
-                        } else {
-                            introduceChanged = !oldIntroduce.equals(charSequence.toString());
-                        }
-                        canChangerUserInfo();
+                .subscribe(charSequence -> {
+                    String oldIntroduce = getIntro(mUserInfoBean);
+                    if (TextUtils.isEmpty(oldIntroduce)) {
+                        introduceChanged = !TextUtils.isEmpty(charSequence);
+                    } else {
+                        introduceChanged = !oldIntroduce.equals(charSequence.toString());
                     }
+                    canChangerUserInfo();
                 });
     }
 
@@ -392,12 +375,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 // 为了让用户看到提示成功的消息，添加定时器：1.5s后关闭页面
                 Observable.timer(1500, TimeUnit.MILLISECONDS)
                         .compose(this.<Long>bindToLifecycle())
-                        .subscribe(new Action1<Long>() {
-                            @Override
-                            public void call(Long aLong) {
-                                getActivity().finish();
-                            }
-                        });
+                        .subscribe(aLong -> getActivity().finish());
                 break;
             default:
         }
@@ -493,30 +471,27 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mAreaPickerView = new OptionsPickerView(getActivity());
         mAreaPickerView.setCancelable(true);// 触摸是否自动消失
         mAreaPickerView.setTitle("请选择城市");
-        mAreaPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3) {
-                if (options2Items.size() <= options1 || options2Items.get(options1).size() <=
-                        options2) {
-                    return;//避免pickview控件的bug
-                }
-                String areaText1 = options1Items.get(options1).getPickerViewText();
-                String areaText2 = "", areaText3 = "";
-                if (locationLevel == LOCATION_2LEVEL) {
-                    areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
-                }
-                if (locationLevel == LOCATION_3LEVEL) {
-                    areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
-                    areaText3 = options3Items.get(options1).get(options2).get(options3)
-                            .getPickerViewText();
-                }
-                areaText2 = areaText2.equals(getString(R.string.all)) ? "" : areaText2;//如果为全部则不显示
-                areaText3 = areaText3.equals(getString(R.string.all)) ? "" : areaText3;//如果为全部则不显示
-                setCity(areaText1 + "  " + areaText2 + areaText3);
-                mCityOption1 = options1;
-                mCityOption2 = options2;
-                mCityOption3 = options3;
+        mAreaPickerView.setOnoptionsSelectListener((options1, options2, options3) -> {
+            if (options2Items.size() <= options1 || options2Items.get(options1).size() <=
+                    options2) {
+                return;//避免pickview控件的bug
             }
+            String areaText1 = options1Items.get(options1).getPickerViewText();
+            String areaText2 = "", areaText3 = "";
+            if (locationLevel == LOCATION_2LEVEL) {
+                areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
+            }
+            if (locationLevel == LOCATION_3LEVEL) {
+                areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
+                areaText3 = options3Items.get(options1).get(options2).get(options3)
+                        .getPickerViewText();
+            }
+            areaText2 = areaText2.equals(getString(R.string.all)) ? "" : areaText2;//如果为全部则不显示
+            areaText3 = areaText3.equals(getString(R.string.all)) ? "" : areaText3;//如果为全部则不显示
+            setCity(areaText1 + "  " + areaText2 + areaText3);
+            mCityOption1 = options1;
+            mCityOption2 = options2;
+            mCityOption3 = options3;
         });
         mPresenter.getAreaData();
     }
@@ -537,33 +512,19 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        setGender(UserInfoBean.MALE);
-                        mGenderPopupWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    setGender(UserInfoBean.MALE);
+                    mGenderPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        setGender(UserInfoBean.FEMALE);
-                        mGenderPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    setGender(UserInfoBean.FEMALE);
+                    mGenderPopupWindow.hide();
                 })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        setGender(UserInfoBean.SECRET);
-                        mGenderPopupWindow.hide();
-                    }
+                .item3ClickListener(() -> {
+                    setGender(UserInfoBean.SECRET);
+                    mGenderPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mGenderPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mGenderPopupWindow.hide())
                 .build();
     }
 
@@ -582,28 +543,17 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        // 选择相册，单张
-                        mPhotoSelector.getPhotoListFromSelector(1, null);
-                        mPhotoPopupWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    // 选择相册，单张
+                    mPhotoSelector.getPhotoListFromSelector(1, null);
+                    mPhotoPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera(null);
-                        mPhotoPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(null);
+                    mPhotoPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPhotoPopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
     }
 
     /**
@@ -616,7 +566,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     /**
      * 设置用户性别
      */
-    private void setGender(String genderType) {
+    private void setGender(int genderType) {
         switch (genderType) {
             case UserInfoBean.MALE:
                 mTvSex.setText(R.string.male);
@@ -635,8 +585,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     /**
      * 封装编辑用户信息的提交信息
      */
-    private HashMap<String, String> packageUserInfo() {
-        HashMap<String, String> fieldMap = new HashMap<>();
+    private HashMap<String, Object> packageUserInfo() {
+        HashMap<String, Object> fieldMap = new HashMap<>();
         // 只上传改变的信息
         if (userNameChanged) {
             fieldMap.put(USER_NAME, mEtUserName.getText().toString());
@@ -669,8 +619,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      *
      * @return
      */
-    private HashMap<String, String> packageUserHeadIcon() {
-        HashMap<String, String> fieldMap = new HashMap<>();
+    private HashMap<String, Object> packageUserHeadIcon() {
+        HashMap<String, Object> fieldMap = new HashMap<>();
         // avatar
         fieldMap.put(USER_STORAGE_TASK_ID, upDateHeadIconStorageId + "");
         fieldMap.put(USER_LOCAL_IMG_PATH, path);// 本地图片的路径，因为没有返回storage_id,用来更新图片

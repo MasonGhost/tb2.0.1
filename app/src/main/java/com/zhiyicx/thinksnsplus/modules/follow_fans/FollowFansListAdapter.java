@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -112,7 +111,7 @@ public class FollowFansListAdapter extends CommonAdapter<FollowFansBean> {
         holder.setText(R.id.tv_name, userInfoBean.getName());
         holder.setText(R.id.tv_user_signature, userInfoBean.getIntro());
         // 修改点赞数量颜色
-        String digCountString = userInfoBean.getDiggs_count();
+        String digCountString = userInfoBean.getExtra().getLikes_count()+"";
         // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常
         if (TextUtils.isEmpty(digCountString)) {
             digCountString = 0 + "";

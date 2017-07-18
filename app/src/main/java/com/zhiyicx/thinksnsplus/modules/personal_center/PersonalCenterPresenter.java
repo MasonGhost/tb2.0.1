@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -260,15 +261,15 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public void changeUserCover(final UserInfoBean userInfoBean, int storage_task_id, final String imagePath) {
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("cover_storage_task_id", storage_task_id + "");
         Subscription subscription = mUserInfoRepository.changeUserInfo(hashMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe() {
+                .subscribe(new BaseSubscribeForV2<BaseJson>() {
 
                     @Override
-                    protected void onSuccess(Object data) {
+                    protected void onSuccess(BaseJson data) {
                         // 修改成功后，关闭页面
                         mRootView.setChangeUserCoverState(true);
                         // 将本地图片路径作为storageId保存到数据库

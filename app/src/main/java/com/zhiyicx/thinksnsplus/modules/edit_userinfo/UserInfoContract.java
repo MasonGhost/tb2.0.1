@@ -64,7 +64,7 @@ public interface UserInfoContract {
          *
          * @param userInfos 用户需要修改的信息，通过 hashMap 传递，key 表示请求字段，value 表示修改的值
          */
-        Observable<BaseJson> changeUserInfo(HashMap<String, String> userInfos);
+        Observable<BaseJson> changeUserInfo(HashMap<String, Object> userInfos);
 
         /**
          * 获取用户信息
@@ -169,7 +169,7 @@ public interface UserInfoContract {
          * @param userInfos
          * @param isHeadIcon 仅仅修改头像
          */
-        void changUserInfo(HashMap<String, String> userInfos, boolean isHeadIcon);
+        void changUserInfo(HashMap<String, Object> userInfos, boolean isHeadIcon);
 
 
         /**

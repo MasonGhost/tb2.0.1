@@ -752,17 +752,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void updateDynamicCounts(int changeNums) {
-        int currenDynamicCounts = 0;
-        try {
-            currenDynamicCounts = Integer.parseInt(mUserInfoBean.getFeeds_count());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int currenDynamicCounts = mUserInfoBean.getExtra().getFeeds_count();
         currenDynamicCounts += changeNums;
         if (currenDynamicCounts < 0) {
             currenDynamicCounts = 0;
         }
-        mUserInfoBean.setFeeds_count(String.valueOf(currenDynamicCounts));
+        mUserInfoBean.getExtra().setFeeds_count(currenDynamicCounts);
         mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
     }
 

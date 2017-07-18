@@ -29,7 +29,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -119,7 +118,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     }
 
     @Override
-    public void changUserInfo(final HashMap<String, String> userInfos, final boolean isHeadIcon) {
+    public void changUserInfo(final HashMap<String, Object> userInfos, final boolean isHeadIcon) {
         if (!checkChangedUserInfo(userInfos)) {
             return;
         }
@@ -185,29 +184,29 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
      *
      * @param changeUserInfo 被编辑过的的用户信息
      */
-    private void upDateUserInfo(HashMap<String, String> changeUserInfo) {
+    private void upDateUserInfo(HashMap<String, Object> changeUserInfo) {
         AuthBean authBean = mIAuthRepository.getAuthBean();
         UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean
                 .getUser_id());
         if (changeUserInfo.containsKey(UserInfoFragment.USER_NAME)) {
-            mUserInfoBean.setName(changeUserInfo.get(UserInfoFragment.USER_NAME));
+            mUserInfoBean.setName((String) changeUserInfo.get(UserInfoFragment.USER_NAME));
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_SEX)) {
-            mUserInfoBean.setSex(changeUserInfo.get(UserInfoFragment.USER_SEX));
+            mUserInfoBean.setSex((Integer) changeUserInfo.get(UserInfoFragment.USER_SEX));
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_LOCATION)) {
-            mUserInfoBean.setLocation(changeUserInfo.get(UserInfoFragment.USER_LOCATION));
-            mUserInfoBean.setProvince(changeUserInfo.get(UserInfoFragment.USER_PROVINCE));
-            mUserInfoBean.setCity(changeUserInfo.get(UserInfoFragment.USER_CITY));
+            mUserInfoBean.setLocation((String) changeUserInfo.get(UserInfoFragment.USER_LOCATION));
+            mUserInfoBean.setProvince((String) changeUserInfo.get(UserInfoFragment.USER_PROVINCE));
+            mUserInfoBean.setCity((String) changeUserInfo.get(UserInfoFragment.USER_CITY));
             if (changeUserInfo.containsKey(UserInfoFragment.USER_AREA)) {
-                mUserInfoBean.setArea(changeUserInfo.get(UserInfoFragment.USER_AREA));
+                mUserInfoBean.setArea((String) changeUserInfo.get(UserInfoFragment.USER_AREA));
             }
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_INTRO)) {
-            mUserInfoBean.setIntro(changeUserInfo.get(UserInfoFragment.USER_INTRO));
+            mUserInfoBean.setIntro((String) changeUserInfo.get(UserInfoFragment.USER_INTRO));
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_STORAGE_TASK_ID)) {
-            mUserInfoBean.setAvatar(changeUserInfo.get(UserInfoFragment.USER_LOCAL_IMG_PATH));
+            mUserInfoBean.setAvatar((String) changeUserInfo.get(UserInfoFragment.USER_LOCAL_IMG_PATH));
         }
         // 提示用户主页更新用户信息
         List<UserInfoBean> userInfoBeanList = new ArrayList<>();
@@ -222,11 +221,11 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
      *
      * @return 返回true，表示可以通知服务器
      */
-    private boolean checkChangedUserInfo(HashMap<String, String> userInfos) {
+    private boolean checkChangedUserInfo(HashMap<String, Object> userInfos) {
         if (userInfos != null) {
             // 如果修改信息包含用户名，并且用户名无法通过检测，返回false
             if (userInfos.containsKey(UserInfoFragment.USER_NAME)) {
-                if (!checkUsername(userInfos.get(UserInfoFragment.USER_NAME))) {
+                if (!checkUsername((String) userInfos.get(UserInfoFragment.USER_NAME))) {
                     return false;
                 }
             }
