@@ -47,6 +47,7 @@ public interface ChannelDetailContract {
         void sendDynamic();
 
         DynamicDetailBeanV2 getCurrentPayDynamic();
+
     }
 
     interface Repository extends IBaseChannelRepository {

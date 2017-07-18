@@ -1,5 +1,6 @@
 package com.zhiyicx.common.base;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,13 +9,13 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class BaseJsonV2<T>{
+public class BaseJsonV2<T> {
 
     protected boolean status;
     protected int code;
     protected int id = -1;
     private T data;
-    private List<String> message;
+    private Object message;
 
     public boolean isStatus() {
         return status;
@@ -49,7 +50,14 @@ public class BaseJsonV2<T>{
     }
 
     public List<String> getMessage() {
-        return message;
+        List<String> resultMsg;
+        if (message instanceof List) {
+            resultMsg = (List<String>) message;
+        } else {
+            resultMsg = new ArrayList<>();
+            resultMsg.add((String) message);
+        }
+        return resultMsg;
     }
 
     public void setMessage(List<String> message) {

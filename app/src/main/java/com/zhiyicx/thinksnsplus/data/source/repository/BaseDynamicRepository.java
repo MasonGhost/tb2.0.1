@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean;
@@ -117,6 +118,12 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
         return mDynamicClient.sendDynamicV2(body);
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean) {
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
+        return mDynamicClient.sendGroupDynamic(dynamicDetailBean.getGroup_id(), body);
     }
 
     /**

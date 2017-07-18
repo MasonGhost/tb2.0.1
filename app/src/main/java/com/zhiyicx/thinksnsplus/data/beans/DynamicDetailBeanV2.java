@@ -371,8 +371,8 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         private int file;
         private String size;
         private String imgUrl;
-        private int width;
         private int paid_node;
+        private int width;
         private int height;
         private double amount;
         private String type;

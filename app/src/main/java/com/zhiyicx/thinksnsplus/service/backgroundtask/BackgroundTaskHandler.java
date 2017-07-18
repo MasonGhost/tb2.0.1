@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
@@ -335,6 +336,10 @@ public class BackgroundTaskHandler {
              */
             case SEND_DYNAMIC_V2:
                 sendDynamicV2(backgroundRequestTaskBean);
+                break;
+
+            case SEND_GROUP_DYNAMIC:
+                sendGroupDynamic(backgroundRequestTaskBean);
                 break;
 
             /**
@@ -748,7 +753,7 @@ public class BackgroundTaskHandler {
         final DynamicDetailBeanV2 detailBeanV2;
         detailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(feedMark);
 
-        if (sendDynamicDataBean==null||detailBeanV2 == null) {
+        if (sendDynamicDataBean == null || detailBeanV2 == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
             return;
         }
@@ -845,6 +850,99 @@ public class BackgroundTaskHandler {
                     }
                 });
 
+    }
+
+    private void sendGroupDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final GroupSendDynamicDataBean sendDynamicDataBean = (GroupSendDynamicDataBean) params.get("sendDynamicDataBean");
+
+        if (sendDynamicDataBean == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+
+        // 存入数据库
+        // ....
+        List<ImageBean> photos = sendDynamicDataBean.getPhotos();
+        Observable<BaseJson<Object>> observable;
+        // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
+        if (photos != null && !photos.isEmpty()) {
+            // 先处理图片上传，图片上传成功后，在进行动态发布
+            List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
+            for (int i = 0; i < photos.size(); i++) {
+                ImageBean imageBean = photos.get(i);
+                String filePath = imageBean.getImgUrl();
+                int photoWidth = (int) imageBean.getWidth();
+                int photoHeight = (int) imageBean.getHeight();
+                String photoMimeType = imageBean.getImgMimeType();
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+            }
+            observable = // 组合多个图片上传任务
+                    Observable.combineLatest(upLoadPics, args -> {
+                        // 得到图片上传的结果
+                        List<Integer> integers = new ArrayList<>();
+                        for (int i = 0; i < args.length; i++) {
+                            BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
+                            if (baseJson.isStatus()) {
+                                sendDynamicDataBean.getImages().get(i).setId(baseJson.getData());
+                                integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+                            } else {
+                                throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                            }
+                        }
+                        return integers;
+                    }).map(integers -> {
+                        sendDynamicDataBean.setPhotos(null);
+                        return sendDynamicDataBean;
+                    }).flatMap(new Func1<GroupSendDynamicDataBean, Observable<BaseJson<Object>>>() {
+                        @Override
+                        public Observable<BaseJson<Object>> call(GroupSendDynamicDataBean sendDynamicDataBeanV2) {
+                            return mSendDynamicRepository.sendGroupDynamic(sendDynamicDataBeanV2)
+                                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                                        @Override
+                                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                                            BaseJson<Object> baseJson = new BaseJson<>();
+                                            baseJson.setData((double) objectBaseJsonV2.getId());
+                                            String msg = objectBaseJsonV2.getMessage().get(0);
+                                            baseJson.setStatus(msg.equals("发布成功"));
+                                            baseJson.setMessage(msg);
+                                            return Observable.just(baseJson);
+                                        }
+                                    });
+                        }
+                    });
+        } else {
+            // 没有图片上传任务，直接发布动态
+            observable = mSendDynamicRepository.sendGroupDynamic(sendDynamicDataBean)
+                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                        @Override
+                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                            BaseJson<Object> baseJson = new BaseJson<>();
+                            baseJson.setData((double) objectBaseJsonV2.getId());
+                            String msg = objectBaseJsonV2.getMessage().get(0);
+                            baseJson.setStatus(msg.equals("发布成功"));
+                            baseJson.setMessage(msg);
+                            return Observable.just(baseJson);
+                        }
+                    });
+        }
+        observable.subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     private void sendDynamicByEventBus(int dynamicBelong, DynamicDetailBeanV2 dynamicBean, boolean sendSuccess

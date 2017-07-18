@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public interface IDynamicReppsitory {
      * @return basejson, object is null
      */
     Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean);
+    Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean);
 
     /**
      * get dynamic list
