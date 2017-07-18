@@ -29,11 +29,6 @@ public class ApiConfig {
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
-//    public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
-
-//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 //    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
 
@@ -369,6 +364,9 @@ public class ApiConfig {
     public static final String APP_PATH_GET_GROUP_DETAIL = "api/" + API_VERSION_2 +  "/groups/{group}"; // 圈子详情
     public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}"; // 动态详情
     public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts"; // 动态列表
+
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
+
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
