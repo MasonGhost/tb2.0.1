@@ -73,7 +73,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.Dynami
 
 public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetailContract.Presenter, GroupDynamicCommentListBean>
         implements GroupDynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
-        InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, DynamicDetailHeader.OnImageClickLisenter,
+        InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, GroupDynamicDetailHeader.OnImageClickLisenter,
         TextViewUtils.OnSpanTextClickListener{
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
@@ -109,7 +109,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     private GroupDynamicListBean mGroupDynamicListBean;// 上一个页面传进来的数据
     private FollowFansBean mFollowFansBean;// 用户关注状态
     private boolean mIsLookMore = false;
-    private DynamicDetailHeader mDynamicDetailHeader;
+    private GroupDynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
@@ -163,8 +163,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     protected void setLoadingViewHolderClick() {
         super.setLoadingViewHolderClick();
         if (mGroupDynamicListBean == null) {
-//            mPresenter.getCurrentDynamicDetail(getArguments().getLong(MessageCommentAdapter
-//                    .BUNDLE_SOURCE_ID),0);
+            mPresenter.getCurrentDynamicDetail(getArguments().getLong(MessageCommentAdapter
+                    .BUNDLE_SOURCE_ID),0);
         } else {
 //            mPresenter.getDetailAll(mGroupDynamicListBean.getId(), DEFAULT_PAGE_MAX_ID, mGroupDynamicListBean
 //                    .getUser_id() + "",mGroupDynamicListBean.getTop());
@@ -223,7 +223,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
 
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mDynamicDetailHeader = new DynamicDetailHeader(getContext(), mPresenter.getAdvert());
+        mDynamicDetailHeader = new GroupDynamicDetailHeader(getContext(), mPresenter.getAdvert());
         mDynamicDetailHeader.setOnImageClickLisenter(this);
         mHeaderAndFooterWrapper.addHeaderView(mDynamicDetailHeader.getDynamicDetailHeader());
         View mFooterView = new View(getContext());
@@ -244,7 +244,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
                 mPresenter.getCurrentDynamicDetail(bundle.getLong(MessageCommentAdapter
                         .BUNDLE_SOURCE_ID),0);
             } else {
-//                mPresenter.getCurrentDynamicDetail(mGroupDynamicListBean.getId(),mGroupDynamicListBean.getTop());
+                mPresenter.getCurrentDynamicDetail(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId());
             }
         }
     }
@@ -364,7 +364,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     @Override
     public void updateDynamic(GroupDynamicListBean detailBeanV2) {
         mGroupDynamicListBean = detailBeanV2;
-//        mDynamicDetailHeader.updateImage(mGroupDynamicListBean);
+        mDynamicDetailHeader.updateImage(mGroupDynamicListBean);
     }
 
     @Override
@@ -374,7 +374,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
 
     @Override
     public void updateCommentCountAndDig() {
-//        mDynamicDetailHeader.updateHeaderViewData(mGroupDynamicListBean);
+        mDynamicDetailHeader.updateHeaderViewData(mGroupDynamicListBean);
     }
 
     @Override
@@ -424,9 +424,9 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         setToolBarUser(mGroupDynamicListBean);// 设置标题用户
         initBottomToolData(mGroupDynamicListBean);// 初始化底部工具栏数据
 //        设置动态详情列表数据
-//        mDynamicDetailHeader.setDynamicDetial(mGroupDynamicListBean);
+        mDynamicDetailHeader.setDynamicDetial(mGroupDynamicListBean);
         updateCommentCountAndDig();
-//        onNetResponseSuccess(mGroupDynamicListBean.getComments(), false);
+        onNetResponseSuccess(mGroupDynamicListBean.getCommentslist(), false);
         if (mIsLookMore) {
             mRvList.scrollToPosition(1);
         }

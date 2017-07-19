@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.google.gson.Gson;
+
 import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -12,9 +14,12 @@ import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
@@ -25,10 +30,12 @@ import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import okhttp3.RequestBody;
 import retrofit2.http.Path;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -237,5 +244,124 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         } else {
             return mChannelClient.joinGroup(groupInfoBean.getId());
         }
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean) {
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
+        return mChannelClient.sendGroupDynamic(dynamicDetailBean.getGroup_id(), body);
+    }
+
+    @Override
+    public Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(long group_id, long dynamic_id, long max_id) {
+        return mChannelClient.getGroupDynamicCommentList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
+                .flatMap(new Func1<List<GroupDynamicCommentListBean>, Observable<List<GroupDynamicCommentListBean>>>() {
+                    @Override
+                    public Observable<List<GroupDynamicCommentListBean>> call(List<GroupDynamicCommentListBean> groupDynamicCommentListBeen) {
+                        List<Object> user_ids = new ArrayList<>();
+                        if (groupDynamicCommentListBeen != null) {
+                            for (GroupDynamicCommentListBean groupDynamicCommentListBean : groupDynamicCommentListBeen) {
+                                user_ids.add(groupDynamicCommentListBean.getUser_id());
+                                user_ids.add(groupDynamicCommentListBean.getReply_to_user_id());
+                            }
+                            return mUserInfoRepository.getUserInfo(user_ids)
+                                    .map(listBaseJson -> {
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (int i = 0; i < groupDynamicCommentListBeen.size(); i++) {
+                                            groupDynamicCommentListBeen.get(i).setCommentUser(
+                                                    userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getUser_id()));
+                                            groupDynamicCommentListBeen.get(i).setReplyUser(
+                                                    userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getReply_to_user_id()));
+                                        }
+                                        return groupDynamicCommentListBeen;
+                                    });
+                        } else {
+                            return Observable.just(new ArrayList<>());
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<FollowFansBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id) {
+        return mChannelClient.getDigList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
+                .flatMap(new Func1<List<FollowFansBean>, Observable<List<FollowFansBean>>>() {
+                    @Override
+                    public Observable<List<FollowFansBean>> call(List<FollowFansBean> followFansBeen) {
+                        List<Object> user_ids = new ArrayList<>();
+                        if (followFansBeen != null) {
+                            for (FollowFansBean followFansBean : followFansBeen) {
+                                user_ids.add(followFansBean.getTargetUserId());
+                            }
+                            return mUserInfoRepository.getUserInfo(user_ids)
+                                    .map(listBaseJson -> {
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (int i = 0; i < followFansBeen.size(); i++) {
+                                            followFansBeen.get(i).setTargetUserInfo(userInfoBeanSparseArray.get(
+                                                    (int) followFansBeen.get(i).getTargetUserId()));
+                                        }
+                                        return followFansBeen;
+                                    });
+                        } else {
+                            return Observable.just(new ArrayList<>());
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public Observable<GroupDynamicListBean> getGroupDynamicDetail(long group_id, long dynamic_id) {
+        return mChannelClient.getGroupDynamicDetail(group_id, dynamic_id);
+    }
+
+    @Override
+    public void handleLike(boolean isLiked, long group_id, long dynamic_id) {
+        Observable.just(isLiked)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+//                    params.put("feed_id", feed_id);
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
+                        backgroundRequestTaskBean.setPath(
+                                String.format(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf(dynamic_id)));
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                        backgroundRequestTaskBean.setPath(
+                                String.format(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf(dynamic_id)));
+                    }
+
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
+    }
+
+    @Override
+    public void handelCollect(boolean isCollected, long group_id, long dynamic_id) {
+        Observable.just(isCollected)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+//                    params.put("feed_id", feed_id);
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
+                        backgroundRequestTaskBean.setPath(
+                                String.format(ApiConfig.APP_PATH_COLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf(dynamic_id)));
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                        backgroundRequestTaskBean.setPath(
+                                String.format(ApiConfig.APP_PATH_COLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf(dynamic_id)));
+                    }
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
     }
 }

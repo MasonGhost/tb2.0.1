@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public interface GroupDynamicDetailContract {
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
-    interface Repository extends IDynamicReppsitory {
+    interface Repository extends IBaseChannelRepository {
         /**
          * 获取用户关注状态
          */

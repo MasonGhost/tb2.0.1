@@ -15,8 +15,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -153,4 +156,13 @@ public interface ChannelClient {
                                                 @Path("post") long dynamic_id,
                                                 @Query("limit") int limit,
                                                 @Query("after") long max_id);
+
+    /**
+     * 发布动态 v2 接口--圈子
+     *
+     * @return
+     */
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(ApiConfig.APP_PATH_SEND_GROUP_DYNAMIC)
+    Observable<BaseJsonV2<Object>> sendGroupDynamic(@Path("group") int group, @Body RequestBody body);
 }

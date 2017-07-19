@@ -40,6 +40,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoI
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
@@ -99,6 +100,8 @@ public class BackgroundTaskHandler {
     SendDynamicRepository mSendDynamicRepository;
     @Inject
     UpLoadRepository mUpLoadRepository;
+    @Inject
+    BaseChannelRepository mBaseChannelRepository;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
@@ -897,7 +900,7 @@ public class BackgroundTaskHandler {
                     }).flatMap(new Func1<GroupSendDynamicDataBean, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(GroupSendDynamicDataBean sendDynamicDataBeanV2) {
-                            return mSendDynamicRepository.sendGroupDynamic(sendDynamicDataBeanV2)
+                            return mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBeanV2)
                                     .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
                                         @Override
                                         public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
@@ -913,7 +916,7 @@ public class BackgroundTaskHandler {
                     });
         } else {
             // 没有图片上传任务，直接发布动态
-            observable = mSendDynamicRepository.sendGroupDynamic(sendDynamicDataBean)
+            observable = mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean)
                     .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
                         @Override
                         public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {

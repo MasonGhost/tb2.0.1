@@ -47,6 +47,7 @@ import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListI
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader;
+import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.GroupDynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -601,7 +602,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             return;
         }
         mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
-        Intent intent = new Intent(getActivity(), DynamicDetailActivity.class);
+        Intent intent = new Intent(getActivity(), GroupDynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
         bundle.putInt(DYNAMIC_DETAIL_DATA_POSITION, position);

@@ -72,7 +72,6 @@ import static com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean.TYPE_NEW;
 public class BaseDynamicRepository implements IDynamicReppsitory {
 
     protected DynamicClient mDynamicClient;
-    protected ChannelClient mChannelClient;
 
     @Inject
     protected UserInfoRepository mUserInfoRepository;
@@ -97,7 +96,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     @Inject
     public BaseDynamicRepository(ServiceManager serviceManager) {
         mDynamicClient = serviceManager.getDynamicClient();
-        mChannelClient = serviceManager.getChannelClient();
     }
 
     /**
@@ -123,12 +121,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
         return mDynamicClient.sendDynamicV2(body);
-    }
-
-    @Override
-    public Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean) {
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
-        return mDynamicClient.sendGroupDynamic(dynamicDetailBean.getGroup_id(), body);
     }
 
     /**
@@ -195,6 +187,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
     }
+
 
     /**
      * 删除动态
@@ -477,36 +470,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 });
     }
 
-    @Override
-    public Observable<List<FollowFansBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id) {
-        return mChannelClient.getDigList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
-                .flatMap(new Func1<List<FollowFansBean>, Observable<List<FollowFansBean>>>() {
-                    @Override
-                    public Observable<List<FollowFansBean>> call(List<FollowFansBean> followFansBeen) {
-                        List<Object> user_ids = new ArrayList<>();
-                        if (followFansBeen != null) {
-                            for (FollowFansBean followFansBean : followFansBeen) {
-                                user_ids.add(followFansBean.getTargetUserId());
-                            }
-                            return mUserInfoRepository.getUserInfo(user_ids)
-                                    .map(listBaseJson -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (int i = 0; i < followFansBeen.size(); i++) {
-                                            followFansBeen.get(i).setTargetUserInfo(userInfoBeanSparseArray.get(
-                                                    (int) followFansBeen.get(i).getTargetUserId()));
-                                        }
-                                        return followFansBeen;
-                                    });
-                        } else {
-                            return Observable.just(new ArrayList<>());
-                        }
-                    }
-                });
-    }
-
     /**
      * V2
      *
@@ -558,39 +521,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     return listBaseJson.getPinned();
                                 });
 
-                    }
-                });
-    }
-
-    @Override
-    public Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(long group_id, long dynamic_id, long max_id) {
-        return mChannelClient.getGroupDynamicCommentList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
-                .flatMap(new Func1<List<GroupDynamicCommentListBean>, Observable<List<GroupDynamicCommentListBean>>>() {
-                    @Override
-                    public Observable<List<GroupDynamicCommentListBean>> call(List<GroupDynamicCommentListBean> groupDynamicCommentListBeen) {
-                        List<Object> user_ids = new ArrayList<>();
-                        if (groupDynamicCommentListBeen != null) {
-                            for (GroupDynamicCommentListBean groupDynamicCommentListBean : groupDynamicCommentListBeen) {
-                                user_ids.add(groupDynamicCommentListBean.getUser_id());
-                                user_ids.add(groupDynamicCommentListBean.getReply_to_user_id());
-                            }
-                            return mUserInfoRepository.getUserInfo(user_ids)
-                                    .map(listBaseJson -> {
-                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
-                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                        }
-                                        for (int i = 0; i < groupDynamicCommentListBeen.size(); i++) {
-                                            groupDynamicCommentListBeen.get(i).setCommentUser(
-                                                    userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getUser_id()));
-                                            groupDynamicCommentListBeen.get(i).setReplyUser(
-                                                    userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getReply_to_user_id()));
-                                        }
-                                        return groupDynamicCommentListBeen;
-                                    });
-                        } else {
-                            return Observable.just(new ArrayList<>());
-                        }
                     }
                 });
     }
@@ -689,11 +619,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     @Override
     public Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(Long feed_id) {
         return dealWithDynamic(mDynamicClient.getDynamicDetailBeanV2(feed_id));
-    }
-
-    @Override
-    public Observable<GroupDynamicListBean> getGroupDynamicDetail(long group_id, long dynamic_id) {
-        return mChannelClient.getGroupDynamicDetail(group_id, dynamic_id);
     }
 
     protected Observable<BaseJson<List<DynamicBean>>> dealWithDynamicList(Observable<BaseJson<List<DynamicBean>>> observable,

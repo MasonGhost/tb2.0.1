@@ -18,7 +18,7 @@ import rx.Observable;
  * @contact email:648129313@qq.com
  */
 
-public class GroupDynamicDetailRepository extends BaseDynamicRepository implements GroupDynamicDetailContract.Repository{
+public class GroupDynamicDetailRepository extends BaseChannelRepository implements GroupDynamicDetailContract.Repository{
 
     @Inject
     public GroupDynamicDetailRepository(ServiceManager serviceManager) {

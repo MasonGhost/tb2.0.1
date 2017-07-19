@@ -5,8 +5,11 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -58,4 +61,30 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
 
     Observable<BaseJsonV2<Object>> handleGroupJoinByFragment(GroupInfoBean groupInfoBean);
 
+    Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean);
+
+    /**
+     * 获取圈子动态的评论列表
+     */
+    Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(long group_id, long dynamic_id, long max_id);
+
+    /**
+     * 获取圈子动态详情
+     *
+     * @param group_id   圈子id
+     * @param dynamic_id 动态id
+     */
+    Observable<GroupDynamicListBean> getGroupDynamicDetail(long group_id, long dynamic_id);
+
+    Observable<List<FollowFansBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id);
+
+    /**
+     * 圈子动态点赞
+     */
+    void handleLike(boolean isLiked, long group_id, long dynamic_id);
+
+    /**
+     * 圈子动态收藏
+     */
+    void handelCollect(boolean isCollected, long group_id, long dynamic_id);
 }

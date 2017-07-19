@@ -8,9 +8,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 
 import java.util.List;
@@ -42,7 +39,7 @@ public interface IDynamicReppsitory {
      * @return basejson, object is null
      */
     Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean);
-    Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean);
+
 
     /**
      * get dynamic list
@@ -134,8 +131,6 @@ public interface IDynamicReppsitory {
 
     Observable<List<FollowFansBean>> getDynamicDigListV2(Long feed_id, Long max_id);
 
-    Observable<List<FollowFansBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id);
-
     /**
      * 一条动态的评论列表
      *
@@ -145,11 +140,6 @@ public interface IDynamicReppsitory {
      * @return
      */
     Observable<List<DynamicCommentBean>> getDynamicCommentListV2(Long feed_mark, Long feed_id, Long max_id);
-
-    /**
-     * 获取圈子动态的评论列表
-     */
-    Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(long group_id, long dynamic_id, long max_id);
 
     /**
      * 根据 id 获取评论列表
@@ -166,14 +156,6 @@ public interface IDynamicReppsitory {
      * @return
      */
     Observable<DynamicDetailBeanV2> getDynamicDetailBeanV2(Long feed_id);
-
-    /**
-     * 获取圈子动态详情
-     *
-     * @param group_id   圈子id
-     * @param dynamic_id 动态id
-     */
-    Observable<GroupDynamicListBean> getGroupDynamicDetail(long group_id, long dynamic_id);
 
     /**
      * 设置动态评论收费 V2
