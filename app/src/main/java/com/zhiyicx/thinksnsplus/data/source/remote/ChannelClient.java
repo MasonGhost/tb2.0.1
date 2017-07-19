@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
@@ -95,4 +96,47 @@ public interface ChannelClient {
      */
     @GET(ApiConfig.APP_PATH_GET_GROUP_DETAIL)
     Observable<GroupInfoBean> getGroupDetail(@Path("group") long group_id);
+
+    /**
+     * 获取圈子动态详情
+     *
+     * @param group_id   圈子id
+     * @param dynamic_id 动态id
+     */
+    @GET(ApiConfig.APP_PATH_GET_GROUP_DYNAMIC_DETAIL)
+    Observable<GroupDynamicListBean> getGroupDynamicDetail(@Path("group") long group_id, @Path("post") long dynamic_id);
+
+    /**
+     * 获取圈子动态的评论列表
+     *
+     * @param group_id   圈子id
+     * @param dynamic_id 动态id
+     */
+    @GET(ApiConfig.APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST)
+    Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(@Path("group") long group_id, @Path("post") long dynamic_id);
+
+
+    /**
+     * 点赞动态
+     */
+    @POST(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC)
+    Observable<BaseJsonV2> diggGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
+
+    /**
+     * 取消点赞
+     */
+    @DELETE(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC)
+    Observable<BaseJsonV2> cancelDiggGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
+
+    /**
+     * 收藏动态
+     */
+    @POST(ApiConfig.APP_PATH_COLLECT_GROUP_DYNAMIC)
+    Observable<BaseJsonV2> collectGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
+
+    /**
+     * 取消收藏
+     */
+    @DELETE(ApiConfig.APP_PATH_COLLECT_GROUP_DYNAMIC)
+    Observable<BaseJsonV2> cancelCollectGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
 }
