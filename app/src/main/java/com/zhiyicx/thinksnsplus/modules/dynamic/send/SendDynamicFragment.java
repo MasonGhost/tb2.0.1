@@ -58,6 +58,7 @@ import butterknife.BindView;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.GROUP_ID;
 
 
 /**
@@ -99,6 +100,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     EditText mEtInput;
     @BindView(R.id.sl_send_dynamic)
     ScrollView sl_send_dynamic;
+    @BindView(R.id.v_horizontal_line)
+    View mTitleUnderLine;
 
     private List<ImageBean> selectedPhotos;
     private CommonAdapter<ImageBean> mCommonAdapter;
@@ -554,7 +557,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .getmCurrentLoginAuth().getUser_id() : 0;
 
         groupSendDynamicDataBean.setViews(1);
-        groupSendDynamicDataBean.setGroup_id(1);
+        groupSendDynamicDataBean.setGroup_id((int) getArguments().getLong(GROUP_ID));
         groupSendDynamicDataBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         groupSendDynamicDataBean.setContent(mEtDynamicContent.getInputContent());
         groupSendDynamicDataBean.setTitle(mEtDynamicTitle.getInputContent());
@@ -715,8 +718,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 selectedPhotos = new ArrayList<>(MAX_PHOTOS);
                 selectedPhotos.addAll(originPhotos);
             }
-            if (sendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.CHANNEL_DYNAMIC) {
+            if (sendDynamicDataBean.getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC) {
                 mEtDynamicTitle.setVisibility(View.VISIBLE);
+                mTitleUnderLine.setVisibility(View.VISIBLE);
+                mTvToll.setVisibility(View.GONE);
             }
         }
         switch (dynamicType) {

@@ -666,7 +666,7 @@ public class BackgroundTaskHandler {
             channel_id = 0;
         }
         final DynamicBean dynamicBean;
-        if (dynamicBelong == SendDynamicDataBean.CHANNEL_DYNAMIC) {
+        if (dynamicBelong == SendDynamicDataBean.GROUP_DYNAMIC) {
             dynamicBean = (DynamicBean) params.get("dynamicbean");
         } else {
             dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
@@ -884,23 +884,28 @@ public class BackgroundTaskHandler {
                     Observable.combineLatest(upLoadPics, args -> {
                         // 得到图片上传的结果
                         List<Integer> integers = new ArrayList<>();
+                        List<GroupSendDynamicDataBean.ImagesBean> images = new ArrayList<>();
                         for (int i = 0; i < args.length; i++) {
                             BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
                             if (baseJson.isStatus()) {
-                                sendDynamicDataBean.getImages().get(i).setId(baseJson.getData());
+                                GroupSendDynamicDataBean.ImagesBean imagesBean = new GroupSendDynamicDataBean.ImagesBean();
+                                imagesBean.setId(baseJson.getData());
+                                images.add(imagesBean);
                                 integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
                             } else {
+                                images = null;
                                 throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
                             }
                         }
+                        sendDynamicDataBean.setImages(images);
                         return integers;
                     }).map(integers -> {
                         sendDynamicDataBean.setPhotos(null);
                         return sendDynamicDataBean;
                     }).flatMap(new Func1<GroupSendDynamicDataBean, Observable<BaseJson<Object>>>() {
                         @Override
-                        public Observable<BaseJson<Object>> call(GroupSendDynamicDataBean sendDynamicDataBeanV2) {
-                            return mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBeanV2)
+                        public Observable<BaseJson<Object>> call(GroupSendDynamicDataBean sendDynamicDataBean) {
+                            return mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean)
                                     .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
                                         @Override
                                         public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
@@ -916,6 +921,7 @@ public class BackgroundTaskHandler {
                     });
         } else {
             // 没有图片上传任务，直接发布动态
+            sendDynamicDataBean.setPhotos(null);
             observable = mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean)
                     .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
                         @Override
@@ -965,7 +971,7 @@ public class BackgroundTaskHandler {
                     mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
                 }
                 break;
-            case SendDynamicDataBean.CHANNEL_DYNAMIC:
+            case SendDynamicDataBean.GROUP_DYNAMIC:
                 // 频道发送动态，不会显示在界面上,不用存在数据库中，不用做任何处理
                 //EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_CHANNEL);
                 break;

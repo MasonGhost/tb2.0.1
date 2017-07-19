@@ -48,7 +48,7 @@ public interface ChannelDetailContract {
          * @param stateSuccess 订阅是否成功
          * @param message      接口返回message
          */
-        void subscribChannelState(boolean stateSuccess, ChannelSubscripBean channelSubscripBean, String message);
+        void subscribChannelState(boolean stateSuccess, GroupInfoBean channelSubscripBean, String message);
 
         /**
          * 动态已发送的ui通知
@@ -65,7 +65,7 @@ public interface ChannelDetailContract {
         /**
          * 处理用户订阅状态
          */
-        void handleChannelSubscrib(ChannelSubscripBean channelSubscripBean);
+        void handleGroupSubscrib(GroupInfoBean channelSubscripBean);
 
         void getGroupDetails(long group_id);
 

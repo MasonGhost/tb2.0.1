@@ -35,7 +35,7 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
     /**
      * 在fragment中处理订阅状态
      */
-    Observable<BaseJson<Object>> handleSubscribChannelByFragment(ChannelSubscripBean channelSubscripBean);
+    Observable<BaseJson<Object>> handleSubscribGroupByFragment(GroupInfoBean channelSubscripBean);
 
     /**
      * 获取频道列表
@@ -59,7 +59,6 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
 
     void handleGroupJoin(GroupInfoBean groupInfoBean);
 
-    Observable<BaseJsonV2<Object>> handleGroupJoinByFragment(GroupInfoBean groupInfoBean);
 
     Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean);
 

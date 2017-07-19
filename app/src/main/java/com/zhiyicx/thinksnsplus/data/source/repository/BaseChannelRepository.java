@@ -95,34 +95,8 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
-    public Observable<BaseJson<Object>> handleSubscribChannelByFragment(final ChannelSubscripBean channelSubscripBean) {
-        final boolean subscribState = channelSubscripBean.getChannelSubscriped();
-        long channelId = channelSubscripBean.getId();
-        Observable<BaseJson<Object>> observable = null;
-        if (subscribState) {
-            // 已经订阅，变为未订阅
-            observable = mChannelClient.cancleSubscribChannel(channelId);
-        } else {
-            // 未订阅，变为已订阅
-            observable = mChannelClient.subscribChannel(channelId);
-        }
-        return observable.doOnNext(objectBaseJson -> {
-            if (objectBaseJson.isStatus() || objectBaseJson.getCode() == 0) {
-                // 服务器返回正常状态：操作数据库，数据源
-                ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
-                if (subscribState) {
-                    channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() - 1);// 订阅数-1
-                } else {
-                    channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() + 1);// 订阅数+1
-                }
-                // 更改数据源，切换订阅状态
-                channelSubscripBean.setChannelSubscriped(!channelSubscripBean.getChannelSubscriped());
-                // 更新数据库
-                mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBean);
-            } else {
-                // 返回错误状态，表明订阅或者取消订阅失败，不要改变当前状态
-            }
-        });
+    public Observable<BaseJson<Object>> handleSubscribGroupByFragment(GroupInfoBean channelSubscripBean) {
+        return null;
     }
 
     @Override
@@ -235,15 +209,6 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_JOIN_GROUP_S, String.valueOf(groupInfoBean.getId())));
         // 启动后台任务
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-    }
-
-    @Override
-    public Observable<BaseJsonV2<Object>> handleGroupJoinByFragment(GroupInfoBean groupInfoBean) {
-        if (groupInfoBean.getIs_audit() == 1) {
-            return mChannelClient.quitGroup(groupInfoBean.getId());
-        } else {
-            return mChannelClient.joinGroup(groupInfoBean.getId());
-        }
     }
 
     @Override

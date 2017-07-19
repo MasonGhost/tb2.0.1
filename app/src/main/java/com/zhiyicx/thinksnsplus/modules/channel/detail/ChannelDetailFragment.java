@@ -30,7 +30,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
@@ -50,6 +49,7 @@ import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetail
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.GroupDynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.GroupDynamicEmptyItem;
@@ -77,6 +77,8 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA_POSITION;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.GROUP_ID;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.SEND_OPTION;
 
 /**
  * @author LiuChao
@@ -286,23 +288,23 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
-    public void subscribChannelState(boolean stateSuccess, ChannelSubscripBean channelSubscripBean, String message) {
-        boolean subscribState = channelSubscripBean.getChannelSubscriped();// 操作后的订阅状态
-        if (stateSuccess && subscribState) {
+    public void subscribChannelState(boolean stateSuccess, GroupInfoBean groupInfoBean, String message) {
+        boolean isJoined = groupInfoBean.getIs_member() == 1;
+        if (stateSuccess && isJoined) {
             // 订阅成功
-        } else if (!stateSuccess && subscribState) {
+        } else if (!stateSuccess && isJoined) {
             // 订阅失败
             showSnackErrorMessage(message);
-        } else if (stateSuccess && !subscribState) {
+        } else if (stateSuccess && !isJoined) {
             // 取消订阅成功
-        } else if (!stateSuccess && !subscribState) {
+        } else if (!stateSuccess && !isJoined) {
             // 取消订阅失败
         }
         if (stateSuccess) {
             // 操作成功，需要刷新订阅数量
-            mItemChannelDetailHeader.refreshSubscribeData(channelSubscripBean.getChannelInfoBean());
+            mItemChannelDetailHeader.refreshSubscribeData(groupInfoBean);
         }
-        initSubscribState(channelSubscripBean);
+        initSubscribState(groupInfoBean);
     }
 
     @Override
@@ -634,7 +636,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     // 进行订阅
-//                        mPresenter.handleChannelSubscrib(mGroupInfoBean);
+                        mPresenter.handleGroupSubscrib(mGroupInfoBean);
                     // 处理订阅ui逻辑：先处理ui,并未可订阅状态的ui，不可点击发送动态
                     mIvSubscribBtn.setVisibility(View.GONE);
                     mBtnSendDynamic.setVisibility(View.VISIBLE);
@@ -655,9 +657,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     /**
      * 处理订阅状态对应的不同逻辑:
      */
-    private void initSubscribState(ChannelSubscripBean channelSubscripBean) {
-        Boolean subscribState = channelSubscripBean.getChannelSubscriped();
-        if (subscribState) {
+    private void initSubscribState(GroupInfoBean groupInfoBean) {
+        boolean isJoined = groupInfoBean.getIs_member() == 1;
+        if (isJoined) {
             // 订阅后，显示发送动态按钮，隐藏订阅按钮
             mIvSubscribBtn.setVisibility(View.GONE);
             mBtnSendDynamic.setVisibility(View.VISIBLE);
@@ -696,7 +698,13 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * 点击动态发送按钮，进入文字图片的动态发布
      */
     private void clickSendPhotoTextDynamic() {
-        mPhotoSelector.getPhotoListFromSelector(9, null);
+        Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong(GROUP_ID, mGroupInfoBean.getId());
+        intent.putExtra(SEND_OPTION, bundle);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.zoom_in, 0);
+//        mPhotoSelector.getPhotoListFromSelector(9, null);
     }
 
     private void initPhotoPicker() {
@@ -717,7 +725,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.GROUP_DYNAMIC);
         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
         sendDynamicDataBean.setDynamicPrePhotos(photoList);
         sendDynamicDataBean.setDynamicChannlId(mGroupInfoBean.getId());
@@ -822,7 +830,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mBtnSendDynamic.setOnLongClickListener(v -> {
             // 跳转到发送动态页面
             SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.CHANNEL_DYNAMIC);
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.GROUP_DYNAMIC);
             sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
             sendDynamicDataBean.setDynamicChannlId(mGroupInfoBean.getId());
             SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);

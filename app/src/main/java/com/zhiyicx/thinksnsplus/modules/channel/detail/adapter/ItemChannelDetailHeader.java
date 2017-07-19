@@ -106,7 +106,8 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     public static int[] TOOLBAR_RIGHT_BLUE = {89, 182, 215};
     private int channelNameFirstY = 0;
 
-    public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
+    public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper,
+                                   View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
         mActivity = activity;
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
@@ -285,9 +286,9 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     /**
      * 刷新订阅数
      */
-    public void refreshSubscribeData(ChannelInfoBean channelInfoBean) {
+    public void refreshSubscribeData(GroupInfoBean groupInfoBean) {
         // 设置订阅人数
-        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(channelInfoBean.getFollow_count()));
+        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(groupInfoBean.getMembers().size()));
     }
 
     private void initHeaderViewUI(View headerView) {

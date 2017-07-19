@@ -6,7 +6,11 @@ import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 
+import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.SEND_OPTION;
+
 public class SelectDynamicTypeActivity extends TSActivity {
+
+
 
     @Nullable
     @Override
@@ -16,7 +20,7 @@ public class SelectDynamicTypeActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return new SelectDynamicTypeFragment();
+        return SelectDynamicTypeFragment.getInstance(getIntent().getBundleExtra(SEND_OPTION));
     }
 
     @Override
