@@ -112,7 +112,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
                 return mDynamicClient.sendDynamic(body);
-            case SendDynamicDataBean.CHANNEL_DYNAMIC:
+            case SendDynamicDataBean.GROUP_DYNAMIC:
                 return mDynamicClient.sendDynamicToChannel(channel_id, body);
             default:
                 return mDynamicClient.sendDynamic(body);

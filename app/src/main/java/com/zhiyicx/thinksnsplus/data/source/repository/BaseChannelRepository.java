@@ -88,7 +88,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
-    public Observable<BaseJson<Object>> handleSubscribChannelByFragment(final ChannelSubscripBean channelSubscripBean) {
+    public Observable<BaseJson<Object>> handleSubscribGroupByFragment(final ChannelSubscripBean channelSubscripBean) {
         final boolean subscribState = channelSubscripBean.getChannelSubscriped();
         long channelId = channelSubscripBean.getId();
         Observable<BaseJson<Object>> observable = null;

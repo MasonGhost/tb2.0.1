@@ -15,9 +15,9 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description 圈子发布动态的数据类
  */
-public class GroupSendDynamicDataBean implements Serializable,Parcelable{
+public class GroupSendDynamicDataBean implements Serializable, Parcelable {
 
-    private static final long serialVersionUID=1234L;
+    private static final long serialVersionUID = 1234L;
     /**
      * title : 圈子动态标题
      * content : 圈子动态内容
@@ -69,8 +69,8 @@ public class GroupSendDynamicDataBean implements Serializable,Parcelable{
         this.images = images;
     }
 
-    public static class ImagesBean implements Parcelable,Serializable{
-        private static final long serialVersionUID=12234L;
+    public static class ImagesBean implements Parcelable, Serializable {
+        private static final long serialVersionUID = 12234L;
         /**
          * id : 1
          */
@@ -125,6 +125,7 @@ public class GroupSendDynamicDataBean implements Serializable,Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
+        dest.writeInt(this.group_id);
         dest.writeString(this.content);
         dest.writeList(this.images);
         dest.writeList(this.photos);
@@ -135,6 +136,7 @@ public class GroupSendDynamicDataBean implements Serializable,Parcelable{
 
     protected GroupSendDynamicDataBean(Parcel in) {
         this.title = in.readString();
+        this.group_id = in.readInt();
         this.content = in.readString();
         this.images = new ArrayList<>();
         this.photos = new ArrayList<>();
