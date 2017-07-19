@@ -25,7 +25,7 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
     @Inject
     public GroupDynamicCommentListBeanGreenDaoImpl(Application context) {
         super(context);
-        mGroupDynamicCommentListBeanDao=getWDaoSession().getGroupDynamicCommentListBeanDao();
+        mGroupDynamicCommentListBeanDao = getWDaoSession().getGroupDynamicCommentListBeanDao();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
 
     @Override
     public List<GroupDynamicCommentListBean> getMultiDataFromCache() {
-        return null;
+        return mGroupDynamicCommentListBeanDao.loadAll();
     }
 
     @Override
@@ -75,10 +75,10 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
 
     @Override
     public long insertOrReplace(GroupDynamicCommentListBean newData) {
-        return 0;
+        return mGroupDynamicCommentListBeanDao.insertOrReplace(newData);
     }
 
-    public List<GroupDynamicCommentListBean> getMySendingComment(int feed_id){
+    public List<GroupDynamicCommentListBean> getMySendingComment(int feed_id) {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
@@ -87,5 +87,30 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
                         GroupDynamicCommentListBeanDao.Properties.Id.isNull())
                 .orderDesc(GroupDynamicCommentListBeanDao.Properties.Created_at)
                 .list();
+    }
+
+    public List<GroupDynamicCommentListBean> getGroupCommentsByFeedId(long feed_id) {
+        if (AppApplication.getmCurrentLoginAuth() == null) {
+            return new ArrayList<>();
+        }
+        return mGroupDynamicCommentListBeanDao.queryBuilder()
+                .where(GroupDynamicCommentListBeanDao.Properties.User_id.eq(AppApplication.getmCurrentLoginAuth().getUser_id()),
+                        GroupDynamicCommentListBeanDao.Properties.Feed_id.eq(feed_id))
+                .orderDesc(GroupDynamicCommentListBeanDao.Properties.Created_at)
+                .list();
+    }
+
+    public GroupDynamicCommentListBean getGroupCommentsByCommentMark(long comment_mark) {
+        List<GroupDynamicCommentListBean> result = mGroupDynamicCommentListBeanDao.queryBuilder()
+                .where(GroupDynamicCommentListBeanDao.Properties.User_id.eq(AppApplication.getmCurrentLoginAuth().getUser_id()),
+                        GroupDynamicCommentListBeanDao.Properties.Feed_id.eq(comment_mark))
+                .orderDesc(GroupDynamicCommentListBeanDao.Properties.Created_at)
+                .list();
+
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+
+        return null;
     }
 }

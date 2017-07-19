@@ -165,4 +165,13 @@ public interface ChannelClient {
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_SEND_GROUP_DYNAMIC)
     Observable<BaseJsonV2<Object>> sendGroupDynamic(@Path("group") int group, @Body RequestBody body);
+
+    /**
+     * 删除动态 v2 接口--圈子
+     *
+     * @param groupId 圈子id
+     * @param dynamic_id 动态id
+     */
+    @DELETE(ApiConfig.APP_PATH_DELETE_GROUP_DYNAMIC)
+    Observable<BaseJsonV2<Object>> deleteGroupDynamic(@Path("group") long groupId,@Path("post") long dynamic_id);
 }

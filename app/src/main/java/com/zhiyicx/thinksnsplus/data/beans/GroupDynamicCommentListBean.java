@@ -36,6 +36,7 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
 
     @Id
     private Long id;
+    private Long comment_mark;
     private int feed_id;
     private long user_id;
     @ToOne(joinProperty = "user_id")
@@ -47,6 +48,14 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
     private String created_at;
     private int to_user_id;
     private int state = SEND_ING;
+
+    public Long getComment_mark() {
+        return comment_mark;
+    }
+
+    public void setComment_mark(Long comment_mark) {
+        this.comment_mark = comment_mark;
+    }
 
     @Override
     public Long getMaxId() {
@@ -226,10 +235,11 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         myDao.update(this);
     }
 
-    @Generated(hash = 950709989)
-    public GroupDynamicCommentListBean(Long id, int feed_id, long user_id, String content, long reply_to_user_id,
-            String created_at, int to_user_id, int state) {
+    @Generated(hash = 1106045402)
+    public GroupDynamicCommentListBean(Long id, Long comment_mark, int feed_id, long user_id, String content,
+            long reply_to_user_id, String created_at, int to_user_id, int state) {
         this.id = id;
+        this.comment_mark = comment_mark;
         this.feed_id = feed_id;
         this.user_id = user_id;
         this.content = content;
