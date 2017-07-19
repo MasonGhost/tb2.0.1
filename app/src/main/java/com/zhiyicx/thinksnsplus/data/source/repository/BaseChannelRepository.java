@@ -95,49 +95,48 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
-    public Observable<BaseJson<Object>> handleSubscribGroupByFragment(GroupInfoBean channelSubscripBean) {
-        return null;
+    public Observable<BaseJsonV2<Object>> handleSubscribGroupByFragment(GroupInfoBean channelSubscripBean) {
+        return mChannelClient.joinGroup(channelSubscripBean.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") final String type, final long userId) {
         // 将获取到的ChannelInfoBean类型的频道列表，通过map转换成ChannelSubscripBean类型的数据
         return mChannelClient.getChannelList(type)
-                .map(new Func1<BaseJson<List<ChannelInfoBean>>, BaseJson<List<ChannelSubscripBean>>>() {
-                    @Override
-                    public BaseJson<List<ChannelSubscripBean>> call(BaseJson<List<ChannelInfoBean>> listBaseJson) {
-                        BaseJson<List<ChannelSubscripBean>> channelSubscripBeanBaseJson = new BaseJson<List<ChannelSubscripBean>>();
-                        channelSubscripBeanBaseJson.setCode(listBaseJson.getCode());
-                        channelSubscripBeanBaseJson.setMessage(listBaseJson.getMessage());
-                        channelSubscripBeanBaseJson.setStatus(listBaseJson.isStatus());
-                        if (listBaseJson.isStatus() || listBaseJson.getCode() == 0) {
-                            List<ChannelInfoBean> channelInfoBeanList = listBaseJson.getData();
-                            List<ChannelSubscripBean> channelSubscripBeanList = new ArrayList<ChannelSubscripBean>();
-                            if (channelInfoBeanList != null) {
-                                for (ChannelInfoBean channelInfoBean : channelInfoBeanList) {
-                                    ChannelSubscripBean channelSubscripBean = new ChannelSubscripBean();
-                                    channelSubscripBean.setId(channelInfoBean.getId());// 设置频道id
-                                    channelSubscripBean.setChannelInfoBean(channelInfoBean);// 设置频道信息
-                                    // 如果是获取我订阅的频道，设置订阅状态为1
-                                    if (type == ApiConfig.CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL) {
-                                        channelInfoBean.setFollow_status(1);
-                                    }
-                                    channelSubscripBean.setChannelSubscriped(channelInfoBean.getFollow_status() == 0 ? false : true);// 设置订阅状态
-                                    channelSubscripBean.setUserId(userId);// 设置请求的用户id
-                                    channelSubscripBean.setUserIdAndIdforUnique("");// 添加唯一约束，防止数据重复
-                                    channelSubscripBeanList.add(channelSubscripBean);
+                .map(listBaseJson -> {
+                    BaseJson<List<ChannelSubscripBean>> channelSubscripBeanBaseJson = new BaseJson<>();
+                    channelSubscripBeanBaseJson.setCode(listBaseJson.getCode());
+                    channelSubscripBeanBaseJson.setMessage(listBaseJson.getMessage());
+                    channelSubscripBeanBaseJson.setStatus(listBaseJson.isStatus());
+                    if (listBaseJson.isStatus() || listBaseJson.getCode() == 0) {
+                        List<ChannelInfoBean> channelInfoBeanList = listBaseJson.getData();
+                        List<ChannelSubscripBean> channelSubscripBeanList = new ArrayList<>();
+                        if (channelInfoBeanList != null) {
+                            for (ChannelInfoBean channelInfoBean : channelInfoBeanList) {
+                                ChannelSubscripBean channelSubscripBean = new ChannelSubscripBean();
+                                channelSubscripBean.setId(channelInfoBean.getId());// 设置频道id
+                                channelSubscripBean.setChannelInfoBean(channelInfoBean);// 设置频道信息
+                                // 如果是获取我订阅的频道，设置订阅状态为1
+                                if (type == ApiConfig.CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL) {
+                                    channelInfoBean.setFollow_status(1);
                                 }
+                                channelSubscripBean.setChannelSubscriped(channelInfoBean.getFollow_status() == 0 ? false : true);// 设置订阅状态
+                                channelSubscripBean.setUserId(userId);// 设置请求的用户id
+                                channelSubscripBean.setUserIdAndIdforUnique("");// 添加唯一约束，防止数据重复
+                                channelSubscripBeanList.add(channelSubscripBean);
                             }
-                            channelSubscripBeanBaseJson.setData(channelSubscripBeanList);
-                            mChannelInfoBeanGreenDao.insertOrReplace(channelInfoBeanList);
-                            mChannelSubscripBeanGreenDao.clearTable();
-                            mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBeanList);
-
-                        } else {
-                            channelSubscripBeanBaseJson.setData(null);
                         }
-                        return channelSubscripBeanBaseJson;
+                        channelSubscripBeanBaseJson.setData(channelSubscripBeanList);
+                        mChannelInfoBeanGreenDao.insertOrReplace(channelInfoBeanList);
+                        mChannelSubscripBeanGreenDao.clearTable();
+                        mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBeanList);
+
+                    } else {
+                        channelSubscripBeanBaseJson.setData(null);
                     }
+                    return channelSubscripBeanBaseJson;
                 });
     }
 
@@ -303,7 +302,6 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                         backgroundRequestTaskBean.setPath(
                                 String.format(ApiConfig.APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf(dynamic_id)));
                     }
-
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
     }
@@ -317,7 +315,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                     HashMap<String, Object> params = new HashMap<>();
 //                    params.put("feed_id", feed_id);
                     // 后台处理
-                    if (aBoolean) {
+                    if (!aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST_V2, params);
                         backgroundRequestTaskBean.setPath(
                                 String.format(ApiConfig.APP_PATH_COLLECT_GROUP_DYNAMIC_S, String.valueOf(group_id), String.valueOf(dynamic_id)));

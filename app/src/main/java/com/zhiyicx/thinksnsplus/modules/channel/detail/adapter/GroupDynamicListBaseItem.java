@@ -215,7 +215,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                 // 显示工具栏
                 DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                        .getDiggs()), dynamicBean.getCollections()==1, 0);
+                        .getDiggs()), dynamicBean.getIs_digg() == GroupDynamicListBean.IS_DIGG, 0);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                         .getComments()), false, 1);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
@@ -248,7 +248,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                         });
             }
 
-            holder.setVisible(R.id.dcv_comment,View.GONE);
+            holder.setVisible(R.id.dcv_comment, View.GONE);
             if (showCommentList) {
                 // 设置评论内容
                 GroupDynamicListCommentView comment = holder.getView(R.id.group_comment);

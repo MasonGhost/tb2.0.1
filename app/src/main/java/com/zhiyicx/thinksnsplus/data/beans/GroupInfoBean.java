@@ -150,6 +150,22 @@ public class GroupInfoBean extends BaseListBean {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupInfoBean that = (GroupInfoBean) o;
+
+        return id == that.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
+
     public static class GroupCoverBean implements Serializable, Parcelable{
 
         @Transient

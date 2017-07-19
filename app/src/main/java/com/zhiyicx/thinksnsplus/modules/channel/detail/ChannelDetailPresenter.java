@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -232,7 +233,16 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         }
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getListDatas().get(postion));
         mRepository.handleLike(isLiked, feed_id);
+    }
 
+    @Override
+    public void handleCollect(GroupDynamicListBean dynamicBean) {
+        // 修改数据-更新界面
+        boolean is_collection = dynamicBean.getIs_collection() == GroupDynamicListBean.IS_COLLECT;// 旧状态
+        // 更新数据库
+        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
+        // 通知服务器
+        mRepository.handelCollect(is_collection,dynamicBean.getGroup_id(),dynamicBean.getId());
     }
 
     @Override
@@ -248,14 +258,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
 
     @Override
     public void reSendDynamic(int position) {
-        // 发送动态
-        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC);
-        HashMap<String, Object> params = new HashMap<>();
-//        // feed_mark作为参数
-//        params.put("params", mRootView.getListDatas().get(position).getFeed_mark());
-        backgroundRequestTaskBean.setParams(params);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        // 目前圈子动态失败也不重发
     }
 
     @Override
@@ -323,34 +326,9 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         mRootView.getListDatas().get(mCurrentPostion).setComments(mRootView.getListDatas().get(mCurrentPostion).getComments() + 1);
         mRootView.refreshData();
 
-        mDynamicCommentBeanGreenDaoImpl.insertOrReplace(creatComment);// 这里要 feed_id
+        mDynamicCommentBeanGreenDaoImpl.insertOrReplace(creatComment);
         mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getId(), replyToUserId, (long) creatComment.getFeed_id());
 
-    }
-
-    @Override
-    public void handleCollect(GroupDynamicListBean dynamicBean) {
-        // 收藏
-        // 修改数据
-        boolean is_collection = dynamicBean.getCollections() == 1;// 旧状态
-        dynamicBean.setCollections(dynamicBean.getCollections() == 1 ? 0 : 1);
-        boolean newCollectState = !is_collection;
-        // 更新数据库
-        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
-        // 通知服务器
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("feed_id", dynamicBean.getId());
-        // 后台处理
-        if (newCollectState) {
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.POST, params);
-        } else {
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
-        }
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_COLLECT_FORMAT,
-                dynamicBean.getId()));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        EventBus.getDefault().post(dynamicBean, EventBusTagConfig.EVENT_COLLECT_DYNAMIC);
     }
 
     @Override
@@ -498,10 +476,11 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         Subscription subscription = mRepository.handleSubscribGroupByFragment(groupSubscripBean)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Object>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(Object data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
                         // 发送到可能的地方，改变订阅状态
+                        groupSubscripBean.setIs_member(1);
                         mRootView.subscribChannelState(true, groupSubscripBean, "");
                         EventBus.getDefault().post(groupSubscripBean, EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB);
                     }

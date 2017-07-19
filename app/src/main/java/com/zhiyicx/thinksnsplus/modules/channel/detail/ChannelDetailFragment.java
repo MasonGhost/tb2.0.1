@@ -29,7 +29,6 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
@@ -47,7 +46,6 @@ import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListI
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForZeroImage;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.ItemChannelDetailHeader;
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.GroupDynamicDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
@@ -494,12 +492,26 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      */
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
-//        mListDatas.get(dataPosition).getTool().setIs_digg_feed(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ? DynamicToolBean.STATUS_DIGG_FEED_CHECKED : DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED);
-//        mListDatas.get(dataPosition).getTool().setFeed_digg_count(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_UNCHECKED ?
-//                mListDatas.get(dataPosition).getTool().getFeed_digg_count() - 1 : mListDatas.get(dataPosition).getTool().getFeed_digg_count() + 1);
-//        refreshData();
-//        mPresenter.handleLike(mListDatas.get(dataPosition).getTool().getIs_digg_feed() == DynamicToolBean.STATUS_DIGG_FEED_CHECKED,
-//                mListDatas.get(dataPosition).getFeed().getFeed_id(), dataPosition);
+        mListDatas.get(dataPosition).setIs_digg(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.IS_DIGG ? GroupDynamicListBean.UN_DIGG : GroupDynamicListBean.IS_DIGG);
+        mListDatas.get(dataPosition).setDiggs(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.UN_DIGG ?
+                mListDatas.get(dataPosition).getDiggs() - 1 : mListDatas.get(dataPosition).getDiggs() + 1);
+        refreshData(dataPosition);
+        mPresenter.handleLike(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.IS_DIGG,
+                mListDatas.get(dataPosition).getId(), dataPosition);
+    }
+
+    /**
+     * 收藏
+     *
+     * @param dataPosition
+     */
+    private void handleCollect(int dataPosition) {
+        // 先更新界面，再后台处理
+        mPresenter.handleCollect(mListDatas.get(dataPosition));
+        boolean is_collection = mListDatas.get(dataPosition).getIs_collection() == GroupDynamicListBean.IS_COLLECT;// 旧状态
+        mListDatas.get(dataPosition).setCollections(is_collection ?
+                GroupDynamicListBean.UN_COLLECT : GroupDynamicListBean.IS_COLLECT);
+        refreshData(dataPosition);
     }
 
     private void showCommentView() {
@@ -636,7 +648,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     // 进行订阅
-                        mPresenter.handleGroupSubscrib(mGroupInfoBean);
+                    mPresenter.handleGroupSubscrib(mGroupInfoBean);
                     // 处理订阅ui逻辑：先处理ui,并未可订阅状态的ui，不可点击发送动态
                     mIvSubscribBtn.setVisibility(View.GONE);
                     mBtnSendDynamic.setVisibility(View.VISIBLE);
@@ -790,6 +802,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {// 收藏
                     mMyDynamicPopWindow.hide();
+                    handleCollect(position);
                     showBottomView(true);
                 })
                 .item2ClickListener(() -> {// 删除

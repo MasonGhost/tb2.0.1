@@ -29,6 +29,12 @@ public class GroupDynamicListBean extends BaseListBean {
     public static final int SEND_ERROR = 0;
     public static final int SEND_ING = 1;
     public static final int SEND_SUCCESS = 2;
+
+    public static final int IS_DIGG = 1;
+    public static final int UN_DIGG = 0;
+
+    public static final int IS_COLLECT = 1;
+    public static final int UN_COLLECT = 0;
     /**
      * id : 2
      * title : hehehsdfasdfasdf
