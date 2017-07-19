@@ -202,6 +202,12 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
 
+        <!--圈子相关页面-->
+        <activity
+                android:name=".modules.channel.group_dynamic.GroupDynamicDetailActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
+
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"
