@@ -175,7 +175,7 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     }
 
     public String getProvince() {
-        if (TextUtils.isEmpty(province)&&!TextUtils.isEmpty(location)) {
+        if (TextUtils.isEmpty(province) && !TextUtils.isEmpty(location)) {
             String[] data = location.split(" ");
             if (data.length > 0) {
                 province = data[0];
@@ -189,7 +189,7 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     }
 
     public String getCity() {
-        if (TextUtils.isEmpty(city)&&!TextUtils.isEmpty(location)) {
+        if (TextUtils.isEmpty(city) && !TextUtils.isEmpty(location)) {
             String[] data = location.split(" ");
             if (data.length > 1) {
                 city = data[1];
@@ -204,7 +204,7 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     }
 
     public String getArea() {
-        if (TextUtils.isEmpty(area)&&!TextUtils.isEmpty(location)) {
+        if (TextUtils.isEmpty(area) && !TextUtils.isEmpty(location)) {
             String[] data = location.split(" ");
             if (data.length > 2) {
                 area = data[2];
@@ -258,6 +258,9 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     }
 
     public UserInfoExtraBean getExtra() {
+        if (extra == null) {
+            extra = new UserInfoExtraBean();
+        }
         return extra;
     }
 
@@ -471,8 +474,8 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
 
     @Generated(hash = 923884662)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, String created_at, String updated_at, String avatar, String cover,
-            UserInfoExtraBean extra) {
+                        String location, String created_at, String updated_at, String avatar, String cover,
+                        UserInfoExtraBean extra) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
