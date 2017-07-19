@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -28,22 +27,17 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoimpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailContract;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -81,9 +75,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     @Inject
     GroupDynamicCommentListBeanGreenDaoImpl mGroupDynamicCommentListBeanGreenDao;
     @Inject
-    FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-    @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+//    @Inject
+//    GroupDynamicLikeListBeanDao mGroupDynamicLikeListBeanDao;
     @Inject
     SystemRepository mSystemRepository;
     @Inject
@@ -162,11 +156,11 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             return new ArrayList<>();
         }
         // 从数据库获取关注状态，如果没有从服务器获取
-        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication
-                .getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
-        if (followFansBean != null) {
-            mRootView.upDateFollowFansState(followFansBean.getFollowState());
-        }
+//        GroupDynamicLikeListBean followFansBean = mGroupDynamicLikeListBeanDao.getFollowState(AppApplication
+//                .getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
+//        if (followFansBean != null) {
+//            mRootView.upDateFollowFansState(followFansBean.getFollowState());
+//        }
         // 从数据库获取评论列表
         return null/*mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
                 .getFeed_mark())*/;
@@ -217,8 +211,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                 , (followFansBeen, listBaseJson2, listBaseJson3) -> {
                     GroupDynamicListBean dynamicBean = new GroupDynamicListBean();
                     if (listBaseJson2.isStatus()) {
-//                        dynamicBean.setDigUserInfoList(followFansBeen);
-                        mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0));
+                        dynamicBean.setMGroupDynamicLikeListBeanList(followFansBeen);
+//                        mGroupDynamicLikeListBeanDao.insertOrReplace(listBaseJson2.getData().get(0));
                         // 保存关注状态
                         List<GroupDynamicCommentListBean> data = listBaseJson3;
 //                        // 取出本地未发送成功的评论
@@ -254,7 +248,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                     @Override
                     protected void onSuccess(GroupDynamicListBean data) {
                         mRootView.getCurrentDynamic().setComments(data.getComments());
-//                        mRootView.getCurrentDynamic().setDigUserInfoList(data.getDigUserInfoList());
+                        mRootView.getCurrentDynamic().setMGroupDynamicLikeListBeanList(data.getMGroupDynamicLikeListBeanList());
                         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
                         mRootView.allDataReady();
                     }
@@ -291,9 +285,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(ApiConfig.DEFAULT_MAX_RETRY_COUNT, 0))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<List<FollowFansBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<GroupDynamicLikeListBean>>() {
                     @Override
-                    protected void onSuccess(List<FollowFansBean> data) {
+                    protected void onSuccess(List<GroupDynamicLikeListBean> data) {
                         mRootView.setDigHeadIcon(data);
                         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
                     }
@@ -319,33 +313,32 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         }
         // 更新UI
         mRootView.setLike(isLiked);
-//        mRootView.getCurrentDynamic().setFeed_digg_count(isLiked ? mRootView.getCurrentDynamic()
-//                .getFeed_digg_count() + 1 : mRootView.getCurrentDynamic().getFeed_digg_count() - 1);
-//        mRootView.getCurrentDynamic().setHas_digg(isLiked);
+        mRootView.getCurrentDynamic().setDiggs(isLiked ? mRootView.getCurrentDynamic()
+                .getDiggs() + 1 : mRootView.getCurrentDynamic().getDiggs() - 1);
+        mRootView.getCurrentDynamic().setIs_digg(isLiked ? 1:0);
         if (!isLiked) {// 取消喜欢，修改修换的用户信息
-//            List<FollowFansBean> digUsers = mRootView.getCurrentDynamic().getDigUserInfoList();
-//            int digUserSize = digUsers.size();
-//            for (int i = 0; i < digUserSize; i++) {
-//                if (digUsers.get(i).getTargetUserId() == AppApplication.getmCurrentLoginAuth()
-//                        .getUser_id()) {
-//                    digUsers.remove(i);
-//                    break;
-//                }
-//            }
+            List<GroupDynamicLikeListBean> digUsers = mRootView.getCurrentDynamic().getMGroupDynamicLikeListBeanList();
+            int digUserSize = digUsers.size();
+            for (int i = 0; i < digUserSize; i++) {
+                if (digUsers.get(i).getId() == AppApplication.getmCurrentLoginAuth()
+                        .getUser_id()) {
+                    digUsers.remove(i);
+                    break;
+                }
+            }
         } else {// 喜欢
-            FollowFansBean myFollowFansBean = new FollowFansBean();
+            GroupDynamicLikeListBean myFollowFansBean = new GroupDynamicLikeListBean();
             UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long)
                     AppApplication.getmCurrentLoginAuth().getUser_id());
-            myFollowFansBean.setTargetUserInfo(mineUserInfo);
-            myFollowFansBean.setTargetUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-            myFollowFansBean.setOriginUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-            myFollowFansBean.setOrigintargetUser("");
-//            mRootView.getCurrentDynamic().getDigUserInfoList().add(0, myFollowFansBean);// 把数据加到第一个
+            if (mineUserInfo != null){
+                myFollowFansBean.setMUserInfoBean(mineUserInfo);
+                myFollowFansBean.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+                mRootView.getCurrentDynamic().getMGroupDynamicLikeListBeanList().add(0, myFollowFansBean);// 把数据加到第一个
+            }
         }
         mRootView.updateCommentCountAndDig();
-
         // 更新数据库
-//        mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicToolBean);
+        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicToolBean);
         // 通知服务器
         mRepository.handleLike(isLiked, group_id, dynamic_id);
     }
@@ -361,7 +354,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         // 更新UI
         mRootView.setCollect(newCollectState);
         // 更新数据库
-//        mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
+        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
         // 通知服务器
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
@@ -406,40 +399,40 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     }
 
     @Override
-    public void handleFollowUser(FollowFansBean followFansBean) {
+    public void handleFollowUser(GroupDynamicLikeListBean followFansBean) {
         BackgroundRequestTaskBean backgroundRequestTaskBean = null;
-        if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
-            // 当前未关注，进行关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
-            // 进行后台任务请求
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
-        } else {
-            // 已关注，取消关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
-            // 进行后台任务请求
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
-        }
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
-        backgroundRequestTaskBean.setParams(hashMap);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                (backgroundRequestTaskBean);
-        // 本地数据库和ui进行刷新
-        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
-        mRootView.upDateFollowFansState(followFansBean.getFollowState());
+//        if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
+//            // 当前未关注，进行关注
+//            followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
+//            // 进行后台任务请求
+//            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+//            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
+//            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
+//        } else {
+//            // 已关注，取消关注
+//            followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
+//            // 进行后台任务请求
+//            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+//            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
+//            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
+//        }
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put("user_id", followFansBean.getUser_id() + "");
+//        backgroundRequestTaskBean.setParams(hashMap);
+//        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+//                (backgroundRequestTaskBean);
+//        // 本地数据库和ui进行刷新
+//        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
+//        mRootView.upDateFollowFansState(followFansBean.getFollowState());
     }
 
     @Override
     public void getUserFollowState(String user_ids) {
-        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication
-                .getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
-        if (followFansBean != null) {
-            mRootView.initFollowState(followFansBean);
-        }
+//        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication
+//                .getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
+//        if (followFansBean != null) {
+//            mRootView.initFollowState(followFansBean);
+//        }
     }
 
     @Override

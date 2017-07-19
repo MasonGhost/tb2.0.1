@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
@@ -103,7 +104,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     View mToolbarTopBlank;
 
     private GroupDynamicListBean mGroupDynamicListBean;// 上一个页面传进来的数据
-    private FollowFansBean mFollowFansBean;// 用户关注状态
+    private GroupDynamicLikeListBean mFollowFansBean;// 用户关注状态
     private boolean mIsLookMore = false;
     private GroupDynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -332,8 +333,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
-//        mGroupDynamicListBean.setDigUserInfoList(userInfoBeanList);
+    public void setDigHeadIcon(List<GroupDynamicLikeListBean> userInfoBeanList) {
+        mGroupDynamicListBean.setMGroupDynamicLikeListBeanList(userInfoBeanList);
         updateCommentCountAndDig();
     }
 
@@ -350,7 +351,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
 
     @Override
     public void initFollowState(FollowFansBean mFollowFansBean) {
-        this.mFollowFansBean = mFollowFansBean;
+//        this.mFollowFansBean = mFollowFansBean;
         setToolBarRightFollowState(mFollowFansBean.getFollowState());
     }
 
@@ -463,9 +464,9 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
      */
     private void initBottomToolData(GroupDynamicListBean dynamicBean) {
         // 设置是否喜欢
-//        mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_digg(), DynamicDetailMenuView.ITEM_POSITION_0);
+        mDdDynamicTool.setItemIsChecked(dynamicBean.getIs_digg() == 1, DynamicDetailMenuView.ITEM_POSITION_0);
         //设置是否收藏
-//        mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_collect(), DynamicDetailMenuView.ITEM_POSITION_3);
+        mDdDynamicTool.setItemIsChecked(dynamicBean.getIs_collection() == 1, DynamicDetailMenuView.ITEM_POSITION_3);
     }
 
     /**
@@ -477,8 +478,9 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             switch (postion) {
                 case DynamicDetailMenuView.ITEM_POSITION_0:
                     // 处理喜欢逻辑，包括服务器，数据库，ui
-//                    mPresenter.handleLike(!mGroupDynamicListBean.isHas_digg(),
-//                            mGroupDynamicListBean.getId(), mGroupDynamicListBean);
+                    boolean isLike = mGroupDynamicListBean.getIs_digg() == 1;
+                    mPresenter.handleLike(!isLike,mGroupDynamicListBean.getGroup_id(),
+                            mGroupDynamicListBean.getId(), mGroupDynamicListBean);
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_1:
                     // 评论
@@ -492,13 +494,13 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:
                     // 处理喜欢逻辑，包括服务器，数据库，ui
-//                    if (mGroupDynamicListBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-//                        initMyDynamicPopupWindow(mGroupDynamicListBean, mGroupDynamicListBean.getHas_collect());
-//                        mMyDynamicPopWindow.show();
-//                    } else {
-//                        initOtherDynamicPopupWindow(mGroupDynamicListBean, mGroupDynamicListBean.getHas_collect());
-//                        mOtherDynamicPopWindow.show();
-//                    }
+                    if (mGroupDynamicListBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                        initMyDynamicPopupWindow(mGroupDynamicListBean, mGroupDynamicListBean.getIs_collection() == 1);
+                        mMyDynamicPopWindow.show();
+                    } else {
+                        initOtherDynamicPopupWindow(mGroupDynamicListBean, mGroupDynamicListBean.getIs_collection() == 1);
+                        mOtherDynamicPopWindow.show();
+                    }
                     break;
             }
         });
@@ -550,10 +552,10 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     private void handleItemClick(int position) {
         position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-//            if (mListDatas.get(position).getComment_id() != null) {
-//                initDeleteComentPopupWindow(mListDatas.get(position).getComment_id(), position);
-//                mDeletCommentPopWindow.show();
-//            }
+            if (mListDatas.get(position).getId() != null) {
+                initDeleteComentPopupWindow(mListDatas.get(position).getId(), position);
+                mDeletCommentPopWindow.show();
+            }
         } else {
             mReplyUserId = mListDatas.get(position).getUser_id();
             showCommentView();

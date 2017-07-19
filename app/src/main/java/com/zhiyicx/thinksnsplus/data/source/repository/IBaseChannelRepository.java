@@ -3,10 +3,8 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
@@ -75,7 +73,7 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
      */
     Observable<GroupDynamicListBean> getGroupDynamicDetail(long group_id, long dynamic_id);
 
-    Observable<List<FollowFansBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id);
+    Observable<List<GroupDynamicLikeListBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id);
 
     /**
      * 圈子动态点赞
