@@ -29,22 +29,18 @@ import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailContract;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailHeader;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailCommentItem;
+import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.adapter.GroupDynamicDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
+import com.zhiyicx.thinksnsplus.widget.GroupDynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -74,7 +70,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.Dynami
 public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetailContract.Presenter, GroupDynamicCommentListBean>
         implements GroupDynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
         InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, GroupDynamicDetailHeader.OnImageClickLisenter,
-        TextViewUtils.OnSpanTextClickListener{
+        TextViewUtils.OnSpanTextClickListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
@@ -164,10 +160,10 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         super.setLoadingViewHolderClick();
         if (mGroupDynamicListBean == null) {
             mPresenter.getCurrentDynamicDetail(getArguments().getLong(MessageCommentAdapter
-                    .BUNDLE_SOURCE_ID),0);
+                    .BUNDLE_SOURCE_ID), 0);
         } else {
-//            mPresenter.getDetailAll(mGroupDynamicListBean.getId(), DEFAULT_PAGE_MAX_ID, mGroupDynamicListBean
-//                    .getUser_id() + "",mGroupDynamicListBean.getTop());
+            mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), DEFAULT_PAGE_MAX_ID, mGroupDynamicListBean
+                    .getUser_id() + "");
         }
     }
 
@@ -242,9 +238,10 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             mGroupDynamicListBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
             if (mGroupDynamicListBean == null) {
                 mPresenter.getCurrentDynamicDetail(bundle.getLong(MessageCommentAdapter
-                        .BUNDLE_SOURCE_ID),0);
+                        .BUNDLE_SOURCE_ID), 0);
             } else {
-                mPresenter.getCurrentDynamicDetail(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId());
+                mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(),
+                        DEFAULT_PAGE_MAX_ID, mGroupDynamicListBean.getUser_id() + "");
             }
         }
     }
@@ -252,13 +249,14 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     @Override
     public void initDynamicDetail(GroupDynamicListBean dynamicBean) {
         mGroupDynamicListBean = dynamicBean;
-//        if (mPresenter.checkCurrentDynamicIsDeleted(mGroupDynamicListBean.getUser_id(), mGroupDynamicListBean.getFeed_mark())) {// 检测动态是否已经被删除了
-//            dynamicHasBeDeleted();
-//            return;
-//        }
+        if (mPresenter.checkCurrentDynamicIsDeleted(mGroupDynamicListBean.getUser_id(), mGroupDynamicListBean.getId())) {// 检测动态是否已经被删除了
+            dynamicHasBeDeleted();
+            return;
+        }
+        mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), DEFAULT_PAGE_MAX_ID, String.valueOf(mGroupDynamicListBean
+                .getUser_id()));
 //        if (mGroupDynamicListBean.getDigUserInfoList() == null) {
-//            mPresenter.getDetailAll(mDynamicBean.getId(), DEFAULT_PAGE_MAX_ID, mDynamicBean
-//                    .getUser_id() + "",mDynamicBean.getTop());
+//
 //        } else {
 //            allDataReady();
 //        }
@@ -267,19 +265,19 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     @Override
     public void onResume() {
         super.onResume();
-//        if (mGroupDynamicListBean != null && mPresenter.checkCurrentDynamicIsDeleted(mDynamicBean.getUser_id(), mDynamicBean.getFeed_mark())) {// 检测动态是否已经被删除了
-//            dynamicHasBeDeleted();
-//        }
+        if (mGroupDynamicListBean != null && mPresenter.checkCurrentDynamicIsDeleted(mGroupDynamicListBean.getUser_id(), mGroupDynamicListBean.getId())) {// 检测动态是否已经被删除了
+            dynamicHasBeDeleted();
+        }
     }
 
     @Override
-    protected MultiItemTypeAdapter<DynamicCommentBean> getAdapter() {
+    protected MultiItemTypeAdapter<GroupDynamicCommentListBean> getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
-        DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
+        GroupDynamicDetailCommentItem dynamicDetailCommentItem = new GroupDynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
         dynamicDetailCommentItem.setOnCommentTextClickListener(this);
         adapter.addItemViewDelegate(dynamicDetailCommentItem);
-        DynamicCommentEmptyItem dynamicCommentEmptyItem = new DynamicCommentEmptyItem();
+        GroupDynamicCommentEmptyItem dynamicCommentEmptyItem = new GroupDynamicCommentEmptyItem();
         adapter.addItemViewDelegate(dynamicCommentEmptyItem);
         adapter.setOnItemClickListener(this);
         return adapter;
@@ -287,7 +285,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
 
     @Override
     public void onImageClick(int iamgePosition, double amount, int note) {
-        initImageCenterPopWindow(iamgePosition, (float) amount, note,R.string.buy_pay_words_desc,true);
+        initImageCenterPopWindow(iamgePosition, (float) amount, note, R.string.buy_pay_words_desc, true);
     }
 
     public static GroupDynamicDetailFragment initFragment(Bundle bundle) {
@@ -391,8 +389,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     @Override
     public void onNetResponseSuccess(@NotNull List<GroupDynamicCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
-            DynamicCommentBean emptyData = new DynamicCommentBean();
-//            data.add(emptyData);
+            GroupDynamicCommentListBean emptyData = new GroupDynamicCommentListBean();
+            data.add(emptyData);
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }
@@ -671,11 +669,11 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     /**
-     * @param imagePosition   图片位置
-     * @param amout           费用
-     * @param note            支付节点
-     * @param strRes          文字说明
-     * @param isImage         是否是图片收费
+     * @param imagePosition 图片位置
+     * @param amout         费用
+     * @param note          支付节点
+     * @param strRes        文字说明
+     * @param isImage       是否是图片收费
      */
     private void initImageCenterPopWindow(final int imagePosition, float amout,
                                           final int note, int strRes, final boolean isImage) {

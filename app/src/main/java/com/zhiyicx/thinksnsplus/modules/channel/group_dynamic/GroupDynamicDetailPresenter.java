@@ -37,6 +37,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicCommentListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoimpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -74,6 +76,10 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDetailContract.Repository,
         GroupDynamicDetailContract.View> implements GroupDynamicDetailContract.Presenter,
         OnShareCallbackListener {
+    @Inject
+    GroupDynamicListBeanGreenDaoimpl mGroupDynamicListBeanGreenDaoimpl;
+    @Inject
+    GroupDynamicCommentListBeanGreenDaoImpl mGroupDynamicCommentListBeanGreenDao;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
@@ -186,12 +192,13 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 //                        data.setTop(topFlag);
                         mRootView.initDynamicDetail(data);
                         // 存入数据库
+                        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(data);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.e(message);
-//                        handleDynamicHasBeDeleted(code, feed_id);
+                        handleDynamicHasBeDeleted(code, dynamic_id);
                     }
 
                     @Override
@@ -211,7 +218,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                     GroupDynamicListBean dynamicBean = new GroupDynamicListBean();
                     if (listBaseJson2.isStatus()) {
 //                        dynamicBean.setDigUserInfoList(followFansBeen);
-//                        mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0));
+                        mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0));
                         // 保存关注状态
                         List<GroupDynamicCommentListBean> data = listBaseJson3;
 //                        // 取出本地未发送成功的评论
@@ -246,16 +253,16 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                 .subscribe(new BaseSubscribeForV2<GroupDynamicListBean>() {
                     @Override
                     protected void onSuccess(GroupDynamicListBean data) {
-//                        mRootView.getCurrentDynamic().setComments(data.getComments());
+                        mRootView.getCurrentDynamic().setComments(data.getComments());
 //                        mRootView.getCurrentDynamic().setDigUserInfoList(data.getDigUserInfoList());
-//                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
-//                        mRootView.allDataReady();
+                        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
+                        mRootView.allDataReady();
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.i(message);
-//                        handleDynamicHasBeDeleted(code, feed_id);
+                        handleDynamicHasBeDeleted(code, dynamic_id);
                     }
 
                     @Override
@@ -269,9 +276,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     /**
      * 处理动态被删除了
      */
-    private void handleDynamicHasBeDeleted(int code, Long feed_id) {
+    private void handleDynamicHasBeDeleted(int code, Long dynamic_id) {
         if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
-//            mDynamicDetailBeanV2GreenDao.deleteDynamicByFeedId(feed_id);
+            mGroupDynamicListBeanGreenDaoimpl.deleteSingleCache(dynamic_id);
             mRootView.dynamicHasBeDeleted();
         } else {
             mRootView.loadAllError();
@@ -288,7 +295,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                     @Override
                     protected void onSuccess(List<FollowFansBean> data) {
                         mRootView.setDigHeadIcon(data);
-//                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
+                        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
                     }
 
                     @Override
