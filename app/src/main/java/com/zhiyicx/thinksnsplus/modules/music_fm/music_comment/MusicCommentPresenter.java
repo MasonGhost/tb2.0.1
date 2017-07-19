@@ -167,7 +167,7 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id()
                 + "" + System.currentTimeMillis();
         createComment.setComment_mark(Long.parseLong(comment_mark));
-        createComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+        createComment.setUser_id((int) AppApplication.getmCurrentLoginAuth().getUser_id());
         createComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
         if (reply_id == 0) {// 回复资讯

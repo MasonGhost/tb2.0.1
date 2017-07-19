@@ -3,15 +3,13 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -111,12 +109,11 @@ public class AuthRepository implements IAuthRepository {
             return;
         }
         CommonClient commonClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
-        String imei = DeviceUtils.getIMEI(mContext);
-        commonClient.refreshToken(authBean.getRefresh_token(), imei)
+        commonClient.refreshToken(authBean.getToken())
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<AuthBean>() {
+                .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
                         // 获取了最新的token，将这些信息保存起来
@@ -217,15 +214,7 @@ public class AuthRepository implements IAuthRepository {
         if (authBean == null) {// 没有token，不需要刷新
             return false;
         }
-        long createTime = TimeUtils.string2MillisDefaultLocal(authBean.getCreated_at());
-        int expiers = authBean.getExpires();
-        int days = TimeUtils.getifferenceDays((createTime + expiers) * 1000);//表示token过期时间距离现在的时间
-        if (expiers == 0) {// 永不过期,不需要刷新token
-            return false;
-        } else if (days >= -1) {// 表示当前时间是过期时间的前一天,或者已经过期,需要尝试刷新token
-            return true;
-        }
-        return false;
+        return authBean.getToken_is_expired();
     }
 
 }

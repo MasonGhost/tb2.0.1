@@ -117,12 +117,11 @@ public interface CommonClient {
     /**
      * 刷新 token
      *
-     * @param deviceCode  设备号
-     * @param refrshToken 刷新token
-     * @return 成功后自动调用auth接口，返回信息和login一样
+     * @param token 刷新 token
+     * @return 成功后自动调用 auth 接口，返回信息和 login 一样
      */
     @PATCH(APP_PATH_REFRESH_TOKEN)
-    Observable<BaseJson<AuthBean>> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
+    Observable<AuthBean> refreshToken(@Path("token") String token);
 
     /**
      * 查看扩展包安装状态

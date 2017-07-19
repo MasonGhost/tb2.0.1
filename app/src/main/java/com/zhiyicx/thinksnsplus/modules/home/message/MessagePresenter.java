@@ -181,7 +181,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 获取对话列表
      */
     private void getCoversationList() {
-        mRepository.getConversationList(AppApplication.getmCurrentLoginAuth().getUser_id())
+        mRepository.getConversationList((int) AppApplication.getmCurrentLoginAuth().getUser_id())
                 .doAfterTerminate(() -> mRootView.hideLoading())
                 .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
                     @Override

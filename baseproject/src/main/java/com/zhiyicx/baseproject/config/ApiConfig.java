@@ -300,7 +300,7 @@ public class ApiConfig {
      * 通用 CommonClient
      */
     public static final String APP_PATH_GET_VERTIFYCODE = "api/" + API_VERSION + "/auth/phone/send-code";// 获取验证码
-    public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION + "/auth";// 刷新 token
+    public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION_2 + "/tokens/{token}";// 刷新 token
     public static final String APP_PATH_CREATE_STORAGE_TASK = "api/" + API_VERSION + "/storages/task";// 储存任务创建
     public static final String APP_PATH_NOTIFY_STORAGE_TASK =
             "api/" + API_VERSION + "/storages/task/{storage_task_id}";//  储存任务通知

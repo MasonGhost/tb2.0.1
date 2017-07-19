@@ -3,24 +3,80 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.common.config.ConstantConfig;
 
 import java.io.Serializable;
 
+
 /**
- * @author LiuChao
- * @describe
- * @date 2017/1/3
- * @contact email:450127106@qq.com
+ * @Describe 用户认证信息
+ * @Author Jungle68
+ * @Date 2017/7/19
+ * @Contact master.jungle68@gmail.com
  */
+
 public class AuthBean extends CacheBean implements Parcelable, Serializable {
     public static final long serialVersionUID = 536871008l;
-
+    private static final long REQUEST_TIME_OFFSET = 10_000;
+    /**
+     * {
+     * "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6Ly9wbHVzLmlvL2FwaS92Mi90b2tlbnMiLCJpYXQiOjE1MDAzNjU5MzQsImV4cCI6MTUwMTU3NTUzNCwibmJmIjoxNTAwMzY1OTM0LCJqdGkiOiJ1aXlvdTQwNnJsdU9pa3l3In0.OTM4mbH3QW7busunRsFUsheE5vysuIfrBrwjWnd0J6k",
+     * "user": {
+     * "id": 1,
+     * "name": "创始人",
+     * "bio": "我是大管理员",
+     * "sex": 0,
+     * "location": "成都市 四川省 中国",
+     * "created_at": "2017-06-02 08:43:54",
+     * "updated_at": "2017-07-06 07:04:06",
+     * "avatar": "http://plus.io/api/v2/users/1/avatar",
+     * "extra": {
+     * "user_id": 1,
+     * "likes_count": 0,
+     * "comments_count": 0,
+     * "followers_count": 0,
+     * "followings_count": 1,
+     * "updated_at": "2017-07-16 09:44:25",
+     * "feeds_count": 0
+     * }
+     * },
+     * "ttl": 20160, 用户token的有效期(单位:秒)
+     * "refresh_ttl": 40320
+     * }
+     */
 
     private String token;
-    private long refresh_ttl; // 刷新 token
-    private long ttl;// 用户token的有效期(单位:秒)
+    @SerializedName("refresh_ttl")
+    private long refresh_token; // 刷新 token 过期时间 间隔时间(单位:分钟)
+    @SerializedName("ttl")
+    private long expires;// 用户 token 的有效期(单位:分钟) 过期时间 ，间隔时间
+    private long user_id;
     private UserInfoBean user;
+
+    private long token_request_time = System.currentTimeMillis(); // 请求 token 的当前时间
+
+    public long getUser_id() {
+        if (user != null) {
+            return user.getUser_id();
+        } else {
+            return user_id;
+        }
+    }
+
+    public void setUser_id(long user_id) {
+        this.user_id = user_id;
+    }
+
+
+    public long getExpires() {
+        return expires;
+    }
+
+    public void setExpires(long expires) {
+        this.expires = expires;
+    }
 
     public String getToken() {
         return token;
@@ -30,20 +86,28 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.token = token;
     }
 
-    public long getRefresh_ttl() {
-        return refresh_ttl;
+    public long getRefresh_token() {
+        return refresh_token;
     }
 
-    public void setRefresh_ttl(long refresh_ttl) {
-        this.refresh_ttl = refresh_ttl;
+    public void setRefresh_token(long refresh_token) {
+        this.refresh_token = refresh_token;
     }
 
-    public long getTtl() {
-        return ttl;
+    public boolean getRefresh_token_is_expired() {
+        if (System.currentTimeMillis() - refresh_token * ConstantConfig.MIN == REQUEST_TIME_OFFSET) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void setTtl(long ttl) {
-        this.ttl = ttl;
+    public boolean getToken_is_expired() {
+        if (System.currentTimeMillis() - expires * ConstantConfig.MIN == REQUEST_TIME_OFFSET) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public UserInfoBean getUser() {
@@ -54,6 +118,21 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.user = user;
     }
 
+    public AuthBean() {
+    }
+
+    @Override
+    public String toString() {
+        return "AuthBean{" +
+                "token='" + token + '\'' +
+                ", refresh_token=" + refresh_token +
+                ", expires=" + expires +
+                ", user_id=" + user_id +
+                ", user=" + user +
+                ", token_request_time=" + token_request_time +
+                '}';
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -62,19 +141,20 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.token);
-        dest.writeLong(this.refresh_ttl);
-        dest.writeLong(this.ttl);
+        dest.writeLong(this.refresh_token);
+        dest.writeLong(this.expires);
+        dest.writeLong(this.user_id);
         dest.writeParcelable(this.user, flags);
-    }
-
-    public AuthBean() {
+        dest.writeLong(this.token_request_time);
     }
 
     protected AuthBean(Parcel in) {
         this.token = in.readString();
-        this.refresh_ttl = in.readLong();
-        this.ttl = in.readLong();
+        this.refresh_token = in.readLong();
+        this.expires = in.readLong();
+        this.user_id = in.readLong();
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.token_request_time = in.readLong();
     }
 
     public static final Creator<AuthBean> CREATOR = new Creator<AuthBean>() {
@@ -88,14 +168,4 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
             return new AuthBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "AuthBean{" +
-                "token='" + token + '\'' +
-                ", refresh_ttl=" + refresh_ttl +
-                ", ttl=" + ttl +
-                ", user=" + user +
-                '}';
-    }
 }

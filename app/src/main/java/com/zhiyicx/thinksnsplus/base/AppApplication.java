@@ -322,9 +322,9 @@ public class AppApplication extends TSApplication {
      * @return
      */
 
-    public static int getMyUserIdWithdefault() {
+    public static long getMyUserIdWithdefault() {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        int userId;
+        long userId;
         if (authBean == null) {
             userId = -1;
         } else {
