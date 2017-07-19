@@ -18,37 +18,9 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
 
 
     private String token;
-    private String refresh_token;
-    private int user_id;
-    private int expires;// 用户token的有效期(单位:秒)
-    private int state;
-    private int id;
-    private String created_at;// 用户权限token开始时间(单位秒的时间戳)
-    private String updated_at;// 用户权限token开始时间(单位秒的时间戳)
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
-    public int getExpires() {
-        return expires;
-    }
-
-    public void setExpires(int expires) {
-        this.expires = expires;
-    }
+    private long refresh_ttl; // 刷新 token
+    private long ttl;// 用户token的有效期(单位:秒)
+    private UserInfoBean user;
 
     public String getToken() {
         return token;
@@ -58,53 +30,28 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
         this.token = token;
     }
 
-    public String getRefresh_token() {
-        return refresh_token;
+    public long getRefresh_ttl() {
+        return refresh_ttl;
     }
 
-    public void setRefresh_token(String refresh_token) {
-        this.refresh_token = refresh_token;
+    public void setRefresh_ttl(long refresh_ttl) {
+        this.refresh_ttl = refresh_ttl;
     }
 
-    public int getState() {
-        return state;
+    public long getTtl() {
+        return ttl;
     }
 
-    public void setState(int state) {
-        this.state = state;
+    public void setTtl(long ttl) {
+        this.ttl = ttl;
     }
 
-    public int getId() {
-        return id;
+    public UserInfoBean getUser() {
+        return user;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
-    }
-
-    public AuthBean() {
-    }
-
-    @Override
-    public String toString() {
-        return "AuthBean{" +
-                "token='" + token + '\'' +
-                ", refresh_token='" + refresh_token + '\'' +
-                ", user_id=" + user_id +
-                ", expires=" + expires +
-                ", state=" + state +
-                ", id=" + id +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                '}';
+    public void setUser(UserInfoBean user) {
+        this.user = user;
     }
 
     @Override
@@ -115,24 +62,19 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.token);
-        dest.writeString(this.refresh_token);
-        dest.writeInt(this.user_id);
-        dest.writeInt(this.expires);
-        dest.writeInt(this.state);
-        dest.writeInt(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
+        dest.writeLong(this.refresh_ttl);
+        dest.writeLong(this.ttl);
+        dest.writeParcelable(this.user, flags);
+    }
+
+    public AuthBean() {
     }
 
     protected AuthBean(Parcel in) {
         this.token = in.readString();
-        this.refresh_token = in.readString();
-        this.user_id = in.readInt();
-        this.expires = in.readInt();
-        this.state = in.readInt();
-        this.id = in.readInt();
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
+        this.refresh_ttl = in.readLong();
+        this.ttl = in.readLong();
+        this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
     }
 
     public static final Creator<AuthBean> CREATOR = new Creator<AuthBean>() {
@@ -146,4 +88,14 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
             return new AuthBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "AuthBean{" +
+                "token='" + token + '\'' +
+                ", refresh_ttl=" + refresh_ttl +
+                ", ttl=" + ttl +
+                ", user=" + user +
+                '}';
+    }
 }

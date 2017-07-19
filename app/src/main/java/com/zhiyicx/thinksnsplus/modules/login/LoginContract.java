@@ -38,7 +38,6 @@ public interface LoginContract {
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository {
-        Observable<BaseJson<AuthBean>> login(Context context, String phone, String password);
 
         Observable<AuthBean> loginV2(final String account, final String password);
     }
