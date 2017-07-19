@@ -50,6 +50,6 @@ public class GlideConfiguration implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-//        glide.register(String.class, InputStream.class, new ImageUtils.V2ImageHeaderedLoader.StreamFactory("Bearer "+AppApplication.getTOKEN()));
+//        glide.registerByPhone(String.class, InputStream.class, new ImageUtils.V2ImageHeaderedLoader.StreamFactory("Bearer "+AppApplication.getTOKEN()));
     }
 }

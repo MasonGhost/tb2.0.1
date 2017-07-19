@@ -31,13 +31,7 @@ import rx.schedulers.Schedulers;
 public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, LoginContract.View> implements LoginContract.Presenter {
 
     @Inject
-    public LoginPresenter(LoginContract.Repository repository, LoginContract.View rootView) {
-        super(repository, rootView);
-    }
-
-    @Inject
     AuthRepository mAuthRepository;
-
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -46,6 +40,11 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     WalletRepository mWalletRepository;
+
+    @Inject
+    public LoginPresenter(LoginContract.Repository repository, LoginContract.View rootView) {
+        super(repository, rootView);
+    }
 
     @Override
     public void login(String phone, String password) {
