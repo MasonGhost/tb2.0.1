@@ -33,15 +33,11 @@ public interface GroupDynamicDetailContract {
 
         /**
          * 设置是否喜欢该动态
-         *
-         * @param isLike
          */
         void setLike(boolean isLike);
 
         /**
          * 设置是否收藏该动态
-         *
-         * @param isCollect
          */
         void setCollect(boolean isCollect);
 
@@ -67,8 +63,6 @@ public interface GroupDynamicDetailContract {
 
         /**
          * 获取当前动态在列表中的位置
-         *
-         * @return
          */
         Bundle getArgumentsBundle();
 
@@ -100,44 +94,36 @@ public interface GroupDynamicDetailContract {
     interface Repository extends IDynamicReppsitory {
         /**
          * 获取用户关注状态
-         *
-         * @param user_ids
-         * @return
          */
         Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
     }
 
     interface Presenter extends ITSListPresenter<GroupDynamicCommentListBean> {
-        /**
-         * 获取当前动态
-         *
-         * @param feed_id
-         */
-        void getCurrentDynamic(long feed_id);
 
         /**
-         * 获取当前动态详情 V2
+         * 获取当前动态详情
          *
-         * @param feed_id
+         * @param group_id   圈子id
+         * @param dynamic_id 动态id
          */
-        void getCurrentDynamicDetail(long feed_id,int topFlag);
+        void getCurrentDynamicDetail(long group_id, long dynamic_id);
 
         /**
          * 获取当前动态的点赞列表
          */
-        void getDetailAll(Long feed_id, Long max_id, String user_ids,int topFlag);
+        void getDetailAll(long group_id, long dynamic_id, Long max_id, String user_ids);
 
         /**
          * 获取当前动态的点赞列表
          */
-        void getDynamicDigList(Long feed_id, Long max_id);
+        void getDynamicDigList(long group_id, long dynamic_id, long max_id);
 
         /**
          * 处理喜欢逻辑
          *
          * @param groupDynamicListBean 更新数据库
          */
-        void handleLike(boolean isLiked, Long feed_id, GroupDynamicListBean groupDynamicListBean);
+        void handleLike(boolean isLiked, long group_id, long dynamic_id, GroupDynamicListBean groupDynamicListBean);
 
         /**
          * 处理收藏逻辑
@@ -160,22 +146,8 @@ public interface GroupDynamicDetailContract {
          */
         void getUserFollowState(String user_ids);
 
-        /**
-         * send a comment
-         *
-         * @param replyToUserId  comment  to who
-         * @param commentContent comment content
-         */
-        void sendComment(long replyToUserId, String commentContent);
         void sendCommentV2(long replyToUserId, String commentContent);
 
-        /**
-         * delete a comment
-         *
-         * @param comment_id      comment's id
-         * @param commentPosition comment curren position
-         */
-        void deleteComment(long comment_id, int commentPosition);
         void deleteCommentV2(long comment_id, int commentPosition);
 
         /**
@@ -183,7 +155,6 @@ public interface GroupDynamicDetailContract {
          *
          * @param user_id   the dynamic is belong to
          * @param feed_mark the dynamic's feed_mark
-         * @return
          */
         boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark);
 
@@ -191,6 +162,6 @@ public interface GroupDynamicDetailContract {
 
         void checkNote(int note);
 
-        void payNote(int imagePosition,int note,boolean isImage);
+        void payNote(int imagePosition, int note, boolean isImage);
     }
 }

@@ -5,9 +5,11 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
 
 import java.util.List;
 
@@ -113,7 +115,10 @@ public interface ChannelClient {
      * @param dynamic_id 动态id
      */
     @GET(ApiConfig.APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST)
-    Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(@Path("group") long group_id, @Path("post") long dynamic_id);
+    Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(@Path("group") long group_id,
+                                                                             @Path("post") long dynamic_id,
+                                                                             @Query("limit") int limit,
+                                                                             @Query("after") long max_id);
 
 
     /**
@@ -139,4 +144,13 @@ public interface ChannelClient {
      */
     @DELETE(ApiConfig.APP_PATH_COLLECT_GROUP_DYNAMIC)
     Observable<BaseJsonV2> cancelCollectGroupDynamic(@Path("group") long group_id, @Path("post") long dynamic_id);
+
+    /**
+     * 获取动态点赞列表
+     */
+    @GET(ApiConfig.APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST)
+    Observable<List<FollowFansBean>> getDigList(@Path("group") long group_id,
+                                                @Path("post") long dynamic_id,
+                                                @Query("limit") int limit,
+                                                @Query("after") long max_id);
 }
