@@ -290,7 +290,7 @@ public class AppApplication extends TSApplication {
 
     @Override
     protected SSLSocketFactory getSSLSocketFactory() {
-        if (ApiConfig.APP_DOMAIN.contains("https")) {
+        if (ApiConfig.APP_IS_NEED_SSH_CERTIFICATE) {
             return super.getSSLSocketFactory();
         } else {
             int[] a = {R.raw.plus};
