@@ -12,7 +12,6 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.converter.PropertyConverter;
@@ -77,9 +76,11 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     @Transient
     private String sexString;   // sex编号对应的具体值，不保存到数据库中
     private String location;
-
+    @Transient
     private String province;    // 省
+    @Transient
     private String city;        // 城市
+    @Transient
     private String area;        // 区
 
 
@@ -399,6 +400,28 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     }
 
 
+    /**
+     * UserInfoExtraBean 转 String 形式存入数据库
+     */
+    public static class ExtraParamsConverter implements PropertyConverter<UserInfoExtraBean, String> {
+
+        @Override
+        public UserInfoExtraBean convertToEntityProperty(String databaseValue) {
+            if (databaseValue == null) {
+                return null;
+            }
+            return ConvertUtils.base64Str2Object(databaseValue);
+        }
+
+        @Override
+        public String convertToDatabaseValue(UserInfoExtraBean entityProperty) {
+            if (entityProperty == null) {
+                return null;
+            }
+            return ConvertUtils.object2Base64Str(entityProperty);
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -414,6 +437,9 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
         dest.writeInt(this.sex);
         dest.writeString(this.sexString);
         dest.writeString(this.location);
+        dest.writeString(this.province);
+        dest.writeString(this.city);
+        dest.writeString(this.area);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeString(this.avatar);
@@ -431,33 +457,15 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
         this.sex = in.readInt();
         this.sexString = in.readString();
         this.location = in.readString();
+        this.province = in.readString();
+        this.city = in.readString();
+        this.area = in.readString();
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.avatar = in.readString();
         this.cover = in.readString();
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
-    }
-
-    @Generated(hash = 95474078)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-                        String location, String province, String city, String area, String created_at,
-                        String updated_at, String avatar, String cover, UserInfoExtraBean extra) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.province = province;
-        this.city = city;
-        this.area = area;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.extra = extra;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -483,6 +491,9 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
                 ", sex=" + sex +
                 ", sexString='" + sexString + '\'' +
                 ", location='" + location + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", area='" + area + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
                 ", avatar='" + avatar + '\'' +
@@ -491,28 +502,4 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
                 ", extra=" + extra +
                 '}';
     }
-
-
-    /**
-     * UserInfoExtraBean 转 String 形式存入数据库
-     */
-    public static class ExtraParamsConverter implements PropertyConverter<UserInfoExtraBean, String> {
-
-        @Override
-        public UserInfoExtraBean convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(UserInfoExtraBean entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
 }
