@@ -414,11 +414,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             case 3: // 更多
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getCollections() == 1);
+                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT);
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
-                            .getCollections() == 1, shareBitMap);
+                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT, shareBitMap);
                     mOtherDynamicPopWindow.show();
                 }
                 break;
@@ -497,7 +497,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 mListDatas.get(dataPosition).getDiggs() - 1 : mListDatas.get(dataPosition).getDiggs() + 1);
         refreshData(dataPosition);
         mPresenter.handleLike(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.IS_DIGG,
-                mListDatas.get(dataPosition).getId(), dataPosition);
+                mListDatas.get(dataPosition).getId(), mListDatas.get(dataPosition).getGroup_id(), dataPosition);
     }
 
     /**
@@ -509,7 +509,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         // 先更新界面，再后台处理
         mPresenter.handleCollect(mListDatas.get(dataPosition));
         boolean is_collection = mListDatas.get(dataPosition).getIs_collection() == GroupDynamicListBean.IS_COLLECT;// 旧状态
-        mListDatas.get(dataPosition).setCollections(is_collection ?
+        mListDatas.get(dataPosition).setIs_collection(is_collection ?
                 GroupDynamicListBean.UN_COLLECT : GroupDynamicListBean.IS_COLLECT);
         refreshData(dataPosition);
     }

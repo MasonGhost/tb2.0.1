@@ -73,10 +73,11 @@ public interface ChannelDetailContract {
          * handle like status
          *
          * @param isLiked true,do like ,or  cancle like
-         * @param feed_id dynamic id
-         * @param postion current item position
+         * @param dynamic_id dynamic id
+         * @param group_id group id
+         * @param position dynamic position
          */
-        void handleLike(boolean isLiked, Long feed_id, int postion);
+        void handleLike(boolean isLiked, long group_id, long dynamic_id,int position);
 
         /**
          * add viewcount

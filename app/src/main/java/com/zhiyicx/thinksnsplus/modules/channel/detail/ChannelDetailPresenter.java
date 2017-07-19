@@ -21,11 +21,8 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
@@ -37,14 +34,12 @@ import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoim
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -67,14 +62,13 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 @FragmentScoped
 public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContract.Repository, ChannelDetailContract.View>
         implements ChannelDetailContract.Presenter, OnShareCallbackListener {
-    private static final int NEED_INTERFACE_NUM = 1;
 
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
-    GroupDynamicCommentListBeanGreenDaoImpl mDynamicCommentBeanGreenDaoImpl;
+    GroupDynamicCommentListBeanGreenDaoImpl mGroupDynamicCommentBeanGreenDaoImpl;
     @Inject
     GroupDynamicListBeanGreenDaoimpl mGroupDynamicListBeanGreenDaoimpl;
     @Inject
@@ -106,7 +100,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     .map(groupZipBean -> {
                         List<GroupDynamicListBean> data = groupZipBean.getGroupDynamicList();
                         for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mDynamicCommentBeanGreenDaoImpl.getMySendingComment(data.get(i).getMaxId().intValue());
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(data.get(i).getMaxId().intValue());
                             if (!dynamicCommentBeen.isEmpty()) {
                                 dynamicCommentBeen.addAll(data.get(i).getNew_comments());
                                 data.get(i).getNew_comments().clear();
@@ -149,7 +143,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                             data.addAll(listBaseJson);
                         }
                         for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
-                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
                             if (!dynamicCommentBeen.isEmpty()) {
                                 dynamicCommentBeen.addAll(listBaseJson.get(i).getNew_comments());
                                 listBaseJson.get(i).getNew_comments().clear();
@@ -222,17 +216,18 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     /**
      * handle like or cancle like in background
      *
-     * @param isLiked true,do like ,or  cancle like
-     * @param feed_id dynamic id
-     * @param postion current item position
+     * @param isLiked    true,do like ,or  cancle like
+     * @param dynamic_id dynamic id
+     * @param group_id   group id
+     * @param position   dynamic position
      */
     @Override
-    public void handleLike(boolean isLiked, final Long feed_id, final int postion) {
-        if (feed_id == null || feed_id == 0) {
+    public void handleLike(boolean isLiked, long group_id, long dynamic_id, int position) {
+        if (dynamic_id == 0) {
             return;
         }
-        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getListDatas().get(postion));
-        mRepository.handleLike(isLiked, feed_id);
+        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getListDatas().get(position));
+        mRepository.handleLike(isLiked, group_id, dynamic_id);
     }
 
     @Override
@@ -242,7 +237,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         // 更新数据库
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
         // 通知服务器
-        mRepository.handelCollect(is_collection,dynamicBean.getGroup_id(),dynamicBean.getId());
+        mRepository.handelCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
     }
 
     @Override
@@ -265,7 +260,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     public void deleteComment(GroupDynamicListBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
         mRootView.getListDatas().get(dynamicPosition).setComments(dynamicBean.getComments() - 1);
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
-        mDynamicCommentBeanGreenDaoImpl.deleteSingleCache(dynamicBean.getNew_comments().get(commentPositon));
+        mGroupDynamicCommentBeanGreenDaoImpl.deleteSingleCache(dynamicBean.getNew_comments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getNew_comments().remove(commentPositon);
         mRootView.refreshData(dynamicPosition);
         mRepository.deleteComment(dynamicBean.getId(), comment_id);
@@ -306,7 +301,9 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         GroupDynamicCommentListBean creatComment = new GroupDynamicCommentListBean();
         creatComment.setState(DynamicCommentBean.SEND_ING);
         creatComment.setContent(commentContent);
-        creatComment.setId(mRootView.getListDatas().get(mCurrentPostion).getId());
+        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
+        creatComment.setComment_mark(Long.parseLong(comment_mark));
+        creatComment.setFeed_id(mRootView.getListDatas().get(mCurrentPostion).getId().intValue());
         creatComment.setReply_to_user_id(replyToUserId);
         if (replyToUserId == 0) { //当回复动态的时候
             UserInfoBean userInfoBean = new UserInfoBean();
@@ -326,8 +323,12 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         mRootView.getListDatas().get(mCurrentPostion).setComments(mRootView.getListDatas().get(mCurrentPostion).getComments() + 1);
         mRootView.refreshData();
 
-        mDynamicCommentBeanGreenDaoImpl.insertOrReplace(creatComment);
-        mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion).getId(), replyToUserId, (long) creatComment.getFeed_id());
+        mGroupDynamicCommentBeanGreenDaoImpl.insertOrReplace(creatComment);
+        mRepository.sendGroupComment(commentContent,
+                (long) mRootView.getListDatas().get(mCurrentPostion).getGroup_id(),
+                mRootView.getListDatas().get(mCurrentPostion).getId(),
+                replyToUserId,
+                creatComment.getComment_mark());
 
     }
 

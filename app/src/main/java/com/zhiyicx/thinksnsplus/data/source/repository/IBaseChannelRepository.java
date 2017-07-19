@@ -59,6 +59,7 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
 
     void handleGroupJoin(GroupInfoBean groupInfoBean);
 
+    void sendGroupComment(String commentContent,Long group_id, Long feed_id, Long reply_to_user_id,Long comment_mark);
 
     Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean);
 
