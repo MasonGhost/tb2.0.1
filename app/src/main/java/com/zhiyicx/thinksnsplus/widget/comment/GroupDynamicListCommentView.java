@@ -56,7 +56,7 @@ public class GroupDynamicListCommentView extends LinearLayout {
         init();
     }
 
-    protected void init() {
+    private void init() {
         setOrientation(VERTICAL);
         LayoutInflater.from(getContext()).inflate(R.layout.view_group_dynamic_list_comment, this);
         mGroupDynamicNoPullRecycleView = (GroupDynamicNoPullRecycleView) findViewById(R.id.fl_comment);

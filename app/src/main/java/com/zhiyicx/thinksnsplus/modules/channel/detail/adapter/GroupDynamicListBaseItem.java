@@ -248,10 +248,10 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                         });
             }
 
-            holder.setVisible(R.id.dcv_comment, showCommentList ? View.VISIBLE : View.GONE);
+            holder.setVisible(R.id.dcv_comment,View.GONE);
             if (showCommentList) {
                 // 设置评论内容
-                GroupDynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+                GroupDynamicListCommentView comment = holder.getView(R.id.group_comment);
                 if (dynamicBean.getNew_comments() == null || dynamicBean.getNew_comments().isEmpty()) {
                     comment.setVisibility(View.GONE);
                 } else {

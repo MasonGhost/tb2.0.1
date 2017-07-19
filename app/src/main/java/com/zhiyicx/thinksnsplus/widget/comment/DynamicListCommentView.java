@@ -33,7 +33,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListCommentView extends GroupDynamicListCommentView {
+public class DynamicListCommentView extends LinearLayout {
     private static final int SHOW_MORE_COMMENT_SIZE_LIMIT = 6;
 
     private DynamicNoPullRecycleView mDynamicNoPullRecycleView;
@@ -49,18 +49,20 @@ public class DynamicListCommentView extends GroupDynamicListCommentView {
 
     public DynamicListCommentView(Context context) {
         super(context);
+        init();
     }
 
     public DynamicListCommentView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public DynamicListCommentView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
-    @Override
-    protected void init() {
+    private void init() {
         setOrientation(VERTICAL);
         LayoutInflater.from(getContext()).inflate(R.layout.view_dynamic_list_comment, this);
         mDynamicNoPullRecycleView = (DynamicNoPullRecycleView) findViewById(R.id.fl_comment);
