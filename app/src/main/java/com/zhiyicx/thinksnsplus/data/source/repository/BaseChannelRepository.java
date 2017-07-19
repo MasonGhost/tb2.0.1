@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
@@ -232,6 +233,8 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     @Override
     public Observable<List<GroupDynamicCommentListBean>> getGroupDynamicCommentList(long group_id, long dynamic_id, long max_id) {
         return mChannelClient.getGroupDynamicCommentList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<List<GroupDynamicCommentListBean>, Observable<List<GroupDynamicCommentListBean>>>() {
                     @Override
                     public Observable<List<GroupDynamicCommentListBean>> call(List<GroupDynamicCommentListBean> groupDynamicCommentListBeen) {
@@ -263,15 +266,17 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
-    public Observable<List<FollowFansBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id) {
+    public Observable<List<GroupDynamicLikeListBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id) {
         return mChannelClient.getDigList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
-                .flatMap(new Func1<List<FollowFansBean>, Observable<List<FollowFansBean>>>() {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<GroupDynamicLikeListBean>, Observable<List<GroupDynamicLikeListBean>>>() {
                     @Override
-                    public Observable<List<FollowFansBean>> call(List<FollowFansBean> followFansBeen) {
+                    public Observable<List<GroupDynamicLikeListBean>> call(List<GroupDynamicLikeListBean> followFansBeen) {
                         List<Object> user_ids = new ArrayList<>();
                         if (followFansBeen != null) {
-                            for (FollowFansBean followFansBean : followFansBeen) {
-                                user_ids.add(followFansBean.getTargetUserId());
+                            for (GroupDynamicLikeListBean followFansBean : followFansBeen) {
+                                user_ids.add(followFansBean.getId());
                             }
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {
@@ -280,8 +285,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         for (int i = 0; i < followFansBeen.size(); i++) {
-                                            followFansBeen.get(i).setTargetUserInfo(userInfoBeanSparseArray.get(
-                                                    (int) followFansBeen.get(i).getTargetUserId()));
+                                            followFansBeen.get(i).setMUserInfoBean(userInfoBeanSparseArray.get(Integer.parseInt(String.valueOf(followFansBeen.get(i).getId()))));
                                         }
                                         return followFansBeen;
                                     });
@@ -294,7 +298,29 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
 
     @Override
     public Observable<GroupDynamicListBean> getGroupDynamicDetail(long group_id, long dynamic_id) {
-        return mChannelClient.getGroupDynamicDetail(group_id, dynamic_id);
+        return mChannelClient.getGroupDynamicDetail(group_id, dynamic_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<GroupDynamicListBean, Observable<GroupDynamicListBean>>() {
+                    @Override
+                    public Observable<GroupDynamicListBean> call(GroupDynamicListBean groupDynamicListBean) {
+                        List<Object> user_ids = new ArrayList<>();
+                        if (groupDynamicListBean != null){
+                            user_ids.add(groupDynamicListBean.getUser_id());
+                            return mUserInfoRepository.getUserInfo(user_ids)
+                                    .map(listBaseJson -> {
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        groupDynamicListBean.setUserInfoBean(
+                                                userInfoBeanSparseArray.get(Integer.parseInt(String.valueOf(groupDynamicListBean.getUser_id()))));
+                                        return groupDynamicListBean;
+                                    });
+                        }
+                        return null;
+                    }
+                });
     }
 
     @Override

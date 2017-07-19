@@ -4,12 +4,10 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
 
 import java.util.List;
 
@@ -152,10 +150,10 @@ public interface ChannelClient {
      * 获取动态点赞列表
      */
     @GET(ApiConfig.APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST)
-    Observable<List<FollowFansBean>> getDigList(@Path("group") long group_id,
-                                                @Path("post") long dynamic_id,
-                                                @Query("limit") int limit,
-                                                @Query("after") long max_id);
+    Observable<List<GroupDynamicLikeListBean>> getDigList(@Path("group") long group_id,
+                                                          @Path("post") long dynamic_id,
+                                                          @Query("limit") int limit,
+                                                          @Query("after") long max_id);
 
     /**
      * 发布动态 v2 接口--圈子
