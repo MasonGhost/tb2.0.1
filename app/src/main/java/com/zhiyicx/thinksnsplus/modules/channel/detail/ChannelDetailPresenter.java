@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
@@ -90,9 +89,6 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
 
     }
 
-//    private int mInterfaceNum = 0;//纪录请求接口数量，用于统计接口是否全部请求完成，需要接口全部请求完成后在显示界面
-//    SparseArray<Long> msendingStatus = new SparseArray<>();
-
     @Inject
     public ChannelDetailPresenter(ChannelDetailContract.Repository repository, ChannelDetailContract.View rootView) {
         super(repository, rootView);
@@ -104,102 +100,86 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        long channel_id = mRootView.getChannelId();
+        long group_id = mRootView.getGroupId();
 
         if (!isLoadMore) {
-            Observable.zip(mRepository.getGroupDetail(maxId), mRepository.getDynamicListFromGroup(channel_id, maxId)
-                    , new Func2<GroupInfoBean, List<GroupDynamicListBean>, GroupZipBean>() {
-                        @Override
-                        public GroupZipBean call(GroupInfoBean groupInfoBean, List<GroupDynamicListBean> groupDynamicListBeen) {
-                            return new GroupZipBean(groupInfoBean, groupDynamicListBeen);
-                        }
-                    })
-                    .map(new Func1<GroupZipBean, GroupZipBean>() {
-                        @Override
-                        public GroupZipBean call(GroupZipBean groupZipBean) {
-                            List<GroupDynamicListBean> data = groupZipBean.getGroupDynamicList();
-                            for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
-                                List<GroupDynamicCommentListBean> dynamicCommentBeen = mDynamicCommentBeanGreenDaoImpl.getMySendingComment(data.get(i).getMaxId().intValue());
-                                if (!dynamicCommentBeen.isEmpty()) {
-                                    dynamicCommentBeen.addAll(data.get(i).getNew_comments());
-                                    data.get(i).getNew_comments().clear();
-                                    data.get(i).getNew_comments().addAll(dynamicCommentBeen);
-                                }
+            Subscription subscription = Observable.zip(mRepository.getGroupDetail(group_id), mRepository.getDynamicListFromGroup(group_id, maxId)
+                    , GroupZipBean::new)
+                    .map(groupZipBean -> {
+                        List<GroupDynamicListBean> data = groupZipBean.getGroupDynamicList();
+                        for (int i = 0; i < data.size(); i++) { // 把自己发的评论加到评论列表的前面
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mDynamicCommentBeanGreenDaoImpl.getMySendingComment(data.get(i).getMaxId().intValue());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(data.get(i).getNew_comments());
+                                data.get(i).getNew_comments().clear();
+                                data.get(i).getNew_comments().addAll(dynamicCommentBeen);
                             }
-                            return groupZipBean;
                         }
+                        return groupZipBean;
                     })
                     .subscribe(new BaseSubscribeForV2<GroupZipBean>() {
                         @Override
                         protected void onSuccess(GroupZipBean zipData) {
-//                            mInterfaceNum++;
-//                        mRootView.onNetResponseSuccess(data, isLoadMore);
-                            allready();
+                            mRootView.onNetResponseSuccess(zipData.getGroupDynamicList(), isLoadMore);
+                            allready(zipData);
                         }
 
                         @Override
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
+                            mRootView.showSnackErrorMessage(message);
                         }
 
                         @Override
                         protected void onException(Throwable throwable) {
                             super.onException(throwable);
+                            mRootView.loadAllError();
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                            super.onCompleted();
+//                            mRootView.hideCenterLoading();
                         }
                     });
+            addSubscrebe(subscription);
         } else {
-
-        }
-
-        Subscription subscription = mRepository.getDynamicListFromGroup(channel_id, maxId)
-                .map(listBaseJson -> {
-                    if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
-                        List<GroupDynamicListBean> data = getGroupDynamicBeenFromDB();
-                        data.addAll(listBaseJson);
-                    }
-                    for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
-                        List<GroupDynamicCommentListBean> dynamicCommentBeen = mDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
-                        if (!dynamicCommentBeen.isEmpty()) {
-                            dynamicCommentBeen.addAll(listBaseJson.get(i).getNew_comments());
-                            listBaseJson.get(i).getNew_comments().clear();
-                            listBaseJson.get(i).getNew_comments().addAll(dynamicCommentBeen);
+            Subscription subscription = mRepository.getDynamicListFromGroup(group_id, maxId)
+                    .map(listBaseJson -> {
+                        if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                            List<GroupDynamicListBean> data = getGroupDynamicBeenFromDB();
+                            data.addAll(listBaseJson);
                         }
-                    }
+                        for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(listBaseJson.get(i).getNew_comments());
+                                listBaseJson.get(i).getNew_comments().clear();
+                                listBaseJson.get(i).getNew_comments().addAll(dynamicCommentBeen);
+                            }
+                        }
 
 
-                    return listBaseJson;
-                })
-                .subscribe(new BaseSubscribeForV2<List<GroupDynamicListBean>>() {
-                    @Override
-                    protected void onSuccess(List<GroupDynamicListBean> data) {
-//                        mInterfaceNum++;
-//                        mRootView.onNetResponseSuccess(data, isLoadMore);
-                        allready();
-                    }
+                        return listBaseJson;
+                    })
+                    .subscribe(new BaseSubscribeForV2<List<GroupDynamicListBean>>() {
+                        @Override
+                        protected void onSuccess(List<GroupDynamicListBean> data) {
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                        }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-//                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
-//                            mRootView.showMessage(message);
-//                        } else {
-//                            mRootView.loadAllError();
-//                        }
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            mRootView.loadAllError();
+                        }
 
-                        mRootView.loadAllError();
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-//                        if (mInterfaceNum >= NEED_INTERFACE_NUM) {
-//                            mRootView.onResponseError(throwable, isLoadMore);
-//                        } else {
-//                            mRootView.loadAllError();
-//                        }
-
-                        mRootView.loadAllError();
-                    }
-                });
-        addSubscrebe(subscription);
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            mRootView.loadAllError();
+                        }
+                    });
+            addSubscrebe(subscription);
+        }
     }
 
     @Override
@@ -229,10 +209,6 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             return new ArrayList<>();
         }
         List<GroupDynamicListBean> datas = mGroupDynamicListBeanGreenDaoimpl.getMySendingUnSuccessDynamic((long) AppApplication.getmCurrentLoginAuth().getUser_id());
-//        msendingStatus.clear();
-//        for (int i = 0; i < datas.size(); i++) {
-//            msendingStatus.put(i, datas.get(i).getId());
-//        }
         return datas;
     }
 
@@ -241,11 +217,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         return true;
     }
 
-    private void allready() {
-//        if (mInterfaceNum == NEED_INTERFACE_NUM) {
-//            mRootView.allDataReady();
-//        }
-        mRootView.allDataReady();
+    private void allready(GroupZipBean groupZipBean) {
+        mRootView.allDataReady(groupZipBean);
     }
 
     /**

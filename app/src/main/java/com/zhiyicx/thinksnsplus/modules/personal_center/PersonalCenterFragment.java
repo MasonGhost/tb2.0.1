@@ -94,7 +94,7 @@ import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalC
  */
 
 public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicDetailBeanV2> implements PersonalCenterContract.View, DynamicListBaseItem.OnReSendClickListener,
-        DynamicNoPullRecycleView.OnCommentStateClickListener, DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
+        DynamicNoPullRecycleView.OnCommentStateClickListener<DynamicCommentBean>, DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
         DynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, PhotoSelectorImpl.IPhotoBackListener {
 
     public static final String PERSONAL_CENTER_DATA = "personal_center_data";

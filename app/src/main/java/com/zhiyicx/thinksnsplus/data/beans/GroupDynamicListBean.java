@@ -212,10 +212,23 @@ public class GroupDynamicListBean extends BaseListBean {
         private String raw;
         private String size;
         private int width;
+        private int propPart;
         private int height;
         private int file_id;
         private String imgUrl;
         private String type;
+
+        public int getPropPart() {
+            return propPart;
+        }
+
+        public void setPropPart(int propPart) {
+            this.propPart = propPart;
+        }
+
+        public String getSize() {
+            return size;
+        }
 
         public void setWidth(int width) {
             this.width = width;
@@ -293,6 +306,7 @@ public class GroupDynamicListBean extends BaseListBean {
             dest.writeString(this.raw);
             dest.writeString(this.size);
             dest.writeInt(this.width);
+            dest.writeInt(this.propPart);
             dest.writeInt(this.height);
             dest.writeInt(this.file_id);
         }
@@ -304,6 +318,7 @@ public class GroupDynamicListBean extends BaseListBean {
             this.raw = in.readString();
             this.size = in.readString();
             this.width = in.readInt();
+            this.propPart = in.readInt();
             this.height = in.readInt();
             this.file_id = in.readInt();
         }

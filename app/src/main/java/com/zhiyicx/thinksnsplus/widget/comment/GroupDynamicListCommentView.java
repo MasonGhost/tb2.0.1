@@ -8,21 +8,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.widget.SimpleTextNoPullRecycleView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.TimeStringSortClass;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -33,39 +27,39 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListCommentView extends LinearLayout {
+public class GroupDynamicListCommentView extends LinearLayout {
     private static final int SHOW_MORE_COMMENT_SIZE_LIMIT = 6;
 
-    private DynamicNoPullRecycleView mDynamicNoPullRecycleView;
+    private GroupDynamicNoPullRecycleView mGroupDynamicNoPullRecycleView;
     private TextView mMoreComment;
 
 
     private OnMoreCommentClickListener mOnMoreCommentClickListener;
     private OnCommentClickListener mOnCommentClickListener;
-    private DynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
-    private DynamicDetailBeanV2 mDynamicBean;
+    private GroupDynamicNoPullRecycleView.OnCommentStateClickListener mOnCommentStateClickListener;
+    private GroupDynamicListBean mDynamicBean;
 
     private boolean mIsUserNameClick = false; // 标识用户名被点击还是评论被点击了
 
-    public DynamicListCommentView(Context context) {
+    public GroupDynamicListCommentView(Context context) {
         super(context);
         init();
     }
 
-    public DynamicListCommentView(Context context, AttributeSet attrs) {
+    public GroupDynamicListCommentView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public DynamicListCommentView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GroupDynamicListCommentView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    private void init() {
+    protected void init() {
         setOrientation(VERTICAL);
-        LayoutInflater.from(getContext()).inflate(R.layout.view_dynamic_list_comment, this);
-        mDynamicNoPullRecycleView = (DynamicNoPullRecycleView) findViewById(R.id.fl_comment);
+        LayoutInflater.from(getContext()).inflate(R.layout.view_group_dynamic_list_comment, this);
+        mGroupDynamicNoPullRecycleView = (GroupDynamicNoPullRecycleView) findViewById(R.id.fl_comment);
         mMoreComment = (TextView) findViewById(R.id.tv_more_comment);
         setListener();
     }
@@ -78,7 +72,7 @@ public class DynamicListCommentView extends LinearLayout {
                         mOnMoreCommentClickListener.onMoreCommentClick(mMoreComment, mDynamicBean);
                     }
                 });
-        mDynamicNoPullRecycleView.setOnUserNameClickListener(userInfoBean -> {
+        mGroupDynamicNoPullRecycleView.setOnUserNameClickListener(userInfoBean -> {
 
             if (!mIsUserNameClick) {
                 if (mOnCommentClickListener != null) {
@@ -87,7 +81,7 @@ public class DynamicListCommentView extends LinearLayout {
                 }
             }
         });
-        mDynamicNoPullRecycleView.setOnIitemClickListener((view, position) -> {
+        mGroupDynamicNoPullRecycleView.setOnIitemClickListener((view, position) -> {
 
             if (!mIsUserNameClick) {
                 if (mOnCommentClickListener != null) {
@@ -98,14 +92,14 @@ public class DynamicListCommentView extends LinearLayout {
 
             }
         });
-        mDynamicNoPullRecycleView.setOnUserNameLongClickListener(userInfoBean -> {
+        mGroupDynamicNoPullRecycleView.setOnUserNameLongClickListener(userInfoBean -> {
             if (!mIsUserNameClick) {
                 mIsUserNameClick = true;
             }
         });
         setOnClickListener(v -> {
         });
-        mDynamicNoPullRecycleView.setOnCommentStateClickListener((dynamicCommentBean, position) -> {
+        mGroupDynamicNoPullRecycleView.setOnCommentStateClickListener((dynamicCommentBean, position) -> {
             if (mOnCommentStateClickListener != null) {
                 mOnCommentStateClickListener.onCommentStateClick(dynamicCommentBean, position);
             }
@@ -117,22 +111,21 @@ public class DynamicListCommentView extends LinearLayout {
      *
      * @param dynamicBean
      */
-    public void setData(DynamicDetailBeanV2 dynamicBean) {
+    public void setData(GroupDynamicListBean dynamicBean) {
         mDynamicBean = dynamicBean;
-        List<DynamicCommentBean> data = new ArrayList<>();
+        List<GroupDynamicCommentListBean> data = new ArrayList<>();
 
-        if (dynamicBean.getComments() != null && !dynamicBean.getComments().isEmpty()) {
-            if (dynamicBean.getComments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
+        if (dynamicBean.getNew_comments() != null && !dynamicBean.getNew_comments().isEmpty()) {
+            if (dynamicBean.getNew_comments().size() >= SHOW_MORE_COMMENT_SIZE_LIMIT) { //最多显示3条
                 for (int i = 0; i < SHOW_MORE_COMMENT_SIZE_LIMIT - 1; i++) {
-                    data.add(dynamicBean.getComments().get(i));
+                    data.add(dynamicBean.getNew_comments().get(i));
                 }
             } else {
-                data.addAll(dynamicBean.getComments());
+                data.addAll(dynamicBean.getNew_comments());
             }
         }
-        mDynamicNoPullRecycleView.setTopFlagPosition(DynamicNoPullRecycleView.TopFlagPosition.WORDS_RIGHT);
-        mDynamicNoPullRecycleView.setData(data);
-        if (dynamicBean.getFeed_comment_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
+        mGroupDynamicNoPullRecycleView.setData(data);
+        if (dynamicBean.getComments() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
             mMoreComment.setVisibility(VISIBLE);
         } else {
             mMoreComment.setVisibility(GONE);
@@ -147,18 +140,18 @@ public class DynamicListCommentView extends LinearLayout {
         mOnCommentClickListener = onCommentClickListener;
     }
 
-    public void setOnCommentStateClickListener(DynamicNoPullRecycleView.OnCommentStateClickListener onCommentStateClickListener) {
+    public void setOnCommentStateClickListener(GroupDynamicNoPullRecycleView.OnCommentStateClickListener onCommentStateClickListener) {
         mOnCommentStateClickListener = onCommentStateClickListener;
     }
 
     public interface OnMoreCommentClickListener {
-        void onMoreCommentClick(View view, DynamicDetailBeanV2 dynamicBean);
+        void onMoreCommentClick(View view, GroupDynamicListBean dynamicBean);
     }
 
     public interface OnCommentClickListener {
         void onCommentUserInfoClick(UserInfoBean userInfoBean);
 
-        void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position);
+        void onCommentContentClick(GroupDynamicListBean dynamicBean, int position);
     }
 
 }

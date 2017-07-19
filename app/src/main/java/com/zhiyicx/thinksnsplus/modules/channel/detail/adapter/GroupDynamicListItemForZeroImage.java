@@ -1,8 +1,9 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
+package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.content.Context;
 
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 
 /**
  * @author LiuChao
@@ -11,15 +12,15 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
  * @contact email:450127106@qq.com
  */
 
-public class DynamicListItemForZeroImage extends DynamicListBaseItem {
-    public DynamicListItemForZeroImage(Context context) {
+public class GroupDynamicListItemForZeroImage extends GroupDynamicListBaseItem {
+    public GroupDynamicListItemForZeroImage(Context context) {
         super(context);
     }
 
 
     @Override
-    public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
-        return item.getFeed_mark() != null && (item.getImages() == null || item.getImages().isEmpty());
+    public boolean isForViewType(GroupDynamicListBean item, int position) {
+        return item.getId() != null && (item.getImages() == null || item.getImages().isEmpty());
     }
 
 }

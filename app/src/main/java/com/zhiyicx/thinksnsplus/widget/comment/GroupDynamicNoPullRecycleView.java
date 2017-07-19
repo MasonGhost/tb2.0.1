@@ -16,6 +16,7 @@ import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.ArrayList;
@@ -27,28 +28,23 @@ import java.util.List;
  * @Date 2017/3/6
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<DynamicCommentBean> {
+public class GroupDynamicNoPullRecycleView extends CommentBaseRecycleView<GroupDynamicCommentListBean> {
 
-    private OnUserNameClickListener mOnUserNameClickListener;
-    private OnUserNameLongClickListener mOnUserNameLongClickListener;
-    private OnCommentStateClickListener mOnCommentStateClickListener;
-    private TopFlagPosition mTopFlagPosition = TopFlagPosition.NONE;
-
-    public DynamicNoPullRecycleView(Context context) {
+    public GroupDynamicNoPullRecycleView(Context context) {
         super(context);
     }
 
-    public DynamicNoPullRecycleView(Context context, @Nullable AttributeSet attrs) {
+    public GroupDynamicNoPullRecycleView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public DynamicNoPullRecycleView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public GroupDynamicNoPullRecycleView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     @Override
     protected void convertData(com.zhy.adapter.recyclerview.base.ViewHolder holder,
-                               final DynamicCommentBean dynamicCommentBean, final int position) {
+                               final GroupDynamicCommentListBean dynamicCommentBean, final int position) {
         if (dynamicCommentBean.getState() == DynamicCommentBean.SEND_ERROR) {
             holder.setVisible(com.zhiyicx.baseproject.R.id.iv_hint_img, VISIBLE);
         } else {
@@ -59,12 +55,6 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         contentTextView.setText(setShowText(dynamicCommentBean, contentTextView));
         // Add the links and make the links clickable
         ConvertUtils.stringLinkConvert(contentTextView, setLiknks(dynamicCommentBean, position));
-
-        if (mTopFlagPosition == TopFlagPosition.VIEW_RIGHT) {
-            contentTextView.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    dynamicCommentBean.getPinned() == 1 ?
-                            getResources().getDrawable(R.mipmap.label_zhiding) : null, null);
-        }
 
         holder.setOnClickListener(com.zhiyicx.baseproject.R.id.tv_simple_text_comment, v -> {
             if (mOnIitemClickListener != null) {
@@ -86,25 +76,11 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
     }
 
 
-    protected CharSequence setShowText(DynamicCommentBean dynamicCommentBean, TextView contentTextView) {
-        String content = handleName(dynamicCommentBean);
-        if (dynamicCommentBean.getPinned() != 1) {// 不是置顶的评论则不用处理
-            return content;
-        } else if (mTopFlagPosition == TopFlagPosition.WORDS_RIGHT) {
-            int lenght = content.length();
-            Drawable top_drawable = getResources().getDrawable(R.mipmap.label_zhiding);
-            top_drawable.setBounds(0, 0,(int)(contentTextView.getTextSize()*2),contentTextView.getLineHeight());
-
-            ImageSpan imgSpan = new CenterImageSpan(top_drawable);
-            SpannableString spannableString = SpannableString.valueOf(content + "T");
-            spannableString.setSpan(imgSpan, lenght, lenght + 1, Spannable
-                    .SPAN_EXCLUSIVE_EXCLUSIVE);
-            return spannableString;
-        }
-        return content;
+    protected CharSequence setShowText(GroupDynamicCommentListBean dynamicCommentBean, TextView contentTextView) {
+        return handleName(dynamicCommentBean);
     }
 
-    protected List<Link> setLiknks(final DynamicCommentBean dynamicCommentBean, int position) {
+    protected List<Link> setLiknks(final GroupDynamicCommentListBean dynamicCommentBean, int position) {
         List<Link> links = new ArrayList<>();
         if (dynamicCommentBean.getCommentUser() != null) {// 我也不知道这个怎么会是 null
             Link commentNameLink = new Link(dynamicCommentBean.getCommentUser().getName())
@@ -166,7 +142,7 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
      * @param dynamicCommentBean
      * @return
      */
-    private String handleName(DynamicCommentBean dynamicCommentBean) {
+    private String handleName(GroupDynamicCommentListBean dynamicCommentBean) {
         String content = "";
         String comentUserName = dynamicCommentBean.getCommentUser() == null ? "该用户已被删除" :
                 dynamicCommentBean.getCommentUser().getName();
@@ -174,54 +150,12 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
                 dynamicCommentBean.getReplyUser().getName();
         if (dynamicCommentBean.getReply_to_user_id() == 0) { // 当没有回复者时，就是回复评论
 
-            content += "" + comentUserName + ":  " + dynamicCommentBean.getComment_content();
+            content += "" + comentUserName + ":  " + dynamicCommentBean.getContent();
         } else {
             content += "" + comentUserName + " 回复 " + replyUserName + ":  " + dynamicCommentBean
-                    .getComment_content();
+                    .getContent();
         }
         return content;
-    }
-
-
-    public void setOnUserNameClickListener(OnUserNameClickListener onUserNameClickListener) {
-        mOnUserNameClickListener = onUserNameClickListener;
-    }
-
-    public void setOnUserNameLongClickListener(OnUserNameLongClickListener
-                                                       onUserNameLongClickListener) {
-        mOnUserNameLongClickListener = onUserNameLongClickListener;
-    }
-
-    public void setOnCommentStateClickListener(OnCommentStateClickListener
-                                                       onCommentStateClickListener) {
-        mOnCommentStateClickListener = onCommentStateClickListener;
-    }
-
-    public void setTopFlagPosition(TopFlagPosition topFlagPosition) {
-        mTopFlagPosition = topFlagPosition;
-    }
-
-    public interface OnUserNameClickListener {
-        void onUserNameClick(UserInfoBean userInfoBean);
-
-    }
-
-    public interface OnUserNameLongClickListener {
-        void onUserNameLongClick(UserInfoBean userInfoBean);
-
-    }
-
-    public interface OnCommentStateClickListener {
-        void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position);
-    }
-
-    public enum TopFlagPosition {
-        VIEW_RIGHT("在整个 view 的右边，居中对齐"),
-        WORDS_RIGHT("文字末尾的右边，与最后一排文字居中对齐"),
-        NONE("无置顶标记");
-
-        TopFlagPosition(String desc) {
-        }
     }
 
 }

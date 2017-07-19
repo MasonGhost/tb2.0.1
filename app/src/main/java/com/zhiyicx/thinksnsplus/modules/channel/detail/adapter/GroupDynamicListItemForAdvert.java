@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
+package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -10,6 +10,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
@@ -25,14 +26,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/2/22
  * @Contact master.jungle68@gmail.com
  */
-
-public class DynamicListItemForAdvert extends DynamicListBaseItem {
+public class GroupDynamicListItemForAdvert extends GroupDynamicListBaseItem {
 
 
     private static final int IMAGE_COUNTS = 1;// 动态列表图片数量
     private static final int CURREN_CLOUMS = 1; // 当前列数
 
-    public DynamicListItemForAdvert(Context context) {
+    public GroupDynamicListItemForAdvert(Context context) {
         super(context);
     }
 
@@ -48,7 +48,8 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
 
 
     @Override
-    public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
+    public void convert(ViewHolder holder, final GroupDynamicListBean dynamicBean, GroupDynamicListBean lastT,
+                        int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
         initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
@@ -62,7 +63,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
      * @param part        this part percent of imageContainer
      */
     @Override
-    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, ImageView view, final GroupDynamicListBean dynamicBean, final int positon, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */
@@ -71,8 +72,8 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
 
-        List<DynamicDetailBeanV2.ImagesBean> imageBeanList = dynamicBean.getImages();
-        DynamicDetailBeanV2.ImagesBean imageBean = imageBeanList.get(positon);
+        List<GroupDynamicListBean.ImagesBean> imageBeanList = dynamicBean.getImages();
+        GroupDynamicListBean.ImagesBean imageBean = imageBeanList.get(positon);
 
         with = currentWith;
 
@@ -80,7 +81,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
 
         String url;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            url = String.format(ApiConfig.IMAGE_PATH, imageBean.getFile(), proportion);
+            url = String.format(ApiConfig.IMAGE_PATH, imageBean.getFile_id(), proportion);
         } else {
             url = imageBean.getImgUrl();
         }

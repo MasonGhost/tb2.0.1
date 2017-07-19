@@ -28,7 +28,7 @@ public interface ChannelDetailContract {
         /**
          * 所有接口都请求完毕后回调
          */
-        void allDataReady();
+        void allDataReady(GroupZipBean groupZipBean);
 
         /**
          * 加载失败
@@ -36,11 +36,11 @@ public interface ChannelDetailContract {
         void loadAllError();
 
         /**
-         * 获取频道id
+         * 获取圈子id
          *
          * @return
          */
-        long getChannelId();
+        long getGroupId();
 
         /**
          * 处理订阅后的状态

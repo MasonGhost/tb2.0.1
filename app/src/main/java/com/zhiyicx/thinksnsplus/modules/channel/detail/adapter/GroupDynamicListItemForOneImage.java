@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
+package com.zhiyicx.thinksnsplus.modules.channel.detail.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -13,6 +13,7 @@ import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -26,13 +27,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class DynamicListItemForOneImage extends DynamicListBaseItem {
+public class GroupDynamicListItemForOneImage extends GroupDynamicListBaseItem {
 
 
     private static final int IMAGE_COUNTS = 1;// 动态列表图片数量
     private static final int CURREN_CLOUMS = 1; // 当前列数
 
-    public DynamicListItemForOneImage(Context context) {
+    public GroupDynamicListItemForOneImage(Context context) {
         super(context);
     }
 
@@ -48,7 +49,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
 
 
     @Override
-    public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
+    public void convert(ViewHolder holder, final GroupDynamicListBean dynamicBean, GroupDynamicListBean lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
         initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
@@ -62,7 +63,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
      * @param part        this part percent of imageContainer
      */
     @Override
-    protected void initImageView(final ViewHolder holder, ImageView view, final DynamicDetailBeanV2 dynamicBean, final int positon, int part) {
+    protected void initImageView(final ViewHolder holder, ImageView view, final GroupDynamicListBean dynamicBean, final int positon, int part) {
         /**
          * 一张图时候，需要对宽高做限制
          */
@@ -70,7 +71,7 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         int height;
         int proportion; // 压缩比例
         int currentWith = getCurrenItemWith(part);
-        DynamicDetailBeanV2.ImagesBean imageBean = dynamicBean.getImages().get(0);
+        GroupDynamicListBean.ImagesBean imageBean = dynamicBean.getImages().get(0);
         with = currentWith;
         height = (with * imageBean.getHeight() / imageBean.getWidth());
         height = height > mImageMaxHeight ? mImageMaxHeight : height;
@@ -81,9 +82,9 @@ public class DynamicListItemForOneImage extends DynamicListBaseItem {
         view.setLayoutParams(new LinearLayout.LayoutParams(with, height));
 
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            Boolean canLook = !(imageBean.isPaid() != null && !imageBean.isPaid() && imageBean.getType().equals(Toll.LOOK_TOLL_TYPE));
+            Boolean canLook = true;
             Glide.with(mContext)
-                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile(), with, height, proportion, AppApplication.getTOKEN()))
+                    .load(ImageUtils.imagePathConvertV2(canLook, imageBean.getFile_id(), with, height, proportion, AppApplication.getTOKEN()))
                     .override(with, height)
                     .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
