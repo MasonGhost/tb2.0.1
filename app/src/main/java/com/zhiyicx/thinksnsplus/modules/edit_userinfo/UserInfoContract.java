@@ -35,9 +35,8 @@ public interface UserInfoContract {
          * 设置头像上传的状态
          *
          * @param upLoadState -1 失败 0进行中 1 图片上传成功 2图片用户信息修改成功
-         * @param taskId      返回的图片任务id
          */
-        void setUpLoadHeadIconState(int upLoadState, int taskId);
+        void setUpLoadHeadIconState(int upLoadState);
 
         /**
          * 设置信息修改提交状态

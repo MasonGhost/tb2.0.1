@@ -9,7 +9,6 @@ import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
@@ -91,29 +90,47 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
     @Override
     public void changeUserHeadIcon(String filePath) {
-        mRootView.setUpLoadHeadIconState(0, 0);
-        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFileV2(
-                filePath, options.outMimeType, true, options.outWidth, options.outHeight)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Integer>() {
+        mRootView.setUpLoadHeadIconState(0);
+        Subscription subscription =   mIUploadRepository.uploadAvatar(filePath)
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(Integer data) {
-                        mRootView.setUpLoadHeadIconState(1, data);
+                    protected void onSuccess(Object data) {
+                        mRootView.setUpLoadHeadIconState(1);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.setUpLoadHeadIconState(-1, 0);
+                        mRootView.setUpLoadHeadIconState(-1);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setUpLoadHeadIconState(-1, 0);
+                        mRootView.setUpLoadHeadIconState(-1);
                         LogUtils.e(throwable, "result");
                     }
                 });
+        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
+//        Subscription subscription = mIUploadRepository.upLoadSingleFileV2(
+//                filePath, options.outMimeType, true, options.outWidth, options.outHeight)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseSubscribe<Integer>() {
+//                    @Override
+//                    protected void onSuccess(Integer data) {
+//                        mRootView.setUpLoadHeadIconState(1, data);
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(String message, int code) {
+//                        mRootView.setUpLoadHeadIconState(-1, 0);
+//                    }
+//
+//                    @Override
+//                    protected void onException(Throwable throwable) {
+//                        mRootView.setUpLoadHeadIconState(-1, 0);
+//                        LogUtils.e(throwable, "result");
+//                    }
+//                });
         addSubscrebe(subscription);
     }
 
@@ -137,7 +154,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(1, "");
                         } else {
-                            mRootView.setUpLoadHeadIconState(2, 0);
+                            mRootView.setUpLoadHeadIconState(2);
                         }
                         EventBus.getDefault().post(EventBusTagConfig.EVENT_USERINFO_UPDATE);
                         upDateUserInfo(userInfos);
@@ -149,7 +166,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(-1, "");
                         } else {
-                            mRootView.setUpLoadHeadIconState(-1, 0);
+                            mRootView.setUpLoadHeadIconState(-1);
                         }
 
                     }
@@ -159,7 +176,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(-1, "");
                         } else {
-                            mRootView.setUpLoadHeadIconState(-1, 0);
+                            mRootView.setUpLoadHeadIconState(-1);
                         }
                     }
                 });

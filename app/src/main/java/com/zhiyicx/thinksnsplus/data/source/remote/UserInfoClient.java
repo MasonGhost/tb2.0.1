@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
@@ -121,23 +122,23 @@ public interface UserInfoClient {
      * 获取用户收到的点赞
      *
      * @param after 用来翻页数据体记录 id
-     * @param limit  返回数据条数 默认 20 条
+     * @param limit 返回数据条数 默认 20 条
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MY_DIGGS)
     Observable<List<DigedBean>> getMyDiggs(@Query("after") int after,
-                                                     @Query("limit") int limit);
+                                           @Query("limit") int limit);
 
     /**
      * 获取用户收到的评论
      *
      * @param after 用来翻页数据体记录 id
-     * @param limit  返回数据条数 默认 20 条
+     * @param limit 返回数据条数 默认 20 条
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
     Observable<List<CommentedBean>> getMyComments(@Query("after") int after,
-                                                            @Query("limit") int limit);
+                                                  @Query("limit") int limit);
 
     /**
      * 获取用户收到的评论
@@ -189,4 +190,14 @@ public interface UserInfoClient {
      */
     @PATCH(ApiConfig.APP_PATH_MAKE_NOTIFICAITON_READED)
     Observable<Object> makeNotificationReaded(@Query("notification") String notificationId);
+
+    /**
+     * 更新用户头像
+     *
+     * @param multipartBody
+     * @return
+     */
+    @POST(ApiConfig.APP_PATH_UPDATE_USER_AVATAR)
+    Observable<Object> updateAvatar(@Body MultipartBody multipartBody);
+
 }

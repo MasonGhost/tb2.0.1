@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -230,21 +231,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         this.mUserInfoBean = userInfoBean;
         // 设置用户头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_100_ZIP);
-        } catch (Exception e) {
-            userIconUrl = mUserInfoBean.getAvatar();
-        }
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .transformation(new GlideCircleTransform(getContext()))
                 .imagerView(mIvHeadIcon)
-                .url(userIconUrl)
+                .url(ImageUtils.getUserAvatar(mUserInfoBean.getUser_id()))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .build());
@@ -253,7 +243,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
-        mTvUserSignature.setText(userInfoBean.getIntro());
+        mTvUserSignature.setText(TextUtils.isEmpty(userInfoBean.getIntro()) ? getString(R.string.intro_default) : userInfoBean.getIntro());
         // 设置粉丝数
         String followedCount = String.valueOf(userInfoBean.getExtra().getFollowers_count());
         mTvFansCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followedCount)));

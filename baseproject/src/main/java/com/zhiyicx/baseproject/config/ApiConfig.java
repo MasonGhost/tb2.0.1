@@ -49,6 +49,8 @@ public class ApiConfig {
 
     // 图片地址 V2
     public static final String IMAGE_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
+    // 头像地址
+    public static final String IMAGE_AVATAR_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/users/%s/avatar";
 
     // 音乐地址 V2
     public static final String MUSIC_PATH = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s";
@@ -78,6 +80,7 @@ public class ApiConfig {
     public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION_2 + "/user/likes"; // 获取用户收到的点赞
     public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION_2 + "/user/comments"; // 获取用户收到的评论
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+    public static final String APP_PATH_UPDATE_USER_AVATAR = "api/" + API_VERSION_2 + "/user/avatar";// 修改用户头像
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
      *

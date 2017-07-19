@@ -3,12 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,7 +46,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -121,7 +117,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
     private boolean isFirstOpenCityPicker = true;// 是否是第一次打开城市选择器：默认是第一次打开
-    private int upDateHeadIconStorageId = 0;// 上传成功返回的图片id
     private String path;// 上传成功的图片本地路径
 
     private int locationLevel = LOCATION_2LEVEL;
@@ -242,26 +237,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setPresenter(UserInfoContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.user_info);
     }
@@ -322,7 +297,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setUpLoadHeadIconState(int upLoadState, int taskId) {
+    public void setUpLoadHeadIconState(int upLoadState) {
         // 上传成功，可以进行修改
         switch (upLoadState) {
             case -1:
@@ -338,9 +313,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mTSnackbarUploadIcon.show();
                 break;
             case 1:
-                upDateHeadIconStorageId = taskId;
-                mPresenter.changUserInfo(packageUserHeadIcon(), true);
-                break;
             case 2:
                 TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
                         getString(R.string.update_head_success), TSnackbar.LENGTH_SHORT)
@@ -398,19 +370,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
         // 设置头像
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_38_ZIP);
-        } catch (Exception e) {
-            userIconUrl = mUserInfoBean.getAvatar();
-        }
+
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userIconUrl)
+                .url(ImageUtils.getUserAvatar(mUserInfoBean.getUser_id()))
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .imagerView(mIvHeadIcon)
@@ -615,19 +577,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     /**
-     * 用户头像再上传图片后自动提交修改，不和用户信息一起提交
-     *
-     * @return
-     */
-    private HashMap<String, Object> packageUserHeadIcon() {
-        HashMap<String, Object> fieldMap = new HashMap<>();
-        // avatar
-        fieldMap.put(USER_STORAGE_TASK_ID, upDateHeadIconStorageId + "");
-        fieldMap.put(USER_LOCAL_IMG_PATH, path);// 本地图片的路径，因为没有返回storage_id,用来更新图片
-        return fieldMap;
-    }
-
-    /**
      * 判断是否需要修改信息：如果用户名，性别。。。其中任意一项发生变化，都可以提交修改
      */
     private void canChangerUserInfo() {
@@ -643,7 +592,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      */
     private String getIntro(UserInfoBean userInfoBean) {
         if (userInfoBean == null) {
-            return "";
+            return getString(R.string.intro_default);
         }
         String intro = userInfoBean.getIntro();
         // 是缺省的内容,就设置为kong，但要注意这儿有个隐藏的bug，如果简介设置为缺省的内容，那就。。。
@@ -701,12 +650,5 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
 
 }

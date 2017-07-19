@@ -26,6 +26,16 @@ import java.util.Locale;
 public class ImageUtils {
     public static final int DEFAULT_IMAGE_ID = -1;
 
+    /**
+     * 获取用户头像地址
+     * @param userId  user's  id
+     * @return
+     */
+    public static String getUserAvatar(long userId) {
+        return String.format(ApiConfig.IMAGE_AVATAR_PATH_V2, userId);
+
+    }
+
 //    /**
 //     * 图片地址转换
 //     *
