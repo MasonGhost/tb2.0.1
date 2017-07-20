@@ -46,7 +46,7 @@ public interface GroupDynamicDetailContract {
         /**
          * 设置点赞头像
          */
-        void setDigHeadIcon(List<GroupDynamicLikeListBean> userInfoBeanList);
+        void setDigHeadIcon(List<FollowFansBean> userInfoBeanList);
 
         /**
          * 更新关注状态
@@ -141,7 +141,7 @@ public interface GroupDynamicDetailContract {
         /**
          * 关注或者取消关注
          */
-        void handleFollowUser(GroupDynamicLikeListBean followFansBean);
+        void handleFollowUser(FollowFansBean followFansBean);
 
         /**
          * 获取关注状态

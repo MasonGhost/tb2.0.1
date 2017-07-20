@@ -237,7 +237,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         // 更新数据库
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
         // 通知服务器
-        mRepository.handelCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
+        mRepository.handleCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
     }
 
     @Override

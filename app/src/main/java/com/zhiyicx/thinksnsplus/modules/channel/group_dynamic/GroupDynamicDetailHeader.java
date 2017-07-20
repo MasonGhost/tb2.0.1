@@ -187,15 +187,15 @@ public class GroupDynamicDetailHeader {
         dynamicHorizontalStackIconView.setPublishTime(dynamicBean.getCreated_at());
         dynamicHorizontalStackIconView.setViewerCount(dynamicBean.getViews());
         // 设置点赞头像
-        List<GroupDynamicLikeListBean> userInfoList = dynamicBean.getMGroupDynamicLikeListBeanList();
+        List<FollowFansBean> userInfoList = dynamicBean.getMGroupDynamicLikeListBeanList();
         List<ImageBean> imageBeanList = null;
         if (userInfoList != null && !userInfoList.isEmpty()) {
             imageBeanList = new ArrayList<>();
             for (int i = userInfoList.size() - 1; i >= 0; i--) {
                 ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getMUserInfoBean()
+                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getTargetUserInfo()
                         .getAvatar()) ? 0 : Integer.parseInt(userInfoList.get(i)
-                        .getMUserInfoBean().getAvatar()));
+                        .getTargetUserInfo().getAvatar()));
                 imageBeanList.add(imageBean);
             }
         }

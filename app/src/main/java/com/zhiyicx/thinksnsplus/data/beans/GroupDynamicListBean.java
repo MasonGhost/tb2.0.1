@@ -74,7 +74,7 @@ public class GroupDynamicListBean extends BaseListBean {
     @Convert(converter = GroupDynamicCommentConvert.class, columnType = String.class)
     private List<GroupDynamicCommentListBean> commentslist;
     @Convert(converter = GroupDynamicLikesConvert.class, columnType = String.class)
-    private List<GroupDynamicLikeListBean> mGroupDynamicLikeListBeanList;
+    private List<FollowFansBean> mGroupDynamicLikeListBeanList;
     private int state = SEND_ING;
 
     public int getState() {
@@ -353,7 +353,7 @@ public class GroupDynamicListBean extends BaseListBean {
     public static class GroupDynamicCommentConvert extends BaseConvert<List<GroupDynamicCommentListBean>> {
     }
 
-    public static class GroupDynamicLikesConvert extends BaseConvert<List<GroupDynamicLikeListBean>> {
+    public static class GroupDynamicLikesConvert extends BaseConvert<List<FollowFansBean>> {
     }
 
     public List<GroupDynamicCommentListBean> getCommentslist() {
@@ -400,8 +400,8 @@ public class GroupDynamicListBean extends BaseListBean {
         myDao.update(this);
     }
 
-    @Generated(hash = 1069121414)
-    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<GroupDynamicLikeListBean> mGroupDynamicLikeListBeanList, int state) {
+    @Generated(hash = 1682096477)
+    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<FollowFansBean> mGroupDynamicLikeListBeanList, int state) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -480,11 +480,11 @@ public class GroupDynamicListBean extends BaseListBean {
         this.is_collection = is_collection;
     }
 
-    public List<GroupDynamicLikeListBean> getMGroupDynamicLikeListBeanList() {
+    public List<FollowFansBean> getMGroupDynamicLikeListBeanList() {
         return this.mGroupDynamicLikeListBeanList;
     }
 
-    public void setMGroupDynamicLikeListBeanList(List<GroupDynamicLikeListBean> mGroupDynamicLikeListBeanList) {
+    public void setMGroupDynamicLikeListBeanList(List<FollowFansBean> mGroupDynamicLikeListBeanList) {
         this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
     }
 
@@ -514,7 +514,7 @@ public class GroupDynamicListBean extends BaseListBean {
         this.updated_at = in.readString();
         this.images = in.createTypedArrayList(ImagesBean.CREATOR);
         this.commentslist = in.createTypedArrayList(GroupDynamicCommentListBean.CREATOR);
-        this.mGroupDynamicLikeListBeanList = in.createTypedArrayList(GroupDynamicLikeListBean.CREATOR);
+        this.mGroupDynamicLikeListBeanList = in.createTypedArrayList(FollowFansBean.CREATOR);
         this.state = in.readInt();
     }
 
