@@ -232,9 +232,15 @@ public class GroupDynamicDetailHeader {
         if (lastImg) {
             view.findViewById(R.id.img_divider).setVisibility(View.GONE);
         }
-
+        String[] size = imageBean.getSize().split("x");
+        int resultWidth = 0;
+        int resultHeight = 0;
+        if (size.length > 0){
+            resultWidth = Integer.parseInt(size[0]);
+            resultHeight = Integer.parseInt(size[1]);
+        }
         // 如果有本地图片，优先显示本地图片
-        int height = (imageBean.getHeight() * picWidth / imageBean.getWidth());
+        int height = (resultHeight * picWidth / resultWidth);
         // 提前设置图片控件的大小，使得占位图显示
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picWidth, height);
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
