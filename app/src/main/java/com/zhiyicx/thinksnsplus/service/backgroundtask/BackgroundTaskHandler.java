@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.service.backgroundtask;
 import android.app.Application;
 
 import com.google.gson.Gson;
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -243,19 +242,18 @@ public class BackgroundTaskHandler {
              * 通用 POST 接口处理
              */
             case POST:
-                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-                    return;
-                }
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 postMethod(backgroundRequestTaskBean);
                 break;
 
+            case PUT:
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
+                backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
+                putMethod(backgroundRequestTaskBean);
+                break;
             case POST_V2:
-                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-                    return;
-                }
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 postMethodV2(backgroundRequestTaskBean);
                 break;
@@ -263,20 +261,12 @@ public class BackgroundTaskHandler {
              * 通用 GET 接口处理
              */
             case GET:
-
-                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-                    return;
-                }
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 break;
 
             case PATCH:
-
-                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-                    return;
-                }
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 PatchMethod(backgroundRequestTaskBean);
                 break;
@@ -284,18 +274,12 @@ public class BackgroundTaskHandler {
              * 通用 DELETE 接口处理
              */
             case DELETE:
-                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-                    return;
-                }
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 deleteMethod(backgroundRequestTaskBean);
                 break;
             case DELETE_V2:
-                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-                    return;
-                }
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 deleteMethodV2(backgroundRequestTaskBean);
                 break;
@@ -304,10 +288,7 @@ public class BackgroundTaskHandler {
              */
             case GET_IM_INFO:
 
-                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-                    return;
-                }
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
 
                 getIMInfo(backgroundRequestTaskBean);
@@ -317,10 +298,7 @@ public class BackgroundTaskHandler {
              */
             case GET_USER_INFO:
 
-                if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
-                    EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
-                    return;
-                }
+                if (tipBackgroundTaskCanNotDeal(backgroundRequestTaskBean)) return;
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 getUserInfo(backgroundRequestTaskBean);
                 break;
@@ -358,6 +336,14 @@ public class BackgroundTaskHandler {
             default:
         }
 
+    }
+
+    private boolean tipBackgroundTaskCanNotDeal(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        if (backgroundRequestTaskBean.getMax_retry_count() - 1 <= 0) {
+            EventBus.getDefault().post(backgroundRequestTaskBean, EventBusTagConfig.EVENT_BACKGROUND_TASK_CANT_NOT_DEAL);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -443,7 +429,47 @@ public class BackgroundTaskHandler {
                     }
                 });
     }
+    /**
+     * 处理 Put 请求类型的后台任务
+     */
+    private void putMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        HashMap params = backgroundRequestTaskBean.getParams();
+        if (params == null) {
+            params = new HashMap();
+        }
+        final OnNetResponseCallBack callBack = (OnNetResponseCallBack) params.get(NET_CALLBACK);
+        params.remove(NET_CALLBACK);
+        mServiceManager.getCommonClient().handleBackGroundTaskPut(backgroundRequestTaskBean.getPath())
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        if (callBack != null) {
+                            callBack.onSuccess(data);
+                        }
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                    }
 
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        if (checkIsNeedReRequest(code)) {
+                            addBackgroundRequestTask(backgroundRequestTaskBean);
+                        } else {
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        }
+                        if (callBack != null) {
+                            callBack.onFailure(message, code);
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        addBackgroundRequestTask(backgroundRequestTaskBean);
+                        if (callBack != null) {
+                            callBack.onException(throwable);
+                        }
+                    }
+                });
+    }
     /**
      * 处理Patch请求类型的后台任务
      */
@@ -485,9 +511,9 @@ public class BackgroundTaskHandler {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
         mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
                 , body)
-                .subscribe(new BaseSubscribe<CacheBean>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(CacheBean data) {
+                    protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     }
 
@@ -518,11 +544,11 @@ public class BackgroundTaskHandler {
         final OnNetResponseCallBack callBack = (OnNetResponseCallBack) datas.get(NET_CALLBACK);
         datas.remove(NET_CALLBACK);
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-        mServiceManager.getCommonClient().handleBackGroudTaskDeleteV2(backgroundRequestTaskBean.getPath()
+        mServiceManager.getCommonClient().handleBackGroudTaskDelete(backgroundRequestTaskBean.getPath()
                 , body)
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<CacheBean>>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<CacheBean> data) {
+                    protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     }
 

@@ -4,10 +4,9 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -51,19 +50,19 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.Repositor
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<DynamicDigListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<FollowFansBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<DynamicDigListBean> data, boolean isLoadMore) {
         DynamicDetailBeanV2 dynamicBean = mRootView.getDynamicBean();
         dynamicBean.setDigUserInfoList(data);
         return mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean) >= 0;
     }
 
     @Override
-    public void handleFollowUser(int position, FollowFansBean followFansBean) {
+    public void handleFollowUser(int position, UserInfoBean followFansBean) {
         mUserInfoRepository.handleFollow(followFansBean);
         mRootView.upDataFollowState(position);
     }
@@ -73,9 +72,9 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.Repositor
         mRepository.getDynamicDigListV2(feed_id, maxId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<List<FollowFansBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<DynamicDigListBean>>() {
                     @Override
-                    protected void onSuccess(List<FollowFansBean> data) {
+                    protected void onSuccess(List<DynamicDigListBean> data) {
                         LogUtils.i("digList_netData" + data.toString());
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
@@ -94,7 +93,7 @@ public class DigListPresenter extends AppBasePresenter<DigListContract.Repositor
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicDetailBeanV2 dynamicBean) {
+    public List<DynamicDigListBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicDetailBeanV2 dynamicBean) {
         return dynamicBean.getDigUserInfoList();
     }
 }

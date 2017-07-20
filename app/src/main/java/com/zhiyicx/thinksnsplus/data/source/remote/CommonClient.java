@@ -280,21 +280,16 @@ public interface CommonClient {
     @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
     Observable<BaseJson<Object>> handleBackGroundTaskPost(@Path("path") String path, @Part List<MultipartBody.Part> partList);
 
-    /**
-     * 后台任务处理
-     */
     @Multipart
     @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
     Observable<BaseJsonV2<Object>> handleBackGroundTaskPostV2(@Path("path") String path, @Part List<MultipartBody.Part> partList);
 
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK, hasBody = true)
-    Observable<BaseJson<CacheBean>> handleBackGroudTaskDelete(@Path("path") String path, @Body RequestBody requestBody);
+    Observable<Object> handleBackGroudTaskDelete(@Path("path") String path, @Body RequestBody requestBody);
 
-    @Headers({"Content-type:application/json;charset=UTF-8"})
-    @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK, hasBody = true)
-    Observable<BaseJsonV2<CacheBean>> handleBackGroudTaskDeleteV2(@Path("path") String path, @Body RequestBody requestBody);
-
+    @PUT(APP_PATH_HANDLE_BACKGROUND_TASK)
+    Observable<Object> handleBackGroundTaskPut(@Path("path") String path);
 
     /**
      * rap接口，用来测试token过期,当前返回token过期

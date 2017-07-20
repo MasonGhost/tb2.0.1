@@ -127,12 +127,13 @@ public class ApiConfig {
     /**
      * 关注粉丝 FollowFansClient
      */
-    //api/" + API_VERSION + "/follows/follows/{user_id}/{max_id}
-    public static final String APP_PATH_FOLLOW_LIST = "api/" + API_VERSION + "/follows/follows/{user_id}/{max_id}";// 获取用户关注列表
-    //api/" + API_VERSION + "/follows/followeds/{user_id}/{max_id}
-    public static final String APP_PATH_FANS_LIST = "api/" + API_VERSION + "/follows/followeds/{user_id}/{max_id}";// 获取用户粉丝列表
-    public static final String APP_PATH_FOLLOW_USER = "api/" + API_VERSION + "/users/follow";// 关注用户
-    public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/" + API_VERSION + "/users/unFollow";// 取消用户关注
+    public static final String APP_PATH_FOLLOW_LIST = "api/" + API_VERSION_2 + "/users/{user_id}/followings";// 获取用户关注列表
+    public static final String APP_PATH_FANS_LIST = "api/" + API_VERSION_2 + "/users/{user_id}/followers";// 获取用户粉丝列表
+    public static final String APP_PATH_FOLLOW_USER = "api/" + API_VERSION_2 + "/user/followings/{user_id}";// 关注用户
+    public static final String APP_PATH_FOLLOW_USER_FORMART = "api/" + API_VERSION_2 + "/user/followings/%d";// 关注用户
+    public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/" + API_VERSION_2 + "/user/followings/{user_id}";// 取消用户关注
+    public static final String APP_PATH_CANCEL_FOLLOW_USER_FORMART = "api/" + API_VERSION_2 + "/user/followings/%d";// 取消用户关注
+
     public static final String APP_PATH_GET_USER_FOLLOW_STATE = "api/" + API_VERSION + "/users/followstatus";// 获取用户关注状态
 
     public static final String APP_PATH_GET_DIGGS_RANK = "api/" + API_VERSION + "/diggsrank";//  用户点赞排行
@@ -173,7 +174,6 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT = "api/" + API_VERSION + "/feeds/%s/comment";
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/comments";
     // 获取点赞列表
-    public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/diggusers";
     public static final String APP_PATH_DYNAMIC_DIG_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/likes";
     // 一条动态的评论列表
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/comments";

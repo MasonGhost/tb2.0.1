@@ -5,9 +5,9 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  * @contact email:450127106@qq.com
  */
 
-public class DigListFragment extends TSListFragment<DigListContract.Presenter, FollowFansBean> implements DigListContract.View {
+public class DigListFragment extends TSListFragment<DigListContract.Presenter, DynamicDigListBean> implements DigListContract.View {
     public static final String DIG_LIST_DATA = "dig_list_data";// 传入点赞榜的数据
 
     // 从动态详情传递过来的动态数据，已经包括了第一页的点赞列表，所以不需要从数据库拿取
@@ -37,7 +37,7 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
     }
 
     @Override
-    protected MultiItemTypeAdapter<FollowFansBean> getAdapter() {
+    protected MultiItemTypeAdapter<DynamicDigListBean> getAdapter() {
         return new DigListAdapter(getContext(), R.layout.item_dig_list, mListDatas, mPresenter);
     }
 
@@ -77,7 +77,7 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, F
     }
 
     @Override
-    protected List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    protected List<DynamicDigListBean> requestCacheData(Long maxId, boolean isLoadMore) {
         return mPresenter.requestCacheData(maxId, isLoadMore, mDynamicBean);
     }
 

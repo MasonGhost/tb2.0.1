@@ -15,8 +15,7 @@ import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -33,37 +32,36 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 
-public class DigListAdapter extends CommonAdapter<FollowFansBean> {
+public class DigListAdapter extends CommonAdapter<DynamicDigListBean> {
     private DigListContract.Presenter mPresenter;
 
-    public DigListAdapter(Context context, int layoutId, List<FollowFansBean> datas, DigListContract.Presenter mPresenter) {
+    public DigListAdapter(Context context, int layoutId, List<DynamicDigListBean> datas, DigListContract.Presenter mPresenter) {
         super(context, layoutId, datas);
         this.mPresenter = mPresenter;
     }
 
     @Override
-    protected void convert(ViewHolder holder, final FollowFansBean followFansBean, final int position) {
+    protected void convert(ViewHolder holder, final DynamicDigListBean dynamicDigListBean, final int position) {
         final FilterImageView filterImageView = holder.getView(R.id.iv_headpic);
         TextView tv_name = holder.getView(R.id.tv_name);
         TextView tv_content = holder.getView(R.id.tv_content);
         ImageView iv_follow = holder.getView(R.id.iv_follow);
 
-        final UserInfoBean userInfoBean = followFansBean.getTargetUserInfo();
-        if (userInfoBean != null) {
-            tv_name.setText(userInfoBean.getName());
-            tv_content.setText(userInfoBean.getIntro());
+        if (dynamicDigListBean != null) {
+            tv_name.setText(dynamicDigListBean.getDiggUserInfo().getName());
+            tv_content.setText(dynamicDigListBean.getDiggUserInfo().getIntro());
             // 显示用户头像
             ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
             int storegeId;
             String userIconUrl;
             try {
-                storegeId = Integer.parseInt(userInfoBean.getAvatar());
+                storegeId = Integer.parseInt(dynamicDigListBean.getDiggUserInfo().getAvatar());
                 userIconUrl = ImageUtils.imagePathConvertV2(storegeId
                         , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
                         , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
                         , ImageZipConfig.IMAGE_38_ZIP);
             } catch (Exception e) {
-                userIconUrl = userInfoBean.getAvatar();
+                userIconUrl = dynamicDigListBean.getDiggUserInfo().getAvatar();
             }
             imageLoader.loadImage(filterImageView.getContext(), GlideImageConfig.builder()
                     .imagerView(filterImageView)
@@ -74,34 +72,27 @@ public class DigListAdapter extends CommonAdapter<FollowFansBean> {
                     .build());
             RxView.clicks(holder.getConvertView())
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(filterImageView.getContext(), userInfoBean));
+                    .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(filterImageView.getContext(), dynamicDigListBean.getDiggUserInfo()));
         }
         // 如果当前列表包含了自己，就隐藏该关注按钮
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        if (userInfoBean != null && userInfoBean.getUser_id() == authBean.getUser_id()) {
+        if (dynamicDigListBean != null && dynamicDigListBean.getUser_id() == authBean.getUser_id()) {
             iv_follow.setVisibility(View.GONE);
         } else {
             iv_follow.setVisibility(View.VISIBLE);
-            // 设置关注状态
-            int state = followFansBean.getFollowState();
-            switch (state) {
-                case FollowFansBean.UNFOLLOWED_STATE:
-                    iv_follow.setImageResource(R.mipmap.detail_ico_follow);
-                    break;
-                case FollowFansBean.IFOLLOWED_STATE:
-                    iv_follow.setImageResource(R.mipmap.detail_ico_followed);
-                    break;
-                case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                    iv_follow.setImageResource(R.mipmap.detail_ico_followed_eachother);
-                    break;
-                default:
+            if(dynamicDigListBean.getDiggUserInfo().isFollowing()&&dynamicDigListBean.getDiggUserInfo().isFollower()){
+                iv_follow.setImageResource(R.mipmap.detail_ico_followed_eachother);
+            }else if(dynamicDigListBean.getDiggUserInfo().isFollower()){
+                iv_follow.setImageResource(R.mipmap.detail_ico_followed);
+            }else {
+                iv_follow.setImageResource(R.mipmap.detail_ico_follow);
             }
 
             // 设置关注状态点击事件
             RxView.clicks(iv_follow)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     //.compose(.<Void>bindToLifecycle())
-                    .subscribe(aVoid -> mPresenter.handleFollowUser(position, followFansBean));
+                    .subscribe(aVoid -> mPresenter.handleFollowUser(position, dynamicDigListBean.getDiggUserInfo()));
         }
 
     }

@@ -128,7 +128,7 @@ public interface UserInfoContract {
          *
          * @param followFansBean
          */
-        void handleFollow(FollowFansBean followFansBean);
+        void handleFollow(UserInfoBean followFansBean);
 
         /**
          * 获取点赞排行榜

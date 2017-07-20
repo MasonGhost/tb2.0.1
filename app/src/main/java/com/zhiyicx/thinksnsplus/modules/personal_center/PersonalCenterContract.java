@@ -34,7 +34,7 @@ public interface PersonalCenterContract {
          *
          * @param followFansBean
          */
-        void setFollowState(FollowFansBean followFansBean);
+        void setFollowState(UserInfoBean followFansBean);
 
         /**
          * 设置封面上传的状态
@@ -126,7 +126,7 @@ public interface PersonalCenterContract {
         /**
          * 处理关注状态
          */
-        void handleFollow(FollowFansBean followFansBean);
+        void handleFollow(UserInfoBean followFansBean);
 
         /**
          * 上传封面图片

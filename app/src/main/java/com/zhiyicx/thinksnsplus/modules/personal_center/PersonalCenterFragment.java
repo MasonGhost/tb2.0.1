@@ -122,8 +122,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
 
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
-    // 关注状态
-    private FollowFansBean mFollowFansBean;
     // 上一个页面传过来的用户信息
     private UserInfoBean mUserInfoBean;
     private PhotoSelectorImpl mPhotoSelector;
@@ -177,9 +175,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     // 表示第一次进入界面加载正确的关注状态，后续才能进行关注操作
-                    if (mFollowFansBean != null) {
-                        mPresenter.handleFollow(mFollowFansBean);
-                    }
+                        mPresenter.handleFollow(mUserInfoBean);
                 });
         // 添加聊天点击事件
         RxView.clicks(mLlChatContainer)
@@ -491,9 +487,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void setFollowState(FollowFansBean followFansBean) {
-        mFollowFansBean = followFansBean;
-        setBottomFollowState(followFansBean.getFollowState());
+    public void setFollowState(UserInfoBean followFansBean) {
+        mUserInfoBean = followFansBean;
+        setBottomFollowState(followFansBean);
     }
 
     @Override
@@ -580,25 +576,21 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     /**
      * 设置底部 view 的关注状态
      */
-    private void setBottomFollowState(int state) {
-        switch (state) {
-            case FollowFansBean.UNFOLLOWED_STATE:
-                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
-                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
-                mTvFollow.setText(R.string.follow);
-                break;
-            case FollowFansBean.IFOLLOWED_STATE:
-                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
-                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
-                mTvFollow.setText(R.string.followed);
-                break;
-            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
-                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
-                mTvFollow.setText(R.string.followed_eachother);
-                break;
-            default:
+    private void setBottomFollowState(UserInfoBean userInfoBean1) {
+        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+            mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
+            mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+            mTvFollow.setText(R.string.followed_eachother);
+        }else if(userInfoBean1.isFollower()){
+            mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
+            mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+            mTvFollow.setText(R.string.followed);
+        }else {
+            mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
+            mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+            mTvFollow.setText(R.string.follow);
         }
+
     }
 
     /**

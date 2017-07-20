@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
-import com.zhiyicx.baseproject.cache.CacheBean;
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -27,7 +27,7 @@ import java.io.Serializable;
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class UserInfoBean extends CacheBean implements Parcelable, Serializable {
+public class UserInfoBean extends BaseListBean implements Parcelable, Serializable {
     private static final long serialVersionUID = 536871008;
 
     /**
@@ -42,6 +42,8 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
      * "created_at": "2017-06-02 08:43:54",
      * "updated_at": "2017-07-06 07:04:06",
      * "avatar": "http://plus.io/api/v2/users/1/avatar", // 头像
+     * "following": false,  基于这条消息的用户是否关注了我
+     * "follower": false,   基于这条消息的用户是否被我关注了
      * "extra": {
      * "user_id": 1,
      * "likes_count": 0, // 被喜欢统计数
@@ -84,7 +86,8 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     @Transient
     private String area;        // 区
 
-
+    private boolean following;
+    private boolean follower;
     private String created_at;
     private String updated_at;
     private String avatar;      // 头像 地址
@@ -258,6 +261,22 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
         this.wallet = wallet;
     }
 
+    public boolean isFollowing() {
+        return following;
+    }
+
+    public void setFollowing(boolean following) {
+        this.following = following;
+    }
+
+    public boolean isFollower() {
+        return follower;
+    }
+
+    public void setFollower(boolean follower) {
+        this.follower = follower;
+    }
+
     public UserInfoExtraBean getExtra() {
         if (extra == null) {
             extra = new UserInfoExtraBean();
@@ -428,6 +447,31 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     }
 
     @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", intro='" + intro + '\'' +
+                ", sex=" + sex +
+                ", sexString='" + sexString + '\'' +
+                ", location='" + location + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", area='" + area + '\'' +
+                ", following=" + following +
+                ", follower=" + follower +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", cover='" + cover + '\'' +
+                ", wallet=" + wallet +
+                ", extra=" + extra +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -445,6 +489,8 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
         dest.writeString(this.province);
         dest.writeString(this.city);
         dest.writeString(this.area);
+        dest.writeByte(this.following ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.follower ? (byte) 1 : (byte) 0);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeString(this.avatar);
@@ -465,6 +511,8 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
         this.province = in.readString();
         this.city = in.readString();
         this.area = in.readString();
+        this.following = in.readByte() != 0;
+        this.follower = in.readByte() != 0;
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.avatar = in.readString();
@@ -473,10 +521,10 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
     }
 
-    @Generated(hash = 923884662)
+    @Generated(hash = 1469305731)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-                        String location, String created_at, String updated_at, String avatar, String cover,
-                        UserInfoExtraBean extra) {
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, UserInfoExtraBean extra) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
@@ -484,6 +532,8 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
         this.intro = intro;
         this.sex = sex;
         this.location = location;
+        this.following = following;
+        this.follower = follower;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.avatar = avatar;
@@ -504,25 +554,15 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     };
 
     @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", intro='" + intro + '\'' +
-                ", sex=" + sex +
-                ", sexString='" + sexString + '\'' +
-                ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", cover='" + cover + '\'' +
-                ", wallet=" + wallet +
-                ", extra=" + extra +
-                '}';
+    public Long getMaxId() {
+        return user_id;
+    }
+
+    public boolean getFollowing() {
+        return this.following;
+    }
+
+    public boolean getFollower() {
+        return this.follower;
     }
 }
