@@ -43,8 +43,8 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
         mGroupDynamicCommentListBeanDao.insertOrReplaceInTx(multiData);
     }
 
-    public void deleteCacheByFeedMark(Long feed_mark){
-        Observable.from(getLocalComments(feed_mark))
+    public void deleteCacheByFeedMark(Long feed_id){
+        Observable.from(getLocalComments(feed_id))
                 .subscribeOn(Schedulers.io())
                 .filter(dynamicCommentBean -> dynamicCommentBean.getId() != null && dynamicCommentBean.getId() != 0)
                 .subscribe(new Observer<GroupDynamicCommentListBean>() {
@@ -80,9 +80,10 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
         return mGroupDynamicCommentListBeanDao.loadAll();
     }
 
-    public List<GroupDynamicCommentListBean> getLocalComments(Long feedMark) {
+    public List<GroupDynamicCommentListBean> getLocalComments(Long feed_id) {
+
         return mGroupDynamicCommentListBeanDao.queryBuilder()
-                .where(GroupDynamicCommentListBeanDao.Properties.Comment_mark.eq(feedMark)).list();
+                .where(GroupDynamicCommentListBeanDao.Properties.Feed_id.eq(feed_id)).list();
     }
 
     @Override

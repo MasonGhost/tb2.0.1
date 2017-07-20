@@ -176,7 +176,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             return false;
         }
         mGroupDynamicCommentListBeanGreenDao.deleteCacheByFeedMark(mRootView.getCurrentDynamic()
-                .getFeed_mark());// 删除本条动态的本地评论
+                .getId());// 删除本条动态的本地评论
         mGroupDynamicCommentListBeanGreenDao.saveMultiData(data);
         return true;
     }
