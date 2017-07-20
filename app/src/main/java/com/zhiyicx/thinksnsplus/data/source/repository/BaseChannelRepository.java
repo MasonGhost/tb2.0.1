@@ -212,7 +212,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
-    public void sendGroupComment(String commentContent,Long group_id, Long feed_id, Long reply_to_user_id,Long comment_mark) {
+    public void sendGroupComment(String commentContent, Long group_id, Long feed_id, Long reply_to_user_id, Long comment_mark) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("content", commentContent);
@@ -220,7 +220,27 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         params.put("reply_to_user_id", reply_to_user_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_GROUP_DYNAMIC_COMMENT, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT,group_id, feed_id));
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT, group_id, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void deleteGroupComment(long group_id, long feed_id, long comment_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT, group_id, feed_id, comment_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void deleteGroupDynamic(long group_id, long feed_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DELETE_GROUP_DYNAMIC_FORMAT, group_id, feed_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
@@ -305,7 +325,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                     @Override
                     public Observable<GroupDynamicListBean> call(GroupDynamicListBean groupDynamicListBean) {
                         List<Object> user_ids = new ArrayList<>();
-                        if (groupDynamicListBean != null){
+                        if (groupDynamicListBean != null) {
                             user_ids.add(groupDynamicListBean.getUser_id());
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {

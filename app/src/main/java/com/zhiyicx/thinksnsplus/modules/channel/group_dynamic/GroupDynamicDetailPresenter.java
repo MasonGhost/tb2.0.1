@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoimpl;

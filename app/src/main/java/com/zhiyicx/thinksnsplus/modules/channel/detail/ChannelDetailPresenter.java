@@ -263,7 +263,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         mGroupDynamicCommentBeanGreenDaoImpl.deleteSingleCache(dynamicBean.getNew_comments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getNew_comments().remove(commentPositon);
         mRootView.refreshData(dynamicPosition);
-        mRepository.deleteComment(dynamicBean.getId(), comment_id);
+        mRepository.deleteGroupComment(dynamicBean.getGroup_id(), dynamicBean.getId(), comment_id);
     }
 
 
@@ -284,7 +284,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         }
         mRootView.refreshData();
         if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
-            mRepository.deleteDynamic(dynamicBean.getId());
+            mRepository.deleteGroupDynamic(dynamicBean.getGroup_id(), dynamicBean.getId());
         }
 
     }

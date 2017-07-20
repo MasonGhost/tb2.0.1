@@ -18,9 +18,9 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 public class GroupDynamicListItemForThreeImage extends GroupDynamicListBaseItem {
     private static final int IMAGE_COUNTS = 3;// 动态列表图片数量
     private static final int CURREN_CLOUMS = 3;// 当前列数
+
     public GroupDynamicListItemForThreeImage(Context context) {
         super(context);
-
     }
 
     @Override

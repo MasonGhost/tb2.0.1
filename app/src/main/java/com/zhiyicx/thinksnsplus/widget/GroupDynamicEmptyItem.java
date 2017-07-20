@@ -15,6 +15,8 @@ public class GroupDynamicEmptyItem extends EmptyItem<GroupDynamicListBean> {
 
     @Override
     public boolean isForViewType(GroupDynamicListBean item, int position) {
-        return item != null && item.getId() == null;
+        boolean isForViewType=
+         item != null && item.getId() == null;
+        return isForViewType;
     }
 }
