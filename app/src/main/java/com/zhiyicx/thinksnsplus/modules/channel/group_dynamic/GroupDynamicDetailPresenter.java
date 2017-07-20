@@ -254,7 +254,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                 .subscribe(new BaseSubscribeForV2<GroupDynamicListBean>() {
                     @Override
                     protected void onSuccess(GroupDynamicListBean data) {
-                        mRootView.getCurrentDynamic().setComments(data.getComments());
+                        mRootView.getCurrentDynamic().setCommentslist(data.getCommentslist());
                         mRootView.getCurrentDynamic().setMGroupDynamicLikeListBeanList(data.getMGroupDynamicLikeListBeanList());
                         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
                         mRootView.allDataReady();
@@ -444,7 +444,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         }
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
-        mRepository.deleteCommentV2(mRootView.getCurrentDynamic().getId(), comment_id);
+        mRepository.deleteGroupComment(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic().getId(), comment_id);
     }
 
     /**
