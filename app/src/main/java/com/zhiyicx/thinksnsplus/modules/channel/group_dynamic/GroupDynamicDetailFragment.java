@@ -254,13 +254,12 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             dynamicHasBeDeleted();
             return;
         }
-        mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), DEFAULT_PAGE_MAX_ID, String.valueOf(mGroupDynamicListBean
-                .getUser_id()));
-//        if (mGroupDynamicListBean.getDigUserInfoList() == null) {
-//
-//        } else {
-//            allDataReady();
-//        }
+        if (mGroupDynamicListBean.getMGroupDynamicLikeListBeanList() == null) {
+            mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), DEFAULT_PAGE_MAX_ID, String.valueOf(mGroupDynamicListBean
+                    .getUser_id()));
+        } else {
+            allDataReady();
+        }
     }
 
     @Override

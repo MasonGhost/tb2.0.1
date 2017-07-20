@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2Dao;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -86,6 +88,15 @@ public class GroupDynamicListBeanGreenDaoimpl extends CommonCacheImpl<GroupDynam
 
     public UserInfoBean getComment(){
 
+        return null;
+    }
+
+    public GroupDynamicListBean getDynamicByFeedMark(Long feed_mark) {
+        List<GroupDynamicListBean> datas = mGroupDynamicListBeanDao.queryDeep(" where " + " T." + DynamicDetailBeanV2Dao.Properties.Feed_mark.columnName + " = ? "// feedId倒序
+                , String.valueOf(feed_mark));
+        if (!datas.isEmpty()) {
+            return datas.get(0);
+        }
         return null;
     }
 }

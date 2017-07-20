@@ -123,23 +123,23 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                     @Override
                     protected void onSuccess(List<GroupDynamicCommentListBean> data) {
                         if (!isLoadMore) { // 刷新时，把自己还未发送成功的评论加载到前面
-//                            List<GroupDynamicCommentListBean> myComments = mGroupDynamicCommentListBeanGreenDao
-//                                    .getMySendingComment(mRootView.getCurrentDynamic().getGroup_id());
-//                            if (!myComments.isEmpty()) {
-//                                for (int i = 0; i < myComments.size(); i++) {
-//                                    myComments.get(i).setCommentUser(mUserInfoBeanGreenDao
-//                                            .getSingleDataFromCache(myComments.get(i).getUser_id
-//                                                    ()));
-//                                    if (myComments.get(i).getReply_to_user_id() != 0) {
-//                                        myComments.get(i).setReplyUser(mUserInfoBeanGreenDao
-//                                                .getSingleDataFromCache(myComments.get(i)
-//                                                        .getReply_to_user_id()));
-//                                    }
-//                                }
-//                                myComments.addAll(data);
-//                                data.clear();
-//                                data.addAll(myComments);
-//                            }
+                            List<GroupDynamicCommentListBean> myComments = mGroupDynamicCommentListBeanGreenDao
+                                    .getMySendingComment(mRootView.getCurrentDynamic().getGroup_id());
+                            if (!myComments.isEmpty()) {
+                                for (int i = 0; i < myComments.size(); i++) {
+                                    myComments.get(i).setCommentUser(mUserInfoBeanGreenDao
+                                            .getSingleDataFromCache(myComments.get(i).getUser_id
+                                                    ()));
+                                    if (myComments.get(i).getReply_to_user_id() != 0) {
+                                        myComments.get(i).setReplyUser(mUserInfoBeanGreenDao
+                                                .getSingleDataFromCache(myComments.get(i)
+                                                        .getReply_to_user_id()));
+                                    }
+                                }
+                                myComments.addAll(data);
+                                data.clear();
+                                data.addAll(myComments);
+                            }
                         }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
@@ -222,23 +222,23 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                         mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0));
                         // 保存关注状态
                         List<GroupDynamicCommentListBean> data = listBaseJson3;
-//                        // 取出本地未发送成功的评论
-////                        List<GroupDynamicCommentListBean> myComments = mDynamicCommentBeanGreenDao
-////                                .getMySendingComment(mRootView.getCurrentDynamic().getFeed_mark());
-//                        if (!myComments.isEmpty()) {
-//                            for (int i = 0; i < myComments.size(); i++) {
-//                                myComments.get(i).setCommentUser(mUserInfoBeanGreenDao
-//                                        .getSingleDataFromCache(myComments.get(i).getUser_id()));
-//                                if (myComments.get(i).getReply_to_user_id() != 0) {
-//                                    myComments.get(i).setReplyUser(mUserInfoBeanGreenDao
-//                                            .getSingleDataFromCache(myComments.get(i)
-//                                                    .getReply_to_user_id()));
-//                                }
-//                            }
-//                            myComments.addAll(data);
-//                            data.clear();
-//                            data.addAll(myComments);
-//                        }
+                        // 取出本地未发送成功的评论
+                        List<GroupDynamicCommentListBean> myComments = mGroupDynamicCommentListBeanGreenDao
+                                .getMySendingComment(mRootView.getCurrentDynamic().getGroup_id());
+                        if (!myComments.isEmpty()) {
+                            for (int i = 0; i < myComments.size(); i++) {
+                                myComments.get(i).setCommentUser(mUserInfoBeanGreenDao
+                                        .getSingleDataFromCache(myComments.get(i).getUser_id()));
+                                if (myComments.get(i).getReply_to_user_id() != 0) {
+                                    myComments.get(i).setReplyUser(mUserInfoBeanGreenDao
+                                            .getSingleDataFromCache(myComments.get(i)
+                                                    .getReply_to_user_id()));
+                                }
+                            }
+                            myComments.addAll(data);
+                            data.clear();
+                            data.addAll(myComments);
+                        }
                         dynamicBean.setCommentslist(data);
 
                     } else {
