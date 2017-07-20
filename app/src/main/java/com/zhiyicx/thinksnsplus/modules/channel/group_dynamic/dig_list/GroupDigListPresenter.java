@@ -8,7 +8,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -108,7 +108,7 @@ public class GroupDigListPresenter extends AppBasePresenter<GroupDigListContract
     }
 
     @Override
-    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, GroupDynamicLikeListBean dynamicBean) {
-        return null;
+    public List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, GroupDynamicListBean dynamicBean) {
+        return dynamicBean.getMGroupDynamicLikeListBeanList();
     }
 }

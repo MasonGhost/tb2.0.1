@@ -29,7 +29,7 @@ public class GroupDigListFragment extends TSListFragment<GroupDigListContract.Pr
 
     @Override
     public void upDataFollowState(int position) {
-
+        refreshData(position);
     }
 
     @Override

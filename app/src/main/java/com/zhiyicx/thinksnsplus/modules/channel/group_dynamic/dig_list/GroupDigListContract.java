@@ -45,6 +45,6 @@ public interface GroupDigListContract {
 
         void requestNetData(Long maxId, boolean isLoadMore, long feed_id);
 
-        List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, GroupDynamicLikeListBean dynamicBean);
+        List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, GroupDynamicListBean dynamicBean);
     }
 }
