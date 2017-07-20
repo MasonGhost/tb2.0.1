@@ -34,6 +34,8 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListActivity;
+import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
@@ -187,15 +189,15 @@ public class GroupDynamicDetailHeader {
         dynamicHorizontalStackIconView.setPublishTime(dynamicBean.getCreated_at());
         dynamicHorizontalStackIconView.setViewerCount(dynamicBean.getViews());
         // 设置点赞头像
-        List<GroupDynamicLikeListBean> userInfoList = dynamicBean.getMGroupDynamicLikeListBeanList();
+        List<FollowFansBean> userInfoList = dynamicBean.getMGroupDynamicLikeListBeanList();
         List<ImageBean> imageBeanList = null;
         if (userInfoList != null && !userInfoList.isEmpty()) {
             imageBeanList = new ArrayList<>();
             for (int i = userInfoList.size() - 1; i >= 0; i--) {
                 ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getMUserInfoBean()
+                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getTargetUserInfo()
                         .getAvatar()) ? 0 : Integer.parseInt(userInfoList.get(i)
-                        .getMUserInfoBean().getAvatar()));
+                        .getTargetUserInfo().getAvatar()));
                 imageBeanList.add(imageBean);
             }
         }
@@ -204,10 +206,10 @@ public class GroupDynamicDetailHeader {
         // 设置跳转到点赞列表
         dynamicHorizontalStackIconView.setDigContainerClickListener(digContainer -> {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(DigListFragment.DIG_LIST_DATA, dynamicBean);
-            Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity
+            bundle.putParcelable(GroupDigListFragment.GROUP_DIG_LIST_DATA, dynamicBean);
+            Intent intent = new Intent(mDynamicDetailHeader.getContext(), GroupDigListActivity
                     .class);
-            intent.putExtras(bundle);
+            intent.putExtra(GroupDigListFragment.GROUP_DIG_LIST_DATA, bundle);
             mDynamicDetailHeader.getContext().startActivity(intent);
         });
         if (dynamicBean.getComments() <= 0) {

@@ -104,7 +104,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     View mToolbarTopBlank;
 
     private GroupDynamicListBean mGroupDynamicListBean;// 上一个页面传进来的数据
-    private GroupDynamicLikeListBean mFollowFansBean;// 用户关注状态
+    private FollowFansBean mFollowFansBean;// 用户关注状态
     private boolean mIsLookMore = false;
     private GroupDynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -333,7 +333,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    public void setDigHeadIcon(List<GroupDynamicLikeListBean> userInfoBeanList) {
+    public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
         mGroupDynamicListBean.setMGroupDynamicLikeListBeanList(userInfoBeanList);
         updateCommentCountAndDig();
     }
@@ -351,7 +351,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
 
     @Override
     public void initFollowState(FollowFansBean mFollowFansBean) {
-//        this.mFollowFansBean = mFollowFansBean;
+        this.mFollowFansBean = mFollowFansBean;
         setToolBarRightFollowState(mFollowFansBean.getFollowState());
     }
 
