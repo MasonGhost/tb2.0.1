@@ -585,7 +585,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 
     @Override
     public void payNote(final int imagePosition, int note, boolean isImage) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {
             balance = walletBean.getBalance();

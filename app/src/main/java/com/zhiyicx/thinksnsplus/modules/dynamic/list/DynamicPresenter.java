@@ -505,7 +505,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void payNote(final int dynamicPosition, final int imagePosition, int note, final boolean isImage) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {
             balance = walletBean.getBalance();
