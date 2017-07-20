@@ -12,6 +12,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Observer;
+import rx.schedulers.Schedulers;
+
 /**
  * @Author Jliuer
  * @Date 2017/07/18/16:57
@@ -38,6 +42,28 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
         mGroupDynamicCommentListBeanDao.insertOrReplaceInTx(multiData);
     }
 
+    public void deleteCacheByFeedMark(Long feed_mark){
+        Observable.from(getLocalComments(feed_mark))
+                .subscribeOn(Schedulers.io())
+                .filter(dynamicCommentBean -> dynamicCommentBean.getId() != null && dynamicCommentBean.getId() != 0)
+                .subscribe(new Observer<GroupDynamicCommentListBean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(GroupDynamicCommentListBean groupDynamicCommentListBean) {
+                        deleteSingleCache(groupDynamicCommentListBean);
+                    }
+                });
+    }
+
     @Override
     public boolean isInvalide() {
         return false;
@@ -45,12 +71,17 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
 
     @Override
     public GroupDynamicCommentListBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        return mGroupDynamicCommentListBeanDao.load(primaryKey);
     }
 
     @Override
     public List<GroupDynamicCommentListBean> getMultiDataFromCache() {
         return mGroupDynamicCommentListBeanDao.loadAll();
+    }
+
+    public List<GroupDynamicCommentListBean> getLocalComments(Long feedMark) {
+        return mGroupDynamicCommentListBeanDao.queryBuilder()
+                .where(GroupDynamicCommentListBeanDao.Properties.Comment_mark.eq(feedMark)).list();
     }
 
     @Override
@@ -103,7 +134,7 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
     public GroupDynamicCommentListBean getGroupCommentsByCommentMark(long comment_mark) {
         List<GroupDynamicCommentListBean> result = mGroupDynamicCommentListBeanDao.queryBuilder()
                 .where(GroupDynamicCommentListBeanDao.Properties.User_id.eq(AppApplication.getmCurrentLoginAuth().getUser_id()),
-                        GroupDynamicCommentListBeanDao.Properties.Feed_id.eq(comment_mark))
+                        GroupDynamicCommentListBeanDao.Properties.Comment_mark.eq(comment_mark))
                 .orderDesc(GroupDynamicCommentListBeanDao.Properties.Created_at)
                 .list();
 

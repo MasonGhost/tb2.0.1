@@ -55,7 +55,7 @@ public class GroupInfoBeanGreenDaoImpl extends CommonCacheImpl<GroupInfoBean> {
 
     @Override
     public void clearTable() {
-
+        mGroupInfoBeanDao.deleteAll();
     }
 
     @Override

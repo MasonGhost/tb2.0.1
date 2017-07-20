@@ -39,6 +39,7 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
     @Id
     private Long id;
     @Unique
+    @SerializedName("group_post_comment_mark")
     private Long comment_mark;
     private int group_id;
     private int feed_id;
@@ -138,6 +139,7 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         this.reply_to_user_id = reply_to_user_id;
     }
 
+    
 
     @Override
     public int describeContents() {

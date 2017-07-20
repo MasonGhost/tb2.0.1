@@ -1041,7 +1041,7 @@ public class BackgroundTaskHandler {
     private void sendGroupComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
-        final Long comment_mark = (Long) params.get("comment_mark");
+        final Long comment_mark = (Long) params.get("group_post_comment_mark");
         final GroupDynamicCommentListBean dynamicCommentBean = mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByCommentMark(comment_mark);
         if (dynamicCommentBean == null) {
             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);

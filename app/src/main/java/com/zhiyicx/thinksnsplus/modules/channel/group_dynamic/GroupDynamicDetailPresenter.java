@@ -30,8 +30,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -61,7 +59,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_MAX_ID;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
@@ -83,7 +80,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-//    @Inject
+    //    @Inject
 //    GroupDynamicLikeListBeanDao mGroupDynamicLikeListBeanDao;
     @Inject
     SystemRepository mSystemRepository;
@@ -169,8 +166,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             mRootView.upDateFollowFansState(followFansBean.getFollowState());
         }
         // 从数据库获取评论列表
-        return null/*mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
-                .getFeed_mark())*/;
+        return mGroupDynamicCommentListBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
+                .getFeed_mark());
     }
 
     @Override
@@ -178,9 +175,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         if (data == null) {
             return false;
         }
-//        mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(mRootView.getCurrentDynamic()
-//                .getFeed_mark());// 删除本条动态的本地评论
-//        mDynamicCommentBeanGreenDao.insertOrReplace(data);
+        mGroupDynamicCommentListBeanGreenDao.deleteCacheByFeedMark(mRootView.getCurrentDynamic()
+                .getFeed_mark());// 删除本条动态的本地评论
+        mGroupDynamicCommentListBeanGreenDao.saveMultiData(data);
         return true;
     }
 
@@ -238,7 +235,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 //                            myComments.addAll(data);
 //                            data.clear();
 //                            data.addAll(myComments);
-//                        }
+////                        }
                         dynamicBean.setCommentslist(data);
 
                     } else {
@@ -322,9 +319,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mRootView.setLike(isLiked);
         mRootView.getCurrentDynamic().setDiggs(isLiked ? mRootView.getCurrentDynamic()
                 .getDiggs() + 1 : mRootView.getCurrentDynamic().getDiggs() - 1);
-        mRootView.getCurrentDynamic().setIs_digg(isLiked ? 1:0);
+        mRootView.getCurrentDynamic().setIs_digg(isLiked ? 1 : 0);
         List<FollowFansBean> digUsers = mRootView.getCurrentDynamic().getMGroupDynamicLikeListBeanList();
-        if (digUsers == null){
+        if (digUsers == null) {
             digUsers = new ArrayList<>();
         }
         if (!isLiked) {// 取消喜欢，修改修换的用户信息
