@@ -97,8 +97,18 @@ public interface UserInfoContract {
          * @param user_ids user 可以是一个值，或者多个值，多个值的时候用英文半角 , 分割。
          * @return
          */
-        Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(String user_ids);
+        Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids);
 
+        /**
+         *  搜索用户的用户信息
+         * @param user_ids Get multiple designated users, multiple IDs using , split.
+         * @param name     Used to retrieve users whose username contains name.
+         * @param since    The integer ID of the last User that you've seen.
+         * @param order    Sorting. Enum: asc, desc
+         * @param limit    List user limit, minimum 1 max 50.
+         * @return
+         */
+        Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit);
 
         /**
          * 获取用户信息,先从本地获取，本地没有再从网络 获取

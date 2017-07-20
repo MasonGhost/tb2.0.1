@@ -81,13 +81,17 @@ public interface UserInfoClient {
     Observable<UserInfoBean> getSpecifiedUserInfo(@Path("user_id") long userId, @Query("following") Long followingUserId, @Query("follower") Long followerUserId);
 
     /**
-     * 批量获取指定用户的用户信息
+     * 批量获取用户信息
      *
-     * @param user_ids user 可以是一个值，或者多个值，多个值的时候用英文半角 , 分割。
+     * @param user_ids Get multiple designated users, multiple IDs using , split.
+     * @param name     Used to retrieve users whose username contains name.
+     * @param since    The integer ID of the last User that you've seen.
+     * @param order    Sorting. Enum: asc, desc
+     * @param limit    List user limit, minimum 1 max 50.
      * @return
      */
     @GET(APP_PATH_GET_BATCH_SPECIFIED_USER_INFO)
-    Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(@Query("user") String user_ids);
+    Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(@Query("id") String user_ids, @Query("name") String name, @Query("since") Integer since, @Query("order") String order, @Query("limit") Integer limit);
 
     /**
      * 获取 IM 信息

@@ -17,10 +17,8 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -31,7 +29,6 @@ import javax.inject.Inject;
 import retrofit2.http.Path;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -182,6 +179,9 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                 .flatMap(new Func1<List<GroupInfoBean>, Observable<List<GroupInfoBean>>>() {
                     @Override
                     public Observable<List<GroupInfoBean>> call(List<GroupInfoBean> groupInfoBeen) {
+                        if(groupInfoBeen.isEmpty()){
+                            return Observable.just(groupInfoBeen);
+                        }
                         List<Object> user_ids = new ArrayList<>();
                         for (GroupInfoBean groupInfoBean : groupInfoBeen) {
                             for (GroupManagerBean groupManagerBean : groupInfoBean.getManagers()) {

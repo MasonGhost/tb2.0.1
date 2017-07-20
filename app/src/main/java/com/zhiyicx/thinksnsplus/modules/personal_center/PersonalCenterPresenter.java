@@ -199,28 +199,30 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        Subscription subscription = mRepository.getUserFollowState(user_id + "")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<FollowFansBean>() {
-                    @Override
-                    protected void onSuccess(FollowFansBean data) {
-                        mInterfaceNum++;
-                        mRootView.setFollowState(data);
-                        allready();
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.loadAllError();
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.loadAllError();
-                    }
-                });
-        addSubscrebe(subscription);
+        mInterfaceNum++;
+        allready();
+//        Subscription subscription = mRepository.getUserFollowState(user_id + "")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseSubscribe<FollowFansBean>() {
+//                    @Override
+//                    protected void onSuccess(FollowFansBean data) {
+//                        mInterfaceNum++;
+//                        mRootView.setFollowState(data);
+//                        allready();
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(String message, int code) {
+//                        mRootView.loadAllError();
+//                    }
+//
+//                    @Override
+//                    protected void onException(Throwable throwable) {
+//                        mRootView.loadAllError();
+//                    }
+//                });
+//        addSubscrebe(subscription);
     }
 
     @Override
@@ -231,7 +233,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public void uploadUserCover(String filePath,UserInfoBean userInfoBean) {
+    public void uploadUserCover(String filePath, UserInfoBean userInfoBean) {
         Subscription subscription = mIUploadRepository.uploadBg(filePath)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override

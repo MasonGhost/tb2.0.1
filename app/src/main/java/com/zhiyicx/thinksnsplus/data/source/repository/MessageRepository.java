@@ -285,7 +285,7 @@ public class MessageRepository implements MessageContract.Repository {
                         if (userIds.length() > 1) {
                             userIds = userIds.substring(0, userIds.length() - 1);
                         }
-                        return mUserInfoRepository.getBatchSpecifiedUserInfo(userIds)
+                        return mUserInfoRepository.getUserInfoByIds(userIds)
                                 .subscribeOn(Schedulers.io())
                                 .map(userInfoBeens -> {
                                     SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
@@ -311,7 +311,7 @@ public class MessageRepository implements MessageContract.Repository {
                     @Override
                     public Observable<TSPNotificationBean> call(TSPNotificationBean tspNotificationBeen) {
 
-                        return mUserInfoRepository.getBatchSpecifiedUserInfo(String.valueOf(tspNotificationBeen.getUser_id()))
+                        return mUserInfoRepository.getUserInfoByIds(String.valueOf(tspNotificationBeen.getUser_id()))
                                 .subscribeOn(Schedulers.io())
                                 .map(userInfoBeens -> {
                                     tspNotificationBeen.setUserInfo(userInfoBeens.get(0));

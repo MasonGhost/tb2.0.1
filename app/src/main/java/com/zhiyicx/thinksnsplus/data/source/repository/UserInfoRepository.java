@@ -120,7 +120,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
-        return getBatchSpecifiedUserInfo(userids)
+        return getUserInfoByIds(userids)
                 .subscribeOn(Schedulers.io())
                 .map(userInfoBeen -> {
                     BaseJson<List<UserInfoBean>> baseJson = new BaseJson<>();
@@ -166,8 +166,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(String user_ids) {
-        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids)
+    public Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids) {
+        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids,null,null,null,null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit) {
+        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids,name,since,order,limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -215,7 +222,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
 
-        return mUserInfoClient.getBatchSpecifiedUserInfo(userids)
+        return getUserInfoByIds(userids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(listBaseJson -> {
