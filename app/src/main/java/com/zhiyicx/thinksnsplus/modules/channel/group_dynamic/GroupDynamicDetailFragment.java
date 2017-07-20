@@ -584,7 +584,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
      */
     private void initDeleteComentPopupWindow(final long comment_id, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(false ? getString(R.string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_theme))
                 .bottomStr(getString(R.string.cancel))
