@@ -200,4 +200,12 @@ public interface UserInfoClient {
     @POST(ApiConfig.APP_PATH_UPDATE_USER_AVATAR)
     Observable<Object> updateAvatar(@Body MultipartBody multipartBody);
 
+    /**
+     * 更新用户背景
+     *
+     * @param multipartBody
+     * @return
+     */
+    @POST(ApiConfig.APP_PATH_UPDATE_USER_BG)
+    Observable<Object> updateBg(@Body MultipartBody multipartBody);
 }

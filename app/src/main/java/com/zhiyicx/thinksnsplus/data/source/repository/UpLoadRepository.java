@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -251,17 +252,28 @@ public class UpLoadRepository implements IUploadRepository {
      */
     @Override
     public Observable<Object> uploadAvatar(String filePath) {
+        return mUserInfoClient.updateAvatar(getMultipartBody(filePath, "avatar"))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<Object> uploadBg(String filePath) {
+        return mUserInfoClient.updateBg(getMultipartBody(filePath, "image"))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @NonNull
+    private MultipartBody getMultipartBody(String filePath, String key) {
         MultipartBody.Builder builder = new MultipartBody.Builder();
         File file = new File(filePath);//filePath 图片地址
         String mimeType = FileUtils.getMimeTypeByFile(file);
         RequestBody imageBody = RequestBody.create(
                 MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
-        builder.addFormDataPart("avatar", file.getName(), imageBody);//imgfile 后台接收图片流的参数名
+        builder.addFormDataPart(key, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
         builder.setType(MultipartBody.FORM);//设置类型
-        MultipartBody multipartBody = builder.build();
-        return mUserInfoClient.updateAvatar(multipartBody)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io());
+        return builder.build();
     }
 
 }

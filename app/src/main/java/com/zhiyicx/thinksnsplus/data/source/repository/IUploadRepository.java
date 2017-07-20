@@ -43,4 +43,12 @@ public interface IUploadRepository {
      * @return
      */
     Observable<Object> uploadAvatar(String filePath);
+
+    /**
+     * 上传个人背景封面
+     *
+     * @param filePath
+     * @return
+     */
+    Observable<Object> uploadBg(String filePath);
 }
