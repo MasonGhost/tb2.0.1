@@ -270,7 +270,11 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     @Override
     public void reSendComment(GroupDynamicCommentListBean commentBean, long feed_id) {
         commentBean.setState(DynamicCommentBean.SEND_ING);
-        mRepository.sendComment(commentBean.getContent(), feed_id, commentBean.getReply_to_user_id(), 1L);
+        mRepository.sendGroupComment(commentBean.getContent(),
+                (long) commentBean.getGroup_id(),
+                feed_id,
+                commentBean.getReply_to_user_id(),
+                commentBean.getComment_mark());
         mRootView.refreshData();
     }
 
@@ -303,6 +307,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         creatComment.setContent(commentContent);
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         creatComment.setComment_mark(Long.parseLong(comment_mark));
+        creatComment.setGroup_id(mRootView.getListDatas().get(mCurrentPostion).getGroup_id());
         creatComment.setFeed_id(mRootView.getListDatas().get(mCurrentPostion).getId().intValue());
         creatComment.setReply_to_user_id(replyToUserId);
         if (replyToUserId == 0) { //当回复动态的时候

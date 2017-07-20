@@ -10,6 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 
@@ -36,7 +37,9 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
 
     @Id
     private Long id;
+    @Unique
     private Long comment_mark;
+    private int group_id;
     private int feed_id;
     private long user_id;
     @ToOne(joinProperty = "user_id")
@@ -48,6 +51,14 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
     private String created_at;
     private int to_user_id;
     private int state = SEND_ING;
+
+    public int getFeed_id() {
+        return feed_id;
+    }
+
+    public void setFeed_id(int feed_id) {
+        this.feed_id = feed_id;
+    }
 
     public Long getComment_mark() {
         return comment_mark;
@@ -62,12 +73,12 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         return id;
     }
 
-    public int getFeed_id() {
-        return feed_id;
+    public int getGroup_id() {
+        return group_id;
     }
 
-    public void setFeed_id(int feed_id) {
-        this.feed_id = feed_id;
+    public void setGroup_id(int group_id) {
+        this.group_id = group_id;
     }
 
     public int getState() {
@@ -127,9 +138,30 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         this.reply_to_user_id = reply_to_user_id;
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.comment_mark);
+        dest.writeInt(this.group_id);
+        dest.writeInt(this.feed_id);
+        dest.writeLong(this.user_id);
+        dest.writeParcelable(this.commentUser, flags);
+        dest.writeString(this.content);
+        dest.writeLong(this.reply_to_user_id);
+        dest.writeParcelable(this.replyUser, flags);
+        dest.writeString(this.created_at);
+        dest.writeInt(this.to_user_id);
+        dest.writeInt(this.state);
+    }
+
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 397031426)
     public UserInfoBean getCommentUser() {
         long __key = this.user_id;
@@ -148,9 +180,7 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         return commentUser;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1714457217)
     public void setCommentUser(@NotNull UserInfoBean commentUser) {
         if (commentUser == null) {
@@ -163,9 +193,7 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         }
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 2112537803)
     public UserInfoBean getReplyUser() {
         long __key = this.reply_to_user_id;
@@ -184,9 +212,7 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         return replyUser;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1942204408)
     public void setReplyUser(@NotNull UserInfoBean replyUser) {
         if (replyUser == null) {
@@ -235,56 +261,6 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         myDao.update(this);
     }
 
-    @Generated(hash = 1106045402)
-    public GroupDynamicCommentListBean(Long id, Long comment_mark, int feed_id, long user_id, String content,
-            long reply_to_user_id, String created_at, int to_user_id, int state) {
-        this.id = id;
-        this.comment_mark = comment_mark;
-        this.feed_id = feed_id;
-        this.user_id = user_id;
-        this.content = content;
-        this.reply_to_user_id = reply_to_user_id;
-        this.created_at = created_at;
-        this.to_user_id = to_user_id;
-        this.state = state;
-    }
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 1079061794)
-    private transient GroupDynamicCommentListBeanDao myDao;
-    @Generated(hash = 734177030)
-    private transient Long commentUser__resolvedKey;
-    @Generated(hash = 1789712289)
-    private transient Long replyUser__resolvedKey;
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeInt(this.feed_id);
-        dest.writeLong(this.user_id);
-        dest.writeParcelable(this.commentUser, flags);
-        dest.writeString(this.content);
-        dest.writeLong(this.reply_to_user_id);
-        dest.writeParcelable(this.replyUser, flags);
-        dest.writeString(this.created_at);
-        dest.writeInt(this.to_user_id);
-        dest.writeInt(this.state);
-    }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1028792152)
     public void __setDaoSession(DaoSession daoSession) {
@@ -292,9 +268,14 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         myDao = daoSession != null ? daoSession.getGroupDynamicCommentListBeanDao() : null;
     }
 
+    public GroupDynamicCommentListBean() {
+    }
+
     protected GroupDynamicCommentListBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.comment_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.group_id = in.readInt();
         this.feed_id = in.readInt();
         this.user_id = in.readLong();
         this.commentUser = in.readParcelable(UserInfoBean.class.getClassLoader());
@@ -306,8 +287,19 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         this.state = in.readInt();
     }
 
-    @Generated(hash = 705863403)
-    public GroupDynamicCommentListBean() {
+    @Generated(hash = 1109890683)
+    public GroupDynamicCommentListBean(Long id, Long comment_mark, int group_id, int feed_id, long user_id, String content,
+            long reply_to_user_id, String created_at, int to_user_id, int state) {
+        this.id = id;
+        this.comment_mark = comment_mark;
+        this.group_id = group_id;
+        this.feed_id = feed_id;
+        this.user_id = user_id;
+        this.content = content;
+        this.reply_to_user_id = reply_to_user_id;
+        this.created_at = created_at;
+        this.to_user_id = to_user_id;
+        this.state = state;
     }
 
     public static final Creator<GroupDynamicCommentListBean> CREATOR = new Creator<GroupDynamicCommentListBean>() {
@@ -321,4 +313,14 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
             return new GroupDynamicCommentListBean[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1079061794)
+    private transient GroupDynamicCommentListBeanDao myDao;
+    @Generated(hash = 734177030)
+    private transient Long commentUser__resolvedKey;
+    @Generated(hash = 1789712289)
+    private transient Long replyUser__resolvedKey;
 }

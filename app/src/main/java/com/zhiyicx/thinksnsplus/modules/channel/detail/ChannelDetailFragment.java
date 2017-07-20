@@ -469,14 +469,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onCommentStateClick(GroupDynamicCommentListBean dynamicCommentBean, int position) {
-
+        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getId())).getId());
+        mReSendCommentPopWindow.show();
     }
-
-//    @Override
-//    public void onCommentStateClick(GroupDynamicCommentListBean dynamicCommentBean, int position) {
-//        initReSendCommentPopupWindow(dynamicCommentBean, mListDatas.get(mPresenter.getCurrenPosiotnInDataList(dynamicCommentBean.getId())).getId());
-//        mReSendCommentPopWindow.show();
-//    }
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -565,6 +560,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mReSendCommentPopWindow.hide();
+                    //mCurrentPostion, mReplyToUserId, text
                     mPresenter.reSendComment(commentBean, feed_id);
                 })
                 .bottomClickListener(() -> mReSendCommentPopWindow.hide())
