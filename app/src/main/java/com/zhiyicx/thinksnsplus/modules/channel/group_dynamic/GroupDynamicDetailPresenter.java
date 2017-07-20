@@ -330,7 +330,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         if (!isLiked) {// 取消喜欢，修改修换的用户信息
             int digUserSize = digUsers.size();
             for (int i = 0; i < digUserSize; i++) {
-                if (digUsers.get(i).getId() == AppApplication.getmCurrentLoginAuth()
+                if (digUsers.get(i).getTargetUserId() == AppApplication.getmCurrentLoginAuth()
                         .getUser_id()) {
                     digUsers.remove(i);
                     break;
