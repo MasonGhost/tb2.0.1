@@ -30,8 +30,12 @@ public class EventBusTagConfig {
     public static final String EVENT_COLLECT_DYNAMIC = "event_collect_dynamic";
     // 收藏圈子动态
     public static final String EVENT_COLLECT_GROUP_DYNAMIC = "event_collect_group_dynamic";
-    //更新动态列表
+    // 点赞圈子动态
+    public static final String EVENT_DIG_GROUP_DYNAMIC = "event_dig_group_dynamic";
+    // 更新动态列表
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
+    // 更新圈子动态列表
+    public static final String EVENT_UPDATE_GROUP_DYNAMIC = "event_update_group_dynamic";
     // 详情界面删除内容通知
     public static final String DYNAMIC_LIST_DELETE_UPDATE = "dynamic_list_delete_update";
     // 动态列表发送评论
@@ -64,7 +68,6 @@ public class EventBusTagConfig {
 
     // 加入/退出圈子
     public static final String EVENT_GROUP_JOIN = "event_group_join";
-
 
     /**
      * 音乐相关

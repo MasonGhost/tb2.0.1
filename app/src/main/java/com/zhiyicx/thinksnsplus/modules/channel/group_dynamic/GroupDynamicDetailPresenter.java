@@ -348,6 +348,11 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mRootView.updateCommentCountAndDig();
         // 更新数据库
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicToolBean);
+        // 通知列表
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
+        bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
+        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_DYNAMIC);
         // 通知服务器
         mRepository.handleLike(isLiked, group_id, dynamic_id);
     }
@@ -365,9 +370,13 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mRootView.setCollect(newCollectState);
         // 更新数据库
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
+        // 通知列表
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicBean);
+        bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
+        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_DYNAMIC);
         // 通知服务器
         mRepository.handleCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
-        EventBus.getDefault().post(dynamicBean, EventBusTagConfig.EVENT_COLLECT_GROUP_DYNAMIC);
     }
 
     @Override
@@ -681,4 +690,5 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     public void onCancel(Share share) {
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
+
 }

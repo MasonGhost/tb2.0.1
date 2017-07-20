@@ -436,7 +436,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
      *
      * @param data
      */
-    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_GROUP_DYNAMIC)
     public void updateDynamic(Bundle data) {
         Observable.just(data)
                 .subscribeOn(Schedulers.newThread())
@@ -454,7 +454,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                         }
                     }
                     if (dynamicPosition != -1) {// 如果列表有当前评论
-                        mRootView.getListDatas().set(position, dynamicBean);
+                        mRootView.getListDatas().set(dynamicPosition, dynamicBean);
                     }
 
                     return isNeedRefresh ? dynamicPosition : -1;
