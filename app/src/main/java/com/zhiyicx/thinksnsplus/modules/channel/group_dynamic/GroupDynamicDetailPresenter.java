@@ -431,15 +431,15 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     @Override
     public void deleteCommentV2(long comment_id, int commentPosition) {
         mIsNeedDynamicListRefresh = true;
-//        mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
-//                .getFeed_comment_count() - 1);
-//        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
-//        mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments()
-//                .get(commentPosition));
+        mRootView.getCurrentDynamic().setComments(mRootView.getCurrentDynamic()
+                .getComments() - 1);
+        mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
+        mGroupDynamicCommentListBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getCommentslist()
+                .get(commentPosition));
         mRootView.getListDatas().remove(commentPosition);
         if (mRootView.getListDatas().isEmpty()) {
-            DynamicCommentBean emptyData = new DynamicCommentBean();
-//            mRootView.getListDatas().add(emptyData);
+            GroupDynamicCommentListBean emptyData = new GroupDynamicCommentListBean();
+            mRootView.getListDatas().add(emptyData);
         }
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();

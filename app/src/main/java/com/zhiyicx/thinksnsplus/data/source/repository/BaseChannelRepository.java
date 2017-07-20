@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -62,6 +63,9 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     protected ChannelSubscripBeanGreenDaoImpl mChannelSubscripBeanGreenDao;
     @Inject
     protected ChannelInfoBeanGreenDaoImpl mChannelInfoBeanGreenDao;
+
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
 //    @Inject
 //    private GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
@@ -176,6 +180,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                     for (UserInfoBean userInfoBean : listBaseJson.getData()) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
+                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
                                     for (int i = 0; i < groupInfoBeen.size(); i++) {
                                         if (groupInfoBeen.get(i).getManagers() != null) {
                                             for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
@@ -271,11 +276,18 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                         for (UserInfoBean userInfoBean : listBaseJson.getData()) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
                                         for (int i = 0; i < groupDynamicCommentListBeen.size(); i++) {
                                             groupDynamicCommentListBeen.get(i).setCommentUser(
                                                     userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getUser_id()));
-                                            groupDynamicCommentListBeen.get(i).setReplyUser(
-                                                    userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getReply_to_user_id()));
+                                            if (groupDynamicCommentListBeen.get(i).getReply_to_user_id() != 0){
+                                                groupDynamicCommentListBeen.get(i).setReplyUser(
+                                                        userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getReply_to_user_id()));
+                                            } else {
+                                                UserInfoBean userInfoBean = new UserInfoBean();
+                                                userInfoBean.setUser_id(0L);
+                                                groupDynamicCommentListBeen.get(i).setReplyUser(userInfoBean);
+                                            }
                                         }
                                         return groupDynamicCommentListBeen;
                                     });
