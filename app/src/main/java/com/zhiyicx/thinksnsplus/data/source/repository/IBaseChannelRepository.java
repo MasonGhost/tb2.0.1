@@ -61,6 +61,10 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
 
     void sendGroupComment(String commentContent,Long group_id, Long feed_id, Long reply_to_user_id,Long comment_mark);
 
+    void deleteGroupComment(long group_id,long feed_id,long comment_id);
+
+    void deleteGroupDynamic(long group_id,long feed_id);
+
     Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean);
 
     /**

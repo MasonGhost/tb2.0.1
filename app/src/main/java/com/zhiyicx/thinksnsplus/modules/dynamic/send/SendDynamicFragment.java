@@ -557,7 +557,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 .getmCurrentLoginAuth().getUser_id() : 0;
 
         groupSendDynamicDataBean.setViews(1);
-        groupSendDynamicDataBean.setGroup_id((int) getArguments().getLong(GROUP_ID));
+        groupSendDynamicDataBean.setGroup_id((int)getDynamicSendData().getDynamicChannlId());
         groupSendDynamicDataBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         groupSendDynamicDataBean.setContent(mEtDynamicContent.getInputContent());
         groupSendDynamicDataBean.setTitle(mEtDynamicTitle.getInputContent());

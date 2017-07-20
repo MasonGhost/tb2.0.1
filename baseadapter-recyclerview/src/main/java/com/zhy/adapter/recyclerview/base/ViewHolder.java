@@ -31,7 +31,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         super(itemView);
         mContext = context;
         mConvertView = itemView;
-        mViews = new SparseArray<View>();
+        mViews = new SparseArray<>();
     }
 
 
@@ -61,7 +61,8 @@ public class ViewHolder extends RecyclerView.ViewHolder
         {
             view = mConvertView.findViewById(viewId);
             if (view==null){
-                throw new RuntimeException("please check your viewType has repeated?");
+                throw new RuntimeException("view not found!!! please check your viewType has repeated ? " +
+                        "or make sure your view has declared in your view");
             }
             mViews.put(viewId, view);
         }

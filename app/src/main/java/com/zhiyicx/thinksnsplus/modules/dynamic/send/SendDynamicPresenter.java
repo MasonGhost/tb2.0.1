@@ -55,6 +55,14 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         if (dynamicBean.getImages() == null) { // 当没有图片的时候，给一个占位数组
             dynamicBean.setImages(new ArrayList<>());
         }
+
+        if (mRootView.getDynamicSendData().getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC
+                && (dynamicBean.getTitle() == null || dynamicBean.getTitle().isEmpty())) {
+            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
+                    mContext.getString(R.string.group_dynamic_send_must_has_title));
+            return;
+        }
+
         GroupSendDynamicDataBean groupSendDynamicDataBean = new GroupSendDynamicDataBean();
         groupSendDynamicDataBean.setGroup_id(dynamicBean.getGroup_id());
         groupSendDynamicDataBean.setTitle(dynamicBean.getTitle());

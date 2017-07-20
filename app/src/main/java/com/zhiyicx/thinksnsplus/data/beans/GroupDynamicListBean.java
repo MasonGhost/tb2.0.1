@@ -64,6 +64,7 @@ public class GroupDynamicListBean extends BaseListBean {
     private int is_collection;
     private int comments;
     private Long user_id;
+    private Long feed_mark;
     @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
     private int is_audit;
@@ -400,8 +401,9 @@ public class GroupDynamicListBean extends BaseListBean {
         myDao.update(this);
     }
 
-    @Generated(hash = 1682096477)
-    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<FollowFansBean> mGroupDynamicLikeListBeanList, int state) {
+
+    @Generated(hash = 780235565)
+    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<FollowFansBean> mGroupDynamicLikeListBeanList, int state) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -413,6 +415,7 @@ public class GroupDynamicListBean extends BaseListBean {
         this.is_collection = is_collection;
         this.comments = comments;
         this.user_id = user_id;
+        this.feed_mark = feed_mark;
         this.is_audit = is_audit;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -486,6 +489,14 @@ public class GroupDynamicListBean extends BaseListBean {
 
     public void setMGroupDynamicLikeListBeanList(List<FollowFansBean> mGroupDynamicLikeListBeanList) {
         this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
+    }
+
+    public Long getFeed_mark() {
+        return this.feed_mark;
+    }
+
+    public void setFeed_mark(Long feed_mark) {
+        this.feed_mark = feed_mark;
     }
 
     /** called by internal mechanisms, do not call yourself. */

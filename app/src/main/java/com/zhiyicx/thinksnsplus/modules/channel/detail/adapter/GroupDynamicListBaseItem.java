@@ -142,8 +142,10 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
     @Override
     public boolean isForViewType(GroupDynamicListBean item, int position) {
         // 当本地和服务器都没有图片的时候，使用
-        return item.getId() != null && (item.getImages() != null && item.getImages().size
+        boolean isForViewType=
+        item.getId() != null && (item.getImages() != null && item.getImages().size
                 () == getImageCounts());
+        return isForViewType;
     }
 
     /**

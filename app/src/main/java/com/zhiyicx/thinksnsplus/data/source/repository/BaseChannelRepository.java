@@ -227,6 +227,25 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
+    public void deleteGroupComment(long group_id, long feed_id, long comment_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT, group_id, feed_id, comment_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
+    public void deleteGroupDynamic(long group_id, long feed_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DELETE_GROUP_DYNAMIC_FORMAT, group_id, feed_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+    }
+
+    @Override
     public Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
         return mChannelClient.sendGroupDynamic(dynamicDetailBean.getGroup_id(), body);

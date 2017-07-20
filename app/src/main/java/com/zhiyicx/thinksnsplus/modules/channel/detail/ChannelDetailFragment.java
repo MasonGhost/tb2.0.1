@@ -37,7 +37,9 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForEightImage;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForFiveImage;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForFourImage;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForNineImage;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForOneImage;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForSevenImage;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListItemForSixImage;
@@ -159,6 +161,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     protected void initData() {
         mGroupInfoBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
+        initSubscribState(mGroupInfoBean);
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
         super.initData();
     }
@@ -212,16 +215,19 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
+
+
+
         setAdapter(adapter, new GroupDynamicListItemForZeroImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForTwoImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForThreeImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForFourImage(getContext()));
-        setAdapter(adapter, new GroupDynamicListItemForZeroImage(getContext()));
+        setAdapter(adapter, new GroupDynamicListItemForFiveImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForSixImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForEightImage(getContext()));
-        setAdapter(adapter, new GroupDynamicListItemForZeroImage(getContext()));
+        setAdapter(adapter, new GroupDynamicListItemForNineImage(getContext()));
         GroupDynamicEmptyItem emptyItem = new GroupDynamicEmptyItem();
         adapter.addItemViewDelegate(emptyItem);
         adapter.setOnItemClickListener(this);
@@ -262,7 +268,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mItemChannelDetailHeader.setScrollListenter();
         // 状态栏文字设为白色
         //StatusBarUtils.statusBarDarkMode(mActivity);
-        initGroupState();// 尝试显示订阅按钮
+        //initGroupState();// 尝试显示订阅按钮
         mItemChannelDetailHeader.initHeaderViewData(mGroupInfoBean);
     }
 
@@ -302,7 +308,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             // 操作成功，需要刷新订阅数量
             mItemChannelDetailHeader.refreshSubscribeData(groupInfoBean);
         }
-        initSubscribState(groupInfoBean);
+//        initSubscribState(groupInfoBean);
     }
 
     @Override
@@ -380,13 +386,6 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         dataPosition = dataPosition - 1;// 减去 header
         mCurrentPostion = dataPosition;
 
-        Bitmap shareBitMap = null;
-        try {
-            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + 1).findViewById(R.id.siv_0);
-            shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon_256);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
@@ -412,9 +411,18 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 break;
 
             case 3: // 更多
+                Bitmap shareBitMap = null;
+                try {
+                    ImageView imageView = (ImageView) layoutManager.findViewByPosition
+                            (dataPosition).findViewById(R.id.siv_0);
+                    shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
+                            .getDrawable(), R.mipmap.icon_256);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT);
+                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT,shareBitMap);
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
@@ -443,7 +451,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     public void onCommentContentClick(GroupDynamicListBean dynamicBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getId());
         if (dynamicBean.getNew_comments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-//            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
+            initDeletCommentPopWindow(dynamicBean, mCurrentPostion, position);
             mDeletCommentPopWindow.show();
         } else {
             showCommentView();
@@ -788,7 +796,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * @param dynamicBean curent dynamic
      * @param position    curent dynamic postion
      */
-    private void initMyDynamicPopupWindow(final GroupDynamicListBean dynamicBean, final int position, boolean isCollected) {
+    private void initMyDynamicPopupWindow(final GroupDynamicListBean dynamicBean, final int position, boolean isCollected,
+                                          final Bitmap shareBitMap) {
         Long feed_id = dynamicBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyDynamicPopWindow = ActionPopupWindow.builder()
@@ -811,6 +820,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                     showBottomView(true);
                 })
                 .item3ClickListener(() -> {// 分享
+                    mPresenter.shareDynamic(dynamicBean, shareBitMap);
                     mMyDynamicPopWindow.hide();
                 })
                 .bottomClickListener(() -> {//取消

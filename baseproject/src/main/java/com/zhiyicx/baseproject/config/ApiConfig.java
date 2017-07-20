@@ -376,8 +376,10 @@ public class ApiConfig {
     public static final String APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d/comment";// 创建圈子动态评论
     public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d/comments/%d";// 删除圈子动态评论
     public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts";// 创建圈子动态
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}";// 删除圈子动态
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d";// 删除圈子动态
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
