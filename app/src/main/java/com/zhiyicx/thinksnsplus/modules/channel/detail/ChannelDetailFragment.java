@@ -215,9 +215,6 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
-
-
-
         setAdapter(adapter, new GroupDynamicListItemForZeroImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForOneImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForTwoImage(getContext()));
