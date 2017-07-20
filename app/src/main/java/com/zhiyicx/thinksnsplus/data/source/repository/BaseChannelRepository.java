@@ -218,7 +218,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("content", commentContent);
-        params.put("comment_mark", comment_mark);
+        params.put("group_post_comment_mark", comment_mark);
         params.put("reply_to_user_id", reply_to_user_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_GROUP_DYNAMIC_COMMENT, params);

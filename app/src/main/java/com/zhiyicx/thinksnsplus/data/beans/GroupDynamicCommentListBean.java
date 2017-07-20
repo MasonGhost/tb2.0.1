@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 import org.greenrobot.greendao.DaoException;
@@ -96,7 +97,6 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
     public void setContent(String content) {
         this.content = content;
     }
-
 
     public String getCreated_at() {
         return created_at;

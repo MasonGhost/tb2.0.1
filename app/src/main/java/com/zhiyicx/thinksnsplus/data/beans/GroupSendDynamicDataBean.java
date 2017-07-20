@@ -23,11 +23,20 @@ public class GroupSendDynamicDataBean implements Serializable, Parcelable {
      * content : 圈子动态内容
      * images : [{"id":1},{"id":2}]
      */
+    private long group_post_mark;
     private int group_id;
     private String title;
     private String content;
     private List<ImagesBean> images;
     private List<ImageBean> photos;// 待发送的本地图片信息
+
+    public long getGroup_post_mark() {
+        return group_post_mark;
+    }
+
+    public void setGroup_post_mark(long group_post_mark) {
+        this.group_post_mark = group_post_mark;
+    }
 
     public int getGroup_id() {
         return group_id;
@@ -126,6 +135,7 @@ public class GroupSendDynamicDataBean implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
         dest.writeInt(this.group_id);
+        dest.writeLong(this.group_post_mark);
         dest.writeString(this.content);
         dest.writeList(this.images);
         dest.writeList(this.photos);
@@ -137,6 +147,7 @@ public class GroupSendDynamicDataBean implements Serializable, Parcelable {
     protected GroupSendDynamicDataBean(Parcel in) {
         this.title = in.readString();
         this.group_id = in.readInt();
+        this.group_post_mark = in.readLong();
         this.content = in.readString();
         this.images = new ArrayList<>();
         this.photos = new ArrayList<>();

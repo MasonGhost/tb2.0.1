@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -83,5 +84,8 @@ public class GroupDynamicListBeanGreenDaoimpl extends CommonCacheImpl<GroupDynam
                 , String.valueOf(user_id));
     }
 
-    ;
+    public UserInfoBean getComment(){
+
+        return null;
+    }
 }

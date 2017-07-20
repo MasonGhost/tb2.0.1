@@ -64,6 +64,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         }
 
         GroupSendDynamicDataBean groupSendDynamicDataBean = new GroupSendDynamicDataBean();
+        groupSendDynamicDataBean.setGroup_post_mark(dynamicBean.getFeed_mark());
         groupSendDynamicDataBean.setGroup_id(dynamicBean.getGroup_id());
         groupSendDynamicDataBean.setTitle(dynamicBean.getTitle());
         groupSendDynamicDataBean.setContent(dynamicBean.getContent());

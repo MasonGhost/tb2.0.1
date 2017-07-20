@@ -556,7 +556,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         long userId = AppApplication.getmCurrentLoginAuth() != null ? AppApplication
                 .getmCurrentLoginAuth().getUser_id() : 0;
 
+        String feedMarkString = userId + "" + System.currentTimeMillis();
+        long feedMark = Long.parseLong(feedMarkString);
+
         groupSendDynamicDataBean.setViews(1);
+        groupSendDynamicDataBean.setFeed_mark(feedMark);
         groupSendDynamicDataBean.setGroup_id((int)getDynamicSendData().getDynamicChannlId());
         groupSendDynamicDataBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         groupSendDynamicDataBean.setContent(mEtDynamicContent.getInputContent());

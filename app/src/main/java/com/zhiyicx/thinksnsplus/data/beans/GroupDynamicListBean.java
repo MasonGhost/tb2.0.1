@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
@@ -64,6 +65,7 @@ public class GroupDynamicListBean extends BaseListBean {
     private int is_collection;
     private int comments;
     private Long user_id;
+    @SerializedName("group_post_mark")
     private Long feed_mark;
     @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
