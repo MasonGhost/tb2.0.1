@@ -11,7 +11,6 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -19,7 +18,6 @@ import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -233,64 +231,32 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public void uploadUserCover(String filePath) {
-        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFileV2(
-                filePath, options.outMimeType, true, options.outWidth, options.outHeight)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Integer>() {
+    public void uploadUserCover(String filePath,UserInfoBean userInfoBean) {
+        Subscription subscription = mIUploadRepository.uploadBg(filePath)
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(Integer data) {
-                        mRootView.setUpLoadCoverState(true, data);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.setUpLoadCoverState(false, 0);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.setUpLoadCoverState(false, 0);
-                        LogUtils.e(throwable, "result");
-                    }
-                });
-        addSubscrebe(subscription);
-    }
-
-    @Override
-    public void changeUserCover(final UserInfoBean userInfoBean, int storage_task_id, final String imagePath) {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("cover_storage_task_id", storage_task_id + "");
-        Subscription subscription = mUserInfoRepository.changeUserInfo(hashMap)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<BaseJson>() {
-
-                    @Override
-                    protected void onSuccess(BaseJson data) {
-                        // 修改成功后，关闭页面
-                        mRootView.setChangeUserCoverState(true);
+                    protected void onSuccess(Object data) {
+                        mRootView.setUpLoadCoverState(true);
                         // 将本地图片路径作为storageId保存到数据库
-                        userInfoBean.setCover(imagePath);
+                        userInfoBean.setCover(filePath);
                         // 更新用户数据库
                         mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        // 修改失败，好尴尬
-                        mRootView.setChangeUserCoverState(false);
+                        mRootView.setUpLoadCoverState(false);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setChangeUserCoverState(false);
+                        mRootView.setUpLoadCoverState(false);
+                        LogUtils.e(throwable, "result");
                     }
                 });
         addSubscrebe(subscription);
     }
+
 
     @Override
     public void shareUserInfo(UserInfoBean userInfoBean) {

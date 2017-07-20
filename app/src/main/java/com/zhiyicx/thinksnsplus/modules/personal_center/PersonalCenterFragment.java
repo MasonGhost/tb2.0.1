@@ -497,11 +497,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void setUpLoadCoverState(boolean upLoadState, int taskId) {
+    public void setUpLoadCoverState(boolean upLoadState) {
         if (upLoadState) {
             // 封面图片上传成功
             // 通知服务器，更改用户信息
-            mPresenter.changeUserCover(mUserInfoBean, taskId, imagePath);
+            // 修改成功后，关闭页面
+             setChangeUserCoverState(true);
         } else {
             TSnackbar.make(mSnackRootView, R.string.cover_uploadFailure, TSnackbar.LENGTH_SHORT)
                     .setPromptThemBackground(Prompt.ERROR)
@@ -525,7 +526,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();
         // 上传本地图片
-        mPresenter.uploadUserCover(imagePath);
+        mPresenter.uploadUserCover(imagePath,mUserInfoBean);
         // 加载本地图片
         mPersonalCenterHeaderViewItem.upDateUserCover(imagePath);
     }

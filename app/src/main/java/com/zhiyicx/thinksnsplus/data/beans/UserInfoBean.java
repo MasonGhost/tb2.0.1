@@ -88,6 +88,7 @@ public class UserInfoBean extends CacheBean implements Parcelable, Serializable 
     private String created_at;
     private String updated_at;
     private String avatar;      // 头像 地址
+    @SerializedName("bg")
     private String cover;// 封面
     @Transient
     private WalletBean wallet;
