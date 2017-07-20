@@ -276,10 +276,11 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                         for (UserInfoBean userInfoBean : listBaseJson.getData()) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
                                         for (int i = 0; i < groupDynamicCommentListBeen.size(); i++) {
+                                            // 发布评论用户
                                             groupDynamicCommentListBeen.get(i).setCommentUser(
                                                     userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getUser_id()));
+                                            // 回复用户
                                             if (groupDynamicCommentListBeen.get(i).getReply_to_user_id() != 0){
                                                 groupDynamicCommentListBeen.get(i).setReplyUser(
                                                         userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getReply_to_user_id()));
@@ -289,6 +290,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                                 groupDynamicCommentListBeen.get(i).setReplyUser(userInfoBean);
                                             }
                                         }
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
                                         return groupDynamicCommentListBeen;
                                     });
                         } else {

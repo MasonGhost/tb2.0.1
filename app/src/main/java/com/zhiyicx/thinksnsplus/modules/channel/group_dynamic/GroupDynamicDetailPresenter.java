@@ -120,23 +120,23 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                     @Override
                     protected void onSuccess(List<GroupDynamicCommentListBean> data) {
                         if (!isLoadMore) { // 刷新时，把自己还未发送成功的评论加载到前面
-//                            List<GroupDynamicCommentListBean> myComments = mGroupDynamicCommentListBeanGreenDao
-//                                    .getMySendingComment(mRootView.getCurrentDynamic().getGroup_id());
-//                            if (!myComments.isEmpty()) {
-//                                for (int i = 0; i < myComments.size(); i++) {
-//                                    myComments.get(i).setCommentUser(mUserInfoBeanGreenDao
-//                                            .getSingleDataFromCache(myComments.get(i).getUser_id
-//                                                    ()));
-//                                    if (myComments.get(i).getReply_to_user_id() != 0) {
-//                                        myComments.get(i).setReplyUser(mUserInfoBeanGreenDao
-//                                                .getSingleDataFromCache(myComments.get(i)
-//                                                        .getReply_to_user_id()));
-//                                    }
-//                                }
-//                                myComments.addAll(data);
-//                                data.clear();
-//                                data.addAll(myComments);
-//                            }
+                            List<GroupDynamicCommentListBean> myComments = mGroupDynamicCommentListBeanGreenDao
+                                    .getMySendingComment(mRootView.getCurrentDynamic().getGroup_id());
+                            if (!myComments.isEmpty()) {
+                                for (int i = 0; i < myComments.size(); i++) {
+                                    myComments.get(i).setCommentUser(mUserInfoBeanGreenDao
+                                            .getSingleDataFromCache(myComments.get(i).getUser_id
+                                                    ()));
+                                    if (myComments.get(i).getReply_to_user_id() != 0) {
+                                        myComments.get(i).setReplyUser(mUserInfoBeanGreenDao
+                                                .getSingleDataFromCache(myComments.get(i)
+                                                        .getReply_to_user_id()));
+                                    }
+                                }
+                                myComments.addAll(data);
+                                data.clear();
+                                data.addAll(myComments);
+                            }
                         }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
@@ -166,8 +166,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             mRootView.upDateFollowFansState(followFansBean.getFollowState());
         }
         // 从数据库获取评论列表
-        return mGroupDynamicCommentListBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
-                .getFeed_mark());
+        return mGroupDynamicCommentListBeanGreenDao.getGroupCommentsByFeedId(mRootView.getCurrentDynamic()
+                .getId());
     }
 
     @Override
@@ -219,23 +219,24 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                         mFollowFansBeanGreenDao.insertOrReplace(listBaseJson2.getData().get(0));
                         // 保存关注状态
                         List<GroupDynamicCommentListBean> data = listBaseJson3;
-//                        // 取出本地未发送成功的评论
-////                        List<GroupDynamicCommentListBean> myComments = mDynamicCommentBeanGreenDao
-////                                .getMySendingComment(mRootView.getCurrentDynamic().getFeed_mark());
-//                        if (!myComments.isEmpty()) {
-//                            for (int i = 0; i < myComments.size(); i++) {
-//                                myComments.get(i).setCommentUser(mUserInfoBeanGreenDao
-//                                        .getSingleDataFromCache(myComments.get(i).getUser_id()));
-//                                if (myComments.get(i).getReply_to_user_id() != 0) {
-//                                    myComments.get(i).setReplyUser(mUserInfoBeanGreenDao
-//                                            .getSingleDataFromCache(myComments.get(i)
-//                                                    .getReply_to_user_id()));
-//                                }
-//                            }
-//                            myComments.addAll(data);
-//                            data.clear();
-//                            data.addAll(myComments);
-////                        }
+
+                        // 取出本地未发送成功的评论
+                        List<GroupDynamicCommentListBean> myComments = mGroupDynamicCommentListBeanGreenDao
+                                .getMySendingComment(mRootView.getCurrentDynamic().getGroup_id());
+                        if (!myComments.isEmpty()) {
+                            for (int i = 0; i < myComments.size(); i++) {
+                                myComments.get(i).setCommentUser(mUserInfoBeanGreenDao
+                                        .getSingleDataFromCache(myComments.get(i).getUser_id()));
+                                if (myComments.get(i).getReply_to_user_id() != 0) {
+                                    myComments.get(i).setReplyUser(mUserInfoBeanGreenDao
+                                            .getSingleDataFromCache(myComments.get(i)
+                                                    .getReply_to_user_id()));
+                                }
+                            }
+                            myComments.addAll(data);
+                            data.clear();
+                            data.addAll(myComments);
+                        }
                         dynamicBean.setCommentslist(data);
 
                     } else {
@@ -251,7 +252,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                 .subscribe(new BaseSubscribeForV2<GroupDynamicListBean>() {
                     @Override
                     protected void onSuccess(GroupDynamicListBean data) {
-                        mRootView.getCurrentDynamic().setComments(data.getComments());
+                        mRootView.getCurrentDynamic().setCommentslist(data.getCommentslist());
                         mRootView.getCurrentDynamic().setMGroupDynamicLikeListBeanList(data.getMGroupDynamicLikeListBeanList());
                         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
                         mRootView.allDataReady();
@@ -327,7 +328,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         if (!isLiked) {// 取消喜欢，修改修换的用户信息
             int digUserSize = digUsers.size();
             for (int i = 0; i < digUserSize; i++) {
-                if (digUsers.get(i).getId() == AppApplication.getmCurrentLoginAuth()
+                if (digUsers.get(i).getTargetUserId() == AppApplication.getmCurrentLoginAuth()
                         .getUser_id()) {
                     digUsers.remove(i);
                     break;
@@ -355,9 +356,10 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     public void handleCollect(GroupDynamicListBean dynamicBean) {
         // 收藏
         // 修改数据
-        boolean is_collection = dynamicBean.getCollections() == 1;// 旧状态
+        boolean is_collection = dynamicBean.getIs_collection() == 1;// 旧状态
         // 新状态
-        dynamicBean.setCollections(is_collection ? 0 : 1);
+        dynamicBean.setIs_collection(is_collection ? 0 : 1);
+        dynamicBean.setCollections(is_collection ? dynamicBean.getCollections() - 1 : dynamicBean.getCollections() + 1);
         boolean newCollectState = !is_collection;
         // 更新UI
         mRootView.setCollect(newCollectState);
@@ -440,7 +442,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         }
         mRootView.refreshData();
         mRootView.updateCommentCountAndDig();
-        mRepository.deleteCommentV2(mRootView.getCurrentDynamic().getId(), comment_id);
+        mRepository.deleteGroupComment(mRootView.getCurrentDynamic().getGroup_id(), mRootView.getCurrentDynamic().getId(), comment_id);
     }
 
     /**

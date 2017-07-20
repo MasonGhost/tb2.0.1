@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -109,7 +110,13 @@ public class GroupDynamicCommentListBeanGreenDaoImpl extends CommonCacheImpl<Gro
         return mGroupDynamicCommentListBeanDao.insertOrReplace(newData);
     }
 
-    public List<GroupDynamicCommentListBean> getMySendingComment(int feed_id) {
+    public void insertOrReplace(List<GroupDynamicCommentListBean> newData) {
+        if (newData != null && !newData.isEmpty()){
+            mGroupDynamicCommentListBeanDao.insertOrReplaceInTx(newData);
+        }
+    }
+
+    public List<GroupDynamicCommentListBean> getMySendingComment(long feed_id) {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return new ArrayList<>();
         }
