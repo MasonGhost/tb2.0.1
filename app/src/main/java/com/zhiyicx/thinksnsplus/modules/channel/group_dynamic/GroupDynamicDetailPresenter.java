@@ -358,9 +358,10 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     public void handleCollect(GroupDynamicListBean dynamicBean) {
         // 收藏
         // 修改数据
-        boolean is_collection = dynamicBean.getCollections() == 1;// 旧状态
+        boolean is_collection = dynamicBean.getIs_collection() == 1;// 旧状态
         // 新状态
-        dynamicBean.setCollections(is_collection ? 0 : 1);
+        dynamicBean.setIs_collection(is_collection ? 0 : 1);
+        dynamicBean.setCollections(is_collection ? dynamicBean.getCollections() - 1 : dynamicBean.getCollections() + 1);
         boolean newCollectState = !is_collection;
         // 更新UI
         mRootView.setCollect(newCollectState);
