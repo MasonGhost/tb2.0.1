@@ -92,7 +92,17 @@
             android:paddingTop="@dimen/spacing_mid">
 
             <TextView
+                android:id="@+id/tv_withdraw_dec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_comment"/>
+
+            <TextView
                 android:id="@+id/bt_sure"
+                android:layout_marginTop="@dimen/button_login_margin_top"
                 style="@style/style_login_button"
                 android:enabled="false"
                 android:text="@string/sure"

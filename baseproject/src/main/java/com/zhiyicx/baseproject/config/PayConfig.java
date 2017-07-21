@@ -30,7 +30,7 @@ public class PayConfig {
      * @return 真实货币分单位
      */
     public static double gameCurrency2RealCurrency(double d, int ratio) {
-        return (RATIO_UNIT * d / ratio) * MONEY_UNIT;
+        return (RATIO_UNIT * d / ratio);
     }
 
     /**
