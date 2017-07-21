@@ -383,7 +383,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     public void shareDynamic(GroupDynamicListBean dynamicBean, Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(mContext.getString(R.string.share));
+        shareContent.setTitle(TextUtils.isEmpty(dynamicBean.getTitle()) ? mContext
+                .getString(R.string.share) : dynamicBean.getTitle());
         shareContent.setContent(TextUtils.isEmpty(dynamicBean.getContent()) ? mContext
                 .getString(R.string
                         .share_dynamic) : dynamicBean.getContent());
@@ -393,8 +394,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory
                     .decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         }
-        shareContent.setUrl(String.format(ApiConfig.APP_PATH_SHARE_DYNAMIC, dynamicBean.getId()
-                == null ? "" : dynamicBean.getId()));
+        shareContent.setUrl(ApiConfig.APP_PATH_SHARE_GROUP/*String.format(ApiConfig.APP_PATH_SHARE_GROUP, dynamicBean.getId()
+                == null ? "" : dynamicBean.getId())*/);
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }

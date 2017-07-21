@@ -135,6 +135,11 @@ public class GroupInfoBean extends BaseListBean {
     }
 
     @Override
+    public Long getMaxId() {
+        return id;
+    }
+
+    @Override
     public String toString() {
         return "GroupInfoBean{" +
                 "id=" + id +
