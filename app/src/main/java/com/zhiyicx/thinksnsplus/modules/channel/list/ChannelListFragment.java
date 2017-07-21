@@ -188,6 +188,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     @Subscriber(tag = EventBusTagConfig.EVENT_GROUP_JOIN)
     public void changeJoinState(GroupInfoBean groupInfoBean) {
         // 如果是自己关注的列表 则去掉该项
+        boolean hasItem = false;
         for (int i = 0; i < mListDatas.size(); i++) {
             if (mListDatas.get(i).getId() == groupInfoBean.getId()){
                 if (pageType == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST
@@ -197,10 +198,14 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
                 } else {
                     mListDatas.set(i, groupInfoBean);
                 }
+                hasItem = true;
+                break;
+            } else {
+                hasItem = false;
             }
         }
         if (pageType == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST
-                && groupInfoBean.getIs_member() == 1) {
+                && groupInfoBean.getIs_member() == 1 && !hasItem) {
             mListDatas.add(groupInfoBean);
         }
         refreshData(mListDatas);
