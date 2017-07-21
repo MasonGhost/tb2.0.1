@@ -9,11 +9,7 @@ import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
 import com.bumptech.glide.module.GlideModule;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
-
-import java.io.InputStream;
 
 /**
  * @Describe Glide配置信息

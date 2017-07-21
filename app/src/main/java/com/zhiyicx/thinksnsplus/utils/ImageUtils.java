@@ -1,7 +1,10 @@
-package com.zhiyicx.baseproject.utils;
+package com.zhiyicx.thinksnsplus.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -10,8 +13,13 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
+import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.io.InputStream;
 import java.util.Locale;
@@ -24,34 +32,56 @@ import java.util.Locale;
  */
 
 public class ImageUtils {
+    public static final String SHAREPREFERENCE_USER_HEADPIC_SIGNATURE = "sharepreference_user_headpic_signature";
+    public static final String SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE = "sharepreference_user_headpic_signature";
+    public static final long DEFAULT_USER_HEADPIC_CACHE_TIME = 3 * 24 * 60_1000;
+    public static final long DEFAULT_SHAREPREFERENCES_OFFSET_TIME = 10_1000;
+    public static long laste_request_time;
     public static final int DEFAULT_IMAGE_ID = -1;
+
+    private static long mSigture;
+
+    /**
+     * 加载用户头像
+     *
+     * @param userInfoBean 用户信息
+     * @param imageView    展示的控件
+     */
+    public static void loadUserHeadPic(UserInfoBean userInfoBean, ImageView imageView) {
+        long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
+        if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
+
+            if (userInfoBean.getUser_id() == currentLoginUerId) {
+                mSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
+            } else {
+                mSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
+            }
+            if (System.currentTimeMillis() - mSigture > DEFAULT_USER_HEADPIC_CACHE_TIME) {
+                mSigture = System.currentTimeMillis();
+            }
+            SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
+                    , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mSigture);
+        }
+        laste_request_time = System.currentTimeMillis();
+        Glide.with(imageView.getContext())
+                .load(TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar())
+                .signature(new StringSignature(String.valueOf(mSigture)))
+                .placeholder(R.mipmap.pic_default_portrait1)
+                .error(R.mipmap.pic_default_portrait1)
+                .into(imageView);
+    }
+
 
     /**
      * 获取用户头像地址
-     * @param userId  user's  id
+     *
+     * @param userId user's  id
      * @return
      */
     public static String getUserAvatar(long userId) {
         return String.format(ApiConfig.IMAGE_AVATAR_PATH_V2, userId);
 
     }
-
-//    /**
-//     * 图片地址转换
-//     *
-//     * @param storage 图片对应的 id 号，也可能是本地的图片路径
-//     * @param part    压缩比例 0-100
-//     * @return
-//     */
-//    public static String imagePathConvert(String storage, int part) {
-//        try {
-//            // 如果图片的storage能够转成一个整数
-//            Integer.parseInt(storage);
-//            return String.format(Locale.getDefault(), ApiConfig.IMAGE_PATH, storage, part);
-//        } catch (NumberFormatException e) {
-//            return storage;
-//        }
-//    }
 
     /**
      * 图片地址转换 V2 api

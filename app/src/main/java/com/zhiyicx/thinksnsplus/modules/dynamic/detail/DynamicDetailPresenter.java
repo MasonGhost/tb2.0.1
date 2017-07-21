@@ -364,7 +364,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         } else {// 喜欢
             UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long)
                     AppApplication.getmCurrentLoginAuth().getUser_id());
-            DynamicDigListBean dynamicDigListBean=new DynamicDigListBean();
+            DynamicDigListBean dynamicDigListBean = new DynamicDigListBean();
             dynamicDigListBean.setUser_id(mineUserInfo.getUser_id());
             dynamicDigListBean.setId(System.currentTimeMillis());
             dynamicDigListBean.setDiggUserInfo(mineUserInfo);
@@ -679,6 +679,10 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     @Override
     public List<SystemConfigBean.Advert> getAdvert() {
         List<SystemConfigBean.Advert> imageAdvert = new ArrayList<>();
+        if (mSystemRepository.getBootstrappersInfoFromLocal()
+                .getAdverts() == null) {
+            return imageAdvert;
+        }
         for (SystemConfigBean.Advert advert : mSystemRepository.getBootstrappersInfoFromLocal()
                 .getAdverts()) {
             if (advert.getImageAdvert() != null) {
