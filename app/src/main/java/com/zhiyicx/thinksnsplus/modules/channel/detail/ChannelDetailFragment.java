@@ -500,7 +500,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 mListDatas.get(dataPosition).getDiggs() - 1 : mListDatas.get(dataPosition).getDiggs() + 1);
         refreshData(dataPosition);
         mPresenter.handleLike(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.IS_DIGG,
-                mListDatas.get(dataPosition).getId(), mListDatas.get(dataPosition).getGroup_id(), dataPosition);
+                mListDatas.get(dataPosition).getGroup_id(),mListDatas.get(dataPosition).getId() , dataPosition);
     }
 
     /**
