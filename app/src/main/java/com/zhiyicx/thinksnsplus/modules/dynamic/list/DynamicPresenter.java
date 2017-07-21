@@ -341,6 +341,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void deleteDynamic(DynamicDetailBeanV2 dynamicBean, int position) {
+        if (position == -1) {
+            return;
+        }
         mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
         mRootView.refreshData();
