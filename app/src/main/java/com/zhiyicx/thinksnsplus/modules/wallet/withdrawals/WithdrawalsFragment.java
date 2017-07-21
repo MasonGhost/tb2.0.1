@@ -143,8 +143,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-//                    mPresenter.withdraw(mWithdrawalsMoney * mWalletConfigBean.getRatio() // 传入的虚拟货币
-                    mPresenter.withdraw(mWithdrawalsMoney * PayConfig.MONEY_UNIT // 传入的真实货币
+                    mPresenter.withdraw(mWithdrawalsMoney
                             , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
                 });
 

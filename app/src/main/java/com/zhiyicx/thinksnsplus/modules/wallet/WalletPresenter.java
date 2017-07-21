@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet;
 
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -106,7 +107,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
                         }
                         int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-                        mRootView.updateBalance(data.getWallet() != null ? data.getWallet().getBalance() * (ratio / MONEY_UNIT) : 0);
+                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(),ratio) : 0);
                     }
 
                     @Override

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
@@ -263,10 +264,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
         double myMoney = 0;
         if (userInfoBean.getWallet() != null) {
-
             myMoney = userInfoBean.getWallet().getBalance();
         }
-        mBtWallet.setRightText(getString(R.string.money_format_with_unit, myMoney));
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrency2GameCurrency(myMoney,mPresenter.getBalanceRatio())));
 
     }
 

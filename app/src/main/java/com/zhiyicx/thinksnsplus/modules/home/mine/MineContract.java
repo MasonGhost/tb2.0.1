@@ -49,6 +49,8 @@ public interface MineContract {
          * 更新用户信息
          */
         void updateUserInfo();
+
+        int getBalanceRatio();
     }
 
     interface Repository {

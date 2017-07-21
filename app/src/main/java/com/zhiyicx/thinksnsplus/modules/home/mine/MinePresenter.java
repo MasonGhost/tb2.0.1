@@ -128,4 +128,8 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
                 });
     }
 
+    @Override
+    public int getBalanceRatio() {
+        return mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
+    }
 }
