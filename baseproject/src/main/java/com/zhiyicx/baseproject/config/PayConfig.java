@@ -6,7 +6,6 @@ package com.zhiyicx.baseproject.config;
  * @Date 2017/5/15
  * @Contact master.jungle68@gmail.com
  */
-
 public class PayConfig {
 
     /**
