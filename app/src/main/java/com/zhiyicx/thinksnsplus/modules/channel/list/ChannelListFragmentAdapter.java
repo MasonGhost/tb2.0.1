@@ -119,6 +119,8 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
                 .subscribe(aVoid -> {
                     if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
                         mPresenter.handleGroupJoin(position, groupInfoBean);
+                    } else {
+                        tv_channel_subscrib.setChecked(false);
                     }
                 });
 
