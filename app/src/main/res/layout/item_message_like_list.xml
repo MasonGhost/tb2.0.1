@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
+    android:id="@+id/rl_container"
     android:paddingLeft="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">

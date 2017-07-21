@@ -78,6 +78,7 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .imagerView(holder.getView(R.id.iv_headpic))
                 .build());
+
         if (digedBean.getSource_cover() != null) {
             System.out.println("1111111111111111111111 = " + ImageUtils.imagePathConvertV2(digedBean.getSource_cover().intValue()
                     , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
@@ -95,9 +96,8 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
             holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, digedBean.getSource_content());
+            holder.setText(R.id.tv_deatil, digedBean.getLikeable() == null ? holder.getConvertView().getContext().getString(R.string.review_dynamic_deleted) : digedBean.getSource_content());
         }
-
         holder.setText(R.id.tv_name, digedBean.getDigUserInfo().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(digedBean.getUpdated_at()));
         // 响应事件
@@ -107,9 +107,14 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> toUserCenter(digedBean.getDigUserInfo()));
-        RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> toDetail(digedBean));
+//        if (digedBean.getLikeable() != null) {
+//            RxView.clicks(holder.getView(R.id.rl_container))
+//                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+//                    .subscribe(aVoid ->
+//                    {
+//                        toDetail(digedBean);
+//                    });
+//        }
     }
 
 
