@@ -457,6 +457,12 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                             break;
                         }
                     }
+                    // 传过来的带了一个占位的评论，先暂时这样去掉这条评论
+                    if (dynamicBean.getCommentslist() != null
+                            && dynamicBean.getCommentslist().size() == 1
+                            && TextUtils.isEmpty(dynamicBean.getCommentslist().get(0).getContent())){
+                        dynamicBean.getCommentslist().clear();
+                    }
                     if (dynamicPosition != -1) {// 如果列表有当前评论
                         mRootView.getListDatas().set(dynamicPosition, dynamicBean);
                     }
