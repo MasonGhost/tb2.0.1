@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 
@@ -172,6 +173,7 @@ public class GroupInfoBean extends BaseListBean {
         private static final long serialVersionUID = 1L;
         private int raw;
         private String size;
+        @SerializedName("id")
         private long file_id;
 
         public int getRaw() {
