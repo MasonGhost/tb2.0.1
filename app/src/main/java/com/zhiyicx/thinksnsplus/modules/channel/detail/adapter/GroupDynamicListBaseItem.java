@@ -189,7 +189,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
                     .getCreated_at()));
-            holder.setVisible(R.id.tv_title, View.GONE);
+            holder.setText(R.id.tv_title,dynamicBean.getTitle());
 
             String content = dynamicBean.getContent();
             TextView contentView = holder.getView(R.id.tv_content);
