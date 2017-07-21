@@ -97,9 +97,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     protected void initData() {
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
-            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit),
-                    PayConfig.gameCurrency2RealCurrency(mWalletConfigBean.getCase_min_amount(),
-                            mWalletConfigBean.getRatio())/PayConfig.MONEY_UNIT));
+            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit),mWalletConfigBean.getCase_min_amount()/PayConfig.MONEY_UNIT));
         }
     }
 

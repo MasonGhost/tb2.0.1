@@ -30,7 +30,7 @@ public interface DynamicCommentTopContract {
     }
 
     interface Presenter extends IBasePresenter {
-        float getBalance();
+        double getBalance();
         void topDynamicComment(long feed_id,long comment_id, int amount, int day);
     }
 
