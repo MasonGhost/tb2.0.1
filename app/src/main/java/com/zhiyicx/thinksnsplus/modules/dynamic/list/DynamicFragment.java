@@ -55,6 +55,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -86,7 +87,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.Dynami
  * @Contact master.jungle68@gmail.com
  */
 public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicDetailBeanV2>
-        implements DynamicNoPullRecycleView.OnCommentStateClickListener,
+        implements DynamicNoPullRecycleView.OnCommentStateClickListener<DynamicCommentBean>,
         InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView
                 .OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener,
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,

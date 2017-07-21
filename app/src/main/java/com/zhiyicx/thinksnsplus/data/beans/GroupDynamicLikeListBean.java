@@ -30,6 +30,10 @@ public class GroupDynamicLikeListBean extends BaseListBean {
     UserInfoBean mUserInfoBean;
     private long user_id;
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
 
     @Override
     public int describeContents() {

@@ -46,6 +46,11 @@ public class WalletBeanGreenDaoImpl extends CommonCacheImpl<WalletBean> {
         return walletBeanDao.load(primaryKey);
     }
 
+    public WalletBean getSingleDataByUserId(Long user_id) {
+        WalletBeanDao walletBeanDao = getRDaoSession().getWalletBeanDao();
+        return walletBeanDao.queryBuilder().where(WalletBeanDao.Properties.User_id.eq(user_id)).list().get(0);
+    }
+
     /**
      * 通过 user id 获取钱包信息
      *

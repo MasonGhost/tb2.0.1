@@ -27,11 +27,8 @@ import java.util.List;
  * @Date 2017/3/6
  * @Contact master.jungle68@gmail.com
  */
-public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<DynamicCommentBean> {
+public class DynamicNoPullRecycleView extends CommentBaseRecycleView<DynamicCommentBean> {
 
-    private OnUserNameClickListener mOnUserNameClickListener;
-    private OnUserNameLongClickListener mOnUserNameLongClickListener;
-    private OnCommentStateClickListener mOnCommentStateClickListener;
     private TopFlagPosition mTopFlagPosition = TopFlagPosition.NONE;
 
     public DynamicNoPullRecycleView(Context context) {
@@ -182,37 +179,8 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         return content;
     }
 
-
-    public void setOnUserNameClickListener(OnUserNameClickListener onUserNameClickListener) {
-        mOnUserNameClickListener = onUserNameClickListener;
-    }
-
-    public void setOnUserNameLongClickListener(OnUserNameLongClickListener
-                                                       onUserNameLongClickListener) {
-        mOnUserNameLongClickListener = onUserNameLongClickListener;
-    }
-
-    public void setOnCommentStateClickListener(OnCommentStateClickListener
-                                                       onCommentStateClickListener) {
-        mOnCommentStateClickListener = onCommentStateClickListener;
-    }
-
     public void setTopFlagPosition(TopFlagPosition topFlagPosition) {
         mTopFlagPosition = topFlagPosition;
-    }
-
-    public interface OnUserNameClickListener {
-        void onUserNameClick(UserInfoBean userInfoBean);
-
-    }
-
-    public interface OnUserNameLongClickListener {
-        void onUserNameLongClick(UserInfoBean userInfoBean);
-
-    }
-
-    public interface OnCommentStateClickListener {
-        void onCommentStateClick(DynamicCommentBean dynamicCommentBean, int position);
     }
 
     public enum TopFlagPosition {
@@ -223,5 +191,6 @@ public class DynamicNoPullRecycleView extends SimpleTextNoPullRecycleView<Dynami
         TopFlagPosition(String desc) {
         }
     }
+
 
 }

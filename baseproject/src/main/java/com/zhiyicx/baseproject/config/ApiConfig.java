@@ -373,17 +373,22 @@ public class ApiConfig {
     public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}"; // 动态详情
     public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts"; // 动态列表
 
-    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collections";// 收藏圈子动态的
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
-    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/posts/collections";// 我收藏的圈子动态列表
-    public static final String APP_PATH_DELETE_MYCOLLECT_GROUP_DYNAMIC_DIGG = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 取消点赞
-    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 点赞
-    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/diggs";// 点赞列表
-    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comment";// 创建圈子动态评论
-    public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
-    public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts";// 创建圈子动态
-
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/collection";// 收藏圈子动态的
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 +  "/groups/%s/posts/%s/collection";// 收藏圈子动态的
+    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 +  "/groups/posts/collections";// 我收藏的圈子动态列表
+    public static final String APP_PATH_DELETE_MYCOLLECT_GROUP_DYNAMIC_DIGG = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/digg";// 取消点赞
+    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/digg";// 点赞
+    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 +  "/groups/%s/posts/%s/digg";// 点赞
+    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/diggs";// 点赞列表
+    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comment";// 创建圈子动态评论
+    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d/comment";// 创建圈子动态评论
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d/comments/%d";// 删除圈子动态评论
+    public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts";// 创建圈子动态
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}";// 删除圈子动态
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d";// 删除圈子动态
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）

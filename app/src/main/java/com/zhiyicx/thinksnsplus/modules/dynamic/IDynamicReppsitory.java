@@ -40,7 +40,7 @@ public interface IDynamicReppsitory {
      * @return basejson, object is null
      */
     Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean);
-    Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean);
+
 
     /**
      * get dynamic list

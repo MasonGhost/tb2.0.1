@@ -87,7 +87,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
      * 设置点赞的人的头像，最多五个
      */
     public void setDigUserHeadIcon(List<ImageBean> imageBeanList) {
-        if (imageBeanList == null) {
+        if (imageBeanList == null || imageBeanList.size() == 0) {
             showNoDig();
         } else {
             for (int i = 0; i < mImageViews.length; i++) {

@@ -56,15 +56,6 @@ public interface DynamicClient {
     Observable<BaseJsonV2<Object>> sendDynamicV2(@Body RequestBody body);
 
     /**
-     * 发布动态 v2 接口--圈子
-     *
-     * @return
-     */
-    @Headers({"Content-type:application/json;charset=UTF-8"})
-    @POST(ApiConfig.APP_PATH_SEND_GROUP_DYNAMIC)
-    Observable<BaseJsonV2<Object>> sendGroupDynamic(@Path("group") int group, @Body RequestBody body);
-
-    /**
      * 发布动态到频道
      */
     @Headers({"Content-type:application/json;charset=UTF-8"})

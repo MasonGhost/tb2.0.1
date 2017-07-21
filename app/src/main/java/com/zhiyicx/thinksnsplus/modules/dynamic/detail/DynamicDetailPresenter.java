@@ -33,11 +33,13 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
@@ -89,7 +91,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     SystemRepository mSystemRepository;
     @Inject
     CommentRepository mCommentRepository;
-
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
 
@@ -692,10 +695,10 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public void payNote(final int imagePosition, int note, boolean isImage) {
-        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
-        if (userInfo != null && userInfo.getWallet() != null) {
-            balance = userInfo.getWallet().getBalance();
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
         }
         double amount = mRootView.getCurrentDynamic().getImages().get(imagePosition).getAmount();
         if (balance < amount) {

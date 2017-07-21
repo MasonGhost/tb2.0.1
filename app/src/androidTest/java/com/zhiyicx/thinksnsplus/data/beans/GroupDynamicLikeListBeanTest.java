@@ -12,7 +12,7 @@ public class GroupDynamicLikeListBeanTest extends AbstractDaoTestLongPk<GroupDyn
     protected GroupDynamicLikeListBean createEntity(Long key) {
         GroupDynamicLikeListBean entity = new GroupDynamicLikeListBean();
         entity.setId(key);
-        entity.setUser_id(123);
+        entity.setUser_id(1L);
         return entity;
     }
 

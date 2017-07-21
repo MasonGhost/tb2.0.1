@@ -156,6 +156,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
 
     @Override
     public void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean) {
+
         mRepository.handleSubscribChannel(channelSubscripBean);
         EventBus.getDefault().post(channelSubscripBean, EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB);
     }
@@ -189,17 +190,17 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB)
-    public void uploadChannelSubscribState(ChannelSubscripBean channelSubscripBean) {
-        List<ChannelSubscripBean> currentPageData = mRootView.getChannelListData();
+    public void uploadChannelSubscribState(GroupInfoBean channelSubscripBean) {
+        List<GroupInfoBean> currentPageData = mRootView.getGroupList();
         int position = currentPageData.indexOf(channelSubscripBean);
         LogUtils.i("uploadChannelSubscribState page " + mRootView.getPageType() + "  position " + position);
         // 如果当前列表存在这样的数据，刷新该数据
         if (position > -1) {
             //更新item的状态
-            ChannelSubscripBean currentItem = currentPageData.get(position);
-            int newFollowCount = channelSubscripBean.getChannelInfoBean().getFollow_count();
-            currentItem.getChannelInfoBean().setFollow_count(newFollowCount);
-            currentItem.setChannelSubscriped(channelSubscripBean.getChannelSubscriped());
+            GroupInfoBean currentItem = currentPageData.get(position);
+            int newFollowCount = channelSubscripBean.getMembers_count();
+            currentItem.setMembers_count(newFollowCount);
+            currentItem.setIs_member(channelSubscripBean.getIs_member());
             mRootView.refreshData(position);
         } else {
             // 如果不存在就添加近列表

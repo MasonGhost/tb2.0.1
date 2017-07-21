@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
@@ -40,6 +41,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -94,7 +96,8 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     CommentRepository mCommentRepository;
 
@@ -554,10 +557,10 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public void payNote(int dynamicPosition, int imagePosition, int note, boolean isImage) {
-        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId((long) AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
-        if (userInfo != null && userInfo.getWallet() != null) {
-            balance = userInfo.getWallet().getBalance();
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
         }
         double amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
         if (balance < amount) {

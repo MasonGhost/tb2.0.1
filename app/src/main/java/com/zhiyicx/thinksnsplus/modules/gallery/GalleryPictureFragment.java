@@ -333,7 +333,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public GlideUrl requestGlideUrl() {
                             final Toll toll = mImageBean.getToll();
-                            final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            final Boolean canLook;
+                            if (toll==null){
+                                canLook=true;
+                            }else{
+                                canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            }
                             return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
                                     ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN());
 
@@ -365,7 +370,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
                             final Toll toll = mImageBean.getToll();
-                            final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            final Boolean canLook;
+                            if (toll==null){
+                                canLook=true;
+                            }else{
+                                canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            }
                             if (!canLook) {
                                 if (mTvOriginPhoto != null) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
@@ -458,8 +468,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         mTvOriginPhoto.setClickable(false);
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
         mTvOriginPhoto.setText("0%");
-        final Toll toll = mImageBean.getToll();
-        final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
         Glide.with(context)
                 .using(new ProgressModelLoader(new Handler() {
                     @Override

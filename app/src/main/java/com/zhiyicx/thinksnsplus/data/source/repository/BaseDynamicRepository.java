@@ -21,6 +21,9 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
@@ -33,6 +36,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -105,7 +109,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
                 return mDynamicClient.sendDynamic(body);
-            case SendDynamicDataBean.CHANNEL_DYNAMIC:
+            case SendDynamicDataBean.GROUP_DYNAMIC:
                 return mDynamicClient.sendDynamicToChannel(channel_id, body);
             default:
                 return mDynamicClient.sendDynamic(body);
@@ -116,12 +120,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
         return mDynamicClient.sendDynamicV2(body);
-    }
-
-    @Override
-    public Observable<BaseJsonV2<Object>> sendGroupDynamic(GroupSendDynamicDataBean dynamicDetailBean) {
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
-        return mDynamicClient.sendGroupDynamic(dynamicDetailBean.getGroup_id(), body);
     }
 
     /**
@@ -188,6 +186,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
     }
+
 
     /**
      * 删除动态
@@ -633,6 +632,57 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
                     }
                 });
+    }
+
+    protected Observable<List<GroupDynamicListBean>> dealWithGroupDynamicList(Observable<List<GroupDynamicListBean>> observable,
+                                                                              final String type, final boolean isLoadMore) {
+        return observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<List<GroupDynamicListBean>, Observable<List<GroupDynamicListBean>>>() {
+                    @Override
+                    public Observable<List<GroupDynamicListBean>> call(List<GroupDynamicListBean> groupDynamicList) {
+                        final List<Object> user_ids = new ArrayList<>();
+                        for (GroupDynamicListBean groupDynamicListBean : groupDynamicList) {
+                            user_ids.add(groupDynamicListBean.getUser_id());
+                            for (GroupDynamicCommentListBean commentListBean : groupDynamicListBean.getNew_comments()) {
+                                user_ids.add(commentListBean.getUser_id());
+                                user_ids.add(commentListBean.getReply_to_user_id());
+                            }
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(userinfobeans -> {
+                                    if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (GroupDynamicListBean dynamicBean : groupDynamicList) {
+                                            dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getUser_id().intValue()));
+                                            for (int i = 0; i < dynamicBean.getNew_comments().size(); i++) {
+                                                UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) dynamicBean.getNew_comments().get(i).getUser_id());
+                                                if (tmpUserinfo != null) {
+                                                    dynamicBean.getNew_comments().get(i).setCommentUser(tmpUserinfo);
+                                                }
+                                                if (dynamicBean.getNew_comments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
+                                                    UserInfoBean userInfoBean = new UserInfoBean();
+                                                    userInfoBean.setUser_id(0L);
+                                                    dynamicBean.getNew_comments().get(i).setReplyUser(userInfoBean);
+                                                } else {
+                                                    if (userInfoBeanSparseArray.get((int) dynamicBean.getNew_comments().get(i).getReply_to_user_id()) != null) {
+                                                        dynamicBean.getNew_comments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getNew_comments().get(i).getReply_to_user_id()));
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                    }
+                                    return groupDynamicList;
+                                });
+                    }
+                });
+
     }
 
     protected Observable<DynamicDetailBeanV2> dealWithDynamic(Observable<DynamicDetailBeanV2> observable) {

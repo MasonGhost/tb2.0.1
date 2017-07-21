@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -37,6 +38,9 @@ import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_D
  */
 public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelectorImpl.IPhotoBackListener {
 
+    public static final String SEND_OPTION = "send_option";
+    public static final String GROUP_ID = "group_id";
+
     @BindView(R.id.send_words_dynamic)
     IconTextView mSendWordsDynamic;
     @BindView(R.id.send_image_dynamic)
@@ -46,6 +50,12 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
     @BindView(R.id.select_dynamic_parent)
     LinearLayout mSelectDynamicParent;
     private PhotoSelectorImpl mPhotoSelector;
+
+    public static SelectDynamicTypeFragment getInstance(Bundle b) {
+        SelectDynamicTypeFragment selectDynamicTypeFragment = new SelectDynamicTypeFragment();
+        selectDynamicTypeFragment.setArguments(b);
+        return selectDynamicTypeFragment;
+    }
 
     @Override
     protected boolean setUseSatusbar() {
@@ -103,6 +113,10 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
                 SendDynamicDataBean sendWordsDynamicDataBean = new SendDynamicDataBean();
                 sendWordsDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
                 sendWordsDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
+                if (getArguments() != null) {
+                    sendWordsDynamicDataBean.setDynamicBelong(SendDynamicDataBean.GROUP_DYNAMIC);
+                    sendWordsDynamicDataBean.setDynamicChannlId(getArguments().getLong(GROUP_ID));
+                }
                 SendDynamicActivity.startToSendDynamicActivity(getContext(), sendWordsDynamicDataBean);
                 getActivity().finish();
                 getActivity().overridePendingTransition(0, R.anim.zoom_out);
@@ -127,6 +141,10 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
         sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
         sendDynamicDataBean.setDynamicPrePhotos(photoList);
+        if (getArguments() != null) {
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.GROUP_DYNAMIC);
+            sendDynamicDataBean.setDynamicChannlId(getArguments().getLong(GROUP_ID));
+        }
         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
         getActivity().finish();

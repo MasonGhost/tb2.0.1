@@ -5,7 +5,6 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
@@ -21,7 +20,6 @@ import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -57,7 +55,17 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         if (dynamicBean.getImages() == null) { // 当没有图片的时候，给一个占位数组
             dynamicBean.setImages(new ArrayList<>());
         }
+
+        if (mRootView.getDynamicSendData().getDynamicBelong() == SendDynamicDataBean.GROUP_DYNAMIC
+                && (dynamicBean.getTitle() == null || dynamicBean.getTitle().isEmpty())) {
+            mRootView.initInstructionsPop(mContext.getString(R.string.instructions),
+                    mContext.getString(R.string.group_dynamic_send_must_has_title));
+            return;
+        }
+
         GroupSendDynamicDataBean groupSendDynamicDataBean = new GroupSendDynamicDataBean();
+        groupSendDynamicDataBean.setGroup_post_mark(dynamicBean.getFeed_mark());
+        groupSendDynamicDataBean.setGroup_id(dynamicBean.getGroup_id());
         groupSendDynamicDataBean.setTitle(dynamicBean.getTitle());
         groupSendDynamicDataBean.setContent(dynamicBean.getContent());
         mRootView.packageGroupDynamicStorageData(groupSendDynamicDataBean);
@@ -122,7 +130,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
                 mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 break;
-            case SendDynamicDataBean.CHANNEL_DYNAMIC:
+            case SendDynamicDataBean.GROUP_DYNAMIC:
                 // 没有存入数据库，所以通过map传到后台
                 params.put("dynamicbean", dynamicBean);
                 // 发送到频道，不做处理

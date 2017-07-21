@@ -45,7 +45,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
-    private static final String TAG = "ChannelListFragmentAdap";
     private ChannelListContract.Presenter mPresenter;
 
     public ChannelListFragmentAdapter(Context context, int layoutId, List<GroupInfoBean> datas, ChannelListContract.Presenter presenter) {
@@ -83,7 +82,6 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
         }
         GlideUrl glideUrl = ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id(), width, height
                 , port, AppApplication.getTOKEN());
-        LogUtils.i(TAG + "channelCoverBean  " + groupCoverBean + "\n url --> " + glideUrl.toStringUrl());
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .placeholder(R.drawable.shape_default_image)
@@ -119,7 +117,7 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
         RxView.clicks(tv_channel_subscrib)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
+                    if (TouristConfig.CHEENAL_CAN_SUBSCRIB && !mPresenter.handleTouristControl()) {
                         mPresenter.handleGroupJoin(position, groupInfoBean);
                     }
                 });

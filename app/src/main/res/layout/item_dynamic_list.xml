@@ -118,7 +118,7 @@
         android:layout_toRightOf="@+id/iv_headpic"
         />
 
-    <com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView
+    <com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView
         android:id="@+id/fl_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -127,6 +127,6 @@
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_toRightOf="@+id/iv_headpic">
 
-    </com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView>
+    </com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView>
 
 </RelativeLayout>

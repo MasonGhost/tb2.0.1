@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
@@ -37,6 +39,11 @@ public class SendDynamicPresenterModule {
     @Provides
     IUploadRepository provideIUploadRepository(ServiceManager serviceManager, Application application) {
         return new UpLoadRepository(serviceManager, application);
+    }
+
+    @Provides
+    IBaseChannelRepository provideIBaseChannelRepository(IBaseChannelRepository repository){
+        return repository;
     }
 
 }
