@@ -110,7 +110,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
     }
 
     @Override
-    public float getBalance() {
+    public double getBalance() {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
             WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
@@ -118,7 +118,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
                 return 0;
             }
             int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-            return (float) walletBean.getBalance() * (ratio / MONEY_UNIT);
+            return walletBean.getBalance() * (ratio / MONEY_UNIT);
         }
         return 0;
     }

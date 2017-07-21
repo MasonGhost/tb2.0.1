@@ -63,6 +63,7 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -200,26 +201,23 @@ public class BackgroundTaskHandler {
     /**
      * 处理任务线程
      */
-    private Runnable handleTaskRunnable = new Runnable() {
-        @Override
-        public void run() {
+    private Runnable handleTaskRunnable = () -> {
 
-            while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
+        while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
 //                LogUtils.d("---------backTask------- ");
-                if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
-                    BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
-                    handleTask(backgroundRequestTaskBean);
-                }
-                threadSleep();
+            if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
+                BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
+                handleTask(backgroundRequestTaskBean);
             }
-            mIsExit = true;
+            threadSleep();
+        }
+        mIsExit = true;
 //            // 存储未执行的数据到数据库，下次执行
 //            if (mBackgroundRequestTaskBeanCaches.size() > 0) {
 //                mBackgroundRequestTaskBeanGreenDao.saveMultiData(mBackgroundRequestTaskBeanCaches);
 //            }
-            // 取消 event 监听
-            EventBus.getDefault().unregister(BackgroundTaskHandler.this);
-        }
+        // 取消 event 监听
+        EventBus.getDefault().unregister(BackgroundTaskHandler.this);
     };
 
     /**
@@ -969,10 +967,8 @@ public class BackgroundTaskHandler {
             , BackgroundRequestTaskBean backgroundRequestTaskBean, Object data) {
         switch (dynamicBelong) {
             case SendDynamicDataBean.MORMAL_DYNAMIC:
-                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 if (sendSuccess) {
                     // 动态发送成功
-                    mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     dynamicBean.setState(DynamicBean.SEND_SUCCESS);
                     dynamicBean.setId(((Double) data).longValue());
                     mSendDynamicDataBeanV2Dao.delteSendDynamicDataBeanV2ByFeedMark(String.valueOf(dynamicBean.getFeed_mark()));
@@ -980,7 +976,11 @@ public class BackgroundTaskHandler {
                 } else {
                     dynamicBean.setState(DynamicBean.SEND_ERROR);
                     mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
+
                 }
+
+                mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);
                 break;
             case SendDynamicDataBean.GROUP_DYNAMIC:
                 // 频道发送动态，不会显示在界面上,不用存在数据库中，不用做任何处理
@@ -1019,6 +1019,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -1031,6 +1032,7 @@ public class BackgroundTaskHandler {
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
                     }
+
                 });
 
     }
@@ -1064,6 +1066,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
@@ -1108,6 +1111,7 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onFailure(String message, int code) {
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         infoCommentListBean.setState(DynamicBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                         EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);

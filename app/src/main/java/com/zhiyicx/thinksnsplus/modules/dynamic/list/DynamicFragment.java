@@ -55,7 +55,6 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.widget.comment.CommentBaseRecycleView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -433,7 +432,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth()
                 .getUser_id();
         if (canNotLookWords) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float)
+            initImageCenterPopWindow(position, position, (float)
                             detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
@@ -621,8 +620,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicBean
-                        .SEND_SUCCESS &&dynamicBean
-                        .getComments().get(commentPosition).getPinned()!=1&&
+                        .SEND_SUCCESS && dynamicBean
+                        .getComments().get(commentPosition).getPinned() != 1 &&
                         !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R
                         .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
@@ -712,7 +711,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item2Str(getString(feedIdIsNull ? R.string.empty :
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
-                    // 付费评论功能 移除
+                // 付费评论功能 移除
 //                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)// 付费评论功能 移除
 //                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
                 .item4Str(BuildConfig.USE_TOLL && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)

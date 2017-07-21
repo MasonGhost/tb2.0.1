@@ -25,8 +25,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
-
 /**
  * @Describe
  * @Author Jungle68
@@ -107,7 +105,7 @@ public class WalletPresenter extends AppBasePresenter<WalletContract.Repository,
                             mWalletBeanGreenDao.insertOrReplace(data.getWallet());
                         }
                         int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-                        mRootView.updateBalance(data.getWallet() != null ? PayConfig.realCurrency2GameCurrency(data.getWallet().getBalance(),ratio) : 0);
+                        mRootView.updateBalance(data.getWallet() != null ? data.getWallet().getBalance() / PayConfig.MONEY_UNIT : 0);
                     }
 
                     @Override
