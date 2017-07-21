@@ -203,8 +203,8 @@ public class BackgroundTaskHandler {
      */
     private Runnable handleTaskRunnable = () -> {
 
-        while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {
-//                LogUtils.d("---------backTask------- ");
+        while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {// mIsNetConnected 网络监测可能有问题，待修改
+//                LogUtils.d("---------backTask-------:: "+mIsNetConnected);
             if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                 BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                 handleTask(backgroundRequestTaskBean);

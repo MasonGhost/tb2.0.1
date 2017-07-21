@@ -193,6 +193,9 @@ public class UserInfoBean implements Parcelable, Serializable {
         if (avatar == null) {
             avatar = getConfigProperty("avatar");
         }
+        if (avatar.isEmpty()) {
+            avatar = "0";
+        }
         return avatar;
     }
 
@@ -786,8 +789,8 @@ public class UserInfoBean implements Parcelable, Serializable {
 
     @Generated(hash = 1124713812)
     public UserInfoBean(Long user_id, String sex, String name, String avatar, String phone, String email, String intro, String location, String province,
-            String city, String area, String education, String created_at, String updated_at, String deleted_at, String diggs_count, String following_count,
-            String followed_count, String feeds_count, String cover, List<DatasBean> datas, List<CountsBean> counts) {
+                        String city, String area, String education, String created_at, String updated_at, String deleted_at, String diggs_count, String following_count,
+                        String followed_count, String feeds_count, String cover, List<DatasBean> datas, List<CountsBean> counts) {
         this.user_id = user_id;
         this.sex = sex;
         this.name = name;
