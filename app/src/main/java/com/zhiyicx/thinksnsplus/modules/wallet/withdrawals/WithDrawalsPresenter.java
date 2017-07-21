@@ -34,20 +34,18 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
         super(repository, rootView);
     }
 
-
     @Override
     public void withdraw(double value, String type, String account) {
         if (mRootView.getMoney() != (int) mRootView.getMoney()) {
             mRootView.initWithdrawalsInstructionsPop(R.string.withdrawal_instructions_detail);
             return;
         }
-        value = PayConfig.gameCurrency2RealCurrency(value,mRootView.getWalletConfigBean().getRatio());
 
         if (value < mRootView.getWalletConfigBean().getCase_min_amount()) {
             mRootView.minMoneyLimit();
             return;
         }
-
+        value = PayConfig.gameCurrency2RealCurrency(value,mRootView.getWalletConfigBean().getRatio());
         Subscription subscribe = mRepository.withdraw(value, type, account)
                 .compose(mSchedulersTransformer)
                 .doOnSubscribe(() -> {
