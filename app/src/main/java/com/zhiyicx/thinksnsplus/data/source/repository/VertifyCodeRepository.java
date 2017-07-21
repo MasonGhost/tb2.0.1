@@ -30,14 +30,14 @@ public class VertifyCodeRepository implements IVertifyCodeRepository {
 
     @Override
     public Observable<Object> getMemberVertifyCode(String phone) {
-        return mCommonClient.getMemberVertifyCode(phone)
+        return mCommonClient.getMemberVertifyCode(phone,null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<Object> getNonMemberVertifyCode(String phone) {
-        return mCommonClient.getNonMemberVertifyCode(phone)
+        return mCommonClient.getNonMemberVertifyCode(phone,null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
