@@ -386,15 +386,18 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢
                 // 还未发送成功的动态列表不查看详情
-                if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
+                if ((!TouristConfig.DYNAMIC_CAN_DIGG && mPresenter.handleTouristControl()) ||
+                        mListDatas.get(dataPosition).getId() == null || mListDatas.get
+                        (dataPosition).getId() == 0) {
                     return;
                 }
                 handleLike(dataPosition);
                 break;
 
             case 1: // 评论
-                // 还未发送成功的动态列表不查看详情
-                if (mListDatas.get(dataPosition).getId() == null || mListDatas.get(dataPosition).getId() == 0) {
+                if ((!TouristConfig.DYNAMIC_CAN_COMMENT && mPresenter.handleTouristControl()) ||
+                        mListDatas.get(dataPosition).getId() == null || mListDatas.get
+                        (dataPosition).getId() == 0) {
                     return;
                 }
                 showCommentView();
@@ -648,6 +651,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         RxView.clicks(mIvSubscribBtn)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    if (!TouristConfig.CHEENAL_CAN_SUBSCRIB && mPresenter.handleTouristControl
+                            ()) {
+                        return;
+                    }
                     // 进行订阅
                     mPresenter.handleGroupSubscrib(mGroupInfoBean);
                     // 处理订阅ui逻辑：先处理ui,并未可订阅状态的ui，不可点击发送动态
