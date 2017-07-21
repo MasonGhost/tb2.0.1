@@ -42,7 +42,7 @@
     <string name="publish">发布</string>
     <string name="skip">跳过</string>
     <string name="intro_default">这家伙很懒,什么都没有留下</string>
-    <string name="money_format_with_unit">%.2f元</string>
+    <string name="money_format_with_unit">%.2f积分</string>
     <string name="money_format">%.2f</string>
     <string name="upload_sucess">上传成功</string>
     <!-- 注册 -->

@@ -47,7 +47,8 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     EditText mEtWithdrawAccountInput;
     @BindView(R.id.bt_sure)
     TextView mBtSure;
-
+    @BindView(R.id.tv_withdraw_dec)
+    TextView mTvWithdrawDec;
 
     private ActionPopupWindow mWithdrawalsInstructionsPopupWindow;
 
@@ -96,6 +97,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
     protected void initData() {
         if (getArguments() != null) {
             mWalletConfigBean = getArguments().getParcelable(BUNDLE_DATA);
+            mTvWithdrawDec.setText(String.format(getString(R.string.min_withdraw_money_limit), mWalletConfigBean.getCase_min_amount()));
         }
     }
 
@@ -143,8 +145,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
-//                    mPresenter.withdraw(mWithdrawalsMoney * mWalletConfigBean.getRatio() // 传入的虚拟货币
-                    mPresenter.withdraw(mWithdrawalsMoney * PayConfig.MONEY_UNIT // 传入的真实货币
+                    mPresenter.withdraw(mWithdrawalsMoney
                             , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
                 });
 

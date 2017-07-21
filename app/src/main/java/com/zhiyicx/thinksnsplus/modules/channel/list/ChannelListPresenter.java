@@ -68,6 +68,8 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
             case ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST:
                 if (istourist()) {
                     mRootView.gotoAllChannel();
+                    // 如果没有登陆，那么直接显示没有数据
+                    mRootView.onNetResponseSuccess(null, isLoadMore);
                     return;
                 }
                 observable = mRepository.getUserJoinedGroupList(maxId);
@@ -129,6 +131,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
                 .subscribe(new BaseSubscribeForV2<List<GroupInfoBean>>() {
                     @Override
                     protected void onSuccess(List<GroupInfoBean> data) {
+                        // 自己的圈子，手动设置为已加入
                         if (type == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST) {
                             for (GroupInfoBean groupInfoBean : data) {
                                 groupInfoBean.setIs_member(1);
