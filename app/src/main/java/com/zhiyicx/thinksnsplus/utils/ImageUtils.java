@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.utils;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -15,6 +16,8 @@ import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 import com.bumptech.glide.load.model.stream.StreamModelLoader;
 import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
+import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -34,12 +37,23 @@ import java.util.Locale;
 public class ImageUtils {
     public static final String SHAREPREFERENCE_USER_HEADPIC_SIGNATURE = "sharepreference_user_headpic_signature";
     public static final String SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE = "sharepreference_user_headpic_signature";
-    public static final long DEFAULT_USER_HEADPIC_CACHE_TIME = 3 * 24 * 60_1000;
+
+    public static final String SHAREPREFERENCE_USER_COVER_SIGNATURE = "sharepreference_user_cover_signature";
+    public static final String SHAREPREFERENCE_CURRENT_LOGIN_USER_COVER__SIGNATURE = "sharepreference_user_cover_signature";
+    public static final long DEFAULT_USER_CACHE_TIME = 3 * 24 * 60_1000;
     public static final long DEFAULT_SHAREPREFERENCES_OFFSET_TIME = 10_1000;
     public static long laste_request_time;
-    public static final int DEFAULT_IMAGE_ID = -1;
 
-    private static long mSigture;
+    private static long mHeadPicSigture;
+    private static long mCoverSigture;
+
+    public static void updateCurrentLoginUserHeadPicSignature(Context context) {
+        SharePreferenceUtils.saveLong(context.getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE, System.currentTimeMillis() - DEFAULT_USER_CACHE_TIME);
+    }
+
+    public static void updateCurrentLoginUserCoverSignature(Context context) {
+        SharePreferenceUtils.saveLong(context.getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_COVER__SIGNATURE, System.currentTimeMillis() - DEFAULT_USER_CACHE_TIME);
+    }
 
     /**
      * 加载用户头像
@@ -47,27 +61,86 @@ public class ImageUtils {
      * @param userInfoBean 用户信息
      * @param imageView    展示的控件
      */
-    public static void loadUserHeadPic(UserInfoBean userInfoBean, ImageView imageView) {
+    public static void loadUserCover(UserInfoBean userInfoBean, ImageView imageView) {
+        long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
+
+        if (userInfoBean.getUser_id() == currentLoginUerId) {
+            mCoverSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_COVER__SIGNATURE);
+        } else {
+            mCoverSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_COVER_SIGNATURE);
+        }
+        if (System.currentTimeMillis() - mCoverSigture > DEFAULT_USER_CACHE_TIME) {
+            mCoverSigture = System.currentTimeMillis();
+        }
+        SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
+                , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_COVER__SIGNATURE : SHAREPREFERENCE_USER_COVER_SIGNATURE, mHeadPicSigture);
+        Glide.with(imageView.getContext())
+                .load(userInfoBean.getCover())
+                .signature(new StringSignature(String.valueOf(mCoverSigture)))
+                .placeholder(R.mipmap.default_pic_personal)
+                .error(R.mipmap.default_pic_personal)
+                .into(imageView);
+    }
+
+    /**
+     * 加载用户头像
+     *
+     * @param userInfoBean 用户信息
+     * @param imageView    展示的控件
+     */
+    public static void loadCircleUserHeadPic(UserInfoBean userInfoBean, ImageView imageView) {
         long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
         if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
 
             if (userInfoBean.getUser_id() == currentLoginUerId) {
-                mSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
+                mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
             } else {
-                mSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
+                mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
             }
-            if (System.currentTimeMillis() - mSigture > DEFAULT_USER_HEADPIC_CACHE_TIME) {
-                mSigture = System.currentTimeMillis();
+            if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
+                mHeadPicSigture = System.currentTimeMillis();
             }
             SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
-                    , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mSigture);
+                    , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
         }
         laste_request_time = System.currentTimeMillis();
         Glide.with(imageView.getContext())
                 .load(TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar())
-                .signature(new StringSignature(String.valueOf(mSigture)))
+                .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)
+                .transform(new GlideCircleTransform(imageView.getContext().getApplicationContext()))
+                .into(imageView);
+    }
+
+    /**
+     * 加载用户头像带有白色边框
+     *
+     * @param userInfoBean 用户信息
+     * @param imageView    展示的控件
+     */
+    public static void loadCircleUserHeadPicWithBorder(UserInfoBean userInfoBean, ImageView imageView) {
+        long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
+        if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
+
+            if (userInfoBean.getUser_id() == currentLoginUerId) {
+                mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
+            } else {
+                mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
+            }
+            if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
+                mHeadPicSigture = System.currentTimeMillis();
+            }
+            SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
+                    , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
+        }
+        laste_request_time = System.currentTimeMillis();
+        Glide.with(imageView.getContext())
+                .load(TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar())
+                .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+                .placeholder(R.mipmap.pic_default_portrait1)
+                .error(R.mipmap.pic_default_portrait1)
+                .transform(new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white)))
                 .into(imageView);
     }
 

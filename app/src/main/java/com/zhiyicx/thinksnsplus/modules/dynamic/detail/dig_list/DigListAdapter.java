@@ -6,17 +6,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -51,25 +47,7 @@ public class DigListAdapter extends CommonAdapter<DynamicDigListBean> {
             tv_name.setText(dynamicDigListBean.getDiggUserInfo().getName());
             tv_content.setText(dynamicDigListBean.getDiggUserInfo().getIntro());
             // 显示用户头像
-            ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-            int storegeId;
-            String userIconUrl;
-            try {
-                storegeId = Integer.parseInt(dynamicDigListBean.getDiggUserInfo().getAvatar());
-                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , ImageZipConfig.IMAGE_38_ZIP);
-            } catch (Exception e) {
-                userIconUrl = dynamicDigListBean.getDiggUserInfo().getAvatar();
-            }
-            imageLoader.loadImage(filterImageView.getContext(), GlideImageConfig.builder()
-                    .imagerView(filterImageView)
-                    .transformation(new GlideCircleTransform(filterImageView.getContext()))
-                    .url(userIconUrl)
-                    .placeholder(R.mipmap.pic_default_portrait1)
-                    .errorPic(R.mipmap.pic_default_portrait1)
-                    .build());
+            ImageUtils.loadCircleUserHeadPic( dynamicDigListBean.getDiggUserInfo(), filterImageView);
             RxView.clicks(holder.getConvertView())
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(filterImageView.getContext(), dynamicDigListBean.getDiggUserInfo()));

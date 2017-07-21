@@ -11,13 +11,9 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -33,6 +29,7 @@ import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import javax.inject.Inject;
 
@@ -113,9 +110,14 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && mPresenter != null) {
-            mPresenter.getUserInfoFromDB();
             mPresenter.updateUserInfo();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.getUserInfoFromDB();
     }
 
     @Override
@@ -229,15 +231,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         this.mUserInfoBean = userInfoBean;
         // 设置用户头像
-        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .transformation(new GlideCircleTransform(getContext()))
-                .imagerView(mIvHeadIcon)
-                .url(ImageUtils.getUserAvatar(mUserInfoBean.getUser_id()))
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .errorPic(R.mipmap.pic_default_portrait1)
-                .build());
-
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean,mIvHeadIcon);
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介

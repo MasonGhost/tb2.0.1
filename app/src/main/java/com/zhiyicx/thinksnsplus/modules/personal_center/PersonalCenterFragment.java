@@ -60,6 +60,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -85,6 +86,7 @@ import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalC
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_BLACK_ICON;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_DIVIDER_RGB;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_WHITE_ICON;
+import static com.zhiyicx.thinksnsplus.utils.ImageUtils.updateCurrentLoginUserCoverSignature;
 
 /**
  * @author LiuChao
@@ -523,8 +525,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         imagePath = imageBean.getImgUrl();
         // 上传本地图片
         mPresenter.uploadUserCover(imagePath,mUserInfoBean);
+        mUserInfoBean.setCover(imagePath);
+        ImageUtils.updateCurrentLoginUserCoverSignature(getContext());
         // 加载本地图片
-        mPersonalCenterHeaderViewItem.upDateUserCover(imagePath);
+        mPersonalCenterHeaderViewItem.upDateUserCover(mUserInfoBean);
     }
 
     @Override

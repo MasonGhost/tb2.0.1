@@ -1,14 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import android.graphics.BitmapFactory;
-
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
@@ -17,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.EventBus;
 
@@ -91,10 +89,14 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     @Override
     public void changeUserHeadIcon(String filePath) {
         mRootView.setUpLoadHeadIconState(0);
-        Subscription subscription =   mIUploadRepository.uploadAvatar(filePath)
+        Subscription subscription = mIUploadRepository.uploadAvatar(filePath)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
+                        UserInfoBean currentLoginUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        currentLoginUserInfo.setAvatar(filePath);
+                        mUserInfoBeanGreenDao.insertOrReplace(currentLoginUserInfo);
+                        ImageUtils.updateCurrentLoginUserHeadPicSignature(mContext);
                         mRootView.setUpLoadHeadIconState(1);
                     }
 

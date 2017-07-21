@@ -17,15 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -36,9 +31,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
-
-import static com.zhiyicx.thinksnsplus.utils.ImageUtils.imagePathConvertV2;
 
 /**
  * @author LiuChao
@@ -219,25 +213,10 @@ public class PersonalCenterHeaderViewItem {
     }
 
     public void initHeaderViewData(final UserInfoBean userInfoBean) {
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(userInfoBean.getAvatar());
-            userIconUrl = imagePathConvertV2(storegeId
-                    , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_70_ZIP);
-        } catch (Exception e) {
-            userIconUrl = userInfoBean.getAvatar();
-        }
+
         // 显示头像
-        mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .url(userIconUrl)
-                .placeholder(R.mipmap.pic_default_portrait2)
-                .errorPic(R.mipmap.pic_default_portrait2)
-                .imagerView(iv_head_icon)
-                .transformation(new GlideCircleBorderTransform(mActivity, mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mActivity, R.color.white)))
-                .build());
+        ImageUtils.loadCircleUserHeadPicWithBorder(userInfoBean, iv_head_icon);
+
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
         tv_user_name.post(() -> {
@@ -277,7 +256,7 @@ public class PersonalCenterHeaderViewItem {
         }
         upDateDynamicNums(dynamicCountInt);
         // 设置封面
-        setUserCover(userInfoBean.getCover());
+        setUserCover(userInfoBean);
         // 设置封面切换
         iv_background_cover.setOnClickListener(v -> {
             AuthBean authBean = AppApplication.getmCurrentLoginAuth();
@@ -376,31 +355,19 @@ public class PersonalCenterHeaderViewItem {
     /**
      * 设置用户的封面
      */
-    private void setUserCover(String coverImage) {
-        try {
-            coverImage = ImageUtils.imagePathConvertV2(Integer.parseInt(coverImage)
-                    , DeviceUtils.getScreenWidth(mActivity)
-                    , iv_background_cover.getHeight()
-                    , ImageZipConfig.IMAGE_100_ZIP);
-        } catch (Exception e) {
-
-        }
+    private void setUserCover(UserInfoBean userInfoBean) {
         // 设置封面
-        mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .placeholder(R.mipmap.default_pic_personal)
-                .errorPic(R.mipmap.default_pic_personal)
-                .url(coverImage)// 显示原图
-                .imagerView(iv_background_cover)
-                .build());
+        ImageUtils.loadUserCover(userInfoBean, iv_background_cover);
+
     }
 
     /**
      * 更新封面
      *
-     * @param coverImage
+     * @param userInfoBean
      */
-    public void upDateUserCover(String coverImage) {
-        setUserCover(coverImage);
+    public void upDateUserCover(UserInfoBean userInfoBean) {
+        setUserCover(userInfoBean);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 

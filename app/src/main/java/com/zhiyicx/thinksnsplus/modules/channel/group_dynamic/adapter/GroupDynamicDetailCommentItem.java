@@ -79,27 +79,7 @@ public class GroupDynamicDetailCommentItem implements ItemViewDelegate<GroupDyna
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(dynamicCommentBean.getCommentUser().getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_26_ZIP);
-        } catch (Exception e) {
-            userIconUrl = dynamicCommentBean.getCommentUser().getAvatar();
-        }
-        AppApplication.AppComponentHolder.getAppComponent()
-                .imageLoader()
-                .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(userIconUrl)
-                        .placeholder(R.mipmap.pic_default_portrait1)
-                        .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
-                        .errorPic(R.mipmap.pic_default_portrait1)
-                        .imagerView(holder.getView(R.id.iv_headpic))
-                        .build()
-                );
+        ImageUtils.loadCircleUserHeadPic(dynamicCommentBean.getCommentUser(), holder.getView(R.id.iv_headpic));
         setUserInfoClick(holder.getView(R.id.tv_name), dynamicCommentBean.getCommentUser());
         setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicCommentBean.getCommentUser());
     }

@@ -367,17 +367,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         String intro = getIntro(mUserInfoBean);
         mEtUserIntroduce.setText(intro);// 设置简介
 
-        // 设置头像
-        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-
-        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(ImageUtils.getUserAvatar(mUserInfoBean.getUser_id()))
-                .errorPic(R.mipmap.pic_default_portrait1)
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .imagerView(mIvHeadIcon)
-                .transformation(new GlideCircleTransform(getContext()))
-                .build());
-
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean,mIvHeadIcon);
     }
 
     @Override

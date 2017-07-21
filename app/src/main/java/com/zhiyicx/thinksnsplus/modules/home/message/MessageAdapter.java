@@ -12,20 +12,16 @@ import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -80,25 +76,7 @@ public class MessageAdapter extends CommonAdapter<MessageItemBean> implements Sw
 
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
-                int storegeId;
-                String userIconUrl;
-                try {
-                    storegeId = Integer.parseInt(messageItemBean.getUserInfo().getAvatar());
-                    userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                            , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                            , ImageZipConfig.IMAGE_38_ZIP);
-                } catch (Exception e) {
-                    userIconUrl = messageItemBean.getUserInfo().getAvatar();
-                }
-                AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
-                        .url(userIconUrl)
-                        .transformation(new GlideCircleTransform(mContext))
-                        .errorPic(R.mipmap.pic_default_portrait1)
-                        .placeholder(R.mipmap.pic_default_portrait1)
-                        .imagerView(holder.getView(R.id.iv_headpic))
-                        .build()
-                );
+                ImageUtils.loadCircleUserHeadPic(messageItemBean.getUserInfo(), holder.getView(R.id.iv_headpic));
                 holder.setText(R.id.tv_name, messageItemBean.getUserInfo().getName());     // 响应事件
                 setUserInfoClick(holder.getView(R.id.tv_name), messageItemBean.getUserInfo());
                 setUserInfoClick(holder.getView(R.id.iv_headpic), messageItemBean.getUserInfo());

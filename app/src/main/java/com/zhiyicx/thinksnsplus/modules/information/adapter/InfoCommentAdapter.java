@@ -316,28 +316,7 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
             emptyView.setNeedTextTip(false);
             emptyView.setErrorType(EmptyView.STATE_NODATA_ENABLE_CLICK);
         } else {
-            int storegeId;
-            String userIconUrl;
-            try {
-                storegeId = Integer.parseInt(infoCommentListBean.getFromUserInfoBean().getAvatar());
-                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , ImageZipConfig.IMAGE_26_ZIP);
-            } catch (Exception e) {
-                userIconUrl = infoCommentListBean.getFromUserInfoBean().getAvatar();
-            }
-            AppApplication.AppComponentHolder.getAppComponent()
-                    .imageLoader()
-                    .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                            .url(userIconUrl)
-                            .placeholder(R.drawable.shape_default_image_circle)
-                            .transformation(new GlideCircleTransform(holder.getConvertView()
-                                    .getContext()))
-                            .errorPic(R.drawable.shape_default_image_circle)
-                            .imagerView(holder.getView(R.id.iv_headpic))
-                            .build()
-                    );
+            ImageUtils.loadCircleUserHeadPic(infoCommentListBean.getFromUserInfoBean(), holder.getView(R.id.iv_headpic));
             holder.setText(R.id.tv_name, infoCommentListBean.getFromUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(infoCommentListBean
                     .getCreated_at()));
