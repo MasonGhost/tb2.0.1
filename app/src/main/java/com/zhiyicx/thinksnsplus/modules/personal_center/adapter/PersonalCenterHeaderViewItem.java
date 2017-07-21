@@ -260,7 +260,7 @@ public class PersonalCenterHeaderViewItem {
         tv_user_follow.setText(followString);
 
         // 设置粉丝人数
-        String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFeeds_count()) + ">";
+        String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowers_count()) + ">";
         CharSequence fansString = ColorPhrase.from(fansContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
