@@ -228,6 +228,7 @@ public class GroupDynamicListBean extends BaseListBean {
         private int width;
         private int propPart;
         private int height;
+        @SerializedName("id")
         private int file_id;
         private String imgUrl;
         private String type;

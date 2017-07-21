@@ -51,7 +51,7 @@ public class GroupDynamicListItemForOneImage extends GroupDynamicListBaseItem {
     @Override
     public void convert(ViewHolder holder, final GroupDynamicListBean dynamicBean, GroupDynamicListBean lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
-        initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
+        initImageView(holder,holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 
     /**
@@ -88,7 +88,7 @@ public class GroupDynamicListItemForOneImage extends GroupDynamicListBaseItem {
                     .override(with, height)
                     .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.mipmap.pic_locked)
+                    .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                     .into(view);
         } else {
             Glide.with(mContext)

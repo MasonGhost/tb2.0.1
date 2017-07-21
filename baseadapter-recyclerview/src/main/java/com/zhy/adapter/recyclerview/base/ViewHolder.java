@@ -61,7 +61,7 @@ public class ViewHolder extends RecyclerView.ViewHolder
         {
             view = mConvertView.findViewById(viewId);
             if (view==null){
-                throw new RuntimeException("view not found!!! please check your viewType has repeated ? " +
+                throw new RuntimeException("view not found!!! please check your view-Type has repeated ? " +
                         "or make sure your view has declared in your view");
             }
             mViews.put(viewId, view);

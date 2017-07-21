@@ -306,7 +306,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                         .override(w, h)
                         .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.mipmap.pic_locked)
+                        .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .into(view);
             } else {
                 Glide.with(mContext)
