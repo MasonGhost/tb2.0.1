@@ -19,7 +19,6 @@ import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -554,7 +553,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put(USER_NAME, mEtUserName.getText().toString());
         }
         if (sexChanged) {
-            fieldMap.put(USER_SEX, mTvSex.getTag(R.id.view_data) + "");
+            fieldMap.put(USER_SEX, mTvSex.getTag(R.id.view_data));
         }
         if (cityChanged) {
             fieldMap.put(USER_LOCATION, mTvCity.getText().toString());
