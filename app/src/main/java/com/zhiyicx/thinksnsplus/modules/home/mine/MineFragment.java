@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.utils.ImageUtils;
@@ -238,7 +237,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .errorPic(R.mipmap.pic_default_portrait1)
                 .build());
-
 
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());

@@ -42,6 +42,9 @@ public class GlideImageLoaderStrategy implements ImageLoaderStrategy<GlideImageC
         if (config.getTransformation() != null) {
             requestBuilder.transform(config.getTransformation());
         }
+        if (config.getStringSignature() != null) {
+            requestBuilder.signature(config.getStringSignature());
+        }
         if (config.getPlaceholder() != 0)// 设置占位符
         {
             requestBuilder.placeholder(config.getPlaceholder());

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.signature.StringSignature;
 import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
 
 /**
@@ -16,6 +17,7 @@ import com.zhiyicx.common.utils.imageloader.config.ImageConfig;
 public class GlideImageConfig extends ImageConfig {
 
     private Transformation<Bitmap> transformation;
+    private StringSignature stringSignature;
     private boolean crossFade;
 
 
@@ -27,10 +29,16 @@ public class GlideImageConfig extends ImageConfig {
         this.errorPic = builder.errorPic;
         this.crossFade = builder.crossFade;
         this.transformation = builder.transformation;
+        this.stringSignature = builder.stringSignature;
+
     }
 
     public Transformation<Bitmap> getTransformation() {
         return transformation;
+    }
+
+    public StringSignature getStringSignature() {
+        return stringSignature;
     }
 
     public boolean isCrossFade() {
@@ -50,7 +58,7 @@ public class GlideImageConfig extends ImageConfig {
         private int errorPic;
         private boolean crossFade;
         private Transformation<Bitmap> transformation;
-
+        private StringSignature stringSignature;
         private Buidler() {
         }
 
@@ -68,6 +76,11 @@ public class GlideImageConfig extends ImageConfig {
             this.transformation = transformation;
             return this;
         }
+           public Buidler stringSignature(StringSignature stringSignature) {
+            this.stringSignature = stringSignature;
+            return this;
+        }
+
 
         public Buidler placeholder(int placeholder) {
             this.placeholder = placeholder;
