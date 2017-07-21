@@ -75,7 +75,7 @@ public class ApiConfig {
      * 用户 UserInfoClient
      */
     public static final String APP_PATH_GET_USER_INFO = "api/" + API_VERSION + "/users";// 获取用户信息
-    public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION + "/users";// 修改用户信息
+    public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION_2 + "/user";// 修改用户信息
     public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION + "/im/users";// 获取 IM 帐号信息
     public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION_2 + "/user/likes"; // 获取用户收到的点赞
     public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION_2 + "/user/comments"; // 获取用户收到的评论

@@ -109,28 +109,6 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         LogUtils.e(throwable, "result");
                     }
                 });
-        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-//        Subscription subscription = mIUploadRepository.upLoadSingleFileV2(
-//                filePath, options.outMimeType, true, options.outWidth, options.outHeight)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new BaseSubscribe<Integer>() {
-//                    @Override
-//                    protected void onSuccess(Integer data) {
-//                        mRootView.setUpLoadHeadIconState(1, data);
-//                    }
-//
-//                    @Override
-//                    protected void onFailure(String message, int code) {
-//                        mRootView.setUpLoadHeadIconState(-1, 0);
-//                    }
-//
-//                    @Override
-//                    protected void onException(Throwable throwable) {
-//                        mRootView.setUpLoadHeadIconState(-1, 0);
-//                        LogUtils.e(throwable, "result");
-//                    }
-//                });
         addSubscrebe(subscription);
     }
 
@@ -146,10 +124,10 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         Subscription subscription = mRepository.changeUserInfo(userInfos)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<BaseJson>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
 
                     @Override
-                    protected void onSuccess(BaseJson data) {
+                    protected void onSuccess(Object data) {
                         // 修改成功后，关闭页面
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(1, "");

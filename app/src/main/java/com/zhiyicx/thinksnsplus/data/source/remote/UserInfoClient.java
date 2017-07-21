@@ -51,7 +51,7 @@ public interface UserInfoClient {
      */
     @FormUrlEncoded
     @PATCH(APP_PATH_CHANGE_USER_INFO)
-    Observable<BaseJson> changeUserInfo(@FieldMap HashMap<String, Object> userFieldMap);
+    Observable<Object> changeUserInfo(@FieldMap HashMap<String, Object> userFieldMap);
 
     /**
      * 获取用户信息  v1 版本

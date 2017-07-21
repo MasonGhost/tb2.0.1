@@ -97,7 +97,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson> changeUserInfo(HashMap<String, Object> userInfos) {
+    public Observable<Object> changeUserInfo(HashMap<String, Object> userInfos) {
         return mUserInfoClient.changeUserInfo(userInfos);
     }
 

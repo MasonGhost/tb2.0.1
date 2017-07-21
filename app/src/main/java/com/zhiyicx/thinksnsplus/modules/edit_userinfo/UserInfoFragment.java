@@ -67,7 +67,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      * 通过hashmap进行封装，而不是使用Usrinfobean，主要是以后可能配置用户信息，方便以后拓展
      */
     public static final String USER_NAME = "name";
-    public static final String USER_INTRO = "intro";
+    public static final String USER_INTRO = "bio";
     public static final String USER_SEX = "sex";
     public static final String USER_LOCATION = "location";
     public static final String USER_PROVINCE = "province";

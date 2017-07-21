@@ -63,7 +63,7 @@ public interface UserInfoContract {
          *
          * @param userInfos 用户需要修改的信息，通过 hashMap 传递，key 表示请求字段，value 表示修改的值
          */
-        Observable<BaseJson> changeUserInfo(HashMap<String, Object> userInfos);
+        Observable<Object> changeUserInfo(HashMap<String, Object> userInfos);
 
         /**
          * 获取用户信息
