@@ -73,10 +73,8 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     public void onNetResponseSuccess(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
-        closeLoadingView();
+        super.onNetResponseSuccess(data, isLoadMore);
         if (mListDatas.isEmpty()) {
-            // 如果界面数据为空,加载数据到界面
-            super.onNetResponseSuccess(data, isLoadMore);
             // 如果界面上没有显示数据，从网络获取后界面上仍然没有数据，就切换到所有频道的页面
             if (data == null || data.isEmpty()) {
                 ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
@@ -84,10 +82,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
                     channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
                 }
             }
-        } else {
-            // 如果界面数据不为空，网络请求获取到的数据，那就下次加载
         }
-
     }
 
     @Override
@@ -102,7 +97,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     protected boolean isRefreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -117,7 +112,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     protected boolean isLoadingMoreEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -171,6 +166,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     public List<GroupInfoBean> getGroupList() {
         return mListDatas;
     }
+
 
     @Override
     public void gotoAllChannel() {

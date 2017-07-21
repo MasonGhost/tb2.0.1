@@ -131,6 +131,7 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
                 .subscribe(new BaseSubscribeForV2<List<GroupInfoBean>>() {
                     @Override
                     protected void onSuccess(List<GroupInfoBean> data) {
+                        // 自己的圈子，手动设置为已加入
                         if (type == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST) {
                             for (GroupInfoBean groupInfoBean : data) {
                                 groupInfoBean.setIs_member(1);
