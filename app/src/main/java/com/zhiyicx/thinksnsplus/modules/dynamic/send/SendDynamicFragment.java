@@ -355,7 +355,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void addPlaceHolder() {
-        if (selectedPhotos.size() < MAX_PHOTOS && mTvToll.getVisibility() == View.GONE) {// 这个需求是真的怪，打开收费时隐藏添加图片
+        if (selectedPhotos.size() < MAX_PHOTOS && !isToll) {// 这个需求是真的怪，打开收费时隐藏添加图片,头皮发麻
             // 占位缺省图
             ImageBean camera = new ImageBean();
             selectedPhotos.add(camera);
@@ -486,7 +486,13 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 sl_send_dynamic.smoothScrollTo(0, 0);
             } else {
-                mTvToll.setVisibility(mTvToll.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+
+                if (isToll){// 这里肯定是要删的
+                    selectedPhotos.remove(selectedPhotos.size()-1);
+                }else{
+                    selectedPhotos.add(new ImageBean());
+                }
+
                 mCommonAdapter.notifyDataSetChanged();
             }
             mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);

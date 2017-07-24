@@ -29,7 +29,7 @@ public interface DynamicTopContract {
     }
 
     interface Presenter extends IBasePresenter {
-        float getBalance();
+        double getBalance();
 
         void stickTop(long feed_id);
     }

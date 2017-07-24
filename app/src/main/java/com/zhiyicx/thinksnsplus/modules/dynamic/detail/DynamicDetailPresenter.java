@@ -288,11 +288,15 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.i(message);
+                        if (message.equalsIgnoreCase("Not Found")) {
+                            code = ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED;
+                        }
                         handleDynamicHasBeDeleted(code, feed_id);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
+
                         mRootView.loadAllError();
                     }
                 });

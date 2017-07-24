@@ -336,9 +336,10 @@ public class ApiConfig {
     /**
      * 分享相关
      */
-    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "web/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
-    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "web/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
+    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "h5/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
     public static final String APP_PATH_SHARE_DEFAULT = APP_DOMAIN + "api/develop";// 开发中的提示
+    public static final String APP_PATH_SHARE_GROUP = APP_DOMAIN + "api/develop";// 分享圈子动态，目前暂时用开发中
 
 
     /**
