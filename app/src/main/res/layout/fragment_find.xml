@@ -101,6 +101,20 @@
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>
 
+            <!--问答-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                    android:id="@+id/find_quiz"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/full_button_height"
+                    android:visibility="visible"
+                    android:layout_marginTop="@dimen/spacing_mid"
+                    app:dividerLeftMargin="@dimen/spacing_normal"
+                    app:dividerRightMargin="@dimen/spacing_normal"
+                    app:leftImage="@mipmap/discover_ico_nearby"
+                    app:leftText="@string/quiz"
+                    app:rightImage="@mipmap/ic_arrow_smallgrey"
+                    app:showLine="false"/>
+
         </LinearLayout>
     </ScrollView>
 </com.wcy.overscroll.OverScrollLayout>

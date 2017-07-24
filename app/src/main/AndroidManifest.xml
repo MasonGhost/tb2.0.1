@@ -211,6 +211,10 @@
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="adjustResize"/>
 
+        <!--问答相关-->
+        <activity android:name=".modules.quiz.edit.SendQuizActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize"/>
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"

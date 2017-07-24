@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
+import com.zhiyicx.thinksnsplus.modules.quiz.edit.SendQuizActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;
@@ -54,6 +55,8 @@ public class FindFragment extends TSFragment {
     CombinationButton mFindPerson;
     @BindView(R.id.find_nearby)
     CombinationButton mFindNearby;
+    @BindView(R.id.find_quiz)
+    CombinationButton mFindQuiz;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -120,7 +123,7 @@ public class FindFragment extends TSFragment {
     }
 
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
-            R.id.find_person, R.id.find_nearby})
+            R.id.find_person, R.id.find_nearby, R.id.find_quiz})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
@@ -176,6 +179,13 @@ public class FindFragment extends TSFragment {
             case R.id.find_person:
                 break;
             case R.id.find_nearby:
+                break;
+            case R.id.find_quiz:
+                if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
+                    startActivity(new Intent(getActivity(), SendQuizActivity.class));
+                } else {
+                    showLoginPop();
+                }
                 break;
             default:
                 break;

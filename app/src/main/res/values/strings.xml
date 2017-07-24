@@ -45,8 +45,9 @@
     <string name="active">活动</string>
     <string name="buy_goods">购物</string>
     <string name="find_person">找人</string>
-    <string name="near_person">附件的人</string>
+    <string name="near_person">附近的人</string>
     <string name="group">圈子</string>
+    <string name="quiz">问答</string>
 
     <!--个人资料-->
     <string name="user_info">个人资料</string>
