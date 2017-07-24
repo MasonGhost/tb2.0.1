@@ -37,7 +37,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class DynamicHorizontalStackIconView extends FrameLayout {
     // 点赞数量
     private TextView digCount;
-    private ImageView iv_dig_head1, iv_dig_head2, iv_dig_head3, iv_dig_head4, iv_dig_head5;
     private ImageView[] mImageViews;
     // 发布时间
     private TextView publishTime;
@@ -73,11 +72,11 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
         setDigRxClickListener();
         // 将图片存到图片数组中,倒序存放
         mImageViews = new ImageView[5];
-        mImageViews[4] = iv_dig_head1 = (ImageView) findViewById(R.id.iv_dig_head1);
-        mImageViews[3] = iv_dig_head2 = (ImageView) findViewById(R.id.iv_dig_head2);
-        mImageViews[2] = iv_dig_head3 = (ImageView) findViewById(R.id.iv_dig_head3);
-        mImageViews[1] = iv_dig_head4 = (ImageView) findViewById(R.id.iv_dig_head4);
-        mImageViews[0] = iv_dig_head5 = (ImageView) findViewById(R.id.iv_dig_head5);
+        mImageViews[0] = (ImageView) findViewById(R.id.iv_dig_head1);
+        mImageViews[1] = (ImageView) findViewById(R.id.iv_dig_head2);
+        mImageViews[2] = (ImageView) findViewById(R.id.iv_dig_head3);
+        mImageViews[3] = (ImageView) findViewById(R.id.iv_dig_head4);
+        mImageViews[4] = (ImageView) findViewById(R.id.iv_dig_head5);
         publishTime = (TextView) findViewById(R.id.tv_dynamic_publish_time);
         viewerCount = (TextView) findViewById(R.id.tv_dynamic_viewer_count);
     }
@@ -95,7 +94,7 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                     DynamicDigListBean userInfoBean = dynamicDigListBeanList.get(i);
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
-                                    .transformation(new GlideCircleBorderTransform(mContext,mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext,R.color.white)))
+                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
                                     .placeholder(R.mipmap.pic_default_portrait2)
                                     .errorPic(R.mipmap.pic_default_portrait2)
                                     .imagerView(mImageViews[i])
