@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -50,7 +49,9 @@ public class GroupInfoBeanGreenDaoImpl extends CommonCacheImpl<GroupInfoBean> {
 
     @Override
     public List<GroupInfoBean> getMultiDataFromCache() {
-        return mGroupInfoBeanDao.loadAll();
+        List<GroupInfoBean> result = mGroupInfoBeanDao.loadAll();
+        result.sort((o1, o2) -> (int) (o2.getId() - o1.getId()));
+        return result;
     }
 
     @Override
@@ -90,7 +91,10 @@ public class GroupInfoBeanGreenDaoImpl extends CommonCacheImpl<GroupInfoBean> {
      */
     public List<GroupInfoBean> getUserJoinedGroup() {
         List<GroupInfoBean> list = null;
-        list = mGroupInfoBeanDao.queryBuilder().where(GroupInfoBeanDao.Properties.Is_member.eq(1)).list();
+        list = mGroupInfoBeanDao.queryBuilder()
+                .where(GroupInfoBeanDao.Properties.Is_member.eq(1))
+                .orderDesc(GroupInfoBeanDao.Properties.Id)
+                .list();
         return list;
     }
 }
