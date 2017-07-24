@@ -6,14 +6,12 @@ import android.os.Bundle;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
-import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
 
@@ -46,7 +44,7 @@ public interface GroupDynamicDetailContract {
         /**
          * 设置点赞头像
          */
-        void setDigHeadIcon(List<FollowFansBean> userInfoBeanList);
+        void setDigHeadIcon(List<DynamicDigListBean> userInfoBeanList);
 
         /**
          * 更新关注状态

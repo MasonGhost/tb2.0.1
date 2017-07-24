@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
@@ -290,9 +291,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(ApiConfig.DEFAULT_MAX_RETRY_COUNT, 0))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<List<FollowFansBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<DynamicDigListBean>>() {
                     @Override
-                    protected void onSuccess(List<FollowFansBean> data) {
+                    protected void onSuccess(List<DynamicDigListBean> data) {
                         mRootView.setDigHeadIcon(data);
                         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
                     }
@@ -321,30 +322,26 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mRootView.getCurrentDynamic().setDiggs(isLiked ? mRootView.getCurrentDynamic()
                 .getDiggs() + 1 : mRootView.getCurrentDynamic().getDiggs() - 1);
         mRootView.getCurrentDynamic().setIs_digg(isLiked ? 1 : 0);
-        List<FollowFansBean> digUsers = mRootView.getCurrentDynamic().getMGroupDynamicLikeListBeanList();
-        if (digUsers == null) {
-            digUsers = new ArrayList<>();
-        }
         if (!isLiked) {// 取消喜欢，修改修换的用户信息
+            List<DynamicDigListBean> digUsers = mRootView.getCurrentDynamic().getMGroupDynamicLikeListBeanList();
             int digUserSize = digUsers.size();
             for (int i = 0; i < digUserSize; i++) {
-                if (digUsers.get(i).getTargetUserId() == AppApplication.getmCurrentLoginAuth()
+                if (digUsers.get(i).getUser_id() == AppApplication.getmCurrentLoginAuth()
                         .getUser_id()) {
                     digUsers.remove(i);
                     break;
                 }
             }
         } else {// 喜欢
-            FollowFansBean myFollowFansBean = new FollowFansBean();
-            long user_id = AppApplication.getmCurrentLoginAuth().getUser_id();
-            UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(user_id);
-            myFollowFansBean.setTargetUserInfo(mineUserInfo);
-            myFollowFansBean.setTargetUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-            myFollowFansBean.setOriginUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-            myFollowFansBean.setOrigintargetUser("");
-            digUsers.add(0, myFollowFansBean);// 把数据加到第一个
+            UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long)
+                    AppApplication.getmCurrentLoginAuth().getUser_id());
+            DynamicDigListBean dynamicDigListBean = new DynamicDigListBean();
+            dynamicDigListBean.setUser_id(mineUserInfo.getUser_id());
+            dynamicDigListBean.setId(System.currentTimeMillis());
+            dynamicDigListBean.setDiggUserInfo(mineUserInfo);
+            mRootView.getCurrentDynamic().getMGroupDynamicLikeListBeanList().add(0, dynamicDigListBean);// 把数据加到第一个
         }
-        mRootView.getCurrentDynamic().setMGroupDynamicLikeListBeanList(digUsers);
+
         mRootView.updateCommentCountAndDig();
         // 更新数据库
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicToolBean);

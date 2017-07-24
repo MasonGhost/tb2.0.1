@@ -374,6 +374,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             dynamicDigListBean.setDiggUserInfo(mineUserInfo);
             mRootView.getCurrentDynamic().getDigUserInfoList().add(0, dynamicDigListBean);// 把数据加到第一个
         }
+
+
         mRootView.updateCommentCountAndDig();
 
         // 更新数据库

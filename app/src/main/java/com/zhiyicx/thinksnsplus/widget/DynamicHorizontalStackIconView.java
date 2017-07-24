@@ -11,15 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -86,24 +85,21 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
     /**
      * 设置点赞的人的头像，最多五个
      */
-    public void setDigUserHeadIcon(List<ImageBean> imageBeanList) {
-        if (imageBeanList == null || imageBeanList.size() == 0) {
+    public void setDigUserHeadIcon(List<DynamicDigListBean> dynamicDigListBeanList) {
+        if (dynamicDigListBeanList == null || dynamicDigListBeanList.size() == 0) {
             showNoDig();
         } else {
             for (int i = 0; i < mImageViews.length; i++) {
                 // 需要显示的图片控件
-                if (i < imageBeanList.size()) {
-                    ImageBean imageBean = imageBeanList.get(i);
+                if (i < dynamicDigListBeanList.size()) {
+                    DynamicDigListBean userInfoBean = dynamicDigListBeanList.get(i);
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
                                     .transformation(new GlideCircleBorderTransform(mContext,mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext,R.color.white)))
                                     .placeholder(R.mipmap.pic_default_portrait2)
                                     .errorPic(R.mipmap.pic_default_portrait2)
                                     .imagerView(mImageViews[i])
-                                    .url(ImageUtils.imagePathConvertV2(imageBean.getStorage_id()
-                                            ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                            ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                                            ,ImageZipConfig.IMAGE_26_ZIP))
+                                    .url(ImageUtils.getUserAvatar(userInfoBean.getDiggUserInfo()))
                                     .build()
                             );
                     mImageViews[i].setVisibility(VISIBLE);

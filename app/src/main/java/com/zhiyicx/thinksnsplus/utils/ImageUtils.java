@@ -157,6 +157,21 @@ public class ImageUtils {
     }
 
     /**
+     * 获取用户头像地址
+     *
+     * @param userInfoBean user's  info
+     * @return
+     */
+    public static String getUserAvatar(UserInfoBean userInfoBean) {
+        if (TextUtils.isEmpty(userInfoBean.getAvatar())) {
+            return String.format(ApiConfig.IMAGE_AVATAR_PATH_V2, userInfoBean.getUser_id());
+        } else {
+            return userInfoBean.getAvatar();
+        }
+
+    }
+
+    /**
      * 图片地址转换 V2 api
      *
      * @param canLook 是否可查看

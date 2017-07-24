@@ -186,18 +186,7 @@ public class DynamicDetailHeader {
         dynamicHorizontalStackIconView.setViewerCount(dynamicBean.getFeed_view_count());
         // 设置点赞头像
         List<DynamicDigListBean> userInfoList = dynamicBean.getDigUserInfoList();
-        List<ImageBean> imageBeanList = null;
-        if (userInfoList != null && !userInfoList.isEmpty()) {
-            imageBeanList = new ArrayList<>();
-            for (int i = userInfoList.size() - 1; i >= 0; i--) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getDiggUserInfo()
-                        .getAvatar()) ? 0 : Integer.parseInt(userInfoList.get(i)
-                        .getDiggUserInfo().getAvatar()));
-                imageBeanList.add(imageBean);
-            }
-        }
-        dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);
+        dynamicHorizontalStackIconView.setDigUserHeadIcon(userInfoList);
 
         // 设置跳转到点赞列表
         dynamicHorizontalStackIconView.setDigContainerClickListener(digContainer -> {

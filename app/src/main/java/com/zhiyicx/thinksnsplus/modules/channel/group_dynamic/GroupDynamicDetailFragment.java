@@ -16,9 +16,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
@@ -28,6 +26,7 @@ import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
@@ -38,6 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.adapter.GroupDynam
 import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.GroupDynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -300,12 +300,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
         final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-        int headImageId = dynamicBean.getUserInfoBean().getAvatar().isEmpty() ? -1 : Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar());
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvertV2(headImageId
-                        , headIconWidth
-                        , headIconWidth
-                        , ImageZipConfig.IMAGE_26_ZIP))
+                .load(ImageUtils.getUserAvatar(dynamicBean.getUserInfoBean()))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)
@@ -329,7 +325,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
+    public void setDigHeadIcon(List<DynamicDigListBean> userInfoBeanList) {
         mGroupDynamicListBean.setMGroupDynamicLikeListBeanList(userInfoBeanList);
         updateCommentCountAndDig();
     }
