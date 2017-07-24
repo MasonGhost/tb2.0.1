@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.collect.group_posts;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.impl.share.ShareModule;
@@ -11,6 +12,8 @@ import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenter;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenterModule;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,11 @@ public class CollectGroupDynamicListFragment extends ChannelDetailFragment {
 
     @Inject
     ChannelDetailPresenter mChannelDetailPresenter;
+
+    @Override
+    protected boolean isNeedRefreshAnimation() {
+        return true;
+    }
 
     @Override
     protected boolean showToolbar() {
@@ -55,7 +63,12 @@ public class CollectGroupDynamicListFragment extends ChannelDetailFragment {
 
     @Override
     protected boolean setUseStatusView() {
-        return false;
+        return true;
+    }
+
+    @Override
+    protected boolean isRefreshEnable() {
+        return true;
     }
 
     @Override
@@ -81,6 +94,11 @@ public class CollectGroupDynamicListFragment extends ChannelDetailFragment {
     }
 
     @Override
+    protected void onEmptyViewClick() {
+        super.onEmptyViewClick();
+    }
+
+    @Override
     protected void initData() {
         DaggerCollectGroupDynamicPresenterComonent
                 .builder()
@@ -99,8 +117,9 @@ public class CollectGroupDynamicListFragment extends ChannelDetailFragment {
                 .setShowToolMenu(false);
     }
 
-    @Override
-    protected List<GroupDynamicListBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return new ArrayList<>();
+    public static CollectGroupDynamicListFragment newInstance(Bundle bundle) {
+        CollectGroupDynamicListFragment channelDetailFragment = new CollectGroupDynamicListFragment();
+        channelDetailFragment.setArguments(bundle);
+        return channelDetailFragment;
     }
 }

@@ -21,10 +21,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean;
@@ -36,7 +34,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -376,7 +373,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             }
                             // 通过用户id列表请求用户信息和用户关注状态
                             return mUserInfoRepository.getUserInfo(userids)
-                                    .map(new Func1<BaseJson<List<UserInfoBean>>,List<DynamicDigListBean>>() {
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, List<DynamicDigListBean>>() {
                                         @Override
                                         public List<DynamicDigListBean> call(BaseJson<List<UserInfoBean>> listBaseJson) {
                                             if (listBaseJson.isStatus()) {
@@ -649,6 +646,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
                             }
+                        }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(groupDynamicList);
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
