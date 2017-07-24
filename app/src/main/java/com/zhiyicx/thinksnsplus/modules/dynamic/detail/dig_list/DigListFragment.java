@@ -7,7 +7,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
@@ -44,26 +43,6 @@ public class DigListFragment extends TSListFragment<DigListContract.Presenter, D
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
         return true;
-    }
-
-    @Override
-    public void setPresenter(DigListContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     @Override

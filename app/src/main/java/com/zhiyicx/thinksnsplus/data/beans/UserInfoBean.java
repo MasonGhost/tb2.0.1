@@ -155,7 +155,11 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
     public String getIntro() {
-        return intro;
+        if(TextUtils.isEmpty(intro)){
+            return AppApplication.getContext().getResources().getString(R.string.intro_default);
+        }else {
+            return intro;
+        }
     }
 
     public void setIntro(String intro) {
