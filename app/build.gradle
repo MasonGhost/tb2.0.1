@@ -196,6 +196,8 @@ dependencies {
     compile dataDependences.jiguangJcore
 
     compile dataDependences.greendaoSqlcipher
+    compile dataDependences.markdown
+    compile dataDependences.editor
     compile(name: 'lint-library-release', ext: 'aar')
 }
 

@@ -119,7 +119,10 @@ ext {
             skinDesign                   : 'skin.support:skin-support-design:1.2.4',   // skin-support-design material design 控件支持[可选],已经依赖了skin
             skinCardveiw                 : 'skin.support:skin-support-cardview:1.2.0', // skin-support-cardview CardView 控件支持[可选]已经依赖了skin
             // font
-            calligraphyFont              : 'uk.co.chrisjenx:calligraphy:2.3.0'
+            calligraphyFont              : 'uk.co.chrisjenx:calligraphy:2.3.0',
+            // markdown editor
+            markdown                     :'com.github.tiagohm.MarkdownView:emoji:0.17.0',
+            editor                       :'jp.wasabeef:richeditor-android:1.2.2'
     ]
     sdksoupportDependencies = [
             appcompatV7  : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",
