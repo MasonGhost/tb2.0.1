@@ -72,7 +72,7 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image()
+                    .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image().intValue()
                             , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
                             , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
                             , ImageZipConfig.IMAGE_50_ZIP))
