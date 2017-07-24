@@ -145,7 +145,7 @@ public class TextViewUtils {
                     }
                 }
             });
-            dealTextViewClickEvent();
+            dealTextViewClickEvent(mTextView);
         } else {
             mTextView.setText(mOriMsg);
         }
@@ -193,8 +193,8 @@ public class TextViewUtils {
     }
 
     // clickSpan 的点击事件分发处理
-    private void dealTextViewClickEvent() {
-        mTextView.setOnTouchListener(new View.OnTouchListener() {
+    private void dealTextViewClickEvent(TextView textView) {
+        textView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 CharSequence text = ((TextView) v).getText();

@@ -46,9 +46,13 @@ public interface IBaseChannelRepository extends IDynamicReppsitory {
     Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") String type, long userId);
 
     /**
-     * 获取频道的动态列表
+     * 获取圈子的动态列表
      */
     Observable<List<GroupDynamicListBean>> getDynamicListFromGroup(long group_id, long max_id);
+    /**
+     * 获取圈子我收藏的动态列表
+     */
+    Observable<List<GroupDynamicListBean>> getMyCollectGroupDynamicList(long group_id, long max_id);
 
     /**
      * 获取圈子列表

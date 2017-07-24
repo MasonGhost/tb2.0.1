@@ -18,6 +18,7 @@ import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -25,6 +26,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
@@ -93,8 +95,43 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             return;
         }
         long group_id = mRootView.getGroupId();
+        if (group_id<0){
+            Subscription subscription = mRepository.getMyCollectGroupDynamicList(group_id, maxId)
+                    .map(listBaseJson -> {
+                        if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                            List<GroupDynamicListBean> data = getGroupDynamicBeenFromDB();
+                            data.addAll(listBaseJson);
+                        }
+                        for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(listBaseJson.get(i).getNew_comments());
+                                listBaseJson.get(i).getNew_comments().clear();
+                                listBaseJson.get(i).getNew_comments().addAll(dynamicCommentBeen);
+                            }
+                        }
 
-        if (!isLoadMore) {
+
+                        return listBaseJson;
+                    })
+                    .subscribe(new BaseSubscribeForV2<List<GroupDynamicListBean>>() {
+                        @Override
+                        protected void onSuccess(List<GroupDynamicListBean> data) {
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            mRootView.loadAllError();
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            mRootView.loadAllError();
+                        }
+                    });
+            addSubscrebe(subscription);
+        }else if (!isLoadMore) {
             Subscription subscription = Observable.zip(mRepository.getGroupDetail(group_id), mRepository.getDynamicListFromGroup(group_id, maxId)
                     , GroupZipBean::new)
                     .map(groupZipBean -> {
@@ -280,7 +317,9 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
 
     @Override
     public void deleteDynamic(GroupDynamicListBean dynamicBean, int position) {
-
+        if (position==-1){
+            return;
+        }
         mGroupDynamicListBeanGreenDaoimpl.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
         if (mRootView.getListDatas().isEmpty()) {// 添加暂未图
@@ -453,6 +492,12 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                             break;
                         }
                     }
+                    // 传过来的带了一个占位的评论，先暂时这样去掉这条评论
+                    if (dynamicBean.getCommentslist() != null
+                            && dynamicBean.getCommentslist().size() == 1
+                            && TextUtils.isEmpty(dynamicBean.getCommentslist().get(0).getContent())){
+                        dynamicBean.getCommentslist().clear();
+                    }
                     if (dynamicPosition != -1) {// 如果列表有当前评论
                         mRootView.getListDatas().set(dynamicPosition, dynamicBean);
                     }
@@ -506,5 +551,10 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Subscriber(tag = EventBusTagConfig.DYNAMIC_LIST_DELETE_UPDATE)
+    public void deleteDynamic(GroupDynamicListBean dynamicBean) {
+        deleteDynamic(dynamicBean, mRootView.getListDatas().indexOf(dynamicBean));
     }
 }

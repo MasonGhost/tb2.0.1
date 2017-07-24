@@ -31,6 +31,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -95,9 +96,12 @@ import static com.zhiyicx.thinksnsplus.utils.ImageUtils.updateCurrentLoginUserCo
  * @contact email:450127106@qq.com
  */
 
-public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicDetailBeanV2> implements PersonalCenterContract.View, DynamicListBaseItem.OnReSendClickListener,
-        DynamicNoPullRecycleView.OnCommentStateClickListener<DynamicCommentBean>, DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener, DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
-        DynamicListCommentView.OnMoreCommentClickListener, InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, PhotoSelectorImpl.IPhotoBackListener {
+public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicDetailBeanV2> implements PersonalCenterContract.View,
+        DynamicListBaseItem.OnReSendClickListener, DynamicNoPullRecycleView.OnCommentStateClickListener<DynamicCommentBean>,
+        DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
+        DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,  DynamicListCommentView.OnMoreCommentClickListener,
+        InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener,
+        PhotoSelectorImpl.IPhotoBackListener,TextViewUtils.OnSpanTextClickListener {
 
     public static final String PERSONAL_CENTER_DATA = "personal_center_data";
 
@@ -163,6 +167,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
+    protected boolean needCenterLoadingDialog() {
         return true;
     }
 
@@ -454,12 +463,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         boolean canNotLookWords = detailBeanV2.getPaid_node() != null && !detailBeanV2.getPaid_node().isPaid()
                 && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth().getUser_id();
         if (canNotLookWords) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) detailBeanV2.getPaid_node().getAmount(),
+            initImageCenterPopWindow(position, position, (float) detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
         }
 
         goDynamicDetail(position, false);
+    }
+
+    @Override
+    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
+        initImageCenterPopWindow(position, position, (float) amount,
+                note, R.string.buy_pay_words_desc, false);
     }
 
     @Override
@@ -638,6 +653,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         dynamicListBaseItem.setOnMoreCommentClickListener(this);
         dynamicListBaseItem.setOnCommentClickListener(this);
         dynamicListBaseItem.setOnCommentStateClickListener(this);
+        dynamicListBaseItem.setOnSpanTextClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
     }
 

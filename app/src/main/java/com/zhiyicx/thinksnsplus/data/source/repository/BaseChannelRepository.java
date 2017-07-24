@@ -151,6 +151,11 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
+    public Observable<List<GroupDynamicListBean>> getMyCollectGroupDynamicList(long group_id, long max_id) {
+        return dealWithGroupDynamicList(mChannelClient.getMyCollectGroupDynamicList(TSListFragment.DEFAULT_PAGE_SIZE, max_id), "", false);
+    }
+
+    @Override
     public Observable<List<GroupInfoBean>> getGroupList(int type, long max_id) {
         Observable<List<GroupInfoBean>> observable;
         if (type == 0) {

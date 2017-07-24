@@ -104,7 +104,7 @@ public class GroupDynamicDetailHeader {
      * @param dynamicBean
      */
     public void setDynamicDetial(GroupDynamicListBean dynamicBean) {
-        String titleText = "";
+        String titleText = dynamicBean.getTitle();
         if (TextUtils.isEmpty(titleText)) {
             mTitle.setVisibility(View.GONE);
         } else {

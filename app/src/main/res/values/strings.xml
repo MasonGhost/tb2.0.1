@@ -181,9 +181,10 @@
     <string name="collect_info">资讯</string>
     <string name="collect_activity">活动</string>
     <string name="collect_album">专辑</string>
+    <string name="group_collect_dynamic">圈子</string>
 
     <!--动态置顶-->
-    <string name="yuan">积分</string>
+    <string name="yuan">元</string>
     <string name="select_day">%1$dd</string>
     <string name="select_topday">选择置顶天数</string>
     <string name="totop_money">置顶金额</string>
@@ -237,7 +238,7 @@
 
     <!--钱包-->
     <string name="default_mongy">0.00</string>
-    <string name="account_balance">账户余额(积分)</string>
+    <string name="account_balance">账户余额(元)</string>
     <string name="recharge">充值</string>
     <string name="withdraw">提现</string>
     <string name="withdraw_doing">提现中&#8230;</string>
@@ -272,7 +273,7 @@
     <string name="withdraw_money">提现金额</string>
     <string name="withdraw_money_done">%1$s 账户提现</string>
     <string name="min_withdraw_money">未满足可提现最低金额</string>
-    <string name="min_withdraw_money_limit">提现最低积分：%.2f</string>
+    <string name="min_withdraw_money_limit">最低提现金额：%.2f元</string>
     <string name="limit_withdraw_count">一月只能提现一次</string>
     <string name="limit_withdraw_money">金额已超出可提现余额</string>
     <string name="withdraw_all">全部</string>

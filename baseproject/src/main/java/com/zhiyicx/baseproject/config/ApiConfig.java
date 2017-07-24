@@ -336,9 +336,10 @@ public class ApiConfig {
     /**
      * 分享相关
      */
-    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "web/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
-    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "web/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
+    public static final String APP_PATH_SHARE_USERINFO = APP_DOMAIN + "h5/users/feeds/%s";// 用户信息分享地址 url/web/users/feeds/{user_id}
+    public static final String APP_PATH_SHARE_DYNAMIC = APP_DOMAIN + "h5/feed/%s";// 动态信息分享地址 url/web/feed/{feed_id}
     public static final String APP_PATH_SHARE_DEFAULT = APP_DOMAIN + "api/develop";// 开发中的提示
+    public static final String APP_PATH_SHARE_GROUP = APP_DOMAIN + "api/develop";// 分享圈子动态，目前暂时用开发中
 
 
     /**
@@ -374,8 +375,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts"; // 动态列表
 
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
-    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 收藏圈子动态的
-    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/collection";// 收藏圈子动态的
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 收藏圈子动态
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/collection";// 收藏圈子动态
     public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/posts/collections";// 我收藏的圈子动态列表
     public static final String APP_PATH_DELETE_MYCOLLECT_GROUP_DYNAMIC_DIGG = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 取消点赞
     public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 点赞

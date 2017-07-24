@@ -81,13 +81,13 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
     }
 
     @Override
-    public float getBalance() {
+    public double getBalance() {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
             WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
             int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
             try {
-                return (float) walletBean.getBalance() * (ratio / MONEY_UNIT);
+                return walletBean.getBalance() * (ratio / MONEY_UNIT);
             } catch (Exception e) {
                 return 0;
             }
