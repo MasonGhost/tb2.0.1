@@ -393,6 +393,9 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .flatMap(new Func1<List<CommentedBean>, Observable<List<CommentedBean>>>() {
                     @Override
                     public Observable<List<CommentedBean>> call(final List<CommentedBean> data) {
+                        if (data.isEmpty()) {
+                            return Observable.just(data);
+                        }
                         List<Object> userIds = new ArrayList();
                         for (CommentedBean commentedBean : data) {
                             userIds.add(commentedBean.getUser_id());
