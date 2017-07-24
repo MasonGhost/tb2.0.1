@@ -10,7 +10,7 @@ import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -29,23 +29,23 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:648129313@qq.com
  */
 
-public class GroupDigListAdapter extends CommonAdapter<FollowFansBean> {
+public class GroupDigListAdapter extends CommonAdapter<DynamicDigListBean> {
 
     private GroupDigListContract.Presenter mPresenter;
 
-    public GroupDigListAdapter(Context context, List<FollowFansBean> datas, GroupDigListContract.Presenter presenter) {
+    public GroupDigListAdapter(Context context, List<DynamicDigListBean> datas, GroupDigListContract.Presenter presenter) {
         super(context, R.layout.item_dig_list, datas);
         this.mPresenter = presenter;
     }
 
     @Override
-    protected void convert(ViewHolder holder, FollowFansBean followFansBean, int position) {
+    protected void convert(ViewHolder holder, DynamicDigListBean dynamicDigListBean, int position) {
         final FilterImageView filterImageView = holder.getView(R.id.iv_headpic);
         TextView tv_name = holder.getView(R.id.tv_name);
         TextView tv_content = holder.getView(R.id.tv_content);
         ImageView iv_follow = holder.getView(R.id.iv_follow);
 
-        final UserInfoBean userInfoBean = followFansBean.getTargetUserInfo();
+        final UserInfoBean userInfoBean = dynamicDigListBean.getTargetUserInfo();
         if (userInfoBean != null) {
             tv_name.setText(userInfoBean.getName());
             tv_content.setText(userInfoBean.getIntro());
@@ -58,30 +58,22 @@ public class GroupDigListAdapter extends CommonAdapter<FollowFansBean> {
         }
         // 如果当前列表包含了自己，就隐藏该关注按钮
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        if (userInfoBean != null && userInfoBean.getUser_id() == authBean.getUser_id()) {
+        if (dynamicDigListBean.getUser_id() == authBean.getUser_id()) {
             iv_follow.setVisibility(View.GONE);
         } else {
             iv_follow.setVisibility(View.VISIBLE);
-            // 设置关注状态
-            int state = followFansBean.getFollowState();
-            switch (state) {
-                case FollowFansBean.UNFOLLOWED_STATE:
-                    iv_follow.setImageResource(R.mipmap.detail_ico_follow);
-                    break;
-                case FollowFansBean.IFOLLOWED_STATE:
-                    iv_follow.setImageResource(R.mipmap.detail_ico_followed);
-                    break;
-                case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                    iv_follow.setImageResource(R.mipmap.detail_ico_followed_eachother);
-                    break;
-                default:
+            if(dynamicDigListBean.getDiggUserInfo().isFollowing()&&dynamicDigListBean.getDiggUserInfo().isFollower()){
+                iv_follow.setImageResource(R.mipmap.detail_ico_followed_eachother);
+            }else if(dynamicDigListBean.getDiggUserInfo().isFollower()){
+                iv_follow.setImageResource(R.mipmap.detail_ico_followed);
+            }else {
+                iv_follow.setImageResource(R.mipmap.detail_ico_follow);
             }
 
             // 设置关注状态点击事件
             RxView.clicks(iv_follow)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    //.compose(.<Void>bindToLifecycle())
-                    .subscribe(aVoid -> mPresenter.handleFollowUser(position, followFansBean));
+                    .subscribe(aVoid -> mPresenter.handleFollowUser(position, dynamicDigListBean.getDiggUserInfo()));
         }
     }
 }

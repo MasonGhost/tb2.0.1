@@ -19,7 +19,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
@@ -30,13 +29,14 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 
 import java.util.ArrayList;
@@ -186,18 +186,8 @@ public class GroupDynamicDetailHeader {
         dynamicHorizontalStackIconView.setPublishTime(dynamicBean.getCreated_at());
         dynamicHorizontalStackIconView.setViewerCount(dynamicBean.getViews());
         // 设置点赞头像
-        List<FollowFansBean> userInfoList = dynamicBean.getMGroupDynamicLikeListBeanList();
-        List<ImageBean> imageBeanList = null;
-        if (userInfoList != null && !userInfoList.isEmpty()) {
-            imageBeanList = new ArrayList<>();
-            for (int i = userInfoList.size() - 1; i >= 0; i--) {
-                ImageBean imageBean = new ImageBean();
-                imageBean.setStorage_id(TextUtils.isEmpty(userInfoList.get(i).getTargetUserInfo()
-                        .getAvatar()) ? 0 : Integer.parseInt(userInfoList.get(i)
-                        .getTargetUserInfo().getAvatar()));
-                imageBeanList.add(imageBean);
-            }
-        }
+        List<DynamicDigListBean> imageBeanList = dynamicBean.getMGroupDynamicLikeListBeanList();
+
         dynamicHorizontalStackIconView.setDigUserHeadIcon(imageBeanList);
 
         // 设置跳转到点赞列表

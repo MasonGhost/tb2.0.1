@@ -420,14 +420,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         if (listBaseJson.getComments() != null && listBaseJson.getComments().size() > 1) {
                             Collections.sort(listBaseJson.getComments(), new TimeStringSortClass());
                         }
-                        listBaseJson.getPinned().addAll(listBaseJson.getComments());
-                        for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinned()) {
+                        listBaseJson.getPinneds().addAll(listBaseJson.getComments());
+                        for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
                             user_ids.add(dynamicCommentBean.getUser_id());
                             user_ids.add(dynamicCommentBean.getReply_to_user_id());
                             dynamicCommentBean.setFeed_mark(feed_mark);
                         }
                         if (user_ids.isEmpty()) {
-                            return Observable.just(listBaseJson.getPinned());
+                            return Observable.just(listBaseJson.getPinneds());
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
@@ -435,25 +435,24 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     for (UserInfoBean userInfoBean : userinfobeans.getData()) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
-                                    for (int i = 0; i < listBaseJson.getPinned().size(); i++) {
-                                        listBaseJson.getPinned().get(i).setCommentUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinned().get(i).getUser_id()));
-                                        if (listBaseJson.getPinned().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
+                                    for (int i = 0; i < listBaseJson.getPinneds().size(); i++) {
+                                        listBaseJson.getPinneds().get(i).setCommentUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinneds().get(i).getUser_id()));
+                                        if (listBaseJson.getPinneds().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
                                             UserInfoBean userInfoBean = new UserInfoBean();
                                             userInfoBean.setUser_id(0L);
-                                            listBaseJson.getPinned().get(i).setReplyUser(userInfoBean);
+                                            listBaseJson.getPinneds().get(i).setReplyUser(userInfoBean);
                                         } else {
-                                            listBaseJson.getPinned().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinned().get(i).getReply_to_user_id()));
+                                            listBaseJson.getPinneds().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinneds().get(i).getReply_to_user_id()));
                                         }
                                     }
                                     mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
 
-                                    return listBaseJson.getPinned();
+                                    return listBaseJson.getPinneds();
                                 });
 
                     }
                 });
     }
-
 
     /**
      * @param comment_ids 评论id 以逗号隔开或者数组形式传入

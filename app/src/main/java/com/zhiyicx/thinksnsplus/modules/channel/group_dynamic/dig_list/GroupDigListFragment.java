@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 
 /**
@@ -15,7 +15,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
  * @contact email:648129313@qq.com
  */
 
-public class GroupDigListFragment extends TSListFragment<GroupDigListContract.Presenter, FollowFansBean> implements GroupDigListContract.View{
+public class GroupDigListFragment extends TSListFragment<GroupDigListContract.Presenter, DynamicDigListBean> implements GroupDigListContract.View{
 
     public static final String GROUP_DIG_LIST_DATA = "dig_list_data";// 传入点赞榜的数据
 
