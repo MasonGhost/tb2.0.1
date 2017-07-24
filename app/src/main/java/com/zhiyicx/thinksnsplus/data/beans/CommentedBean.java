@@ -414,9 +414,7 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1828279436)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

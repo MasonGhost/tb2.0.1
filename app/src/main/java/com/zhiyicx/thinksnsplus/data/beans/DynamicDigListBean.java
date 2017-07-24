@@ -6,11 +6,13 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
+
+import java.io.Serializable;
 
 /**
  * @author LiuChao
@@ -19,7 +21,8 @@ import org.greenrobot.greendao.DaoException;
  * @contact email:450127106@qq.com
  */
 @Entity
-public class DynamicDigListBean extends BaseListBean implements Parcelable {
+public class DynamicDigListBean extends BaseListBean implements Parcelable,Serializable {
+    private static final long serialVersionUID = -570059504828130442L;
     /**
      * id : 2 // 赞 ID
      * user_id : 1 // 赞的用户
