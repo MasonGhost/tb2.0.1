@@ -63,7 +63,6 @@ public class GroupDynamicListBean extends BaseListBean {
     private int collections;
     private int is_collection;
     private int comments;
-    @SerializedName("id")
     private Long user_id;
     @SerializedName("group_post_mark")
     private Long feed_mark;
@@ -426,8 +425,8 @@ public class GroupDynamicListBean extends BaseListBean {
         this.state = in.readInt();
     }
 
-    @Generated(hash = 1388812928)
-    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
+    @Generated(hash = 1175365712)
+    public GroupDynamicListBean(Long id, Long collect_id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
         this.id = id;
         this.title = title;
         this.content = content;

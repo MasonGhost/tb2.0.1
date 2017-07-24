@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.CollectGroupDyanmciListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
@@ -123,8 +124,8 @@ public interface ChannelClient {
      * 获取我收藏的圈子动态
      */
     @GET(ApiConfig.APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST)
-    Observable<List<GroupDynamicListBean>> getMyCollectGroupDynamicList(@Query("limit") int limit,
-                                                                             @Query("after") long max_id);
+    Observable<List<CollectGroupDyanmciListBean>> getMyCollectGroupDynamicList(@Query("limit") int limit,
+                                                                               @Query("after") long max_id);
 
 
     /**
