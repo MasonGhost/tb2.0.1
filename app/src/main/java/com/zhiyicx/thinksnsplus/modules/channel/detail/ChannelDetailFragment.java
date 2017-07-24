@@ -141,7 +141,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent, mPresenter);
-        mItemChannelDetailHeader.initHeaderView(false);
+        mItemChannelDetailHeader.initHeaderView(false,setHeadShow());
 
         mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
         //mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
@@ -285,6 +285,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public long getGroupId() {
+        if (mGroupInfoBean==null){
+            return -1L;
+        }
         return mGroupInfoBean.getId();
     }
 
@@ -422,7 +425,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 }
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT,shareBitMap);
+                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT, shareBitMap);
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
@@ -500,7 +503,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 mListDatas.get(dataPosition).getDiggs() - 1 : mListDatas.get(dataPosition).getDiggs() + 1);
         refreshData(dataPosition);
         mPresenter.handleLike(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.IS_DIGG,
-                mListDatas.get(dataPosition).getGroup_id(),mListDatas.get(dataPosition).getId() , dataPosition);
+                mListDatas.get(dataPosition).getGroup_id(), mListDatas.get(dataPosition).getId(), dataPosition);
     }
 
     /**
@@ -678,6 +681,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * 处理订阅状态对应的不同逻辑:
      */
     private void initSubscribState(GroupInfoBean groupInfoBean) {
+        if (groupInfoBean == null) {
+            return;
+        }
         boolean isJoined = groupInfoBean.getIs_member() == 1;
         if (isJoined) {
             // 订阅后，显示发送动态按钮，隐藏订阅按钮
@@ -859,5 +865,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
             return true;
         });
+    }
+
+    protected boolean setHeadShow(){
+        return true;
     }
 }

@@ -121,6 +121,13 @@ public interface ChannelClient {
                                                                              @Query("limit") int limit,
                                                                              @Query("after") long max_id);
 
+    /**
+     * 获取我收藏的圈子动态
+     */
+    @GET(ApiConfig.APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST)
+    Observable<List<GroupDynamicListBean>> getMyCollectGroupDynamicList(@Query("limit") int limit,
+                                                                             @Query("after") long max_id);
+
 
     /**
      * 点赞动态

@@ -184,7 +184,7 @@ public class AppApplication extends TSApplication {
                 if (authBean != null) {
                     return chain.request().newBuilder()
                             .header("Accept", "application/json")
-                            .header((request.url() + "").contains("v1") ? "ACCESS-TOKEN" : "Authorization", (request.url() + "").contains("v1") ? authBean.getToken() : " Bearer " + authBean.getToken())
+                            .header("Authorization"," Bearer " + authBean.getToken())
                             .build();
                 } else {
                     return chain.request().newBuilder()

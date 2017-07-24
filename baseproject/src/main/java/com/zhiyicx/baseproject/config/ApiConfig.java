@@ -29,10 +29,10 @@ public class ApiConfig {
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-    public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
-    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
+    public static final boolean APP_IS_NEED_SSH_CERTIFICATE = false;// 在线测试服务器 2
+//    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
 
-    //    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+        public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
 //
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
@@ -375,8 +375,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts"; // 动态列表
 
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
-    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 收藏圈子动态的
-    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/collection";// 收藏圈子动态的
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 收藏圈子动态
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/collection";// 收藏圈子动态
     public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/posts/collections";// 我收藏的圈子动态列表
     public static final String APP_PATH_DELETE_MYCOLLECT_GROUP_DYNAMIC_DIGG = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 取消点赞
     public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 点赞

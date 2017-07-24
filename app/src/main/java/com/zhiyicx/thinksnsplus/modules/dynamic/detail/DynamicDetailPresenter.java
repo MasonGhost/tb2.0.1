@@ -423,8 +423,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mContext.getString(R.string.share));
         shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed_content()) ? mContext
-                .getString(R.string
-                        .share_dynamic) : dynamicBean.getFeed_content());
+                .getString(R.string.share_dynamic) : dynamicBean.getFeed_content());
         if (bitmap != null) {
             shareContent.setBitmap(bitmap);
         } else {

@@ -95,8 +95,43 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             return;
         }
         long group_id = mRootView.getGroupId();
+        if (group_id<0){
+            Subscription subscription = mRepository.getMyCollectGroupDynamicList(group_id, maxId)
+                    .map(listBaseJson -> {
+                        if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
+                            List<GroupDynamicListBean> data = getGroupDynamicBeenFromDB();
+                            data.addAll(listBaseJson);
+                        }
+                        for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
+                            List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
+                            if (!dynamicCommentBeen.isEmpty()) {
+                                dynamicCommentBeen.addAll(listBaseJson.get(i).getNew_comments());
+                                listBaseJson.get(i).getNew_comments().clear();
+                                listBaseJson.get(i).getNew_comments().addAll(dynamicCommentBeen);
+                            }
+                        }
 
-        if (!isLoadMore) {
+
+                        return listBaseJson;
+                    })
+                    .subscribe(new BaseSubscribeForV2<List<GroupDynamicListBean>>() {
+                        @Override
+                        protected void onSuccess(List<GroupDynamicListBean> data) {
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            mRootView.loadAllError();
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            mRootView.loadAllError();
+                        }
+                    });
+            addSubscrebe(subscription);
+        }else if (!isLoadMore) {
             Subscription subscription = Observable.zip(mRepository.getGroupDetail(group_id), mRepository.getDynamicListFromGroup(group_id, maxId)
                     , GroupZipBean::new)
                     .map(groupZipBean -> {

@@ -127,7 +127,10 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
 
     }
 
-    public void initHeaderView(boolean isSetScrollListener) {
+    public void initHeaderView(boolean isSetScrollListener, boolean isShow) {
+        if (!isShow) {
+            return;
+        }
         headerView = LayoutInflater.from(mActivity).inflate(R.layout.item_channel_detail_header, null);
         initHeaderViewUI(headerView);
         mHeaderAndFooterWrapper.addHeaderView(headerView);
@@ -240,9 +243,9 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         int strokeWidth = ConvertUtils.dp2px(mActivity, 2);
         Glide.with(mActivity)
                 .load(ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id()
-                        ,mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                        ,mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                        ,ImageZipConfig.IMAGE_70_ZIP))
+                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(mActivity, strokeWidth))
                 .placeholder(R.drawable.shape_default_image)
@@ -350,4 +353,5 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
             refreshImage.setVisibility(View.GONE);
         }
     }
+
 }
