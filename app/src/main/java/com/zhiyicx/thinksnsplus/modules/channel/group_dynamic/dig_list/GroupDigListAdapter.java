@@ -45,7 +45,7 @@ public class GroupDigListAdapter extends CommonAdapter<DynamicDigListBean> {
         TextView tv_content = holder.getView(R.id.tv_content);
         ImageView iv_follow = holder.getView(R.id.iv_follow);
 
-        final UserInfoBean userInfoBean = dynamicDigListBean.getTargetUserInfo();
+        final UserInfoBean userInfoBean = dynamicDigListBean.getDiggUserInfo();
         if (userInfoBean != null) {
             tv_name.setText(userInfoBean.getName());
             tv_content.setText(userInfoBean.getIntro());
