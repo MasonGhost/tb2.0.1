@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicListBeanGreenDaoimpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,9 @@ public class GroupDigListPresenter extends AppBasePresenter<GroupDigListContract
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    GroupDynamicListBeanGreenDaoimpl mGroupDynamicListBeanGreenDaoimpl;
+
     @Inject
     public GroupDigListPresenter(GroupDigListContract.Repository repository, GroupDigListContract.View rootView) {
         super(repository, rootView);
@@ -69,7 +73,9 @@ public class GroupDigListPresenter extends AppBasePresenter<GroupDigListContract
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<DynamicDigListBean> data, boolean isLoadMore) {
-        return false;
+        GroupDynamicListBean dynamicBean = mRootView.getDynamicBean();
+        dynamicBean.setMGroupDynamicLikeListBeanList(data);
+        return mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean) >= 0;
     }
 
     @Override
