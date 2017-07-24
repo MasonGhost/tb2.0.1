@@ -368,32 +368,27 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             List<Object> userids = new ArrayList<>();
                             for (int i = 0; i < dynamicDigListBeanList.size(); i++) {
                                 DynamicDigListBean dynamicDigListBean = dynamicDigListBeanList.get(i);
-                                if (dynamicDigListBean.getUser_id() != null && dynamicDigListBean.getUser_id() != 0) {
-                                    userids.add(dynamicDigListBean.getUser_id());
-                                }
-                                if (dynamicDigListBean.getTarget_user() != null && dynamicDigListBean.getTarget_user() != 0) {
-                                    userids.add(dynamicDigListBean.getTarget_user());
-                                }
+                                userids.add(dynamicDigListBean.getUser_id());
+                                userids.add(dynamicDigListBean.getTarget_user());
                             }
                             // 通过用户id列表请求用户信息和用户关注状态
                             return mUserInfoRepository.getUserInfo(userids)
-                                    .map(listBaseJson -> {
-                                        if (listBaseJson.isStatus()) {
-                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : listBaseJson.getData()) {
-                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                            }
-                                            for (DynamicDigListBean dynamicDigListBean : dynamicDigListBeanList) {
-                                                if (dynamicDigListBean.getUser_id() != null && dynamicDigListBean.getUser_id() != 0) {
-                                                    dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id().intValue()));
+                                    .map(new Func1<BaseJson<List<UserInfoBean>>, List<DynamicDigListBean>>() {
+                                        @Override
+                                        public List<DynamicDigListBean> call(BaseJson<List<UserInfoBean>> listBaseJson) {
+                                            if (listBaseJson.isStatus()) {
+                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                                 }
-                                                if (dynamicDigListBean.getTarget_user() != null && dynamicDigListBean.getTarget_user() != 0) {
+                                                for (DynamicDigListBean dynamicDigListBean : dynamicDigListBeanList) {
+                                                    dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id().intValue()));
                                                     dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
                                                 }
+                                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
                                             }
-                                            mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
+                                            return dynamicDigListBeanList;
                                         }
-                                        return dynamicDigListBeanList;
                                     });
                         } else {
                             // 返回期待以外的数据，比如状态为false，或者数据为空，发射空数据
@@ -458,7 +453,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     }
                 });
     }
-
 
     /**
      * @param comment_ids 评论id 以逗号隔开或者数组形式传入
@@ -651,6 +645,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
                             }
+                        }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(groupDynamicList);
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {

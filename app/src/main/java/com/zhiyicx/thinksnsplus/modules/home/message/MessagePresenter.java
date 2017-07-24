@@ -361,7 +361,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-
+                        LogUtils.d("makeNotificationReaded::" + "onSuccess");
                     }
                 });
     }
@@ -542,25 +542,20 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         if (data.isEmpty()) {
                             return;
                         }
-
+                        mCommentsNoti.clear();
+                        mDiggNoti.clear();
+                        mReviewNoti.clear();
                         for (TSPNotificationBean tspNotificationBean : data) {
                             switch (tspNotificationBean.getData().getChannel()) {
                                 case NOTIFICATION_KEY_FEED_COMMENTS:
                                 case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
-                                    if (!mCommentsNoti.contains(tspNotificationBean)) {
-                                        mCommentsNoti.add(tspNotificationBean);
-                                    }
-
+                                    mCommentsNoti.add(tspNotificationBean);
                                     break;
                                 case NOTIFICATION_KEY_FEED_DIGGS:
-                                    if (!mDiggNoti.contains(tspNotificationBean)) {
-                                        mDiggNoti.add(tspNotificationBean);
-                                    }
+                                    mDiggNoti.add(tspNotificationBean);
                                     break;
                                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                                    if (!mReviewNoti.contains(tspNotificationBean)) {
-                                        mReviewNoti.add(tspNotificationBean);
-                                    }
+                                    mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
                             }
