@@ -6,7 +6,6 @@ import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DaggerDynamicDetailPresenterCompnent;
 
 /**
  * @author Catherine

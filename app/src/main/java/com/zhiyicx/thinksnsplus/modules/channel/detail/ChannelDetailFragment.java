@@ -106,13 +106,13 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @BindView(R.id.v_horizontal_line)
     View mVHorizontalLine;
     @BindView(R.id.ll_toolbar_container_parent)
-    LinearLayout mLlToolbarContainerParent;
+    protected LinearLayout mLlToolbarContainerParent;
     @BindView(R.id.v_shadow)
     View mVShadow;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.btn_send_dynamic)
-    ImageView mBtnSendDynamic;
+    protected ImageView mBtnSendDynamic;
     @BindView(R.id.iv_refresh)
     ImageView mIvRefresh;
 
@@ -162,8 +162,19 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     protected void initData() {
         mGroupInfoBean = getArguments().getParcelable(CHANNEL_HEADER_INFO_DATA);
         initSubscribState(mGroupInfoBean);
-        mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+        if (mPresenter!=null){
+            mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false);
+        }
+
         super.initData();
+    }
+
+    @Override
+    protected List<GroupDynamicListBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        if (mPresenter==null){
+            return new ArrayList<>();
+        }
+        return super.requestCacheData(maxId, isLoadMore);
     }
 
     @Override
