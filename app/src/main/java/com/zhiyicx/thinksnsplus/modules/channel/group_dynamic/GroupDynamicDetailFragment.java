@@ -27,7 +27,6 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -101,7 +100,6 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     View mToolbarTopBlank;
 
     private GroupDynamicListBean mGroupDynamicListBean;// 上一个页面传进来的数据
-    private FollowFansBean mFollowFansBean;// 用户关注状态
     private boolean mIsLookMore = false;
     private GroupDynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -192,9 +190,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mFollowFansBean != null) {
-                        mPresenter.handleFollowUser(mFollowFansBean);
-                    }
+                        mPresenter.handleFollowUser(mGroupDynamicListBean.getUserInfoBean());
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -337,14 +333,13 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    public void upDateFollowFansState(int followState) {
-        setToolBarRightFollowState(followState);
+    public void upDateFollowFansState(UserInfoBean userInfoBean) {
+        setToolBarRightFollowState(userInfoBean);
     }
 
     @Override
-    public void initFollowState(FollowFansBean mFollowFansBean) {
-        this.mFollowFansBean = mFollowFansBean;
-        setToolBarRightFollowState(mFollowFansBean.getFollowState());
+    public void initFollowState(UserInfoBean userInfoBean) {
+        setToolBarRightFollowState(userInfoBean);
     }
 
     @Override
@@ -427,7 +422,6 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             mTvToolbarRight.setVisibility(View.GONE);
         } else {
             // 获取用户关注状态
-            mPresenter.getUserFollowState(user_id + "");
             mTvToolbarRight.setVisibility(View.VISIBLE);
         }
     }
@@ -511,19 +505,14 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     /**
      * 设置toolBar上面的关注状态
      */
-    private void setToolBarRightFollowState(int state) {
+    private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
         mTvToolbarRight.setVisibility(View.VISIBLE);
-        switch (state) {
-            case FollowFansBean.UNFOLLOWED_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
-                break;
-            case FollowFansBean.IFOLLOWED_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
-                break;
-            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
-                break;
-            default:
+        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
+        }else if(userInfoBean1.isFollower()){
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
+        }else {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
         }
     }
 

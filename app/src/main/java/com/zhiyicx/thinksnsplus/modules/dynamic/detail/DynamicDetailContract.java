@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -51,12 +52,7 @@ public interface DynamicDetailContract {
         /**
          * 更新关注状态
          */
-        void upDateFollowFansState(int followState);
-
-        /**
-         * 设置初始关注状态
-         */
-        void initFollowState(FollowFansBean mFollowFansBean);
+        void upDateFollowFansState(UserInfoBean userInfoBean);
 
         /**
          * 获取当前动态数据
@@ -151,12 +147,7 @@ public interface DynamicDetailContract {
         /**
          * 关注或者取消关注
          */
-        void handleFollowUser(FollowFansBean followFansBean);
-
-        /**
-         * 获取关注状态
-         */
-        void getUserFollowState(String user_ids);
+        void handleFollowUser(UserInfoBean userInfoBean);
 
         /**
          * send a comment

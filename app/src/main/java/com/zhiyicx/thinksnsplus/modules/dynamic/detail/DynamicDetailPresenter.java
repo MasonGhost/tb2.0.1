@@ -30,7 +30,6 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
@@ -42,6 +41,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -52,7 +52,6 @@ import org.simple.eventbus.Subscriber;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -95,8 +94,10 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     public SharePolicy mSharePolicy;
-
+    @Inject
+    UserInfoRepository mUserInfoRepository;
     private boolean mIsNeedDynamicListRefresh = false;
+
 
     @Inject
     public DynamicDetailPresenter(DynamicDetailContract.Repository repository,
@@ -165,12 +166,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                 null) {
             return new ArrayList<>();
         }
-        // 从数据库获取关注状态，如果没有从服务器获取
-        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication
-                .getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
-        if (followFansBean != null) {
-            mRootView.upDateFollowFansState(followFansBean.getFollowState());
-        }
+
         // 从数据库获取评论列表
         return mDynamicCommentBeanGreenDao.getLocalComments(mRootView.getCurrentDynamic()
                 .getFeed_mark());
@@ -439,41 +435,11 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public void handleFollowUser(FollowFansBean followFansBean) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
-        if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
-            // 当前未关注，进行关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
-            // 进行后台任务请求
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.PUT);
-            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_FOLLOW_USER_FORMART, AppApplication.getmCurrentLoginAuth().getUser_id()));
-        } else {
-            // 已关注，取消关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
-            // 进行后台任务请求
-            backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART, AppApplication.getmCurrentLoginAuth().getUser_id()));
-        }
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
-        backgroundRequestTaskBean.setParams(hashMap);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                (backgroundRequestTaskBean);
-        // 本地数据库和ui进行刷新
-        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
-        mRootView.upDateFollowFansState(followFansBean.getFollowState());
+    public void handleFollowUser(UserInfoBean userInfoBean) {
+        mUserInfoRepository.handleFollow(userInfoBean);
+        mRootView.upDateFollowFansState(userInfoBean);
     }
 
-    @Override
-    public void getUserFollowState(String user_ids) {
-        FollowFansBean followFansBean = mFollowFansBeanGreenDao.getFollowState(AppApplication
-                .getmCurrentLoginAuth().getUser_id(), mRootView.getCurrentDynamic().getUser_id());
-        if (followFansBean != null) {
-            mRootView.initFollowState(followFansBean);
-        }
-    }
 
     @Override
     public void deleteComment(long comment_id, int commentPositon) {

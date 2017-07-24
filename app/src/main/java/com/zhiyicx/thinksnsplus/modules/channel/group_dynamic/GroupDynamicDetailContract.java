@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
 
 import java.util.List;
@@ -49,12 +50,12 @@ public interface GroupDynamicDetailContract {
         /**
          * 更新关注状态
          */
-        void upDateFollowFansState(int followState);
+        void upDateFollowFansState(UserInfoBean userInfoBean);
 
         /**
          * 设置初始关注状态
          */
-        void initFollowState(FollowFansBean mFollowFansBean);
+        void initFollowState(UserInfoBean userInfoBean);
 
         /**
          * 获取当前动态数据
@@ -139,12 +140,7 @@ public interface GroupDynamicDetailContract {
         /**
          * 关注或者取消关注
          */
-        void handleFollowUser(FollowFansBean followFansBean);
-
-        /**
-         * 获取关注状态
-         */
-        void getUserFollowState(String user_ids);
+        void handleFollowUser(UserInfoBean followFansBean);
 
         void sendCommentV2(long replyToUserId, String commentContent);
 
