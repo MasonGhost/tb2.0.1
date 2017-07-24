@@ -641,6 +641,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         final List<Object> user_ids = new ArrayList<>();
                         for (GroupDynamicListBean groupDynamicListBean : groupDynamicList) {
                             user_ids.add(groupDynamicListBean.getUser_id());
+                            if (groupDynamicListBean.getNew_comments() == null || groupDynamicListBean.getNew_comments().isEmpty()) {
+                                continue;
+                            }
                             for (GroupDynamicCommentListBean commentListBean : groupDynamicListBean.getNew_comments()) {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
@@ -658,6 +661,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                         }
                                         for (GroupDynamicListBean dynamicBean : groupDynamicList) {
                                             dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getUser_id().intValue()));
+                                            if (dynamicBean.getNew_comments() == null || dynamicBean.getNew_comments().isEmpty()) {
+                                                continue;
+                                            }
                                             for (int i = 0; i < dynamicBean.getNew_comments().size(); i++) {
                                                 UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) dynamicBean.getNew_comments().get(i).getUser_id());
                                                 if (tmpUserinfo != null) {

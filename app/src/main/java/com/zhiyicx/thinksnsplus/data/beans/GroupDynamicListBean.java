@@ -63,6 +63,7 @@ public class GroupDynamicListBean extends BaseListBean {
     private int collections;
     private int is_collection;
     private int comments;
+    @SerializedName("id")
     private Long user_id;
     @SerializedName("group_post_mark")
     private Long feed_mark;
@@ -459,10 +460,14 @@ public class GroupDynamicListBean extends BaseListBean {
             return new GroupDynamicListBean[size];
         }
     };
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 699919709)
     private transient GroupDynamicListBeanDao myDao;
     @Generated(hash = 1005780391)
