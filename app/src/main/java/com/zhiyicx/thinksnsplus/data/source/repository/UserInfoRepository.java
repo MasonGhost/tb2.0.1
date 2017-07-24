@@ -269,7 +269,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.PUT);
-            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_FOLLOW_USER_FORMART, AppApplication.getmCurrentLoginAuth().getUser_id()));
+            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_FOLLOW_USER_FORMART, followFansBean.getUser_id()));
             followFansBean.getExtra().setFollowings_count(followFansBean.getExtra().getFollowings_count() + 1);
 
         } else {
@@ -279,7 +279,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART, AppApplication.getmCurrentLoginAuth().getUser_id()));
+            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART,followFansBean.getUser_id()));
             if (followFansBean.getExtra().getFollowings_count() > 0)
                 followFansBean.getExtra().setFollowings_count(followFansBean.getExtra().getFollowings_count() - 1);
 
