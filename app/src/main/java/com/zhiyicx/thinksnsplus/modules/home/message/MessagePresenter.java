@@ -110,9 +110,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     private int mUnreadNotificationTotalNums; // 未读消息总数
 
-    List<TSPNotificationBean> mCommentsNoti = new ArrayList<TSPNotificationBean>();
-    List<TSPNotificationBean> mDiggNoti = new ArrayList<TSPNotificationBean>();
-    List<TSPNotificationBean> mReviewNoti = new ArrayList<TSPNotificationBean>();
+    List<TSPNotificationBean> mCommentsNoti = new ArrayList<>();
+    List<TSPNotificationBean> mDiggNoti = new ArrayList<>();
+    List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -547,13 +547,20 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                             switch (tspNotificationBean.getData().getChannel()) {
                                 case NOTIFICATION_KEY_FEED_COMMENTS:
                                 case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
-                                    mCommentsNoti.add(tspNotificationBean);
+                                    if (!mCommentsNoti.contains(tspNotificationBean)) {
+                                        mCommentsNoti.add(tspNotificationBean);
+                                    }
+
                                     break;
                                 case NOTIFICATION_KEY_FEED_DIGGS:
-                                    mDiggNoti.add(tspNotificationBean);
+                                    if (!mDiggNoti.contains(tspNotificationBean)) {
+                                        mDiggNoti.add(tspNotificationBean);
+                                    }
                                     break;
                                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
-                                    mReviewNoti.add(tspNotificationBean);
+                                    if (!mReviewNoti.contains(tspNotificationBean)) {
+                                        mReviewNoti.add(tspNotificationBean);
+                                    }
                                     break;
                                 default:
                             }

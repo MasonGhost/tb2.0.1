@@ -296,11 +296,15 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.i(message);
+                        if (message.equalsIgnoreCase("Not Found")) {
+                            code = ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED;
+                        }
                         handleDynamicHasBeDeleted(code, feed_id);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
+
                         mRootView.loadAllError();
                     }
                 });
@@ -429,7 +433,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         shareContent.setTitle(mContext.getString(R.string.share));
         shareContent.setContent(TextUtils.isEmpty(dynamicBean.getFeed_content()) ? mContext
                 .getString(R.string
-                .share_dynamic) : dynamicBean.getFeed_content());
+                        .share_dynamic) : dynamicBean.getFeed_content());
         if (bitmap != null) {
             shareContent.setBitmap(bitmap);
         } else {

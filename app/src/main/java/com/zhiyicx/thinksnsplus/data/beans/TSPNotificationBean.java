@@ -339,6 +339,22 @@ public class TSPNotificationBean {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TSPNotificationBean that = (TSPNotificationBean) o;
+
+        return id.equals(that.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2063187465)
     public void __setDaoSession(DaoSession daoSession) {
