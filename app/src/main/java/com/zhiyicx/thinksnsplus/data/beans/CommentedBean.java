@@ -85,16 +85,20 @@ public class CommentedBean extends BaseListBean {
     private String updated_at;
     @Transient
     private Object commentable;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 143748434)
     private transient CommentedBeanDao myDao;
 
     @Generated(hash = 278509995)
     public CommentedBean(Long id, String channel, Long target_id, String comment_content, String target_title, Long target_image, Long user_id, Long target_user,
-            Long reply_user, String created_at, String updated_at) {
+                         Long reply_user, String created_at, String updated_at) {
         this.id = id;
         this.channel = channel;
         this.target_id = target_id;
@@ -203,7 +207,6 @@ public class CommentedBean extends BaseListBean {
                     JSONArray jsonArray = jsonObject.getJSONArray("images");
                     target_image = (long) jsonArray.getJSONObject(0).getDouble("file_id");
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
                 break;
             case APP_LIKE_MUSIC:
@@ -230,7 +233,7 @@ public class CommentedBean extends BaseListBean {
     }
 
     public String getTarget_title() {
-        if (!TextUtils.isEmpty(target_title)) {
+        if (!TextUtils.isEmpty(target_title) || commentable == null) {
             return this.target_title;
         }
 
@@ -241,7 +244,6 @@ public class CommentedBean extends BaseListBean {
                     JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
                     target_title = jsonObject.getString("feed_content");
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
                 break;
             case APP_LIKE_MUSIC:
@@ -268,7 +270,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 418864499)
     public UserInfoBean getCommentUserInfo() {
         Long __key = this.user_id;
@@ -288,7 +292,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 28373690)
     public void setCommentUserInfo(UserInfoBean commentUserInfo) {
         synchronized (this) {
@@ -299,7 +305,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1491152852)
     public UserInfoBean getSourceUserInfo() {
         Long __key = this.target_user;
@@ -319,7 +327,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 672311628)
     public void setSourceUserInfo(UserInfoBean sourceUserInfo) {
         synchronized (this) {
@@ -330,7 +340,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1858190697)
     public UserInfoBean getReplyUserInfo() {
         Long __key = this.reply_user;
@@ -350,7 +362,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1797342590)
     public void setReplyUserInfo(UserInfoBean replyUserInfo) {
         synchronized (this) {
@@ -400,7 +414,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1828279436)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
