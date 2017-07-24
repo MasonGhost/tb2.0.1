@@ -21,10 +21,8 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicBean;
@@ -36,7 +34,6 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -423,14 +420,14 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         if (listBaseJson.getComments() != null && listBaseJson.getComments().size() > 1) {
                             Collections.sort(listBaseJson.getComments(), new TimeStringSortClass());
                         }
-                        listBaseJson.getPinned().addAll(listBaseJson.getComments());
-                        for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinned()) {
+                        listBaseJson.getPinneds().addAll(listBaseJson.getComments());
+                        for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
                             user_ids.add(dynamicCommentBean.getUser_id());
                             user_ids.add(dynamicCommentBean.getReply_to_user_id());
                             dynamicCommentBean.setFeed_mark(feed_mark);
                         }
                         if (user_ids.isEmpty()) {
-                            return Observable.just(listBaseJson.getPinned());
+                            return Observable.just(listBaseJson.getPinneds());
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
@@ -438,19 +435,19 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                     for (UserInfoBean userInfoBean : userinfobeans.getData()) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
-                                    for (int i = 0; i < listBaseJson.getPinned().size(); i++) {
-                                        listBaseJson.getPinned().get(i).setCommentUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinned().get(i).getUser_id()));
-                                        if (listBaseJson.getPinned().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
+                                    for (int i = 0; i < listBaseJson.getPinneds().size(); i++) {
+                                        listBaseJson.getPinneds().get(i).setCommentUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinneds().get(i).getUser_id()));
+                                        if (listBaseJson.getPinneds().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
                                             UserInfoBean userInfoBean = new UserInfoBean();
                                             userInfoBean.setUser_id(0L);
-                                            listBaseJson.getPinned().get(i).setReplyUser(userInfoBean);
+                                            listBaseJson.getPinneds().get(i).setReplyUser(userInfoBean);
                                         } else {
-                                            listBaseJson.getPinned().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinned().get(i).getReply_to_user_id()));
+                                            listBaseJson.getPinneds().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinneds().get(i).getReply_to_user_id()));
                                         }
                                     }
                                     mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
 
-                                    return listBaseJson.getPinned();
+                                    return listBaseJson.getPinneds();
                                 });
 
                     }
