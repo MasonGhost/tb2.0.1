@@ -22,4 +22,6 @@
     <dimen name="rec_image_for_list">50dp</dimen>
     <!--频道封面、专辑详情页专辑封面，详情 -->
     <dimen name="rec_image_for_list_normal">60dp</dimen>
+    <!--问答-->
+    <dimen name="rec_image_for_list_small">60dp</dimen>
 </resources>
