@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA$InfoContainerFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,8 +15,7 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class QA$Fragment extends TSViewPagerFragment{
-
+public class QA_Fragment extends TSViewPagerFragment{
 
     @Override
     protected List<String> initTitles() {
@@ -24,7 +24,7 @@ public class QA$Fragment extends TSViewPagerFragment{
 
     @Override
     protected List<Fragment> initFragments() {
-        return null;
+        return Arrays.asList(QA$InfoContainerFragment.getInstance(), QA$InfoContainerFragment.getInstance());
     }
 
     @Override
