@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -48,6 +49,13 @@ public class WalletBeanGreenDaoImpl extends CommonCacheImpl<WalletBean> {
 
     public WalletBean getSingleDataByUserId(Long user_id) {
         WalletBeanDao walletBeanDao = getRDaoSession().getWalletBeanDao();
+        WalletBean walletBean = new WalletBean();
+        walletBean.setBalance(0);
+        walletBean.setUser_id((int) AppApplication.getMyUserIdWithdefault());
+        List<WalletBean> walletBeanList = walletBeanDao.queryBuilder().where(WalletBeanDao.Properties.User_id.eq(user_id)).list();
+        if (walletBeanList.isEmpty()) {
+            return walletBean;
+        }
         return walletBeanDao.queryBuilder().where(WalletBeanDao.Properties.User_id.eq(user_id)).list().get(0);
     }
 

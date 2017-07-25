@@ -339,7 +339,7 @@ public class SystemRepository implements ISystemRepository {
                     .subscribe(new BaseSubscribe<Conversation>() {
                         @Override
                         protected void onSuccess(Conversation data) {
-                            data.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
+                            data.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
                             data.setUsids(uids);
                             data.setPair(pair);
                             mChatRepository.insertOrUpdateConversation(data);

@@ -11,7 +11,7 @@ import java.util.List;
 public class DynamicCommentBeanV2 {
 
     private List<DynamicCommentBean> comments;
-    private List<DynamicCommentBean> pinned;
+    private List<DynamicCommentBean> pinneds;
 
     public List<DynamicCommentBean> getComments() {
         return comments;
@@ -21,11 +21,11 @@ public class DynamicCommentBeanV2 {
         this.comments = comments;
     }
 
-    public List<DynamicCommentBean> getPinned() {
-        return pinned;
+    public List<DynamicCommentBean> getPinneds() {
+        return pinneds;
     }
 
-    public void setPinned(List<DynamicCommentBean> pinned) {
-        this.pinned = pinned;
+    public void setPinneds(List<DynamicCommentBean> pinneds) {
+        this.pinneds = pinneds;
     }
 }

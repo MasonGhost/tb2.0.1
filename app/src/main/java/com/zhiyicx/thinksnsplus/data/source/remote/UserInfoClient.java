@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
@@ -50,7 +51,7 @@ public interface UserInfoClient {
      */
     @FormUrlEncoded
     @PATCH(APP_PATH_CHANGE_USER_INFO)
-    Observable<BaseJson> changeUserInfo(@FieldMap HashMap<String, String> userFieldMap);
+    Observable<Object> changeUserInfo(@FieldMap HashMap<String, Object> userFieldMap);
 
     /**
      * 获取用户信息  v1 版本
@@ -80,13 +81,17 @@ public interface UserInfoClient {
     Observable<UserInfoBean> getSpecifiedUserInfo(@Path("user_id") long userId, @Query("following") Long followingUserId, @Query("follower") Long followerUserId);
 
     /**
-     * 批量获取指定用户的用户信息
+     * 批量获取用户信息
      *
-     * @param user_ids user 可以是一个值，或者多个值，多个值的时候用英文半角 , 分割。
+     * @param user_ids Get multiple designated users, multiple IDs using , split.
+     * @param name     Used to retrieve users whose username contains name.
+     * @param since    The integer ID of the last User that you've seen.
+     * @param order    Sorting. Enum: asc, desc
+     * @param limit    List user limit, minimum 1 max 50.
      * @return
      */
     @GET(APP_PATH_GET_BATCH_SPECIFIED_USER_INFO)
-    Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(@Query("user") String user_ids);
+    Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(@Query("id") String user_ids, @Query("name") String name, @Query("since") Integer since, @Query("order") String order, @Query("limit") Integer limit);
 
     /**
      * 获取 IM 信息
@@ -121,23 +126,23 @@ public interface UserInfoClient {
      * 获取用户收到的点赞
      *
      * @param after 用来翻页数据体记录 id
-     * @param limit  返回数据条数 默认 20 条
+     * @param limit 返回数据条数 默认 20 条
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MY_DIGGS)
     Observable<List<DigedBean>> getMyDiggs(@Query("after") int after,
-                                                     @Query("limit") int limit);
+                                           @Query("limit") int limit);
 
     /**
      * 获取用户收到的评论
      *
      * @param after 用来翻页数据体记录 id
-     * @param limit  返回数据条数 默认 20 条
+     * @param limit 返回数据条数 默认 20 条
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
     Observable<List<CommentedBean>> getMyComments(@Query("after") int after,
-                                                            @Query("limit") int limit);
+                                                  @Query("limit") int limit);
 
     /**
      * 获取用户收到的评论
@@ -189,4 +194,22 @@ public interface UserInfoClient {
      */
     @PATCH(ApiConfig.APP_PATH_MAKE_NOTIFICAITON_READED)
     Observable<Object> makeNotificationReaded(@Query("notification") String notificationId);
+
+    /**
+     * 更新用户头像
+     *
+     * @param multipartBody
+     * @return
+     */
+    @POST(ApiConfig.APP_PATH_UPDATE_USER_AVATAR)
+    Observable<Object> updateAvatar(@Body MultipartBody multipartBody);
+
+    /**
+     * 更新用户背景
+     *
+     * @param multipartBody
+     * @return
+     */
+    @POST(ApiConfig.APP_PATH_UPDATE_USER_BG)
+    Observable<Object> updateBg(@Body MultipartBody multipartBody);
 }

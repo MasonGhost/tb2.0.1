@@ -50,6 +50,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
+    public static final int DEFAULT_CROP_IMAGE_MAX_SIZE = 500;
 
     public static final int PHOTO_CLUMS_SIZE = 4;
     public static final int MAX_DEFAULT_COUNT = 9;
@@ -186,6 +187,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
         switch (mCropShape) {
             case SHAPE_SQUARE:// 更换头像
                 options.setToolbarTitle(mContext.getString(R.string.change_head_icon));
+                options.withMaxResultSize(DEFAULT_CROP_IMAGE_MAX_SIZE, DEFAULT_CROP_IMAGE_MAX_SIZE);
                 break;
             case SHAPE_RCTANGLE:// 更换封面
                 options.setToolbarTitle(mContext.getString(R.string.change_bg_cover));

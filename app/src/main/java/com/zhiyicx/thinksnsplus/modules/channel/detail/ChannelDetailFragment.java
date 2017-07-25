@@ -106,13 +106,13 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @BindView(R.id.v_horizontal_line)
     View mVHorizontalLine;
     @BindView(R.id.ll_toolbar_container_parent)
-    LinearLayout mLlToolbarContainerParent;
+    protected LinearLayout mLlToolbarContainerParent;
     @BindView(R.id.v_shadow)
     View mVShadow;
     @BindView(R.id.ilv_comment)
     InputLimitView mIlvComment;
     @BindView(R.id.btn_send_dynamic)
-    ImageView mBtnSendDynamic;
+    protected ImageView mBtnSendDynamic;
     @BindView(R.id.iv_refresh)
     ImageView mIvRefresh;
 
@@ -141,7 +141,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mItemChannelDetailHeader = new ItemChannelDetailHeader(getActivity(), mRvList, mHeaderAndFooterWrapper, mLlToolbarContainerParent, mPresenter);
-        mItemChannelDetailHeader.initHeaderView(false);
+        mItemChannelDetailHeader.initHeaderView(false, setHeadShow());
 
         mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent, STATUS_RGB, 255);
         //mItemChannelDetailHeader.setViewColorWithAlpha(mLlToolbarContainerParent.findViewById(R.id.rl_toolbar_container), TOOLBAR_RGB, 255);
@@ -225,8 +225,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         setAdapter(adapter, new GroupDynamicListItemForSevenImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForEightImage(getContext()));
         setAdapter(adapter, new GroupDynamicListItemForNineImage(getContext()));
-        GroupDynamicEmptyItem emptyItem = new GroupDynamicEmptyItem();
-        adapter.addItemViewDelegate(emptyItem);
+        if (getGroupId() >= 0) {
+            GroupDynamicEmptyItem emptyItem = new GroupDynamicEmptyItem();
+            adapter.addItemViewDelegate(emptyItem);
+        }
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -285,6 +287,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public long getGroupId() {
+        if (mGroupInfoBean == null) {
+            return -1L;
+        }
         return mGroupInfoBean.getId();
     }
 
@@ -315,7 +320,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onNetResponseSuccess(@NotNull List<GroupDynamicListBean> data, boolean isLoadMore) {
-        if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
+        if (!isLoadMore && data.isEmpty() && getGroupId() >= 0) { // 增加空数据，用于显示占位图
             GroupDynamicListBean emptyData = new GroupDynamicListBean();
             data.add(emptyData);
         }
@@ -422,10 +427,10 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 }
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT,shareBitMap);
+                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT, shareBitMap);
                     mMyDynamicPopWindow.show();
                 } else {
-                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), mListDatas.get(dataPosition)
+                    initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getIs_collection() == GroupDynamicListBean.IS_COLLECT, shareBitMap);
                     mOtherDynamicPopWindow.show();
                 }
@@ -500,7 +505,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 mListDatas.get(dataPosition).getDiggs() - 1 : mListDatas.get(dataPosition).getDiggs() + 1);
         refreshData(dataPosition);
         mPresenter.handleLike(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.IS_DIGG,
-                mListDatas.get(dataPosition).getGroup_id(),mListDatas.get(dataPosition).getId() , dataPosition);
+                mListDatas.get(dataPosition).getGroup_id(), mListDatas.get(dataPosition).getId(), dataPosition);
     }
 
     /**
@@ -678,6 +683,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      * 处理订阅状态对应的不同逻辑:
      */
     private void initSubscribState(GroupInfoBean groupInfoBean) {
+        if (groupInfoBean == null) {
+            return;
+        }
         boolean isJoined = groupInfoBean.getIs_member() == 1;
         if (isJoined) {
             // 订阅后，显示发送动态按钮，隐藏订阅按钮
@@ -762,7 +770,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      *
      * @param dynamicBean curent dynamic
      */
-    private void initOtherDynamicPopupWindow(final GroupDynamicListBean dynamicBean, boolean isCollected, final
+    private void initOtherDynamicPopupWindow(final GroupDynamicListBean dynamicBean, int position, boolean isCollected, final
     Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
@@ -774,7 +782,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {// 收藏
-                    mPresenter.handleCollect(dynamicBean);
+                    handleCollect(position);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
                 })
@@ -859,5 +867,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
             SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
             return true;
         });
+    }
+
+    protected boolean setHeadShow() {
+        return true;
     }
 }

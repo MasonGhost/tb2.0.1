@@ -3,24 +3,19 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.adapter;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoLongClickListener;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -30,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
 
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean.SEND_ERROR;
 
@@ -78,28 +72,7 @@ public class MusicCommentItem implements ItemViewDelegate<MusicCommentListBean> 
     public void convert(ViewHolder holder, final MusicCommentListBean musicCommentListBean,
                         MusicCommentListBean lastT, final int position, int itemCounts) {
         if (musicCommentListBean.getFromUserInfoBean() != null) {
-            int storegeId;
-            String userIconUrl;
-            try {
-                storegeId = Integer.parseInt(musicCommentListBean.getFromUserInfoBean().getAvatar());
-                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                        , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , ImageZipConfig.IMAGE_38_ZIP);
-            } catch (Exception e) {
-                userIconUrl = musicCommentListBean.getFromUserInfoBean().getAvatar();
-            }
-            AppApplication.AppComponentHolder.getAppComponent()
-                    .imageLoader()
-                    .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                            .url(userIconUrl)
-                            .placeholder(R.drawable.shape_default_image_circle)
-                            .transformation(new GlideCircleTransform(holder.getConvertView()
-                                    .getContext()))
-                            .errorPic(R.drawable.shape_default_image_circle)
-                            .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                            .build()
-                    );
+            ImageUtils.loadCircleUserHeadPic(musicCommentListBean.getFromUserInfoBean(), holder.getView(R.id.iv_headpic));
             holder.setText(R.id.tv_name, musicCommentListBean.getFromUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(musicCommentListBean
                     .getCreated_at()));

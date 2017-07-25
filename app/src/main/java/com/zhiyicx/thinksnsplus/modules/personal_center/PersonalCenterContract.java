@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -35,14 +34,13 @@ public interface PersonalCenterContract {
          *
          * @param followFansBean
          */
-        void setFollowState(FollowFansBean followFansBean);
+        void setFollowState(UserInfoBean followFansBean);
 
         /**
          * 设置封面上传的状态
          *
-         * @param taskId 返回的图片任务id
          */
-        void setUpLoadCoverState(boolean upLoadState, int taskId);
+        void setUpLoadCoverState(boolean upLoadState);
 
         /**
          * 设置通知服务器封面更新的状态
@@ -128,20 +126,12 @@ public interface PersonalCenterContract {
         /**
          * 处理关注状态
          */
-        void handleFollow(FollowFansBean followFansBean);
+        void handleFollow(UserInfoBean followFansBean);
 
         /**
          * 上传封面图片
          */
-        void uploadUserCover(String filePath);
-
-        /**
-         * 修改封面图片
-         *
-         * @param storage_task_id 封面上传的任务id
-         * @param imagePath       上传封面的本地路径
-         */
-        void changeUserCover(UserInfoBean userInfoBean, int storage_task_id, String imagePath);
+        void uploadUserCover(String filePath,UserInfoBean userInfoBean);
 
         /**
          * 分享用户信息

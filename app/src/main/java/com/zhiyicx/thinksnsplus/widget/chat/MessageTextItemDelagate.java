@@ -1,25 +1,19 @@
 package com.zhiyicx.thinksnsplus.widget.chat;
 
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageLoaderStrategy;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
-
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @Describe 我发送的文本消息
@@ -125,25 +119,7 @@ public class MessageTextItemDelagate implements ItemViewDelegate<ChatItemBean> {
             if (chatItemBean.getUserInfo().getName().equals(holder.getConvertView().getContext().getString(R.string.ts_helper))) { // TS 助手
                 ((ImageView) holder.getView(R.id.iv_chat_headpic)).setImageResource(R.mipmap.ico_ts_assistant);
             } else {
-                int storegeId;
-                String userIconUrl;
-                try {
-                    storegeId = Integer.parseInt(chatItemBean.getUserInfo().getAvatar());
-                    userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                            , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                            , holder.getConvertView().getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                            , ImageZipConfig.IMAGE_38_ZIP);
-                } catch (Exception e) {
-                    userIconUrl = chatItemBean.getUserInfo().getAvatar();
-                }
-                mImageLoader.loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                        .url(userIconUrl)
-                        .placeholder(R.mipmap.pic_default_portrait1)
-                        .transformation(new GlideCircleTransform(holder.getConvertView().getContext()))
-                        .errorPic(R.mipmap.pic_default_portrait1)
-                        .imagerView(holder.getView(R.id.iv_chat_headpic))
-                        .build()
-                );
+                ImageUtils.loadCircleUserHeadPic(chatItemBean.getUserInfo(), holder.getView(R.id.iv_chat_headpic));
             }
         } else {
             holder.setVisible(R.id.iv_chat_headpic, View.GONE);

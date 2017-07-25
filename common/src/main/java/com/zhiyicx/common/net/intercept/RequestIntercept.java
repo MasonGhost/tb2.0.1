@@ -61,7 +61,7 @@ public class RequestIntercept implements Interceptor {
         Response originalResponse = chain.proceed(request);
         long t2 = System.nanoTime();
         //打印响应时间
-        LogUtils.d(TAG, "Received %d response  in %.1fms%n%s", originalResponse.code(), (t2 - t1) / 1e6d, originalResponse.headers());
+        LogUtils.d(TAG, "Received response code %d in %.1fms%n%s", originalResponse.code(),(t2 - t1) / 1e6d, originalResponse.headers());
 
         //读取服务器返回的结果
         ResponseBody responseBody = originalResponse.body();

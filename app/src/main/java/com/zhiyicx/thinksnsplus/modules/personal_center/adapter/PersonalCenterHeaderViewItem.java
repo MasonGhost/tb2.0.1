@@ -17,15 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -36,9 +31,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
-
-import static com.zhiyicx.baseproject.utils.ImageUtils.imagePathConvertV2;
 
 /**
  * @author LiuChao
@@ -219,25 +213,10 @@ public class PersonalCenterHeaderViewItem {
     }
 
     public void initHeaderViewData(final UserInfoBean userInfoBean) {
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(userInfoBean.getAvatar());
-            userIconUrl = imagePathConvertV2(storegeId
-                    , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_70_ZIP);
-        } catch (Exception e) {
-            userIconUrl = userInfoBean.getAvatar();
-        }
+
         // 显示头像
-        mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .url(userIconUrl)
-                .placeholder(R.mipmap.pic_default_portrait2)
-                .errorPic(R.mipmap.pic_default_portrait2)
-                .imagerView(iv_head_icon)
-                .transformation(new GlideCircleBorderTransform(mActivity, mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mActivity, R.color.white)))
-                .build());
+        ImageUtils.loadCircleUserHeadPicWithBorder(userInfoBean, iv_head_icon);
+
         // 设置用户名
         tv_user_name.setText(userInfoBean.getName());
         tv_user_name.post(() -> {
@@ -252,7 +231,7 @@ public class PersonalCenterHeaderViewItem {
         tv_user_intro.setText(userInfoBean.getIntro());
 
         // 设置关注人数
-        String followContent = "关注 " + "<" + ConvertUtils.numberConvert(Integer.parseInt((TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count()))) + ">";
+        String followContent = "关注 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowings_count()) + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
@@ -260,7 +239,7 @@ public class PersonalCenterHeaderViewItem {
         tv_user_follow.setText(followString);
 
         // 设置粉丝人数
-        String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(Integer.parseInt((TextUtils.isEmpty(userInfoBean.getFollowed_count()) ? "0" : userInfoBean.getFollowed_count()))) + ">";
+        String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowers_count()) + ">";
         CharSequence fansString = ColorPhrase.from(fansContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
                 .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
@@ -268,7 +247,7 @@ public class PersonalCenterHeaderViewItem {
         tv_user_fans.setText(fansString);
 
         // 设置动态数量
-        String dynamicCountString = userInfoBean.getFeeds_count();
+        String dynamicCountString = String.valueOf(userInfoBean.getExtra().getFeeds_count());
         int dynamicCountInt;
         if (!TextUtils.isEmpty(dynamicCountString)) {
             dynamicCountInt = Integer.parseInt(dynamicCountString);
@@ -277,50 +256,38 @@ public class PersonalCenterHeaderViewItem {
         }
         upDateDynamicNums(dynamicCountInt);
         // 设置封面
-        setUserCover(userInfoBean.getCover());
+        setUserCover(userInfoBean);
         // 设置封面切换
-        iv_background_cover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-                // 如果进入的是自己的个人中心，才允许修改背景封面
-                if (authBean != null && authBean.getUser_id() == userInfoBean.getUser_id()) {
-                    initPhotoPopupWindow();
-                    mPhotoPopupWindow.show();
-                }
+        iv_background_cover.setOnClickListener(v -> {
+            AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+            // 如果进入的是自己的个人中心，才允许修改背景封面
+            if (authBean != null && authBean.getUser_id() == userInfoBean.getUser_id()) {
+                initPhotoPopupWindow();
+                mPhotoPopupWindow.show();
             }
         });
         // 点击头像
-        iv_head_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        iv_head_icon.setOnClickListener(v -> {
 
-            }
         });
         // 跳转到粉丝列表
-        tv_user_fans.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundleFans = new Bundle();
-                bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
-                bundleFans.putLong(FollowFansListFragment.PAGE_DATA, userInfoBean.getUser_id());
-                Intent itFans = new Intent(mActivity, FollowFansListActivity.class);
-                itFans.putExtras(bundleFans);
-                mActivity.startActivity(itFans);
-            }
+        tv_user_fans.setOnClickListener(v -> {
+            Bundle bundleFans = new Bundle();
+            bundleFans.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FANS_FRAGMENT_PAGE);
+            bundleFans.putLong(FollowFansListFragment.PAGE_DATA, userInfoBean.getUser_id());
+            Intent itFans = new Intent(mActivity, FollowFansListActivity.class);
+            itFans.putExtras(bundleFans);
+            mActivity.startActivity(itFans);
         });
 
         // 跳转到关注列表
-        tv_user_follow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundleFollow = new Bundle();
-                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
-                bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, userInfoBean.getUser_id());
-                Intent itFollow = new Intent(mActivity, FollowFansListActivity.class);
-                itFollow.putExtras(bundleFollow);
-                mActivity.startActivity(itFollow);
-            }
+        tv_user_follow.setOnClickListener(v -> {
+            Bundle bundleFollow = new Bundle();
+            bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+            bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, userInfoBean.getUser_id());
+            Intent itFollow = new Intent(mActivity, FollowFansListActivity.class);
+            itFollow.putExtras(bundleFollow);
+            mActivity.startActivity(itFollow);
         });
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
@@ -372,58 +339,35 @@ public class PersonalCenterHeaderViewItem {
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(mActivity)
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        // 选择相册，单张
-                        mPhotoSelector.getPhotoListFromSelector(1, null);
-                        mPhotoPopupWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    // 选择相册，单张
+                    mPhotoSelector.getPhotoListFromSelector(1, null);
+                    mPhotoPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera(null);
-                        mPhotoPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(null);
+                    mPhotoPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPhotoPopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
     }
 
     /**
      * 设置用户的封面
      */
-    private void setUserCover(String coverImage) {
-        try {
-            coverImage = ImageUtils.imagePathConvertV2(Integer.parseInt(coverImage)
-                    , DeviceUtils.getScreenWidth(mActivity)
-                    , iv_background_cover.getHeight()
-                    , ImageZipConfig.IMAGE_100_ZIP);
-        } catch (Exception e) {
-
-        }
+    private void setUserCover(UserInfoBean userInfoBean) {
         // 设置封面
-        mImageLoader.loadImage(mActivity, GlideImageConfig.builder()
-                .placeholder(R.mipmap.default_pic_personal)
-                .errorPic(R.mipmap.default_pic_personal)
-                .url(coverImage)// 显示原图
-                .imagerView(iv_background_cover)
-                .build());
+        ImageUtils.loadUserCover(userInfoBean, iv_background_cover);
+
     }
 
     /**
      * 更新封面
      *
-     * @param coverImage
+     * @param userInfoBean
      */
-    public void upDateUserCover(String coverImage) {
-        setUserCover(coverImage);
+    public void upDateUserCover(UserInfoBean userInfoBean) {
+        setUserCover(userInfoBean);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 

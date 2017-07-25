@@ -10,15 +10,12 @@ import android.support.test.rule.ActivityTestRule;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static android.support.test.espresso.action.ViewActions.*;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -43,13 +40,15 @@ public class PersonalCenterTest extends AcitivityTest {
             //模拟要发送的activity
             Bundle bundle = new Bundle();
             UserInfoBean mUserInfoBean = new UserInfoBean();
+            UserInfoBean.UserInfoExtraBean extraBean = new UserInfoBean.UserInfoExtraBean();
+            mUserInfoBean.setExtra(extraBean);
             mUserInfoBean.setUser_id(6L);
             mUserInfoBean.setCover(20 + "");
             mUserInfoBean.setAvatar(10 + "");
             mUserInfoBean.setName("haha");
             mUserInfoBean.setIntro("hahahahhaha");
-            mUserInfoBean.setFollowing_count(20 + "");
-            mUserInfoBean.setFollowed_count(30 + "");
+            mUserInfoBean.getExtra().setFollowings_count(20);
+            mUserInfoBean.getExtra().setFollowers_count(30);
             bundle.putParcelable(PersonalCenterFragment.PERSONAL_CENTER_DATA, mUserInfoBean);
             Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
             Intent intent = new Intent(targetContext, PersonalCenterActivity.class);
@@ -125,6 +124,6 @@ public class PersonalCenterTest extends AcitivityTest {
     public void canGoToChat() throws Exception {
         ll_chat_container.check(matches(isDisplayed())); // 聊天按钮可见
         ll_chat_container.check(matches(isClickable()));// 聊天按钮可点击
-        
+
     }
 }

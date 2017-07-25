@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -84,5 +85,22 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
         UserInfoBeanDao userInfoBeanDao = getWDaoSession().getUserInfoBeanDao();
         userInfoBeanDao.insertOrReplaceInTx(newData);
     }
-    
+
+    public List<UserInfoBean> getFollowingUserInfo(long maxId) {
+        UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
+        return userInfoBeanDao.queryBuilder()
+                .where(UserInfoBeanDao.Properties.Following.eq(true),UserInfoBeanDao.Properties.User_id.gt(maxId))
+                .limit(TSListFragment.DEFAULT_ONE_PAGE_SIZE)
+                .list();
+    }
+
+    public List<UserInfoBean> getFollowerUserInfo(long maxId) {
+        UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
+        return userInfoBeanDao.queryBuilder()
+                .where(UserInfoBeanDao.Properties.Follower.eq(true),UserInfoBeanDao.Properties.User_id.gt(maxId))
+                .limit(TSListFragment.DEFAULT_ONE_PAGE_SIZE)
+                .list();
+    }
+
+
 }

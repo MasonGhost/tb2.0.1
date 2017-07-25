@@ -1,23 +1,18 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.google.gson.Gson;
-
 import android.util.SparseArray;
 
+import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
-import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupManagerBean;
@@ -25,11 +20,9 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;
@@ -42,9 +35,7 @@ import okhttp3.RequestBody;
 import retrofit2.http.Path;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -153,6 +144,11 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     }
 
     @Override
+    public Observable<List<GroupDynamicListBean>> getMyCollectGroupDynamicList(long group_id, long max_id) {
+        return dealWithGroupCollectDynamicList(mChannelClient.getMyCollectGroupDynamicList(TSListFragment.DEFAULT_PAGE_SIZE, max_id), "", false);
+    }
+
+    @Override
     public Observable<List<GroupInfoBean>> getGroupList(int type, long max_id) {
         Observable<List<GroupInfoBean>> observable;
         if (type == 0) {
@@ -165,6 +161,9 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                 .flatMap(new Func1<List<GroupInfoBean>, Observable<List<GroupInfoBean>>>() {
                     @Override
                     public Observable<List<GroupInfoBean>> call(List<GroupInfoBean> groupInfoBeen) {
+                        if (groupInfoBeen.isEmpty()) {
+                            return Observable.just(groupInfoBeen);
+                        }
                         List<Object> user_ids = new ArrayList<>();
                         for (GroupInfoBean groupInfoBean : groupInfoBeen) {
                             for (GroupManagerBean groupManagerBean : groupInfoBean.getManagers()) {
@@ -265,7 +264,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                     @Override
                     public Observable<List<GroupDynamicCommentListBean>> call(List<GroupDynamicCommentListBean> groupDynamicCommentListBeen) {
                         List<Object> user_ids = new ArrayList<>();
-                        if (groupDynamicCommentListBeen != null) {
+                        if (!groupDynamicCommentListBeen.isEmpty()) {
                             for (GroupDynamicCommentListBean groupDynamicCommentListBean : groupDynamicCommentListBeen) {
                                 user_ids.add(groupDynamicCommentListBean.getUser_id());
                                 user_ids.add(groupDynamicCommentListBean.getReply_to_user_id());
@@ -281,7 +280,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                             groupDynamicCommentListBeen.get(i).setCommentUser(
                                                     userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getUser_id()));
                                             // 回复用户
-                                            if (groupDynamicCommentListBeen.get(i).getReply_to_user_id() != 0){
+                                            if (groupDynamicCommentListBeen.get(i).getReply_to_user_id() != 0) {
                                                 groupDynamicCommentListBeen.get(i).setReplyUser(
                                                         userInfoBeanSparseArray.get((int) groupDynamicCommentListBeen.get(i).getReply_to_user_id()));
                                             } else {
@@ -294,53 +293,48 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                         return groupDynamicCommentListBeen;
                                     });
                         } else {
-                            return Observable.just(new ArrayList<>());
+                            return Observable.just(groupDynamicCommentListBeen);
                         }
                     }
                 });
     }
 
     @Override
-    public Observable<List<FollowFansBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id) {
+    public Observable<List<DynamicDigListBean>> getGroupDynamicDigList(long group_id, long dynamic_id, long max_id) {
         return mChannelClient.getDigList(group_id, dynamic_id, TSListFragment.DEFAULT_PAGE_SIZE, max_id)
-                .flatMap(new Func1<List<GroupDynamicLikeListBean>, Observable<List<FollowFansBean>>>() {
+                .flatMap(new Func1<List<DynamicDigListBean>, Observable<List<DynamicDigListBean>>>() {
                     @Override
-                    public Observable<List<FollowFansBean>> call(List<GroupDynamicLikeListBean> groupDynamicLikeListBeen) {
+                    public Observable<List<DynamicDigListBean>> call(List<DynamicDigListBean> groupDynamicLikeListBeen) {
                         List<Object> user_ids = new ArrayList<>();
-                        String userIdString = "";
-                        if (groupDynamicLikeListBeen != null) {
+                        if (!groupDynamicLikeListBeen.isEmpty()) {
                             for (int i = 0; i < groupDynamicLikeListBeen.size(); i++) {
-                                GroupDynamicLikeListBean likeListBean = groupDynamicLikeListBeen.get(i);
-                                user_ids.add(likeListBean.getUser_id());
-                                if (i == 0) {
-                                    userIdString = likeListBean.getUser_id() + "";
-                                } else {
-                                    userIdString += ConstantConfig.SPLIT_SMBOL + likeListBean.getUser_id();
+                                DynamicDigListBean likeListBean = groupDynamicLikeListBeen.get(i);
+                                if (likeListBean.getUser_id() != null && likeListBean.getUser_id() != 0) {
+                                    user_ids.add(likeListBean.getUser_id());
+                                }
+                                if (likeListBean.getTarget_user() != null && likeListBean.getTarget_user() != 0) {
+                                    user_ids.add(likeListBean.getTarget_user());
                                 }
                             }
-                            return Observable.combineLatest(mUserInfoRepository.getUserFollowState(userIdString),
-                                    mUserInfoRepository.getUserInfo(user_ids), (followFansBeanJson, userInfo) -> {
-                                        List<UserInfoBean> userInfoList = userInfo.getData();
-                                        // 没有获取到用户信息，但依然显示列表信息，有这个必要吗
-                                        if (followFansBeanJson.isStatus() && userInfoList != null && !userInfoList.isEmpty()) {
+                            // 通过用户id列表请求用户信息和用户关注状态
+                            return mUserInfoRepository.getUserInfo(user_ids)
+                                    .map(listBaseJson -> {
+                                        if (listBaseJson.isStatus()) {
                                             SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : userInfo.getData()) {
+                                            for (UserInfoBean userInfoBean : listBaseJson.getData()) {
                                                 userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                             }
-                                            List<FollowFansBean> followFansBeanList = followFansBeanJson.getData();
-                                            if (followFansBeanJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
-                                                // 将用户信息封装到状态列表中
-                                                for (int i = 0; i < followFansBeanList.size(); i++) {
-                                                    // 封装好每一个FollowFansBean对象，方便存入数据库
-                                                    FollowFansBean followFansBean = followFansBeanList.get(i);
-                                                    // 设置点赞列表的maxID到FollowFansBean中,上拉加载
-                                                    followFansBean.setId(groupDynamicLikeListBeen.get(i).getId());
-                                                    // 设置目标用户信息
-                                                    followFansBean.setTargetUserInfo(userInfoBeanSparseArray.get((int) followFansBean.getTargetUserId()));
+                                            for (DynamicDigListBean dynamicDigListBean : groupDynamicLikeListBeen) {
+                                                if (dynamicDigListBean.getUser_id() != null && dynamicDigListBean.getUser_id() != 0) {
+                                                    dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id().intValue()));
+                                                }
+                                                if (dynamicDigListBean.getTarget_user() != null && dynamicDigListBean.getTarget_user() != 0) {
+                                                    dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
                                                 }
                                             }
+                                            mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
                                         }
-                                        return followFansBeanJson.getData();
+                                        return groupDynamicLikeListBeen;
                                     });
                         } else {
                             return Observable.just(new ArrayList<>());

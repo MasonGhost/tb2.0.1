@@ -14,7 +14,6 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -74,9 +73,10 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     @Override
     public void onNetResponseSuccess(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
+        closeLoadingView();
         if (mListDatas.isEmpty()) {
             // 如果界面上没有显示数据，从网络获取后界面上仍然没有数据，就切换到所有频道的页面
-            if (data == null || data.isEmpty()) {
+            if (data.isEmpty()) {
                 ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
                 if (channelListViewPagerFragment != null) {
                     channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);

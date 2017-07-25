@@ -9,11 +9,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -25,9 +20,9 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -168,24 +163,9 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
             lastT, final int position, int itemCounts) {
 
         try {
-            int storegeId;
-            String userIconUrl;
-            try {
-                storegeId = Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar());
-                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , ImageZipConfig.IMAGE_38_ZIP);
-            } catch (Exception e) {
-                userIconUrl = dynamicBean.getUserInfoBean().getAvatar();
-            }
-            mImageLoader.loadImage(mContext, GlideImageConfig.builder()
-                    .url(userIconUrl)
-                    .placeholder(R.mipmap.pic_default_portrait1)
-                    .transformation(new GlideCircleTransform(mContext))
-                    .errorPic(R.mipmap.pic_default_portrait1)
-                    .imagerView(holder.getView(R.id.iv_headpic))
-                    .build());
+
+            ImageUtils.loadCircleUserHeadPic( dynamicBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
+
             holder.setText(R.id.tv_name, dynamicBean.getUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(dynamicBean
                     .getCreated_at()));

@@ -2,9 +2,6 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBeanDao;
-
 public class GroupDynamicLikeListBeanTest extends AbstractDaoTestLongPk<GroupDynamicLikeListBeanDao, GroupDynamicLikeListBean> {
 
     public GroupDynamicLikeListBeanTest() {

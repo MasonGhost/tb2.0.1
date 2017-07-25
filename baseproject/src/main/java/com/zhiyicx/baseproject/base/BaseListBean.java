@@ -3,6 +3,8 @@ package com.zhiyicx.baseproject.base;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.cache.CacheBean;
+
 /**
  * @author LiuChao
  * @describe 用于列表中的实体基类，只要来处理maxId
@@ -10,7 +12,7 @@ import android.os.Parcelable;
  * @contact email:450127106@qq.com
  */
 
-public class BaseListBean implements Parcelable {
+public class BaseListBean extends CacheBean implements Parcelable {
 
     protected Long maxId;
 

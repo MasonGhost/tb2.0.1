@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 
-import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -17,7 +16,7 @@ public interface IUploadRepository {
     /**
      * 上传单个文件
      *
-     * @param {params}      文件流需要的参数字段名，好像这儿随便来一个就可以了，但是不能没有;2017/4/28 修改为服务器处理的 input 数据
+     * @param {params}    文件流需要的参数字段名，好像这儿随便来一个就可以了，但是不能没有;2017/4/28 修改为服务器处理的 input 数据
      * @param filePath    文件本地路径
      * @param mimeType    文件类型
      * @param isPic       是否上传的图片，这样在获取mime时，可以方便一点
@@ -25,9 +24,9 @@ public interface IUploadRepository {
      * @param photoWidth  图片宽度
      * @return
      */
-    Observable<BaseJson<Integer>> upLoadSingleFile( String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
+    Observable<BaseJson<Integer>> upLoadSingleFile(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
 
-    Observable<BaseJson<Integer>> upLoadSingleFileV2( String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
+    Observable<BaseJson<Integer>> upLoadSingleFileV2(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
 
     /**
      * 校验文件hash
@@ -36,4 +35,20 @@ public interface IUploadRepository {
      * @return
      */
     Observable<BaseJsonV2> checkStorageHash(String hash);
+
+    /**
+     * 上传个人头像
+     *
+     * @param filePath
+     * @return
+     */
+    Observable<Object> uploadAvatar(String filePath);
+
+    /**
+     * 上传个人背景封面
+     *
+     * @param filePath
+     * @return
+     */
+    Observable<Object> uploadBg(String filePath);
 }

@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -47,7 +46,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_ST
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NON_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVERSATIONS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
@@ -65,64 +63,42 @@ import static com.zhiyicx.baseproject.config.ApiConfig.SYSTEM_LAUNCH_ADVERT;
  */
 
 public interface CommonClient {
-    /**
-     * 验证码类型
-     * registerByPhone: 注册
-     * login: 登录
-     * change: 修改,找回密码
-     */
-
-    String VERTIFY_CODE_TYPE_REGISTER = "registerByPhone";
-    String VERTIFY_CODE_TYPE_LOGIN = "login";
-    String VERTIFY_CODE_TYPE_CHANGE = "change";
 
 
     /*******************************************  系统相关  *********************************************/
 
 
     /**
-     * 获取验证码
-     *
-     * @param requestState {requestState}=success/fasle
-     * @param phone        需要被发送验证码的手机号
-     * @param type         发送验证码的类型，固定三个值(registerByPhone、login、change) registerByPhone: 注
-     * @return
-     */
-    @FormUrlEncoded
-    @POST(APP_PATH_GET_VERTIFYCODE)
-    Observable<BaseJson<CacheBean>> getVertifyCode(@Query("requestState") String requestState, @Field("phone") String phone
-            , @Field("type") String type);
-
-
-    /**
      * 获取会员验证码 ：使用场景如登陆、找回密码，其他用户行为验证等。
      *
-     * @param phone 需要被发送验证码的手机号
+     * @param phone 需要被发送验证码的手机号 Required without email, Send the verification code in sms mode.
+     * @param email 需要被发送验证码的邮箱 Required without phone, Send the verification code in mail mode.
      * @return
      */
     @FormUrlEncoded
     @POST(APP_PATH_GET_MEMBER_VERTIFYCODE)
-    Observable<Object> getMemberVertifyCode(@Field("phone") String phone);
+    Observable<Object> getMemberVertifyCode(@Field("phone") String phone, @Field("email") String email);
 
     /**
      * 获取非会员验证码 ：用于发送不存在于系统中的用户短信，使用场景如注册等。
      *
-     * @param phone 需要被发送验证码的手机号
+     * @param phone 需要被发送验证码的手机号 Required without email, Send the verification code in sms mode.
+     * @param email 需要被发送验证码的邮箱 Required without phone, Send the verification code in mail mode.
      * @return
      */
     @FormUrlEncoded
     @POST(APP_PATH_GET_NON_MEMBER_VERTIFYCODE)
-    Observable<Object> getNonMemberVertifyCode(@Field("phone") String phone);
+    Observable<Object> getNonMemberVertifyCode(@Field("phone") String phone, @Field("email") String email);
+
 
     /**
      * 刷新 token
      *
-     * @param deviceCode  设备号
-     * @param refrshToken 刷新token
-     * @return 成功后自动调用auth接口，返回信息和login一样
+     * @param token 刷新 token
+     * @return 成功后自动调用 auth 接口，返回信息和 login 一样
      */
     @PATCH(APP_PATH_REFRESH_TOKEN)
-    Observable<BaseJson<AuthBean>> refreshToken(@Query("refresh_token") String refrshToken, @Query("device_code") String deviceCode);
+    Observable<AuthBean> refreshToken(@Path("token") String token);
 
     /**
      * 查看扩展包安装状态
@@ -281,21 +257,16 @@ public interface CommonClient {
     @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
     Observable<BaseJson<Object>> handleBackGroundTaskPost(@Path("path") String path, @Part List<MultipartBody.Part> partList);
 
-    /**
-     * 后台任务处理
-     */
     @Multipart
     @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
     Observable<BaseJsonV2<Object>> handleBackGroundTaskPostV2(@Path("path") String path, @Part List<MultipartBody.Part> partList);
 
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK, hasBody = true)
-    Observable<BaseJson<CacheBean>> handleBackGroudTaskDelete(@Path("path") String path, @Body RequestBody requestBody);
+    Observable<Object> handleBackGroudTaskDelete(@Path("path") String path, @Body RequestBody requestBody);
 
-    @Headers({"Content-type:application/json;charset=UTF-8"})
-    @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK, hasBody = true)
-    Observable<BaseJsonV2<CacheBean>> handleBackGroudTaskDeleteV2(@Path("path") String path, @Body RequestBody requestBody);
-
+    @PUT(APP_PATH_HANDLE_BACKGROUND_TASK)
+    Observable<Object> handleBackGroundTaskPut(@Path("path") String path);
 
     /**
      * rap接口，用来测试token过期,当前返回token过期

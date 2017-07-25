@@ -1,15 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
-import android.graphics.BitmapFactory;
-
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
@@ -18,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.EventBus;
 
@@ -29,7 +26,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -92,26 +88,26 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
 
     @Override
     public void changeUserHeadIcon(String filePath) {
-        mRootView.setUpLoadHeadIconState(0, 0);
-        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFileV2(
-                filePath, options.outMimeType, true, options.outWidth, options.outHeight)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Integer>() {
+        mRootView.setUpLoadHeadIconState(0);
+        Subscription subscription = mIUploadRepository.uploadAvatar(filePath)
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(Integer data) {
-                        mRootView.setUpLoadHeadIconState(1, data);
+                    protected void onSuccess(Object data) {
+                        UserInfoBean currentLoginUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        currentLoginUserInfo.setAvatar(filePath);
+                        mUserInfoBeanGreenDao.insertOrReplace(currentLoginUserInfo);
+                        ImageUtils.updateCurrentLoginUserHeadPicSignature(mContext);
+                        mRootView.setUpLoadHeadIconState(1);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        mRootView.setUpLoadHeadIconState(-1, 0);
+                        mRootView.setUpLoadHeadIconState(-1);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setUpLoadHeadIconState(-1, 0);
+                        mRootView.setUpLoadHeadIconState(-1);
                         LogUtils.e(throwable, "result");
                     }
                 });
@@ -119,7 +115,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     }
 
     @Override
-    public void changUserInfo(final HashMap<String, String> userInfos, final boolean isHeadIcon) {
+    public void changUserInfo(final HashMap<String, Object> userInfos, final boolean isHeadIcon) {
         if (!checkChangedUserInfo(userInfos)) {
             return;
         }
@@ -130,15 +126,15 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         Subscription subscription = mRepository.changeUserInfo(userInfos)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<BaseJson>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
 
                     @Override
-                    protected void onSuccess(BaseJson data) {
+                    protected void onSuccess(Object data) {
                         // 修改成功后，关闭页面
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(1, "");
                         } else {
-                            mRootView.setUpLoadHeadIconState(2, 0);
+                            mRootView.setUpLoadHeadIconState(2);
                         }
                         EventBus.getDefault().post(EventBusTagConfig.EVENT_USERINFO_UPDATE);
                         upDateUserInfo(userInfos);
@@ -150,7 +146,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(-1, "");
                         } else {
-                            mRootView.setUpLoadHeadIconState(-1, 0);
+                            mRootView.setUpLoadHeadIconState(-1);
                         }
 
                     }
@@ -160,7 +156,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                         if (!isHeadIcon) {
                             mRootView.setChangeUserInfoState(-1, "");
                         } else {
-                            mRootView.setUpLoadHeadIconState(-1, 0);
+                            mRootView.setUpLoadHeadIconState(-1);
                         }
                     }
                 });
@@ -185,29 +181,29 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
      *
      * @param changeUserInfo 被编辑过的的用户信息
      */
-    private void upDateUserInfo(HashMap<String, String> changeUserInfo) {
+    private void upDateUserInfo(HashMap<String, Object> changeUserInfo) {
         AuthBean authBean = mIAuthRepository.getAuthBean();
         UserInfoBean mUserInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean
                 .getUser_id());
         if (changeUserInfo.containsKey(UserInfoFragment.USER_NAME)) {
-            mUserInfoBean.setName(changeUserInfo.get(UserInfoFragment.USER_NAME));
+            mUserInfoBean.setName((String) changeUserInfo.get(UserInfoFragment.USER_NAME));
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_SEX)) {
-            mUserInfoBean.setSex(changeUserInfo.get(UserInfoFragment.USER_SEX));
+            mUserInfoBean.setSex((Integer) changeUserInfo.get(UserInfoFragment.USER_SEX));
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_LOCATION)) {
-            mUserInfoBean.setLocation(changeUserInfo.get(UserInfoFragment.USER_LOCATION));
-            mUserInfoBean.setProvince(changeUserInfo.get(UserInfoFragment.USER_PROVINCE));
-            mUserInfoBean.setCity(changeUserInfo.get(UserInfoFragment.USER_CITY));
+            mUserInfoBean.setLocation((String) changeUserInfo.get(UserInfoFragment.USER_LOCATION));
+            mUserInfoBean.setProvince((String) changeUserInfo.get(UserInfoFragment.USER_PROVINCE));
+            mUserInfoBean.setCity((String) changeUserInfo.get(UserInfoFragment.USER_CITY));
             if (changeUserInfo.containsKey(UserInfoFragment.USER_AREA)) {
-                mUserInfoBean.setArea(changeUserInfo.get(UserInfoFragment.USER_AREA));
+                mUserInfoBean.setArea((String) changeUserInfo.get(UserInfoFragment.USER_AREA));
             }
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_INTRO)) {
-            mUserInfoBean.setIntro(changeUserInfo.get(UserInfoFragment.USER_INTRO));
+            mUserInfoBean.setIntro((String) changeUserInfo.get(UserInfoFragment.USER_INTRO));
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_STORAGE_TASK_ID)) {
-            mUserInfoBean.setAvatar(changeUserInfo.get(UserInfoFragment.USER_LOCAL_IMG_PATH));
+            mUserInfoBean.setAvatar((String) changeUserInfo.get(UserInfoFragment.USER_LOCAL_IMG_PATH));
         }
         // 提示用户主页更新用户信息
         List<UserInfoBean> userInfoBeanList = new ArrayList<>();
@@ -222,11 +218,11 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
      *
      * @return 返回true，表示可以通知服务器
      */
-    private boolean checkChangedUserInfo(HashMap<String, String> userInfos) {
+    private boolean checkChangedUserInfo(HashMap<String, Object> userInfos) {
         if (userInfos != null) {
             // 如果修改信息包含用户名，并且用户名无法通过检测，返回false
             if (userInfos.containsKey(UserInfoFragment.USER_NAME)) {
-                if (!checkUsername(userInfos.get(UserInfoFragment.USER_NAME))) {
+                if (!checkUsername((String) userInfos.get(UserInfoFragment.USER_NAME))) {
                     return false;
                 }
             }

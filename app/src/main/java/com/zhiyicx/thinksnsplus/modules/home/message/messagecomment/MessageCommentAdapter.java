@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -13,8 +12,6 @@ import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -26,6 +23,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -68,29 +66,13 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         } else {
             holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
         }
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(commentedBean.getCommentUserInfo().getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_38_ZIP);
-        } catch (Exception e) {
-            userIconUrl = commentedBean.getCommentUserInfo().getAvatar();
-        }
-        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userIconUrl)
-                .transformation(new GlideCircleTransform(getContext()))
-                .errorPic(R.mipmap.pic_default_portrait1)
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .imagerView((ImageView) holder.getView(R.id.iv_headpic))
-                .build());
-        if (commentedBean.getTarget_image() != 0) {
+        ImageUtils.loadCircleUserHeadPic(commentedBean.getCommentUserInfo(), holder.getView(R.id.iv_headpic));
+
+        if (commentedBean.getTarget_image() != null) {
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                    .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image()
+                    .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image().intValue()
                             , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
                             , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
                             , ImageZipConfig.IMAGE_50_ZIP))

@@ -61,6 +61,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
@@ -86,6 +87,7 @@ import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalC
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_BLACK_ICON;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_DIVIDER_RGB;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_WHITE_ICON;
+import static com.zhiyicx.thinksnsplus.utils.ImageUtils.updateCurrentLoginUserCoverSignature;
 
 /**
  * @author LiuChao
@@ -126,8 +128,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
 
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
-    // 关注状态
-    private FollowFansBean mFollowFansBean;
     // 上一个页面传过来的用户信息
     private UserInfoBean mUserInfoBean;
     private PhotoSelectorImpl mPhotoSelector;
@@ -186,9 +186,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     // 表示第一次进入界面加载正确的关注状态，后续才能进行关注操作
-                    if (mFollowFansBean != null) {
-                        mPresenter.handleFollow(mFollowFansBean);
-                    }
+                        mPresenter.handleFollow(mUserInfoBean);
                 });
         // 添加聊天点击事件
         RxView.clicks(mLlChatContainer)
@@ -506,17 +504,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void setFollowState(FollowFansBean followFansBean) {
-        mFollowFansBean = followFansBean;
-        setBottomFollowState(followFansBean.getFollowState());
+    public void setFollowState(UserInfoBean followFansBean) {
+        mUserInfoBean = followFansBean;
+        setBottomFollowState(followFansBean);
     }
 
     @Override
-    public void setUpLoadCoverState(boolean upLoadState, int taskId) {
+    public void setUpLoadCoverState(boolean upLoadState) {
         if (upLoadState) {
             // 封面图片上传成功
             // 通知服务器，更改用户信息
-            mPresenter.changeUserCover(mUserInfoBean, taskId, imagePath);
+            // 修改成功后，关闭页面
+             setChangeUserCoverState(true);
         } else {
             TSnackbar.make(mSnackRootView, R.string.cover_uploadFailure, TSnackbar.LENGTH_SHORT)
                     .setPromptThemBackground(Prompt.ERROR)
@@ -540,9 +539,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();
         // 上传本地图片
-        mPresenter.uploadUserCover(imagePath);
+        mPresenter.uploadUserCover(imagePath,mUserInfoBean);
+        mUserInfoBean.setCover(imagePath);
+        ImageUtils.updateCurrentLoginUserCoverSignature(getContext());
         // 加载本地图片
-        mPersonalCenterHeaderViewItem.upDateUserCover(imagePath);
+        mPersonalCenterHeaderViewItem.upDateUserCover(mUserInfoBean);
     }
 
     @Override
@@ -594,25 +595,21 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     /**
      * 设置底部 view 的关注状态
      */
-    private void setBottomFollowState(int state) {
-        switch (state) {
-            case FollowFansBean.UNFOLLOWED_STATE:
-                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
-                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
-                mTvFollow.setText(R.string.follow);
-                break;
-            case FollowFansBean.IFOLLOWED_STATE:
-                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
-                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
-                mTvFollow.setText(R.string.followed);
-                break;
-            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
-                mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
-                mTvFollow.setText(R.string.followed_eachother);
-                break;
-            default:
+    private void setBottomFollowState(UserInfoBean userInfoBean1) {
+        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+            mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
+            mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+            mTvFollow.setText(R.string.followed_eachother);
+        }else if(userInfoBean1.isFollower()){
+            mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
+            mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
+            mTvFollow.setText(R.string.followed);
+        }else {
+            mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
+            mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
+            mTvFollow.setText(R.string.follow);
         }
+
     }
 
     /**
@@ -768,17 +765,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void updateDynamicCounts(int changeNums) {
-        int currenDynamicCounts = 0;
-        try {
-            currenDynamicCounts = Integer.parseInt(mUserInfoBean.getFeeds_count());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int currenDynamicCounts = mUserInfoBean.getExtra().getFeeds_count();
         currenDynamicCounts += changeNums;
         if (currenDynamicCounts < 0) {
             currenDynamicCounts = 0;
         }
-        mUserInfoBean.setFeeds_count(String.valueOf(currenDynamicCounts));
+        mUserInfoBean.getExtra().setFeeds_count(currenDynamicCounts);
         mPersonalCenterHeaderViewItem.upDateDynamicNums(currenDynamicCounts);
     }
 

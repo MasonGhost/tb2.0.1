@@ -8,7 +8,6 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
 
@@ -18,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -46,6 +44,7 @@ public class RegisterActivityTest {
     public static final String USER_PHONE = "15694005009";
     public static final String USER_NAME = "七夜68";
     public static final String TEST_USER_NAME = "啊哈";
+    public static final String TEST_USER_EMAIL = "335891510@qq.com";
     @Rule
     public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule(RegisterActivity.class);
 
@@ -65,24 +64,18 @@ public class RegisterActivityTest {
      */
     @Test
     public void registerFailure() throws Exception {
-        mRegisterClient.registerByPhone( USER_PHONE, USER_NAME, "12344", "dsafdsa")
+        mRegisterClient.register(USER_PHONE, USER_NAME, TEST_USER_EMAIL, "dsafdsa", RegisterClient.REGITER_TYPE_EMAIL, "12344")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<AuthBean>() {
-                    @Override
-                    public void call(AuthBean integerBaseJson) {
-                        LogUtils.d(integerBaseJson.toString());
+                .subscribe(integerBaseJson -> {
+                    LogUtils.d(integerBaseJson.toString());
 
-                            // 成功跳转:当前不可能发生
-                            assertFalse(true);
+                    // 成功跳转:当前不可能发生
+                    assertFalse(true);
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        LogUtils.e(throwable, "error");
-                        assertFalse(false);
-                    }
+                }, throwable -> {
+                    LogUtils.e(throwable, "error");
+                    assertFalse(false);
                 });
 
     }
@@ -94,24 +87,18 @@ public class RegisterActivityTest {
      */
     @Test
     public void registerSuccess() throws Exception {
-        mRegisterClient.registerByPhone( USER_PHONE, USER_NAME, "1244", "dsafdsa" )
+        mRegisterClient.register(USER_PHONE, USER_NAME, TEST_USER_EMAIL, "dsafdsa", RegisterClient.REGITER_TYPE_EMAIL, "12344")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<AuthBean>() {
-                    @Override
-                    public void call(AuthBean integerBaseJson) {
-                        LogUtils.d(integerBaseJson.toString());
+                .subscribe(integerBaseJson -> {
+                    LogUtils.d(integerBaseJson.toString());
 
-                            // 成功跳转:当前不可能发生
-                            assertTrue(true);
+                    // 成功跳转:当前不可能发生
+                    assertTrue(true);
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        LogUtils.e(throwable, "error");
-                        assertFalse(false);
-                    }
+                }, throwable -> {
+                    LogUtils.e(throwable, "error");
+                    assertFalse(false);
                 });
 
     }
