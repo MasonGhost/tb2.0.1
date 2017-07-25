@@ -41,17 +41,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_publish_qustion;
-    }
-
-    @Override
-    protected int setLeftImg() {
-        return 0;
-    }
-
-    @Override
-    protected String setLeftTitle() {
-        return getString(R.string.cancel);
+        return R.layout.fragment_publish_qustion_add_topic;
     }
 
     @Override
@@ -87,7 +77,6 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
         RxTextView.afterTextChangeEvents(mEtQustion)
                 .compose(this.bindToLifecycle())
                 .subscribe(new Subscriber<TextViewAfterTextChangeEvent>() {
