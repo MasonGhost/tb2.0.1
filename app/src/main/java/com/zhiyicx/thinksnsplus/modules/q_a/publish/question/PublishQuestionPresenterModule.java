@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.PublishQuestionRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.PublishPublishQuestionRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,7 +26,7 @@ public class PublishQuestionPresenterModule {
     }
 
     @Provides
-    public PublishQuestionContract.Repository provideSendQuizContractRepository(PublishQuestionRepository repository){
+    public PublishQuestionContract.Repository provideSendQuizContractRepository(PublishPublishQuestionRepository repository){
         return repository;
     }
 }

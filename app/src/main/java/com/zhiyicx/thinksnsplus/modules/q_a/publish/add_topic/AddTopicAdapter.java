@@ -1,10 +1,10 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
+package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
 import android.content.Context;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -13,25 +13,26 @@ import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
+
 /**
- * @Describe list adapter for recommenc question
+ * @Describe  list adapter for recommenc question topic
  * @Author Jungle68
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
  */
 
-public class PublishQuestionAdapter extends CommonAdapter<QA_LIstInfoBean> {
+public class AddTopicAdapter extends CommonAdapter<QATopicBean> {
 
-    public PublishQuestionAdapter(Context context, int layoutId, List<QA_LIstInfoBean> datas) {
+    public AddTopicAdapter(Context context, int layoutId, List<QATopicBean> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    protected void convert(ViewHolder holder, QA_LIstInfoBean qa_lIstInfoBean, int position) {
-        setItemData(holder, qa_lIstInfoBean, position);
+    protected void convert(ViewHolder holder, QATopicBean qaTopicBean, int position) {
+        setItemData(holder, qaTopicBean, position);
     }
 
-    private void setItemData(final ViewHolder holder, final QA_LIstInfoBean qa_lIstInfoBean, final int position) {
+    private void setItemData(final ViewHolder holder, final QATopicBean qaTopicBean, final int position) {
 
 
         // 设置用户名，用户简介

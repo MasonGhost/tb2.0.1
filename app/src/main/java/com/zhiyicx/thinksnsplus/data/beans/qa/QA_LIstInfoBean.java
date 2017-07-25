@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.data.beans;
+package com.zhiyicx.thinksnsplus.data.beans.qa;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 

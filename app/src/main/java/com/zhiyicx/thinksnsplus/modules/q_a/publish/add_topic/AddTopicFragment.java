@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
+package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +11,7 @@ import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 
 import butterknife.BindView;
 import rx.Subscriber;
@@ -24,18 +24,17 @@ import rx.Subscriber;
  * @Contact master.jungle68@gmail.com
  */
 
-
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QA_LIstInfoBean> implements PublishQuestionContract.View {
+public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter, QATopicBean> implements AddTopicContract.View {
 
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
 
     private String mQuestionStr = "";
 
-    public static PublishQuestionFragment newInstance() {
+    public static AddTopicFragment newInstance() {
 
         Bundle args = new Bundle();
-        PublishQuestionFragment fragment = new PublishQuestionFragment();
+        AddTopicFragment fragment = new AddTopicFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -121,7 +120,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     protected void initData() {
         super.initData();
         for (int i = 0; i < 10; i++) {
-            QA_LIstInfoBean qa_lIstInfoBean = new QA_LIstInfoBean();
+            QATopicBean qa_lIstInfoBean = new QATopicBean();
             mListDatas.add(qa_lIstInfoBean);
         }
         refreshData();
@@ -129,7 +128,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        PublishQuestionAdapter adapter = new PublishQuestionAdapter(getContext(), R.layout.item_publish_question, mListDatas);
+        AddTopicAdapter adapter = new AddTopicAdapter(getContext(), R.layout.item_publish_question, mListDatas);
         return adapter;
     }
 

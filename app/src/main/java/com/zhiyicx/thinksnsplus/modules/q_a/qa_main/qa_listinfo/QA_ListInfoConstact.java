@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.thinksnsplus.data.beans.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
 
 /**
  * @Author Jliuer

@@ -11,9 +11,9 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 
-public class BaseQuestionRepository implements IBaseQuestionRepository {
+public class BasePublishQuestionRepository implements IBasePublishQuestionRepository {
 
     @Inject
-    public BaseQuestionRepository(ServiceManager manager) {
+    public BasePublishQuestionRepository(ServiceManager manager) {
     }
 }

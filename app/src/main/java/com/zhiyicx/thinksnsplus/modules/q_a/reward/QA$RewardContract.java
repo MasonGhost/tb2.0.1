@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.source.repository.IBaseQuestionRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
 /**
  * @author Catherine
@@ -21,7 +21,7 @@ public interface QA$RewardContract {
 
     }
 
-    interface Repository extends IBaseQuestionRepository {
+    interface RepositoryPublish extends IBasePublishQuestionRepository {
 
     }
 }

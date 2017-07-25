@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 

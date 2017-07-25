@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.data.beans.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
 
 import org.jetbrains.annotations.NotNull;
 
