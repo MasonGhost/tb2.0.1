@@ -9,15 +9,12 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QA_LIstInfoBean;
 
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import rx.Subscriber;
-
-import static com.zhiyicx.common.config.ConstantConfig.SEARCH_JITTER_SPACING_TIME;
 
 
 /**
@@ -48,6 +45,11 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     @Override
+    protected int setLeftImg() {
+        return 0;
+    }
+
+    @Override
     protected String setLeftTitle() {
         return getString(R.string.cancel);
     }
@@ -73,11 +75,16 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     @Override
+    protected void setRightClick() {
+        super.setRightClick();
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
         RxTextView.afterTextChangeEvents(mEtQustion)
                 .compose(this.bindToLifecycle())
-                .throttleFirst(SEARCH_JITTER_SPACING_TIME, TimeUnit.MILLISECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Subscriber<TextViewAfterTextChangeEvent>() {
                     @Override
                     public void onCompleted() {
@@ -94,9 +101,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     public void onNext(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
                         mQuestionStr = textViewAfterTextChangeEvent.editable().toString().trim();
                         if (!TextUtils.isEmpty(mQuestionStr)) {
-                            // TODO: 2017/7/25  搜索相同的問題
                             mToolbarRight.setEnabled(true);
-                        }else {
+                            // TODO: 20177/25  搜索相同的問題
+                        } else {
                             mToolbarRight.setEnabled(false);
                         }
 

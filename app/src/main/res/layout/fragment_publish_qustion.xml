@@ -9,7 +9,7 @@
                                              app:layout_constraintTop_toTopOf="@+id/et_qustion"
                                              tools:layout_editor_absoluteX="0dp">
 
-    <EditText
+    <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
         android:id="@+id/et_qustion"
         style="@style/style_edit"
         android:layout_width="0dp"
