@@ -13,6 +13,6 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class)
+@Component(dependencies = AppComponent.class,modules = QA_listInfoFragmentPresenterModule.class)
 public interface QA_ListInfoComponent extends InjectComponent<QA_ListInfoFragment> {
 }

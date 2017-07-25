@@ -11,8 +11,8 @@ import com.zhiyicx.baseproject.base.TSActivity;
 public class QA_InfoContainerActivity extends TSActivity {
 
     @Override
-    protected QA$InfoContainerFragment getFragment() {
-        return QA$InfoContainerFragment.getInstance();
+    protected QA_InfoContainerFragment getFragment() {
+        return QA_InfoContainerFragment.getInstance();
     }
 
     @Override

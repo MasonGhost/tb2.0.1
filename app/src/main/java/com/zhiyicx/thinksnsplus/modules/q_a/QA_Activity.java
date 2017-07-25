@@ -8,7 +8,7 @@ public class QA_Activity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return null;
+        return new QA_Fragment();
     }
 
     @Override
