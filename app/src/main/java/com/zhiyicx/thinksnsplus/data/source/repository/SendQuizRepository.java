@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.q$a.edit.SendQuizContract;
+import com.zhiyicx.thinksnsplus.modules.q$a.publish_question.SendQuizContract;
 
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q$a.edit;
+package com.zhiyicx.thinksnsplus.modules.q$a.publish_question;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;

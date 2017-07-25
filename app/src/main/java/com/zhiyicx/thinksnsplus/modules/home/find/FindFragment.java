@@ -23,7 +23,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
-import com.zhiyicx.thinksnsplus.modules.q$a.edit.SendQuizActivity;
+import com.zhiyicx.thinksnsplus.modules.q$a.publish_question.SendQuizActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q$a.edit;
+package com.zhiyicx.thinksnsplus.modules.q$a.publish_question;
 
 import com.zhiyicx.thinksnsplus.data.source.repository.SendQuizRepository;
 
