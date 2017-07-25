@@ -1,11 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.q$a.publish_question;
 
-import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseQuizRepository;
-
-import java.util.List;
 
 /**
  * @author Catherine
@@ -14,17 +11,16 @@ import java.util.List;
  * @contact email:648129313@qq.com
  */
 
-public interface SendQuizContract {
+public interface PublishQuestionContract {
 
-    interface View extends IBaseView<Presenter>{
-        List<ImageBean> getImageList();
+    interface View extends IBaseView<Presenter> {
     }
 
-    interface Presenter extends IBasePresenter{
-        void postImage();
+    interface Presenter extends IBasePresenter {
+
     }
 
-    interface Repository extends IBaseQuizRepository{
+    interface Repository extends IBaseQuizRepository {
 
     }
 }

@@ -12,16 +12,12 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class SendQuizPresenter extends BasePresenter<SendQuizContract.Repository, SendQuizContract.View>
-        implements SendQuizContract.Presenter{
+public class PublishQuestionPresenter extends BasePresenter<PublishQuestionContract.Repository, PublishQuestionContract.View>
+        implements PublishQuestionContract.Presenter{
 
     @Inject
-    public SendQuizPresenter(SendQuizContract.Repository repository, SendQuizContract.View rootView) {
+    public PublishQuestionPresenter(PublishQuestionContract.Repository repository, PublishQuestionContract.View rootView) {
         super(repository, rootView);
     }
 
-    @Override
-    public void postImage() {
-
-    }
 }

@@ -13,6 +13,6 @@ import dagger.Component;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules = SendQuizPresenterModule.class)
-public interface SendQuizComponent extends InjectComponent<SendQuizActivity>{
+@Component(dependencies = AppComponent.class, modules = PublishQuestionPresenterModule.class)
+public interface PublishQuestionComponent extends InjectComponent<PublishQuestionActivity>{
 }
