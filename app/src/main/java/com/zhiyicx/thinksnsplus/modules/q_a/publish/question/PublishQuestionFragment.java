@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 
 import butterknife.BindView;
 import rx.Subscriber;
@@ -78,11 +80,19 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        if (!mQuestionStr.endsWith("?") || !mQuestionStr.endsWith("？")) {
+        if (mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) {
+            addTopic();
+        } else {
             showSnackErrorMessage(getString(R.string.qa_publish_title_toast));
-            return;
         }
 
+    }
+
+    private void addTopic() {
+        Intent intent = new Intent(getActivity(), AddTopicActivity.class);
+        Bundle bundle = new Bundle();
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

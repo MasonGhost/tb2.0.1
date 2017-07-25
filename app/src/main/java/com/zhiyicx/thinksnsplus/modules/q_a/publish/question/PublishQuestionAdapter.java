@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -35,7 +36,7 @@ public class PublishQuestionAdapter extends CommonAdapter<QA_LIstInfoBean> {
 
 
         // 设置用户名，用户简介
-//        holder.setText(R.id.tv_name, userInfoBean.getName());
+        holder.setText(R.id.tv_content, "你好");
 
         // 添加点击事件
         RxView.clicks(holder.getConvertView())

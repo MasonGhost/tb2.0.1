@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ToastUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -36,7 +37,8 @@ public class AddTopicAdapter extends CommonAdapter<QATopicBean> {
 
 
         // 设置用户名，用户简介
-//        holder.setText(R.id.tv_name, userInfoBean.getName());
+        holder.setText(R.id.tv_title, "你好");
+        holder.setText(R.id.tv_content, "大量时间噶劳动竞赛高考了近分开了三个加快立法的世界观");
 
         // 添加点击事件
         RxView.clicks(holder.getConvertView())

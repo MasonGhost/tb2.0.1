@@ -9,7 +9,6 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 
@@ -51,7 +50,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.qa_publish);
+        return getString(R.string.qa_publish_select_topic_hint);
     }
 
     @Override
@@ -67,10 +66,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        if (!mQuestionStr.endsWith("?") || !mQuestionStr.endsWith("？")) {
-            showSnackErrorMessage(getString(R.string.qa_publish_title_toast));
-            return;
-        }
+
 
     }
 
@@ -117,7 +113,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        AddTopicAdapter adapter = new AddTopicAdapter(getContext(), R.layout.item_publish_question, mListDatas);
+        AddTopicAdapter adapter = new AddTopicAdapter(getContext(), R.layout.item_publish_question_add_topic, mListDatas);
         return adapter;
     }
 

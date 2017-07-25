@@ -221,6 +221,10 @@
             android:name=".modules.q_a.publish.question.PublishQuestionActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".modules.q_a.publish.add_topic.AddTopicActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
                 android:name=".modules.q_a.reward.QA_RewardActivity"
