@@ -41,7 +41,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
 
     protected abstract List<Fragment> initFragments();
 
-    private void initViewPager(View rootView) {
+    protected void initViewPager(View rootView) {
         mTsvToolbar = (TabSelectView) rootView.findViewById(R.id.tsv_toolbar);
         mVpFragment = (ViewPager) rootView.findViewById(R.id.vp_fragment);
         mVpFragment.setOffscreenPageLimit(DEFAULT_OFFSET_PAGE);
