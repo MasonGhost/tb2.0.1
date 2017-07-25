@@ -14,5 +14,5 @@ import dagger.Component;
  */
 @FragmentScoped
 @Component(dependencies = AppComponent.class)
-public interface QA$ListInfoComponent extends InjectComponent<QA$ListInfoFragment> {
+public interface QA_ListInfoComponent extends InjectComponent<QA_ListInfoFragment> {
 }
