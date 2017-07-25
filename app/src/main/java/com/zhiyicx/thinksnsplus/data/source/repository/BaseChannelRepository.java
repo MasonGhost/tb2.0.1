@@ -264,7 +264,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                     @Override
                     public Observable<List<GroupDynamicCommentListBean>> call(List<GroupDynamicCommentListBean> groupDynamicCommentListBeen) {
                         List<Object> user_ids = new ArrayList<>();
-                        if (groupDynamicCommentListBeen != null) {
+                        if (!groupDynamicCommentListBeen.isEmpty()) {
                             for (GroupDynamicCommentListBean groupDynamicCommentListBean : groupDynamicCommentListBeen) {
                                 user_ids.add(groupDynamicCommentListBean.getUser_id());
                                 user_ids.add(groupDynamicCommentListBean.getReply_to_user_id());
@@ -293,7 +293,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                         return groupDynamicCommentListBeen;
                                     });
                         } else {
-                            return Observable.just(new ArrayList<>());
+                            return Observable.just(groupDynamicCommentListBeen);
                         }
                     }
                 });

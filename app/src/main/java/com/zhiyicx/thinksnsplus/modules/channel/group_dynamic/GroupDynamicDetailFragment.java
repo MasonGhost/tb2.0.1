@@ -423,6 +423,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         } else {
             // 获取用户关注状态
             mTvToolbarRight.setVisibility(View.VISIBLE);
+            setToolBarRightFollowState(mGroupDynamicListBean.getUserInfoBean());
         }
     }
 

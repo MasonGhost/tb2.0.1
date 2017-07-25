@@ -637,9 +637,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         }
         Bundle bundle = mRootView.getArgumentsBundle();
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
-            if (mRootView.getListDatas() == null || mRootView.getListDatas().isEmpty()) {
-                return;// 你说起气不气，这里这个个更新导致的bug不静心真的发现不了啊
-            }
             mRootView.getCurrentDynamic().setComments(mRootView.getListDatas());
             bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
             bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);

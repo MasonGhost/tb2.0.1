@@ -27,7 +27,6 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -78,8 +77,6 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-    //    @Inject
-//    GroupDynamicLikeListBeanDao mGroupDynamicLikeListBeanDao;
     @Inject
     SystemRepository mSystemRepository;
     @Inject
@@ -516,13 +513,10 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         }
         Bundle bundle = mRootView.getArgumentsBundle();
         if (bundle != null && bundle.containsKey(DYNAMIC_DETAIL_DATA)) {
-            if (mRootView.getListDatas() == null || mRootView.getListDatas().isEmpty()) {
-                return;// 你说起气不气，这里这个个更新导致的bug不静心真的发现不了啊
-            }
             mRootView.getCurrentDynamic().setCommentslist(mRootView.getListDatas());
             bundle.putParcelable(DYNAMIC_DETAIL_DATA, mRootView.getCurrentDynamic());
             bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, mIsNeedDynamicListRefresh);
-            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
+            EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_DYNAMIC);
         }
     }
 
@@ -594,7 +588,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 //                        }
 //                        bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);
                         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
-                        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_DYNAMIC);
+                        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_DYNAMIC);
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string
                                 .transaction_success));
                     }
