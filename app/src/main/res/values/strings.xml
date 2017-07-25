@@ -325,7 +325,9 @@
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过5个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
     <string name="qa_publish_reward">悬赏</string>
+    <string name="qa_publish_reset_money">重置</string>
     <string name="qa_publish_reward_set_money">设置悬赏金额</string>
+    <string name="qa_publish_reward_set_onlooker_money">设置围观金额</string>
     <string name="qa_publish_reward_custom_money">自定义金额</string>
     <string name="qa_publish_reward_invite">邀请</string>
     <string name="qa_publish_reward_rule">悬赏规则</string>

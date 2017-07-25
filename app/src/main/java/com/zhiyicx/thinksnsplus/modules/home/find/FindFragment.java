@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish_question.SendQuizActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;
@@ -188,7 +189,7 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_quiz:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    startActivity(new Intent(getActivity(), SendQuizActivity.class));
+                    startActivity(new Intent(getActivity(), QA_RewardActivity.class));
                 } else {
                     showLoginPop();
                 }
