@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.quiz.edit;
+package com.zhiyicx.thinksnsplus.modules.q$a.edit;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;

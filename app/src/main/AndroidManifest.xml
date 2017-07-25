@@ -212,7 +212,7 @@
                   android:windowSoftInputMode="adjustResize"/>
 
         <!--问答相关-->
-        <activity android:name=".modules.quiz.edit.SendQuizActivity"
+        <activity android:name=".modules.q$a.edit.SendQuizActivity"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="adjustResize"/>
         <service

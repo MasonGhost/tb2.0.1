@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.quiz.edit;
+package com.zhiyicx.thinksnsplus.modules.q$a.edit;
 
 import android.content.Intent;
 import android.view.View;
