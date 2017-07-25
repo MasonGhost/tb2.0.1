@@ -4,11 +4,10 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <!--编辑器-->
-    <com.zhiyicx.thinksnsplus.widget.MarkDownEditor
-            android:id="@+id/md_editor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
+    <!--用户头像-->
+    <ImageView
+            android:id="@+id/iv_expert_portrait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 </LinearLayout>

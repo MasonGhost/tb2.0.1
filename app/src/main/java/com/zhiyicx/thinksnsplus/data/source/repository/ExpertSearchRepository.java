@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA$RewardContract;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchContract;
 
 import javax.inject.Inject;
 
@@ -12,10 +12,10 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 
-public class QA$RewardRepository extends BaseQuizRepository implements QA$RewardContract.Repository{
+public class ExpertSearchRepository extends BasePublishQuestionRepository implements ExpertSearchContract.Repository{
 
     @Inject
-    public QA$RewardRepository(ServiceManager manager) {
+    public ExpertSearchRepository(ServiceManager manager) {
         super(manager);
     }
 }

@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish_question.SendQuizContract;
 
 import javax.inject.Inject;
 
@@ -12,10 +11,9 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 
-public class SendQuizRepository extends BaseQuizRepository implements SendQuizContract.Repository{
+public class BasePublishQuestionRepository implements IBasePublishQuestionRepository {
 
     @Inject
-    public SendQuizRepository(ServiceManager manager) {
-        super(manager);
+    public BasePublishQuestionRepository(ServiceManager manager) {
     }
 }

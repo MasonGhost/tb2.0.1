@@ -22,6 +22,10 @@ public class ConstantConfig {
      */
     public static final int JITTER_SPACING_TIME = 1;
     /**
+     * 搜索抖动间隔时间，单位 ms
+     */
+    public static final int SEARCH_JITTER_SPACING_TIME = 400;
+    /**
      * 手机号码长度
      */
     public static final int MOBILE_PHONE_NUMBER_LENGHT = 11;

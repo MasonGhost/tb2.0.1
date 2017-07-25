@@ -156,6 +156,7 @@ dependencies {
     compile supportDependences.appcompatV7
     compile supportDependences.paletteV7
     compile supportDependences.supportV4
+    compile supportDependences.constraintLayout
 
     // Test
     testCompile testDependences.junit

@@ -24,8 +24,8 @@ import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
-import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish_question.SendQuizActivity;
+
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;
@@ -188,11 +188,8 @@ public class FindFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), QA_Activity.class));
                 break;
             case R.id.find_quiz:
-                if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    startActivity(new Intent(getActivity(), SendQuizActivity.class));
-                } else {
-                    showLoginPop();
-                }
+//                startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
+                startActivity(new Intent(getActivity(), QA_RewardActivity.class));
                 break;
             default:
                 break;
@@ -214,15 +211,12 @@ public class FindFragment extends TSFragment {
                         com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
 
                 .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mActionPopupWindow.hide();
-                        if (isOppoR9s) {
-                            DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
-                        } else {
-                            DeviceUtils.openAppDetail(getActivity());
-                        }
+                .item2ClickListener(() -> {
+                    mActionPopupWindow.hide();
+                    if (isOppoR9s) {
+                        DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
+                    } else {
+                        DeviceUtils.openAppDetail(getActivity());
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
