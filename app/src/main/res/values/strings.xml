@@ -319,10 +319,10 @@
     <string name="qa_publish_content_hint">详细描述你的问题，有助于准确收到准确的回答</string>
     <string name="qa_publish_anonymous">匿名提问</string>
     <string name="qa_publish_enable_anonymous">启用匿名</string>
-    <string name="qa_tag">话题</string>
-    <string name="qa_publish_select_tag_hint">至少添加一个话题</string>
-    <string name="qa_publish_search_tag">搜索话题</string>
-    <string name="qa_publish_select_tag_count_hint">添加话题不可以超过5个</string>
+    <string name="qa_topic">话题</string>
+    <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
+    <string name="qa_publish_search_topic">搜索话题</string>
+    <string name="qa_publish_select_topic_count_hint">添加话题不可以超过5个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
     <string name="qa_publish_reward">悬赏</string>
     <string name="qa_publish_reward_set_money">设置悬赏金额</string>
@@ -332,8 +332,8 @@
     <string name="qa_publish_reward_onlookers">围观</string>
     <string name="qa_publish_recommend_expert">推荐专家</string>
     <string name="qa_publish_btn">发布</string>
-    <string name="qa_tag_all">全部话题</string>
-    <string name="qa_tag_user_followed">我关注的</string>
-    <string name="qa_tag_follow">关注</string>
-    <string name="qa_tag_followed">已关注</string>
+    <string name="qa_topic_all">全部话题</string>
+    <string name="qa_topic_user_followed">我关注的</string>
+    <string name="qa_topic_follow">关注</string>
+    <string name="qa_topic_followed">已关注</string>
 </resources>
