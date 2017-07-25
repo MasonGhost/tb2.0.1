@@ -12,7 +12,7 @@ public class CommentedBeanTest extends AbstractDaoTestLongPk<CommentedBeanDao, C
     protected CommentedBean createEntity(Long key) {
         CommentedBean entity = new CommentedBean();
         entity.setId(key);
-        entity.setTarget_image(18);
+        entity.setTarget_image(18L);
         return entity;
     }
 
