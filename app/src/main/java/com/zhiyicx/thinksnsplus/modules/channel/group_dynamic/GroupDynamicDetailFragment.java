@@ -16,22 +16,18 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
-import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicLikeListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
@@ -40,7 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.adapter.GroupDynam
 import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.GroupDynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -104,7 +100,6 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     View mToolbarTopBlank;
 
     private GroupDynamicListBean mGroupDynamicListBean;// 上一个页面传进来的数据
-    private FollowFansBean mFollowFansBean;// 用户关注状态
     private boolean mIsLookMore = false;
     private GroupDynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -195,9 +190,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mFollowFansBean != null) {
-                        mPresenter.handleFollowUser(mFollowFansBean);
-                    }
+                        mPresenter.handleFollowUser(mGroupDynamicListBean.getUserInfoBean());
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -303,12 +296,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
         final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-        int headImageId = dynamicBean.getUserInfoBean().getAvatar().isEmpty() ? -1 : Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar());
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvertV2(headImageId
-                        , headIconWidth
-                        , headIconWidth
-                        , ImageZipConfig.IMAGE_26_ZIP))
+                .load(ImageUtils.getUserAvatar(dynamicBean.getUserInfoBean()))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)
@@ -332,7 +321,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
+    public void setDigHeadIcon(List<DynamicDigListBean> userInfoBeanList) {
         mGroupDynamicListBean.setMGroupDynamicLikeListBeanList(userInfoBeanList);
         updateCommentCountAndDig();
     }
@@ -344,14 +333,13 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    public void upDateFollowFansState(int followState) {
-        setToolBarRightFollowState(followState);
+    public void upDateFollowFansState(UserInfoBean userInfoBean) {
+        setToolBarRightFollowState(userInfoBean);
     }
 
     @Override
-    public void initFollowState(FollowFansBean mFollowFansBean) {
-        this.mFollowFansBean = mFollowFansBean;
-        setToolBarRightFollowState(mFollowFansBean.getFollowState());
+    public void initFollowState(UserInfoBean userInfoBean) {
+        setToolBarRightFollowState(userInfoBean);
     }
 
     @Override
@@ -434,8 +422,8 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             mTvToolbarRight.setVisibility(View.GONE);
         } else {
             // 获取用户关注状态
-            mPresenter.getUserFollowState(user_id + "");
             mTvToolbarRight.setVisibility(View.VISIBLE);
+            setToolBarRightFollowState(mGroupDynamicListBean.getUserInfoBean());
         }
     }
 
@@ -518,19 +506,14 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     /**
      * 设置toolBar上面的关注状态
      */
-    private void setToolBarRightFollowState(int state) {
+    private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
         mTvToolbarRight.setVisibility(View.VISIBLE);
-        switch (state) {
-            case FollowFansBean.UNFOLLOWED_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
-                break;
-            case FollowFansBean.IFOLLOWED_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
-                break;
-            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
-                break;
-            default:
+        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
+        }else if(userInfoBean1.isFollower()){
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
+        }else {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
         }
     }
 

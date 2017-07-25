@@ -14,7 +14,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -22,7 +21,7 @@ import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
@@ -46,7 +45,6 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @Author Jliuer
@@ -318,28 +316,7 @@ public class InfoCommentAdapter extends MultiItemTypeAdapter<InfoCommentListBean
             emptyView.setNeedTextTip(false);
             emptyView.setErrorType(EmptyView.STATE_NODATA_ENABLE_CLICK);
         } else {
-            int storegeId;
-            String userIconUrl;
-            try {
-                storegeId = Integer.parseInt(infoCommentListBean.getFromUserInfoBean().getAvatar());
-                userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                        , ImageZipConfig.IMAGE_26_ZIP);
-            } catch (Exception e) {
-                userIconUrl = infoCommentListBean.getFromUserInfoBean().getAvatar();
-            }
-            AppApplication.AppComponentHolder.getAppComponent()
-                    .imageLoader()
-                    .loadImage(holder.getConvertView().getContext(), GlideImageConfig.builder()
-                            .url(userIconUrl)
-                            .placeholder(R.drawable.shape_default_image_circle)
-                            .transformation(new GlideCircleTransform(holder.getConvertView()
-                                    .getContext()))
-                            .errorPic(R.drawable.shape_default_image_circle)
-                            .imagerView(holder.getView(R.id.iv_headpic))
-                            .build()
-                    );
+            ImageUtils.loadCircleUserHeadPic(infoCommentListBean.getFromUserInfoBean(), holder.getView(R.id.iv_headpic));
             holder.setText(R.id.tv_name, infoCommentListBean.getFromUserInfoBean().getName());
             holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(infoCommentListBean
                     .getCreated_at()));

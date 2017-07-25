@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.collect.album.CollectAlbumListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.dynamic.CollectDynamicListFragment;
+import com.zhiyicx.thinksnsplus.modules.collect.group_posts.CollectGroupDynamicListFragment;
 import com.zhiyicx.thinksnsplus.modules.collect.info.CollectInformationListFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
@@ -34,6 +35,7 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
                 getString(R.string.collect_dynamic)
                 , getString(R.string.collect_info)
                 , getString(R.string.collect_album)
+                , getString(R.string.group_collect_dynamic)
         );
     }
 
@@ -63,10 +65,12 @@ public class CollectListFragment extends TSViewPagerFragment<CollectListPresente
         Fragment dynamicListFragment = CollectDynamicListFragment.newInstance();
         Fragment infoListFragment = CollectInformationListFragment.newInstance();
         Fragment albumListFragment = CollectAlbumListFragment.newInstance();
+        Fragment groupDynamicListFragment = CollectGroupDynamicListFragment.newInstance(new Bundle());
         return Arrays.asList(
                 dynamicListFragment
                 , infoListFragment
                 , albumListFragment
+                , groupDynamicListFragment
         );
     }
 

@@ -18,7 +18,6 @@ import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -31,7 +30,6 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
@@ -78,7 +76,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  */
 @FragmentScoped
 public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterContract.Repository, PersonalCenterContract.View> implements PersonalCenterContract.Presenter, OnShareCallbackListener {
-    private static final int NEED_INTERFACE_NUM = 3;
+    private static final int NEED_INTERFACE_NUM = 2;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
@@ -204,96 +202,65 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        Subscription subscription = mRepository.getUserFollowState(user_id + "")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<FollowFansBean>() {
-                    @Override
-                    protected void onSuccess(FollowFansBean data) {
-                        mInterfaceNum++;
-                        mRootView.setFollowState(data);
-                        allready();
-                    }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.loadAllError();
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.loadAllError();
-                    }
-                });
-        addSubscrebe(subscription);
+//        Subscription subscription = mRepository.getUserFollowState(user_id + "")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseSubscribe<FollowFansBean>() {
+//                    @Override
+//                    protected void onSuccess(FollowFansBean data) {
+//                        mInterfaceNum++;
+//                        mRootView.setFollowState(data);
+//                        allready();
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(String message, int code) {
+//                        mRootView.loadAllError();
+//                    }
+//
+//                    @Override
+//                    protected void onException(Throwable throwable) {
+//                        mRootView.loadAllError();
+//                    }
+//                });
+//        addSubscrebe(subscription);
     }
 
     @Override
-    public void handleFollow(FollowFansBean followFansBean) {
+    public void handleFollow(UserInfoBean followFansBean) {
         mUserInfoRepository.handleFollow(followFansBean);
         // ui进行刷新
         mRootView.setFollowState(followFansBean);
     }
 
     @Override
-    public void uploadUserCover(String filePath) {
-        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFileV2(
-                filePath, options.outMimeType, true, options.outWidth, options.outHeight)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Integer>() {
-                    @Override
-                    protected void onSuccess(Integer data) {
-                        mRootView.setUpLoadCoverState(true, data);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.setUpLoadCoverState(false, 0);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.setUpLoadCoverState(false, 0);
-                        LogUtils.e(throwable, "result");
-                    }
-                });
-        addSubscrebe(subscription);
-    }
-
-    @Override
-    public void changeUserCover(final UserInfoBean userInfoBean, int storage_task_id, final String imagePath) {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("cover_storage_task_id", storage_task_id + "");
-        Subscription subscription = mUserInfoRepository.changeUserInfo(hashMap)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe() {
-
+    public void uploadUserCover(String filePath, UserInfoBean userInfoBean) {
+        Subscription subscription = mIUploadRepository.uploadBg(filePath)
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        // 修改成功后，关闭页面
-                        mRootView.setChangeUserCoverState(true);
+                        mRootView.setUpLoadCoverState(true);
                         // 将本地图片路径作为storageId保存到数据库
-                        userInfoBean.setCover(imagePath);
+                        userInfoBean.setCover(filePath);
                         // 更新用户数据库
                         mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        // 修改失败，好尴尬
-                        mRootView.setChangeUserCoverState(false);
+                        mRootView.setUpLoadCoverState(false);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setChangeUserCoverState(false);
+                        mRootView.setUpLoadCoverState(false);
+                        LogUtils.e(throwable, "result");
                     }
                 });
         addSubscrebe(subscription);
     }
+
 
     @Override
     public void shareUserInfo(UserInfoBean userInfoBean) {

@@ -2,36 +2,33 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
-import com.alipay.android.phone.mrpc.core.HttpException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -42,6 +39,7 @@ import rx.functions.Func1;
 
 public class UpLoadRepository implements IUploadRepository {
     private CommonClient mCommonClient;
+    private UserInfoClient mUserInfoClient;
     private Context mContext;
 
     // 这个用于服务器校检 hash
@@ -52,6 +50,7 @@ public class UpLoadRepository implements IUploadRepository {
     public UpLoadRepository(ServiceManager serviceManager, Application context) {
         mContext = context;
         mCommonClient = serviceManager.getCommonClient();
+        mUserInfoClient = serviceManager.getUserInfoClient();
     }
 
     @Override
@@ -246,69 +245,35 @@ public class UpLoadRepository implements IUploadRepository {
     }
 
     /**
-     * 处理header，传入retrofit中
+     * 更新用户头像
      *
-     * @param object
+     * @param filePath
      * @return
      */
-    private HashMap<String, String> parseJSONObject(Object object) {
-
-        if (object == null) {
-            return new HashMap<>();
-        }
-        String jsonString = object.toString();
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            HashMap<String, String> jsonMap = new HashMap<>();
-            Iterator<String> iterator = jsonObject.keys();
-            while (iterator.hasNext()) {
-                try {
-                    String key = iterator.next();
-                    jsonMap.put(key, jsonObject.getString(key));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            return jsonMap;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new HashMap<>();
+    @Override
+    public Observable<Object> uploadAvatar(String filePath) {
+        return mUserInfoClient.updateAvatar(getMultipartBody(filePath, "avatar"))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 
-    public static Map<String, Object> objectToMap(Object obj) {
-        if (obj == null) {
-            return null;
-        }
-        //获取关联的所有类，本类以及所有父类
-        boolean ret = true;
-        Class oo = obj.getClass();
-        List<Class> clazzs = new ArrayList<Class>();
-        while (ret) {
-            clazzs.add(oo);
-            oo = oo.getSuperclass();
-            if (oo == null || oo == Object.class) break;
-        }
-
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        for (int i = 0; i < clazzs.size(); i++) {
-            Field[] declaredFields = clazzs.get(i).getDeclaredFields();
-            for (Field field : declaredFields) {
-                int mod = field.getModifiers();
-                //过滤 static 和 final 类型
-                if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
-                    continue;
-                }
-                field.setAccessible(true);
-                try {
-                    map.put(field.getName(), field.get(obj));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return map;
+    @Override
+    public Observable<Object> uploadBg(String filePath) {
+        return mUserInfoClient.updateBg(getMultipartBody(filePath, "image"))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
+
+    @NonNull
+    private MultipartBody getMultipartBody(String filePath, String key) {
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        File file = new File(filePath);//filePath 图片地址
+        String mimeType = FileUtils.getMimeTypeByFile(file);
+        RequestBody imageBody = RequestBody.create(
+                MediaType.parse(TextUtils.isEmpty(mimeType) ? "multipart/form-data" : mimeType), file);
+        builder.addFormDataPart(key, file.getName(), imageBody);//imgfile 后台接收图片流的参数名
+        builder.setType(MultipartBody.FORM);//设置类型
+        return builder.build();
+    }
+
 }

@@ -13,9 +13,6 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -26,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -61,26 +59,7 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
         } else {
             holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
         }
-
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(topDynamicCommentBean.getUserInfoBean().getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_38_ZIP);
-        } catch (Exception e) {
-            userIconUrl = topDynamicCommentBean.getUserInfoBean().getAvatar();
-        }
-        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userIconUrl)
-                .transformation(new GlideCircleTransform(getContext()))
-                .errorPic(R.mipmap.pic_default_portrait1)
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .imagerView(holder.getView(R.id.iv_headpic))
-                .build());
-
+        ImageUtils.loadCircleUserHeadPic(topDynamicCommentBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
         TopDynamicCommentBean.FeedBean feedBean = topDynamicCommentBean.getFeed();
         TopDynamicCommentBean.CommentBean commentBean = topDynamicCommentBean.getComment();
         boolean hasImage = feedBean != null && !feedBean.getImages().isEmpty();

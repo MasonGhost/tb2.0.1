@@ -2,9 +2,6 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBeanDao;
-
 public class GroupDynamicCommentListBeanTest extends AbstractDaoTestLongPk<GroupDynamicCommentListBeanDao, GroupDynamicCommentListBean> {
 
     public GroupDynamicCommentListBeanTest() {

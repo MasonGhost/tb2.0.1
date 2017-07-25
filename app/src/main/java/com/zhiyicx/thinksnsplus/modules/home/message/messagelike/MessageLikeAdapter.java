@@ -8,8 +8,6 @@ import android.view.View;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
@@ -20,6 +18,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -60,30 +59,8 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         } else {
             holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
         }
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(digedBean.getDigUserInfo().getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_38_ZIP);
-        } catch (Exception e) {
-            userIconUrl = digedBean.getDigUserInfo().getAvatar();
-        }
-        mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userIconUrl)
-                .transformation(new GlideCircleTransform(getContext()))
-                .errorPic(R.mipmap.pic_default_portrait1)
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .imagerView(holder.getView(R.id.iv_headpic))
-                .build());
-
+        ImageUtils.loadCircleUserHeadPic(digedBean.getDigUserInfo(), holder.getView(R.id.iv_headpic));
         if (digedBean.getSource_cover() != null) {
-            System.out.println("1111111111111111111111 = " + ImageUtils.imagePathConvertV2(digedBean.getSource_cover().intValue()
-                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                    , ImageZipConfig.IMAGE_50_ZIP));
             holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
@@ -96,8 +73,9 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
             holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, digedBean.getLikeable() == null ? holder.getConvertView().getContext().getString(R.string.review_dynamic_deleted) : digedBean.getSource_content());
+            holder.setText(R.id.tv_deatil, digedBean.getSource_content());
         }
+
         holder.setText(R.id.tv_name, digedBean.getDigUserInfo().getName());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(digedBean.getUpdated_at()));
         // 响应事件
@@ -107,14 +85,9 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> toUserCenter(digedBean.getDigUserInfo()));
-//        if (digedBean.getLikeable() != null) {
-//            RxView.clicks(holder.getView(R.id.rl_container))
-//                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                    .subscribe(aVoid ->
-//                    {
-//                        toDetail(digedBean);
-//                    });
-//        }
+        RxView.clicks(holder.getConvertView())
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> toDetail(digedBean));
     }
 
 

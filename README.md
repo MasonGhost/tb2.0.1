@@ -39,7 +39,7 @@ Gradle 版本
 
 ```shell
 master ( 主分支 )
-developer (开发分支 )
+develop (开发分支 )
 feature/add_image  ( 特性分支 )
 feature/add_image_jungle68 ( 个人开发可以加上作者 )
 hotfix/pay_fail ( 修复分支 )

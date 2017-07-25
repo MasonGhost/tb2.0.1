@@ -11,13 +11,12 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import butterknife.BindView;
 
@@ -103,8 +102,7 @@ public class BillDetailFragment extends TSFragment {
         final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
 
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvertV2(Integer.parseInt(userInfoBean.getAvatar()), headIconWidth, headIconWidth
-                        , ImageZipConfig.IMAGE_26_ZIP))
+                .load(ImageUtils.getUserAvatar(userInfoBean))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)

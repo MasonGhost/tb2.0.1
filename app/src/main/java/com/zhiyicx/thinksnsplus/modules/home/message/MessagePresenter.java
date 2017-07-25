@@ -110,9 +110,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     private int mUnreadNotificationTotalNums; // 未读消息总数
 
-    List<TSPNotificationBean> mCommentsNoti = new ArrayList<TSPNotificationBean>();
-    List<TSPNotificationBean> mDiggNoti = new ArrayList<TSPNotificationBean>();
-    List<TSPNotificationBean> mReviewNoti = new ArrayList<TSPNotificationBean>();
+    List<TSPNotificationBean> mCommentsNoti = new ArrayList<>();
+    List<TSPNotificationBean> mDiggNoti = new ArrayList<>();
+    List<TSPNotificationBean> mReviewNoti = new ArrayList<>();
 
     @Inject
     public MessagePresenter(MessageContract.Repository repository, MessageContract.View rootView) {
@@ -181,7 +181,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 获取对话列表
      */
     private void getCoversationList() {
-        mRepository.getConversationList(AppApplication.getmCurrentLoginAuth().getUser_id())
+        mRepository.getConversationList((int) AppApplication.getmCurrentLoginAuth().getUser_id())
                 .doAfterTerminate(() -> mRootView.hideLoading())
                 .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
                     @Override
@@ -361,7 +361,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-
+                        LogUtils.d("makeNotificationReaded::" + "onSuccess");
                     }
                 });
     }
@@ -542,7 +542,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         if (data.isEmpty()) {
                             return;
                         }
-
+                        mCommentsNoti.clear();
+                        mDiggNoti.clear();
+                        mReviewNoti.clear();
                         for (TSPNotificationBean tspNotificationBean : data) {
                             switch (tspNotificationBean.getData().getChannel()) {
                                 case NOTIFICATION_KEY_FEED_COMMENTS:

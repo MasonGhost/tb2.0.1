@@ -2,15 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * @author LiuChao
@@ -21,7 +18,7 @@ import rx.Observable;
 
 public interface DigListContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<FollowFansBean, DigListContract.Presenter> {
+    interface View extends ITSListView<DynamicDigListBean, DigListContract.Presenter> {
         void upDataFollowState(int position);
 
         /**
@@ -37,14 +34,14 @@ public interface DigListContract {
 
     }
 
-    interface Presenter extends ITSListPresenter<FollowFansBean> {
+    interface Presenter extends ITSListPresenter<DynamicDigListBean> {
         /**
          * 关注或者取消关注
          */
-        void handleFollowUser(int position, FollowFansBean followFansBean);
+        void handleFollowUser(int position, UserInfoBean followFansBean);
 
         void requestNetData(Long maxId, boolean isLoadMore, long feed_id);
 
-        List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicDetailBeanV2 dynamicBean);
+        List<DynamicDigListBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicDetailBeanV2 dynamicBean);
     }
 }

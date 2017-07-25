@@ -7,17 +7,16 @@ import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 /**
  * @Author Jliuer
@@ -77,8 +76,44 @@ public class GroupDynamicListBean extends BaseListBean {
     @Convert(converter = GroupDynamicCommentConvert.class, columnType = String.class)
     private List<GroupDynamicCommentListBean> commentslist;
     @Convert(converter = GroupDynamicLikesConvert.class, columnType = String.class)
-    private List<FollowFansBean> mGroupDynamicLikeListBeanList;
+    private List<DynamicDigListBean> mGroupDynamicLikeListBeanList;
     private int state = SEND_ING;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 699919709)
+    private transient GroupDynamicListBeanDao myDao;
+
+    @Generated(hash = 1388812928)
+    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.group_id = group_id;
+        this.views = views;
+        this.diggs = diggs;
+        this.is_digg = is_digg;
+        this.collections = collections;
+        this.is_collection = is_collection;
+        this.comments = comments;
+        this.user_id = user_id;
+        this.feed_mark = feed_mark;
+        this.is_audit = is_audit;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.images = images;
+        this.commentslist = commentslist;
+        this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
+        this.state = state;
+    }
+
+    @Generated(hash = 638700750)
+    public GroupDynamicListBean() {
+    }
+
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
 
     public int getState() {
         return state;
@@ -357,7 +392,7 @@ public class GroupDynamicListBean extends BaseListBean {
     public static class GroupDynamicCommentConvert extends BaseConvert<List<GroupDynamicCommentListBean>> {
     }
 
-    public static class GroupDynamicLikesConvert extends BaseConvert<List<FollowFansBean>> {
+    public static class GroupDynamicLikesConvert extends BaseConvert<List<DynamicDigListBean>> {
     }
 
     public List<GroupDynamicCommentListBean> getCommentslist() {
@@ -366,6 +401,38 @@ public class GroupDynamicListBean extends BaseListBean {
 
     public void setCommentslist(List<GroupDynamicCommentListBean> commentslist) {
         this.commentslist = commentslist;
+    }
+
+    public int getIs_digg() {
+        return is_digg;
+    }
+
+    public void setIs_digg(int is_digg) {
+        this.is_digg = is_digg;
+    }
+
+    public int getIs_collection() {
+        return is_collection;
+    }
+
+    public void setIs_collection(int is_collection) {
+        this.is_collection = is_collection;
+    }
+
+    public Long getFeed_mark() {
+        return feed_mark;
+    }
+
+    public void setFeed_mark(Long feed_mark) {
+        this.feed_mark = feed_mark;
+    }
+
+    public List<DynamicDigListBean> getMGroupDynamicLikeListBeanList() {
+        return this.mGroupDynamicLikeListBeanList;
+    }
+
+    public void setMGroupDynamicLikeListBeanList(List<DynamicDigListBean> mGroupDynamicLikeListBeanList) {
+        this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
     }
 
     /**
@@ -404,43 +471,6 @@ public class GroupDynamicListBean extends BaseListBean {
         myDao.update(this);
     }
 
-
-    @Generated(hash = 780235565)
-    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<FollowFansBean> mGroupDynamicLikeListBeanList, int state) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.group_id = group_id;
-        this.views = views;
-        this.diggs = diggs;
-        this.is_digg = is_digg;
-        this.collections = collections;
-        this.is_collection = is_collection;
-        this.comments = comments;
-        this.user_id = user_id;
-        this.feed_mark = feed_mark;
-        this.is_audit = is_audit;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.images = images;
-        this.commentslist = commentslist;
-        this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
-        this.state = state;
-    }
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 699919709)
-    private transient GroupDynamicListBeanDao myDao;
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
-
-
     @Override
     public int describeContents() {
         return 0;
@@ -460,6 +490,7 @@ public class GroupDynamicListBean extends BaseListBean {
         dest.writeInt(this.is_collection);
         dest.writeInt(this.comments);
         dest.writeValue(this.user_id);
+        dest.writeValue(this.feed_mark);
         dest.writeParcelable(this.userInfoBean, flags);
         dest.writeInt(this.is_audit);
         dest.writeString(this.created_at);
@@ -468,38 +499,6 @@ public class GroupDynamicListBean extends BaseListBean {
         dest.writeTypedList(this.commentslist);
         dest.writeTypedList(this.mGroupDynamicLikeListBeanList);
         dest.writeInt(this.state);
-    }
-
-    public int getIs_digg() {
-        return this.is_digg;
-    }
-
-    public void setIs_digg(int is_digg) {
-        this.is_digg = is_digg;
-    }
-
-    public int getIs_collection() {
-        return this.is_collection;
-    }
-
-    public void setIs_collection(int is_collection) {
-        this.is_collection = is_collection;
-    }
-
-    public List<FollowFansBean> getMGroupDynamicLikeListBeanList() {
-        return this.mGroupDynamicLikeListBeanList;
-    }
-
-    public void setMGroupDynamicLikeListBeanList(List<FollowFansBean> mGroupDynamicLikeListBeanList) {
-        this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
-    }
-
-    public Long getFeed_mark() {
-        return this.feed_mark;
-    }
-
-    public void setFeed_mark(Long feed_mark) {
-        this.feed_mark = feed_mark;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -522,18 +521,15 @@ public class GroupDynamicListBean extends BaseListBean {
         this.is_collection = in.readInt();
         this.comments = in.readInt();
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.is_audit = in.readInt();
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.images = in.createTypedArrayList(ImagesBean.CREATOR);
         this.commentslist = in.createTypedArrayList(GroupDynamicCommentListBean.CREATOR);
-        this.mGroupDynamicLikeListBeanList = in.createTypedArrayList(FollowFansBean.CREATOR);
+        this.mGroupDynamicLikeListBeanList = in.createTypedArrayList(DynamicDigListBean.CREATOR);
         this.state = in.readInt();
-    }
-
-    @Generated(hash = 638700750)
-    public GroupDynamicListBean() {
     }
 
     public static final Creator<GroupDynamicListBean> CREATOR = new Creator<GroupDynamicListBean>() {

@@ -84,7 +84,7 @@ public class MessageRepository implements MessageContract.Repository {
                                     // 去除没有聊天消息的
                                     continue;
                                 }
-                                tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
+                                tmp.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
                                 if (tmp.getType() == Conversation.CONVERSATION_TYPE_PRIVATE) { // 单聊
                                     try {
                                         String[] uidsPair = tmp.getUsids().split(",");
@@ -189,7 +189,7 @@ public class MessageRepository implements MessageContract.Repository {
                                          tmp.setLast_message(message);
                                          tmp.setLast_message_time(message.getCreate_time());
                                      }
-                                     tmp.setIm_uid(AppApplication.getmCurrentLoginAuth().getUser_id());
+                                     tmp.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
                                      if (tmp.getType() == Conversation.CONVERSATION_TYPE_PRIVATE) { // 单聊
                                          try {
                                              String[] uidsPair = tmp.getUsids().split(",");
@@ -285,7 +285,7 @@ public class MessageRepository implements MessageContract.Repository {
                         if (userIds.length() > 1) {
                             userIds = userIds.substring(0, userIds.length() - 1);
                         }
-                        return mUserInfoRepository.getBatchSpecifiedUserInfo(userIds)
+                        return mUserInfoRepository.getUserInfoByIds(userIds)
                                 .subscribeOn(Schedulers.io())
                                 .map(userInfoBeens -> {
                                     SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
@@ -311,7 +311,7 @@ public class MessageRepository implements MessageContract.Repository {
                     @Override
                     public Observable<TSPNotificationBean> call(TSPNotificationBean tspNotificationBeen) {
 
-                        return mUserInfoRepository.getBatchSpecifiedUserInfo(String.valueOf(tspNotificationBeen.getUser_id()))
+                        return mUserInfoRepository.getUserInfoByIds(String.valueOf(tspNotificationBeen.getUser_id()))
                                 .subscribeOn(Schedulers.io())
                                 .map(userInfoBeens -> {
                                     tspNotificationBeen.setUserInfo(userInfoBeens.get(0));

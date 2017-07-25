@@ -12,6 +12,10 @@ public class ConstantConfig {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
+    public static final String ORDER_ASC="asc";
+
+    public static final String ORDER_DESC="desc";
+
     public static final String SPLIT_SMBOL = ",";
     /**
      * 抖动间隔时间，单位 s

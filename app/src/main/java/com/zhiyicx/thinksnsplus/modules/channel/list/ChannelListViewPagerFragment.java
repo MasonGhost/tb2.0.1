@@ -59,6 +59,6 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
      * @param page
      */
     public void setSelectPager(int page) {
-        mVpFragment.setCurrentItem(page);
+        mVpFragment.setCurrentItem(page,false);
     }
 }

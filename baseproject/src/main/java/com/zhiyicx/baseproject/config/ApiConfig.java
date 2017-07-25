@@ -29,10 +29,13 @@ public class ApiConfig {
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final boolean APP_IS_NEED_SSH_CERTIFICATE = false;// 在线测试服务器 2
+//    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
+
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
     public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
 //
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 //    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
@@ -46,6 +49,8 @@ public class ApiConfig {
 
     // 图片地址 V2
     public static final String IMAGE_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s?w=%d&h=%d&q=%d";
+    // 头像地址
+    public static final String IMAGE_AVATAR_PATH_V2 = APP_DOMAIN + "api/" + API_VERSION_2 + "/users/%s/avatar";
 
     // 音乐地址 V2
     public static final String MUSIC_PATH = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/%s";
@@ -55,9 +60,8 @@ public class ApiConfig {
     /**
      * 登录 Login
      */
-    public static final String APP_PATH_LOGIN = "api/" + API_VERSION + "/auth";
+    public static final String APP_PATH_LOGIN = "api/" + API_VERSION_2 + "/tokens";
 
-    public static final String APP_PATH_LOGIN_V2 = "api/" + API_VERSION_2 + "/login";
     /**
      * 密码 PasswordClient
      */
@@ -71,20 +75,22 @@ public class ApiConfig {
      * 用户 UserInfoClient
      */
     public static final String APP_PATH_GET_USER_INFO = "api/" + API_VERSION + "/users";// 获取用户信息
-    public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION + "/users";// 修改用户信息
+    public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION_2 + "/user";// 修改用户信息
     public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION + "/im/users";// 获取 IM 帐号信息
     public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION_2 + "/user/likes"; // 获取用户收到的点赞
     public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION_2 + "/user/comments"; // 获取用户收到的评论
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+    public static final String APP_PATH_UPDATE_USER_AVATAR = "api/" + API_VERSION_2 + "/user/avatar";// 修改用户头像
+    public static final String APP_PATH_UPDATE_USER_BG = "api/" + API_VERSION_2 + "/user/bg";// 修改用户背景
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
+     *
      * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md}
      * <p>
      * feed:comment 动态被评论
      * feed:reply-comment 动态评论被回复
      * feed:pinned-comment 动态评论申请置顶
      * feed:digg 动态被点赞
-     *
      */
     public static final String NOTIFICATION_KEY_FEED_DIGGS = "feed:digg";
     public static final String NOTIFICATION_KEY_FEED_COMMENTS = "feed:comment";
@@ -106,9 +112,9 @@ public class ApiConfig {
     public static final String APP_PATH_MAKE_NOTIFICAITON_READED = "api/" + API_VERSION_2 + "/user/notifications/";
     // type  获取通知类型，可选 all,read,unread 默认 all
 
-    public static final String NOTIFICATION_TYPE_ALL="all";
-    public static final String NOTIFICATION_TYPE_READ="read";
-    public static final String NOTIFICATION_TYPE_UNREAD="unread ";
+    public static final String NOTIFICATION_TYPE_ALL = "all";
+    public static final String NOTIFICATION_TYPE_READ = "read";
+    public static final String NOTIFICATION_TYPE_UNREAD = "unread ";
 
 
     /**
@@ -121,12 +127,13 @@ public class ApiConfig {
     /**
      * 关注粉丝 FollowFansClient
      */
-    //api/" + API_VERSION + "/follows/follows/{user_id}/{max_id}
-    public static final String APP_PATH_FOLLOW_LIST = "api/" + API_VERSION + "/follows/follows/{user_id}/{max_id}";// 获取用户关注列表
-    //api/" + API_VERSION + "/follows/followeds/{user_id}/{max_id}
-    public static final String APP_PATH_FANS_LIST = "api/" + API_VERSION + "/follows/followeds/{user_id}/{max_id}";// 获取用户粉丝列表
-    public static final String APP_PATH_FOLLOW_USER = "api/" + API_VERSION + "/users/follow";// 关注用户
-    public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/" + API_VERSION + "/users/unFollow";// 取消用户关注
+    public static final String APP_PATH_FOLLOW_LIST = "api/" + API_VERSION_2 + "/users/{user_id}/followings";// 获取用户关注列表
+    public static final String APP_PATH_FANS_LIST = "api/" + API_VERSION_2 + "/users/{user_id}/followers";// 获取用户粉丝列表
+    public static final String APP_PATH_FOLLOW_USER = "api/" + API_VERSION_2 + "/user/followings/{user_id}";// 关注用户
+    public static final String APP_PATH_FOLLOW_USER_FORMART = "api/" + API_VERSION_2 + "/user/followings/%d";// 关注用户
+    public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/" + API_VERSION_2 + "/user/followings/{user_id}";// 取消用户关注
+    public static final String APP_PATH_CANCEL_FOLLOW_USER_FORMART = "api/" + API_VERSION_2 + "/user/followings/%d";// 取消用户关注
+
     public static final String APP_PATH_GET_USER_FOLLOW_STATE = "api/" + API_VERSION + "/users/followstatus";// 获取用户关注状态
 
     public static final String APP_PATH_GET_DIGGS_RANK = "api/" + API_VERSION + "/diggsrank";//  用户点赞排行
@@ -167,7 +174,6 @@ public class ApiConfig {
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT = "api/" + API_VERSION + "/feeds/%s/comment";
     public static final String APP_PATH_DYNAMIC_SEND_COMMENT_V2 = "api/" + API_VERSION_2 + "/feeds/%s/comments";
     // 获取点赞列表
-    public static final String APP_PATH_DYNAMIC_DIG_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/diggusers";
     public static final String APP_PATH_DYNAMIC_DIG_LIST_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/likes";
     // 一条动态的评论列表
     public static final String APP_PATH_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION + "/feeds/{feed_id}/comments";
@@ -298,7 +304,7 @@ public class ApiConfig {
      * 通用 CommonClient
      */
     public static final String APP_PATH_GET_VERTIFYCODE = "api/" + API_VERSION + "/auth/phone/send-code";// 获取验证码
-    public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION + "/auth";// 刷新 token
+    public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION_2 + "/tokens/{token}";// 刷新 token
     public static final String APP_PATH_CREATE_STORAGE_TASK = "api/" + API_VERSION + "/storages/task";// 储存任务创建
     public static final String APP_PATH_NOTIFY_STORAGE_TASK =
             "api/" + API_VERSION + "/storages/task/{storage_task_id}";//  储存任务通知
@@ -357,30 +363,33 @@ public class ApiConfig {
     // 获取频道的动态列表
     public static final String APP_PATH_GET_CHANNEL_DYNAMIC_LIST = "api/" + API_VERSION + "/channels/{channel_id}/feeds";
 
-    /** 圈子相关 */
+    /**
+     * 圈子相关
+     */
     public static final String APP_PATH_GET_ALL_GROUP = "api/" + API_VERSION_2 + "/groups";// 所有的圈子列表/如果是post,则是创建圈子
     public static final String APP_PATH_GET_USER_JOINED_GROUP = "api/" + API_VERSION_2 + "/groups/joined";// 用户加入的圈子
-    public static final String APP_PATH_JOIN_GROUP = "api/" + API_VERSION_2 +  "/groups/{group}/join"; // 加入/退出圈子
-    public static final String APP_PATH_JOIN_GROUP_S = "api/" + API_VERSION_2 +  "/groups/%s/join"; // 加入/退出圈子
-    public static final String APP_PATH_GET_GROUP_DETAIL = "api/" + API_VERSION_2 +  "/groups/{group}"; // 圈子详情
-    public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}"; // 动态详情
-    public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts"; // 动态列表
+    public static final String APP_PATH_JOIN_GROUP = "api/" + API_VERSION_2 + "/groups/{group}/join"; // 加入/退出圈子
+    public static final String APP_PATH_JOIN_GROUP_S = "api/" + API_VERSION_2 + "/groups/%s/join"; // 加入/退出圈子
+    public static final String APP_PATH_GET_GROUP_DETAIL = "api/" + API_VERSION_2 + "/groups/{group}"; // 圈子详情
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_DETAIL = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}"; // 动态详情
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts"; // 动态列表
 
-    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/collection";// 收藏圈子动态的
-    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 +  "/groups/%s/posts/%s/collection";// 收藏圈子动态的
-    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 +  "/groups/posts/collections";// 我收藏的圈子动态列表
-    public static final String APP_PATH_DELETE_MYCOLLECT_GROUP_DYNAMIC_DIGG = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/digg";// 取消点赞
-    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/digg";// 点赞
-    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 +  "/groups/%s/posts/%s/digg";// 点赞
-    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/diggs";// 点赞列表
-    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comment";// 创建圈子动态评论
-    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d/comment";// 创建圈子动态评论
-    public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d/comments/%d";// 删除圈子动态评论
-    public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts";// 创建圈子动态
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC = "api/" + API_VERSION_2 +  "/groups/{group}/posts/{post}";// 删除圈子动态
-    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 +  "/groups/%d/posts/%d";// 删除圈子动态
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COLLECT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 取消对圈子动态的收藏
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/collection";// 收藏圈子动态
+    public static final String APP_PATH_COLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/collection";// 收藏圈子动态
+    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_LIST = "api/" + API_VERSION_2 + "/groups/posts/collections";// 我收藏的圈子动态列表
+    public static final String APP_PATH_DELETE_MYCOLLECT_GROUP_DYNAMIC_DIGG = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 取消点赞
+    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/digg";// 点赞
+    public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/digg";// 点赞
+    public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/diggs";// 点赞列表
+    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comment";// 创建圈子动态评论
+    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comment";// 创建圈子动态评论
+    public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comments/%d";// 删除圈子动态评论
+    public static final String APP_PATH_SEND_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts";// 创建圈子动态
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}";// 删除圈子动态
+    public static final String APP_PATH_DELETE_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d";// 删除圈子动态
 
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
@@ -395,9 +404,6 @@ public class ApiConfig {
     public static final String APP_LIKE_FEED = "feeds";
     public static final String APP_LIKE_MUSIC = "musics";
     public static final String APP_LIKE_NEWS = "news";
-
-
-
 
 
     /*******************************************  API V2  *********************************************/

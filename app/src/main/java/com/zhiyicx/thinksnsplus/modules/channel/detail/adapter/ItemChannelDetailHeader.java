@@ -20,14 +20,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
 import com.zhiyicx.thinksnsplus.widget.ColorFilterTextView;
@@ -129,7 +127,10 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
 
     }
 
-    public void initHeaderView(boolean isSetScrollListener) {
+    public void initHeaderView(boolean isSetScrollListener, boolean isShow) {
+        if (!isShow) {
+            return;
+        }
         headerView = LayoutInflater.from(mActivity).inflate(R.layout.item_channel_detail_header, null);
         initHeaderViewUI(headerView);
         mHeaderAndFooterWrapper.addHeaderView(headerView);
@@ -242,9 +243,9 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         int strokeWidth = ConvertUtils.dp2px(mActivity, 2);
         Glide.with(mActivity)
                 .load(ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id()
-                        ,mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                        ,mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                        ,ImageZipConfig.IMAGE_70_ZIP))
+                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(mActivity, strokeWidth))
                 .placeholder(R.drawable.shape_default_image)
@@ -352,4 +353,5 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
             refreshImage.setVisibility(View.GONE);
         }
     }
+
 }

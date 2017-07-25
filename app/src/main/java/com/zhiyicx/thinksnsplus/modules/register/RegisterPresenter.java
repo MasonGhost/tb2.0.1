@@ -131,16 +131,17 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
             return;
         }
         mRootView.setRegisterBtEnabled(false);
-        Subscription registerSub = mRepository.register(phone, name, vertifyCode, password)
+        Subscription registerSub = mRepository.registerByPhone(phone, name, vertifyCode, password)
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
-                        mAuthRepository.saveAuthBean(data);// 保存登录认证信息
                         UserInfoBean registerUserInfo = new UserInfoBean();
                         registerUserInfo.setUser_id(Long.valueOf(data.getUser_id()));
                         registerUserInfo.setName(name);
                         registerUserInfo.setPhone(phone);
+                        data.setUser(registerUserInfo);
+                        mAuthRepository.saveAuthBean(data);// 保存登录认证信息
                         mUserInfoBeanGreenDao.insertOrReplace(registerUserInfo);
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();

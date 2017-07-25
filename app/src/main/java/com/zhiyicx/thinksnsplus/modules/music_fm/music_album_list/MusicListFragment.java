@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
