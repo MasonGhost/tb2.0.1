@@ -28,7 +28,6 @@
     <View
         android:id="@+id/line"
         style="@style/style_divider_horizontal_light"
-        android:background="@color/important_for_note"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_qustion"
