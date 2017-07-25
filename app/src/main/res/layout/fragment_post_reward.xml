@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+            android:id="@+id/ll_qa_set_money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+        <include
+                layout="@layout/view_choose_item"/>
+
+        <View
+                android:id="@+id/v_line"
+                style="@style/style_divider_horizontal_light"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                />
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/custom_recharge_money"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                />
+
+        <EditText
+                android:id="@+id/et_input"
+                style="@style/style_dynamic_editext"
+                android:hint="@string/et_top_input"
+                tools:hint="输入金额"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yuan"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                tools:text="元"/>
+    </LinearLayout>
+
+    <!--邀请开关-->
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            android:orientation="horizontal"
+            android:background="@color/white">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:text="@string/qa_publish_reward_invite"/>
+        <android.support.v7.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/spacing_mid"/>
+        <View
+                style="@style/style_divider_horizontal_light"
+                android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
+    <!--选择专家-->
+    <com.zhiyicx.baseproject.widget.button.CombinationButton
+            android:id="@+id/bt_qa_select_expert"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            app:leftText="@string/qa_publish_reward_invite"
+            app:leftTextLeftPadding="@dimen/spacing_mid"
+            app:rightImage="@mipmap/ic_arrow_smallgrey"
+            app:showLine="true"/>
+
+    <!--围观收费开关-->
+    <RelativeLayout
+            android:id="@+id/rl_onlooker"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_button_height"
+            android:orientation="horizontal"
+            android:background="@color/white">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:text="@string/qa_publish_reward_onlookers"/>
+        <android.support.v7.widget.SwitchCompat
+                android:id="@+id/wc_onlooker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/spacing_mid"/>
+        <View
+                style="@style/style_divider_horizontal_light"
+                android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+            android:id="@+id/ll_qa_set_onlookers_money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+        <TextView
+                android:id="@+id/tv_onlookers_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
+                android:text="@string/qa_publish_reward_set_money"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_comment"/>
+
+        <RadioGroup
+                android:id="@+id/rb_onlookers_days_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/select_days_margin_bottom"
+                android:layout_marginTop="@dimen/select_days_margin_top"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid">
+
+            <RadioButton
+                    android:id="@+id/rb_onlookers_one"
+                    style="@style/style_dynamic_radiobutton"
+                    tools:text="ssss"/>
+
+            <RadioButton
+                    android:id="@+id/rb_onlookers_two"
+                    style="@style/style_dynamic_radiobutton"
+                    android:layout_marginLeft="@dimen/spacing_large"/>
+
+            <RadioButton
+                    android:id="@+id/rb_onlookers_three"
+                    style="@style/style_dynamic_radiobutton"
+                    android:layout_marginLeft="@dimen/spacing_large"/>
+
+        </RadioGroup>
+
+        <View
+                android:id="@+id/v_line_onlookers"
+                style="@style/style_divider_horizontal_light"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                />
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/bt_top"
+            android:enabled="false"
+            style="@style/style_login_button"
+            android:layout_marginTop="@dimen/button_login_margin_top"
+            android:text="@string/qa_publish_btn"
+            />
+
+</LinearLayout>
