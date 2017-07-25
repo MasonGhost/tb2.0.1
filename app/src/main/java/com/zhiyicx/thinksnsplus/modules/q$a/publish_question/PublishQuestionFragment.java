@@ -6,8 +6,6 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
 
-import static com.umeng.analytics.pro.x.R;
-
 
 /**
  * @author Catherine
