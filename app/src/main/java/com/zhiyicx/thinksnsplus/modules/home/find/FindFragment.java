@@ -25,6 +25,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerActivity;
+
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;
@@ -187,7 +188,7 @@ public class FindFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), QA_InfoContainerActivity.class));
                 break;
             case R.id.find_quiz:
-                    startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
+                startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
                 break;
             default:
                 break;

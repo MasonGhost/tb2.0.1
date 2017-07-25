@@ -21,12 +21,12 @@ public class PublishQuestionPresenterModule {
     }
 
     @Provides
-    public PublishQuestionContract.View provideSendQuizContractView(){
+    public PublishQuestionContract.View providePublishQuestionContractView(){
         return mView;
     }
 
     @Provides
-    public PublishQuestionContract.Repository provideSendQuizContractRepository(PublishPublishQuestionRepository repository){
+    public PublishQuestionContract.Repository providePublishQuestionContractRepository(PublishPublishQuestionRepository repository){
         return repository;
     }
 }
