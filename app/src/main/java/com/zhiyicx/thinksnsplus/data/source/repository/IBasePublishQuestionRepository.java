@@ -7,6 +7,6 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
  * @contact email:648129313@qq.com
  */
 
-public interface IBaseQuizRepository {
+public interface IBasePublishQuestionRepository {
 
 }

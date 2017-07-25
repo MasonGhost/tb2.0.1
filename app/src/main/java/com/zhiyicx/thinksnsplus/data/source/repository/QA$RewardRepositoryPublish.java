@@ -12,10 +12,10 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 
-public class QA$RewardRepository extends BaseQuizRepository implements QA$RewardContract.Repository{
+public class QA$RewardRepositoryPublish extends BasePublishQuestionRepository implements QA$RewardContract.RepositoryPublish {
 
     @Inject
-    public QA$RewardRepository(ServiceManager manager) {
+    public QA$RewardRepositoryPublish(ServiceManager manager) {
         super(manager);
     }
 }
