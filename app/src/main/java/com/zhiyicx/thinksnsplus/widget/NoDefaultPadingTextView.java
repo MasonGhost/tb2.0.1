@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -12,7 +13,7 @@ import android.widget.TextView;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class NoDefaultPadingTextView extends TextView {
+public class NoDefaultPadingTextView extends AppCompatTextView {
 
     Paint.FontMetricsInt fontMetricsInt;
 

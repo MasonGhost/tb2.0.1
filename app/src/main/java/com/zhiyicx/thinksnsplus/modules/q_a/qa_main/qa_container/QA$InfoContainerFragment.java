@@ -1,30 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 
-import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QA$ListInfoFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QA_ListInfoFragment;
 
-import net.lucode.hackware.magicindicator.MagicIndicator;
-import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
@@ -36,8 +22,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * @Author Jliuer
@@ -94,7 +78,7 @@ public class QA$InfoContainerFragment extends TSViewPagerFragment {
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
             mFragments = new ArrayList<>();
-            mFragments.add(QA$ListInfoFragment.newInstance(QA_TYPE));
+            mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
         }
         return mFragments;
     }

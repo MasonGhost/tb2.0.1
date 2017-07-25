@@ -12,11 +12,11 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-public class QA$RewardPresenter extends BasePresenter<QA$RewardContract.Repository, QA$RewardContract.View>
+public class QA$RewardPresenter extends BasePresenter<QA$RewardContract.RepositoryPublish, QA$RewardContract.View>
         implements QA$RewardContract.Presenter{
 
     @Inject
-    public QA$RewardPresenter(QA$RewardContract.Repository repository, QA$RewardContract.View rootView) {
+    public QA$RewardPresenter(QA$RewardContract.RepositoryPublish repository, QA$RewardContract.View rootView) {
         super(repository, rootView);
     }
 }
