@@ -29,7 +29,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
 
-    private String mQuestionStr;
+    private String mQuestionStr = "";
 
     public static PublishQuestionFragment newInstance() {
 
@@ -77,6 +77,11 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        if (!mQuestionStr.endsWith("?") || !mQuestionStr.endsWith("？")) {
+            showSnackErrorMessage(getString(R.string.qa_publish_title_toast));
+            return;
+        }
+
     }
 
     @Override
