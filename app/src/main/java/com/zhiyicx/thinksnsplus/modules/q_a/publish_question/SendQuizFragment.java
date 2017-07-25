@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q$a.publish_question;
+package com.zhiyicx.thinksnsplus.modules.q_a.publish_question;
 
 import android.content.Intent;
 import android.view.View;

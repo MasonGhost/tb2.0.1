@@ -59,6 +59,7 @@ public class TabSelectView extends FrameLayout {
     private TextView tvToolbarLeft, tvToolbarRight;
     private List<String> mStringList;// tab列表的文字
     private Context mContext;
+    private CommonNavigator mCommonNavigator;
 
     public TabSelectView(Context context) {
         super(context);
@@ -93,6 +94,15 @@ public class TabSelectView extends FrameLayout {
             mStringList = new ArrayList<>();
         }
         initMagicIndicator();
+    }
+
+    public void initTabView(ViewPager viewPager, List<String> stringList, CommonNavigatorAdapter customAdapter) {
+        this.mViewPager = viewPager;
+        this.mStringList = stringList;
+        if (mStringList == null) {
+            mStringList = new ArrayList<>();
+        }
+        initMagicIndicator(customAdapter);
     }
 
     /**
@@ -187,8 +197,8 @@ public class TabSelectView extends FrameLayout {
 
     private void initMagicIndicator() {
         mMagicIndicator.setBackgroundColor(Color.TRANSPARENT);
-        CommonNavigator commonNavigator = new CommonNavigator(mContext);
-        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
+        mCommonNavigator = new CommonNavigator(mContext);
+        mCommonNavigator.setAdapter(new CommonNavigatorAdapter() {
 
             @Override
             public int getCount() {
@@ -224,7 +234,15 @@ public class TabSelectView extends FrameLayout {
                 return linePagerIndicator;
             }
         });
-        mMagicIndicator.setNavigator(commonNavigator);
+        mMagicIndicator.setNavigator(mCommonNavigator);
+        ViewPagerHelper.bind(mMagicIndicator, mViewPager);
+    }
+
+    private void initMagicIndicator(CommonNavigatorAdapter customAdapter) {
+        mMagicIndicator.setBackgroundColor(Color.TRANSPARENT);
+        mCommonNavigator = new CommonNavigator(mContext);
+        mCommonNavigator.setAdapter(customAdapter);
+        mMagicIndicator.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
     }
 
@@ -232,5 +250,7 @@ public class TabSelectView extends FrameLayout {
         void buttonClick();
     }
 
-
+    public CommonNavigator getCommonNavigator() {
+        return mCommonNavigator;
+    }
 }
