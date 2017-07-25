@@ -187,11 +187,7 @@ public class FindFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), QA_InfoContainerActivity.class));
                 break;
             case R.id.find_quiz:
-                if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
-                } else {
-                    showLoginPop();
-                }
                 break;
             default:
                 break;
