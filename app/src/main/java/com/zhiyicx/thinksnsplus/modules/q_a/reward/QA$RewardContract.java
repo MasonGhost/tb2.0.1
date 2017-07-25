@@ -1,11 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 
-import com.zhiyicx.baseproject.base.ITSListPresenter;
-import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.IBaseQuizRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBaseQuestionRepository;
 
 /**
  * @author Catherine
@@ -24,7 +21,7 @@ public interface QA$RewardContract {
 
     }
 
-    interface Repository extends IBaseQuizRepository {
+    interface Repository extends IBaseQuestionRepository {
 
     }
 }

@@ -583,7 +583,7 @@ public abstract class TSListFragment<P extends ITSListPresenter<T>, T extends Ba
      * @param isLoadMore 加载状态
      */
     @Override
-    public void onCacheResponseSuccess(@NotNull List<T> data, boolean isLoadMore) {
+    public void onCacheResponseSuccess( List<T> data, boolean isLoadMore) {
         handleRefreshState(isLoadMore);
         if (!isLoadMore && (data == null || data.size() == 0)) {// 如果没有缓存，直接拉取服务器数据
             getNewDataFromNet();

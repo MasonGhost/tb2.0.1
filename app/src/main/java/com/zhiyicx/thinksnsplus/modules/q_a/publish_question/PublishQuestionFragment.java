@@ -2,13 +2,22 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish_question;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
-import com.zhiyicx.baseproject.base.TSFragment;
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.QA_LIstInfoBean;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Subscriber;
+
+import static com.zhiyicx.common.config.ConstantConfig.SEARCH_JITTER_SPACING_TIME;
 
 
 /**
@@ -18,15 +27,12 @@ import butterknife.BindView;
  * @contact email:648129313@qq.com
  */
 
-public class PublishQuestionFragment extends TSFragment<PublishQuestionContract.Presenter> implements PublishQuestionContract.View {
-
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QA_LIstInfoBean> implements PublishQuestionContract.View {
 
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
-    @BindView(R.id.line)
-    View mLine;
-    @BindView(R.id.rv_questions)
-    RecyclerView mRvQuestions;
+
+    private String mQuestionStr;
 
     public static PublishQuestionFragment newInstance() {
 
@@ -43,17 +49,75 @@ public class PublishQuestionFragment extends TSFragment<PublishQuestionContract.
 
     @Override
     protected String setLeftTitle() {
-        return super.setLeftTitle();
+        return getString(R.string.cancel);
+    }
+
+    @Override
+    protected String setRightTitle() {
+        return getString(R.string.qa_publish_next);
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.qa_publish);
+    }
+
+    @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
     }
 
     @Override
     protected void initView(View rootView) {
+        super.initView(rootView);
+        RxTextView.afterTextChangeEvents(mEtQustion)
+                .compose(this.bindToLifecycle())
+                .throttleFirst(SEARCH_JITTER_SPACING_TIME, TimeUnit.MILLISECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Subscriber<TextViewAfterTextChangeEvent>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mToolbarRight.setEnabled(false);
+                    }
+
+                    @Override
+                    public void onNext(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
+                        mQuestionStr = textViewAfterTextChangeEvent.editable().toString().trim();
+                        if (!TextUtils.isEmpty(mQuestionStr)) {
+                            // TODO: 2017/7/25  搜索相同的問題
+                            mToolbarRight.setEnabled(true);
+                        }else {
+                            mToolbarRight.setEnabled(false);
+                        }
+
+                    }
+                });
     }
 
     @Override
     protected void initData() {
+        super.initData();
+        for (int i = 0; i < 10; i++) {
+            QA_LIstInfoBean qa_lIstInfoBean = new QA_LIstInfoBean();
+            mListDatas.add(qa_lIstInfoBean);
+        }
+        refreshData();
+    }
 
+    @Override
+    protected RecyclerView.Adapter getAdapter() {
+        PublishQuestionAdapter adapter = new PublishQuestionAdapter(getContext(), R.layout.item_publish_question, mListDatas);
+        return adapter;
     }
 
 }

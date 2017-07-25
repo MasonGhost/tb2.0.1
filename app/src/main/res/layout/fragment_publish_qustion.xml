@@ -16,6 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
+        android:background="@color/white"
+        android:hint="@string/qa_publish_title_hint"
         android:padding="@dimen/spacing_large"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -25,25 +27,19 @@
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1"/>
 
-    <View
-        android:id="@+id/line"
-        style="@style/style_divider_horizontal_light"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_qustion"
-        />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_questions"
+    <include
+        layout="@layout/fragment_tslist"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line"
+        app:layout_constraintTop_toBottomOf="@+id/et_qustion"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1"/>
+        tools:layout_constraintTop_creator="1"
+        />
+
 
 </android.support.constraint.ConstraintLayout>

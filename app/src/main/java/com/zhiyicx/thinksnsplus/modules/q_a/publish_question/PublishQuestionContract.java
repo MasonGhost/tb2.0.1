@@ -1,8 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish_question;
 
-import com.zhiyicx.common.mvp.i.IBasePresenter;
-import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.source.repository.IBaseQuizRepository;
+import com.zhiyicx.baseproject.base.ITSListPresenter;
+import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBaseQuestionRepository;
 
 /**
  * @author Catherine
@@ -13,14 +14,14 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IBaseQuizRepository;
 
 public interface PublishQuestionContract {
 
-    interface View extends IBaseView<Presenter> {
+    interface View extends ITSListView<QA_LIstInfoBean, Presenter> {
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends ITSListPresenter<QA_LIstInfoBean> {
 
     }
 
-    interface Repository extends IBaseQuizRepository {
+    interface Repository extends IBaseQuestionRepository {
 
     }
 }
