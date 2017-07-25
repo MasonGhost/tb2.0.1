@@ -218,7 +218,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".modules.q_a.publish.publish_question.PublishQuestionActivity"
+            android:name=".modules.q_a.publish.question.PublishQuestionActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 

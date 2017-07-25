@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish.publish_question;
+package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;

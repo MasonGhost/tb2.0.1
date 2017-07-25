@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    tools:context=".modules.q_a.publish.publish_question.PublishQuestionActivity">
+    tools:context=".modules.q_a.publish.question.PublishQuestionActivity">
 
     <TextView
         android:id="@+id/tv_content"
