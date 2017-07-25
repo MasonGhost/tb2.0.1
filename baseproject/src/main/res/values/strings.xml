@@ -137,30 +137,4 @@
     <string name="share_ing">分享中&#8230;</string>
     <string name="share_fail">分享失败</string>
     <string name="share_cancel">取消分享</string>
-
-    <!--问答相关-->
-    <string name="qa_publish">发布问题</string>
-    <string name="qa_detail">问题详情</string>
-    <string name="qa_publish_next">下一步</string>
-    <string name="qa_publish_title_hint">请输入问题并以问号结尾</string>
-    <string name="qa_publish_content_hint">详细描述你的问题，有助于准确收到准确的回答</string>
-    <string name="qa_publish_anonymous">匿名提问</string>
-    <string name="qa_publish_enable_anonymous">启用匿名</string>
-    <string name="qa_tag">话题</string>
-    <string name="qa_publish_select_tag_hint">至少添加一个话题</string>
-    <string name="qa_publish_search_tag">搜索话题</string>
-    <string name="qa_publish_select_tag_count_hint">添加话题不可以超过5个</string>
-    <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
-    <string name="qa_publish_reward">悬赏</string>
-    <string name="qa_publish_reward_set_money">设置悬赏金额</string>
-    <string name="qa_publish_reward_custom_money">自定义金额</string>
-    <string name="qa_publish_reward_invite">邀请</string>
-    <string name="qa_publish_reward_rule">悬赏规则</string>
-    <string name="qa_publish_reward_onlookers">围观</string>
-    <string name="qa_publish_recommend_expert">推荐专家</string>
-    <string name="qa_publish_btn">发布</string>
-    <string name="qa_tag_all">全部话题</string>
-    <string name="qa_tag_user_followed">我关注的</string>
-    <string name="qa_tag_follow">关注</string>
-    <string name="qa_tag_followed">已关注</string>
 </resources>
