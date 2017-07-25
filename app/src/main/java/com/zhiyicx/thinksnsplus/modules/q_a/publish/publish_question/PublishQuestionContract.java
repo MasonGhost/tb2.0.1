@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.publish_question;
+package com.zhiyicx.thinksnsplus.modules.q_a.publish.publish_question;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;

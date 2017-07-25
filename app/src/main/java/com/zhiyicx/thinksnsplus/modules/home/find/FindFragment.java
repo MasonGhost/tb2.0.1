@@ -23,7 +23,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish_question.PublishQuestionActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.publish_question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
