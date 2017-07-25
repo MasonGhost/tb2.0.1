@@ -65,6 +65,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     protected static final int DEFAULT_OFFSET_PAGE = 3;
     public static final String RECOMMEND_INFO = "-1";
     public static final int REQUEST_CODE = 0;
+
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
             .normal_for_assist_text;// 缺省的tab未选择文字

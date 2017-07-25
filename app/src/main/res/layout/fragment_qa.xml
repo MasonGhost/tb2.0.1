@@ -2,12 +2,11 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/contentView"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/qa_mian"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/ll_toolbar_container_parent"
@@ -15,7 +14,6 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:clickable="true"
-        android:gravity="bottom"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -32,61 +30,71 @@
                 android:paddingRight="@dimen/spacing_mid"
                 android:src="@mipmap/topbar_back_white"/>
 
-            <ImageView
-                android:id="@+id/iv_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/iv_back"
-                android:src="@drawable/frame_loading_grey"
-                android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/tv_channel_name"
+            <RadioGroup
+                android:id="@+id/rg_qa_type"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/toolbar_center_margin"
                 android:layout_marginRight="@dimen/toolbar_center_margin"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:textColor="@color/toolbar_text_corlor_normal"
-                android:textSize="@dimen/toolbar_center_text_size"
-                tools:text="阿超的小蝴蝶"/>
+                android:orientation="horizontal"
+                android:gravity="center">
 
-            <com.zhiyicx.thinksnsplus.widget.ColorFilterTextView
-                android:id="@+id/iv_subscrib_btn"
-                android:layout_width="@dimen/channel_subscrib_btn_width"
-                android:layout_height="@dimen/channel_subscrib_btn_height"
+                <RadioButton
+                    android:id="@+id/rb_qa"
+                    android:button="@null"
+                    android:textSize="@dimen/toolbar_center_text_size"
+                    tools:text="问答"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+                <RadioButton
+                    android:id="@+id/rb_topic"
+                    android:button="@null"
+                    android:textSize="@dimen/toolbar_center_text_size"
+                    tools:text="话题"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+            </RadioGroup>
+
+            <ImageView
+                android:id="@+id/iv_serach"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/spacing_mid"
-                android:layout_marginRight="@dimen/spacing_mid"
-                android:background="@drawable/shape_channel_detail_subscrib_button"
-                android:button="@null"
-                android:drawableLeft="@mipmap/channel_ico_add_white"
-                android:drawablePadding="@dimen/spacing_small_3dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/spacing_normal"
-                android:text="@string/join_group"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_content_comment"/>
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:src="@mipmap/topbar_back_white"/>
+
         </RelativeLayout>
 
         <include layout="@layout/include_horizontal_divider"/>
 
     </LinearLayout>
 
-    <!--发送动态按钮-->
+    <net.lucode.hackware.magicindicator.MagicIndicator
+        android:id="@+id/fragment_qa_indoctor"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"/>
+
     <ImageView
-        android:id="@+id/btn_send_dynamic"
+        android:id="@+id/btn_pulish_question"
         android:layout_width="@dimen/channel_detail_float_btn_height"
         android:layout_height="@dimen/channel_detail_float_btn_height"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="@dimen/floating_button_bottom_margin"
         android:scaleType="fitXY"
-        android:src="@mipmap/channel_btn_suspension"
-        app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior"/>
+        app:layout_behavior="com.zhiyicx.thinksnsplus.widget.coordinatorlayout.ScrollAwareFABBehavior"
+        android:src="@mipmap/channel_btn_suspension"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/fragment_qa_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </android.support.design.widget.CoordinatorLayout>

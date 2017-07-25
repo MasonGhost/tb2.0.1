@@ -309,4 +309,8 @@
     <string name="normal_qustion_three">怎么更换个人主页相册封面？</string>
     <string name="input_instructions">输入提示</string>
     <string name="input_instructions_detail">输入格式错误，手机号码或邮箱仅支持数字或字母</string>
+
+    <!--问答-->
+    <string name="qa_topic">话题</string>
+
 </resources>

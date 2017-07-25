@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q$a.publish_question;
+package com.zhiyicx.thinksnsplus.modules.q_a.publish_question;
 
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
