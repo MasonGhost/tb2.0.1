@@ -19,6 +19,8 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -26,9 +28,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -39,7 +38,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:648129313@qq.com
  */
 
-public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> implements QA$RewardContract.View {
+public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> implements QA$RewardContract.View,
+        CenterInfoPopWindow.CenterPopWindowItem1ClickListener {
 
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
@@ -77,6 +77,8 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
     LinearLayout mLlQaSetOnlookersMoney;
     @BindView(R.id.bt_publish)
     TextView mBtPublish;
+    @BindView(R.id.tv_reward_rule)
+    TextView mTvRewardRule;
     @BindView(R.id.et_onlooker_input)
     EditText mEtOnlookerInput;
     @BindView(R.id.ll_onlooker_set_custom_money)
@@ -88,6 +90,8 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
     // 围观相关
     private List<Float> mOnLookerLabels; // reward labels
     private double mOnLookerMoney; // money pay for watch
+
+    private CenterInfoPopWindow mRulePop; // 悬赏规则
 
     public static QA$RewardFragment instance(Bundle bundle) {
         QA$RewardFragment fragment = new QA$RewardFragment();
@@ -111,6 +115,7 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
     @Override
     protected void initData() {
         initDefaultMoney();
+        initAlertPopupWindow();
     }
 
     @Override
@@ -148,6 +153,25 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
         setRbValue(mRbOnlookersTwo, mRewardLabels.get(1));
         setRbValue(mRbOnlookersThree, mRewardLabels.get(2));
 
+    }
+
+    private void initAlertPopupWindow(){
+        if (mRulePop != null) {
+            return;
+        }
+        mRulePop = CenterInfoPopWindow.builder()
+                .titleStr(getString(R.string.qa_publish_reward_rule))
+                .desStr("xxxxxxxxxxxxxxxxxxx")
+                .item1Str(getString(R.string.get_it))
+                .item1Color(R.color.themeColor)
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .animationStyle(R.style.style_actionPopupAnimation)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .buildCenterPopWindowItem1ClickListener(() -> mRulePop.hide())
+                .parentView(getView())
+                .build();
     }
 
     private void setRbValue(RadioButton radioButton, float f) {
@@ -256,6 +280,10 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
                 .subscribe(aVoid -> {
                     // 发布
                 });
+        RxView.clicks(mTvRewardRule)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mRulePop.show());
     }
 
     private void resetValue() {
@@ -328,5 +356,10 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
 
     private void checkData() {
 
+    }
+
+    @Override
+    public void onClicked() {
+        mRulePop.dismiss();
     }
 }
