@@ -47,6 +47,8 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
@@ -440,6 +442,7 @@ public class BackgroundTaskHandler {
                     }
                 });
     }
+
     /**
      * 处理 Put 请求类型的后台任务
      */
@@ -481,6 +484,7 @@ public class BackgroundTaskHandler {
                     }
                 });
     }
+
     /**
      * 处理Patch请求类型的后台任务
      */
@@ -1031,14 +1035,21 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<Object> data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        dynamicCommentBean.setComment_id((long) data.getId());
-                        dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
-                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    protected void onSuccess(Object data) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            dynamicCommentBean.setComment_id(jsonObject.getJSONObject("comment").getLong("id"));
+                            dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
+                            EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
 
                     @Override
@@ -1063,7 +1074,7 @@ public class BackgroundTaskHandler {
     }
 
     /**
-      * 处理评论发送的后台任务
+     * 处理评论发送的后台任务
      */
     private void sendGroupComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
@@ -1078,14 +1089,24 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<Object> data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        dynamicCommentBean.setId((long) data.getId());
-                        dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
-                        mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    protected void onSuccess(Object data) {
+                        try {
+                            /**
+                             * for detail
+                             * @see{https://github.com/slimkit/plus-component-group/blob/master/Documents/createGroupPostComment.md}
+                             */
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            dynamicCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
+                            dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
+                            EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
                     @Override
