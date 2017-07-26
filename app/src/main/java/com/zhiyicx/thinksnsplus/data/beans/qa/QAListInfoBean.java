@@ -8,6 +8,6 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class QA_LIstInfoBean extends BaseListBean {
+public class QAListInfoBean extends BaseListBean {
 
 }

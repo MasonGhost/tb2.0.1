@@ -197,7 +197,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                 // 显示工具栏
                 DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                        .getDiggs()), dynamicBean.getIs_digg() == GroupDynamicListBean.IS_DIGG, 0);
+                        .getDiggs()), dynamicBean.getHas_like(), 0);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                         .getComments()), false, 1);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean

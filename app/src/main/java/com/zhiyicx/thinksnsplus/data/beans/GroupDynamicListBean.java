@@ -59,9 +59,11 @@ public class GroupDynamicListBean extends BaseListBean {
     private int group_id;
     private int views;
     private int diggs;
-    private int is_digg;
+
+    private boolean has_like;
     private int collections;
-    private int is_collection;
+    private boolean has_collection;
+    @SerializedName("comments_count")
     private int comments;
     private Long user_id;
     @SerializedName("group_post_mark")
@@ -74,46 +76,11 @@ public class GroupDynamicListBean extends BaseListBean {
     @Convert(converter = GroupDynamicImageConvert.class, columnType = String.class)
     private List<ImagesBean> images;
     @Convert(converter = GroupDynamicCommentConvert.class, columnType = String.class)
+    @SerializedName("comments")
     private List<GroupDynamicCommentListBean> commentslist;
     @Convert(converter = GroupDynamicLikesConvert.class, columnType = String.class)
     private List<DynamicDigListBean> mGroupDynamicLikeListBeanList;
     private int state = SEND_ING;
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 699919709)
-    private transient GroupDynamicListBeanDao myDao;
-
-    @Generated(hash = 1388812928)
-    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, int is_digg, int collections, int is_collection, int comments, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.group_id = group_id;
-        this.views = views;
-        this.diggs = diggs;
-        this.is_digg = is_digg;
-        this.collections = collections;
-        this.is_collection = is_collection;
-        this.comments = comments;
-        this.user_id = user_id;
-        this.feed_mark = feed_mark;
-        this.is_audit = is_audit;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.images = images;
-        this.commentslist = commentslist;
-        this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
-        this.state = state;
-    }
-
-    @Generated(hash = 638700750)
-    public GroupDynamicListBean() {
-    }
-
-    @Generated(hash = 1005780391)
-    private transient Long userInfoBean__resolvedKey;
 
     public int getState() {
         return state;
@@ -403,22 +370,6 @@ public class GroupDynamicListBean extends BaseListBean {
         this.commentslist = commentslist;
     }
 
-    public int getIs_digg() {
-        return is_digg;
-    }
-
-    public void setIs_digg(int is_digg) {
-        this.is_digg = is_digg;
-    }
-
-    public int getIs_collection() {
-        return is_collection;
-    }
-
-    public void setIs_collection(int is_collection) {
-        this.is_collection = is_collection;
-    }
-
     public Long getFeed_mark() {
         return feed_mark;
     }
@@ -433,6 +384,53 @@ public class GroupDynamicListBean extends BaseListBean {
 
     public void setMGroupDynamicLikeListBeanList(List<DynamicDigListBean> mGroupDynamicLikeListBeanList) {
         this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.content);
+        dest.writeInt(this.group_id);
+        dest.writeInt(this.views);
+        dest.writeInt(this.diggs);
+        dest.writeByte(this.has_like ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.collections);
+        dest.writeByte(this.has_collection ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.comments);
+        dest.writeValue(this.user_id);
+        dest.writeValue(this.feed_mark);
+        dest.writeParcelable(this.userInfoBean, flags);
+        dest.writeInt(this.is_audit);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeTypedList(this.images);
+        dest.writeTypedList(this.commentslist);
+        dest.writeTypedList(this.mGroupDynamicLikeListBeanList);
+        dest.writeInt(this.state);
+    }
+
+    public boolean getHas_like() {
+        return this.has_like;
+    }
+
+    public void setHas_like(boolean has_like) {
+        this.has_like = has_like;
+    }
+
+    public boolean getHas_collection() {
+        return this.has_collection;
+    }
+
+    public void setHas_collection(boolean has_collection) {
+        this.has_collection = has_collection;
     }
 
     /**
@@ -471,41 +469,14 @@ public class GroupDynamicListBean extends BaseListBean {
         myDao.update(this);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeString(this.title);
-        dest.writeString(this.content);
-        dest.writeInt(this.group_id);
-        dest.writeInt(this.views);
-        dest.writeInt(this.diggs);
-        dest.writeInt(this.is_digg);
-        dest.writeInt(this.collections);
-        dest.writeInt(this.is_collection);
-        dest.writeInt(this.comments);
-        dest.writeValue(this.user_id);
-        dest.writeValue(this.feed_mark);
-        dest.writeParcelable(this.userInfoBean, flags);
-        dest.writeInt(this.is_audit);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeTypedList(this.images);
-        dest.writeTypedList(this.commentslist);
-        dest.writeTypedList(this.mGroupDynamicLikeListBeanList);
-        dest.writeInt(this.state);
-    }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1201375789)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getGroupDynamicListBeanDao() : null;
+    }
+
+    public GroupDynamicListBean() {
     }
 
     protected GroupDynamicListBean(Parcel in) {
@@ -516,9 +487,9 @@ public class GroupDynamicListBean extends BaseListBean {
         this.group_id = in.readInt();
         this.views = in.readInt();
         this.diggs = in.readInt();
-        this.is_digg = in.readInt();
+        this.has_like = in.readByte() != 0;
         this.collections = in.readInt();
-        this.is_collection = in.readInt();
+        this.has_collection = in.readByte() != 0;
         this.comments = in.readInt();
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
@@ -532,6 +503,29 @@ public class GroupDynamicListBean extends BaseListBean {
         this.state = in.readInt();
     }
 
+    @Generated(hash = 1384763763)
+    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, boolean has_like, int collections, boolean has_collection, int comments, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.group_id = group_id;
+        this.views = views;
+        this.diggs = diggs;
+        this.has_like = has_like;
+        this.collections = collections;
+        this.has_collection = has_collection;
+        this.comments = comments;
+        this.user_id = user_id;
+        this.feed_mark = feed_mark;
+        this.is_audit = is_audit;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.images = images;
+        this.commentslist = commentslist;
+        this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
+        this.state = state;
+    }
+
     public static final Creator<GroupDynamicListBean> CREATOR = new Creator<GroupDynamicListBean>() {
         @Override
         public GroupDynamicListBean createFromParcel(Parcel source) {
@@ -543,4 +537,16 @@ public class GroupDynamicListBean extends BaseListBean {
             return new GroupDynamicListBean[size];
         }
     };
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 699919709)
+    private transient GroupDynamicListBeanDao myDao;
+    @Generated(hash = 1005780391)
+    private transient Long userInfoBean__resolvedKey;
 }

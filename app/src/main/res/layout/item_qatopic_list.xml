@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white">
+
+    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+        android:id="@+id/iv_topic_cover"
+        android:layout_width="@dimen/rec_image_for_list_normal"
+        android:layout_height="@dimen/rec_image_for_list_normal"
+        android:layout_marginBottom="@dimen/spacing_mid"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:src="@drawable/shape_default_image"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_toLeftOf="@+id/tv_topic_subscrib"
+        android:layout_toRightOf="@id/iv_topic_cover"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_topic_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            tools:text="我是话题名称"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
+
+
+        <TextView
+            android:id="@+id/tv_topic_feed_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:includeFontPadding="false"
+            tools:text="分享 3.4万"
+            android:textSize="@dimen/size_content_assist"/>
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/tv_topic_subscrib"
+        android:layout_width="@dimen/channel_subscrib_btn_width"
+        android:layout_height="@dimen/channel_subscrib_btn_height"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:background="@drawable/shape_channel_list_subscrib_button"
+        android:button="@null"
+        android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
+        android:drawablePadding="@dimen/spacing_small_3dp"
+        android:paddingLeft="@dimen/spacing_normal"
+        tools:text="关注"
+        android:textColor="@color/selector_channel_list_subscrib_button_divider"
+        android:textSize="@dimen/size_content_comment"/>
+
+</RelativeLayout>

@@ -1,7 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,12 +53,12 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     }
 
     @Override
-    public List<QA_LIstInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<QA_LIstInfoBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
         return false;
     }
 }

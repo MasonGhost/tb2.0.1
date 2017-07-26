@@ -31,20 +31,18 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/npc"/>
 
-    <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
+    <TextView
+        android:lineSpacingExtra="@dimen/spacing_mid_small_8dp"
         android:id="@+id/item_info_hotcomment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@mipmap/pic_default_portrait1"
-        android:drawablePadding="@dimen/spacing_small"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_normal"
-        android:textColor="@color/general_for_hint"
-        app:compoundDrawableHeight="@dimen/headpic_for_assist"
-        app:compoundDrawableWidth="@dimen/headpic_for_assist"
+        android:textSize="@dimen/size_content"
+        android:textColor="@color/normal_for_dynamic_list_content"
         tools:text="三小时前   来自火星"/>
 
     <LinearLayout
@@ -56,14 +54,18 @@
         android:paddingTop="@dimen/spacing_normal">
 
         <TextView
+            android:textSize="@dimen/size_content_assist"
             android:id="@+id/item_info_count"
             android:layout_width="0dp"
+            android:textColor="@color/normal_for_assist_text"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
             tools:text="ssss"/>
 
         <TextView
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_assist"
             android:id="@+id/item_info_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

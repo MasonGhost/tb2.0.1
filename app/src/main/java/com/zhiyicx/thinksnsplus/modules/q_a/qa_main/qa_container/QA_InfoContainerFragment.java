@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
@@ -29,7 +30,7 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class QA$InfoContainerFragment extends TSViewPagerFragment {
+public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
 
     protected static final int DEFAULT_OFFSET_PAGE = 3;
@@ -65,19 +66,22 @@ public class QA$InfoContainerFragment extends TSViewPagerFragment {
     private List<Fragment> mFragments;
     private CommonNavigator mCommonNavigator;
 
-    public static QA$InfoContainerFragment getInstance() {
-        return new QA$InfoContainerFragment();
+    public static QA_InfoContainerFragment getInstance() {
+        return new QA_InfoContainerFragment();
     }
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList(getString(R.string.joined_group), getString(R.string.all_group));
+        return Arrays.asList("走起", "不下班", "车", "旅游");
     }
 
     @Override
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
             mFragments = new ArrayList<>();
+            mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
+            mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
+            mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
             mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
         }
         return mFragments;
@@ -86,6 +90,13 @@ public class QA$InfoContainerFragment extends TSViewPagerFragment {
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected void initViewPager(View rootView) {
+        super.initViewPager(rootView);
+        mTsvToolbar.setLeftImg(0);
+        mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
     }
 
     @NonNull

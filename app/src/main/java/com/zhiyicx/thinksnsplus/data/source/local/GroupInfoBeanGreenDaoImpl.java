@@ -50,7 +50,7 @@ public class GroupInfoBeanGreenDaoImpl extends CommonCacheImpl<GroupInfoBean> {
     @Override
     public List<GroupInfoBean> getMultiDataFromCache() {
         List<GroupInfoBean> result = mGroupInfoBeanDao.loadAll();
-        result.sort((o1, o2) -> (int) (o2.getId() - o1.getId()));
+//        result.sort((o1, o2) -> (int) (o2.getId() - o1.getId()));
         return result;
     }
 
