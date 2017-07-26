@@ -6,6 +6,7 @@
                                              android:layout_height="match_parent"
                                              android:layout_marginTop="0dp"
                                              android:orientation="vertical"
+                                             android:background="@color/white"
                                              app:layout_constraintTop_toTopOf="@+id/et_qustion"
                                              tools:layout_editor_absoluteX="0dp">
 
@@ -34,12 +35,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_qustion"
+        app:layout_constraintTop_toBottomOf="@+id/line"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1"
         />
 
+    <View
+        android:id="@+id/line"
+        style="@style/style_divider_horizontal_light"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_qustion"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
+        />
 
 </android.support.constraint.ConstraintLayout>

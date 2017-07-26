@@ -323,7 +323,7 @@
     <string name="qa_topic">话题</string>
     <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
     <string name="qa_publish_search_topic">搜索话题</string>
-    <string name="qa_publish_select_topic_count_hint">添加话题不可以超过5个</string>
+    <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
     <string name="qa_publish_reward">悬赏</string>
     <string name="qa_publish_reset_money">重置</string>
@@ -341,4 +341,6 @@
     <string name="qa_topic_followed">已关注</string>
     <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
     <string name="qa_show_topic_followed_reward">%1$d 关注  ·  %2$d 回答  ·  ￥%3$.1f 悬赏</string>
+    <string name="edit_quit">放弃编辑</string>
+    <string name="save_to_draft_box">保存至草稿箱</string>
 </resources>

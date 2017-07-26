@@ -2,17 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
 import android.content.Context;
 
-import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 
 /**
@@ -41,9 +36,9 @@ public class AddTopicAdapter extends CommonAdapter<QATopicBean> {
         holder.setText(R.id.tv_content, "大量时间噶劳动竞赛高考了近分开了三个加快立法的世界观");
 
         // 添加点击事件
-        RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> ToastUtils.showLongToast(getContext(), "点击"));
+//        RxView.clicks(holder.getConvertView())
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+//                .subscribe(aVoid -> ToastUtils.showLongToast(getContext(), "点击"));
 
     }
 

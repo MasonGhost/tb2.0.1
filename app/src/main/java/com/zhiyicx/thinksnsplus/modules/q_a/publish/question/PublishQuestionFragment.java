@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,7 +11,10 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
@@ -32,7 +36,11 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
 
+    @BindView(R.id.line)
+    View mLine;
+
     private String mQuestionStr = "";
+    private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
 
     public static PublishQuestionFragment newInstance() {
 
@@ -48,8 +56,18 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     @Override
+    protected int setEmptView() {
+        return 0;
+    }
+
+    @Override
     protected int setLeftImg() {
         return 0;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        onBackPressed();
     }
 
     @Override
@@ -75,6 +93,13 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     protected boolean isLoadingMoreEnable() {
         return false;
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
+                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
+                .shape_recyclerview_grey_divider));
     }
 
     @Override
@@ -135,6 +160,11 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
             mListDatas.add(qa_listInfoBean);
         }
         refreshData();
+        if (mListDatas.isEmpty()) {
+            mLine.setVisibility(View.INVISIBLE);
+        } else {
+            mLine.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -143,4 +173,39 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         return adapter;
     }
 
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initEditWarningPop() {
+        DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
+        if (mEditWarningPopupWindow != null) {
+            return;
+        }
+        mEditWarningPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.edit_quit))
+                .item2Str(getString(R.string.save_to_draft_box))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mEditWarningPopupWindow.hide();
+                    getActivity().finish();
+                })
+                .item2ClickListener(() -> {
+                    mEditWarningPopupWindow.hide();
+                })
+                .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (TextUtils.isEmpty(mQuestionStr)) {
+            super.setLeftClick();
+        } else {
+            initEditWarningPop();
+            mEditWarningPopupWindow.show();
+        }
+    }
 }

@@ -989,7 +989,7 @@ public final class TSnackbar {
             mMaxInlineActionWidth = a.getDimensionPixelSize(R.styleable.SnackbarLayout_maxActionInlineWidth, -1);
             if (a.hasValue(R.styleable.SnackbarLayout_elevation)) {
                 ViewCompat.setElevation(this, a.getDimensionPixelSize(
-                        R.styleable.SnackbarLayout_elevation, 0));
+                        R.styleable.SnackbarLayout_elevation, 5));
             }
             a.recycle();
             setClickable(true);

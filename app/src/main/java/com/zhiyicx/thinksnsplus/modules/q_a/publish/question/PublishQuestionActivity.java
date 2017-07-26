@@ -25,4 +25,9 @@ public class PublishQuestionActivity extends TSActivity<PublishQuestionPresenter
                 .build()
                 .inject(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }
