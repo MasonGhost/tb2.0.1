@@ -427,11 +427,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 }
                 if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT, shareBitMap);
+                            .getHas_collection(), shareBitMap);
                     mMyDynamicPopWindow.show();
                 } else {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
-                            .getIs_collection() == GroupDynamicListBean.IS_COLLECT, shareBitMap);
+                            .getHas_collection(), shareBitMap);
                     mOtherDynamicPopWindow.show();
                 }
                 break;
@@ -500,11 +500,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
      */
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
-        mListDatas.get(dataPosition).setIs_digg(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.IS_DIGG ? GroupDynamicListBean.UN_DIGG : GroupDynamicListBean.IS_DIGG);
-        mListDatas.get(dataPosition).setDiggs(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.UN_DIGG ?
+        mListDatas.get(dataPosition).setHas_like(!mListDatas.get(dataPosition).getHas_like());
+        mListDatas.get(dataPosition).setDiggs(!mListDatas.get(dataPosition).getHas_like() ?
                 mListDatas.get(dataPosition).getDiggs() - 1 : mListDatas.get(dataPosition).getDiggs() + 1);
         refreshData(dataPosition);
-        mPresenter.handleLike(mListDatas.get(dataPosition).getIs_digg() == GroupDynamicListBean.IS_DIGG,
+        mPresenter.handleLike(mListDatas.get(dataPosition).getHas_like(),
                 mListDatas.get(dataPosition).getGroup_id(), mListDatas.get(dataPosition).getId(), dataPosition);
     }
 
@@ -516,9 +516,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void handleCollect(int dataPosition) {
         // 先更新界面，再后台处理
         mPresenter.handleCollect(mListDatas.get(dataPosition));
-        boolean is_collection = mListDatas.get(dataPosition).getIs_collection() == GroupDynamicListBean.IS_COLLECT;// 旧状态
-        mListDatas.get(dataPosition).setIs_collection(is_collection ?
-                GroupDynamicListBean.UN_COLLECT : GroupDynamicListBean.IS_COLLECT);
+        boolean is_collection = mListDatas.get(dataPosition).getHas_collection();// 旧状态
+        mListDatas.get(dataPosition).setHas_collection(!is_collection );
         refreshData(dataPosition);
     }
 

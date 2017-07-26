@@ -451,9 +451,9 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
      */
     private void initBottomToolData(GroupDynamicListBean dynamicBean) {
         // 设置是否喜欢
-        mDdDynamicTool.setItemIsChecked(dynamicBean.getIs_digg() == 1, DynamicDetailMenuView.ITEM_POSITION_0);
+        mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_like(), DynamicDetailMenuView.ITEM_POSITION_0);
         //设置是否收藏
-        mDdDynamicTool.setItemIsChecked(dynamicBean.getIs_collection() == 1, DynamicDetailMenuView.ITEM_POSITION_3);
+        mDdDynamicTool.setItemIsChecked(dynamicBean.getHas_collection(), DynamicDetailMenuView.ITEM_POSITION_3);
     }
 
     /**
@@ -465,7 +465,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             switch (postion) {
                 case DynamicDetailMenuView.ITEM_POSITION_0:
                     // 处理喜欢逻辑，包括服务器，数据库，ui
-                    boolean isLike = mGroupDynamicListBean.getIs_digg() == 1;
+                    boolean isLike = mGroupDynamicListBean.getHas_like();
                     mPresenter.handleLike(!isLike,mGroupDynamicListBean.getGroup_id(),
                             mGroupDynamicListBean.getId(), mGroupDynamicListBean);
                     break;
@@ -482,10 +482,10 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
                 case DynamicDetailMenuView.ITEM_POSITION_3:
                     // 处理喜欢逻辑，包括服务器，数据库，ui
                     if (mGroupDynamicListBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
-                        initMyDynamicPopupWindow(mGroupDynamicListBean, mGroupDynamicListBean.getIs_collection() == 1);
+                        initMyDynamicPopupWindow(mGroupDynamicListBean, mGroupDynamicListBean.getHas_collection());
                         mMyDynamicPopWindow.show();
                     } else {
-                        initOtherDynamicPopupWindow(mGroupDynamicListBean, mGroupDynamicListBean.getIs_collection() == 1);
+                        initOtherDynamicPopupWindow(mGroupDynamicListBean, mGroupDynamicListBean.getHas_collection());
                         mOtherDynamicPopWindow.show();
                     }
                     break;
