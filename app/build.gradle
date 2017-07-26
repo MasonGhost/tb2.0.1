@@ -200,5 +200,7 @@ dependencies {
     compile dataDependences.markdown
     compile dataDependences.editor
     compile(name: 'lint-library-release', ext: 'aar')
+
+    compile dataDependences.flowlayout
 }
 

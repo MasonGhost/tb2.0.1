@@ -11,6 +11,12 @@ import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.view.flowlayout.FlowLayout;
+import com.zhy.view.flowlayout.TagFlowLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import rx.Subscriber;
@@ -23,12 +29,18 @@ import rx.Subscriber;
  * @Contact master.jungle68@gmail.com
  */
 
-public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter, QATopicBean> implements AddTopicContract.View {
+public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter, QATopicBean> implements AddTopicContract.View, MultiItemTypeAdapter.OnItemClickListener, TagFlowLayout.OnTagClickListener {
 
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
 
+    @BindView(R.id.fl_topics)
+    TagFlowLayout mFLTopics;
+
     private String mQuestionStr = "";
+    private List<QATopicBean> mQATopicBeanList = new ArrayList<>();
+    private TopicsAdapter mTopicsAdapter;
+    private int mMaxTagNums;
 
     public static AddTopicFragment newInstance() {
 
@@ -67,12 +79,13 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void setRightClick() {
         super.setRightClick();
 
-
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        initTopicsView();
+
         RxTextView.afterTextChangeEvents(mEtQustion)
                 .compose(this.bindToLifecycle())
                 .subscribe(new Subscriber<TextViewAfterTextChangeEvent>() {
@@ -101,9 +114,16 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
                 });
     }
 
+    private void initTopicsView() {
+        mTopicsAdapter = new TopicsAdapter(mQATopicBeanList, getContext());
+        mFLTopics.setAdapter(mTopicsAdapter);
+        mFLTopics.setOnTagClickListener(this);
+    }
+
     @Override
     protected void initData() {
         super.initData();
+        mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
         for (int i = 0; i < 10; i++) {
             QATopicBean qa_lIstInfoBean = new QATopicBean();
             mListDatas.add(qa_lIstInfoBean);
@@ -114,7 +134,29 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected RecyclerView.Adapter getAdapter() {
         AddTopicAdapter adapter = new AddTopicAdapter(getContext(), R.layout.item_publish_question_add_topic, mListDatas);
+        adapter.setOnItemClickListener(this);
         return adapter;
     }
 
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        if (mQATopicBeanList.size() < mMaxTagNums) {
+            mQATopicBeanList.add(mListDatas.get(position));
+            mTopicsAdapter.notifyDataChanged();
+        } else {
+            showSnackErrorMessage(getString(R.string.qa_publish_select_topic_count_hint, mMaxTagNums));
+        }
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
+    }
+
+    @Override
+    public boolean onTagClick(View view, int position, FlowLayout parent) {
+        mQATopicBeanList.remove(position);
+        mTopicsAdapter.notifyDataChanged();
+        return true;
+    }
 }

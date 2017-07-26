@@ -122,7 +122,9 @@ ext {
             calligraphyFont              : 'uk.co.chrisjenx:calligraphy:2.3.0',
             // markdown editor
             markdown                     : 'com.github.tiagohm.MarkdownView:emoji:0.17.0',
-            editor                       : 'jp.wasabeef:richeditor-android:1.2.2'
+            editor                       : 'jp.wasabeef:richeditor-android:1.2.2',
+
+            flowlayout                   : 'com.zhy:flowlayout-lib:1.0.3'
     ]
     sdksoupportDependencies = [
             appcompatV7     : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",
