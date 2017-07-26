@@ -4,21 +4,25 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
 import android.widget.TextView;
 
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,7 +36,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Presenter, QA_LIstInfoBean>
+public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Presenter, QAListInfoBean>
         implements QA_ListInfoConstact.View {
 
     public static final String BUNDLE_QA_TYPE = "qa_type";
@@ -114,12 +118,14 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return new CommonAdapter<QA_LIstInfoBean>(getActivity(), R.layout.item_qa_content, mListDatas) {
+        return new CommonAdapter<QAListInfoBean>(getActivity(), R.layout.item_qa_content, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, QA_LIstInfoBean o, int position) {
+            protected void convert(ViewHolder holder, QAListInfoBean o, int position) {
                 holder.setText(R.id.item_info_title, "火星很危险，快回地球去吧");
                 holder.setText(R.id.item_info_time, "一周前");
-                holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed), 200, 40));
+                holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed_reward)
+                        , 200, 40, 18f));
+                ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(null));
                 TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
                 String content = "火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
                         "快回地球去吧火星很危险，" +
@@ -137,5 +143,33 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
             }
         };
+    }
+
+    private List<Link> setLinks(QAListInfoBean listInfoBean) {
+        List<Link> links = new ArrayList<>();
+        Link followCountLink=new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
+                .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(followCountLink);
+
+        Link answerCountLink=new Link("40").setTextColor(ContextCompat.getColor(getContext(), R.color
+                .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(answerCountLink);
+
+        Link rewardMoneyLink=new Link("￥18.0").setTextColor(ContextCompat.getColor(getContext(), R.color
+                .withdrawals_item_enable))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(rewardMoneyLink);
+        return links;
     }
 }

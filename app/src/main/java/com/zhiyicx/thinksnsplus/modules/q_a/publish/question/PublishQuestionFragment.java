@@ -12,7 +12,7 @@ import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 
 import butterknife.BindView;
@@ -27,7 +27,7 @@ import rx.Subscriber;
  */
 
 
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QA_LIstInfoBean> implements PublishQuestionContract.View {
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean> implements PublishQuestionContract.View {
 
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
@@ -131,8 +131,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     protected void initData() {
         super.initData();
         for (int i = 0; i < 10; i++) {
-            QA_LIstInfoBean qa_lIstInfoBean = new QA_LIstInfoBean();
-            mListDatas.add(qa_lIstInfoBean);
+            QAListInfoBean qa_listInfoBean = new QAListInfoBean();
+            mListDatas.add(qa_listInfoBean);
         }
         refreshData();
     }

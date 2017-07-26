@@ -5,7 +5,7 @@ import android.content.Context;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -21,18 +21,18 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class PublishQuestionAdapter extends CommonAdapter<QA_LIstInfoBean> {
+public class PublishQuestionAdapter extends CommonAdapter<QAListInfoBean> {
 
-    public PublishQuestionAdapter(Context context, int layoutId, List<QA_LIstInfoBean> datas) {
+    public PublishQuestionAdapter(Context context, int layoutId, List<QAListInfoBean> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    protected void convert(ViewHolder holder, QA_LIstInfoBean qa_lIstInfoBean, int position) {
-        setItemData(holder, qa_lIstInfoBean, position);
+    protected void convert(ViewHolder holder, QAListInfoBean qa_listInfoBean, int position) {
+        setItemData(holder, qa_listInfoBean, position);
     }
 
-    private void setItemData(final ViewHolder holder, final QA_LIstInfoBean qa_lIstInfoBean, final int position) {
+    private void setItemData(final ViewHolder holder, final QAListInfoBean qa_listInfoBean, final int position) {
 
 
         // 设置用户名，用户简介
