@@ -1,16 +1,22 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -71,7 +77,9 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
         return new CommonAdapter<QATopicBean>(getContext(), R.layout.item_channel_list, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, QATopicBean o, int position) {
-
+                holder.setText(R.id.tv_topic_feed_count,
+                        String.format(Locale.getDefault(),getString(R.string.qa_show_topic_followed),200,41));
+                ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_topic_feed_count), setLinks(null));
             }
         };
     }
@@ -100,5 +108,25 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
     @Override
     protected List<QATopicBean> requestCacheData(Long maxId, boolean isLoadMore) {
         return mListDatas;
+    }
+
+    private List<Link> setLinks(QATopicBean listInfoBean) {
+        List<Link> links = new ArrayList<>();
+        Link followCountLink=new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
+                .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(followCountLink);
+
+        Link answerCountLink=new Link("41").setTextColor(ContextCompat.getColor(getContext(), R.color
+                .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(answerCountLink);
+        return links;
     }
 }

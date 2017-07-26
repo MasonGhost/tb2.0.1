@@ -135,7 +135,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                         contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
                 Drawable headImage = new CircleImageDrawable(newBmp);
                 headImage.setBounds(0, 0, contentTextView.getLineHeight(), contentTextView.getLineHeight());
-                ImageSpan imgSpan = new CenterImageSpan(headImage);
+                ImageSpan imgSpan = new CenterImageSpan(headImage,true);
                 SpannableString spannableString = SpannableString.valueOf("T" + content);
                 spannableString.setSpan(imgSpan, 0, 1, Spannable
                         .SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -32,6 +32,7 @@
         android:src="@mipmap/npc"/>
 
     <TextView
+        android:lineSpacingExtra="@dimen/spacing_mid_small_8dp"
         android:id="@+id/item_info_hotcomment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
