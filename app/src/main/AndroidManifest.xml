@@ -225,11 +225,10 @@
             android:name=".modules.q_a.publish.add_topic.AddTopicActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-
         <activity
-                android:name=".modules.q_a.reward.QA_RewardActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustPan"/>
+            android:name=".modules.q_a.reward.QA_RewardActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
 
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
@@ -365,6 +364,8 @@
         <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
         </activity>
         <activity android:name=".modules.q_a.QA_Activity">
+        </activity>
+        <activity android:name=".modules.q_a.publish.detail.PublishContentActivity">
         </activity>
     </application>
 

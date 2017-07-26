@@ -20,20 +20,19 @@
 
             <ImageView
                 android:id="@+id/iv_back"
+                android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/spacing_mid"
                 android:paddingRight="@dimen/spacing_mid"
-                android:src="@mipmap/topbar_back_white"/>
+                android:src="@mipmap/topbar_back"/>
 
             <RadioGroup
                 android:id="@+id/rg_qa_type"
                 android:layout_width="@dimen/qa_top_select_width"
                 android:layout_height="@dimen/qa_top_select_height"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/toolbar_center_margin"
-                android:layout_marginRight="@dimen/toolbar_center_margin"
                 android:orientation="horizontal"
                 android:gravity="center">
 
@@ -69,11 +68,12 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/spacing_normal"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginRight="@dimen/spacing_mid"
-                android:src="@mipmap/topbar_back_white"/>
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:src="@mipmap/search_icon_search"
+                android:visibility="visible"/>
 
         </RelativeLayout>
 
@@ -95,6 +95,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="@dimen/floating_button_bottom_margin"
         android:scaleType="fitXY"
-        android:src="@mipmap/channel_btn_suspension"/>
+        android:src="@mipmap/channel_btn_suspension"
+        android:visibility="visible"/>
 
 </FrameLayout>
