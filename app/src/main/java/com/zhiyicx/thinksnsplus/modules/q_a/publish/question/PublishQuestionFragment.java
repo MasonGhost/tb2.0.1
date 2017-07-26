@@ -11,6 +11,8 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -38,6 +40,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     View mLine;
 
     private String mQuestionStr = "";
+    private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
 
     public static PublishQuestionFragment newInstance() {
 
@@ -60,6 +63,11 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     protected int setLeftImg() {
         return 0;
+    }
+
+    @Override
+    protected void setLeftClick() {
+        onBackPressed();
     }
 
     @Override
@@ -165,4 +173,39 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         return adapter;
     }
 
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initEditWarningPop() {
+        DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
+        if (mEditWarningPopupWindow != null) {
+            return;
+        }
+        mEditWarningPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.edit_quit))
+                .item2Str(getString(R.string.save_to_draft_box))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mEditWarningPopupWindow.hide();
+                    getActivity().finish();
+                })
+                .item2ClickListener(() -> {
+                    mEditWarningPopupWindow.hide();
+                })
+                .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (TextUtils.isEmpty(mQuestionStr)) {
+            super.setLeftClick();
+        } else {
+            initEditWarningPop();
+            mEditWarningPopupWindow.show();
+        }
+    }
 }
