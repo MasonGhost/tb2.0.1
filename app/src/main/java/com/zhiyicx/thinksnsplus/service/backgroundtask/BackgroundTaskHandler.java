@@ -62,7 +62,6 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -339,7 +338,7 @@ public class BackgroundTaskHandler {
                 setTollDynamicComment(backgroundRequestTaskBean);
                 break;
 
-            case SEND_COMMENT:
+            case SEND_DYNAMIC_COMMENT:
                 sendComment(backgroundRequestTaskBean);
                 break;
             case SEND_INFO_COMMENT:

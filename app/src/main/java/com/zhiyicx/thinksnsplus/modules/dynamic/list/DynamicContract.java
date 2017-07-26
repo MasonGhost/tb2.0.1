@@ -115,8 +115,6 @@ public interface DynamicContract {
          * @param replyToUserId   comment  to who
          * @param commentContent  comment content
          */
-        void sendComment(int mCurrentPostion, long replyToUserId, String commentContent);
-
         void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent);
 
         /**
