@@ -41,7 +41,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
-import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
@@ -163,7 +162,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<GroupDynamicCommentListBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData( List<GroupDynamicCommentListBean> data, boolean isLoadMore) {
         if (data == null) {
             return false;
         }
@@ -205,6 +204,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                 , mRepository.getGroupDynamicCommentList(group_id, dynamic_id, max_id)
                 , (listBaseJson2, listBaseJson3) -> {
                     GroupDynamicListBean dynamicBean = new GroupDynamicListBean();
+                    dynamicBean.setMGroupDynamicLikeListBeanList(listBaseJson2);
                     // 保存关注状态
                     List<GroupDynamicCommentListBean> data = listBaseJson3;
 
