@@ -306,7 +306,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     private void setConfirmEnable() {
         if (isNameEdited && isCodeEdited && isPassEdited && !isRegisting) {
             if ((mCurrentRegisterType == REGISTER_PHONE && isPhoneEdited)
-                    || mCurrentRegisterType == REGISTER_EMAIL && isEmailEdited) {
+                    || (mCurrentRegisterType == REGISTER_EMAIL && isEmailEdited)) {
                 mBtRegistRegist.setEnabled(true);
             } else {
                 mBtRegistRegist.setEnabled(false);
@@ -329,11 +329,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     @Override
     protected void setRightClick() {
         // 修改UI
-        mCurrentRegisterType = mCurrentRegisterType == REGISTER_PHONE ? REGISTER_EMAIL : REGISTER_PHONE;
-        setRightText(mCurrentRegisterType == REGISTER_PHONE ?
-                getString(R.string.email_address) : getString(R.string.phone_hint));
-        setCenterText(mCurrentRegisterType == REGISTER_PHONE ?
-                getString(R.string.register_by_phone) : getString(R.string.register_by_email));
+        resetUI();
         setRegisterType();
         // 清空数据
         clearAllData();
@@ -363,5 +359,17 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
         isCodeEdited = false;
         isPassEdited = false;
         setConfirmEnable();
+    }
+
+    /**
+     * 重置UI
+     */
+    private void resetUI(){
+        mCurrentRegisterType = mCurrentRegisterType == REGISTER_PHONE ? REGISTER_EMAIL : REGISTER_PHONE;
+        setRightText(mCurrentRegisterType == REGISTER_PHONE ?
+                getString(R.string.email_address) : getString(R.string.phone_hint));
+        setCenterText(mCurrentRegisterType == REGISTER_PHONE ?
+                getString(R.string.register_by_phone) : getString(R.string.register_by_email));
+        showMessage("");
     }
 }

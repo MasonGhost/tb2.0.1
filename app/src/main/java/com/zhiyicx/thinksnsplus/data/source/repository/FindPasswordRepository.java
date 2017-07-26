@@ -30,7 +30,19 @@ public class FindPasswordRepository extends VertifyCodeRepository implements Fin
 
     @Override
     public Observable<BaseJson<CacheBean>> findPassword(String phone, String vertifyCode, String newPassword) {
-        return mPasswordClient.findPassword("success", phone, vertifyCode, newPassword)
+        return mPasswordClient.findPassword("success", phone, null, vertifyCode, newPassword)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<CacheBean> findPasswordV2(String phone, String vertifyCode, String newPassword) {
+        return  mPasswordClient.findPasswordV2(phone, null, vertifyCode, mPasswordClient.REGITER_TYPE_SMS, newPassword)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<CacheBean> findPasswordByEmail(String email, String verifyCode, String newPassword) {
+        return mPasswordClient.findPasswordV2( null, email, verifyCode, mPasswordClient.REGITER_TYPE_EMAIL, newPassword)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }
