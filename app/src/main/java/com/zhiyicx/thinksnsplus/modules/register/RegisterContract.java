@@ -81,7 +81,11 @@ public interface RegisterContract {
     interface Presenter extends IBaseTouristPresenter {
         void getVertifyCode(String phone);
 
+        void getVerifyCodeByEmail(String email);
+
         void register(String name, String phone, String vertifyCode, String password);
+
+        void registerByEmail(String name, String email, String verifyCode, String password);
     }
 
 }
