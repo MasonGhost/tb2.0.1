@@ -1,9 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
+import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
@@ -111,10 +120,21 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 holder.setText(R.id.item_info_title, "火星很危险，快回地球去吧");
                 holder.setText(R.id.item_info_time, "一周前");
                 holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed), 200, 40));
-                holder.setText(R.id.item_info_hotcomment, "火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
+                TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
+                String content = "火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
                         "快回地球去吧火星很危险，" +
                         "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
-                        "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧");
+                        "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧";
+                Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.icon_256),
+                        contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
+                Drawable headImage = new CircleImageDrawable(newBmp);
+                headImage.setBounds(0, 0, contentTextView.getLineHeight(), contentTextView.getLineHeight());
+                ImageSpan imgSpan = new CenterImageSpan(headImage);
+                SpannableString spannableString = SpannableString.valueOf("T" + content);
+                spannableString.setSpan(imgSpan, 0, 1, Spannable
+                        .SPAN_EXCLUSIVE_EXCLUSIVE);
+                contentTextView.setText(spannableString);
+
             }
         };
     }

@@ -268,7 +268,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     @Override
     public void handleCollect(GroupDynamicListBean dynamicBean) {
         // 修改数据-更新界面
-        boolean is_collection = dynamicBean.getIs_collection() == GroupDynamicListBean.IS_COLLECT;// 旧状态
+        boolean is_collection = dynamicBean.getHas_collection();// 旧状态
         // 更新数据库
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
         // 通知服务器

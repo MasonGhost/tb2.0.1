@@ -302,7 +302,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mRootView.setLike(isLiked);
         mRootView.getCurrentDynamic().setDiggs(isLiked ? mRootView.getCurrentDynamic()
                 .getDiggs() + 1 : mRootView.getCurrentDynamic().getDiggs() - 1);
-        mRootView.getCurrentDynamic().setIs_digg(isLiked ? 1 : 0);
+        mRootView.getCurrentDynamic().setHas_like(isLiked);
         if (!isLiked) {// 取消喜欢，修改修换的用户信息
             List<DynamicDigListBean> digUsers = mRootView.getCurrentDynamic().getMGroupDynamicLikeListBeanList();
             int digUserSize = digUsers.size();
@@ -339,9 +339,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     public void handleCollect(GroupDynamicListBean dynamicBean) {
         // 收藏
         // 修改数据
-        boolean is_collection = dynamicBean.getIs_collection() == 1;// 旧状态
+        boolean is_collection = dynamicBean.getHas_collection();// 旧状态
         // 新状态
-        dynamicBean.setIs_collection(is_collection ? 0 : 1);
+        dynamicBean.setHas_collection(!is_collection);
         dynamicBean.setCollections(is_collection ? dynamicBean.getCollections() - 1 : dynamicBean.getCollections() + 1);
         boolean newCollectState = !is_collection;
         // 更新UI

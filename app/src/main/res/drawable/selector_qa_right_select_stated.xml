@@ -3,8 +3,8 @@
     <item  android:state_checked="true">
         <shape >
             <solid android:color="@color/themeColor"/>
-            <corners android:bottomLeftRadius="@dimen/spacing_small"
-                     android:topLeftRadius="@dimen/spacing_small"/>
+            <corners android:bottomRightRadius="@dimen/spacing_small"
+                     android:topRightRadius="@dimen/spacing_small"/>
         </shape>
     </item>
     <item android:state_checked="false">
@@ -12,8 +12,8 @@
             <stroke
                 android:width="@dimen/divider_line"
                 android:color="@color/themeColor"/>
-            <corners android:bottomLeftRadius="@dimen/spacing_small"
-                     android:topLeftRadius="@dimen/spacing_small"/>
+            <corners android:bottomRightRadius="@dimen/spacing_small"
+                     android:topRightRadius="@dimen/spacing_small"/>
         </shape>
     </item>
 </selector>

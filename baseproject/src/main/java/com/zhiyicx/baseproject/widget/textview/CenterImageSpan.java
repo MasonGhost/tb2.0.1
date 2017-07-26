@@ -28,7 +28,6 @@ public class CenterImageSpan extends ImageSpan {
         super(d);
     }
 
-    // 详情见源码，特简单
     @Override
     public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt
             fm) {
@@ -50,7 +49,6 @@ public class CenterImageSpan extends ImageSpan {
         return rect.right;
     }
 
-    // 详情见源码，特简单
     @Override
     public void draw(Canvas canvas, CharSequence text, int start, int end,
                      float x, int top, int y, int bottom, Paint paint) {

@@ -31,12 +31,10 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/npc"/>
 
-    <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
+    <TextView
         android:id="@+id/item_info_hotcomment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@mipmap/pic_default_portrait1"
-        android:drawablePadding="@dimen/spacing_small"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/spacing_normal"
@@ -44,8 +42,6 @@
         android:paddingTop="@dimen/spacing_normal"
         android:textSize="@dimen/size_content"
         android:textColor="@color/normal_for_dynamic_list_content"
-        app:compoundDrawableHeight="@dimen/headpic_for_assist"
-        app:compoundDrawableWidth="@dimen/headpic_for_assist"
         tools:text="三小时前   来自火星"/>
 
     <LinearLayout

@@ -62,4 +62,6 @@
 
     <!--问答内容图片高度-->
     <dimen name="qa_info_iamge_height">150dp</dimen>
+    <dimen name="qa_top_select_height">30dp</dimen>
+    <dimen name="qa_top_select_width">120dp</dimen>
 </resources>

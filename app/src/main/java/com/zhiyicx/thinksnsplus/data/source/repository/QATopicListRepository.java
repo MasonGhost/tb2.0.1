@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListConstact;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -9,4 +12,8 @@ import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListCons
  * @Description
  */
 public class QATopicListRepository implements QATopicListConstact.Repository {
+
+    @Inject
+    public QATopicListRepository(ServiceManager serviceManager) {
+    }
 }

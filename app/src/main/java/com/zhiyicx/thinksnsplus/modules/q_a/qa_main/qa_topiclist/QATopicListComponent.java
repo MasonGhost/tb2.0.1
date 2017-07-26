@@ -1,6 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist;
 
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
+
+import dagger.Component;
 
 /**
  * @Author Jliuer
@@ -8,5 +12,7 @@ import com.zhiyicx.thinksnsplus.base.InjectComponent;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public interface QATopicListComponent extends InjectComponent {
+@FragmentScoped
+@Component(dependencies = AppComponent.class,modules = QATopiclistModule.class)
+public interface QATopicListComponent extends InjectComponent<QATopicListFragment> {
 }

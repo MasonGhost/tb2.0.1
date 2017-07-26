@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerFragment;
 
 import butterknife.BindView;
@@ -43,7 +44,8 @@ public class QA_Fragment extends TSFragment {
     @BindView(R.id.btn_send_dynamic)
     ImageView mBtnSendDynamic;
 
-    private QA_InfoContainerFragment mQA_ListInfoFragment, mQA_TopicInfoFragment;
+    private QA_InfoContainerFragment mQA_ListInfoFragment;
+    private QATopicFragmentContainerFragment mQA_TopicInfoFragment;
 
     @Override
     protected boolean showToolbar() {
@@ -86,7 +88,7 @@ public class QA_Fragment extends TSFragment {
                     break;
                 case R.id.rb_topic:
                     if (mQA_TopicInfoFragment == null) {
-                        mQA_TopicInfoFragment = QA_InfoContainerFragment.getInstance();
+                        mQA_TopicInfoFragment = QATopicFragmentContainerFragment.getInstance();
                         fragmentTransaction.add(R.id.qa_fragment_container, mQA_TopicInfoFragment);
                     } else {
                         fragmentTransaction.show(mQA_TopicInfoFragment);
