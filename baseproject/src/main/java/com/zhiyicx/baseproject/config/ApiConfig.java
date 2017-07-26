@@ -66,6 +66,7 @@ public class ApiConfig {
      * 密码 PasswordClient
      */
     public static final String APP_PATH_CHANGE_PASSWORD = "api/" + API_VERSION + "/users/password";// 修改密码
+    public static final String APP_PATH_CHANGE_PASSWORD_V2 = "api/" + API_VERSION_2 + "/user/password";// 修改密码
     public static final String APP_PATH_FIND_PASSWORD = "api/" + API_VERSION + "/auth/forgot";// 找回密码
     public static final String APP_PATH_FIND_PASSWORD_V2 = "api/" + API_VERSION_2 + "/user/retrieve-password";// 找回密码
     /**

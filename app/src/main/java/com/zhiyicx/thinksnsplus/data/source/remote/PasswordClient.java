@@ -12,6 +12,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_PASSWORD;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_PASSWORD_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_FIND_PASSWORD;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_FIND_PASSWORD_V2;
 
@@ -35,6 +36,11 @@ public interface PasswordClient {
     @PATCH(APP_PATH_CHANGE_PASSWORD)
     Observable<BaseJson<CacheBean>> changePassword(@Query("requestState") String requestState, @Field("password") String password
             , @Field("new_password") String newPassword);
+
+    @FormUrlEncoded
+    @PUT(APP_PATH_CHANGE_PASSWORD_V2)
+    Observable<CacheBean> changePasswordV2(@Query("old_password") String oldPassword, @Field("password") String password
+            , @Field("password_confirmation") String passwordConfirmation);
 
     /**
      * 找回密码
