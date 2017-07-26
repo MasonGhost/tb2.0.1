@@ -199,13 +199,13 @@ public class GroupDynamicDetailHeader {
             intent.putExtra(GroupDigListFragment.GROUP_DIG_LIST_DATA, bundle);
             mDynamicDetailHeader.getContext().startActivity(intent);
         });
-        if (dynamicBean.getComments() <= 0) {
+        if (dynamicBean.getComments_count() <= 0) {
             fl_comment_count_container.setVisibility(View.GONE);
         } else {
             ((TextView) mDynamicDetailHeader.findViewById(R.id.tv_comment_count)).setText
                     (mDynamicDetailHeader.getResources().getString(R.string
                             .dynamic_comment_count, ConvertUtils.numberConvert(dynamicBean
-                            .getComments())));
+                            .getComments_count())));
             fl_comment_count_container.setVisibility(View.VISIBLE);
         }
     }

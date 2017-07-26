@@ -199,7 +199,7 @@ public class GroupDynamicListBaseItem implements ItemViewDelegate<GroupDynamicLi
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                         .getDiggs()), dynamicBean.getHas_like(), 0);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                        .getComments()), false, 1);
+                        .getComments_count()), false, 1);
                 dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
                                 .getViews() == 0 ? 1 : dynamicBean.getViews()),
                         false, 2);// 浏览量没有 0

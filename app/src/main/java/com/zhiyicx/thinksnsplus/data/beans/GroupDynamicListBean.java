@@ -43,7 +43,7 @@ public class GroupDynamicListBean extends BaseListBean {
      * views : 3
      * diggs : 0
      * collections : 0
-     * comments : 4
+     * comments_count : 4
      * user_id : 2
      * is_audit : 1
      * created_at : 2017-07-18 04:17:19
@@ -64,7 +64,7 @@ public class GroupDynamicListBean extends BaseListBean {
     private int collections;
     private boolean has_collection;
     @SerializedName("comments_count")
-    private int comments;
+    private int comments_count;
     private Long user_id;
     @SerializedName("group_post_mark")
     private Long feed_mark;
@@ -163,12 +163,12 @@ public class GroupDynamicListBean extends BaseListBean {
         this.collections = collections;
     }
 
-    public int getComments() {
-        return comments;
+    public int getComments_count() {
+        return comments_count;
     }
 
-    public void setComments(int comments) {
-        this.comments = comments;
+    public void setComments_count(int comments_count) {
+        this.comments_count = comments_count;
     }
 
     public Long getUser_id() {
@@ -388,6 +388,23 @@ public class GroupDynamicListBean extends BaseListBean {
         this.mGroupDynamicLikeListBeanList = mGroupDynamicLikeListBeanList;
     }
 
+    public boolean getHas_like() {
+        return this.has_like;
+    }
+
+    public void setHas_like(boolean has_like) {
+        this.has_like = has_like;
+    }
+
+    public boolean getHas_collection() {
+        return this.has_collection;
+    }
+
+    public void setHas_collection(boolean has_collection) {
+        this.has_collection = has_collection;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -405,7 +422,7 @@ public class GroupDynamicListBean extends BaseListBean {
         dest.writeByte(this.has_like ? (byte) 1 : (byte) 0);
         dest.writeInt(this.collections);
         dest.writeByte(this.has_collection ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.comments);
+        dest.writeInt(this.comments_count);
         dest.writeValue(this.user_id);
         dest.writeValue(this.feed_mark);
         dest.writeParcelable(this.userInfoBean, flags);
@@ -416,22 +433,6 @@ public class GroupDynamicListBean extends BaseListBean {
         dest.writeTypedList(this.commentslist);
         dest.writeTypedList(this.mGroupDynamicLikeListBeanList);
         dest.writeInt(this.state);
-    }
-
-    public boolean getHas_like() {
-        return this.has_like;
-    }
-
-    public void setHas_like(boolean has_like) {
-        this.has_like = has_like;
-    }
-
-    public boolean getHas_collection() {
-        return this.has_collection;
-    }
-
-    public void setHas_collection(boolean has_collection) {
-        this.has_collection = has_collection;
     }
 
     /**
@@ -491,7 +492,7 @@ public class GroupDynamicListBean extends BaseListBean {
         this.has_like = in.readByte() != 0;
         this.collections = in.readInt();
         this.has_collection = in.readByte() != 0;
-        this.comments = in.readInt();
+        this.comments_count = in.readInt();
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
         this.userInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
@@ -504,8 +505,8 @@ public class GroupDynamicListBean extends BaseListBean {
         this.state = in.readInt();
     }
 
-    @Generated(hash = 1384763763)
-    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, boolean has_like, int collections, boolean has_collection, int comments, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
+    @Generated(hash = 1275723709)
+    public GroupDynamicListBean(Long id, String title, String content, int group_id, int views, int diggs, boolean has_like, int collections, boolean has_collection, int comments_count, Long user_id, Long feed_mark, int is_audit, String created_at, String updated_at, List<ImagesBean> images, List<GroupDynamicCommentListBean> commentslist, List<DynamicDigListBean> mGroupDynamicLikeListBeanList, int state) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -515,7 +516,7 @@ public class GroupDynamicListBean extends BaseListBean {
         this.has_like = has_like;
         this.collections = collections;
         this.has_collection = has_collection;
-        this.comments = comments;
+        this.comments_count = comments_count;
         this.user_id = user_id;
         this.feed_mark = feed_mark;
         this.is_audit = is_audit;

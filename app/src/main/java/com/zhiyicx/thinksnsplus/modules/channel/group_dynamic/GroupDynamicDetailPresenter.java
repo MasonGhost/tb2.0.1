@@ -388,8 +388,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     @Override
     public void deleteCommentV2(long comment_id, int commentPosition) {
         mIsNeedDynamicListRefresh = true;
-        mRootView.getCurrentDynamic().setComments(mRootView.getCurrentDynamic()
-                .getComments() - 1);
+        mRootView.getCurrentDynamic().setComments_count(mRootView.getCurrentDynamic()
+                .getComments_count() - 1);
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
         mGroupDynamicCommentListBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getCommentslist()
                 .get(commentPosition));
@@ -442,8 +442,8 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         mGroupDynamicCommentListBeanGreenDao.insertOrReplace(creatComment);
 //         处理评论数
-        mRootView.getCurrentDynamic().setComments(mRootView.getCurrentDynamic()
-                .getComments() + 1);
+        mRootView.getCurrentDynamic().setComments_count(mRootView.getCurrentDynamic()
+                .getComments_count() + 1);
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getCurrentDynamic());
         if (mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas()
                 .get(0).getContent())) {
@@ -582,9 +582,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 //                        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
                         Bundle bundle = new Bundle();
 //                        DynamicDetailBeanV2 dynamicDetailBeanV2 = mRootView.getCurrentDynamic();
-//                        if (mRootView.getCurrentDynamic().getComments().get(0).getComment_mark()
+//                        if (mRootView.getCurrentDynamic().getComments_count().get(0).getComment_mark()
 //                                == null) {
-//                            dynamicDetailBeanV2.getComments().remove(0);
+//                            dynamicDetailBeanV2.getComments_count().remove(0);
 //                        }
 //                        bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicDetailBeanV2);
                         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
