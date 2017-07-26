@@ -74,7 +74,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return new CommonAdapter<QATopicBean>(getContext(), R.layout.item_channel_list, mListDatas) {
+        return new CommonAdapter<QATopicBean>(getContext(), R.layout.item_qatopic_list, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, QATopicBean o, int position) {
                 holder.setText(R.id.tv_topic_feed_count,

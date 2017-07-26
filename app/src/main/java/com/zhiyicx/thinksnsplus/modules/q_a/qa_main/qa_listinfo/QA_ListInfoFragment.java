@@ -134,8 +134,8 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.icon_256),
                         contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
                 Drawable headImage = new CircleImageDrawable(newBmp);
-                headImage.setBounds(0, 0, contentTextView.getLineHeight(), contentTextView.getLineHeight());
-                ImageSpan imgSpan = new CenterImageSpan(headImage,true);
+                headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
+                ImageSpan imgSpan = new CenterImageSpan(headImage, true);
                 SpannableString spannableString = SpannableString.valueOf("T" + content);
                 spannableString.setSpan(imgSpan, 0, 1, Spannable
                         .SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -147,7 +147,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     private List<Link> setLinks(QAListInfoBean listInfoBean) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink=new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link followCountLink = new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -155,7 +155,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .setUnderlined(false);
         links.add(followCountLink);
 
-        Link answerCountLink=new Link("40").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link answerCountLink = new Link("40").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -163,7 +163,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .setUnderlined(false);
         links.add(answerCountLink);
 
-        Link rewardMoneyLink=new Link("￥18.0").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link rewardMoneyLink = new Link("￥18.0").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .withdrawals_item_enable))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
