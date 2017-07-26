@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QA_LIstInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
@@ -32,6 +34,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
 
+    @BindView(R.id.line)
+    View mLine;
+
     private String mQuestionStr = "";
 
     public static PublishQuestionFragment newInstance() {
@@ -45,6 +50,11 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_publish_qustion;
+    }
+
+    @Override
+    protected int setEmptView() {
+        return 0;
     }
 
     @Override
@@ -75,6 +85,13 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     protected boolean isLoadingMoreEnable() {
         return false;
+    }
+
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
+                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
+                .shape_recyclerview_grey_divider));
     }
 
     @Override
@@ -130,11 +147,16 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     protected void initData() {
         super.initData();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             QA_LIstInfoBean qa_lIstInfoBean = new QA_LIstInfoBean();
             mListDatas.add(qa_lIstInfoBean);
         }
         refreshData();
+        if (mListDatas.isEmpty()) {
+            mLine.setVisibility(View.INVISIBLE);
+        } else {
+            mLine.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

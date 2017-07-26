@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -34,6 +36,9 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
 
+    @BindView(R.id.line)
+    View mLine;
+
     @BindView(R.id.fl_topics)
     TagFlowLayout mFLTopics;
 
@@ -53,6 +58,10 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_publish_qustion_add_topic;
+    }
+    @Override
+    protected int setEmptView() {
+        return 0;
     }
 
     @Override
@@ -80,12 +89,16 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         super.setRightClick();
 
     }
-
+    @Override
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
+                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
+                .shape_recyclerview_grey_divider));
+    }
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initTopicsView();
-
         RxTextView.afterTextChangeEvents(mEtQustion)
                 .compose(this.bindToLifecycle())
                 .subscribe(new Subscriber<TextViewAfterTextChangeEvent>() {
@@ -129,6 +142,11 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             mListDatas.add(qa_lIstInfoBean);
         }
         refreshData();
+        if (mListDatas.isEmpty()) {
+            mLine.setVisibility(View.INVISIBLE);
+        } else {
+            mLine.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
