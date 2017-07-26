@@ -9,7 +9,6 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -78,8 +77,10 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
             @Override
             protected void convert(ViewHolder holder, QATopicBean o, int position) {
                 holder.setText(R.id.tv_topic_feed_count,
-                        String.format(Locale.getDefault(),getString(R.string.qa_show_topic_followed),200,41));
+                        String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed), 200, 41));
                 ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_topic_feed_count), setLinks(null));
+                holder.setText(R.id.tv_topic_name, "大大大悟空");
+                holder.setText(R.id.tv_topic_subscrib, getString(R.string.qa_topic_follow));
             }
         };
     }
@@ -112,7 +113,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
 
     private List<Link> setLinks(QATopicBean listInfoBean) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink=new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link followCountLink = new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -120,7 +121,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
                 .setUnderlined(false);
         links.add(followCountLink);
 
-        Link answerCountLink=new Link("41").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link answerCountLink = new Link("41").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))

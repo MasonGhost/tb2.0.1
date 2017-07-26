@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -9,13 +10,19 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerFragment;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
@@ -99,6 +106,11 @@ public class QA_Fragment extends TSFragment {
             }
             fragmentTransaction.commit();
         });
+
+        RxView.clicks(mBtnSendDynamic)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(aVoid -> startActivity(new Intent(getActivity(), PublishQuestionActivity.class)));
     }
 
     private void hideFragment(FragmentTransaction fragmentTransaction) {
