@@ -72,6 +72,8 @@
     <string name="change_password_success">更改成功</string>
     <string name="register_by_phone">手机注册</string>
     <string name="register_by_email">邮箱注册</string>
+    <string name="find_password_by_phone">手机找回</string>
+    <string name="find_password_by_email">邮箱找回</string>
 
     <!-- 拍照相册相关 -->
     <string name="choose_from_photo">从相册中选择</string>
