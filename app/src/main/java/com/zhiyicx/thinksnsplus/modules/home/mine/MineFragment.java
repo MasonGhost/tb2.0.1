@@ -97,6 +97,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
+        mBtRanking.setVisibility(View.GONE);// V2 点赞排行榜还没有,暂时隐藏
     }
 
     @Override
