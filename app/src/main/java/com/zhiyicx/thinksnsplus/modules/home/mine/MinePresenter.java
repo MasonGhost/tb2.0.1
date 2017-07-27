@@ -23,8 +23,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.zhiyicx.baseproject.config.PayConfig.MONEY_UNIT;
-
 /**
  * @author LiuChao
  * @describe
@@ -65,9 +63,9 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
             UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
             if (userInfoBean != null) {
                 WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
-                int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
                 if (walletBean != null) {
-                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
+                    int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
+//                    walletBean.setBalance(walletBean.getBalance() * (ratio / MONEY_UNIT));
                     userInfoBean.setWallet(walletBean);
                 }
                 mRootView.setUserInfo(userInfoBean);
