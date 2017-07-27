@@ -62,6 +62,8 @@
     <dimen name="margin_12">12dp</dimen>
     <dimen name="ppw_center_width">250dp</dimen>
     <dimen name="ppw_center_scroll_height">220dp</dimen>
+    <dimen name="margin_20">20dp</dimen>
     <dimen name="margin_25">25dp</dimen>
     <dimen name="margin_34">34dp</dimen>
+    <dimen name="margin_30">30dp</dimen>
 </resources>

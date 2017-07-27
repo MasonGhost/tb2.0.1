@@ -40,4 +40,5 @@
     <!--提现明细分割线-->
     <color name="withdrawals_item_line">#efefef</color>
 
+    <color name="user_tag_bg">#def0f7</color>
 </resources>

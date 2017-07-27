@@ -1,13 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingTop="@dimen/spacing_large">
 
     <!--用户头像-->
-    <ImageView
-            android:id="@+id/iv_expert_portrait"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+            android:id="@+id/iv_headpic"
+            android:layout_width="@dimen/headpic_for_list"
+            android:layout_height="@dimen/headpic_for_list"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:src="@mipmap/pic_default_portrait1"
+            android:visibility="visible"
+            app:pressShape="circle"/>
 
-</LinearLayout>
+    <LinearLayout
+            android:id="@+id/ll_user_info"
+            android:layout_toRightOf="@+id/iv_headpic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid">
+
+        <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_content"
+                android:textColor="@color/important_for_content"
+                tools:text="xxxxxx"/>
+
+        <TextView
+                android:id="@+id/tv_dig_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                tools:text="xxx"/>
+
+        <com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout
+                android:id="@+id/ftl_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"/>
+    </LinearLayout>
+
+    <View
+            android:layout_below="@+id/ll_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:background="@color/general_for_line_light"/>
+
+</RelativeLayout>
