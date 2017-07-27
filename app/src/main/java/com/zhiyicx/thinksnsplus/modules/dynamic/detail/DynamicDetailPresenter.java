@@ -45,7 +45,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
-import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
@@ -173,7 +172,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<DynamicCommentBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData( List<DynamicCommentBean> data, boolean isLoadMore) {
         if (data == null) {
             return false;
         }
@@ -492,53 +491,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
             return true;
         }
         return false;
-    }
-
-    /**
-     * send a commment
-     *
-     * @param replyToUserId  comment  to who
-     * @param commentContent comment content
-     */
-    @Override
-    public void sendComment(long replyToUserId, String commentContent) {
-        mIsNeedDynamicListRefresh = true;
-        // 生成一条评论
-        DynamicCommentBean creatComment = new DynamicCommentBean();
-        creatComment.setState(DynamicCommentBean.SEND_ING);
-        creatComment.setComment_content(commentContent);
-        creatComment.setFeed_mark(mRootView.getCurrentDynamic().getFeed_mark());
-        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
-                .currentTimeMillis();
-        creatComment.setComment_mark(Long.parseLong(comment_mark));
-        creatComment.setReply_to_user_id(replyToUserId);
-        if (replyToUserId == 0) { //当回复动态的时候
-            UserInfoBean userInfoBean = new UserInfoBean();
-            userInfoBean.setUser_id(replyToUserId);
-            creatComment.setReplyUser(userInfoBean);
-        } else {
-
-            creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
-        }
-        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
-                AppApplication.getmCurrentLoginAuth().getUser_id()));
-        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        // 处理评论数
-        mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
-                .getFeed_comment_count() + 1);
-        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
-        if (mRootView.getListDatas().size() == 1 && TextUtils.isEmpty(mRootView.getListDatas()
-                .get(0).getComment_content())) {
-            mRootView.getListDatas().clear();
-        }
-        mRootView.getListDatas().add(0, creatComment);
-        mRootView.refreshData();
-        mRootView.updateCommentCountAndDig();
-        mRepository.sendComment(commentContent, mRootView.getCurrentDynamic().getId(),
-                replyToUserId, creatComment.getComment_mark());
-
     }
 
     @Override

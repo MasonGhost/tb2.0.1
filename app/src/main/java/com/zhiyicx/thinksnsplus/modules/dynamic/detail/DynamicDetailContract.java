@@ -155,7 +155,6 @@ public interface DynamicDetailContract {
          * @param replyToUserId  comment  to who
          * @param commentContent comment content
          */
-        void sendComment(long replyToUserId, String commentContent);
         void sendCommentV2(long replyToUserId, String commentContent);
 
         /**

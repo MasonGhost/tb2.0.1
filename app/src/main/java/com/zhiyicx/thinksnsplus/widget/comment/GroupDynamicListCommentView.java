@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
@@ -125,7 +124,7 @@ public class GroupDynamicListCommentView extends LinearLayout {
             }
         }
         mGroupDynamicNoPullRecycleView.setData(data);
-        if (dynamicBean.getComments() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
+        if (dynamicBean.getComments_count() >= SHOW_MORE_COMMENT_SIZE_LIMIT) {
             mMoreComment.setVisibility(VISIBLE);
         } else {
             mMoreComment.setVisibility(GONE);

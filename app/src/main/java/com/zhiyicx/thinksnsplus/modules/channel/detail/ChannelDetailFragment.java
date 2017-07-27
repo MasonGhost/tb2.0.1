@@ -501,7 +501,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void handleLike(int dataPosition) {
         // 先更新界面，再后台处理
         mListDatas.get(dataPosition).setHas_like(!mListDatas.get(dataPosition).getHas_like());
-        mListDatas.get(dataPosition).setDiggs(!mListDatas.get(dataPosition).getHas_collection() ?
+        mListDatas.get(dataPosition).setDiggs(!mListDatas.get(dataPosition).getHas_like() ?
                 mListDatas.get(dataPosition).getDiggs() - 1 : mListDatas.get(dataPosition).getDiggs() + 1);
         refreshData(dataPosition);
         mPresenter.handleLike(mListDatas.get(dataPosition).getHas_like(),

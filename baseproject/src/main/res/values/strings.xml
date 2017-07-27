@@ -24,6 +24,9 @@
     <string name="sure_new_password">确认新密码</string>
     <string name="vertify_code">验证码</string>
     <string name="phone_number">手机号</string>
+    <string name="phone_hint">手机</string>
+    <string name="email_address">邮箱</string>
+    <string name="login_account">账号</string>
     <string name="send_vertify_code">获取验证码</string>
     <string name="forget_password">忘记密码</string>
     <string name="find_password">找回密码</string>
@@ -54,7 +57,11 @@
     <string name="immediate_regist">注册</string>
     <string name="vertify_code_input_hint">输入4-6位验证码</string>
     <string name="phone_number_input_hint">输入11位手机号</string>
+    <string name="email_address_input_hint">输入邮箱地址</string>
+    <string name="login_account_hint">用户名/手机号/邮箱</string>
     <string name="phone_number_toast_hint">请输入正确的手机号</string>
+    <string name="email_address_toast_hint">请输入正确的邮箱地址</string>
+    <string name="login_account_toast_hint">请输入账号</string>
     <string name="password_input_hint">输入6位以上登录密码</string>
     <string name="password_toast_hint">密码长度不能低于6位</string>
     <string name="old_password_toast_hint">输入6位以上登录密码</string>
@@ -63,6 +70,10 @@
     <string name="password_diffrent">两次密码输入不一致</string>
     <string name="find_password_success">找回密码成功</string>
     <string name="change_password_success">更改成功</string>
+    <string name="register_by_phone">手机注册</string>
+    <string name="register_by_email">邮箱注册</string>
+    <string name="find_password_by_phone">手机找回</string>
+    <string name="find_password_by_email">邮箱找回</string>
 
     <!-- 拍照相册相关 -->
     <string name="choose_from_photo">从相册中选择</string>

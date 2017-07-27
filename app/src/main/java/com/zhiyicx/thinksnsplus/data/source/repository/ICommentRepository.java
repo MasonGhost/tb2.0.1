@@ -15,7 +15,7 @@ import rx.Observable;
 
 public interface ICommentRepository {
 
-    Observable<BaseJsonV2<Object>> sendCommentV2(String comment_content, long reply_to_user_id, long comment_mark, String path);
+    Observable<Object> sendCommentV2(String comment_content, long reply_to_user_id, long comment_mark, String path);
     Observable<BaseJson<Object>> sendComment(String comment_content, long reply_to_user_id, long comment_mark, String path);
 
     Observable<PurChasesBean> checkNote(int note);

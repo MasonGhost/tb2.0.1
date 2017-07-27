@@ -233,30 +233,17 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
     @Override
-    public void sendComment(String commentContent, Long feed_id, Long reply_to_user_id, Long comment_mark) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_content", commentContent);
-        params.put("reply_to_user_id", reply_to_user_id);
-        params.put("comment_mark", comment_mark);
-        // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_COMMENT, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT, feed_id));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-    }
-
-    @Override
     public void sendCommentV2(String commentContent, Long feed_id, Long reply_to_user_id, Long comment_mark) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_content", commentContent);
+        params.put("body", commentContent);
         params.put("comment_mark", comment_mark);
         if (reply_to_user_id > 0) {
-            params.put("reply_to_user_id", reply_to_user_id);
+            params.put("reply_user", reply_to_user_id);
         }
 
         // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_COMMENT, params);
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_DYNAMIC_COMMENT, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT_V2, feed_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }

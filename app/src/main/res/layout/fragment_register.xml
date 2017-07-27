@@ -37,22 +37,47 @@
 
             <RelativeLayout style="@style/style_edit_white_container">
 
-                <LinearLayout
-                    style="@style/style_edit_white_container"
-                    android:layout_toLeftOf="@+id/rl_send_vertify_code_container"
-                    android:layout_toStartOf="@+id/rl_send_vertify_code_container">
+                <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toLeftOf="@+id/rl_send_vertify_code_container"
+                        android:layout_toStartOf="@+id/rl_send_vertify_code_container">
+                    <!--手机注册-->
+                    <LinearLayout
+                            android:id="@+id/ll_register_by_phone"
+                            style="@style/style_edit_white_container">
 
-                    <TextView
-                        style="@style/style_small_text"
-                        android:text="@string/phone_number"/>
+                        <TextView
+                                style="@style/style_small_text"
+                                android:text="@string/phone_number"/>
 
-                    <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
-                        android:id="@+id/et_regist_phone"
-                        style="@style/style_edit"
-                        android:hint="@string/phone_number_input_hint"
-                        android:inputType="phone"
-                        android:maxLength="@integer/phone_number_length"/>
-                </LinearLayout>
+                        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                                android:id="@+id/et_regist_phone"
+                                style="@style/style_edit"
+                                android:hint="@string/phone_number_input_hint"
+                                android:inputType="phone"
+                                android:maxLength="@integer/phone_number_length"/>
+                    </LinearLayout>
+
+                    <!--邮箱注册-->
+                    <LinearLayout
+                            android:id="@+id/ll_register_by_email"
+                            style="@style/style_edit_white_container">
+
+                        <TextView
+                                style="@style/style_small_text"
+                                android:text="@string/email_address"/>
+
+                        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                                android:id="@+id/et_register_email"
+                                style="@style/style_edit"
+                                android:hint="@string/email_address_input_hint"
+                                android:inputType="textEmailAddress"/>
+                    </LinearLayout>
+
+                </FrameLayout>
+
+
 
                 <RelativeLayout
                     android:id="@+id/rl_send_vertify_code_container"

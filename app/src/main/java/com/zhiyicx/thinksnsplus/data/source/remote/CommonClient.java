@@ -259,7 +259,7 @@ public interface CommonClient {
 
     @Multipart
     @POST(APP_PATH_HANDLE_BACKGROUND_TASK)
-    Observable<BaseJsonV2<Object>> handleBackGroundTaskPostV2(@Path("path") String path, @Part List<MultipartBody.Part> partList);
+    Observable<Object> handleBackGroundTaskPostV2(@Path("path") String path, @Part List<MultipartBody.Part> partList);
 
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @HTTP(method = "DELETE", path = APP_PATH_HANDLE_BACKGROUND_TASK, hasBody = true)

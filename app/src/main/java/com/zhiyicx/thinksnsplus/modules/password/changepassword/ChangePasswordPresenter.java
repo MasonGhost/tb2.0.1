@@ -5,6 +5,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 
 import javax.inject.Inject;
 
@@ -46,8 +47,8 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
             mRootView.showMessage(mContext.getString(R.string.password_diffrent));
             return;
         }
-        Subscription changePasswordSub = mRepository.changePassword(oldPassword, newPassword)
-                .subscribe(new BaseSubscribe<CacheBean>() {
+        Subscription changePasswordSub = mRepository.changePasswordV2(oldPassword, newPassword)
+                .subscribe(new BaseSubscribeForV2<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
                         mRootView.showMessage(mContext.getString(R.string.change_password_success));
