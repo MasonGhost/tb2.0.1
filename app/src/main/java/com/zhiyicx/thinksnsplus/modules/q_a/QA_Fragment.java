@@ -109,8 +109,13 @@ public class QA_Fragment extends TSFragment {
 
         RxView.clicks(mBtnSendDynamic)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> startActivity(new Intent(getActivity(), PublishQuestionActivity.class)));
+
+        RxView.clicks(mIvBack)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> getActivity().finish());
     }
 
     private void hideFragment(FragmentTransaction fragmentTransaction) {

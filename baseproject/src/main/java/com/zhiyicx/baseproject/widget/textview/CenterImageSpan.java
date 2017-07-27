@@ -7,7 +7,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.text.TextPaint;
 import android.text.style.ImageSpan;
+
+import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.utils.ConvertUtils;
 
 /**
  * @Author Jliuer
@@ -55,7 +59,7 @@ public class CenterImageSpan extends ImageSpan {
             fm.bottom = top;
             fm.descent = top;
         }
-        return rect.right + 20;
+        return rect.right + 20;// x 偏移，不贴紧文字
     }
 
     @Override
@@ -64,14 +68,14 @@ public class CenterImageSpan extends ImageSpan {
         Drawable b = getDrawable();
         if (isText) {
             canvas.drawCircle(b.getBounds().centerX(), b.getBounds().centerY(), b.getBounds().right - b.getBounds().centerX(), paint);
-            Paint textP = new Paint(paint);
+            Paint textP = new TextPaint(paint);
             textP.setColor(Color.WHITE);
-            canvas.drawText("匿", b.getBounds().centerX() - paint.measureText("匿") / 2, b.getBounds().centerY() - (paint.descent() + paint.ascent()) / 2, textP);
+            textP.setTextSize(ConvertUtils.sp2px(BaseApplication.getContext(),12));
+            canvas.drawText("匿", b.getBounds().centerX() - textP.measureText("匿") / 2, b.getBounds().centerY() - (textP.descent() + textP.ascent()) / 2, textP);
         } else {
             canvas.save();
             int transY = ((bottom - top) - b.getBounds().bottom) / 2 + top;// y 轴居中对齐
-            float transX = x+20;
-            canvas.translate(x, transY);// x+4 个偏移，不贴紧文字
+            canvas.translate(x, transY);
             b.draw(canvas);
             canvas.restore();
         }

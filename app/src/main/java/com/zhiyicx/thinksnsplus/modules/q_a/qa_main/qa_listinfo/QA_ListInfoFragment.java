@@ -131,7 +131,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                         "快回地球去吧火星很危险，" +
                         "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
                         "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧";
-                Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.icon_256),
+                Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.ico_potoablum),
                         contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
                 Drawable headImage = new CircleImageDrawable(newBmp);
                 headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
