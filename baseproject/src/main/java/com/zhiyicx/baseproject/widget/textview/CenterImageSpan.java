@@ -10,8 +10,10 @@ import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.text.style.ImageSpan;
 
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.SkinUtils;
 
 /**
  * @Author Jliuer
@@ -69,6 +71,8 @@ public class CenterImageSpan extends ImageSpan {
         if (isText) {
             canvas.drawCircle(b.getBounds().centerX(), b.getBounds().centerY(), b.getBounds().right - b.getBounds().centerX(), paint);
             Paint textP = new TextPaint(paint);
+            Paint textB = new TextPaint(paint);
+            textB.setColor(SkinUtils.getColor(R.color.qa_niming));
             textP.setColor(Color.WHITE);
             textP.setTextSize(ConvertUtils.sp2px(BaseApplication.getContext(),12));
             canvas.drawText("匿", b.getBounds().centerX() - textP.measureText("匿") / 2, b.getBounds().centerY() - (textP.descent() + textP.ascent()) / 2, textP);
