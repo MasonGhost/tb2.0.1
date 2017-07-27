@@ -8,7 +8,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 
 import java.util.List;
@@ -89,8 +88,6 @@ public interface IDynamicReppsitory {
      * @param reply_to_user_id
      * @param comment_mark
      */
-    void sendComment(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
-
     void sendCommentV2(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
     /**

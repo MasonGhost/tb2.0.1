@@ -184,22 +184,21 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             } catch (Exception e) {
 
             }
+            contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
 
-            if (TextUtils.isEmpty(content)) {
-                contentView.setVisibility(View.GONE);
-            } else {
-                if (content.length() > mContentMaxShowNum) {
-                    content = content.substring(0, mContentMaxShowNum) + "...";
-                }
-                if (dynamicBean.getPaid_node() != null && !dynamicBean
-                        .getPaid_node().isPaid()) {
-                    content += mContext.getString(R.string.words_holder);
-                }
+            if (content.length() > mContentMaxShowNum) {
+                content = content.substring(0, mContentMaxShowNum) + "...";
+            }
 
-                boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
-                        .getPaid_node().isPaid();
+            boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
+                    .getPaid_node().isPaid();
 
-                TextViewUtils textViewUtils = TextViewUtils.newInstance(contentView, content)
+            if (!canLookWords) {
+                content += mContext.getString(R.string.words_holder);
+            }
+
+            if (canLookWords) {
+                TextViewUtils.newInstance(contentView, content)
                         .spanTextColor(SkinUtils.getColor(R
                                 .color.normal_for_assist_text))
                         .position(50, content.length())
@@ -207,17 +206,26 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .maxLines(contentView.getResources().getInteger(R.integer
                                 .dynamic_list_content_show_lines))
                         .onSpanTextClickListener(mOnSpanTextClickListener)
-                        .disPlayText(true);
-
-                if (!canLookWords) {// 有文字收费
-                    textViewUtils.note(dynamicBean.getPaid_node().getNode())
-                            .amount(dynamicBean.getPaid_node().getAmount())
-                            .disPlayText(false);
-                }
-                textViewUtils.build();
+                        .disPlayText(true)
+                        .build();
+            } else {
+                TextViewUtils.newInstance(contentView, content)
+                        .spanTextColor(SkinUtils.getColor(R
+                                .color.normal_for_assist_text))
+                        .position(50, content.length())
+                        .dynamicPosition(position)
+                        .maxLines(contentView.getResources().getInteger(R.integer
+                                .dynamic_list_content_show_lines))
+                        .onSpanTextClickListener(mOnSpanTextClickListener)
+                        .note(dynamicBean.getPaid_node().getNode())
+                        .dynamicPosition(position)
+                        .amount(dynamicBean.getPaid_node().getAmount())
+                        .disPlayText(false)
+                        .build();
+            }
 
                 contentView.setVisibility(View.VISIBLE);
-            }
+
             setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
             setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
 

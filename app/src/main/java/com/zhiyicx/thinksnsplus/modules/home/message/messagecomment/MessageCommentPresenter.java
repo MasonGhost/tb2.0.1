@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
-import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -84,9 +83,9 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
         Subscription commentSub = mCommentRepository.sendCommentV2(commentContent, replyToUserId, Long.parseLong(AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis()), path)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<Object> data) {
+                    protected void onSuccess(Object data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
                     }
 

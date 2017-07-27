@@ -11,7 +11,6 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
-import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -47,8 +46,9 @@ import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,7 +62,6 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -125,8 +124,6 @@ public class BackgroundTaskHandler {
 
     private boolean mIsExit = false; // 是否关闭
 
-    private boolean mIsNetConnected = false;
-
     private Thread mBackTaskDealThread;
 
     public BackgroundTaskHandler() {
@@ -170,17 +167,7 @@ public class BackgroundTaskHandler {
         mBackTaskDealThread = new Thread(handleTaskRunnable);
         mBackTaskDealThread.start();
         EventBus.getDefault().register(this);
-        mIsNetConnected = NetUtils.netIsConnected(mContext);
     }
-
-    /**
-     * 网络变化监听，暂时不需要 ，配合 Evnetbus 使用
-     */
-    @Subscriber(tag = NetChangeReceiver.EVENT_NETWORK_CONNECTED)
-    public void onNetConnected() {
-        mIsNetConnected = true;
-    }
-
 
     /**
      * 获取缓存中没有被执行的数据
@@ -204,7 +191,7 @@ public class BackgroundTaskHandler {
 
         while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {// mIsNetConnected 网络监测可能有问题，待修改
 //                LogUtils.d("---------backTask-------:: "+mIsNetConnected);
-            if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
+            if (NetUtils.netIsConnected(mContext) && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                 BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                 handleTask(backgroundRequestTaskBean);
             }
@@ -225,7 +212,7 @@ public class BackgroundTaskHandler {
     private void threadSleep() {
         //防止cpu占用过高
         try {
-            if (mIsNetConnected) {
+            if (NetUtils.netIsConnected(mContext)) {
                 Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU);
             } else {
                 Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT);
@@ -339,7 +326,7 @@ public class BackgroundTaskHandler {
                 setTollDynamicComment(backgroundRequestTaskBean);
                 break;
 
-            case SEND_COMMENT:
+            case SEND_DYNAMIC_COMMENT:
                 sendComment(backgroundRequestTaskBean);
                 break;
             case SEND_INFO_COMMENT:
@@ -441,6 +428,7 @@ public class BackgroundTaskHandler {
                     }
                 });
     }
+
     /**
      * 处理 Put 请求类型的后台任务
      */
@@ -482,6 +470,7 @@ public class BackgroundTaskHandler {
                     }
                 });
     }
+
     /**
      * 处理Patch请求类型的后台任务
      */
@@ -1032,14 +1021,21 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<Object> data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        dynamicCommentBean.setComment_id((long) data.getId());
-                        dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
-                        mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    protected void onSuccess(Object data) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            dynamicCommentBean.setComment_id(jsonObject.getJSONObject("comment").getLong("id"));
+                            dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
+                            EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
 
                     @Override
@@ -1064,7 +1060,7 @@ public class BackgroundTaskHandler {
     }
 
     /**
-      * 处理评论发送的后台任务
+     * 处理评论发送的后台任务
      */
     private void sendGroupComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
@@ -1079,14 +1075,24 @@ public class BackgroundTaskHandler {
         mServiceManager.getCommonClient()
                 .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2<Object> data) {
-                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        dynamicCommentBean.setId((long) data.getId());
-                        dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
-                        mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    protected void onSuccess(Object data) {
+                        try {
+                            /**
+                             * for detail
+                             * @see{https://github.com/slimkit/plus-component-group/blob/master/Documents/createGroupPostComment.md}
+                             */
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            dynamicCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
+                            dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
+                            EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
                     @Override

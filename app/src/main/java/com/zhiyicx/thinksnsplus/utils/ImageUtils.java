@@ -89,23 +89,27 @@ public class ImageUtils {
      * @param imageView    展示的控件
      */
     public static void loadCircleUserHeadPic(UserInfoBean userInfoBean, ImageView imageView) {
-        long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
-        if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
+        String avatar = "";
+        if (userInfoBean != null&&userInfoBean.getUser_id()!=null) {
+            avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar();
+            long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
+            if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
 
-            if (userInfoBean.getUser_id() == currentLoginUerId) {
-                mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
-            } else {
-                mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
+                if (userInfoBean.getUser_id() == currentLoginUerId) {
+                    mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
+                } else {
+                    mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
+                }
+                if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
+                    mHeadPicSigture = System.currentTimeMillis();
+                }
+                SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
+                        , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
             }
-            if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
-                mHeadPicSigture = System.currentTimeMillis();
-            }
-            SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
-                    , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
+            laste_request_time = System.currentTimeMillis();
         }
-        laste_request_time = System.currentTimeMillis();
         Glide.with(imageView.getContext())
-                .load(TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar())
+                .load(avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)
@@ -120,23 +124,28 @@ public class ImageUtils {
      * @param imageView    展示的控件
      */
     public static void loadCircleUserHeadPicWithBorder(UserInfoBean userInfoBean, ImageView imageView) {
-        long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
-        if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
+        String avatar = "";
+        if (userInfoBean != null) {
+            avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar();
 
-            if (userInfoBean.getUser_id() == currentLoginUerId) {
-                mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
-            } else {
-                mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
+            long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
+            if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
+
+                if (userInfoBean.getUser_id() == currentLoginUerId) {
+                    mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
+                } else {
+                    mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
+                }
+                if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
+                    mHeadPicSigture = System.currentTimeMillis();
+                }
+                SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
+                        , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
             }
-            if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
-                mHeadPicSigture = System.currentTimeMillis();
-            }
-            SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
-                    , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
+            laste_request_time = System.currentTimeMillis();
         }
-        laste_request_time = System.currentTimeMillis();
         Glide.with(imageView.getContext())
-                .load(TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar())
+                .load(avatar)
                 .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)
@@ -151,7 +160,10 @@ public class ImageUtils {
      * @param userId user's  id
      * @return
      */
-    public static String getUserAvatar(long userId) {
+    public static String getUserAvatar(Long userId) {
+        if (userId == null) {
+            userId = 0L;
+        }
         return String.format(ApiConfig.IMAGE_AVATAR_PATH_V2, userId);
 
     }

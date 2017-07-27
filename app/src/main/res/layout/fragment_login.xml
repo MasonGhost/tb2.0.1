@@ -22,13 +22,13 @@
 
                 <TextView
                     style="@style/style_small_text"
-                    android:text="@string/phone_number"/>
+                    android:text="@string/login_account"/>
 
                 <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
                     android:id="@+id/et_login_phone"
                     style="@style/style_edit"
-                    android:hint="@string/phone_number_input_hint"
-                    android:inputType="phone"
+                    android:hint="@string/login_account_hint"
+                    android:inputType="textPersonName"
                     android:text=""
                     />
             </LinearLayout>

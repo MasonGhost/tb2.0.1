@@ -56,7 +56,7 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(timer!=null){
+        if (timer != null) {
             timer.cancel();
         }
     }
@@ -81,8 +81,47 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
             return;
         }
         mRootView.setSureBtEnabled(false);
-        Subscription findPasswordSub = mRepository.findPassword(phone, vertifyCode, newPassword)
-                .subscribe(new BaseSubscribe<CacheBean>() {
+        Subscription findPasswordSub = mRepository.findPasswordV2(phone, vertifyCode, newPassword)
+                .subscribe(new BaseSubscribeForV2<CacheBean>() {
+                    @Override
+                    protected void onSuccess(CacheBean data) {
+                        mRootView.showMessage(mContext.getString(R.string.find_password_success));
+                        mRootView.finsh();
+                        mRootView.setSureBtEnabled(true);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showMessage(message);
+                        mRootView.setSureBtEnabled(true);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.setSureBtEnabled(true);
+                    }
+                });
+        // 代表检测成功
+        mRootView.showMessage("");
+        addSubscrebe(findPasswordSub);
+    }
+
+    @Override
+    public void findPasswordByEmail(String email, String vertifyCode, String newPassword) {
+        if (checkEmail(email)) {
+            return;
+        }
+        if (checkVertifyLength(vertifyCode)) {
+            return;
+        }
+        if (checkPasswordLength(newPassword)) {
+            return;
+        }
+        mRootView.setSureBtEnabled(false);
+        Subscription findPasswordSub = mRepository.findPasswordByEmail(email, vertifyCode, newPassword)
+                .subscribe(new BaseSubscribeForV2<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
                         mRootView.showMessage(mContext.getString(R.string.find_password_success));
@@ -150,14 +189,48 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
         addSubscrebe(getVertifySub);
     }
 
+    @Override
+    public void getVerifyCodeByEmail(String email) {
+        if (checkEmail(email)){
+            return;
+        }
+        mRootView.setVertifyCodeBtEnabled(false);
+        mRootView.setVertifyCodeLoading(true);
+        Subscription getVerifySub = mRepository.getMemberVerifyCodeByEmail(email)
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mRootView.hideLoading();//隐藏loading
+                        timer.start();//开始倒计时
+                        mRootView.setVertifyCodeLoading(false);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showMessage(message);
+                        mRootView.setVertifyCodeBtEnabled(true);
+                        mRootView.setVertifyCodeLoading(false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mRootView.showMessage(mContext.getString(R.string.err_net_not_work));
+                        mRootView.setVertifyCodeBtEnabled(true);
+                        mRootView.setVertifyCodeLoading(false);
+                    }
+
+                });
+        // 代表检测成功
+        mRootView.showMessage("");
+        addSubscrebe(getVerifySub);
+    }
+
     /**
      * 检测验证码码是否正确
-     *
-     * @param vertifyCode
-     * @return
      */
     private boolean checkVertifyLength(String vertifyCode) {
-        if (vertifyCode.length()< mContext.getResources().getInteger(R.integer.vertiry_code_min_lenght)) {
+        if (vertifyCode.length() < mContext.getResources().getInteger(R.integer.vertiry_code_min_lenght)) {
             mRootView.showMessage(mContext.getString(R.string.vertify_code_input_hint));
             return true;
         }
@@ -166,9 +239,6 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
 
     /**
      * 检测手机号码是否正确
-     *
-     * @param phone
-     * @return
      */
     private boolean checkPhone(String phone) {
         if (!RegexUtils.isMobileExact(phone)) {
@@ -179,10 +249,20 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
     }
 
     /**
-     * 检查密码是否是最小长度
+     * 检测邮箱地址
      *
-     * @param password
-     * @return
+     * @param email 地址
+     */
+    private boolean checkEmail(String email) {
+        if (!RegexUtils.isEmail(email)) {
+            mRootView.showMessage(mContext.getString(R.string.email_address_toast_hint));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 检查密码是否是最小长度
      */
     private boolean checkPasswordLength(String password) {
         if (password.length() < mContext.getResources().getInteger(R.integer.password_min_length)) {

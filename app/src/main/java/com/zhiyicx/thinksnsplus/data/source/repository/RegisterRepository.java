@@ -36,7 +36,7 @@ public class RegisterRepository extends VertifyCodeRepository implements Registe
 
     @Override
     public Observable<AuthBean> registerByEmail(String email, String name, String vertifyCode, String password) {
-        return mRegisterClient.register(null,email, name,password,RegisterClient.REGITER_TYPE_SMS, vertifyCode)
+        return mRegisterClient.register(null,email, name,password,RegisterClient.REGITER_TYPE_EMAIL, vertifyCode)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 

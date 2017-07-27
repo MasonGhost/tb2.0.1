@@ -7,11 +7,14 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_PASSWORD;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_PASSWORD_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_FIND_PASSWORD;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_FIND_PASSWORD_V2;
 
 
 /**
@@ -22,27 +25,41 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_FIND_PASSWORD;
  */
 
 public interface PasswordClient {
+
+    public static final String REGITER_TYPE_EMAIL = "mail";
+    public static final String REGITER_TYPE_SMS = "sms";
+
     /**
      * 修改密码
-     * @param requestState
-     * @param password
-     * @param newPassword
-     * @return
      */
     @FormUrlEncoded
     @PATCH(APP_PATH_CHANGE_PASSWORD)
     Observable<BaseJson<CacheBean>> changePassword(@Query("requestState") String requestState, @Field("password") String password
             , @Field("new_password") String newPassword);
 
+    @FormUrlEncoded
+    @PUT(APP_PATH_CHANGE_PASSWORD_V2)
+    Observable<CacheBean> changePasswordV2(@Query("old_password") String oldPassword, @Field("password") String password
+            , @Field("password_confirmation") String passwordConfirmation);
+
     /**
-     *  找回密码
-     * @param requestState
-     * @param phone
-     * @param vertifyCode
-     * @return
+     * 找回密码
      */
     @FormUrlEncoded
     @PATCH(APP_PATH_FIND_PASSWORD)
-    Observable<BaseJson<CacheBean>> findPassword(@Query("requestState") String requestState, @Field("phone") String phone
-          , @Field("code") String vertifyCode, @Field("password") String newPassword);
+    Observable<BaseJson<CacheBean>> findPassword(
+            @Query("requestState") String requestState
+            , @Field("phone") String phone
+            , @Field("email") String email
+            , @Field("code") String vertifyCode
+            , @Field("password") String newPassword);
+
+
+    @FormUrlEncoded
+    @PUT(APP_PATH_FIND_PASSWORD_V2)
+    Observable<CacheBean> findPasswordV2( @Field("phone") String phone
+            , @Field("email") String email
+            , @Field("verifiable_code") String vertifyCode
+            , @Field("verifiable_type") String verifiable_type
+            , @Field("password") String newPassword);
 }

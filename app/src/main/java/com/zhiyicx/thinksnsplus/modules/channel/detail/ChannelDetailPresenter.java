@@ -293,7 +293,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
 
     @Override
     public void deleteComment(GroupDynamicListBean dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
-        mRootView.getListDatas().get(dynamicPosition).setComments(dynamicBean.getComments() - 1);
+        mRootView.getListDatas().get(dynamicPosition).setComments_count(dynamicBean.getComments_count() - 1);
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
         mGroupDynamicCommentBeanGreenDaoImpl.deleteSingleCache(dynamicBean.getNew_comments().get(commentPositon));
         mRootView.getListDatas().get(dynamicPosition).getNew_comments().remove(commentPositon);
@@ -362,7 +362,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         commentBeanList.addAll(mRootView.getListDatas().get(mCurrentPostion).getNew_comments());
         mRootView.getListDatas().get(mCurrentPostion).getNew_comments().clear();
         mRootView.getListDatas().get(mCurrentPostion).getNew_comments().addAll(commentBeanList);
-        mRootView.getListDatas().get(mCurrentPostion).setComments(mRootView.getListDatas().get(mCurrentPostion).getComments() + 1);
+        mRootView.getListDatas().get(mCurrentPostion).setComments_count(mRootView.getListDatas().get(mCurrentPostion).getComments_count() + 1);
         mRootView.refreshData();
 
         mGroupDynamicCommentBeanGreenDaoImpl.insertOrReplace(creatComment);

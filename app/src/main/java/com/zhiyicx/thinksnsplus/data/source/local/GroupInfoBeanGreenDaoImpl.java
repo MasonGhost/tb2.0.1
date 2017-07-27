@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,7 +51,7 @@ public class GroupInfoBeanGreenDaoImpl extends CommonCacheImpl<GroupInfoBean> {
     @Override
     public List<GroupInfoBean> getMultiDataFromCache() {
         List<GroupInfoBean> result = mGroupInfoBeanDao.loadAll();
-//        result.sort((o1, o2) -> (int) (o2.getId() - o1.getId()));
+        Collections.sort(result,(o1, o2) -> (int) (o2.getId() - o1.getId()));
         return result;
     }
 
