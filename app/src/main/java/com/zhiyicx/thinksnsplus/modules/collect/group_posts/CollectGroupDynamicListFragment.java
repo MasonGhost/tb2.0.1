@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailFragment;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenter;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailPresenterModule;
+import com.zhiyicx.thinksnsplus.modules.channel.detail.adapter.GroupDynamicListBaseItem;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -109,7 +110,8 @@ public class CollectGroupDynamicListFragment extends ChannelDetailFragment {
         super.initData();
     }
 
-    protected void setAdapter(MultiItemTypeAdapter adapter, DynamicListBaseItem dynamicListBaseItem) {
+    @Override
+    protected void setAdapter(MultiItemTypeAdapter adapter, GroupDynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         adapter.addItemViewDelegate(dynamicListBaseItem);
         dynamicListBaseItem.setShowCommentList(false)

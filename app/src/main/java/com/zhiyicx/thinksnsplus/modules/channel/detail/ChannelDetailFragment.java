@@ -244,7 +244,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         return channelDetailFragment;
     }
 
-    private void setAdapter(MultiItemTypeAdapter adapter, GroupDynamicListBaseItem dynamicListBaseItem) {
+    protected void setAdapter(MultiItemTypeAdapter adapter, GroupDynamicListBaseItem dynamicListBaseItem) {
         dynamicListBaseItem.setOnImageClickListener(this);
         dynamicListBaseItem.setOnUserInfoClickListener(this);
         dynamicListBaseItem.setOnMenuItemClickLisitener(this);
