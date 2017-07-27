@@ -60,7 +60,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         // 尝试从数据库获取当前用户的信息
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
-            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache((long) authBean.getUser_id());
+            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(authBean.getUser_id());
             if (userInfoBean != null) {
                 WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
                 if (walletBean != null) {
