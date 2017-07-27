@@ -11,7 +11,6 @@ import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.entity.IMConfig;
-import com.zhiyicx.imsdk.receiver.NetChangeReceiver;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -50,7 +49,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -126,8 +124,6 @@ public class BackgroundTaskHandler {
 
     private boolean mIsExit = false; // 是否关闭
 
-    private boolean mIsNetConnected = false;
-
     private Thread mBackTaskDealThread;
 
     public BackgroundTaskHandler() {
@@ -171,17 +167,7 @@ public class BackgroundTaskHandler {
         mBackTaskDealThread = new Thread(handleTaskRunnable);
         mBackTaskDealThread.start();
         EventBus.getDefault().register(this);
-        mIsNetConnected = NetUtils.netIsConnected(mContext);
     }
-
-    /**
-     * 网络变化监听，暂时不需要 ，配合 Evnetbus 使用
-     */
-    @Subscriber(tag = NetChangeReceiver.EVENT_NETWORK_CONNECTED)
-    public void onNetConnected() {
-        mIsNetConnected = true;
-    }
-
 
     /**
      * 获取缓存中没有被执行的数据
@@ -205,7 +191,7 @@ public class BackgroundTaskHandler {
 
         while (!mIsExit && ActivityHandler.getInstance().getActivityStack() != null) {// mIsNetConnected 网络监测可能有问题，待修改
 //                LogUtils.d("---------backTask-------:: "+mIsNetConnected);
-            if (mIsNetConnected && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
+            if (NetUtils.netIsConnected(mContext) && !mTaskBeanConcurrentLinkedQueue.isEmpty()) {
                 BackgroundRequestTaskBean backgroundRequestTaskBean = mTaskBeanConcurrentLinkedQueue.poll();
                 handleTask(backgroundRequestTaskBean);
             }
@@ -226,7 +212,7 @@ public class BackgroundTaskHandler {
     private void threadSleep() {
         //防止cpu占用过高
         try {
-            if (mIsNetConnected) {
+            if (NetUtils.netIsConnected(mContext)) {
                 Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU);
             } else {
                 Thread.sleep(MESSAGE_SEND_INTERVAL_FOR_CPU_TIME_OUT);
