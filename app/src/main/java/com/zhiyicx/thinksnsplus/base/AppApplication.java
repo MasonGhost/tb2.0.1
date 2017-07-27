@@ -25,6 +25,7 @@ import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.appprocess.AndroidProcess;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
@@ -86,6 +87,19 @@ public class AppApplication extends TSApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        String processName = AndroidProcess.getProcessName(this, android.os.Process.myPid());
+        if (processName != null && processName.equals(getPackageName())) {
+            initAppProject();
+        }
+        // 极光推送
+        JPushInterface.setDebugMode(BuildConfig.USE_LOG);
+        JPushInterface.init(this);
+    }
+
+    /**
+     * 应用进程只需要启动一次
+     */
+    private void initAppProject() {
         initComponent();
         // IM
         if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
@@ -93,15 +107,11 @@ public class AppApplication extends TSApplication {
             ZBIMSDK.init(getContext());
         }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
-        // 极光推送
-        JPushInterface.setDebugMode(BuildConfig.USE_LOG);
+        registerActivityCallBacks();
         // ping++
         Pingpp.enableDebugLog(BuildConfig.USE_LOG);
-        JPushInterface.init(this);
         // 友盟
         MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
-        registerActivityCallBacks();
-
     }
 
     /**
@@ -184,7 +194,7 @@ public class AppApplication extends TSApplication {
                 if (authBean != null) {
                     return chain.request().newBuilder()
                             .header("Accept", "application/json")
-                            .header("Authorization"," Bearer " + authBean.getToken())
+                            .header("Authorization", " Bearer " + authBean.getToken())
                             .build();
                 } else {
                     return chain.request().newBuilder()

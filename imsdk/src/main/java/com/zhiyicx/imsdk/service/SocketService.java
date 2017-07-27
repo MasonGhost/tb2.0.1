@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -381,6 +385,16 @@ public class SocketService extends BaseService implements ImService.ImListener {
         IntentFilter filter = new IntentFilter();
         filter.addAction(action);
         registerReceiver(mSocketRetryReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.requestNetwork(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
+                @Override public void onAvailable(Network network) {
+                    super.onAvailable(network);
+                    socketReconnect();
+                }
+            });
+        }
+
     }
 
     @Override
