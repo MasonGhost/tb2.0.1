@@ -78,6 +78,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private List<AccountBean> mAccountList; // 历史的账号
     private AccountBean mAccountBean; // 当前登录的账号
 
+    private ArrayAdapter mArrayAdapter;
     private AccountAdapterV2 mAccountAdapter;
     private AccountPopWindow mPopWindow;
 
@@ -129,6 +130,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                     mIvClear.setVisibility(TextUtils.isEmpty(charSequence.toString()) ? View.GONE : View.VISIBLE);
+//                    if (mArrayAdapter != null){
+//                        mEtCompleteInput.postDelayed(() -> setAccountListPopHeight(mArrayAdapter.getCount()), 2000);
+//                    }
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)
@@ -287,7 +291,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private void initAccount() {
         List<String> list = new ArrayList<>();
         Drawable mBackgroundDrawable = new ColorDrawable(Color.WHITE);// 默认为透明;
-        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
+//        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
         mAccountList.addAll(mPresenter.getAllAccountList());
         if (mAccountAdapter == null){
             mAccountAdapter = new AccountAdapterV2(getContext(), mAccountList);
@@ -298,8 +302,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         for (AccountBean accountBean : mAccountList){
             list.add(accountBean.getAccountName());
         }
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.item_account, R.id.tv_account_name, list);
-        mEtCompleteInput.setAdapter(arrayAdapter);
+//        setAccountListPopHeight(mAccountList.size());
+        mArrayAdapter = new ArrayAdapter(getContext(), R.layout.item_account, R.id.tv_account_name, list);
+        mEtCompleteInput.setAdapter(mArrayAdapter);
 
 //        mPopWindow = AccountPopWindow.Builder()
 //                .with(getActivity())
@@ -313,5 +318,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void onItemSelect(AccountBean accountBean) {
         mEtCompleteInput.setText(accountBean.getAccountName());
+    }
+
+    private void setAccountListPopHeight(int size){
+        if (size > 2){
+            mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 100));
+        } else {
+            mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 }
