@@ -184,112 +184,113 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
             } catch (Exception e) {
 
             }
+
             contentView.setVisibility(TextUtils.isEmpty(content) ? View.GONE : View.VISIBLE);
+            if (!TextUtils.isEmpty(content)) {
+                if (content.length() > mContentMaxShowNum) {
+                    content = content.substring(0, mContentMaxShowNum) + "...";
+                }
 
-            if (content.length() > mContentMaxShowNum) {
-                content = content.substring(0, mContentMaxShowNum) + "...";
-            }
+                boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
+                        .getPaid_node().isPaid();
 
-            boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
-                    .getPaid_node().isPaid();
+                if (!canLookWords) {
+                    content += mContext.getString(R.string.words_holder);
+                }
 
-            if (!canLookWords) {
-                content += mContext.getString(R.string.words_holder);
-            }
-
-            if (canLookWords) {
-                TextViewUtils.newInstance(contentView, content)
-                        .spanTextColor(SkinUtils.getColor(R
-                                .color.normal_for_assist_text))
-                        .position(50, content.length())
-                        .dynamicPosition(position)
-                        .maxLines(contentView.getResources().getInteger(R.integer
-                                .dynamic_list_content_show_lines))
-                        .onSpanTextClickListener(mOnSpanTextClickListener)
-                        .disPlayText(true)
-                        .build();
-            } else {
-                TextViewUtils.newInstance(contentView, content)
-                        .spanTextColor(SkinUtils.getColor(R
-                                .color.normal_for_assist_text))
-                        .position(50, content.length())
-                        .dynamicPosition(position)
-                        .maxLines(contentView.getResources().getInteger(R.integer
-                                .dynamic_list_content_show_lines))
-                        .onSpanTextClickListener(mOnSpanTextClickListener)
-                        .note(dynamicBean.getPaid_node().getNode())
-                        .dynamicPosition(position)
-                        .amount(dynamicBean.getPaid_node().getAmount())
-                        .disPlayText(false)
-                        .build();
-            }
+                if (canLookWords) {
+                    TextViewUtils.newInstance(contentView, content)
+                            .spanTextColor(SkinUtils.getColor(R
+                                    .color.normal_for_assist_text))
+                            .position(50, content.length())
+                            .dynamicPosition(position)
+                            .maxLines(contentView.getResources().getInteger(R.integer
+                                    .dynamic_list_content_show_lines))
+                            .onSpanTextClickListener(mOnSpanTextClickListener)
+                            .disPlayText(true)
+                            .build();
+                } else {
+                    TextViewUtils.newInstance(contentView, content)
+                            .spanTextColor(SkinUtils.getColor(R
+                                    .color.normal_for_assist_text))
+                            .position(50, content.length())
+                            .dynamicPosition(position)
+                            .maxLines(contentView.getResources().getInteger(R.integer
+                                    .dynamic_list_content_show_lines))
+                            .onSpanTextClickListener(mOnSpanTextClickListener)
+                            .note(dynamicBean.getPaid_node().getNode())
+                            .dynamicPosition(position)
+                            .amount(dynamicBean.getPaid_node().getAmount())
+                            .disPlayText(false)
+                            .build();
+                }
 
                 contentView.setVisibility(View.VISIBLE);
+            }
+                setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
+                setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
 
-            setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
-            setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
+                holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
+                // 分割线跟随工具栏显示隐藏
+                holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
+                if (showToolMenu) {
+                    // 显示工具栏
+                    DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                            .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
+                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                            .getFeed_comment_count()), false, 1);
+                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                                    .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
+                            false, 2);// 浏览量没有 0
+                    // 控制更多按钮的显示隐藏
+                    dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
+                    // 设置工具栏的点击事件
+                    dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
+                        if (mOnMenuItemClickLisitener != null) {
+                            mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+                        }
+                    });
+                }
 
-            holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
-            // 分割线跟随工具栏显示隐藏
-            holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
-            if (showToolMenu) {
-                // 显示工具栏
-                DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                        .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
-                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                        .getFeed_comment_count()), false, 1);
-                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                                .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
-                        false, 2);// 浏览量没有 0
-                // 控制更多按钮的显示隐藏
-                dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
-                // 设置工具栏的点击事件
-                dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
-                    if (mOnMenuItemClickLisitener != null) {
-                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+                holder.setVisible(R.id.fl_tip, showReSendBtn ? View.VISIBLE : View.GONE);
+                if (showReSendBtn) {
+                    // 设置动态发送状态
+                    if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
+                        holder.setVisible(R.id.fl_tip, View.VISIBLE);
+                    } else {
+                        holder.setVisible(R.id.fl_tip, View.GONE);
                     }
-                });
-            }
-
-            holder.setVisible(R.id.fl_tip, showReSendBtn ? View.VISIBLE : View.GONE);
-            if (showReSendBtn) {
-                // 设置动态发送状态
-                if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
-                    holder.setVisible(R.id.fl_tip, View.VISIBLE);
-                } else {
-                    holder.setVisible(R.id.fl_tip, View.GONE);
-                }
-                RxView.clicks(holder.getView(R.id.fl_tip))
-                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(aVoid -> {
-                            if (mOnReSendClickListener != null) {
-                                mOnReSendClickListener.onReSendClick(position);
-                            }
-                        });
-            }
-
-            holder.setVisible(R.id.dcv_comment, showCommentList ? View.VISIBLE : View.GONE);
-            if (showCommentList) {
-                // 设置评论内容
-                DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-                if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
-                    comment.setVisibility(View.GONE);
-                } else {
-                    comment.setVisibility(View.VISIBLE);
+                    RxView.clicks(holder.getView(R.id.fl_tip))
+                            .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                            .subscribe(aVoid -> {
+                                if (mOnReSendClickListener != null) {
+                                    mOnReSendClickListener.onReSendClick(position);
+                                }
+                            });
                 }
 
-                comment.setData(dynamicBean);
-                comment.setOnCommentClickListener(mOnCommentClickListener);
-                comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
-                comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+                holder.setVisible(R.id.dcv_comment, showCommentList ? View.VISIBLE : View.GONE);
+                if (showCommentList) {
+                    // 设置评论内容
+                    DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+                    if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
+                        comment.setVisibility(View.GONE);
+                    } else {
+                        comment.setVisibility(View.VISIBLE);
+                    }
 
+                    comment.setData(dynamicBean);
+                    comment.setOnCommentClickListener(mOnCommentClickListener);
+                    comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+                    comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+
+                }
+
+            } catch(NullPointerException e){
+                e.printStackTrace();
             }
-
-        } catch (NullPointerException e) {
-            e.printStackTrace();
         }
-    }
 
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
         RxView.clicks(view)
