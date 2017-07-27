@@ -1,11 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.user_tag;
+package com.zhiyicx.thinksnsplus.modules.usertag;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.settings.DaggerSettingsComponent;
-import com.zhiyicx.thinksnsplus.modules.settings.SettingsFragment;
-import com.zhiyicx.thinksnsplus.modules.settings.SettingsPresenter;
-import com.zhiyicx.thinksnsplus.modules.settings.SettingsPresenterModule;
 
 /**
  * @Describe 用户标签

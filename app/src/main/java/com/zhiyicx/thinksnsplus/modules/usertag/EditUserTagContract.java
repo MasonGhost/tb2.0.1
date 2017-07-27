@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.user_tag;
+package com.zhiyicx.thinksnsplus.modules.usertag;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;

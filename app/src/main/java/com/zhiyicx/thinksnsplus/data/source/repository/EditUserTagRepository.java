@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
 
-import com.zhiyicx.thinksnsplus.modules.user_tag.EditUserTagContract;
+import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagContract;
 
 import javax.inject.Inject;
 
