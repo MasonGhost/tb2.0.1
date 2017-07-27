@@ -384,8 +384,8 @@ public class ApiConfig {
     public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/like";// 点赞
     public static final String APP_PATH_DIGG_MYCOLLECT_GROUP_DYNAMIC_S = "api/" + API_VERSION_2 + "/groups/%s/posts/%s/like";// 点赞
     public static final String APP_PATH_GET_MYCOLLECT_GROUP_DYNAMIC_DIGG_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/likes";// 点赞列表
-    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comment";// 创建圈子动态评论
-    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comment";// 创建圈子动态评论
+    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 创建圈子动态评论
+    public static final String APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comments";// 创建圈子动态评论
     public static final String APP_PATH_GET_GROUP_DYNAMIC_COMMENT_LIST = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments";// 圈子动态评论列表
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT = "api/" + API_VERSION_2 + "/groups/{group}/posts/{post}/comments/{comment}";// 删除圈子动态评论
     public static final String APP_PATH_DELETE_GROUP_DYNAMIC_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/groups/%d/posts/%d/comments/%d";// 删除圈子动态评论
