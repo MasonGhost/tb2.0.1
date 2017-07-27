@@ -1,9 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.user_tag;
 
+import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.thinksnsplus.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * @Describe
@@ -13,18 +22,27 @@ import com.zhiyicx.thinksnsplus.R;
  */
 public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View {
 
+    @BindView(R.id.tv_choosed_tag_tip)
+    TextView mTvChoosedTagTip;
+    @BindView(R.id.tv_jump_over)
+    TextView mTvJumpOver;
+    @BindView(R.id.rv_choosed_tag)
+    RecyclerView mRvChoosedTag;
+    @BindView(R.id.rv_tag_class)
+    RecyclerView mRvTagClass;
+
     public static EditUserTagFragment newInstance() {
         return new EditUserTagFragment();
     }
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_settings;
+        return R.layout.fragment_edit_user_tag;
     }
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.setting);
+        return getString(R.string.user_tag_choose_tag);
     }
 
     @Override
@@ -35,6 +53,11 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     @Override
     protected boolean showToolBarDivider() {
         return true;
+    }
+
+    @Override
+    protected String setRightTitle() {
+        return getString(R.string.save);
     }
 
     @Override
