@@ -30,6 +30,7 @@
                         android:hint="@string/login_account_hint"
                         android:completionThreshold="@integer/login_hint_mix_count"
                         android:visibility="visible"
+                        android:maxLines="1"
                         android:layout_weight="1"/>
 
                 <ImageView

@@ -287,7 +287,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private void initAccount() {
         List<String> list = new ArrayList<>();
         Drawable mBackgroundDrawable = new ColorDrawable(Color.WHITE);// 默认为透明;
-        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
+//        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
         mAccountList.addAll(mPresenter.getAllAccountList());
         if (mAccountAdapter == null){
             mAccountAdapter = new AccountAdapterV2(getContext(), mAccountList);
@@ -313,5 +313,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     @Override
     public void onItemSelect(AccountBean accountBean) {
         mEtCompleteInput.setText(accountBean.getAccountName());
+    }
+
+    private void setAccountListPopHeight(int size){
+        if (size > 3){
+            mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 150));
+        } else {
+            mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 }
