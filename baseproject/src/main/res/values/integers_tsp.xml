@@ -72,4 +72,7 @@
     <!--tab的文字大小，单位sp-->
     <integer name="tab_text_size">16</integer>
 
+    <!--登录联想的最小输入值-->
+    <integer name="login_hint_mix_count">1</integer>
+
 </resources>

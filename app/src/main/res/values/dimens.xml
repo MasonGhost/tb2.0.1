@@ -59,4 +59,6 @@
 
     <!--意见反馈-->
     <dimen name="feed_back_item_height">45dp</dimen>
+
+    <dimen name="drop_offset_70">80dp</dimen>
 </resources>
