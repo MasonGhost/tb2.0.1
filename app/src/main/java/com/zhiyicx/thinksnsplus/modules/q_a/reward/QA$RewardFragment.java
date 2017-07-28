@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
@@ -22,10 +23,13 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -273,6 +277,8 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转搜索选择专家列表
+                    Intent intent = new Intent(getActivity(), ExpertSearchActivity.class);
+                    startActivity(intent);
                 });
         RxView.clicks(mBtPublish)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

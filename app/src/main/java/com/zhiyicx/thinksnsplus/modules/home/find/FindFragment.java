@@ -190,7 +190,7 @@ public class FindFragment extends TSFragment {
                 startActivity(new Intent(getActivity(), QA_Activity.class));
                 break;
             case R.id.find_quiz:
-
+                startActivity(new Intent(getActivity(), QA_RewardActivity.class));
                 break;
             default:
                 break;

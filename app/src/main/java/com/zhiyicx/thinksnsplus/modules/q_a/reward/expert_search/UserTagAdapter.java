@@ -8,6 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.widget.flowtag.OnInitSelectedPosition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Catherine
@@ -16,22 +21,24 @@ import com.zhiyicx.thinksnsplus.R;
  * @contact email:648129313@qq.com
  */
 
-public class UserTagAdapter extends BaseAdapter{
+public class UserTagAdapter extends BaseAdapter implements OnInitSelectedPosition {
 
-    private Context mContext;
+    private final Context mContext;
+    private final List<UserTagBean> mDataList;
 
-    public UserTagAdapter(Context mContext) {
-        this.mContext = mContext;
+    public UserTagAdapter(Context context) {
+        this.mContext = context;
+        mDataList = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return mDataList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return "xxxxxxxx";
+        return mDataList.get(position);
     }
 
     @Override
@@ -41,9 +48,30 @@ public class UserTagAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_tag, null);
-        TextView tvTagName = (TextView) view.findViewById(R.id.tv_tag_name);
-        tvTagName.setText(position + "xxxx");
+
+        TextView textView = (TextView) view.findViewById(R.id.tv_tag_name);
+        UserTagBean userTagBean = mDataList.get(position);
+        textView.setText("xxxxxxxx" + position);
         return view;
+    }
+
+    public void onlyAddAll(List<UserTagBean> datas) {
+        mDataList.addAll(datas);
+        notifyDataSetChanged();
+    }
+
+    public void clearAndAddAll(List<UserTagBean> datas) {
+        mDataList.clear();
+        onlyAddAll(datas);
+    }
+
+    @Override
+    public boolean isSelectedPosition(int position) {
+        if (position % 2 == 0) {
+            return true;
+        }
+        return false;
     }
 }

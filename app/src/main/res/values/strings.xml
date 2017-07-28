@@ -334,6 +334,7 @@
     <string name="qa_publish_reward_rule">悬赏规则</string>
     <string name="qa_publish_reward_onlookers">围观</string>
     <string name="qa_publish_recommend_expert">推荐专家</string>
+    <string name="qa_publish_show_expert">%1$d 回答  ·  %2$d 赞</string>
     <string name="qa_publish_btn">发布</string>
     <string name="qa_topic_all">全部话题</string>
     <string name="qa_topic_user_followed">我关注的</string>

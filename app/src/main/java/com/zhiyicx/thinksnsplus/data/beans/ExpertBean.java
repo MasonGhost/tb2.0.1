@@ -16,7 +16,7 @@ public class ExpertBean extends BaseListBean{
     private long id;
     private String name;
     private long avatar;
-    private int anwser_count;
+    private int answer_count;
     private int dig_count;
 
     public long getId() {
@@ -43,12 +43,12 @@ public class ExpertBean extends BaseListBean{
         this.avatar = avatar;
     }
 
-    public int getAnwser_count() {
-        return anwser_count;
+    public int getAnswer_count() {
+        return answer_count;
     }
 
-    public void setAnwser_count(int anwser_count) {
-        this.anwser_count = anwser_count;
+    public void setAnswer_count(int answer_count) {
+        this.answer_count = answer_count;
     }
 
     public int getDig_count() {
@@ -71,7 +71,7 @@ public class ExpertBean extends BaseListBean{
         dest.writeLong(this.id);
         dest.writeString(this.name);
         dest.writeLong(this.avatar);
-        dest.writeInt(this.anwser_count);
+        dest.writeInt(this.answer_count);
         dest.writeInt(this.dig_count);
     }
 
@@ -83,7 +83,7 @@ public class ExpertBean extends BaseListBean{
         this.id = in.readLong();
         this.name = in.readString();
         this.avatar = in.readLong();
-        this.anwser_count = in.readInt();
+        this.answer_count = in.readInt();
         this.dig_count = in.readInt();
     }
 
