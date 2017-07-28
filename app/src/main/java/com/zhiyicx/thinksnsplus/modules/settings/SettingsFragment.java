@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +41,8 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     CombinationButton mBtCleanCache;
     @BindView(R.id.bt_about_us)
     CombinationButton mBtAboutUs;
+    @BindView(R.id.bt_account_manager)
+    CombinationButton mBtAccountManager;
 
     //    private AlertDialog.Builder mLoginoutDialogBuilder;// 退出登录选择弹框
 //    private AlertDialog.Builder mCleanCacheDialogBuilder;// 清理缓存选择弹框
@@ -96,6 +99,15 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                     public void call(Void aVoid) {
                         showSnackSuccessMessage("vertify");
                     }
+                });
+        // 账户管理页面
+        RxView.clicks(mBtAccountManager)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    // 跳转账户管理页面
+                    Intent intent = new Intent(getActivity(), AccountManagementActivity.class);
+                    startActivity(intent);
                 });
         // 修改密码
         RxView.clicks(mBtChangePassword)
