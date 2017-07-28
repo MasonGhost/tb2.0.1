@@ -16,6 +16,7 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -219,7 +220,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.getPayStr(mPayType, mRechargeMoney * MONEY_UNIT));// 传入的是真实货币分单位
+                .subscribe(aVoid -> mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney)));// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String mRechargeMoneyStr = charSequence.toString();

@@ -35,6 +35,7 @@ import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
@@ -707,12 +708,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                        .string.buy_pay_member), mImageBean.getToll().getToll_money()))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mImageBean.getToll().getToll_money())))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), mImageBean.getToll().getToll_money()))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mImageBean.getToll().getToll_money())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
                     mPayPopWindow.hide();

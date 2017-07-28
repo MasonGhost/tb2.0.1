@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
@@ -804,12 +805,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), amout))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
                     mPayImagePopWindow.hide();
