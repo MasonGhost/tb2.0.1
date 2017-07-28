@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment;
 
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -87,7 +88,7 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
             WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
             int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
             try {
-                return walletBean.getBalance() * (ratio / MONEY_UNIT);
+                return PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
             } catch (Exception e) {
                 return 0;
             }

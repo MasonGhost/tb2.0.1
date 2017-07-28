@@ -11,7 +11,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import javax.inject.Inject;
 
 import rx.Subscription;
-import rx.functions.Action0;
 
 /**
  * @Author Jliuer
@@ -41,11 +40,11 @@ public class WithDrawalsPresenter extends AppBasePresenter<WithDrawalsConstract.
             return;
         }
 
-        if (value < mRootView.getWalletConfigBean().getCase_min_amount() / PayConfig.MONEY_UNIT) {
+        if (value < PayConfig.realCurrencyFen2Yuan(mRootView.getWalletConfigBean().getCase_min_amount())) {
             mRootView.minMoneyLimit();
             return;
         }
-        value = value * PayConfig.MONEY_UNIT;
+        value = PayConfig.realCurrencyYuan2Fen(value);
         Subscription subscribe = mRepository.withdraw(value, type, account)
                 .compose(mSchedulersTransformer)
                 .doOnSubscribe(() -> {

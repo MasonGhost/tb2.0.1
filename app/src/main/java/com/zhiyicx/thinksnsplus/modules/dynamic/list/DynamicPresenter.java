@@ -10,6 +10,7 @@ import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -471,7 +472,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {
-            balance = walletBean.getBalance();
+            balance = PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
         }
         double amount;
         if (isImage) {
