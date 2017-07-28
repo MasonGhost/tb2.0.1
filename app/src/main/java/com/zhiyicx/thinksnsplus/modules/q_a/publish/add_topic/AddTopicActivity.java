@@ -2,10 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.DaggerPublishQuestionComponent;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionPresenter;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionPresenterModule;
 
 
 /**

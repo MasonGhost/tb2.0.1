@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PictureAndTextEditorView;
 
 /**
  * @author LiuChao
@@ -27,7 +28,7 @@ import com.zhiyicx.thinksnsplus.R;
 
 public class UserInfoInroduceInputView extends FrameLayout {
     protected TextView mTvLimitTip;
-    protected EditText mEtContent;
+    protected PictureAndTextEditorView mEtContent;
     private int mLimitMaxSize;// 最大输入值
     private int mshowLimitSize;// 当输入值达到 mshowLimitSize 时，显示提示
     private String mHintContent;// 编辑框的hint提示文字
@@ -36,7 +37,7 @@ public class UserInfoInroduceInputView extends FrameLayout {
 
     private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
 
-    public EditText getEtContent() {
+    public PictureAndTextEditorView getEtContent() {
         return mEtContent;
     }
 
@@ -58,7 +59,7 @@ public class UserInfoInroduceInputView extends FrameLayout {
     private void init(final Context context, AttributeSet attrs) {
         LayoutInflater.from(context).inflate(R.layout.view_userinfo_introduce_inputview, this);
         mTvLimitTip = (TextView) findViewById(com.zhiyicx.baseproject.R.id.tv_limit_tip);
-        mEtContent = (EditText) findViewById(com.zhiyicx.baseproject.R.id.et_content);
+        mEtContent = (PictureAndTextEditorView) findViewById(com.zhiyicx.baseproject.R.id.et_content);
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs,
                     com.zhiyicx.baseproject.R.styleable.inputLimitView);

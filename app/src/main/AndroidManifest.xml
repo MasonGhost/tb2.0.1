@@ -365,7 +365,8 @@
         </activity>
         <activity android:name=".modules.q_a.QA_Activity">
         </activity>
-        <activity android:name=".modules.q_a.publish.detail.PublishContentActivity">
+        <activity android:name=".modules.q_a.publish.detail.PublishContentActivity"
+            android:windowSoftInputMode="adjustResize">
         </activity>
     </application>
 

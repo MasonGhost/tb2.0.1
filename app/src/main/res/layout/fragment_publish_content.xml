@@ -1,69 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:background="@color/white">
 
     <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
         android:id="@+id/et_qusetion_content"
-        style="@style/style_edit_cursor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_large"
+        android:layout_marginBottom="70dp"
         android:layout_marginLeft="@dimen/spacing_normal_large"
         android:layout_marginRight="@dimen/spacing_normal_large"
         android:layout_marginTop="@dimen/spacing_large"
         app:hintContent="@string/dynamic_content_hint"
-        app:limitSize="@integer/dynamic_content_max_size"
+        app:limitSize="999999"
         app:showLimitSize="@integer/dynamic_content_input_size"
         app:showLines="@integer/dynamic_content_show_lines"/>
 
-    <include
-        android:layout_marginLeft="@dimen/spacing_normal_large"
-        android:layout_marginRight="@dimen/spacing_normal_large"
-        layout="@layout/include_horizontal_divider_light"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
-        />
-
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        android:layout_gravity="bottom"
         android:layout_marginLeft="@dimen/spacing_normal"
         android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/full_button_height">
+        android:background="@color/general_for_loading_more">
+
+        <include
+            layout="@layout/include_horizontal_divider_light"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            />
 
         <ImageView
             android:id="@+id/im_arrowc"
-            android:src="@mipmap/sec_nav_arrow"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:src="@mipmap/sec_nav_arrow"/>
 
         <ImageView
+            android:id="@+id/im_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginRight="@dimen/spacing_normal"
             android:layout_toLeftOf="@+id/im_setting"
-            android:id="@+id/im_pic"
-            android:src="@mipmap/icon_picture_grey"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:src="@mipmap/icon_picture_grey"/>
 
         <ImageView
             android:id="@+id/im_setting"
-            android:layout_alignParentRight="true"
-            android:src="@mipmap/icon_install_grey"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/icon_install_grey"/>
 
     </RelativeLayout>
-
-    <com.zhiyicx.baseproject.widget.button.CombinationButton
-        android:id="@+id/tv_anonymous"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/full_button_height"
-        android:paddingLeft="@dimen/spacing_normal"
-        app:leftText="@string/dynamic_send_toll"
-        app:rightImage="@mipmap/btn_close"/>
-
-</LinearLayout>
+</FrameLayout>

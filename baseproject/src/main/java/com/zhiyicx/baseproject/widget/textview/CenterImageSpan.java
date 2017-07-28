@@ -69,11 +69,11 @@ public class CenterImageSpan extends ImageSpan {
                      float x, int top, int y, int bottom, Paint paint) {
         Drawable b = getDrawable();
         if (isText) {
-            canvas.drawCircle(b.getBounds().centerX(), b.getBounds().centerY(), b.getBounds().right - b.getBounds().centerX(), paint);
             Paint textP = new TextPaint(paint);
             Paint textB = new TextPaint(paint);
             textB.setColor(SkinUtils.getColor(R.color.qa_niming));
             textP.setColor(Color.WHITE);
+            canvas.drawCircle(b.getBounds().centerX(), b.getBounds().centerY(), b.getBounds().right - b.getBounds().centerX(), textB);
             textP.setTextSize(ConvertUtils.sp2px(BaseApplication.getContext(),12));
             canvas.drawText("匿", b.getBounds().centerX() - textP.measureText("匿") / 2, b.getBounds().centerY() - (textP.descent() + textP.ascent()) / 2, textP);
         } else {

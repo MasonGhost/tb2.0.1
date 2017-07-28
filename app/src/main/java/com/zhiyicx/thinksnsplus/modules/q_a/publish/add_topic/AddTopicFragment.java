@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -59,6 +61,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected int getBodyLayoutId() {
         return R.layout.fragment_publish_qustion_add_topic;
     }
+
     @Override
     protected int setEmptView() {
         return 0;
@@ -87,14 +90,16 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void setRightClick() {
         super.setRightClick();
-
+        startActivity(new Intent(getActivity(), PublishContentActivity.class));
     }
+
     @Override
     protected RecyclerView.ItemDecoration getItemDecoration() {
         return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
                 .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
                 .shape_recyclerview_grey_divider));
     }
+
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
