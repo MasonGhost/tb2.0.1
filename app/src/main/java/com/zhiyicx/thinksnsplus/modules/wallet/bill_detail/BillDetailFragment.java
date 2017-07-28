@@ -86,7 +86,7 @@ public class BillDetailFragment extends TSFragment {
         boolean is_user = mBillDetailBean.getUserInfoBean() != null;
         mBillUser.setText(getString(action == 0 ? R.string.account_to_name : R.string.account_form_name));
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
-        String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money),
+        String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
                 PayConfig.realCurrencyFen2Yuan(mBillDetailBean.getAmount()));
         mTvMineMoney.setText(moneyStr);
         mBillUserContainer.setVisibility(is_user ? View.VISIBLE : View.GONE);

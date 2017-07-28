@@ -70,7 +70,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 boolean status_success = recharge.getStatus() == 1;
                 int action = recharge.getAction();
                 desc.setEnabled(status_success);
-                String moneyStr=String.format(Locale.getDefault(),getString(R.string.dynamic_send_toll_select_money),
+                String moneyStr=String.format(Locale.getDefault(),getString(R.string.dynamic_send_toll_select_money_),
                         PayConfig.realCurrencyFen2Yuan(recharge.getAmount()));
                 desc.setText(status_success ? (action == 0 ? "- " +  moneyStr: "+ " +moneyStr) : getString(R.string.bill_doing));
                 account.setText(getDes(recharge));
