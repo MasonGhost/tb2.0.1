@@ -5,6 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -30,7 +31,7 @@ import rx.functions.Action1;
  * @Contact master.jungle68@gmail.com
  */
 public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View {
-    private static final int SPAN_SIZE = 4;
+    private static final int SPAN_SIZE = 3;
     private static final int SECTIONS = 10;
     private static final int SECTION_ITEMS = 5;
 
@@ -93,34 +94,39 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         initListener();
     }
 
+    @Override
+    protected void initData() {
+        for (int i = 0; i < 5; i++) {
+            mChoosedTags.add(new UserTagBean());
+        }
+
+        mChoosedTagAdapter.notifyDataSetChanged();
+    }
+
+
     private void initRvChoosedTag() {
         mChoosedTagLayoutManager = new GridLayoutManager(getContext(), SPAN_SIZE);
+        mRvChoosedTag.setLayoutManager(mChoosedTagLayoutManager);
+        mRvChoosedTag.setHasFixedSize(false);
         initSubscribeAdapter();
+        mRvChoosedTag.setAdapter(mChoosedTagAdapter);
     }
 
     private CommonAdapter initSubscribeAdapter() {
         mChoosedTagAdapter = new CommonAdapter<UserTagBean>(getActivity(), R.layout
-                .item_info_channel, mChoosedTags) {
+                .item_user_tag, mChoosedTags) {
             @Override
             protected void convert(ViewHolder holder, UserTagBean data
                     , final int position) {
-//                TextView textView = holder.getView(R.id.item_info_channel);
-//                ImageView delete = holder.getView(R.id.item_info_channel_deal);
-//
-//                if (position == 0) {
-//                    textView.setBackgroundResource(R.drawable.item_channel_bg_blue);
-//                    if (isEditor) {
-//                        textView.setBackgroundColor(Color.WHITE);
-//                    }
-//                } else {
-//                    textView.setBackgroundResource(R.drawable.item_channel_bg_normal);
-//                }
-//                if (isEditor && position != 0) {
-//                    delete.setVisibility(View.VISIBLE);
-//                } else {
-//                    delete.setVisibility(View.GONE);
-//                }
-//                holder.setText(R.id.item_info_channel, data.getName());
+                TextView textView = holder.getView(R.id.item_info_channel);
+                ImageView delete = holder.getView(R.id.item_info_channel_deal);
+                textView.setBackgroundResource(R.drawable.item_channel_bg_normal);
+                if (position != 0) {
+                    delete.setVisibility(View.VISIBLE);
+                } else {
+                    delete.setVisibility(View.GONE);
+                }
+                holder.setText(R.id.item_info_channel, "你是豆逼" + position);
             }
 
             @Override
@@ -153,12 +159,9 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-//                if (isEditor && position != 0) {
-//                    InfoTypeMyCatesBean bean = mMyCatesBeen.get(position);
-//                    mSubscribeAdapter.removeItem(position);
+                mChoosedTagAdapter.removeItem(position);
 //                    mUnSubscribeAdapter.addItem(new InfoTypeMoreCatesBean(bean.getId(),
 //                            bean.getName()));
-//                }
             }
 
             @Override
@@ -209,11 +212,6 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mRvTagClass.setAdapter(new TagClassAdapter(SECTIONS, SECTION_ITEMS));
 
     }
-
-    @Override
-    protected void initData() {
-    }
-
 
     private void initListener() {
 //
