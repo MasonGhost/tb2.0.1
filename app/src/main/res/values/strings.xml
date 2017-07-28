@@ -69,6 +69,7 @@
 
     <!-- 设置 -->
     <string name="vertify">认证</string>
+    <string name="account_manager">账户管理</string>
     <string name="change_password">修改密码</string>
     <string name="clean_cache">清理缓存</string>
     <string name="is_sure_clean_cache">确定清理缓存？</string>
@@ -80,6 +81,11 @@
     <string name="clean_failure">删除失败!</string>
     <string name="cache_zero_size">0.0B</string>
     <string name="change">更改</string>
+    <string name="account_bind_phone">绑定手机号</string>
+    <string name="account_bind_email">绑定邮箱</string>
+    <string name="account_bind_qq">绑定QQ</string>
+    <string name="account_bind_wechat">绑定微信</string>
+    <string name="account_bind_weibo">绑定微博</string>
 
     <!--裁剪-->
     <string name="crop_head_icon">更换头像</string>
