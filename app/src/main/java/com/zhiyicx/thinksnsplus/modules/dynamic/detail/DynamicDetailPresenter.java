@@ -623,7 +623,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {
-            balance = PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
+            balance = walletBean.getBalance();
         }
         double amount = mRootView.getCurrentDynamic().getImages().get(imagePosition).getAmount();
         if (balance < amount) {

@@ -63,7 +63,7 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {
-            balance = PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
+            balance = walletBean.getBalance();
         }
         DynamicDetailBeanV2 dynamicDetail= mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
         double amount =dynamicDetail.getImages().get(imagePosition).getAmount();
