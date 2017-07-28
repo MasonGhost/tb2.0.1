@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -20,6 +21,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.zhiyicx.thinksnsplus.modules.wallet.bill.BillListFragment.BILL_INFO;
@@ -73,8 +75,9 @@ public class WithdrawalsDetailFragment extends TSListFragment<WithdrawalsDetailC
                 int status = withdrawal.getStatus();
                 boolean status_success = status == 1;
                 desc.setEnabled(status_success);
-
-                desc.setText(status_success ? "- " + withdrawal.getValue() : (getString(status == 0 ? R.string.bill_doing : R.string.transaction_fail)));
+                String moneyStr = String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money),
+                        PayConfig.realCurrencyFen2Yuan(withdrawal.getValue()));
+                desc.setText(status_success ? "- " + moneyStr : (getString(status == 0 ? R.string.bill_doing : R.string.transaction_fail)));
                 account.setText(String.format(getString(R.string.withdraw_money_done),
                         PayType.getValue(withdrawal.getType().toLowerCase())));
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(withdrawal.getCreated_at()));
