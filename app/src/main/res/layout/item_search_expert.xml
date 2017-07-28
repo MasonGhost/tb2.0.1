@@ -40,6 +40,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_normal"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/size_content_comment"
                 tools:text="xxx"/>
 
         <com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout
