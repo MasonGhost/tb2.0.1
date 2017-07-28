@@ -120,8 +120,12 @@ public class MigrationHelper {
             StringBuilder dropTableStringBuilder = new StringBuilder();
             // 删除临时表
             dropTableStringBuilder.append("DROP TABLE ").append(tempTableName);
+            try {
+                db.execSQL(insertTableStringBuilder.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            db.execSQL(insertTableStringBuilder.toString());
             db.execSQL(dropTableStringBuilder.toString());
         }
     }

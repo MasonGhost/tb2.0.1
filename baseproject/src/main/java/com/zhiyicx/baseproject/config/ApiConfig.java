@@ -32,11 +32,11 @@ public class ApiConfig {
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = false;// 在线测试服务器 2
 //    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
 
-    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
-    public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
+//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+//    public static final String APP_IM_DOMAIN = "ws://test-plus.zhibocloud.cn:9900";// im 在线测试服务器
 //
-//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
-//    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
+    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+    public static final String APP_IM_DOMAIN = "ws://tsplus.zhibocloud.cn:9900";// im 正式服务器
 
 
     public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION + "/system/about";// 关于我们网站
@@ -396,9 +396,9 @@ public class ApiConfig {
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
      */
-    public static final String APP_COMPONENT_FEED = "feed";
-    public static final String APP_COMPONENT_MUSIC = "music";
-    public static final String APP_COMPONENT_NEWS = "news";
+//    public static final String APP_COMPONENT_FEED = "feed";
+//    public static final String APP_COMPONENT_MUSIC = "music";
+//    public static final String APP_COMPONENT_NEWS = "news";
     public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_special";
     /**
      * @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/likes.md}
