@@ -1,17 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.settings.account;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_STATE;
+import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindFragment.DEAL_TYPE_EMAIL;
+import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindFragment.DEAL_TYPE_PHONE;
 
 /**
  * @author Catherine
@@ -49,18 +56,30 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
         return getString(R.string.account_manager);
     }
 
-    private void initListener(){
+    private void initListener() {
         RxView.clicks(mBtBindPhone)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转绑定/解绑手机号
+                    Intent intent = new Intent(getActivity(), AccountBindActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_PHONE);
+                    bundle.putBoolean(BUNDLE_BIND_STATE, false);
+                    intent.putExtra(BUNDLE_BIND_TYPE, bundle);
+                    startActivity(intent);
                 });
         RxView.clicks(mBtBindEmail)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转绑定/解绑邮箱
+                    Intent intent = new Intent(getActivity(), AccountBindActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
+                    bundle.putBoolean(BUNDLE_BIND_STATE, false);
+                    intent.putExtra(BUNDLE_BIND_TYPE, bundle);
+                    startActivity(intent);
                 });
         RxView.clicks(mBtBindQq)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

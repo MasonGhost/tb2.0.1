@@ -86,6 +86,8 @@
     <string name="account_bind_qq">绑定QQ</string>
     <string name="account_bind_wechat">绑定微信</string>
     <string name="account_bind_weibo">绑定微博</string>
+    <string name="binding">绑定</string>
+    <string name="remove_binding">解除绑定</string>
 
     <!--裁剪-->
     <string name="crop_head_icon">更换头像</string>
