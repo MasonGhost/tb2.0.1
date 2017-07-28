@@ -23,7 +23,11 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +48,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> implements QA$RewardContract.View,
         CenterInfoPopWindow.CenterPopWindowItem1ClickListener {
+
+    public static final String BUNDLE_RESULT = "bundle_result";
 
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
@@ -367,5 +373,20 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
     @Override
     public void onClicked() {
         mRulePop.dismiss();
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_CHANGE_EXPERT)
+    public void updateInviteState(Bundle bundle){
+        if (bundle != null){
+            ExpertBean expertBean = bundle.getParcelable(BUNDLE_RESULT);
+            if (expertBean != null){
+                mBtQaSelectExpert.setRightText(expertBean.getName());
+            }
+        }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 }

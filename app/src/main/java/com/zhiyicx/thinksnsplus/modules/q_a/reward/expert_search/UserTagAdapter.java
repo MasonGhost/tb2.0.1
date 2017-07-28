@@ -53,7 +53,7 @@ public class UserTagAdapter extends BaseAdapter implements OnInitSelectedPositio
 
         TextView textView = (TextView) view.findViewById(R.id.tv_tag_name);
         UserTagBean userTagBean = mDataList.get(position);
-        textView.setText("xxxxxxxx" + position);
+        textView.setText(userTagBean.getTagName());
         return view;
     }
 

@@ -118,4 +118,7 @@ public class EventBusTagConfig {
      */
     public static final String EVENT_UNREAD_NOTIFICATION_LIMIT="unread-notification-limit";
 
+    /*问答相关*/
+    public static final String EVENT_CHANGE_EXPERT = "event_change_expert";
+
 }
