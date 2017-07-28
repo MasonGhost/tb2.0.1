@@ -22,13 +22,17 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * @Author Jliuer
@@ -40,7 +44,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         PublishContentConstact.View, PhotoSelectorImpl.IPhotoBackListener {
 
     @BindView(R.id.et_qusetion_content)
-    UserInfoInroduceInputView mEtQusetionContent;
+    PictureAndTextEditorView mEtQusetionContent;
     @BindView(R.id.v_horizontal_line)
     View mVHorizontalLine;
     @BindView(R.id.im_arrowc)
@@ -113,12 +117,21 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         int w, h;
-                        w = mEtQusetionContent.getEtContent().getWidth();
+                        w = mEtQusetionContent.getWidth();
                         h = w * resource.getHeight() / resource.getWidth();
-                        mEtQusetionContent.getEtContent().insertBitmap(path,w,h);
+                        mEtQusetionContent.insertBitmap(path,w,h);
                     }
                 });
+    }
 
+    private void test(){
+        Observable
+                .interval(2, TimeUnit.SECONDS)
+                .subscribe(aLong -> {
+            View rootview = getActivity().getWindow().getDecorView();
+            View aaa = rootview.findFocus();
+            LogUtils.i(aaa.getClass().getSimpleName());
+        });
     }
 
     @Override

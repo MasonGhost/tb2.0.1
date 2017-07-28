@@ -7,7 +7,7 @@
     >
     <!--用户编辑页面，简介编辑的布局-->
     <!--简介编辑框-->
-    <com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PictureAndTextEditorView
+    <EditText
         android:id="@+id/et_content"
         style="@style/style_edit_cursor"
         android:scrollbars="vertical"

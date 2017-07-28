@@ -32,7 +32,7 @@ public class PictureAndTextEditorView extends AppCompatEditText {
     private Context mContext;
     private List<String> mContentList;
 
-    public static final String mBitmapTag = "☆";
+    public static final String mBitmapTag = "[img]";
     private String mNewLineTag = "\n";
 
     public PictureAndTextEditorView(Context context) {
@@ -141,7 +141,7 @@ public class PictureAndTextEditorView extends AppCompatEditText {
         }
         String content = getText().toString().replaceAll(mNewLineTag, "");
         if (content.length() > 0 && content.contains(mBitmapTag)) {
-            String[] split = content.split("☆");
+            String[] split = content.split(mBitmapTag);
             mContentList.clear();
             for (String str : split) {
                 mContentList.add(str);
@@ -191,8 +191,8 @@ public class PictureAndTextEditorView extends AppCompatEditText {
                     int end = s.getSpanEnd(span);
                     if (selectStart >= start && selectStart <= end) {
                         ToastUtils.showToast("点击了图片");
-                        setSelection(0);
-                        return false;
+                        setSelection(s.toString().length());
+                        return true;
                     }
                 }
                 break;
@@ -258,4 +258,5 @@ public class PictureAndTextEditorView extends AppCompatEditText {
         }
         return inSampleSize;
     }
+
 }  
