@@ -9,15 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_mid_small"
-        android:background="@drawable/item_channel_bg_normal"
+        android:background="@drawable/item_react_bg_gray"
         android:gravity="center"
-        android:padding="@dimen/spacing_small"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:text="大哥"
-        android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_content"/>
-
+        android:padding="@dimen/spacing_mid_small_8dp"
+        android:textColor="@color/normal_for_dynamic_list_content"
+        android:textSize="@dimen/size_content_assist"/>
 
     <ImageView
         android:visibility="gone"

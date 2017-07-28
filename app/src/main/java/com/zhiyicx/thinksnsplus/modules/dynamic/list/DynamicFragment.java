@@ -492,7 +492,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
                             .getDrawable(), R.mipmap.icon_256);
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
                 if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition)
                         .getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {

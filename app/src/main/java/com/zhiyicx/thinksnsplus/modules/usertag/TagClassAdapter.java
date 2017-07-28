@@ -1,0 +1,102 @@
+package com.zhiyicx.thinksnsplus.modules.usertag;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridAdapter;
+import com.zhiyicx.thinksnsplus.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Sergej Kravcenko on 4/24/2017.
+ * Copyright (c) 2017 Sergej Kravcenko
+ */
+
+public class TagClassAdapter extends StickyHeaderGridAdapter {
+   private List<List<String>> labels;
+
+   TagClassAdapter(int sections, int count) {
+      labels = new ArrayList<>(sections);
+      for (int s = 0; s < sections; ++s) {
+         List<String> labels = new ArrayList<>(count);
+         for (int i = 0; i < count; ++i) {
+            String label = "Item " + String.valueOf(i);
+            /*for (int p = 0; p < s - i; ++p) {
+               label += "*\n";
+            }*/
+            labels.add(label);
+         }
+         this.labels.add(labels);
+      }
+   }
+
+   @Override
+   public int getSectionCount() {
+      return labels.size();
+   }
+
+   @Override
+   public int getSectionItemCount(int section) {
+      return labels.get(section).size();
+   }
+
+   @Override
+   public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup parent, int headerType) {
+      final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_user_tag, parent, false);
+      return new MyHeaderViewHolder(view);
+   }
+
+   @Override
+   public ItemViewHolder onCreateItemViewHolder(ViewGroup parent, int itemType) {
+      final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_tag_class, parent, false);
+      return new MyItemViewHolder(view);
+   }
+
+   @Override
+   public void onBindHeaderViewHolder(HeaderViewHolder viewHolder, int section) {
+      final MyHeaderViewHolder holder = (MyHeaderViewHolder)viewHolder;
+      final String label = "Header " + section;
+      holder.labelView.setText(label);
+   }
+
+   @Override
+   public void onBindItemViewHolder(ItemViewHolder viewHolder, final int section, final int position) {
+      final MyItemViewHolder holder = (MyItemViewHolder)viewHolder;
+      final String label = labels.get(section).get(position);
+      holder.labelView.setText(label);
+      holder.labelView.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            final int section = getAdapterPositionSection(holder.getAdapterPosition());
+            final int offset = getItemSectionOffset(section, holder.getAdapterPosition());
+
+            labels.get(section).remove(offset);
+            notifySectionItemRemoved(section, offset);
+            Toast.makeText(holder.labelView.getContext(), label, Toast.LENGTH_SHORT).show();
+         }
+      });
+   }
+
+   public static class MyHeaderViewHolder extends HeaderViewHolder {
+      TextView labelView;
+
+      MyHeaderViewHolder(View itemView) {
+         super(itemView);
+         labelView = (TextView) itemView.findViewById(R.id.label);
+      }
+   }
+
+   public static class MyItemViewHolder extends ItemViewHolder {
+      TextView labelView;
+
+      MyItemViewHolder(View itemView) {
+         super(itemView);
+         labelView = (TextView) itemView.findViewById(R.id.label);
+      }
+   }
+}

@@ -311,6 +311,13 @@
     <string name="input_instructions">输入提示</string>
     <string name="input_instructions_detail">输入格式错误，手机号码或邮箱仅支持数字或字母</string>
 
+    <!--用户标签-->
+    <string name="jump_over">跳过</string>
+    <string name="save">保存</string>
+    <string name="user_tag_choose_tag">选择标签</string>
+    <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已经选择%2$d个标签</string>
+
+
     <!--问答相关-->
     <string name="qa_publish">发布问题</string>
     <string name="qa_detail">问题详情</string>

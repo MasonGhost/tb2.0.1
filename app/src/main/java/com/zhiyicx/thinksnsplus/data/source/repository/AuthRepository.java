@@ -89,7 +89,7 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public AuthBean getAuthBean() {
         if (AppApplication.getmCurrentLoginAuth() == null) {
-            AppApplication.setmCurrentLoginAuth((AuthBean) SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN));
+            AppApplication.setmCurrentLoginAuth(SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN));
         }
         return AppApplication.getmCurrentLoginAuth();
     }
