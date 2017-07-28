@@ -47,13 +47,13 @@ public class TagClassAdapter extends StickyHeaderGridAdapter {
 
    @Override
    public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup parent, int headerType) {
-      final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_header, parent, false);
+      final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_user_tag, parent, false);
       return new MyHeaderViewHolder(view);
    }
 
    @Override
    public ItemViewHolder onCreateItemViewHolder(ViewGroup parent, int itemType) {
-      final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_item, parent, false);
+      final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_tag_class, parent, false);
       return new MyItemViewHolder(view);
    }
 

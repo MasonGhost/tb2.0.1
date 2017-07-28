@@ -120,7 +120,6 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                     , final int position) {
                 TextView textView = holder.getView(R.id.item_info_channel);
                 ImageView delete = holder.getView(R.id.item_info_channel_deal);
-                textView.setBackgroundResource(R.drawable.item_channel_bg_normal);
                 if (position != 0) {
                     delete.setVisibility(View.VISIBLE);
                 } else {
@@ -183,18 +182,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mTagClassLayoutManager.setSpanSizeLookup(new StickyHeaderGridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int section, int position) {
-                switch (section) {
-                    case 0:
-                        return 3;
-                    case 1:
-                        return 1;
-                    case 2:
-                        return 3 - position % 3;
-                    case 3:
-                        return position % 2 + 1;
-                    default:
-                        return 1;
-                }
+               return 1;
             }
         });
 
