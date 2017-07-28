@@ -132,10 +132,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         return 0;
     }
 
-    @Override
-    protected int setRightImg() {
-        return ico_me_message_normal;
-    }
+//    @Override
+//    protected int setRightImg() {
+//        return ico_me_message_normal;
+//    }
 
     @Override
     protected boolean showToolBarDivider() {
