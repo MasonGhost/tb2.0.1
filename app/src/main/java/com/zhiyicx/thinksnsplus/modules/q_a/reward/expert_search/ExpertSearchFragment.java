@@ -39,7 +39,9 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
     @BindView(R.id.fragment_info_search_cancle)
-    TextView mFragmentInfoSearchCancle;
+    TextView mFragmentInfoSearchCancel;
+    @BindView(R.id.tv_recommend_hint)
+    TextView mTvRecommendHint;
 
     public ExpertSearchFragment instance(Bundle bundle) {
         ExpertSearchFragment fragment = new ExpertSearchFragment();
@@ -62,7 +64,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     }
 
     private void initListener() {
-        RxView.clicks(mFragmentInfoSearchCancle)
+        RxView.clicks(mFragmentInfoSearchCancel)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> getActivity().finish());
