@@ -117,6 +117,9 @@ public class AccountAdapter extends ArrayAdapter<AccountBean> implements Filtera
             mData = (ArrayList<AccountBean>) results.values;
             // 更新视图
             notifyDataSetChanged();
+            if (mListener != null){
+                mListener.onDataChange(mData.size());
+            }
         }
     }
 
@@ -128,5 +131,6 @@ public class AccountAdapter extends ArrayAdapter<AccountBean> implements Filtera
 
     public interface OnItemSelectListener{
         void onItemSelect(AccountBean accountBean);
+        void onDataChange(int size);
     }
 }

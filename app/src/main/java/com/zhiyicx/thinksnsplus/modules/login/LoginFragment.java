@@ -79,8 +79,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private AccountBean mAccountBean; // 当前登录的账号
 
     private ArrayAdapter mArrayAdapter;
-    private AccountAdapterV2 mAccountAdapter;
-    private AccountPopWindow mPopWindow;
+    private AccountAdapter mAccountAdapter;
 
     public static LoginFragment newInstance(boolean isTourist) {
         LoginFragment fragment = new LoginFragment();
@@ -116,13 +115,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .subscribe(charSequence -> {
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
-//                    if (mPopWindow == null){
-//                        return;
-//                    }
-//                    if (!mPopWindow.isShowing()){
-//                        mPopWindow.show();
-//                    }
-//                    mPopWindow.getFilter().filter(charSequence);
                 });
         RxTextView.textChanges(mEtCompleteInput)
                 .compose(this.bindToLifecycle())
@@ -130,9 +122,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                     mIvClear.setVisibility(TextUtils.isEmpty(charSequence.toString()) ? View.GONE : View.VISIBLE);
-//                    if (mArrayAdapter != null){
-//                        mEtCompleteInput.postDelayed(() -> setAccountListPopHeight(mArrayAdapter.getCount()), 2000);
-//                    }
+                    if (mArrayAdapter != null){
+                        setAccountListPopHeight(mArrayAdapter.getCount());
+                    }
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)
@@ -294,7 +286,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 //        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
         mAccountList.addAll(mPresenter.getAllAccountList());
         if (mAccountAdapter == null){
-            mAccountAdapter = new AccountAdapterV2(getContext(), mAccountList);
+            mAccountAdapter = new AccountAdapter(getContext(), mAccountList, this);
         } else {
             mAccountAdapter.notifyDataSetChanged();
         }
@@ -302,17 +294,9 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         for (AccountBean accountBean : mAccountList){
             list.add(accountBean.getAccountName());
         }
-//        setAccountListPopHeight(mAccountList.size());
-        mArrayAdapter = new ArrayAdapter(getContext(), R.layout.item_account, R.id.tv_account_name, list);
-        mEtCompleteInput.setAdapter(mArrayAdapter);
-
-//        mPopWindow = AccountPopWindow.Builder()
-//                .with(getActivity())
-//                .parentView(mEtLoginPhone)
-//                .alpha(0.8f)
-//                .data(mAccountList)
-//                .adapter(mAccountAdapter)
-//                .build();
+        setAccountListPopHeight(mAccountList.size());
+//        mArrayAdapter = new ArrayAdapter(getContext(), R.layout.item_account, R.id.tv_account_name, list);
+        mEtCompleteInput.setAdapter(mAccountAdapter);
     }
 
     @Override
@@ -320,9 +304,14 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mEtCompleteInput.setText(accountBean.getAccountName());
     }
 
+    @Override
+    public void onDataChange(int size) {
+        setAccountListPopHeight(size);
+    }
+
     private void setAccountListPopHeight(int size){
-        if (size > 2){
-            mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 100));
+        if (size > 3){
+            mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 160));
         } else {
             mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         }
