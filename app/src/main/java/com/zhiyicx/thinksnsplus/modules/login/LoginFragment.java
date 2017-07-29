@@ -301,7 +301,10 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     public void onItemSelect(AccountBean accountBean) {
+        // 设置填充数据，收起下拉框
         mEtCompleteInput.setText(accountBean.getAccountName());
+        mEtCompleteInput.setSelection(accountBean.getAccountName().length());
+        mEtCompleteInput.dismissDropDown();
     }
 
     @Override
@@ -311,7 +314,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     private void setAccountListPopHeight(int size){
         if (size > 3){
-            mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 160));
+            mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 140));
         } else {
             mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         }
