@@ -3,19 +3,18 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="@dimen/item_hegiht"
               android:background="@color/white"
-              android:paddingLeft="@dimen/drop_offset_70"
-              android:paddingTop="@dimen/margin_12"
-              android:paddingBottom="@dimen/margin_12">
+              android:paddingLeft="@dimen/drop_offset_70">
 
     <TextView
             android:id="@+id/tv_account_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_content"
             android:maxLines="1"
+            android:gravity="center_vertical"
             android:ellipsize="middle"
             tools:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
 
