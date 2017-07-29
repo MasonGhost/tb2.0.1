@@ -33,7 +33,7 @@
                 android:layout_toLeftOf="@+id/fragment_info_search_cancle"
                 android:layout_toRightOf="@+id/fragment_info_search_back"
                 android:layout_toStartOf="@+id/fragment_info_search_cancle"
-                android:background="@drawable/info_search_bg"
+                android:background="@drawable/expert_search_bg"
                 android:imeOptions="actionSearch"
                 android:paddingEnd="@dimen/spacing_mid"
                 android:paddingLeft="@dimen/spacing_mid"
@@ -43,7 +43,7 @@
                 android:textColorHint="@color/normal_for_assist_text"
                 android:textSize="@dimen/size_sub_title"
                 android:drawableLeft="@mipmap/topic_icon_search"
-                android:drawablePadding="@dimen/toolbar_padding_left"
+                android:drawablePadding="@dimen/margin_10dp"
                 android:hint="@string/info_search"/>
 
         <TextView
