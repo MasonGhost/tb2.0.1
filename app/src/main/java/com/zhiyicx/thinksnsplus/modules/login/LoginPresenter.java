@@ -2,18 +2,23 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AccountBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,6 +43,8 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    @Inject
+    AccountBeanGreenDaoImpl mAccountBeanGreenDao;
     @Inject
     WalletRepository mWalletRepository;
 
@@ -71,6 +78,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                         if (data.getUser().getWallet() != null) {
                             mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
                         }
+                        mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
                         mRootView.setLoginState(true);
                     }
 
@@ -89,6 +97,11 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                 });
 
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public List<AccountBean> getAllAccountList() {
+        return mAccountBeanGreenDao.getMultiDataFromCache();
     }
 
     private void handleIMLogin() {

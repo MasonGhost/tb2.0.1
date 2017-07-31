@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 
 import android.os.Bundle;
 
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
@@ -59,7 +60,7 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
 
     @Override
     public void payNote(final Long feed_id, final int imagePosition, int note) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {
             balance = walletBean.getBalance();

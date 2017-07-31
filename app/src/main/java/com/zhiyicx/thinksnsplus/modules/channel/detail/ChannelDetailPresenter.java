@@ -355,7 +355,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         List<GroupDynamicCommentListBean> commentBeanList = new ArrayList<>();
         commentBeanList.add(creatComment);
@@ -440,7 +440,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
                     for (int i = 0; i < size; i++) {
-                        if (mRootView.getListDatas().get(i).getId().equals(dynamicCommentBean1.getFeed_id())) {
+                        if (mRootView.getListDatas().get(i).getId().intValue()==dynamicCommentBean1.getFeed_id()) {
                             dynamicPosition = i;
                             break;
                         }

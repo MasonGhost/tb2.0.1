@@ -73,4 +73,8 @@
     <integer name="tab_text_size">16</integer>
     <!--用户最多标签数量-->
     <integer name="user_tag_max_nums">5</integer>
+
+    <!--登录联想的最小输入值-->
+    <integer name="login_hint_mix_count">1</integer>
+
 </resources>

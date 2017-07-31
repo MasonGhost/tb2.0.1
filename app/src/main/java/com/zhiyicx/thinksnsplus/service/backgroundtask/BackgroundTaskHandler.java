@@ -1084,7 +1084,11 @@ public class BackgroundTaskHandler {
                              * @see{https://github.com/slimkit/plus-component-group/blob/master/Documents/createGroupPostComment.md}
                              */
                             JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
-                            dynamicCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
+                            try {
+                                dynamicCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
+                            } catch (JSONException e) {// 。。。
+                                dynamicCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            }
                             dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                             mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
                             EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
@@ -21,6 +22,8 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 
@@ -67,8 +70,9 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 boolean status_success = recharge.getStatus() == 1;
                 int action = recharge.getAction();
                 desc.setEnabled(status_success);
-
-                desc.setText(status_success ? (action == 0 ? "- " + recharge.getAmount() : "+ " + recharge.getAmount()) : getString(R.string.bill_doing));
+                String moneyStr=String.format(Locale.getDefault(),getString(R.string.dynamic_send_toll_select_money_),
+                        PayConfig.realCurrencyFen2Yuan(recharge.getAmount()));
+                desc.setText(status_success ? (action == 0 ? "- " +  moneyStr: "+ " +moneyStr) : getString(R.string.bill_doing));
                 account.setText(getDes(recharge));
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
             }

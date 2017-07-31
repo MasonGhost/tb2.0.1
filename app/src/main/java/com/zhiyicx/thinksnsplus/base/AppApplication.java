@@ -102,7 +102,7 @@ public class AppApplication extends TSApplication {
     private void initAppProject() {
         initComponent();
         // IM
-        if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
+        if (!TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 安装了 IM
             LogUtils.d(TAG, "---------------start IM---------------------");
             ZBIMSDK.init(getContext());
         }
