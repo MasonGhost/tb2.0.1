@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridLayoutManager;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -22,7 +23,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe
@@ -50,10 +52,11 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private CommonAdapter mChoosedTagAdapter;
 
     private List<UserTagBean> mChoosedTags = new ArrayList<>();
-    private List<UserTagBean> mTagClasses = new ArrayList<>();
+    private List<TagCategoryBean> mCategoryTags = new ArrayList<>();
 
     private int mMaxChooseNums;
     private int mCurrentChooseNums = 0;
+    private TagClassAdapter mTagClassAdapter;
 
 
     public static EditUserTagFragment newInstance() {
@@ -101,6 +104,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         }
 
         mChoosedTagAdapter.notifyDataSetChanged();
+        mPresenter.getAllTags();
     }
 
 
@@ -133,25 +137,19 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                 RxView.clicks(viewHolder.itemView)
                         .throttleFirst(1, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object o) {
-                                if (mOnItemClickListener != null) {
-                                    int position = viewHolder.getAdapterPosition();
-                                    mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                                }
+                        .subscribe(o -> {
+                            if (mOnItemClickListener != null) {
+                                int position = viewHolder.getAdapterPosition();
+                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
                             }
                         });
 
-                viewHolder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        if (mOnItemClickListener != null) {
-                            int position = viewHolder.getAdapterPosition();
-                            return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                        }
-                        return true;
+                viewHolder.getConvertView().setOnLongClickListener(v -> {
+                    if (mOnItemClickListener != null) {
+                        int position = viewHolder.getAdapterPosition();
+                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
                     }
+                    return true;
                 });
             }
         };
@@ -182,7 +180,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mTagClassLayoutManager.setSpanSizeLookup(new StickyHeaderGridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int section, int position) {
-               return 1;
+                return 1;
             }
         });
 
@@ -197,23 +195,20 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             }
         });
         mRvTagClass.setLayoutManager(mTagClassLayoutManager);
-        mRvTagClass.setAdapter(new TagClassAdapter(SECTIONS, SECTION_ITEMS));
+        mTagClassAdapter = new TagClassAdapter(mCategoryTags);
+        mRvTagClass.setAdapter(mTagClassAdapter);
 
     }
 
     private void initListener() {
-//
-//        // 退出登录
-//        RxView.clicks(mBtLoginOut)
-//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                .compose(this.<Void>bindToLifecycle())
-//                .subscribe(new Action1<Void>() {
-//                    @Override
-//                    public void call(Void aVoid) {
-//                        initLoginOutPopupWindow();
-//                        mLoginoutPopupWindow.show();
-//                    }
-//                });
+
+        // 跳过
+        RxView.clicks(mTvJumpOver)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+
+                });
     }
 
     /**
@@ -225,4 +220,14 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         return mCurrentChooseNums > 0;
     }
 
+    /**
+     * 更新所有标签
+     *
+     * @param tagCategoryBeanList
+     */
+    @Override
+    public void updateTags(List<TagCategoryBean> tagCategoryBeanList) {
+        this.mCategoryTags = tagCategoryBeanList;
+        mTagClassAdapter.notifyAllSectionsDataSetChanged();
+    }
 }

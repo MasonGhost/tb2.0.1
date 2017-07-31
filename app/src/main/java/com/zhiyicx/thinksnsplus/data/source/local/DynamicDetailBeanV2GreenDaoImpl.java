@@ -38,6 +38,9 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
     public void saveMultiData(List<DynamicDetailBeanV2> multiData) {
 
     }
+    public long  getCounts(){
+      return   getRDaoSession().getDynamicDetailBeanV2Dao().count();
+    }
 
     @Override
     public boolean isInvalide() {

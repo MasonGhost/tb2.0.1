@@ -43,15 +43,20 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
     private Long comment_mark;
     private int group_id;
     private int feed_id;
-    private long user_id;
+    private long user_id;// 谁发的这条评论
     @ToOne(joinProperty = "user_id")
     private UserInfoBean commentUser;
+    @SerializedName("body")
     private String content;
-    private long reply_to_user_id;
+    private String commentable_type;
+    private long  commentable_id;
+    @SerializedName("reply_user")
+    private long reply_to_user_id;// 评论要发给谁
     @ToOne(joinProperty = "reply_to_user_id")
     private UserInfoBean replyUser;
     private String created_at;
-    private int to_user_id;
+    @SerializedName("target_user")
+    private int to_user_id;// 发动态人的 id
     private int state = SEND_ING;
 
     public int getFeed_id() {
@@ -139,7 +144,6 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         this.reply_to_user_id = reply_to_user_id;
     }
 
-    
 
     @Override
     public int describeContents() {
@@ -156,11 +160,29 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         dest.writeLong(this.user_id);
         dest.writeParcelable(this.commentUser, flags);
         dest.writeString(this.content);
+        dest.writeString(this.commentable_type);
+        dest.writeLong(this.commentable_id);
         dest.writeLong(this.reply_to_user_id);
         dest.writeParcelable(this.replyUser, flags);
         dest.writeString(this.created_at);
         dest.writeInt(this.to_user_id);
         dest.writeInt(this.state);
+    }
+
+    public String getCommentable_type() {
+        return this.commentable_type;
+    }
+
+    public void setCommentable_type(String commentable_type) {
+        this.commentable_type = commentable_type;
+    }
+
+    public long getCommentable_id() {
+        return this.commentable_id;
+    }
+
+    public void setCommentable_id(long commentable_id) {
+        this.commentable_id = commentable_id;
     }
 
     /** To-one relationship, resolved on first access. */
@@ -282,6 +304,8 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         this.user_id = in.readLong();
         this.commentUser = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.content = in.readString();
+        this.commentable_type = in.readString();
+        this.commentable_id = in.readLong();
         this.reply_to_user_id = in.readLong();
         this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.created_at = in.readString();
@@ -289,15 +313,18 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
         this.state = in.readInt();
     }
 
-    @Generated(hash = 1109890683)
+    @Generated(hash = 2070758597)
     public GroupDynamicCommentListBean(Long id, Long comment_mark, int group_id, int feed_id, long user_id, String content,
-            long reply_to_user_id, String created_at, int to_user_id, int state) {
+            String commentable_type, long commentable_id, long reply_to_user_id, String created_at, int to_user_id,
+            int state) {
         this.id = id;
         this.comment_mark = comment_mark;
         this.group_id = group_id;
         this.feed_id = feed_id;
         this.user_id = user_id;
         this.content = content;
+        this.commentable_type = commentable_type;
+        this.commentable_id = commentable_id;
         this.reply_to_user_id = reply_to_user_id;
         this.created_at = created_at;
         this.to_user_id = to_user_id;

@@ -187,17 +187,17 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         bundle.putLong(BUNDLE_SOURCE_ID, commentedBean.getTarget_id());
         switch (commentedBean.getChannel()) {
 
-            case ApiConfig.APP_COMPONENT_FEED:
+            case ApiConfig.APP_LIKE_FEED:
                 intent = new Intent(mContext, DynamicDetailActivity.class);
                 intent.putExtras(bundle);
                 break;
-            case ApiConfig.APP_COMPONENT_MUSIC:
+            case ApiConfig.APP_LIKE_MUSIC:
                 intent = new Intent(mContext, MusicCommentActivity.class);
 //                bundle.putString(CURRENT_COMMENT_TYPE, commentedBean.getSource_table().equals(APP_COMPONENT_SOURCE_TABLE_MUSICS) ? CURRENT_COMMENT_TYPE_MUSIC : CURRENT_COMMENT_TYPE_ABLUM);
                 bundle.putString(CURRENT_COMMENT_TYPE, CURRENT_COMMENT_TYPE_MUSIC);
                 intent.putExtra(CURRENT_COMMENT, bundle);
                 break;
-            case ApiConfig.APP_COMPONENT_NEWS:
+            case ApiConfig.APP_LIKE_NEWS:
                 intent = new Intent(mContext, InfoDetailsActivity.class);
                 intent.putExtra(BUNDLE_INFO, bundle);
                 break;

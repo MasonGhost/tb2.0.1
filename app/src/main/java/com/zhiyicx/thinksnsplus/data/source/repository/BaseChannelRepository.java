@@ -221,7 +221,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
     public void sendGroupComment(String commentContent, Long group_id, Long feed_id, Long reply_to_user_id, Long comment_mark) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("content", commentContent);
+        params.put("body", commentContent);
         params.put("group_post_comment_mark", comment_mark);
         params.put("reply_to_user_id", reply_to_user_id);
         // 后台处理

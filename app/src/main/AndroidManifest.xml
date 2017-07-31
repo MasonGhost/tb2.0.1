@@ -79,6 +79,10 @@
             android:name=".modules.password.changepassword.ChangePasswordActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".modules.settings.account.AccountManagementActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.settings.bind.AccountBindActivity"
+                android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.password.findpassword.FindPasswordActivity"
             android:screenOrientation="portrait">

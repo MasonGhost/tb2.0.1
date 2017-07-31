@@ -2,6 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.usertag;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
+
+import java.util.List;
 
 /**
  * @Describe
@@ -16,6 +19,7 @@ public interface EditUserTagContract {
      */
     interface View extends IBaseView<Presenter> {
 
+        void updateTags(List<TagCategoryBean> tagCategoryBeanList);
     }
 
     /**
@@ -26,7 +30,10 @@ public interface EditUserTagContract {
     }
 
     interface Presenter extends IBasePresenter {
-
+        /**
+         * 获取全部标签
+         */
+        void getAllTags();
     }
 
 }

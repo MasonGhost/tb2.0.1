@@ -60,6 +60,8 @@
     <!--意见反馈-->
     <dimen name="feed_back_item_height">45dp</dimen>
 
+    <dimen name="drop_offset_70">85dp</dimen>
+
     <!--问答内容图片高度-->
     <dimen name="qa_info_iamge_height">150dp</dimen>
     <dimen name="qa_top_select_height">30dp</dimen>

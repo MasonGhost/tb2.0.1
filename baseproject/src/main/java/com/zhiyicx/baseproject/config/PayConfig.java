@@ -25,7 +25,7 @@ public class PayConfig {
     public static final double RATIO_UNIT = 100; // 转换率单位 %
 
     /**
-     * @param d 游戏币
+     * @param d     游戏币
      * @param ratio 转换率，是个百分数：500  -> 500%
      * @return 真实货币分单位
      */
@@ -34,13 +34,28 @@ public class PayConfig {
     }
 
     /**
-     *
-     * @param d 真实货币 分单位
+     * @param d     真实货币 分单位
      * @param ratio 转换率，是个百分数：500  -> 500%
      * @return 与真实货币 分单位对应的 游戏币
      */
     public static double realCurrency2GameCurrency(double d, int ratio) {
         return (d * ratio / RATIO_UNIT);
+    }
+
+    /**
+     * @param d     真实货币 元单位
+     * @return 真实货币 分单位
+     */
+    public static double realCurrencyYuan2Fen(double d) {
+        return d*MONEY_UNIT;
+    }
+
+    /**
+     * @param d     真实货币 分单位
+     * @return 真实货币 元单位
+     */
+    public static double realCurrencyFen2Yuan(double d) {
+        return d/MONEY_UNIT;
     }
 
 }

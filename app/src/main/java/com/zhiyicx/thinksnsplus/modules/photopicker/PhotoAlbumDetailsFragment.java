@@ -100,7 +100,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         }
         mBtComplete.setEnabled(photos.size() > 0);
         mTvPreview.setEnabled(photos.size() > 0);
-        mBtComplete.setText(getString(R.string.album_selected_count, photos.size(), maxCount));
+        mBtComplete.setText(getString(R.string.album_selected_count, photoList.size(), maxCount));
         photoGridAdapter.notifyDataSetChanged();
     }
 

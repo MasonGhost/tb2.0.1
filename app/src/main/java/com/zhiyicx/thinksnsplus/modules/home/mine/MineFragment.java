@@ -97,6 +97,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
+        mBtRanking.setVisibility(View.GONE);// V2 点赞排行榜还没有,暂时隐藏
     }
 
     @Override
@@ -131,10 +132,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         return 0;
     }
 
-    @Override
-    protected int setRightImg() {
-        return ico_me_message_normal;
-    }
+//    @Override
+//    protected int setRightImg() {
+//        return ico_me_message_normal;
+//    }
 
     @Override
     protected boolean showToolBarDivider() {
@@ -247,7 +248,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         if (userInfoBean.getWallet() != null) {
             myMoney = userInfoBean.getWallet().getBalance();
         }
-        mBtWallet.setRightText(getString(R.string.money_format_with_unit, myMoney/PayConfig.MONEY_UNIT));
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrencyFen2Yuan(myMoney)));
 
     }
 
