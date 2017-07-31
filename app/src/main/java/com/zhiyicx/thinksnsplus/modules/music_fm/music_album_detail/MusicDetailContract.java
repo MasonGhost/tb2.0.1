@@ -46,9 +46,9 @@ public interface MusicDetailContract {
     }
 
     interface Repository {
-        Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(String id);
+        Observable<MusicAlbumDetailsBean> getMusicAblum(String id);
 
-        Observable<BaseJson<MusicDetaisBean>> getMusicDetails(String music_id);
+        Observable<MusicDetaisBean> getMusicDetails(String music_id);
 
         void handleCollect(boolean isCollected, String special_id);
 

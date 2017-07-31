@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.AblumCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
@@ -40,32 +41,32 @@ public interface MusicClient {
 
     // 获取专辑列表
     @GET(APP_PATH_MUSIC_ABLUM_LIST)
-    Observable<BaseJson<List<MusicAlbumListBean>>> getMusicList(@Query("max_id") Long max_id,
+    Observable<List<MusicAlbumListBean>> getMusicList(@Query("max_id") Long max_id,
                                                                 @Query("limit") Long limit);
 
     // 获取收藏专辑列表
     @GET(APP_PATH_MUSIC_COLLECT_ABLUM_LIST)
-    Observable<BaseJson<List<MusicAlbumListBean>>> getCollectMusicList(@Query("max_id") Long max_id,
+    Observable<List<MusicAlbumListBean>> getCollectMusicList(@Query("max_id") Long max_id,
                                                                        @Query("limit") Long limit);
 
     // 获取专辑详情
     @GET(APP_PATH_MUSIC_ABLUM_DETAILS)
-    Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(@Path("special_id") String id);
+    Observable<MusicAlbumDetailsBean> getMusicAblum(@Path("special_id") String id);
 
     // 获取专辑评论列表
     @GET(APP_PATH_MUSIC_ABLUM_COMMENT_LIST)
-    Observable<BaseJson<List<MusicCommentListBean>>> getAblumCommentList(@Path("special_id") String
+    Observable<List<CommentedBean>> getAblumCommentList(@Path("special_id") String
                                                                                  music_id,
-                                                                         @Query("max_id") Long max_id,
-                                                                         @Query("limit") Long limit);
+                                                                  @Query("max_id") Long max_id,
+                                                                  @Query("limit") Long limit);
 
     // 获取歌曲详情
     @GET(APP_PATH_MUSIC_DETAILS)
-    Observable<BaseJson<MusicDetaisBean>> getMusicDetails(@Path("music_id") String music_id);
+    Observable<MusicDetaisBean> getMusicDetails(@Path("music_id") String music_id);
 
     // 获取歌曲评论列表
     @GET(APP_PATH_MUSIC_COMMENT)
-    Observable<BaseJson<List<MusicCommentListBean>>> getMusicCommentList(@Path("music_id") String
+    Observable<List<CommentedBean>> getMusicCommentList(@Path("music_id") String
                                                                                  music_id,
                                                                          @Query("max_id") Long max_id,
                                                                          @Query("limit") Long limit);

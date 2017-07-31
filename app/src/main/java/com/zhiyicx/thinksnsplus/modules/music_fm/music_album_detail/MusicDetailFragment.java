@@ -277,7 +277,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         ablumHeadInfo.setCommentCount(musicAblum.getComment_count());
         ablumHeadInfo.setShareCount(musicAblum.getShare_count());
         ablumHeadInfo.setListenCount(musicAblum.getTaste_count());
-        ablumHeadInfo.setAblumId(musicAblum.getId());
+        ablumHeadInfo.setAblumId(musicAblum.getId().intValue());
         ablumHeadInfo.setLikeCount(musicAblum.getCollect_count());
         WindowUtils.setAblumHeadInfo(ablumHeadInfo);
 
@@ -285,9 +285,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
         mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
 
-        mMusicAlbumListBean.setIs_collection(mAlbumDetailsBean.getIs_collection());
+        mMusicAlbumListBean.setHas_collect(mAlbumDetailsBean.getHas_collect());
 
-        if (mAlbumDetailsBean.getIs_collection() != 0) {
+        if (mAlbumDetailsBean.getHas_collect()) {
             mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
         }
         if (mCompatProvider.getMediaBrowser().isConnected()) {
@@ -625,7 +625,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 break;
             case R.id.fragment_music_detail_favorite:
                 if (!mPresenter.handleTouristControl()) {
-                    mPresenter.handleCollect(mAlbumDetailsBean.getIs_collection() == 0, mAlbumDetailsBean.getId() + "");
+                    mPresenter.handleCollect(!mAlbumDetailsBean.getHas_collect(), mAlbumDetailsBean.getId() + "");
                 }
                 break;
             case R.id.fragment_music_detail_back:
@@ -647,8 +647,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
             @Override
             public void call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                musicsBean.getMusic_info().setIsdiggmusic(e_albumListBean.getMusic_info().getIsdiggmusic());
-                musicsBean.getMusic_info().setComment_count(e_albumListBean.getMusic_info().getComment_count());
+                musicsBean.setHas_like(e_albumListBean.isHas_like());
+                musicsBean.setComment_count(e_albumListBean.getComment_count());
             }
         });
         LogUtils.d("EVENT_MUSIC_LIKE");

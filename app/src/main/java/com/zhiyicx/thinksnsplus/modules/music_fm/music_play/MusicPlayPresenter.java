@@ -49,10 +49,10 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
     public void shareMusic(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle(mRootView.getCurrentMusic().getMusic_info().getTitle());
-        shareContent.setContent(mRootView.getCurrentMusic().getMusic_info().getLyric());
+        shareContent.setTitle(mRootView.getCurrentMusic().getTitle());
+        shareContent.setContent(mRootView.getCurrentMusic().getLyric());
         shareContent.setUrl(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                mRootView.getCurrentMusic().getMusic_info().getStorage()));
+                mRootView.getCurrentMusic().getStorage().getId()));
         if (bitmap==null){
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
         }else{
@@ -69,7 +69,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
 
     @Override
     public void onSuccess(Share share) {
-        mRepository.shareMusic(mRootView.getCurrentMusic().getMusic_info().getId() + "");
+        mRepository.shareMusic(mRootView.getCurrentMusic().getId() + "");
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
     }
 

@@ -35,16 +35,16 @@ public class MusicDataConvert implements MusicProviderSource {
             return tracks.iterator();
         }
         for (MusicAlbumDetailsBean.MusicsBean data : mAlbumDetailsBean.getMusics()) {
-            LogUtils.d("Iterator<MediaMetadataCompat> :::" + data.getMusic_info().getTitle());
+            LogUtils.d("Iterator<MediaMetadataCompat> :::" + data.getTitle());
             tracks.add(buildMusic(data));
         }
         return tracks.iterator();
     }
 
     private MediaMetadataCompat buildMusic(MusicAlbumDetailsBean.MusicsBean data) {
-        MusicAlbumDetailsBean.MusicsBean.MusicInfoBean needData = data.getMusic_info();
+        MusicAlbumDetailsBean.MusicsBean needData = data;
         String musicUrl = String.format(ApiConfig.MUSIC_PATH,
-                needData.getStorage());
+                needData.getStorage().getId());
 
         String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(),50,50,100));
         LogUtils.d("buildMusic--needData.getId:::" + needData.getId());
@@ -56,7 +56,7 @@ public class MusicDataConvert implements MusicProviderSource {
                 .putString(MusicProviderSource.CUSTOM_METADATA_TRACK_SOURCE,
                         "" + musicUrl)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, needData.getTitle())
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, needData.getIsdiggmusic() + "")
+                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, needData.isHas_like() + "")
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, needData.getSinger().getName())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, needData.getLast_time() * 1000)
                 .putString(MediaMetadataCompat.METADATA_KEY_GENRE, METADATA_KEY_GENRE)

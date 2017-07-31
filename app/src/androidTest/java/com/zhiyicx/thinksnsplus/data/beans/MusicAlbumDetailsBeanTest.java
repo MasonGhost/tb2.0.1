@@ -11,12 +11,13 @@ public class MusicAlbumDetailsBeanTest extends AbstractDaoTestLongPk<MusicAlbumD
     @Override
     protected MusicAlbumDetailsBean createEntity(Long key) {
         MusicAlbumDetailsBean entity = new MusicAlbumDetailsBean();
-        entity.setId(13);
-        entity.setTaste_count(33);
-        entity.setShare_count(443);
-        entity.setComment_count(34);
-        entity.setCollect_count(11);
-        entity.setIs_collection(1);
+        entity.setId(key);
+        entity.setId(1L);
+        entity.setTaste_count(2);
+        entity.setShare_count(2);
+        entity.setComment_count(2);
+        entity.setCollect_count(2);
+        entity.setHas_collect(false);
         return entity;
     }
 

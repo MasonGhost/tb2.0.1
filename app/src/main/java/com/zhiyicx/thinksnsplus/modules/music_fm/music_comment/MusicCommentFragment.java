@@ -17,6 +17,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
@@ -52,7 +53,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  * @Description
  */
 public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Presenter,
-        MusicCommentListBean> implements MusicCommentContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
+        CommentedBean> implements MusicCommentContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
         InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener,
         MusicCommentItem.OnReSendClickListener, MusicCommentHeader.HeadlerClickEvent {
 
@@ -72,7 +73,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     public static final String CURRENT_COMMENT_TYPE = "type";
     private MusicCommentHeader.HeaderInfo mHeaderInfo;
     private MusicCommentHeader mMusicCommentHeader;
-    private int mReplyUserId = 0;// 被评论者的 id ,评论动态 id = 0
+    private long mReplyUserId = 0;// 被评论者的 id ,评论动态 id = 0
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mReSendCommentPopWindow;
 
@@ -183,7 +184,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
-    public void onReSendClick(MusicCommentListBean musicCommentListBean) {
+    public void onReSendClick(CommentedBean musicCommentListBean) {
         initReSendCommentPopupWindow(musicCommentListBean);
         mReSendCommentPopWindow.show();
     }
@@ -195,7 +196,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
-    public int getCommentId() {
+    public long getCommentId() {
         return mHeaderInfo.getId();
     }
 
@@ -228,8 +229,8 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
             mReplyUserId = mListDatas.get(position).getUser_id();
             showCommentView();
             String contentHint = getString(R.string.default_input_hint);
-            if (mListDatas.get(position).getReply_to_user_id() != mHeaderInfo.getId()) {
-                contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
+            if (mListDatas.get(position).getReply_user() != mHeaderInfo.getId()) {
+                contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUserInfo().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
         }
@@ -256,14 +257,14 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
-    protected Long getMaxId(@NotNull List<MusicCommentListBean> data) {
+    protected Long getMaxId(@NotNull List<CommentedBean> data) {
         return data.get(data.size() - 1).getId();
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<MusicCommentListBean> data, boolean isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<CommentedBean> data, boolean isLoadMore) {
         if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
-            MusicCommentListBean emptyData = new MusicCommentListBean();
+            CommentedBean emptyData = new CommentedBean();
             data.add(emptyData);
             mMusicCommentHeader.setCommentList(0);
         } else if (!isLoadMore && !data.isEmpty()) {
@@ -287,14 +288,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     private void initLisener() {
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mIlvComment.clearFocus();
-                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                        mVShadow.setVisibility(View.GONE);
+                .subscribe(aVoid -> {
+                    mIlvComment.clearFocus();
+                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                    mVShadow.setVisibility(View.GONE);
 
-                    }
                 });
         mIlvComment.setOnSendClickListener(this);
 
@@ -313,15 +311,12 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                        if (aBoolean) {
-                            mVShadow.setVisibility(View.VISIBLE);
-                        } else {
-                            mVShadow.setVisibility(View.GONE);
-                        }
+                .subscribe(aBoolean -> {
+                    //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                    if (aBoolean) {
+                        mVShadow.setVisibility(View.VISIBLE);
+                    } else {
+                        mVShadow.setVisibility(View.GONE);
                     }
                 });
 
@@ -335,7 +330,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
 
-    private void initDeleteCommentPopupWindow(final MusicCommentListBean data) {
+    private void initDeleteCommentPopupWindow(final CommentedBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -344,29 +339,21 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
-                        setHeaderInfo(mHeaderInfo);
-                        if (WindowUtils.getAblumHeadInfo() != null) {
-                            if (WindowUtils.getAblumHeadInfo().getCommentCount() > 0)
-                                WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() - 1);
-                        }
-                        mPresenter.deleteComment(data);
-                        mDeletCommentPopWindow.hide();
+                .item1ClickListener(() -> {
+                    mHeaderInfo.setCommentCount(mHeaderInfo.getCommentCount() - 1);
+                    setHeaderInfo(mHeaderInfo);
+                    if (WindowUtils.getAblumHeadInfo() != null) {
+                        if (WindowUtils.getAblumHeadInfo().getCommentCount() > 0)
+                            WindowUtils.getAblumHeadInfo().setCommentCount(WindowUtils.getAblumHeadInfo().getCommentCount() - 1);
                     }
+                    mPresenter.deleteComment(data);
+                    mDeletCommentPopWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
     }
 
-    private void initReSendCommentPopupWindow(final MusicCommentListBean commentBean) {
+    private void initReSendCommentPopupWindow(final CommentedBean commentBean) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -375,19 +362,11 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPresenter.reSendComment(commentBean);
-                        mReSendCommentPopWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    mPresenter.reSendComment(commentBean);
+                    mReSendCommentPopWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mReSendCommentPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mReSendCommentPopWindow.hide())
                 .build();
     }
 

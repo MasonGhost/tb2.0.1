@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.PaidNoteConverter;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
@@ -556,78 +557,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         }
     }
 
-    public static class PaidNote implements Serializable, Parcelable {
-        private static final long serialVersionUID = 1234L;
-        /**
-         * paid : true
-         * node : 9
-         * amount : 20
-         */
-
-        private boolean paid;
-        private int node;
-        private int amount;
-
-        public boolean isPaid() {
-            return paid;
-        }
-
-        public void setPaid(boolean paid) {
-            this.paid = paid;
-        }
-
-        public int getNode() {
-            return node;
-        }
-
-        public void setNode(int node) {
-            this.node = node;
-        }
-
-        public int getAmount() {
-            return amount;
-        }
-
-        public void setAmount(int amount) {
-            this.amount = amount;
-        }
-
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
-            dest.writeInt(this.node);
-            dest.writeInt(this.amount);
-        }
-
-        public PaidNote() {
-        }
-
-        protected PaidNote(Parcel in) {
-            this.paid = in.readByte() != 0;
-            this.node = in.readInt();
-            this.amount = in.readInt();
-        }
-
-        public static final Creator<PaidNote> CREATOR = new Creator<PaidNote>() {
-            @Override
-            public PaidNote createFromParcel(Parcel source) {
-                return new PaidNote(source);
-            }
-
-            @Override
-            public PaidNote[] newArray(int size) {
-                return new PaidNote[size];
-            }
-        };
-    }
-
-
     public static class ImagesBeansVonvert implements PropertyConverter<List<ImagesBean>, String> {
         @Override
         public List<ImagesBean> convertToEntityProperty(String databaseValue) {
@@ -658,25 +587,6 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
 
         @Override
         public String convertToDatabaseValue(List<Integer> entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-    public static class PaidNoteConverter implements PropertyConverter<PaidNote, String> {
-
-        @Override
-        public PaidNote convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(PaidNote entityProperty) {
             if (entityProperty == null) {
                 return null;
             }

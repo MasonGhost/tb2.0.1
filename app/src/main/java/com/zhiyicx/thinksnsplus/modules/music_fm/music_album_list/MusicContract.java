@@ -26,7 +26,7 @@ public interface MusicContract {
     }
 
     interface Repository {
-        Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id);
+        Observable<List<MusicAlbumListBean>> getMusicAblumList(long max_id);
 
         List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId);
     }

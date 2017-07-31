@@ -489,8 +489,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private void updateCurrentMusic(final String mediaId) {
         Observable.from(mMusicList).filter(musicsBean -> {
-            LogUtils.i(musicsBean.getMusic_info().getId() + ":::" + mediaId);
-            return (musicsBean.getMusic_info().getId() + "").equals(mediaId);
+            LogUtils.i(musicsBean.getId() + ":::" + mediaId);
+            return (musicsBean.getId() + "").equals(mediaId);
         }).subscribe(musicsBean -> {
             mCurrentMusic = musicsBean;
             dealCurrentMusic();
@@ -510,23 +510,23 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             mFragmentMusicPalyProgress.setLoading(true);
         }
 
-        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+        if (mCurrentMusic.getComment_count() > 0) {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_incomplete);
-            mFragmentMusicPalyCommentCount.setText(String.valueOf(mCurrentMusic.getMusic_info()
+            mFragmentMusicPalyCommentCount.setText(String.valueOf(mCurrentMusic
                     .getComment_count()));
         } else {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_complete);
             mFragmentMusicPalyCommentCount.setText("");
         }
-        String lyric = mCurrentMusic.getMusic_info().getLyric();
+        String lyric = mCurrentMusic.getLyric();
         if (TextUtils.isEmpty(lyric)) {
             lyric = getString(R.string.music_lyric);
         }
         mFragmentMusicPalyLrc.setText(lyric);
 
-        if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
+        if (mCurrentMusic.isHas_like()) {
             mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
         } else {
             mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
@@ -731,12 +731,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     // 评论数量改变
     @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
     public void onCommentCountUpdate(MusicCommentHeader.HeaderInfo headerInfo) {
-        mCurrentMusic.getMusic_info().setComment_count(headerInfo.getCommentCount());
-        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+        mCurrentMusic.setComment_count(headerInfo.getCommentCount());
+        if (mCurrentMusic.getComment_count() > 0) {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_incomplete);
-            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info()
-                    .getComment_count());
+            mFragmentMusicPalyCommentCount.setText(mCurrentMusic.getComment_count()+"");
         } else {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_complete);
@@ -831,10 +830,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                     position) {
                 TextView musicName = holder.getView(R.id.item_music_name);
                 TextView authorName = holder.getView(R.id.item_music_author);
-                musicName.setText(s.getMusic_info().getTitle());
-                authorName.setText("-" + s.getMusic_info().getSinger().getName());
+                musicName.setText(s.getTitle());
+                authorName.setText("-" + s.getSinger().getName());
 
-                if (mCurrentMediaId.equals(s.getMusic_info().getId() + "")) {
+                if (mCurrentMediaId.equals(s.getId() + "")) {
                     musicName.setTextColor(getColor(R.color.important_for_theme));
                     authorName.setTextColor(getColor(R.color.important_for_theme));
                 } else {
@@ -851,7 +850,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 MusicAlbumDetailsBean.MusicsBean musicsBean = mMusicList.get(position);
                 MediaControllerCompat controllerCompat = getActivity()
                         .getSupportMediaController();
-                String id = MediaIDHelper.createMediaID("" + musicsBean.getMusic_info().getId(),
+                String id = MediaIDHelper.createMediaID("" + musicsBean.getId(),
                         MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
                 controllerCompat.getTransportControls()
                         .playFromMediaId(id, null);
@@ -877,7 +876,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             int position) {
                 ImageView image = holder.getView(R.id.fragment_music_paly_img);
                 String imageUrl = ImageUtils.imagePathConvertV2(
-                        o.getMusic_info().getSinger().getCover().getId(), imageSize, imageSize, ImageZipConfig.IMAGE_70_ZIP);
+                        o.getSinger().getCover().getId(), imageSize, imageSize, ImageZipConfig.IMAGE_70_ZIP);
 
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                         .imagerView(image)
@@ -930,14 +929,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         mCurrentImageView.getDrawable(), R.mipmap.icon_256));
                 break;
             case R.id.fragment_music_paly_like: // 点赞
-                mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,
+                mPresenter.handleLike(!mCurrentMusic.isHas_like(),
                         mMediaDescriptionCompat.getMediaId());
-                if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
-                    mCurrentMusic.getMusic_info().setIsdiggmusic(0);
+                if (mCurrentMusic.isHas_like()) {
+                    mCurrentMusic.setHas_like(false);
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
                 } else {
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
-                    mCurrentMusic.getMusic_info().setIsdiggmusic(1);
+                    mCurrentMusic.setHas_like(true);
                 }
                 EventBus.getDefault().post(mCurrentMusic, EVENT_MUSIC_LIKE);
                 break;
@@ -945,11 +944,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
                 Bundle musicBundle = new Bundle();
                 MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
-                headerInfo.setCommentCount(mCurrentMusic.getMusic_info().getComment_count());
-                headerInfo.setId(mCurrentMusic.getMusic_id());
-                headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
-                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
-                headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mCurrentMusic.getMusic_info()
+                headerInfo.setCommentCount(mCurrentMusic.getComment_count());
+                headerInfo.setId(mCurrentMusic.getId());
+                headerInfo.setTitle(mCurrentMusic.getTitle());
+                headerInfo.setLitenerCount(mCurrentMusic.getTaste_count() + "");
+                headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mCurrentMusic
                                 .getSinger().getCover().getId()
                         , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
                         , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)

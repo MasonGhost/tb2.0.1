@@ -8,6 +8,8 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StringDef;
 import android.support.v4.util.ArrayMap;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
@@ -20,7 +22,7 @@ import static android.support.annotation.RestrictTo.Scope.GROUP_ID;
  * @Email Jliuer@aliyun.com
  * @Description 评论操作的公共类
  */
-public class CommonMetadata implements Parcelable {
+public class CommonMetadata extends BaseListBean implements Parcelable {
     private static final String TAG = "CommonMetadata";
 
     public static final int SEND_ING = 0;
@@ -28,6 +30,7 @@ public class CommonMetadata implements Parcelable {
     public static final int SEND_ERROR = 2;
 
     public static final String METADATA_KEY_COMMENT_ID = "zhiyi.common.metadata.comment_id";
+    public static final String METADATA_KEY_MAX_ID = "zhiyi.common.metadata.max_id";
     public static final String METADATA_KEY_COMMENT_TYPE = "zhiyi.common.metadata.comment_type";
     public static final String METADATA_KEY_SOURCE_ID = "zhiyi.common.metadata.source_id";
     public static final String METADATA_KEY_TARGET_ID = "zhiyi.common.metadata.target_id";
@@ -64,6 +67,7 @@ public class CommonMetadata implements Parcelable {
     static {
         METADATA_KEYS_TYPE = new ArrayMap<>();
         METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_ID, METADATA_TYPE_INTEGER);
+        METADATA_KEYS_TYPE.put(METADATA_KEY_MAX_ID, METADATA_TYPE_INTEGER);
         METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_TYPE, METADATA_TYPE_INTEGER);
         METADATA_KEYS_TYPE.put(METADATA_KEY_COMMENT_STATE, METADATA_TYPE_INTEGER);
         METADATA_KEYS_TYPE.put(METADATA_KEY_SOURCE_ID, METADATA_TYPE_INTEGER);

@@ -167,22 +167,14 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Subscriber(tag = EVENT_ABLUM_COLLECT, mode = ThreadMode.MAIN)
     public void onCollectCountUpdate(MusicAlbumListBean e_albumListBean) {
         mMusicAlbumListBean = e_albumListBean;
-        Observable.from(mListDatas).filter(new Func1<MusicAlbumListBean, Boolean>() {
-            @Override
-            public Boolean call(MusicAlbumListBean albumListBean) {
-                return mMusicAlbumListBean.getId() == albumListBean.getId();
-            }
-        }).subscribe(new Action1<MusicAlbumListBean>() {
-            @Override
-            public void call(MusicAlbumListBean albumListBean_same) {
-                albumListBean_same.setCollect_count(mMusicAlbumListBean.getCollect_count());
-                albumListBean_same.setShare_count(mMusicAlbumListBean.getShare_count());
-                albumListBean_same.setIs_collection(mMusicAlbumListBean.getIs_collection());
-                albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
-                albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
-                mPresenter.updateOneMusic(albumListBean_same);
-                mHeaderAndFooterWrapper.notifyDataSetChanged();
-            }
+        Observable.from(mListDatas).filter(albumListBean -> mMusicAlbumListBean.getId() == albumListBean.getId()).subscribe(albumListBean_same -> {
+            albumListBean_same.setCollect_count(mMusicAlbumListBean.getCollect_count());
+            albumListBean_same.setShare_count(mMusicAlbumListBean.getShare_count());
+            albumListBean_same.setHas_collect(mMusicAlbumListBean.getHas_collect());
+            albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
+            albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
+            mPresenter.updateOneMusic(albumListBean_same);
+            mHeaderAndFooterWrapper.notifyDataSetChanged();
         });
     }
 }

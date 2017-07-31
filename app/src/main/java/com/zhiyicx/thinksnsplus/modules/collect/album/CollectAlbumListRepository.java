@@ -26,7 +26,7 @@ public class CollectAlbumListRepository extends MusicRepository {
     }
 
     @Override
-    public Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id) {
+    public Observable<List<MusicAlbumListBean>> getMusicAblumList(long max_id) {
         return mMusicClient.getCollectMusicList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
     }
 

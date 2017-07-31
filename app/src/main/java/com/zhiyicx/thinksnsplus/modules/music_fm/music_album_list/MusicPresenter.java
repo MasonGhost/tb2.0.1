@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 
@@ -45,15 +46,9 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription subscription = mRepository.getMusicAblumList(maxId)
                 .compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<List<MusicAlbumListBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<MusicAlbumListBean>>() {
                     @Override
                     protected void onSuccess(List<MusicAlbumListBean> data) {
-                        if (data.isEmpty()){
-                            mMusicAlbumListDao.saveMultiData(data);
-                        }else{
-                            mMusicAlbumListDao.clearTable();
-                        }
-
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -79,6 +74,11 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
+        if (data.isEmpty()){
+            mMusicAlbumListDao.saveMultiData(data);
+        }else{
+            mMusicAlbumListDao.clearTable();
+        }
         return false;
     }
 

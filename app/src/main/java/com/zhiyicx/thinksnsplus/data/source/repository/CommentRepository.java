@@ -38,7 +38,7 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public Observable<BaseJson<Object>> sendComment(String comment_content, long reply_to_user_id, long comment_mark, String path) {
         HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_content", comment_content);
+        params.put("body", comment_content);
         params.put("reply_to_user_id", reply_to_user_id);
         params.put("comment_mark", comment_mark);
         return mCommonClient.handleBackGroundTaskPost(path, UpLoadFile.upLoadFileAndParams(null, params))
@@ -49,7 +49,7 @@ public class CommentRepository implements ICommentRepository {
     @Override
     public Observable<Object> sendCommentV2(String comment_content, long reply_to_user_id, long comment_mark, String path) {
         HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_content", comment_content);
+        params.put("body", comment_content);
         params.put("reply_to_user_id", reply_to_user_id);
         params.put("comment_mark", comment_mark);
         return mCommonClient.handleBackGroundTaskPostV2(path, UpLoadFile.upLoadFileAndParams(null, params))

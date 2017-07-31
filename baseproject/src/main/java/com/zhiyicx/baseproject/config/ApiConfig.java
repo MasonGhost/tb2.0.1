@@ -261,13 +261,13 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/" + API_VERSION + "/news/%d";
 
     /**
-     * 音乐相关
+     * 音乐相关 升级到V2
      */
-    public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/" + API_VERSION + "/music/specials";// 专辑列表
-    public static final String APP_PATH_MUSIC_COLLECT_ABLUM_LIST = "api/" + API_VERSION + "/music/special/collections";// 专辑列表
+    public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/" + API_VERSION_2 + "/music/specials";// 专辑列表
+    public static final String APP_PATH_MUSIC_COLLECT_ABLUM_LIST = "api/" + API_VERSION_2 + "/music/collections";// 收藏的专辑列表
 
     // 歌曲详情
-    public static final String APP_PATH_MUSIC_DETAILS = "api/" + API_VERSION + "/music/{music_id}";
+    public static final String APP_PATH_MUSIC_DETAILS = "api/" + API_VERSION_2 + "/music/{music_id}";
 
     // 评论歌曲
     public static final String APP_PATH_MUSIC_COMMENT = "api/" + API_VERSION + "/music/{music_id}/comment";
@@ -282,7 +282,7 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT = "api/" + API_VERSION + "/music/special/%s/comment";
 
     // 专辑评论列表
-    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_LIST = "api/" + API_VERSION + "/music/special/{special_id}/comment";
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_LIST = "api/" + API_VERSION_2 + "/music/specials/{special_id}/comments";
 
     // 收藏专辑
     public static final String APP_PATH_MUSIC_ABLUM_COLLECT = "api/" + API_VERSION + "/music/special/{special_id}/collection";
@@ -293,7 +293,7 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/" + API_VERSION + "/music/%s/digg";
 
     // 专辑详情
-    public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/" + API_VERSION + "/music/specials/{special_id}";
+    public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/" + API_VERSION_2 + "/music/specials/{special_id}";
 
     // 分享歌曲
     public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION + "/music/%s/share";
@@ -397,9 +397,9 @@ public class ApiConfig {
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
      */
     public static final String APP_COMPONENT_FEED = "feed";
-    public static final String APP_COMPONENT_MUSIC = "music";
+    public static final String APP_COMPONENT_MUSIC = "musics";
     public static final String APP_COMPONENT_NEWS = "news";
-    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_special";
+    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_specials";
     /**
      * @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/likes.md}
      */

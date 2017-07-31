@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
@@ -70,7 +71,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
     @Override
     public void getMusicAblum(String id) {
         mMusicDetailRepository.getMusicAblum(id).compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
+                .subscribe(new BaseSubscribeForV2<MusicAlbumDetailsBean>() {
                     @Override
                     protected void onSuccess(MusicAlbumDetailsBean data) {
                         mMusicAlbumDetailsBeanGreenDao.insertOrReplace(data);
@@ -92,7 +93,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
     @Override
     public void getMusicDetails(String music_id) {
         mMusicDetailRepository.getMusicDetails(music_id).compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<MusicDetaisBean>() {
+                .subscribe(new BaseSubscribeForV2<MusicDetaisBean>() {
                     @Override
                     protected void onSuccess(MusicDetaisBean data) {
 
@@ -113,9 +114,9 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
     @Override
     public void handleCollect(boolean isUnCollected, String special_id) {
 
-        int is_collect = mRootView.getCurrentAblum().getIs_collection() == 0 ? 1 : 0;
-        mRootView.getCurrentAblum().setIs_collection(is_collect);
-        mRootView.getmMusicAlbumListBean().setIs_collection(is_collect);
+        boolean is_collect = !mRootView.getCurrentAblum().getHas_collect();
+        mRootView.getCurrentAblum().setHas_collect(is_collect);
+        mRootView.getmMusicAlbumListBean().setHas_collect(is_collect);
         int countChange = isUnCollected ? 1 : -1;
         mRootView.getmMusicAlbumListBean().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
         mRootView.getCurrentAblum().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);

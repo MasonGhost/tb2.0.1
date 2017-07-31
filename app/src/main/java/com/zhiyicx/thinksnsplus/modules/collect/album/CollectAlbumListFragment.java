@@ -50,7 +50,7 @@ public class CollectAlbumListFragment extends MusicListFragment {
     public void onCacheResponseSuccess(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
         List<MusicAlbumListBean> dealData = new ArrayList<>();
         for (MusicAlbumListBean albumListBean : data) {
-            if (albumListBean.getIs_collection() == 1) {
+            if (albumListBean.getHas_collect()) {
                 dealData.add(albumListBean);
             }
         }
@@ -84,12 +84,12 @@ public class CollectAlbumListFragment extends MusicListFragment {
             public void call(MusicAlbumListBean albumListBean_same) {
                 albumListBean_same.setCollect_count(mMusicAlbumListBean.getCollect_count());
                 albumListBean_same.setShare_count(mMusicAlbumListBean.getShare_count());
-                albumListBean_same.setIs_collection(mMusicAlbumListBean.getIs_collection());
+                albumListBean_same.setHas_collect(mMusicAlbumListBean.getHas_collect());
                 albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
                 albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
                 mPresenter.updateOneMusic(albumListBean_same);
 
-                if (albumListBean_same.getIs_collection() == 1) {
+                if (albumListBean_same.getHas_collect()) {
                     if (!mListDatas.contains(albumListBean_same)) {
                         mListDatas.add(albumListBean_same);
                     }
