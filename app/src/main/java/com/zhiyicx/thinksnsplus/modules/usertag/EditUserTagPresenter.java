@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -33,12 +35,13 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
 
     @Override
     public void getAllTags() {
-        mSystemRepository.getAllTags()
+        Subscription subscription = mSystemRepository.getAllTags()
                 .subscribe(new BaseSubscribeForV2<List<TagCategoryBean>>() {
                     @Override
                     protected void onSuccess(List<TagCategoryBean> data) {
                         mRootView.updateTags(data);
                     }
                 });
+        addSubscrebe(subscription);
     }
 }

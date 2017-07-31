@@ -5,26 +5,32 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 
-/**
- * Created by huajunhe on 2017/7/31.
- */
+import java.util.List;
 
+/**
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/7/31
+ * @Contact master.jungle68@gmail.com
+ */
 public class TagCategoryBean extends CacheBean implements Parcelable {
-    /**  {
-     "id": 1,
-     "name": "分类1",
-     "tags": [
-     {
-     "id": 1,
-     "name": "标签1",
-     "tag_category_id": 1
-     }
-     ]
-     }*/
+    /**
+     * {
+     * "id": 1,
+     * "name": "分类1",
+     * "tags": [
+     * {
+     * "id": 1,
+     * "name": "标签1",
+     * "tag_category_id": 1
+     * }
+     * ]
+     * }
+     */
 
     private Long id;
     private String name;
-    private UserTagBean tags;
+    private List<UserTagBean> tags;
 
     public Long getId() {
         return id;
@@ -42,14 +48,23 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
         this.name = name;
     }
 
-    public UserTagBean getTags() {
+    public List<UserTagBean> getTags() {
         return tags;
     }
 
-    public void setTags(UserTagBean tags) {
+    public void setTags(List<UserTagBean> tags) {
         this.tags = tags;
     }
 
+
+    @Override
+    public String toString() {
+        return "TagCategoryBean{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", tags=" + tags +
+                '}';
+    }
 
     @Override
     public int describeContents() {
@@ -60,7 +75,7 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
         dest.writeString(this.name);
-        dest.writeParcelable(this.tags, flags);
+        dest.writeTypedList(this.tags);
     }
 
     public TagCategoryBean() {
@@ -69,10 +84,10 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
     protected TagCategoryBean(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
-        this.tags = in.readParcelable(UserTagBean.class.getClassLoader());
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
     }
 
-    public static final Parcelable.Creator<TagCategoryBean> CREATOR = new Parcelable.Creator<TagCategoryBean>() {
+    public static final Creator<TagCategoryBean> CREATOR = new Creator<TagCategoryBean>() {
         @Override
         public TagCategoryBean createFromParcel(Parcel source) {
             return new TagCategoryBean(source);
@@ -83,13 +98,4 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
             return new TagCategoryBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "TagCategoryBean{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", tags=" + tags +
-                '}';
-    }
 }

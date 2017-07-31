@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -53,10 +52,11 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private CommonAdapter mChoosedTagAdapter;
 
     private List<UserTagBean> mChoosedTags = new ArrayList<>();
-    private List<UserTagBean> mTagClasses = new ArrayList<>();
+    private List<TagCategoryBean> mCategoryTags = new ArrayList<>();
 
     private int mMaxChooseNums;
     private int mCurrentChooseNums = 0;
+    private TagClassAdapter mTagClassAdapter;
 
 
     public static EditUserTagFragment newInstance() {
@@ -104,6 +104,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         }
 
         mChoosedTagAdapter.notifyDataSetChanged();
+        mPresenter.getAllTags();
     }
 
 
@@ -179,7 +180,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mTagClassLayoutManager.setSpanSizeLookup(new StickyHeaderGridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int section, int position) {
-               return 1;
+                return 1;
             }
         });
 
@@ -194,7 +195,8 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             }
         });
         mRvTagClass.setLayoutManager(mTagClassLayoutManager);
-        mRvTagClass.setAdapter(new TagClassAdapter(SECTIONS, SECTION_ITEMS));
+        mTagClassAdapter = new TagClassAdapter(mCategoryTags);
+        mRvTagClass.setAdapter(mTagClassAdapter);
 
     }
 
@@ -205,7 +207,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                 
+
                 });
     }
 
@@ -218,8 +220,14 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         return mCurrentChooseNums > 0;
     }
 
+    /**
+     * 更新所有标签
+     *
+     * @param tagCategoryBeanList
+     */
     @Override
     public void updateTags(List<TagCategoryBean> tagCategoryBeanList) {
-
+        this.mCategoryTags = tagCategoryBeanList;
+        mTagClassAdapter.notifyAllSectionsDataSetChanged();
     }
 }
