@@ -38,10 +38,6 @@ public class BindOldAccountFragment extends TSFragment<BindOldAccountContract.Pr
     LoadingButton mBtLoginLogin;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
-    @BindView(R.id.tv_look_around)
-    TextView mTvLookAround;
-    @BindView(R.id.tv_forget_password)
-    TextView mTvForgetPassword;
     @BindView(R.id.et_complete_input)
     AppCompatAutoCompleteTextView mEtCompleteInput;
 
@@ -57,8 +53,6 @@ public class BindOldAccountFragment extends TSFragment<BindOldAccountContract.Pr
     @Override
     protected void initView(View rootView) {
         mEtCompleteInput.setVisibility(View.GONE);
-        mTvLookAround.setVisibility(View.GONE);
-        mTvForgetPassword.setVisibility(View.GONE);
         mEtLoginPhone.setVisibility(View.VISIBLE);
         mBtLoginLogin.setText(getString(R.string.third_platform_bind_confirm));
     }
@@ -99,7 +93,7 @@ public class BindOldAccountFragment extends TSFragment<BindOldAccountContract.Pr
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_login;
+        return R.layout.fragment_bind_old_account;
     }
 
     @Override
