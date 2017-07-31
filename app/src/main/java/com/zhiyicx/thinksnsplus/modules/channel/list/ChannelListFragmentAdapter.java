@@ -8,18 +8,17 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -27,8 +26,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -39,46 +36,56 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:450127106@qq.com
  */
 
-public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBean> {
-    private static final String TAG = "ChannelListFragmentAdap";
+public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
     private ChannelListContract.Presenter mPresenter;
 
-    public ChannelListFragmentAdapter(Context context, int layoutId, List<ChannelSubscripBean> datas, ChannelListContract.Presenter presenter) {
+    public ChannelListFragmentAdapter(Context context, int layoutId, List<GroupInfoBean> datas, ChannelListContract.Presenter presenter) {
         super(context, layoutId, datas);
         mPresenter = presenter;
     }
 
     @Override
-    protected void convert(ViewHolder holder, final ChannelSubscripBean channelSubscripBean, final int position) {
+    protected void convert(ViewHolder holder, final GroupInfoBean groupInfoBean, final int position) {
         ImageView iv_channel_cover = holder.getView(R.id.iv_channel_cover);
         TextView tv_channel_name = holder.getView(R.id.tv_channel_name);
         TextView tv_channel_feed_count = holder.getView(R.id.tv_channel_feed_count);
         TextView tv_channel_follow_count = holder.getView(R.id.tv_channel_follow_count);
         CheckBox tv_channel_subscrib = holder.getView(R.id.tv_channel_subscrib);
 
-        ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
+//        ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
         // 设置封面
-        ChannelInfoBean.ChannelCoverBean channelCoverBean = channelInfoBean.getCover();
+        GroupInfoBean.GroupCoverBean groupCoverBean = groupInfoBean.getAvatar();
+        String[] size = groupCoverBean.getSize().split("x");
+        int width = 0;
+        int height = 0;
+        if (size.length > 0){
+            width = Integer.parseInt(size[0]);
+            height = Integer.parseInt(size[1]);
+        }
         // 计算图片压缩比
         int imageViewWidth = getContext().getResources().getDimensionPixelSize(R.dimen.rec_image_for_list_normal);// 获取图片控件宽高
-        int port = (int) (imageViewWidth * 100.0f / channelCoverBean.getImage_width());
+        if (width == 0){
+            width = (int) (imageViewWidth * 100.0f);
+            height = (int) (imageViewWidth * 100.0f);;
+        }
+        int port = (int) (imageViewWidth * 100.0f / width);
         if (port > 100) {
             port = 100;
         }
-        LogUtils.i(TAG + "channelCoverBean  " + channelCoverBean);
-        String imgUrl = String.format(ApiConfig.IMAGE_PATH, channelCoverBean.getId(), port);
+        GlideUrl glideUrl = ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id(), width, height
+                , port, AppApplication.getTOKEN());
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .placeholder(R.drawable.shape_default_image)
                 .errorPic(R.drawable.shape_default_image)
-                .url(imgUrl)
+                .url(glideUrl.toStringUrl())
                 .imagerView(iv_channel_cover)
                 .build()
         );
         // 设置频道名称
-        tv_channel_name.setText(channelInfoBean.getTitle());
+        tv_channel_name.setText(groupInfoBean.getTitle());
         // 设置分享人数
-        String feedCountNumber = ConvertUtils.numberConvert(channelInfoBean.getFeed_count());
+        String feedCountNumber = ConvertUtils.numberConvert(groupInfoBean.getPosts_count());
         String feedContent = getContext().getString(R.string.channel_share) + " " + "<" + feedCountNumber + ">";
         CharSequence feedString = ColorPhrase.from(feedContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -86,7 +93,7 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
                 .format();
         tv_channel_feed_count.setText(feedString);
         // 设置订阅人数
-        String followCountNumber = ConvertUtils.numberConvert(channelInfoBean.getFollow_count());
+        String followCountNumber = ConvertUtils.numberConvert(groupInfoBean.getMembers_count());
         String followContent = getContext().getString(R.string.channel_follow) + " " + "<" + followCountNumber + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -95,36 +102,33 @@ public class ChannelListFragmentAdapter extends CommonAdapter<ChannelSubscripBea
         tv_channel_follow_count.setText(followString);
 
         // 设置订阅状态
-        tv_channel_subscrib.setChecked(channelSubscripBean.getChannelSubscriped());
-        tv_channel_subscrib.setText(channelSubscripBean.getChannelSubscriped() ? getContext().getString(R.string.channel_followed) : getContext().getString(R.string.channel_follow));
-        tv_channel_subscrib.setPadding(channelSubscripBean.getChannelSubscriped() ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+        boolean isJoined = groupInfoBean.getIs_member() == 1;
+        tv_channel_subscrib.setChecked(isJoined);
+        tv_channel_subscrib.setText(isJoined ? getContext().getString(R.string.quit_group) : getContext().getString(R.string.join_group));
+        tv_channel_subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         RxView.clicks(tv_channel_subscrib)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
-                            mPresenter.handleChannelSubscrib(position, channelSubscripBean);
-                        }
+                .subscribe(aVoid -> {
+                    if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
+                        mPresenter.handleGroupJoin(position, groupInfoBean);
+                    } else {
+                        tv_channel_subscrib.setChecked(false);
                     }
                 });
 
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (TouristConfig.CHENNEL_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
-                            toChannelDetailPage(getContext(), channelSubscripBean);
-                        }
+                .subscribe(aVoid -> {
+                    if (TouristConfig.CHENNEL_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                        toChannelDetailPage(getContext(), groupInfoBean);
                     }
                 });
     }
 
-    private void toChannelDetailPage(Context context, ChannelSubscripBean channelSubscripBean) {
+    private void toChannelDetailPage(Context context, GroupInfoBean groupInfoBean) {
         Intent intent = new Intent(context, ChannelDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ChannelDetailFragment.CHANNEL_HEADER_INFO_DATA, channelSubscripBean);
+        bundle.putParcelable(ChannelDetailFragment.CHANNEL_HEADER_INFO_DATA, groupInfoBean);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

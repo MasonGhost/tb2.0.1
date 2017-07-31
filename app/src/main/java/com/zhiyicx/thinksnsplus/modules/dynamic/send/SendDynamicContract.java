@@ -4,6 +4,8 @@ import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -32,6 +34,7 @@ public interface SendDynamicContract {
         boolean hasTollVerify();
 
         void packageDynamicStorageDataV2(SendDynamicDataBeanV2 sendDynamicDataBeanV2);
+        void packageGroupDynamicStorageData(GroupSendDynamicDataBean sendDynamicDataBeanV2);
 
         double getTollMoney();
 
@@ -47,7 +50,7 @@ public interface SendDynamicContract {
     }
 
     interface Presenter extends IBasePresenter {
-        void sendDynamic(DynamicBean dynamicBean);
+        void sendGroupDynamic(GroupDynamicListBean dynamicBean);
         void sendDynamicV2(DynamicDetailBeanV2 dynamicBean);
     }
 }

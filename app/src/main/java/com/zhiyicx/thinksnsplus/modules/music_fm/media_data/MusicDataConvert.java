@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.media_data;
 import android.support.v4.media.MediaMetadataCompat;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 

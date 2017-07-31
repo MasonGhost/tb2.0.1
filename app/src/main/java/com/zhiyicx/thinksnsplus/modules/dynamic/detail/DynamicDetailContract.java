@@ -6,12 +6,12 @@ import android.os.Bundle;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -47,17 +47,12 @@ public interface DynamicDetailContract {
         /**
          * 设置点赞头像
          */
-        void setDigHeadIcon(List<FollowFansBean> userInfoBeanList);
+        void setDigHeadIcon(List<DynamicDigListBean> userInfoBeanList);
 
         /**
          * 更新关注状态
          */
-        void upDateFollowFansState(int followState);
-
-        /**
-         * 设置初始关注状态
-         */
-        void initFollowState(FollowFansBean mFollowFansBean);
+        void upDateFollowFansState(UserInfoBean userInfoBean);
 
         /**
          * 获取当前动态数据
@@ -152,12 +147,7 @@ public interface DynamicDetailContract {
         /**
          * 关注或者取消关注
          */
-        void handleFollowUser(FollowFansBean followFansBean);
-
-        /**
-         * 获取关注状态
-         */
-        void getUserFollowState(String user_ids);
+        void handleFollowUser(UserInfoBean userInfoBean);
 
         /**
          * send a comment
@@ -165,7 +155,6 @@ public interface DynamicDetailContract {
          * @param replyToUserId  comment  to who
          * @param commentContent comment content
          */
-        void sendComment(long replyToUserId, String commentContent);
         void sendCommentV2(long replyToUserId, String commentContent);
 
         /**

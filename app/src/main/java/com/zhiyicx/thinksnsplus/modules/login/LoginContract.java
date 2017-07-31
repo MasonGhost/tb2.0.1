@@ -4,8 +4,11 @@ import android.content.Context;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -34,17 +37,18 @@ public interface LoginContract {
          */
         void showErrorTips(String error);
 
+        AccountBean getAccountBean();
+
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository {
-        Observable<BaseJson<AuthBean>> login(Context context, String phone, String password);
 
         Observable<AuthBean> loginV2(final String account, final String password);
     }
 
     interface Presenter extends IBaseTouristPresenter {
         void login(String phone, String password);
-
+        List<AccountBean> getAllAccountList();
     }
 }

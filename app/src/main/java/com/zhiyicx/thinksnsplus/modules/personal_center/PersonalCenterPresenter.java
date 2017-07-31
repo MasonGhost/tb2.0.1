@@ -10,6 +10,7 @@ import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -18,7 +19,6 @@ import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DrawableProvider;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -31,9 +31,9 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
@@ -42,6 +42,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -61,6 +62,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -75,7 +77,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
  */
 @FragmentScoped
 public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterContract.Repository, PersonalCenterContract.View> implements PersonalCenterContract.Presenter, OnShareCallbackListener {
-    private static final int NEED_INTERFACE_NUM = 3;
+    private static final int NEED_INTERFACE_NUM = 2;
     @Inject
     DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
     @Inject
@@ -96,7 +98,8 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
-
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     CommentRepository mCommentRepository;
 
@@ -200,96 +203,65 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        Subscription subscription = mRepository.getUserFollowState(user_id + "")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<FollowFansBean>() {
-                    @Override
-                    protected void onSuccess(FollowFansBean data) {
-                        mInterfaceNum++;
-                        mRootView.setFollowState(data);
-                        allready();
-                    }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.loadAllError();
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.loadAllError();
-                    }
-                });
-        addSubscrebe(subscription);
+//        Subscription subscription = mRepository.getUserFollowState(user_id + "")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseSubscribe<FollowFansBean>() {
+//                    @Override
+//                    protected void onSuccess(FollowFansBean data) {
+//                        mInterfaceNum++;
+//                        mRootView.setFollowState(data);
+//                        allready();
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(String message, int code) {
+//                        mRootView.loadAllError();
+//                    }
+//
+//                    @Override
+//                    protected void onException(Throwable throwable) {
+//                        mRootView.loadAllError();
+//                    }
+//                });
+//        addSubscrebe(subscription);
     }
 
     @Override
-    public void handleFollow(FollowFansBean followFansBean) {
+    public void handleFollow(UserInfoBean followFansBean) {
         mUserInfoRepository.handleFollow(followFansBean);
         // ui进行刷新
         mRootView.setFollowState(followFansBean);
     }
 
     @Override
-    public void uploadUserCover(String filePath) {
-        BitmapFactory.Options options = DrawableProvider.getPicsWHByFile(filePath);
-        Subscription subscription = mIUploadRepository.upLoadSingleFileV2(
-                filePath, options.outMimeType, true, options.outWidth, options.outHeight)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Integer>() {
-                    @Override
-                    protected void onSuccess(Integer data) {
-                        mRootView.setUpLoadCoverState(true, data);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.setUpLoadCoverState(false, 0);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.setUpLoadCoverState(false, 0);
-                        LogUtils.e(throwable, "result");
-                    }
-                });
-        addSubscrebe(subscription);
-    }
-
-    @Override
-    public void changeUserCover(final UserInfoBean userInfoBean, int storage_task_id, final String imagePath) {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("cover_storage_task_id", storage_task_id + "");
-        Subscription subscription = mUserInfoRepository.changeUserInfo(hashMap)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe() {
-
+    public void uploadUserCover(String filePath, UserInfoBean userInfoBean) {
+        Subscription subscription = mIUploadRepository.uploadBg(filePath)
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        // 修改成功后，关闭页面
-                        mRootView.setChangeUserCoverState(true);
+                        mRootView.setUpLoadCoverState(true);
                         // 将本地图片路径作为storageId保存到数据库
-                        userInfoBean.setCover(imagePath);
+                        userInfoBean.setCover(filePath);
                         // 更新用户数据库
                         mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        // 修改失败，好尴尬
-                        mRootView.setChangeUserCoverState(false);
+                        mRootView.setUpLoadCoverState(false);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.setChangeUserCoverState(false);
+                        mRootView.setUpLoadCoverState(false);
+                        LogUtils.e(throwable, "result");
                     }
                 });
         addSubscrebe(subscription);
     }
+
 
     @Override
     public void shareUserInfo(UserInfoBean userInfoBean) {
@@ -456,47 +428,6 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     }
 
-    /**
-     * send a commment
-     *
-     * @param mCurrentPostion current dynamic position
-     * @param replyToUserId   comment  to who
-     * @param commentContent  comment content
-     */
-    @Override
-    public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
-        DynamicCommentBean creatComment = new DynamicCommentBean();
-        creatComment.setState(DynamicCommentBean.SEND_ING);
-        creatComment.setComment_content(commentContent);
-        creatComment.setFeed_mark(mRootView.getListDatas().get(mCurrentPostion).getFeed_mark());
-        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
-        creatComment.setComment_mark(Long.parseLong(comment_mark));
-        creatComment.setReply_to_user_id(replyToUserId);
-        if (replyToUserId == 0) { //当回复动态的时候
-            UserInfoBean userInfoBean = new UserInfoBean();
-            userInfoBean.setUser_id(replyToUserId);
-            creatComment.setReplyUser(userInfoBean);
-        } else {
-            creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
-        }
-        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
-        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        List<DynamicCommentBean> commentBeanList = new ArrayList<>();
-        commentBeanList.add(creatComment);
-        commentBeanList.addAll(mRootView.getListDatas().get(mCurrentPostion).getComments());
-        mRootView.getListDatas().get(mCurrentPostion).getComments().clear();
-        mRootView.getListDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
-        mRootView.getListDatas().get(mCurrentPostion).setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getFeed_comment_count() + 1);
-        mRootView.refreshData(mCurrentPostion);
-
-        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion));
-        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion)
-                .getId(), replyToUserId, creatComment.getComment_mark());
-
-    }
-
     @Override
     public void sendCommentV2(int mCurrentPostion, long replyToUserId, String commentContent) {
         DynamicCommentBean creatComment = new DynamicCommentBean();
@@ -587,26 +518,49 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public void payNote(int dynamicPosition, int imagePosition, int note, boolean isImage) {
-        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
-        if (userInfo != null && userInfo.getWallet() != null) {
-            balance = userInfo.getWallet().getBalance();
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
         }
-        double amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
+        double amount;
+        if (isImage){
+            amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
+        }else{
+            amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
+        }
+
         if (balance < amount) {
             mRootView.goRecharge(WalletActivity.class);
             return;
         }
         mCommentRepository.paykNote(note)
-                .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
-                    protected void onSuccess(BaseJsonV2 data) {
+                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
+                        if (isImage) {
+                            return Observable.just(stringBaseJsonV2);
+                        }
+                        return mRepository.getDynamicDetailBeanV2(mRootView.getListDatas().get(dynamicPosition).getId())
+                                .flatMap(new Func1<DynamicDetailBeanV2, Observable<BaseJsonV2<String>>>() {
+                                    @Override
+                                    public Observable<BaseJsonV2<String>> call(DynamicDetailBeanV2 detailBeanV2) {
+                                        stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
+                                        return Observable.just(stringBaseJsonV2);
+                                    }
+                                });
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
                         if (isImage) {
                             mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
                         } else {
                             mRootView.getListDatas().get(dynamicPosition).getPaid_node().setPaid(true);
+                            mRootView.getListDatas().get(dynamicPosition).setFeed_content(data.getData());
                         }
                         mRootView.refreshData(dynamicPosition);
                         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));

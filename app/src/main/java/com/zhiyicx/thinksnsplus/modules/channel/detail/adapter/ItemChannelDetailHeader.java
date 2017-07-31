@@ -20,14 +20,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.ZoomView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
 import com.zhiyicx.thinksnsplus.widget.ColorFilterTextView;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -105,7 +104,8 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     public static int[] TOOLBAR_RIGHT_BLUE = {89, 182, 215};
     private int channelNameFirstY = 0;
 
-    public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
+    public ItemChannelDetailHeader(Activity activity, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper,
+                                   View mToolBarContainer, ChannelDetailContract.Presenter channelDetailPresenter) {
         mActivity = activity;
         mRecyclerView = recyclerView;
         mHeaderAndFooterWrapper = headerAndFooterWrapper;
@@ -127,7 +127,10 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
 
     }
 
-    public void initHeaderView(boolean isSetScrollListener) {
+    public void initHeaderView(boolean isSetScrollListener, boolean isShow) {
+        if (!isShow) {
+            return;
+        }
         headerView = LayoutInflater.from(mActivity).inflate(R.layout.item_channel_detail_header, null);
         initHeaderViewUI(headerView);
         mHeaderAndFooterWrapper.addHeaderView(headerView);
@@ -233,17 +236,16 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         drawable.setColorFilter(colorFilter);
     }
 
-    public void initHeaderViewData(final ChannelSubscripBean channelSubscripBean) {
-        ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
+    public void initHeaderViewData(final GroupInfoBean groupInfoBean) {
         // 显示头像
-        ChannelInfoBean.ChannelCoverBean channelCoverBean = channelInfoBean.getCover();
+        GroupInfoBean.GroupCoverBean groupCoverBean = groupInfoBean.getAvatar();
         // 图片边框宽度2dp
         int strokeWidth = ConvertUtils.dp2px(mActivity, 2);
         Glide.with(mActivity)
-                .load(ImageUtils.imagePathConvertV2(channelCoverBean.getId()
-                        ,mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                        ,mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                        ,ImageZipConfig.IMAGE_70_ZIP))
+                .load(ImageUtils.imagePathConvertV2((int) groupCoverBean.getFile_id()
+                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , mActivity.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                        , ImageZipConfig.IMAGE_70_ZIP))
                 .asBitmap()
                 .transform(new GlideStokeTransform(mActivity, strokeWidth))
                 .placeholder(R.drawable.shape_default_image)
@@ -261,25 +263,22 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
                     }
                 });
         // 设置频道名称
-        tv_channel_name.setText(channelInfoBean.getTitle());
-        tv_channel_name.post(new Runnable() {
-            @Override
-            public void run() {
-                int[] location = new int[2];
-                tv_channel_name.getLocationOnScreen(location);
-                channelNameFirstY = location[1];
-                LogUtils.i(TAG + "tv_user_name " + channelNameFirstY);
-            }
+        tv_channel_name.setText(groupInfoBean.getTitle());
+        tv_channel_name.post(() -> {
+            int[] location = new int[2];
+            tv_channel_name.getLocationOnScreen(location);
+            channelNameFirstY = location[1];
+            LogUtils.i(TAG + "tv_user_name " + channelNameFirstY);
         });
         // 标题栏的频道名称
-        channelName.setText(channelInfoBean.getTitle());
+        channelName.setText(groupInfoBean.getTitle());
         // 设置简介
-        tv_channel_description.setText(channelInfoBean.getDescription());
+        tv_channel_description.setText(groupInfoBean.getIntro());
 
         // 设置订阅人数
-        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(channelInfoBean.getFollow_count()));
+        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(groupInfoBean.getMembers_count()));
         // 设置分享人数
-        tv_share_count.setText(mActivity.getString(R.string.channel_share) + " " + ConvertUtils.numberConvert(channelInfoBean.getFeed_count()));
+        tv_share_count.setText(mActivity.getString(R.string.channel_share) + " " + ConvertUtils.numberConvert(groupInfoBean.getPosts_count()));
         // 设置封面
 
         mHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -288,9 +287,9 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     /**
      * 刷新订阅数
      */
-    public void refreshSubscribeData(ChannelInfoBean channelInfoBean) {
+    public void refreshSubscribeData(GroupInfoBean groupInfoBean) {
         // 设置订阅人数
-        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(channelInfoBean.getFollow_count()));
+        tv_subscrib_count.setText(mActivity.getString(R.string.channel_follow) + " " + ConvertUtils.numberConvert(groupInfoBean.getMembers_count()));
     }
 
     private void initHeaderViewUI(View headerView) {
@@ -303,16 +302,13 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
         tv_share_count = (TextView) headerView.findViewById(R.id.tv_share_count);
         fl_header_container = (LinearLayout) headerView.findViewById(R.id.fl_header_container);
         // 添加头部放缩
-        fl_header_container.post(new Runnable() {
-            @Override
-            public void run() {
-                LogUtils.i("post run" + fl_header_container.getWidth() + "  " + fl_header_container.getHeight());
-                // 通过post获取控件宽高后，创建缩放头部
-                ZoomView zoomView = new ZoomView(fl_header_container, mActivity, mRecyclerView, fl_header_container.getWidth(), fl_header_container.getHeight());
-                zoomView.initZoom();
-                // 添加刷新监听
-                zoomView.setZoomTouchListenerForRefresh(ItemChannelDetailHeader.this);
-            }
+        fl_header_container.post(() -> {
+            LogUtils.i("post run" + fl_header_container.getWidth() + "  " + fl_header_container.getHeight());
+            // 通过post获取控件宽高后，创建缩放头部
+            ZoomView zoomView = new ZoomView(fl_header_container, mActivity, mRecyclerView, fl_header_container.getWidth(), fl_header_container.getHeight());
+            zoomView.initZoom();
+            // 添加刷新监听
+            zoomView.setZoomTouchListenerForRefresh(ItemChannelDetailHeader.this);
         });
     }
 
@@ -335,7 +331,7 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
     @Override
     public void refreshStart(int moveDistance) {
         // 在网络请求结束后，进行调用
-        mChannelDetailPresenter.requestNetData(0l, false);
+        mChannelDetailPresenter.requestNetData(0L, false);
         refreshImage.setVisibility(View.VISIBLE);
         ((AnimationDrawable) refreshImage.getDrawable()).start();
         isRefreshing = true;
@@ -357,4 +353,5 @@ public class ItemChannelDetailHeader implements ZoomView.ZoomTouchListenerForRef
             refreshImage.setVisibility(View.GONE);
         }
     }
+
 }

@@ -30,6 +30,7 @@ public interface ChangePasswordContract {
      */
     interface Repository  {
         Observable<BaseJson<CacheBean>> changePassword(String oldPassword, String newPassword);
+        Observable<CacheBean> changePasswordV2(String oldPassword, String newPassword);
     }
 
     interface Presenter extends IBasePresenter {

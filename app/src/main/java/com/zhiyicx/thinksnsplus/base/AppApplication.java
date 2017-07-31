@@ -15,6 +15,7 @@ import com.google.gson.JsonSyntaxException;
 import com.pingplusplus.android.Pingpp;
 import com.umeng.analytics.MobclickAgent;
 import com.zhiyicx.baseproject.base.TSApplication;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.base.BaseApplication;
@@ -24,6 +25,7 @@ import com.zhiyicx.common.net.intercept.CommonRequestIntercept;
 import com.zhiyicx.common.net.listener.RequestInterceptListener;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.appprocess.AndroidProcess;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.manage.ZBIMSDK;
 import com.zhiyicx.rxerrorhandler.listener.ResponseErroListener;
@@ -85,22 +87,31 @@ public class AppApplication extends TSApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        String processName = AndroidProcess.getProcessName(this, android.os.Process.myPid());
+        if (processName != null && processName.equals(getPackageName())) {
+            initAppProject();
+        }
+        // 极光推送
+        JPushInterface.setDebugMode(BuildConfig.USE_LOG);
+        JPushInterface.init(this);
+    }
+
+    /**
+     * 应用进程只需要启动一次
+     */
+    private void initAppProject() {
         initComponent();
         // IM
-        if (!mAuthRepository.isTourist() && !TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 不是游客并且安装了 IM
+        if (!TextUtils.isEmpty(mSystemRepository.getBootstrappersInfoFromLocal().getIm_serve())) { // 安装了 IM
             LogUtils.d(TAG, "---------------start IM---------------------");
             ZBIMSDK.init(getContext());
         }
         BackgroundTaskManager.getInstance(getContext()).startBackgroundTask();// 开启后台任务
-        // 极光推送
-        JPushInterface.setDebugMode(BuildConfig.USE_LOG);
+        registerActivityCallBacks();
         // ping++
         Pingpp.enableDebugLog(BuildConfig.USE_LOG);
-        JPushInterface.init(this);
         // 友盟
         MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
-        registerActivityCallBacks();
-
     }
 
     /**
@@ -183,7 +194,7 @@ public class AppApplication extends TSApplication {
                 if (authBean != null) {
                     return chain.request().newBuilder()
                             .header("Accept", "application/json")
-                            .header((request.url() + "").contains("v1") ? "ACCESS-TOKEN" : "Authorization", (request.url() + "").contains("v1") ? authBean.getToken() : " Bearer " + authBean.getToken())
+                            .header("Authorization", " Bearer " + authBean.getToken())
                             .build();
                 } else {
                     return chain.request().newBuilder()
@@ -195,7 +206,7 @@ public class AppApplication extends TSApplication {
     }
 
     private void handleHeadRequest(Response originalResponse) {
-        if(originalResponse!=null&&originalResponse.header("unread-notification-limit")!=null){ // 未读数处理
+        if (originalResponse != null && originalResponse.header("unread-notification-limit") != null) { // 未读数处理
             EventBus.getDefault().post(originalResponse.header("unread-notification-limit"), EventBusTagConfig.EVENT_UNREAD_NOTIFICATION_LIMIT);
         }
 
@@ -289,8 +300,12 @@ public class AppApplication extends TSApplication {
 
     @Override
     protected SSLSocketFactory getSSLSocketFactory() {
-        int[] a = {R.raw.plus};
-        return HttpsSSLFactroyUtils.getSSLSocketFactory(this, a);
+        if (ApiConfig.APP_IS_NEED_SSH_CERTIFICATE) {
+            return super.getSSLSocketFactory();
+        } else {
+            int[] a = {R.raw.plus};
+            return HttpsSSLFactroyUtils.getSSLSocketFactory(this, a);
+        }
     }
 
     /**
@@ -316,9 +331,10 @@ public class AppApplication extends TSApplication {
      *
      * @return
      */
-    public static int getMyUserIdWithdefault() {
+
+    public static long getMyUserIdWithdefault() {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        int userId;
+        long userId;
         if (authBean == null) {
             userId = -1;
         } else {

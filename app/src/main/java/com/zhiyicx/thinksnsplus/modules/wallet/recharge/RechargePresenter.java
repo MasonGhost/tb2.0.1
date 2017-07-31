@@ -9,12 +9,11 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
+import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import javax.inject.Inject;
-
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT;
 
 /**
  * @Describe
@@ -30,6 +29,9 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
 
     @Inject
     SystemRepository mSystemRepository;
+
+    @Inject
+    BackgroundRequestTaskBeanGreenDaoImpl mBackgroundRequestTaskBeanGreenDao;
 
     @Inject
     public RechargePresenter(RechargeContract.Repository repository, RechargeContract.View rootView) {
@@ -50,7 +52,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
             protected void onSuccess(PayStrBean data) {
                 try {
                     mRootView.showSnackSuccessMessage(mContext.getString(R.string.recharge_credentials_succes));
-                }catch (Exception e){
+                } catch (Exception e) {
                 }
 
                 mRootView.payCredentialsResult(data);
@@ -93,34 +95,30 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
 
     @Override
     public void rechargeSuccessCallBack(String charge) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
+        backgroundRequestTaskBean.setUser_id((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.GET);
+        backgroundRequestTaskBean.setPath(ApiConfig.APP_DOMAIN + String.format(ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT, charge));
+        mBackgroundRequestTaskBeanGreenDao.insertOrReplace(backgroundRequestTaskBean);
         mRepository.rechargeSuccessCallBack(charge).subscribe(new BaseSubscribeForV2<RechargeSuccessBean>() {
             @Override
             protected void onSuccess(RechargeSuccessBean data) {
+                mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                 try {
                     mRootView.rechargeSuccess(data);
                 } catch (Exception e) {
-                    addTo(charge);
                 }
             }
 
             @Override
             protected void onFailure(String message, int code) {
                 super.onFailure(message, code);
-                addTo(charge);
             }
 
             @Override
             protected void onException(Throwable throwable) {
                 super.onException(throwable);
-                addTo(charge);
             }
         });
-    }
-
-    private void addTo(String charge){
-        BackgroundRequestTaskBean backgroundRequestTaskBean=new BackgroundRequestTaskBean();
-        backgroundRequestTaskBean.setUser_id((long)AppApplication.getmCurrentLoginAuth().getUser_id());
-        backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.GET);
-        backgroundRequestTaskBean.setPath(ApiConfig.APP_DOMAIN+String.format(ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT,charge));
     }
 }

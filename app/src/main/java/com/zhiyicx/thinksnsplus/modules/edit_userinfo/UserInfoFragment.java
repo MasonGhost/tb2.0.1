@@ -3,12 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,14 +19,13 @@ import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.wcy.overscroll.OverScrollLayout;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
-import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -49,14 +45,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 
 /**
  * @author LiuChao
@@ -73,7 +66,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      * 通过hashmap进行封装，而不是使用Usrinfobean，主要是以后可能配置用户信息，方便以后拓展
      */
     public static final String USER_NAME = "name";
-    public static final String USER_INTRO = "intro";
+    public static final String USER_INTRO = "bio";
     public static final String USER_SEX = "sex";
     public static final String USER_LOCATION = "location";
     public static final String USER_PROVINCE = "province";
@@ -123,7 +116,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private UserInfoBean mUserInfoBean;// 用户未修改前的用户信息
     private boolean userNameChanged, sexChanged, cityChanged, introduceChanged;
     private boolean isFirstOpenCityPicker = true;// 是否是第一次打开城市选择器：默认是第一次打开
-    private int upDateHeadIconStorageId = 0;// 上传成功返回的图片id
     private String path;// 上传成功的图片本地路径
 
     private int locationLevel = LOCATION_2LEVEL;
@@ -174,20 +166,17 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .debounce(getResources().getInteger(android.R.integer.config_mediumAnimTime), TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        //若不可视区域高度大于1/3屏幕高度，则键盘显示
-                        LogUtils.i(TAG + "---RxView   " + aBoolean);
-                        if (aBoolean) {
-                        } else {
-                            //键盘隐藏,清除焦点
-                            if (mEtUserIntroduce != null && mEtUserIntroduce.getEtContent().hasFocus()) {
-                                mEtUserIntroduce.getEtContent().clearFocus();
-                            }
-                            if (mEtUserName != null && mEtUserName.hasFocus()) {
-                                mEtUserName.clearFocus();
-                            }
+                .subscribe(aBoolean -> {
+                    //若不可视区域高度大于1/3屏幕高度，则键盘显示
+                    LogUtils.i(TAG + "---RxView   " + aBoolean);
+                    if (aBoolean) {
+                    } else {
+                        //键盘隐藏,清除焦点
+                        if (mEtUserIntroduce != null && mEtUserIntroduce.getEtContent().hasFocus()) {
+                            mEtUserIntroduce.getEtContent().clearFocus();
+                        }
+                        if (mEtUserName != null && mEtUserName.hasFocus()) {
+                            mEtUserName.clearFocus();
                         }
                     }
                 });
@@ -204,78 +193,46 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mPresenter.initUserInfo();
         ////////////////////////监听所有的用户信息变化///////////////////////////////
         RxTextView.textChanges(mEtUserName)
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        LogUtils.i("userName-->" + charSequence);
-                        String oldUserName = mUserInfoBean.getName();
-                        if (TextUtils.isEmpty(oldUserName)) {
-                            userNameChanged = !TextUtils.isEmpty(charSequence);
-                        } else {
-                            userNameChanged = !oldUserName.equals(charSequence.toString());
-                        }
-                        canChangerUserInfo();
+                .subscribe(charSequence -> {
+                    LogUtils.i("userName-->" + charSequence);
+                    String oldUserName = mUserInfoBean.getName();
+                    if (TextUtils.isEmpty(oldUserName)) {
+                        userNameChanged = !TextUtils.isEmpty(charSequence);
+                    } else {
+                        userNameChanged = !oldUserName.equals(charSequence.toString());
                     }
+                    canChangerUserInfo();
                 });
         RxTextView.textChanges(mTvSex)
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        String oldSex = mUserInfoBean.getSexString();
-                        if (TextUtils.isEmpty(oldSex)) {
-                            sexChanged = !TextUtils.isEmpty(charSequence);
-                        } else {
-                            sexChanged = !oldSex.equals(charSequence.toString());
-                        }
-                        canChangerUserInfo();
+                .subscribe(charSequence -> {
+                    String oldSex = mUserInfoBean.getSexString();
+                    if (TextUtils.isEmpty(oldSex)) {
+                        sexChanged = !TextUtils.isEmpty(charSequence);
+                    } else {
+                        sexChanged = !oldSex.equals(charSequence.toString());
                     }
+                    canChangerUserInfo();
                 });
         RxTextView.textChanges(mTvCity)
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        String oldLocation = mUserInfoBean.getLocation();
-                        if (TextUtils.isEmpty(oldLocation)) {
-                            cityChanged = !TextUtils.isEmpty(charSequence);
-                        } else {
-                            cityChanged = !oldLocation.equals(charSequence.toString());
-                        }
-                        canChangerUserInfo();
+                .subscribe(charSequence -> {
+                    String oldLocation = mUserInfoBean.getLocation();
+                    if (TextUtils.isEmpty(oldLocation)) {
+                        cityChanged = !TextUtils.isEmpty(charSequence);
+                    } else {
+                        cityChanged = !oldLocation.equals(charSequence.toString());
                     }
+                    canChangerUserInfo();
                 });
         RxTextView.textChanges(mEtUserIntroduce.getEtContent())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        String oldIntroduce = getIntro(mUserInfoBean);
-                        if (TextUtils.isEmpty(oldIntroduce)) {
-                            introduceChanged = !TextUtils.isEmpty(charSequence);
-                        } else {
-                            introduceChanged = !oldIntroduce.equals(charSequence.toString());
-                        }
-                        canChangerUserInfo();
+                .subscribe(charSequence -> {
+                    String oldIntroduce = getIntro(mUserInfoBean);
+                    if (TextUtils.isEmpty(oldIntroduce)) {
+                        introduceChanged = !TextUtils.isEmpty(charSequence);
+                    } else {
+                        introduceChanged = !oldIntroduce.equals(charSequence.toString());
                     }
+                    canChangerUserInfo();
                 });
-    }
-
-    @Override
-    public void setPresenter(UserInfoContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     @Override
@@ -339,7 +296,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     @Override
-    public void setUpLoadHeadIconState(int upLoadState, int taskId) {
+    public void setUpLoadHeadIconState(int upLoadState) {
         // 上传成功，可以进行修改
         switch (upLoadState) {
             case -1:
@@ -355,9 +312,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mTSnackbarUploadIcon.show();
                 break;
             case 1:
-                upDateHeadIconStorageId = taskId;
-                mPresenter.changUserInfo(packageUserHeadIcon(), true);
-                break;
             case 2:
                 TSnackbar.getTSnackBar(mTSnackbarUploadIcon, mSnackRootView,
                         getString(R.string.update_head_success), TSnackbar.LENGTH_SHORT)
@@ -392,12 +346,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 // 为了让用户看到提示成功的消息，添加定时器：1.5s后关闭页面
                 Observable.timer(1500, TimeUnit.MILLISECONDS)
                         .compose(this.<Long>bindToLifecycle())
-                        .subscribe(new Action1<Long>() {
-                            @Override
-                            public void call(Long aLong) {
-                                getActivity().finish();
-                            }
-                        });
+                        .subscribe(aLong -> getActivity().finish());
                 break;
             default:
         }
@@ -418,27 +367,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         String intro = getIntro(mUserInfoBean);
         mEtUserIntroduce.setText(intro);// 设置简介
 
-        // 设置头像
-        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , getContext().getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_38_ZIP);
-        } catch (Exception e) {
-            userIconUrl = mUserInfoBean.getAvatar();
-        }
-        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .url(userIconUrl)
-                .errorPic(R.mipmap.pic_default_portrait1)
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .imagerView(mIvHeadIcon)
-                .transformation(new GlideCircleTransform(getContext()))
-                .build());
-
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean,mIvHeadIcon);
     }
 
     @Override
@@ -493,30 +422,27 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mAreaPickerView = new OptionsPickerView(getActivity());
         mAreaPickerView.setCancelable(true);// 触摸是否自动消失
         mAreaPickerView.setTitle("请选择城市");
-        mAreaPickerView.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3) {
-                if (options2Items.size() <= options1 || options2Items.get(options1).size() <=
-                        options2) {
-                    return;//避免pickview控件的bug
-                }
-                String areaText1 = options1Items.get(options1).getPickerViewText();
-                String areaText2 = "", areaText3 = "";
-                if (locationLevel == LOCATION_2LEVEL) {
-                    areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
-                }
-                if (locationLevel == LOCATION_3LEVEL) {
-                    areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
-                    areaText3 = options3Items.get(options1).get(options2).get(options3)
-                            .getPickerViewText();
-                }
-                areaText2 = areaText2.equals(getString(R.string.all)) ? "" : areaText2;//如果为全部则不显示
-                areaText3 = areaText3.equals(getString(R.string.all)) ? "" : areaText3;//如果为全部则不显示
-                setCity(areaText1 + "  " + areaText2 + areaText3);
-                mCityOption1 = options1;
-                mCityOption2 = options2;
-                mCityOption3 = options3;
+        mAreaPickerView.setOnoptionsSelectListener((options1, options2, options3) -> {
+            if (options2Items.size() <= options1 || options2Items.get(options1).size() <=
+                    options2) {
+                return;//避免pickview控件的bug
             }
+            String areaText1 = options1Items.get(options1).getPickerViewText();
+            String areaText2 = "", areaText3 = "";
+            if (locationLevel == LOCATION_2LEVEL) {
+                areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
+            }
+            if (locationLevel == LOCATION_3LEVEL) {
+                areaText2 = options2Items.get(options1).get(options2).getPickerViewText();
+                areaText3 = options3Items.get(options1).get(options2).get(options3)
+                        .getPickerViewText();
+            }
+            areaText2 = areaText2.equals(getString(R.string.all)) ? "" : areaText2;//如果为全部则不显示
+            areaText3 = areaText3.equals(getString(R.string.all)) ? "" : areaText3;//如果为全部则不显示
+            setCity(areaText1 + "  " + areaText2 + areaText3);
+            mCityOption1 = options1;
+            mCityOption2 = options2;
+            mCityOption3 = options3;
         });
         mPresenter.getAreaData();
     }
@@ -537,33 +463,19 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        setGender(UserInfoBean.MALE);
-                        mGenderPopupWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    setGender(UserInfoBean.MALE);
+                    mGenderPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        setGender(UserInfoBean.FEMALE);
-                        mGenderPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    setGender(UserInfoBean.FEMALE);
+                    mGenderPopupWindow.hide();
                 })
-                .item3ClickListener(new ActionPopupWindow.ActionPopupWindowItem3ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        setGender(UserInfoBean.SECRET);
-                        mGenderPopupWindow.hide();
-                    }
+                .item3ClickListener(() -> {
+                    setGender(UserInfoBean.SECRET);
+                    mGenderPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mGenderPopupWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mGenderPopupWindow.hide())
                 .build();
     }
 
@@ -582,28 +494,17 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        // 选择相册，单张
-                        mPhotoSelector.getPhotoListFromSelector(1, null);
-                        mPhotoPopupWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    // 选择相册，单张
+                    mPhotoSelector.getPhotoListFromSelector(1, null);
+                    mPhotoPopupWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        // 选择相机，拍照
-                        mPhotoSelector.getPhotoFromCamera(null);
-                        mPhotoPopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(null);
+                    mPhotoPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPhotoPopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
     }
 
     /**
@@ -616,7 +517,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     /**
      * 设置用户性别
      */
-    private void setGender(String genderType) {
+    private void setGender(int genderType) {
         switch (genderType) {
             case UserInfoBean.MALE:
                 mTvSex.setText(R.string.male);
@@ -635,14 +536,14 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     /**
      * 封装编辑用户信息的提交信息
      */
-    private HashMap<String, String> packageUserInfo() {
-        HashMap<String, String> fieldMap = new HashMap<>();
+    private HashMap<String, Object> packageUserInfo() {
+        HashMap<String, Object> fieldMap = new HashMap<>();
         // 只上传改变的信息
         if (userNameChanged) {
             fieldMap.put(USER_NAME, mEtUserName.getText().toString());
         }
         if (sexChanged) {
-            fieldMap.put(USER_SEX, mTvSex.getTag(R.id.view_data) + "");
+            fieldMap.put(USER_SEX, mTvSex.getTag(R.id.view_data));
         }
         if (cityChanged) {
             fieldMap.put(USER_LOCATION, mTvCity.getText().toString());
@@ -665,19 +566,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     }
 
     /**
-     * 用户头像再上传图片后自动提交修改，不和用户信息一起提交
-     *
-     * @return
-     */
-    private HashMap<String, String> packageUserHeadIcon() {
-        HashMap<String, String> fieldMap = new HashMap<>();
-        // avatar
-        fieldMap.put(USER_STORAGE_TASK_ID, upDateHeadIconStorageId + "");
-        fieldMap.put(USER_LOCAL_IMG_PATH, path);// 本地图片的路径，因为没有返回storage_id,用来更新图片
-        return fieldMap;
-    }
-
-    /**
      * 判断是否需要修改信息：如果用户名，性别。。。其中任意一项发生变化，都可以提交修改
      */
     private void canChangerUserInfo() {
@@ -693,7 +581,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      */
     private String getIntro(UserInfoBean userInfoBean) {
         if (userInfoBean == null) {
-            return "";
+            return getString(R.string.intro_default);
         }
         String intro = userInfoBean.getIntro();
         // 是缺省的内容,就设置为kong，但要注意这儿有个隐藏的bug，如果简介设置为缺省的内容，那就。。。
@@ -751,12 +639,5 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
 
 }

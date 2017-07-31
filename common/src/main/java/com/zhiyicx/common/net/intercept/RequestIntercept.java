@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -61,7 +62,7 @@ public class RequestIntercept implements Interceptor {
         Response originalResponse = chain.proceed(request);
         long t2 = System.nanoTime();
         //打印响应时间
-        LogUtils.d(TAG, "Received response  in %.1fms%n%s", (t2 - t1) / 1e6d, originalResponse.headers());
+        LogUtils.d(TAG, "Received response code %d in %.1fms%n%s", originalResponse.code(), (t2 - t1) / 1e6d, originalResponse.headers());
 
         //读取服务器返回的结果
         ResponseBody responseBody = originalResponse.body();
@@ -92,4 +93,5 @@ public class RequestIntercept implements Interceptor {
         }
         return "multipart";
     }
+
 }

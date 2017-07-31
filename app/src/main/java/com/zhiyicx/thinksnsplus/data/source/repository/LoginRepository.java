@@ -1,10 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.content.Context;
 
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -31,18 +28,6 @@ public class LoginRepository implements LoginContract.Repository {
         mLoginClient = serviceManager.getLoginClient();
     }
 
-    @Override
-    public Observable<BaseJson<AuthBean>> login(Context context, final String phone, final String password) {
-       /* if(cacheImp==null){
-            cacheImp = new CacheImp<>(new AuthBeanGreenDaoImpl(context));
-        }
-        return cacheImp.load(1483098241l, new NetWorkCache<AuthBean>() {
-            @Override
-            public Observable<BaseJson<AuthBean>> get(Long key) {
-            }
-        });*/
-        return mLoginClient.login("success", phone, password, DeviceUtils.getIMEI(mContext));
-    }
     @Override
     public Observable<AuthBean> loginV2(final String account, final String password) {
        /* if(cacheImp==null){

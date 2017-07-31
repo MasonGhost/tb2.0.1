@@ -35,9 +35,8 @@ public interface UserInfoContract {
          * 设置头像上传的状态
          *
          * @param upLoadState -1 失败 0进行中 1 图片上传成功 2图片用户信息修改成功
-         * @param taskId      返回的图片任务id
          */
-        void setUpLoadHeadIconState(int upLoadState, int taskId);
+        void setUpLoadHeadIconState(int upLoadState);
 
         /**
          * 设置信息修改提交状态
@@ -64,7 +63,7 @@ public interface UserInfoContract {
          *
          * @param userInfos 用户需要修改的信息，通过 hashMap 传递，key 表示请求字段，value 表示修改的值
          */
-        Observable<BaseJson> changeUserInfo(HashMap<String, String> userInfos);
+        Observable<Object> changeUserInfo(HashMap<String, Object> userInfos);
 
         /**
          * 获取用户信息
@@ -98,8 +97,18 @@ public interface UserInfoContract {
          * @param user_ids user 可以是一个值，或者多个值，多个值的时候用英文半角 , 分割。
          * @return
          */
-        Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(String user_ids);
+        Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids);
 
+        /**
+         *  搜索用户的用户信息
+         * @param user_ids Get multiple designated users, multiple IDs using , split.
+         * @param name     Used to retrieve users whose username contains name.
+         * @param since    The integer ID of the last User that you've seen.
+         * @param order    Sorting. Enum: asc, desc
+         * @param limit    List user limit, minimum 1 max 50.
+         * @return
+         */
+        Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit);
 
         /**
          * 获取用户信息,先从本地获取，本地没有再从网络 获取
@@ -119,7 +128,7 @@ public interface UserInfoContract {
          *
          * @param followFansBean
          */
-        void handleFollow(FollowFansBean followFansBean);
+        void handleFollow(UserInfoBean followFansBean);
 
         /**
          * 获取点赞排行榜
@@ -169,7 +178,7 @@ public interface UserInfoContract {
          * @param userInfos
          * @param isHeadIcon 仅仅修改头像
          */
-        void changUserInfo(HashMap<String, String> userInfos, boolean isHeadIcon);
+        void changUserInfo(HashMap<String, Object> userInfos, boolean isHeadIcon);
 
 
         /**

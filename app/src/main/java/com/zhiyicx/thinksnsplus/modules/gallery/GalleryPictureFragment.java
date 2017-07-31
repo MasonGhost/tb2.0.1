@@ -3,13 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
@@ -36,14 +33,14 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PathConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressListener;
 import com.zhiyicx.baseproject.impl.imageloader.glide.progress.ProgressModelLoader;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
-import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.photoview.PhotoViewAttacher;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
@@ -69,9 +66,6 @@ import butterknife.OnClick;
 import me.iwf.photopicker.utils.AndroidLifecycleUtils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -333,7 +327,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                         @Override
                         public GlideUrl requestGlideUrl() {
                             final Toll toll = mImageBean.getToll();
-                            final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            final Boolean canLook;
+                            if (toll==null){
+                                canLook=true;
+                            }else{
+                                canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            }
                             return ImageUtils.imagePathConvertV2(canLook, mImageBean.getStorage_id(), w, h,
                                     ImageZipConfig.IMAGE_80_ZIP, AppApplication.getTOKEN());
 
@@ -365,7 +364,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                                 mTvOriginPhoto.setVisibility(View.VISIBLE);
                             }
                             final Toll toll = mImageBean.getToll();
-                            final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            final Boolean canLook;
+                            if (toll==null){
+                                canLook=true;
+                            }else{
+                                canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
+                            }
                             if (!canLook) {
                                 if (mTvOriginPhoto != null) {
                                     mTvOriginPhoto.setVisibility(View.GONE);
@@ -458,8 +462,6 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
         mTvOriginPhoto.setClickable(false);
         // 刚点击查看原图，可能会有一段时间，进行重定位请求，所以立即设置进度
         mTvOriginPhoto.setText("0%");
-        final Toll toll = mImageBean.getToll();
-        final Boolean canLook = !(toll.getPaid() != null && !toll.getPaid() && toll.getToll_type_string().equals(Toll.LOOK_TOLL_TYPE));
         Glide.with(context)
                 .using(new ProgressModelLoader(new Handler() {
                     @Override
@@ -706,12 +708,12 @@ public class GalleryPictureFragment extends TSFragment<GalleryConstract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(1.0f)
                 .buildDescrStr(String.format(getString(resId) + getString(R
-                        .string.buy_pay_member), mImageBean.getToll().getToll_money()))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mImageBean.getToll().getToll_money())))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), mImageBean.getToll().getToll_money()))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mImageBean.getToll().getToll_money())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(mImageBean.getFeed_id(), mImageBean.getPosition(), mImageBean.getToll().getPaid_node());
                     mPayPopWindow.hide();

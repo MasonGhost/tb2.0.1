@@ -1,10 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.util.SparseArray;
-
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
@@ -53,16 +50,26 @@ public class BillRepository implements BillContract.Repository {
             public Observable<List<RechargeSuccessBean>> call(List<RechargeSuccessBean> rechargeListBeen) {
                 final List<Object> user_ids = new ArrayList<>();
                 for (RechargeSuccessBean rechargeSuccessBean : rechargeListBeen) {
-                    user_ids.add(rechargeSuccessBean.getUser_id());
+                    if (rechargeSuccessBean.getChannel().equals("user") || rechargeSuccessBean.getChannel().equals("system")) // @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/wallet/charge.md}
+                    {
+                        user_ids.add(rechargeSuccessBean.getAccount());
+                        try {
+                            rechargeSuccessBean.setUser_id(Long.valueOf(rechargeSuccessBean.getAccount()));
+                        } catch (Exception e) {
+                        }
+                    } else {
+                        user_ids.add(rechargeSuccessBean.getUser_id());
+                    }
+
                 }
                 return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                    }
-                    for (int i = 0; i < rechargeListBeen.size(); i++) {
-                        rechargeListBeen.get(i).setUserInfoBean(userInfoBeanSparseArray.get(rechargeListBeen.get(i).getUser_id().intValue()));
-                    }
+//                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+//                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+//                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+//                    }
+//                    for (int i = 0; i < rechargeListBeen.size(); i++) {
+//                        rechargeListBeen.get(i).setUserInfoBean(userInfoBeanSparseArray.get(rechargeListBeen.get(i).getUser_id().intValue()));
+//                    }
                     mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
                     return rechargeListBeen;
                 });

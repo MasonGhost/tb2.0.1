@@ -20,7 +20,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author LiuChao
@@ -42,41 +44,57 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
     }
 
     @Override
-    public Observable<BaseJson<List<FollowFansBean>>> getFollowListFromNet(final long userId, int maxId) {
+    public Observable<List<UserInfoBean>> getFollowListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
         return mFollowFansClient.getUserFollowsList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
-                .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
-                    @Override
-                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
-                        GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
-                        final List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFollows();
-                        return packageData(gsonFollowFansBeanBaseJson, userId, followFansBeanList);
-                    }
-                });
+                .map(userInfoBeen -> {
+                    // 保存用户信息
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
+                    return userInfoBeen;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+//        return mFollowFansClient.getUserFollowsList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
+//                .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
+//                    @Override
+//                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
+//                        GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
+//                        final List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFollows();
+//                        return packageData(gsonFollowFansBeanBaseJson, userId, followFansBeanList);
+//                    }
+//                });
     }
 
     @Override
-    public Observable<BaseJson<List<FollowFansBean>>> getFansListFromNet(final long userId, int maxId) {
+    public Observable<List<UserInfoBean>> getFansListFromNet(final long userId, int maxId) {
         // 将网络请求获取的数据，通过map转换
         return mFollowFansClient.getUserFansList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
-                .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
-                    @Override
-                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
-                        GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
-                        List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFolloweds();
-                        return packageData(gsonFollowFansBeanBaseJson, userId, followFansBeanList);
-                    }
-                });
+                .map(userInfoBeen -> {
+                    // 保存用户信息
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
+                    return userInfoBeen;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+//        return mFollowFansClient.getUserFansList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
+//                .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
+//                    @Override
+//                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
+//                        GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
+//                        List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFolloweds();
+//                        return packageData(gsonFollowFansBeanBaseJson, userId, followFansBeanList);
+//                    }
+//                });
 
     }
 
     @Override
-    public Observable<BaseJson> followUser(long userId) {
+    public Observable<Object> followUser(long userId) {
         return mFollowFansClient.followUser(userId);
     }
 
     @Override
-    public Observable<BaseJson> cancleFollowUser(long userId) {
+    public Observable<Object> cancleFollowUser(long userId) {
         return mFollowFansClient.cancelFollowUser(userId);
     }
 

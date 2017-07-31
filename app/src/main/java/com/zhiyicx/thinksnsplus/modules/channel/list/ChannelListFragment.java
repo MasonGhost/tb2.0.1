@@ -7,11 +7,13 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
+import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,7 +27,7 @@ import static com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListViewPager
  * @contact email:450127106@qq.com
  */
 
-public class ChannelListFragment extends TSListFragment<ChannelListContract.Presenter, ChannelSubscripBean>
+public class ChannelListFragment extends TSListFragment<ChannelListContract.Presenter, GroupInfoBean>
         implements ChannelListContract.View {
     @Inject
     ChannelListPresenter mChannelListPresenter;
@@ -62,8 +64,6 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     /**
      * 内容区域在 viewpager 中
-     *
-     * @return
      */
     @Override
     protected int getstatusbarAndToolbarHeight() {
@@ -71,26 +71,22 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+    public void onNetResponseSuccess( List<GroupInfoBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
         closeLoadingView();
         if (mListDatas.isEmpty()) {
-            // 如果界面数据为空,加载数据到界面
-            super.onNetResponseSuccess(data, isLoadMore);
             // 如果界面上没有显示数据，从网络获取后界面上仍然没有数据，就切换到所有频道的页面
-            if (data == null || data.isEmpty()) {
+            if (data==null||data.isEmpty()) {
                 ChannelListViewPagerFragment channelListViewPagerFragment = (ChannelListViewPagerFragment) getParentFragment();
                 if (channelListViewPagerFragment != null) {
                     channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
                 }
             }
-        } else {
-            // 如果界面数据不为空，网络请求获取到的数据，那就下次加载
         }
-
     }
 
     @Override
-    public void onCacheResponseSuccess(@NotNull List<ChannelSubscripBean> data, boolean isLoadMore) {
+    public void onCacheResponseSuccess(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
         super.onCacheResponseSuccess(data, isLoadMore);
         if (mListDatas.isEmpty()) {
             // 数据库数据为空，还需要从网络请求数据，这时还不能够关闭loadingview
@@ -101,7 +97,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     protected boolean isRefreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -116,7 +112,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     protected boolean isLoadingMoreEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -163,8 +159,14 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
 
     @Override
     public List<ChannelSubscripBean> getChannelListData() {
+        return null;
+    }
+
+    @Override
+    public List<GroupInfoBean> getGroupList() {
         return mListDatas;
     }
+
 
     @Override
     public void gotoAllChannel() {
@@ -172,5 +174,36 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
         if (channelListViewPagerFragment != null) {
             channelListViewPagerFragment.setSelectPager(PAGE_ALL_CHANNEL_LIST);
         }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_GROUP_JOIN)
+    public void changeJoinState(GroupInfoBean groupInfoBean) {
+        // 如果是自己关注的列表 则去掉该项
+        boolean hasItem = false;
+        for (int i = 0; i < mListDatas.size(); i++) {
+            if (mListDatas.get(i).getId() == groupInfoBean.getId()){
+                if (pageType == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST
+                        && groupInfoBean.getIs_member() == 0) {
+                    // 如果是自己关注的列表 则去掉该项
+                    mListDatas.remove(i);
+                } else {
+                    mListDatas.set(i, groupInfoBean);
+                }
+                hasItem = true;
+                break;
+            } else {
+                hasItem = false;
+            }
+        }
+        if (pageType == ChannelListViewPagerFragment.PAGE_MY_SUBSCRIB_CHANNEL_LIST
+                && groupInfoBean.getIs_member() == 1 && !hasItem) {
+            mListDatas.add(groupInfoBean);
+        }
+        refreshData(mListDatas);
     }
 }

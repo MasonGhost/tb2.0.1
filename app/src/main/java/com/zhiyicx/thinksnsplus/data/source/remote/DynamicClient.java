@@ -47,7 +47,7 @@ public interface DynamicClient {
     Observable<BaseJson<Object>> sendDynamic(@Body RequestBody body);
 
     /**
-     * 发布动态
+     * 发布动态 v2 接口
      *
      * @return
      */
@@ -77,11 +77,11 @@ public interface DynamicClient {
 
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST_V2)
     Observable<DynamicBeanV2> getDynamicListV2(@Query("type") String type, @Query
-            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
+            ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit);
 
     @GET(ApiConfig.APP_PATH_GET_COLLECT_DYNAMIC_LIST_V2)
     Observable<List<DynamicDetailBeanV2>> getCollectDynamicListV2(@Query
-            ("after") Long after,@Query("user")Long user_id, @Query("limit") Long limit);
+                                                                          ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit);
 
     /**
      * #点赞一条动态
@@ -107,18 +107,8 @@ public interface DynamicClient {
     @DELETE(ApiConfig.APP_PATH_DYNAMIC_CANCEL_CLICK_LIKE_V2)
     Observable<BaseJson<String>> cancleLikeDynamicV2(@Path("feed_id") Long feed_id);
 
-    /**
-     * 获取某条动态的点赞用户列表
-     *
-     * @param feed_id 动态的唯一id
-     * @param max_id  返回的feed_digg_id 作为max_id,对象为null表示不传
-     * @return
-     */
-    @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST)
-    Observable<BaseJson<List<DynamicDigListBean>>> getDynamicDigList(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Integer limitCount);
-
     @GET(ApiConfig.APP_PATH_DYNAMIC_DIG_LIST_V2)
-    Observable<List<DynamicDigListBean>> getDynamicDigListV2(@Path("feed_id") Long feed_id, @Query("max_id") Long max_id, @Query("limit") Integer limitCount);
+    Observable<List<DynamicDigListBean>> getDynamicDigListV2(@Path("feed_id") Long feed_id, @Query("after") Long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 收藏动态
@@ -232,7 +222,7 @@ public interface DynamicClient {
      * @return
      */
     @DELETE(ApiConfig.APP_PATH_REFUSE_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2> refuseTopComment(@Path("pinned_id")int pinned_id);
+    Observable<BaseJsonV2> refuseTopComment(@Path("pinned_id") int pinned_id);
 
     /**
      * 动态评论置顶审核通过 V2

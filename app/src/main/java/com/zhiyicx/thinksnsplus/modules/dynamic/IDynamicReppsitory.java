@@ -7,7 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 
 import java.util.List;
@@ -39,6 +39,7 @@ public interface IDynamicReppsitory {
      * @return basejson, object is null
      */
     Observable<BaseJsonV2<Object>> sendDynamicV2(SendDynamicDataBeanV2 dynamicDetailBean);
+
 
     /**
      * get dynamic list
@@ -87,8 +88,6 @@ public interface IDynamicReppsitory {
      * @param reply_to_user_id
      * @param comment_mark
      */
-    void sendComment(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
-
     void sendCommentV2(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
     /**
@@ -123,12 +122,8 @@ public interface IDynamicReppsitory {
      */
     Observable<BaseJson<Object>> cancleCollectDynamic(Long feed_id);
 
-    /**
-     * 获取动态点赞列表
-     */
-    Observable<BaseJson<List<FollowFansBean>>> getDynamicDigList(Long feed_id, Long max_id);
 
-    Observable<List<FollowFansBean>> getDynamicDigListV2(Long feed_id, Long max_id);
+    Observable<List<DynamicDigListBean>> getDynamicDigListV2(Long feed_id, Long max_id);
 
     /**
      * 一条动态的评论列表

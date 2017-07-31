@@ -269,4 +269,15 @@
         android:paddingBottom="@dimen/spacing_mid">
     </com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView>
 
+    <com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView
+        android:visibility="gone"
+        android:id="@+id/group_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fl_tip"
+        android:layout_marginLeft="@dimen/dynamic_list_comment_marginright"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_mid">
+    </com.zhiyicx.thinksnsplus.widget.comment.GroupDynamicListCommentView>
+
 </RelativeLayout>

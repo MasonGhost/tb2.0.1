@@ -65,13 +65,31 @@ public interface FindPasswordContract {
          */
         Observable<BaseJson<CacheBean>> findPassword(String phone
                 , String vertifyCode, String newPassword);
+
+        Observable<CacheBean> findPasswordV2(String phone
+                , String vertifyCode, String newPassword);
+
+        /**
+         * 找回密码
+         *
+         * @param email       邮箱地址
+         * @param verifyCode 验证码
+         * @param newPassword 新密码
+         * @return
+         */
+        Observable<CacheBean> findPasswordByEmail(String email
+                , String verifyCode, String newPassword);
     }
 
     interface Presenter extends IBasePresenter {
 
         void findPassword(String phone, String vertifyCode, String newPassword);
 
+        void findPasswordByEmail(String email, String vertifyCode, String newPassword);
+
         void getVertifyCode(String phone);
+
+        void getVerifyCodeByEmail(String email);
     }
 
 }

@@ -34,7 +34,6 @@ import java.util.List;
 import butterknife.BindView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -141,7 +140,7 @@ public class ChatFragment extends TSFragment<ChatContract.Presenter> implements 
         mMessageList.setMessageListItemClickListener(this);
         mMessageList.setRefreshListener(this);
         if (mMessageItemBean.getConversation() == null) { // 先获取本地信息，如果本地信息存在，直接使用，如果没有直接创建
-            Conversation conversation = ConversationDao.getInstance(getContext()).getPrivateChatConversationByUids(AppApplication.getmCurrentLoginAuth().getUser_id(), mMessageItemBean.getUserInfo().getUser_id().intValue());
+            Conversation conversation = ConversationDao.getInstance(getContext()).getPrivateChatConversationByUids((int) AppApplication.getmCurrentLoginAuth().getUser_id(), mMessageItemBean.getUserInfo().getUser_id().intValue());
             if (conversation == null) {
                 mPresenter.createChat(mMessageItemBean.getUserInfo(), null);
             } else {

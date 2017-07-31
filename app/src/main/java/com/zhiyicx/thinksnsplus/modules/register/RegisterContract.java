@@ -28,6 +28,7 @@ public interface RegisterContract {
 
         /**
          * 设置验证码加载
+         *
          * @param isEnable
          */
         void setVertifyCodeLoadin(boolean isEnable);
@@ -53,7 +54,7 @@ public interface RegisterContract {
     /**
      * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
      */
-    interface Repository  extends IVertifyCodeRepository {
+    interface Repository extends IVertifyCodeRepository {
 
         /**
          * 注册
@@ -64,14 +65,27 @@ public interface RegisterContract {
          * @param password    用户密码
          * @return
          */
-        Observable<AuthBean> register(String phone, String name, String vertifyCode, String password);
+        Observable<AuthBean> registerByPhone(String phone, String name, String vertifyCode, String password);
+
+        /**
+         * @param email       注册的邮箱
+         * @param name        用户名
+         * @param vertifyCode 邮箱验证码
+         * @param password    用户密码
+         * @return
+         */
+        Observable<AuthBean> registerByEmail(String email, String name, String vertifyCode, String password);
 
     }
 
     interface Presenter extends IBaseTouristPresenter {
         void getVertifyCode(String phone);
 
+        void getVerifyCodeByEmail(String email);
+
         void register(String name, String phone, String vertifyCode, String password);
+
+        void registerByEmail(String name, String email, String verifyCode, String password);
     }
 
 }

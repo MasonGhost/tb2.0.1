@@ -2,13 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AccountBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -16,12 +18,12 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -34,13 +36,7 @@ import rx.schedulers.Schedulers;
 public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, LoginContract.View> implements LoginContract.Presenter {
 
     @Inject
-    public LoginPresenter(LoginContract.Repository repository, LoginContract.View rootView) {
-        super(repository, rootView);
-    }
-
-    @Inject
     AuthRepository mAuthRepository;
-
     @Inject
     UserInfoRepository mUserInfoRepository;
     @Inject
@@ -48,40 +44,41 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
+    AccountBeanGreenDaoImpl mAccountBeanGreenDao;
+    @Inject
     WalletRepository mWalletRepository;
+
+    @Inject
+    public LoginPresenter(LoginContract.Repository repository, LoginContract.View rootView) {
+        super(repository, rootView);
+    }
 
     @Override
     public void login(String phone, String password) {
-
-        if (!RegexUtils.isMobileExact(phone)) {
-            // 不符合手机号格式
-            mRootView.showErrorTips(mContext.getString(R.string.phone_number_toast_hint));
-            return;
-        }
+        // 此处由于登陆方式有用户名和手机号还有邮箱 注册规则由服务器判断，所以我们不做判断处理
+//        if (!RegexUtils.isMobileExact(phone) && !RegexUtils.isEmail(phone)) {
+//            // 不符合手机号格式
+//            mRootView.showErrorTips(mContext.getString(R.string.phone_number_toast_hint));
+//            return;
+//        }
         mRootView.setLogining();
         Subscription subscription = mRepository.loginV2(phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<AuthBean, Observable<UserInfoBean>>() {
+                .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
-                    public Observable<UserInfoBean> call(AuthBean data) {
+                    protected void onSuccess(AuthBean data) {
                         // 登录成功跳转
                         mAuthRepository.saveAuthBean(data);// 保存auth信息
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
                         // 钱包信息我也不知道在哪儿获取
-                        mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id()+""));
-                        // 获取用户信息
-                        return mUserInfoRepository.getCurrentLoginUserInfo();
-                    }
-                })
-                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
-                    @Override
-                    protected void onSuccess(UserInfoBean data) {
-                        mUserInfoBeanGreenDao.insertOrReplace(data);
-                        if (data.getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(data.getWallet());
+                        mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
+                        mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
+                        if (data.getUser().getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
                         }
+                        mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
                         mRootView.setLoginState(true);
                     }
 
@@ -98,7 +95,13 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                         mRootView.setLoginState(false);
                     }
                 });
+
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public List<AccountBean> getAllAccountList() {
+        return mAccountBeanGreenDao.getMultiDataFromCache();
     }
 
     private void handleIMLogin() {

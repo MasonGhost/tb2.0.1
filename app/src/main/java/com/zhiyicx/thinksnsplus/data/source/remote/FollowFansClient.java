@@ -1,9 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
-import com.zhiyicx.thinksnsplus.data.beans.GsonFollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.List;
 
@@ -11,12 +9,10 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * @author LiuChao
@@ -34,7 +30,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FANS_LIST)
-    Observable<BaseJson<GsonFollowFansBean>> getUserFansList(@Path("user_id") long user_id, @Path("max_id") long max_id, @Query("limit") Integer limitCount);
+    Observable<List<UserInfoBean>> getUserFansList(@Path("user_id") long user_id, @Query("after") long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 获取用户关注列表
@@ -44,7 +40,7 @@ public interface FollowFansClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_FOLLOW_LIST)
-    Observable<BaseJson<GsonFollowFansBean>> getUserFollowsList(@Path("user_id") long user_id, @Path("max_id") long max_id, @Query("limit") Integer limitCount);
+    Observable<List<UserInfoBean>> getUserFollowsList(@Path("user_id") long user_id, @Query("after") long max_id, @Query("limit") Integer limitCount);
 
     /**
      * 关注用户操作
@@ -53,8 +49,8 @@ public interface FollowFansClient {
      * @return
      */
     @FormUrlEncoded
-    @POST(ApiConfig.APP_PATH_FOLLOW_USER)
-    Observable<BaseJson> followUser(@Field("user_id") long user_id);
+    @PUT(ApiConfig.APP_PATH_FOLLOW_USER)
+    Observable<Object> followUser(@Field("user_id") long user_id);
 
     /**
      * 取消用户关注
@@ -64,6 +60,6 @@ public interface FollowFansClient {
      */
     @FormUrlEncoded
     @DELETE(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER)
-    Observable<BaseJson> cancelFollowUser(@Field("user_id") long user_id);
+    Observable<Object> cancelFollowUser(@Field("user_id") long user_id);
 
 }

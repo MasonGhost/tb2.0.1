@@ -10,17 +10,23 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.wallet.bill.BillListFragment.BILL_INFO;
 
 /**
@@ -80,7 +86,8 @@ public class BillDetailFragment extends TSFragment {
         boolean is_user = mBillDetailBean.getUserInfoBean() != null;
         mBillUser.setText(getString(action == 0 ? R.string.account_to_name : R.string.account_form_name));
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
-        String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.valueOf(mBillDetailBean.getAmount());
+        String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
+                PayConfig.realCurrencyFen2Yuan(mBillDetailBean.getAmount()));
         mTvMineMoney.setText(moneyStr);
         mBillUserContainer.setVisibility(is_user ? View.VISIBLE : View.GONE);
         mBillAccountContainer.setVisibility(is_user ? View.GONE : View.VISIBLE);
@@ -91,7 +98,12 @@ public class BillDetailFragment extends TSFragment {
         if (!is_user)
             return;
         dealUserInfo(mBillDetailBean.getUserInfoBean());
+
+        RxView.clicks(mBillUserContainer).throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS).subscribe(aVoid -> {
+            PersonalCenterFragment.startToPersonalCenter(getContext(), mBillDetailBean.getUserInfoBean());
+        });
     }
+
 
     @Override
     protected int getBodyLayoutId() {
@@ -103,8 +115,7 @@ public class BillDetailFragment extends TSFragment {
         final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
 
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvertV2(Integer.parseInt(userInfoBean.getAvatar()), headIconWidth, headIconWidth
-                        , ImageZipConfig.IMAGE_26_ZIP))
+                .load(ImageUtils.getUserAvatar(userInfoBean))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)

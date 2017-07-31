@@ -32,7 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
@@ -40,6 +40,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
@@ -77,8 +78,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repository, DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
-    @Inject
-    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
@@ -93,6 +93,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2GreenDao;
     @Inject
     TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
     AuthRepository mAuthRepository;
     @Inject
@@ -165,6 +167,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public List<DynamicDetailBeanV2> requestCacheData(Long maxId, boolean isLoadMore) {
         List<DynamicDetailBeanV2> datas = null;
+        System.out.println("mDynamicDetailBeanV2GreenDao = " + mDynamicDetailBeanV2GreenDao.getCounts());
         switch (mRootView.getDynamicType()) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
                 if (!isLoadMore) {// 刷新
@@ -293,6 +296,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public void reSendDynamic(int position) {
         // 将动态信息存入数据库
+
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(position));
         // 发送动态
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
@@ -336,53 +340,15 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void deleteDynamic(DynamicDetailBeanV2 dynamicBean, int position) {
+        if (position == -1) {
+            return;
+        }
         mDynamicDetailBeanV2GreenDao.deleteSingleCache(dynamicBean);
         mRootView.getListDatas().remove(position);
         mRootView.refreshData();
         if (dynamicBean.getId() != null && dynamicBean.getId() != 0) {
             mRepository.deleteDynamic(dynamicBean.getId());
         }
-    }
-
-    /**
-     * send a commment
-     *
-     * @param mCurrentPostion current dynamic position
-     * @param replyToUserId   comment  to who
-     * @param commentContent  comment content
-     */
-    @Override
-    public void sendComment(int mCurrentPostion, long replyToUserId, String commentContent) {
-        DynamicCommentBean creatComment = new DynamicCommentBean();
-        creatComment.setState(DynamicCommentBean.SEND_ING);
-        creatComment.setComment_content(commentContent);
-        creatComment.setFeed_mark(mRootView.getListDatas().get(mCurrentPostion).getFeed_mark());
-        String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
-        creatComment.setComment_mark(Long.parseLong(comment_mark));
-        creatComment.setReply_to_user_id(replyToUserId);
-        if (replyToUserId == 0) { //当回复动态的时候
-            UserInfoBean userInfoBean = new UserInfoBean();
-            userInfoBean.setUser_id(replyToUserId);
-            creatComment.setReplyUser(userInfoBean);
-        } else {
-            creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
-        }
-        creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
-        creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
-        List<DynamicCommentBean> commentBeanList = new ArrayList<>();
-        commentBeanList.add(creatComment);
-        commentBeanList.addAll(mRootView.getListDatas().get(mCurrentPostion).getComments());
-        mRootView.getListDatas().get(mCurrentPostion).getComments().clear();
-        mRootView.getListDatas().get(mCurrentPostion).getComments().addAll(commentBeanList);
-        mRootView.getListDatas().get(mCurrentPostion).setFeed_comment_count(mRootView.getListDatas().get(mCurrentPostion).getFeed_comment_count() + 1);
-        mRootView.refreshData(mCurrentPostion);
-
-        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(mCurrentPostion));
-        mDynamicCommentBeanGreenDao.insertOrReplace(creatComment);
-        mRepository.sendComment(commentContent, mRootView.getListDatas().get(mCurrentPostion)
-                .getId(), replyToUserId, creatComment.getComment_mark());
-
     }
 
     @Override
@@ -501,10 +467,10 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void payNote(final int dynamicPosition, final int imagePosition, int note, final boolean isImage) {
-        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
-        if (userInfo != null && userInfo.getWallet() != null) {
-            balance = userInfo.getWallet().getBalance();
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
         }
         double amount;
         if (isImage) {

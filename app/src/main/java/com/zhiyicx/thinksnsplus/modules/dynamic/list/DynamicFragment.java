@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
@@ -86,7 +87,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.Dynami
  * @Contact master.jungle68@gmail.com
  */
 public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, DynamicDetailBeanV2>
-        implements DynamicNoPullRecycleView.OnCommentStateClickListener,
+        implements DynamicNoPullRecycleView.OnCommentStateClickListener<DynamicCommentBean>,
         InputLimitView.OnSendClickListener, DynamicContract.View, DynamicListCommentView
                 .OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener,
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
@@ -432,7 +433,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 && detailBeanV2.getUser_id().intValue() != AppApplication.getmCurrentLoginAuth()
                 .getUser_id();
         if (canNotLookWords) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float)
+            initImageCenterPopWindow(position, position, (float)
                             detailBeanV2.getPaid_node().getAmount(),
                     detailBeanV2.getPaid_node().getNode(), R.string.buy_pay_words_desc, false);
             return;
@@ -492,7 +493,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
                             .getDrawable(), R.mipmap.icon_256);
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
                 if (AppApplication.getmCurrentLoginAuth() != null && mListDatas.get(dataPosition)
                         .getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
@@ -620,8 +620,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             dynamicPositon, final int commentPosition) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicBean
-                        .SEND_SUCCESS &&dynamicBean
-                        .getComments().get(commentPosition).getPinned()!=1&&
+                        .SEND_SUCCESS && dynamicBean
+                        .getComments().get(commentPosition).getPinned() != 1 &&
                         !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R
                         .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
@@ -711,7 +711,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .item2Str(getString(feedIdIsNull ? R.string.empty :
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
-                    // 付费评论功能 移除
+                // 付费评论功能 移除
 //                .item3Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_comment_toll) : null)// 付费评论功能 移除
 //                .item4Str(BuildConfig.USE_TOLL && !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
                 .item4Str(BuildConfig.USE_TOLL && !feedIdIsNull ? getString(R.string.dynamic_list_top_dynamic) : null)
@@ -805,12 +805,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), amout))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
                     mPayImagePopWindow.hide();

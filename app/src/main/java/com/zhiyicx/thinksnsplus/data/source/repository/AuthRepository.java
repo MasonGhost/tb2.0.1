@@ -3,15 +3,13 @@ package com.zhiyicx.thinksnsplus.data.source.repository;
 import android.app.Application;
 
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithDelay;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
@@ -25,7 +23,9 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
@@ -57,6 +57,8 @@ public class AuthRepository implements IAuthRepository {
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
+    TopDynamicBeanGreenDaoImpl mTopDynamicBeanGreenDao;
+    @Inject
     DynamicDetailBeanGreenDaoImpl mDynamicDetailBeanGreenDao;
     @Inject
     DynamicToolBeanGreenDaoImpl mDynamicToolBeanGreenDao;
@@ -70,7 +72,8 @@ public class AuthRepository implements IAuthRepository {
     FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
     @Inject
     SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
-
+    @Inject
+    GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
     @Inject
     SystemRepository mSystemRepository;
 
@@ -89,7 +92,7 @@ public class AuthRepository implements IAuthRepository {
     @Override
     public AuthBean getAuthBean() {
         if (AppApplication.getmCurrentLoginAuth() == null) {
-            AppApplication.setmCurrentLoginAuth((AuthBean) SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN));
+            AppApplication.setmCurrentLoginAuth(SharePreferenceUtils.getObject(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN));
         }
         return AppApplication.getmCurrentLoginAuth();
     }
@@ -111,12 +114,11 @@ public class AuthRepository implements IAuthRepository {
             return;
         }
         CommonClient commonClient = AppApplication.AppComponentHolder.getAppComponent().serviceManager().getCommonClient();
-        String imei = DeviceUtils.getIMEI(mContext);
-        commonClient.refreshToken(authBean.getRefresh_token(), imei)
+        commonClient.refreshToken(authBean.getToken())
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<AuthBean>() {
+                .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
                         // 获取了最新的token，将这些信息保存起来
@@ -152,9 +154,11 @@ public class AuthRepository implements IAuthRepository {
         MessageDao.getInstance(mContext).delDataBase();// 清空聊天信息、对话
         mDynamicBeanGreenDao.clearTable();
         mDynamicCommentBeanGreenDao.clearTable();
+        mGroupInfoBeanGreenDao.clearTable();
         mDynamicDetailBeanV2GreenDao.clearTable();
         mDynamicDetailBeanGreenDao.clearTable();
         mDynamicToolBeanGreenDao.clearTable();
+        mTopDynamicBeanGreenDao.clearTable();
         mDigedBeanGreenDao.clearTable();
         mCommentedBeanGreenDao.clearTable();
         mFlushMessageBeanGreenDao.clearTable();
@@ -217,15 +221,7 @@ public class AuthRepository implements IAuthRepository {
         if (authBean == null) {// 没有token，不需要刷新
             return false;
         }
-        long createTime = TimeUtils.string2MillisDefaultLocal(authBean.getCreated_at());
-        int expiers = authBean.getExpires();
-        int days = TimeUtils.getifferenceDays((createTime + expiers) * 1000);//表示token过期时间距离现在的时间
-        if (expiers == 0) {// 永不过期,不需要刷新token
-            return false;
-        } else if (days >= -1) {// 表示当前时间是过期时间的前一天,或者已经过期,需要尝试刷新token
-            return true;
-        }
-        return false;
+        return authBean.getToken_is_expired();
     }
 
 }

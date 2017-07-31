@@ -120,23 +120,18 @@ public class TextViewUtils {
         return this;
     }
 
-    // 同步处理，不然访问太频繁 mCanRead 这个值有问题
-    private synchronized void handleTextDisplay() {
-        mTextView.setVisibility(View.INVISIBLE);
+    private void handleTextDisplay() {
+         mTextView.setVisibility(View.INVISIBLE);
         if (!mCanRead) {
             mTextView.setText(getSpannableString(mOriMsg));
             //mTextView.setMovementMethod(LinkMovementMethod.getInstance());// 已经交给上级分发处理
             // dealTextViewClickEvent
-            ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver
-                    .OnGlobalLayoutListener() {
+            mTextView.post(new Runnable() {
                 @Override
-                public void onGlobalLayout() {
-                    ViewTreeObserver viewTreeObserver = mTextView.getViewTreeObserver();
-                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                public void run() {
                     if (mTextView.getLineCount() > mMaxLineNums) {
                         int endOfLastLine = mTextView.getLayout().getLineEnd(mMaxLineNums - 1);
-                        String result = mTextView.getText().subSequence(0, endOfLastLine) + "";
+                        String result = mTextView.getText().subSequence(0, endOfLastLine) + "...";
                         mTextView.setText(getSpannableString(result));
                         mTextView.setVisibility(View.VISIBLE);
                     } else {
@@ -145,7 +140,7 @@ public class TextViewUtils {
                     }
                 }
             });
-            dealTextViewClickEvent();
+            dealTextViewClickEvent(mTextView);
         } else {
             mTextView.setText(mOriMsg);
         }
@@ -183,8 +178,8 @@ public class TextViewUtils {
             mEndPos = temp.length();
         }
         try {
-            spanableInfo.setSpan(new SpanTextClickable(), mStartPos + getLetterLenght(temp)/2,
-                    mEndPos,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spanableInfo.setSpan(new SpanTextClickable(), mStartPos + getLetterLenght(temp) / 2,
+                    mEndPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         } catch (Exception e) {
             spanableInfo.setSpan(new SpanTextClickable(), 0, temp.length(), Spanned
                     .SPAN_INCLUSIVE_EXCLUSIVE);
@@ -193,8 +188,8 @@ public class TextViewUtils {
     }
 
     // clickSpan 的点击事件分发处理
-    private void dealTextViewClickEvent() {
-        mTextView.setOnTouchListener(new View.OnTouchListener() {
+    private void dealTextViewClickEvent(TextView textView) {
+        textView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 CharSequence text = ((TextView) v).getText();

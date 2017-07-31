@@ -4,11 +4,9 @@ package com.zhiyicx.thinksnsplus.modules.login;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.modules.AcitivityTest;
 import com.zhiyicx.thinksnsplus.modules.RxUnitTestTools;
@@ -18,7 +16,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static android.support.test.espresso.action.ViewActions.click;
@@ -84,27 +81,16 @@ public class LoginActivityTest extends AcitivityTest {
      */
     @Test
     public void loginFailure() throws Exception {
-        mLoginClient.login("failure", "12344", "dsafdsa","fdsadfs")
+        mLoginClient.loginV2("dsafdsa", "fdsadfs")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<AuthBean>>() {
-                    @Override
-                    public void call(BaseJson<AuthBean> integerBaseJson) {
-                        LogUtils.d("haha",integerBaseJson.toString());
-                        if (integerBaseJson.isStatus()) {
-                            // 登录成功跳转:当前不可能发生
-                           assertFalse(true);
-                        } else {
-                            // 登录失败
-                            assertFalse(false);
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable e) {
-                        LogUtils.e(e,"exception");
+                .subscribe(integerBaseJson -> {
+                    LogUtils.d("haha", integerBaseJson.toString());
+                    // 登录成功跳转:当前不可能发生
+                    assertFalse(true);
+                }, e -> {
+                        LogUtils.e(e, "exception");
                         assertFalse(false);
-                    }
                 });
     }
 

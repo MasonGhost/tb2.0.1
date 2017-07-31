@@ -104,10 +104,11 @@ public interface MessageContract {
 
         /**
          * 标记通知阅读
+         *
          * @param notificationId
          * @return
          */
-        Observable<Object> makeNotificationReaded( String notificationId);
+        Observable<Object> makeNotificationReaded(String notificationId);
     }
 
     interface Presenter extends ITSListPresenter<MessageItemBean> {
@@ -116,8 +117,6 @@ public interface MessageContract {
         MessageItemBean updateLikeItemData();
 
         MessageItemBean updateReviewItemData();
-
-//        MessageItemBean updateNoticesItemData();
 
         /**
          * 刷新是否显示底部红点
@@ -156,5 +155,10 @@ public interface MessageContract {
          * ts 助手配置
          */
         String checkTShelper(long user_id);
+
+        /**
+         * 检查消息未读数
+         */
+        void checkUnreadNotification();
     }
 }

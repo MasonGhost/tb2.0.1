@@ -1,11 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.password.findpassword;
 
 import android.graphics.drawable.Animatable;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,12 +19,14 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
@@ -32,6 +38,9 @@ import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGH
  * @Contact master.jungle68@gmail.com
  */
 public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presenter> implements FindPasswordContract.View {
+
+    private static final int FIND_BY_PHONE = 1;
+    private static final int FIND_BY_EMAIL = 2;
 
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
@@ -49,13 +58,22 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
     PasswordEditText mEtPassword;
     @BindView(R.id.bt_sure)
     LoadingButton mBtSure;
+    @BindView(R.id.ll_find_by_phone)
+    LinearLayout mLlFindByPhone;
+    @BindView(R.id.et_emial)
+    DeleteEditText mEtEmial;
+    @BindView(R.id.ll_find_by_email)
+    LinearLayout mLlFindByEmail;
 
     private boolean isPhoneEdited;
+    private boolean isEmailEdited;
     private boolean isCodeEdited;
     private boolean isPassEdited;
     private boolean mIsVertifyCodeEnalbe = true;
     private Animatable mVertifyAnimationDrawable;
     private boolean isSureLoading;
+
+    private int mCurrentType = FIND_BY_PHONE;
 
     public static FindPasswordFragment newInstance() {
         return new FindPasswordFragment();
@@ -71,6 +89,10 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         return getString(R.string.find_password);
     }
 
+    @Override
+    protected String setRightTitle() {
+        return getString(R.string.find_password_by_email);
+    }
 
     @Override
     protected int setToolBarBackgroud() {
@@ -84,58 +106,59 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
 
     @Override
     protected void initView(View rootView) {
+        setTitleRightByType();
         mVertifyAnimationDrawable = (Animatable) mIvVertifyLoading.getDrawable();
         // 电话号码观察
         RxTextView.textChanges(mEtPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        if (mIsVertifyCodeEnalbe) {
-                            mBtSendVertifyCode.setEnabled(charSequence.length() == MOBILE_PHONE_NUMBER_LENGHT);
-                        }
-                        isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
+                .subscribe(charSequence -> {
+                    if (mIsVertifyCodeEnalbe) {
+                        mBtSendVertifyCode.setEnabled(charSequence.length() == MOBILE_PHONE_NUMBER_LENGHT);
                     }
+                    isPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
+                });
+        RxTextView.textChanges(mEtEmial)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(charSequence -> {
+                    if (mIsVertifyCodeEnalbe) {
+                        mBtSendVertifyCode.setEnabled(RegexUtils.isEmail(charSequence));
+                    }
+                    isEmailEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
         // 验证码观察
         RxTextView.textChanges(mEtVertifyCode)
                 .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        isCodeEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                    }
+                .subscribe(charSequence -> {
+                    isCodeEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
                 });
         // 密码观察
         RxTextView.textChanges(mEtPassword)
                 .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        isPassEdited = !TextUtils.isEmpty(charSequence.toString());
-                        setConfirmEnable();
-                        Editable editable = mEtPassword.getText();
-                        int len = editable.length();
+                .subscribe(charSequence -> {
+                    isPassEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
+                    Editable editable = mEtPassword.getText();
+                    int len = editable.length();
 
-                        if (len > getResources().getInteger(R.integer.password_maxlenght)) {
-                            int selEndIndex = Selection.getSelectionEnd(editable);
-                            String str = editable.toString();
-                            //截取新字符串
-                            String newStr = str.substring(0, getResources().getInteger(R.integer.password_maxlenght));
-                            mEtPassword.setText(newStr);
-                            editable = mEtPassword.getText();
-                            //新字符串的长度
-                            int newLen = editable.length();
-                            //旧光标位置超过字符串长度
-                            if (selEndIndex > newLen) {
-                                selEndIndex = editable.length();
-                            }
-                            //设置新光标所在的位置
-                            Selection.setSelection(editable, selEndIndex);
-
+                    if (len > getResources().getInteger(R.integer.password_maxlenght)) {
+                        int selEndIndex = Selection.getSelectionEnd(editable);
+                        String str = editable.toString();
+                        //截取新字符串
+                        String newStr = str.substring(0, getResources().getInteger(R.integer.password_maxlenght));
+                        mEtPassword.setText(newStr);
+                        editable = mEtPassword.getText();
+                        //新字符串的长度
+                        int newLen = editable.length();
+                        //旧光标位置超过字符串长度
+                        if (selEndIndex > newLen) {
+                            selEndIndex = editable.length();
                         }
+                        //设置新光标所在的位置
+                        Selection.setSelection(editable, selEndIndex);
+
                     }
                 });
 
@@ -144,23 +167,26 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         RxView.clicks(mBtSendVertifyCode)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
+                .subscribe(aVoid -> {
+                    if (mCurrentType == FIND_BY_PHONE){
                         mPresenter.getVertifyCode(mEtPhone.getText().toString().trim());
+                    } else {
+                        mPresenter.getVerifyCodeByEmail(mEtEmial.getText().toString().trim());
                     }
                 });
         // 点击注册按钮
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
+                .subscribe(aVoid -> {
+                    if (mCurrentType == FIND_BY_PHONE){
                         mPresenter.findPassword(mEtPhone.getText().toString().trim()
                                 , mEtVertifyCode.getText().toString().trim()
-                                , mEtPassword.getText().toString().trim()
-                        );
+                                , mEtPassword.getText().toString().trim());
+                    } else {
+                        mPresenter.findPasswordByEmail(mEtEmial.getText().toString().trim()
+                                , mEtVertifyCode.getText().toString().trim()
+                                , mEtPassword.getText().toString().trim());
                     }
                 });
     }
@@ -215,15 +241,63 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
         isSureLoading = !isEnable;
     }
 
+    @Override
+    protected void setRightClick() {
+        // 重置按钮状态
+        resetUI();
+        // 重置UI
+        setRightText(mCurrentType == FIND_BY_PHONE ?
+                getString(R.string.find_password_by_email) : getString(R.string.find_password_by_phone));
+        // 清空数据
+        clearAllData();
+    }
 
     /**
      * 设置确定按钮是否可点击
      */
     private void setConfirmEnable() {
-        if (isPhoneEdited && isCodeEdited && isPassEdited && !isSureLoading) {
-            mBtSure.setEnabled(true);
+        if (isCodeEdited && isPassEdited && !isSureLoading) {
+            if ((mCurrentType == FIND_BY_PHONE && isPhoneEdited)
+                    || (mCurrentType == FIND_BY_EMAIL && isEmailEdited)){
+                mBtSure.setEnabled(true);
+            } else {
+                mBtSure.setEnabled(false);
+            }
         } else {
             mBtSure.setEnabled(false);
         }
+    }
+
+    /**
+     * 清空界面数据
+     */
+    private void clearAllData() {
+        mEtPhone.setText("");
+        mEtEmial.setText("");
+        mEtPassword.setText("");
+        mEtVertifyCode.setText("");
+        isPhoneEdited = false;
+        isEmailEdited = false;
+        isCodeEdited = false;
+        isPassEdited = false;
+        setConfirmEnable();
+    }
+
+    private void resetUI(){
+        mCurrentType = (mCurrentType == FIND_BY_PHONE) ? FIND_BY_EMAIL : FIND_BY_PHONE;
+        setTitleRightByType();
+        setVertifyCodeLoading(false);
+        setSureBtEnabled(true);
+        setVertifyCodeBtEnabled(false);
+        mIsVertifyCodeEnalbe = true;
+        showMessage("");
+        if (mCurrentType == FIND_BY_EMAIL){
+            mEtEmial.requestFocus();
+        }
+    }
+
+    private void setTitleRightByType(){
+        mLlFindByPhone.setVisibility(mCurrentType == FIND_BY_PHONE ? View.VISIBLE : View.GONE);
+        mLlFindByEmail.setVisibility(mCurrentType == FIND_BY_EMAIL ? View.VISIBLE : View.GONE);
     }
 }

@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -29,6 +30,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     AuthRepository mIAuthRepository;
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    WalletRepository mWalletRepository;
 
     @Inject
     public GuidePresenter(GuideContract.Repository repository, GuideContract.View rootView) {
@@ -47,6 +50,8 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
         if (mIAuthRepository.isLogin()) {
             // TODO: 2017/2/10 刷新 Token 时间，过期前一天刷新
 //        mIAuthRepository.refreshToken();
+            // 钱包信息我也不知道在哪儿获取
+            mWalletRepository.getWalletConfigWhenStart(mIAuthRepository.getAuthBean().getUser_id());
             mRootView.startActivity(HomeActivity.class);
         } else {
             mRootView.startActivity(LoginActivity.class);

@@ -14,26 +14,21 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.daimajia.swipe.util.Attributes;
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.imsdk.core.ChatType;
 import com.zhiyicx.imsdk.entity.MessageStatus;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.functions.Action1;
 
-import static com.zhiyicx.baseproject.utils.ImageUtils.DEFAULT_IMAGE_ID;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -65,24 +60,7 @@ public class MessageSwipeAdapter extends RecyclerSwipeAdapter<MessageSwipeAdapte
     private void setItemData(final MessageListHolder holder, final MessageItemBean messageItemBean, final int position) {
         switch (messageItemBean.getConversation().getType()) {
             case ChatType.CHAT_TYPE_PRIVATE:// 私聊
-                int storegeId;
-                String userIconUrl;
-                try {
-                    storegeId = Integer.parseInt(messageItemBean.getUserInfo().getAvatar());
-                    userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                            , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                            , ImageZipConfig.IMAGE_38_ZIP);
-                } catch (Exception e) {
-                    userIconUrl = messageItemBean.getUserInfo().getAvatar();
-                }
-                AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(mContext, GlideImageConfig.builder()
-                        .url(userIconUrl)
-                        .transformation(new GlideCircleTransform(mContext))
-                        .errorPic(R.drawable.shape_default_image_circle)
-                        .imagerView(holder.mIvHeadpic)
-                        .build()
-                );
+                ImageUtils.loadCircleUserHeadPic(messageItemBean.getUserInfo(), holder.mIvHeadpic);
                 holder.mTvName.setText(messageItemBean.getUserInfo().getName());     // 响应事件
                 setUserInfoClick(holder.mTvName, messageItemBean.getUserInfo());
                 setUserInfoClick(holder.mIvHeadpic, messageItemBean.getUserInfo());

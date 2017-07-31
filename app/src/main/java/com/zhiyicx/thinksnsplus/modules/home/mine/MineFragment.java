@@ -11,15 +11,10 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -35,6 +30,7 @@ import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import javax.inject.Inject;
 
@@ -101,6 +97,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     protected void initView(View rootView) {
+        mBtRanking.setVisibility(View.GONE);// V2 点赞排行榜还没有,暂时隐藏
     }
 
     @Override
@@ -115,7 +112,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && mPresenter != null) {
-            mPresenter.getUserInfoFromDB();
+            mPresenter.updateUserInfo();
         }
     }
 
@@ -135,10 +132,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         return 0;
     }
 
-    @Override
-    protected int setRightImg() {
-        return ico_me_message_normal;
-    }
+//    @Override
+//    protected int setRightImg() {
+//        return ico_me_message_normal;
+//    }
 
     @Override
     protected boolean showToolBarDivider() {
@@ -236,43 +233,22 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         this.mUserInfoBean = userInfoBean;
         // 设置用户头像
-        ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
-        int storegeId;
-        String userIconUrl;
-        try {
-            storegeId = Integer.parseInt(mUserInfoBean.getAvatar());
-            userIconUrl = ImageUtils.imagePathConvertV2(storegeId
-                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , getResources().getDimensionPixelOffset(R.dimen.headpic_for_list)
-                    , ImageZipConfig.IMAGE_100_ZIP);
-        } catch (Exception e) {
-            userIconUrl = mUserInfoBean.getAvatar();
-        }
-        imageLoader.loadImage(getContext(), GlideImageConfig.builder()
-                .transformation(new GlideCircleTransform(getContext()))
-                .imagerView(mIvHeadIcon)
-                .url(userIconUrl)
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .errorPic(R.mipmap.pic_default_portrait1)
-                .build());
-
-
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean,mIvHeadIcon);
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
-        mTvUserSignature.setText(userInfoBean.getIntro());
+        mTvUserSignature.setText(TextUtils.isEmpty(userInfoBean.getIntro()) ? getString(R.string.intro_default) : userInfoBean.getIntro());
         // 设置粉丝数
-        String followedCount = TextUtils.isEmpty(userInfoBean.getFollowed_count()) ? "0" : userInfoBean.getFollowed_count();
+        String followedCount = String.valueOf(userInfoBean.getExtra().getFollowers_count());
         mTvFansCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followedCount)));
         // 设置关注数
-        String followingCount = TextUtils.isEmpty(userInfoBean.getFollowing_count()) ? "0" : userInfoBean.getFollowing_count();
+        String followingCount = String.valueOf(userInfoBean.getExtra().getFollowings_count());
         mTvFollowCount.setText(ConvertUtils.numberConvert(Integer.parseInt(followingCount)));
         double myMoney = 0;
         if (userInfoBean.getWallet() != null) {
-
             myMoney = userInfoBean.getWallet().getBalance();
         }
-        mBtWallet.setRightText(getString(R.string.money_format_with_unit, myMoney));
+        mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrencyFen2Yuan(myMoney)));
 
     }
 

@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic;
 
 import android.os.Bundle;
 
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -110,7 +111,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
     }
 
     @Override
-    public float getBalance() {
+    public double getBalance() {
         AuthBean authBean = AppApplication.getmCurrentLoginAuth();
         if (authBean != null) {
             WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
@@ -118,7 +119,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
                 return 0;
             }
             int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-            return (float) walletBean.getBalance() * (ratio / MONEY_UNIT);
+            return PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
         }
         return 0;
     }

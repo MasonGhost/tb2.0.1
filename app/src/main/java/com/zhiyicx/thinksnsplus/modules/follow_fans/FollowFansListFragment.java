@@ -6,7 +6,7 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import javax.inject.Inject;
  * @contact email:450127106@qq.com
  */
 
-public class FollowFansListFragment extends TSListFragment<FollowFansListContract.Presenter, FollowFansBean> implements FollowFansListContract.View {
+public class FollowFansListFragment extends TSListFragment<FollowFansListContract.Presenter, UserInfoBean> implements FollowFansListContract.View {
     // 当前页面是关注页面还是粉丝页面:pageType
     public static final int FANS_FRAGMENT_PAGE = 0;
     public static final int FOLLOW_FRAGMENT_PAGE = 1;
@@ -38,7 +38,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     private boolean mIsVisibleToUser;//页面显示给用户
 
     @Override
-    protected CommonAdapter<FollowFansBean> getAdapter() {
+    protected CommonAdapter<UserInfoBean> getAdapter() {
         return new FollowFansListAdapter(getContext(), R.layout.item_follow_fans_list, mListDatas, pageType, mPresenter);
     }
 
@@ -104,7 +104,7 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     }
 
     @Override
-    protected List<FollowFansBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    protected List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
         return mPresenter.requestCacheData(maxId, isLoadMore, userId, pageType);
     }
 
@@ -116,14 +116,9 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
 
     @Override
     public void upDateFollowFansState(int index) {
-        if (getPageType() == FOLLOW_FRAGMENT_PAGE && mListDatas.get(index).getOrigin_follow_status() == 0) { // 关注页面,并且取消了关注则删除该条 item
+        if (getPageType() == FOLLOW_FRAGMENT_PAGE && !mListDatas.get(index).isFollowing()) { // 关注页面,并且取消了关注则删除该条 item
             mListDatas.remove(index);
             refreshData();
-//            for (int i = 0; i < mListDatas.size(); i++) {
-//                if(mListDatas.get(i).getOrigin_follow_status() == 0){
-//
-//                }
-//            }
         } else {
             refreshData(index);
         }
@@ -132,11 +127,6 @@ public class FollowFansListFragment extends TSListFragment<FollowFansListContrac
     @Override
     public void upDateFollowFansState() {
         refreshData();
-    }
-
-    @Override
-    public List<FollowFansBean> getFollowListData() {
-        return mListDatas;
     }
 
     @Override

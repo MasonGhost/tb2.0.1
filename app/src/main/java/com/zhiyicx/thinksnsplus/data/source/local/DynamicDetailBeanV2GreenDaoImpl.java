@@ -5,8 +5,6 @@ import android.app.Application;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2Dao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
@@ -39,6 +37,9 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
     @Override
     public void saveMultiData(List<DynamicDetailBeanV2> multiData) {
 
+    }
+    public long  getCounts(){
+      return   getRDaoSession().getDynamicDetailBeanV2Dao().count();
     }
 
     @Override
@@ -113,11 +114,13 @@ public class DynamicDetailBeanV2GreenDaoImpl extends CommonCacheImpl<DynamicDeta
 
                 break;
             case ApiConfig.DYNAMIC_TYPE_NEW:
-                datas = mDynamicDetailBeanV2Dao.queryBuilder()
-                        .where(DynamicDetailBeanV2Dao.Properties.Id.isNotNull(), DynamicDetailBeanV2Dao.Properties.User_id.notEq(AppApplication.getmCurrentLoginAuth().getUser_id()))
-                        .whereOr(DynamicDetailBeanV2Dao.Properties.Hot_creat_time.isNull(), DynamicDetailBeanV2Dao.Properties.Hot_creat_time.eq(0), DynamicDetailBeanV2Dao.Properties.IsFollowed.eq(false))
-                        .list();
-                mDynamicDetailBeanV2Dao.deleteInTx(datas);
+                if (AppApplication.getmCurrentLoginAuth() != null) {
+                    datas = mDynamicDetailBeanV2Dao.queryBuilder()
+                            .where(DynamicDetailBeanV2Dao.Properties.Id.isNotNull(), DynamicDetailBeanV2Dao.Properties.User_id.notEq(AppApplication.getmCurrentLoginAuth().getUser_id()))
+                            .whereOr(DynamicDetailBeanV2Dao.Properties.Hot_creat_time.isNull(), DynamicDetailBeanV2Dao.Properties.Hot_creat_time.eq(0), DynamicDetailBeanV2Dao.Properties.IsFollowed.eq(false))
+                            .list();
+                    mDynamicDetailBeanV2Dao.deleteInTx(datas);
+                }
                 return;
             case ApiConfig.DYNAMIC_TYPE_MY_COLLECTION:
                 List<DynamicDetailBeanV2> beanV2List;

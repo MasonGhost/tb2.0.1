@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.gallery;
 
 import android.os.Bundle;
 
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
@@ -10,8 +11,10 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.ICommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
@@ -37,6 +40,8 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
     public GalleryPresenter(GalleryConstract.View rootView) {
@@ -55,10 +60,10 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
 
     @Override
     public void payNote(final Long feed_id, final int imagePosition, int note) {
-        UserInfoBean userInfo = mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
-        if (userInfo != null && userInfo.getWallet() != null) {
-            balance = userInfo.getWallet().getBalance();
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
         }
         DynamicDetailBeanV2 dynamicDetail= mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
         double amount =dynamicDetail.getImages().get(imagePosition).getAmount();

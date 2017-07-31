@@ -12,8 +12,7 @@ public class DigedBeanTest extends AbstractDaoTestLongPk<DigedBeanDao, DigedBean
     protected DigedBean createEntity(Long key) {
         DigedBean entity = new DigedBean();
         entity.setId(key);
-        entity.setDigg_id(12);
-        entity.setSource_cover(2);
+        entity.setSource_cover(2L);
         return entity;
     }
 

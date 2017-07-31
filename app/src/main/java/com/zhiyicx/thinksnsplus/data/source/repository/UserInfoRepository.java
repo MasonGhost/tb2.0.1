@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
-import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
@@ -37,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -97,7 +97,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson> changeUserInfo(HashMap<String, String> userInfos) {
+    public Observable<Object> changeUserInfo(HashMap<String, Object> userInfos) {
         return mUserInfoClient.changeUserInfo(userInfos);
     }
 
@@ -121,7 +121,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
-        return getBatchSpecifiedUserInfo(userids)
+        return getUserInfoByIds(userids)
                 .subscribeOn(Schedulers.io())
                 .map(userInfoBeen -> {
                     BaseJson<List<UserInfoBean>> baseJson = new BaseJson<>();
@@ -167,8 +167,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(String user_ids) {
-        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids)
+    public Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids) {
+        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, null, null, null, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit) {
+        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, name, since, order, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -216,7 +223,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
 
-        return mUserInfoClient.getBatchSpecifiedUserInfo(userids)
+        return getUserInfoByIds(userids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(listBaseJson -> {
@@ -253,47 +260,40 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @param followFansBean
      */
     @Override
-    public void handleFollow(FollowFansBean followFansBean) {
+    public void handleFollow(UserInfoBean followFansBean) {
         BackgroundRequestTaskBean backgroundRequestTaskBean = null;
-        UserInfoBean mineUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
-        if (followFansBean.getOrigin_follow_status() == FollowFansBean.UNFOLLOWED_STATE) {
+        if (!followFansBean.isFollower()) {
             // 当前未关注，进行关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.IFOLLOWED_STATE);
+            followFansBean.setFollower(true);
             EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_FOLLOW_USER);
-            if (!TextUtils.isEmpty(mineUserInfo.getFollowing_count())) {
-                mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) + 1));
-            } else {
-                mineUserInfo.setFollowing_count(String.valueOf(1));
-            }
+            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.PUT);
+            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_FOLLOW_USER_FORMART, followFansBean.getUser_id()));
+            followFansBean.getExtra().setFollowings_count(followFansBean.getExtra().getFollowings_count() + 1);
 
         } else {
             // 已关注，取消关注
-            followFansBean.setOrigin_follow_status(FollowFansBean.UNFOLLOWED_STATE);
+            followFansBean.setFollower(false);
             EventBus.getDefault().post(followFansBean, EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW);
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            backgroundRequestTaskBean.setPath(ApiConfig.APP_PATH_CANCEL_FOLLOW_USER);
-            try {
-                mineUserInfo.setFollowing_count(String.valueOf(Integer.valueOf(mineUserInfo.getFollowing_count()) - 1));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART,followFansBean.getUser_id()));
+            if (followFansBean.getExtra().getFollowings_count() > 0)
+                followFansBean.getExtra().setFollowings_count(followFansBean.getExtra().getFollowings_count() - 1);
 
         }
+
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user_id", followFansBean.getTargetUserId() + "");
+        hashMap.put("user_id", followFansBean.getUser_id() + "");
         backgroundRequestTaskBean.setParams(hashMap);
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
+        BackgroundTaskManager.getInstance(mContext).
+        addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库,关注状态
-        mFollowFansBeanGreenDao.insertOrReplace(followFansBean);
-        mUserInfoBeanGreenDao.insertOrReplace(mineUserInfo);
+        mUserInfoBeanGreenDao.insertOrReplace(followFansBean);
         // 更新动态关注状态
-        mDynamicBeanGreenDao.updateFollowStateByUserId(followFansBean.getTargetUserId(), followFansBean.getOrigin_follow_status() != FollowFansBean.UNFOLLOWED_STATE);
+        mDynamicBeanGreenDao.updateFollowStateByUserId(followFansBean.getUser_id(), followFansBean.isFollower());
 
     }
 
@@ -393,6 +393,9 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .flatMap(new Func1<List<CommentedBean>, Observable<List<CommentedBean>>>() {
                     @Override
                     public Observable<List<CommentedBean>> call(final List<CommentedBean> data) {
+                        if (data.isEmpty()) {
+                            return Observable.just(data);
+                        }
                         List<Object> userIds = new ArrayList();
                         for (CommentedBean commentedBean : data) {
                             userIds.add(commentedBean.getUser_id());

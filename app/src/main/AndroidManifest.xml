@@ -72,6 +72,10 @@
             android:name=".modules.password.changepassword.ChangePasswordActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".modules.settings.account.AccountManagementActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.settings.bind.AccountBindActivity"
+                android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.password.findpassword.FindPasswordActivity"
             android:screenOrientation="portrait">
@@ -201,6 +205,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
+
+        <!--圈子相关页面-->
+        <activity
+                android:name=".modules.channel.group_dynamic.GroupDynamicDetailActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".modules.channel.group_dynamic.dig_list.GroupDigListActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize"/>
 
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"

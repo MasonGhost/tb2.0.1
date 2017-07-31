@@ -16,9 +16,8 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
@@ -32,7 +31,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -40,6 +39,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailComm
 import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -70,7 +70,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.Dynami
 public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.Presenter, DynamicCommentBean>
         implements DynamicDetailContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
         OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener, DynamicDetailHeader.OnImageClickLisenter,
-        TextViewUtils.OnSpanTextClickListener{
+        TextViewUtils.OnSpanTextClickListener {
     public static final String DYNAMIC_DETAIL_DATA = "dynamic_detail_data";
     public static final String DYNAMIC_LIST_NEED_REFRESH = "dynamic_list_need_refresh";
     public static final String DYNAMIC_DETAIL_DATA_TYPE = "dynamic_detail_data_type";
@@ -103,7 +103,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     View mToolbarTopBlank;
 
     private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
-    private FollowFansBean mFollowFansBean;// 用户关注状态
     private boolean mIsLookMore = false;
     private DynamicDetailHeader mDynamicDetailHeader;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -160,10 +159,10 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         super.setLoadingViewHolderClick();
         if (mDynamicBean == null) {
             mPresenter.getCurrentDynamicDetail(getArguments().getLong(MessageCommentAdapter
-                    .BUNDLE_SOURCE_ID),0);
+                    .BUNDLE_SOURCE_ID), 0);
         } else {
             mPresenter.getDetailAll(mDynamicBean.getId(), DEFAULT_PAGE_MAX_ID, mDynamicBean
-                    .getUser_id() + "",mDynamicBean.getTop());
+                    .getUser_id() + "", mDynamicBean.getTop());
         }
     }
 
@@ -194,9 +193,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mFollowFansBean != null) {
-                        mPresenter.handleFollowUser(mFollowFansBean);
-                    }
+                        mPresenter.handleFollowUser(mDynamicBean.getUserInfoBean());
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -238,9 +235,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mDynamicBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
             if (mDynamicBean == null) {
                 mPresenter.getCurrentDynamicDetail(bundle.getLong(MessageCommentAdapter
-                        .BUNDLE_SOURCE_ID),0);
+                        .BUNDLE_SOURCE_ID), 0);
             } else {
-                mPresenter.getCurrentDynamicDetail(mDynamicBean.getId(),mDynamicBean.getTop());
+                mPresenter.getCurrentDynamicDetail(mDynamicBean.getId(), mDynamicBean.getTop());
             }
         }
     }
@@ -254,7 +251,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         }
         if (mDynamicBean.getDigUserInfoList() == null) {
             mPresenter.getDetailAll(mDynamicBean.getId(), DEFAULT_PAGE_MAX_ID, mDynamicBean
-                    .getUser_id() + "",mDynamicBean.getTop());
+                    .getUser_id() + "", mDynamicBean.getTop());
         } else {
             allDataReady();
         }
@@ -270,7 +267,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     protected MultiItemTypeAdapter<DynamicCommentBean> getAdapter() {
-        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
+        MultiItemTypeAdapter<DynamicCommentBean> adapter = new MultiItemTypeAdapter<>(getContext(), mListDatas);
         DynamicDetailCommentItem dynamicDetailCommentItem = new DynamicDetailCommentItem();
         dynamicDetailCommentItem.setOnUserInfoClickListener(this);
         dynamicDetailCommentItem.setOnCommentTextClickListener(this);
@@ -283,7 +280,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
 
     @Override
     public void onImageClick(int iamgePosition, double amount, int note) {
-        initImageCenterPopWindow(iamgePosition, (float) amount, note,R.string.buy_pay_words_desc,true);
+        initImageCenterPopWindow(iamgePosition, (float) amount, note, R.string.buy_pay_words_desc, true);
     }
 
     public static DynamicDetailFragment initFragment(Bundle bundle) {
@@ -301,12 +298,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
         final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-        int headImageId = dynamicBean.getUserInfoBean().getAvatar().isEmpty() ? -1 : Integer.parseInt(dynamicBean.getUserInfoBean().getAvatar());
         Glide.with(getContext())
-                .load(ImageUtils.imagePathConvertV2(headImageId
-                        , headIconWidth
-                        , headIconWidth
-                        , ImageZipConfig.IMAGE_26_ZIP))
+                .load(ImageUtils.getUserAvatar(dynamicBean.getUserInfoBean()))
                 .bitmapTransform(new GlideCircleTransform(getContext()))
                 .placeholder(R.mipmap.pic_default_portrait1)
                 .error(R.mipmap.pic_default_portrait1)
@@ -330,7 +323,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void setDigHeadIcon(List<FollowFansBean> userInfoBeanList) {
+    public void setDigHeadIcon(List<DynamicDigListBean> userInfoBeanList) {
         mDynamicBean.setDigUserInfoList(userInfoBeanList);
         updateCommentCountAndDig();
     }
@@ -342,14 +335,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
-    public void upDateFollowFansState(int followState) {
-        setToolBarRightFollowState(followState);
-    }
-
-    @Override
-    public void initFollowState(FollowFansBean mFollowFansBean) {
-        this.mFollowFansBean = mFollowFansBean;
-        setToolBarRightFollowState(mFollowFansBean.getFollowState());
+    public void upDateFollowFansState(UserInfoBean userInfoBean) {
+        setToolBarRightFollowState(userInfoBean);
     }
 
     @Override
@@ -432,8 +419,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mTvToolbarRight.setVisibility(View.GONE);
         } else {
             // 获取用户关注状态
-            mPresenter.getUserFollowState(user_id + "");
             mTvToolbarRight.setVisibility(View.VISIBLE);
+            setToolBarRightFollowState(mDynamicBean.getUserInfoBean());
         }
     }
 
@@ -515,19 +502,14 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     /**
      * 设置toolBar上面的关注状态
      */
-    private void setToolBarRightFollowState(int state) {
+    private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
         mTvToolbarRight.setVisibility(View.VISIBLE);
-        switch (state) {
-            case FollowFansBean.UNFOLLOWED_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
-                break;
-            case FollowFansBean.IFOLLOWED_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
-                break;
-            case FollowFansBean.FOLLOWED_EACHOTHER_STATE:
-                mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
-                break;
-            default:
+        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
+        }else if(userInfoBean1.isFollower()){
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
+        }else {
+            mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
         }
     }
 
@@ -667,11 +649,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     /**
-     * @param imagePosition   图片位置
-     * @param amout           费用
-     * @param note            支付节点
-     * @param strRes          文字说明
-     * @param isImage         是否是图片收费
+     * @param imagePosition 图片位置
+     * @param amout         费用
+     * @param note          支付节点
+     * @param strRes        文字说明
+     * @param isImage       是否是图片收费
      */
     private void initImageCenterPopWindow(final int imagePosition, float amout,
                                           final int note, int strRes, final boolean isImage) {
@@ -689,12 +671,12 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(strRes) + getString(R
-                        .string.buy_pay_member), amout))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), amout))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(imagePosition, note, isImage);
                     mPayImagePopWindow.hide();
