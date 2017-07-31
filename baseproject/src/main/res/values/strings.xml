@@ -74,11 +74,15 @@
     <string name="register_by_email">邮箱注册</string>
     <string name="find_password_by_phone">手机找回</string>
     <string name="find_password_by_email">邮箱找回</string>
+    <string name="login_by_third_platform">社交账号登陆</string>
     <string name="third_platform_complete_account">完善资料</string>
     <string name="third_platform_bind_old_account">绑定已有账号</string>
     <string name="third_platform_bind_account">绑定账号</string>
     <string name="third_platform_exist_account">已有账号</string>
     <string name="third_platform_bind_confirm">确认绑定</string>
+    <string name="third_qq">QQ</string>
+    <string name="third_weibo">微博</string>
+    <string name="third_wechat">微信</string>
 
     <!-- 拍照相册相关 -->
     <string name="choose_from_photo">从相册中选择</string>
