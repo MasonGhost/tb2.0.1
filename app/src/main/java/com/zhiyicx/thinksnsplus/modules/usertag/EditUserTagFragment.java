@@ -142,7 +142,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                mPresenter.deleteTag(mChoosedTags.get(position).getId(),position);
+                mPresenter.deleteTag(mChoosedTags.get(position).getId(), position);
 
             }
 
@@ -234,6 +234,10 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         if (mCategoryTags.get(categoryPosition).getTags().get(tagPosition).isMine_has()) {
             return;
         }
+        if (mChoosedTags.size() >= mMaxChooseNums) {
+            showSnackErrorMessage(getString(R.string.user_tag_choosed_tag_format_tip, mMaxChooseNums));
+            return;
+        }
         mPresenter.addTags(mCategoryTags.get(categoryPosition).getTags().get(tagPosition).getId(), categoryPosition, tagPosition);
 
     }
@@ -250,7 +254,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     @Override
     public void deleteTagSuccess(int position) {
         mChoosedTags.get(position).setMine_has(false);
-        mPresenter.handleCategoryTagsClick(  mChoosedTags.get(position));
+        mPresenter.handleCategoryTagsClick(mChoosedTags.get(position));
         mChoosedTagAdapter.removeItem(position);
         mTagClassAdapter.notifyAllSectionsDataSetChanged();
 

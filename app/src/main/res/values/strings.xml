@@ -325,5 +325,6 @@
     <string name="save">保存</string>
     <string name="user_tag_choose_tag">选择标签</string>
     <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已经选择%2$d个标签</string>
+    <string name="user_tag_choosed_tag_format_tip">已经选择%1$d个标签</string>
 
 </resources>
