@@ -40,6 +40,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_STATUS;
@@ -246,6 +247,13 @@ public interface CommonClient {
      */
     @DELETE(APP_PATH_DELETE_STORAGE_TASK)
     Observable<BaseJson> deleteStorageTask(@Path("storage_task_id") String storage_task_id, @Query("requestState") String requestState);
+
+
+    /**
+     * 获取所有标签
+     */
+    @DELETE(APP_PATH_GET_ALL_TAGS)
+    Observable<BaseJson> getAllTags();
 
 
     /*******************************************  后台任务处理  *********************************************/
