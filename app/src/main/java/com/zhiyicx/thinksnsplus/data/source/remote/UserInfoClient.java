@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +18,14 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -212,4 +215,44 @@ public interface UserInfoClient {
      */
     @POST(ApiConfig.APP_PATH_UPDATE_USER_BG)
     Observable<Object> updateBg(@Body MultipartBody multipartBody);
+
+    /*******************************************  标签  *********************************************/
+
+
+    /**
+     * 获取一个用户的标签
+     *
+     * @param user_id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_USER_TAGS)
+    Observable<List<UserTagBean>> getUserTags(@Path("user_id") long user_id);
+
+    /**
+     * 获取当前认证用户的标签
+     *
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_CURRENT_USER_TAGS)
+    Observable<List<UserTagBean>> getCurrentUserTags();
+
+    /**
+     * 当前认证用户附加一个标签
+     *
+     * @param tag_id
+     * @return
+     */
+    @PUT(ApiConfig.APP_PATH_CURRENT_USER_ADD_TAGS)
+    Observable<Object> addTag(@Path("tag_id") long tag_id);
+
+    /**
+     * 当前认证用户分离一个标签
+     *
+     * @param tag_id
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_CURRENT_USER_DELETE_TAGS)
+    Observable<Object> deleteTag(@Path("tag_id") long tag_id);
+
+
 }

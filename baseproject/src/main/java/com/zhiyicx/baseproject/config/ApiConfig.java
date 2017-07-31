@@ -81,6 +81,14 @@ public class ApiConfig {
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     public static final String APP_PATH_UPDATE_USER_AVATAR = "api/" + API_VERSION_2 + "/user/avatar";// 修改用户头像
     public static final String APP_PATH_UPDATE_USER_BG = "api/" + API_VERSION_2 + "/user/bg";// 修改用户背景
+
+
+    // 用户标签
+    public static final String APP_PATH_GET_USER_TAGS = "api/" + API_VERSION_2 + "/users/{user_id}/tags";// 获取一个用户的标签
+    public static final String APP_PATH_GET_CURRENT_USER_TAGS = "api/" + API_VERSION_2 + "/user/tags";// 获取当前认证用户的标签
+    public static final String APP_PATH_CURRENT_USER_ADD_TAGS = "api/" + API_VERSION_2 + "/user/tags/{tag_id}";// 当前认证用户附加一个标签
+    public static final String APP_PATH_CURRENT_USER_DELETE_TAGS = "api/" + API_VERSION_2 + "/user/tags/{tag_id}";// 当前认证用户分离一个标签
+
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
      *
@@ -334,6 +342,7 @@ public class ApiConfig {
 
     // 标签
     public static final String APP_PATH_GET_ALL_TAGS = "api/" + API_VERSION_2 + "/tags";// 获取全部标签
+
 
     /**
      * 分享相关

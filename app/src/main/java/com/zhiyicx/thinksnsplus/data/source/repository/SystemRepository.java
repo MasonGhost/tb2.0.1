@@ -27,7 +27,9 @@ import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.TagCategoryBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 
@@ -40,6 +42,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_INTERVAL_TIME;
@@ -58,6 +61,12 @@ public class SystemRepository implements ISystemRepository {
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     protected SystemConversationBeanGreenDaoImpl mSystemConversationBeanGreenDao;
+
+    @Inject
+    protected TagCategoryBeanGreenDaoImpl mTagCategoryBeanGreenDao;
+
+    @Inject
+    protected UserTagBeanGreenDaoImpl mUserTagBeanGreenDao;
 
     @Inject
     protected ChatRepository mChatRepository;
@@ -369,6 +378,7 @@ public class SystemRepository implements ISystemRepository {
         return mCommonClient.getAllTags()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+
     }
 
     /**
@@ -377,7 +387,7 @@ public class SystemRepository implements ISystemRepository {
      * @param list 对话信息
      */
     private void handleTsHelperUserInfo(List<SystemConversationBean> list) {
-        UserInfoBean myUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(Long.valueOf(AppApplication.getmCurrentLoginAuth().getUser_id()));
+        UserInfoBean myUserInfo = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
         UserInfoBean tsHleper = new UserInfoBean();
         tsHleper.setName(mContext.getString(R.string.ts_helper));
         for (SystemConversationBean systemConversationBean : list) {
