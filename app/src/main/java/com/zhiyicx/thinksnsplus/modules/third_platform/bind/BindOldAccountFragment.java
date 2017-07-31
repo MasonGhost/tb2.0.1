@@ -116,6 +116,11 @@ public class BindOldAccountFragment extends TSFragment<BindOldAccountContract.Pr
         return true;
     }
 
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
     /**
      * 设置登录按钮是否可点击
      */

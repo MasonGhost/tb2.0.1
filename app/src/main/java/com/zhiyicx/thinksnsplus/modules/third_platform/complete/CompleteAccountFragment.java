@@ -74,6 +74,11 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     public void showErrorTips(String message) {
         if (TextUtils.isEmpty(message)) {
             mTvErrorTip.setVisibility(View.INVISIBLE);
