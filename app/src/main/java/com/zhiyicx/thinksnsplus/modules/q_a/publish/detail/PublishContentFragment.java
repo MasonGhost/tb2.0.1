@@ -3,14 +3,13 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
@@ -18,21 +17,21 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
-import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
+import jp.wasabeef.richeditor.RichEditor;
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * @Author Jliuer
@@ -43,8 +42,9 @@ import rx.functions.Action1;
 public class PublishContentFragment extends TSFragment<PublishContentConstact.Presenter> implements
         PublishContentConstact.View, PhotoSelectorImpl.IPhotoBackListener {
 
-    @BindView(R.id.et_qusetion_content)
-    PictureAndTextEditorView mEtQusetionContent;
+
+    @BindView(R.id.riche_test)
+    RichTextEditor mRicheTest;
     @BindView(R.id.v_horizontal_line)
     View mVHorizontalLine;
     @BindView(R.id.im_arrowc)
@@ -53,6 +53,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     ImageView mImPic;
     @BindView(R.id.im_setting)
     ImageView mImSetting;
+    Unbinder unbinder;
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private SpannableStringBuilder mSpannableStringBuilder;
@@ -108,7 +109,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         if (photoList.isEmpty()) {
             return;
         }
-        String path=photoList.get(0).getImgUrl();
+        String path = photoList.get(0).getImgUrl();
         // 加载本地图片
         Glide.with(getActivity())
                 .load(path)
@@ -117,21 +118,21 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         int w, h;
-                        w = mEtQusetionContent.getWidth();
+                        w = mRicheTest.getWidth();
                         h = w * resource.getHeight() / resource.getWidth();
-                        mEtQusetionContent.insertBitmap(path,w,h);
+                        mRicheTest.insertImage(resource,path);
                     }
                 });
     }
 
-    private void test(){
+    private void test() {
         Observable
                 .interval(2, TimeUnit.SECONDS)
                 .subscribe(aLong -> {
-            View rootview = getActivity().getWindow().getDecorView();
-            View aaa = rootview.findFocus();
-            LogUtils.i(aaa.getClass().getSimpleName());
-        });
+                    View rootview = getActivity().getWindow().getDecorView();
+                    View aaa = rootview.findFocus();
+                    LogUtils.i(aaa.getClass().getSimpleName());
+                });
     }
 
     @Override
@@ -141,7 +142,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_publish_content;
+        return R.layout.fragment_publish_content_test;
     }
 
     /**
@@ -181,4 +182,17 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         initPhotoPopupWindow();
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }
