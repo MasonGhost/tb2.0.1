@@ -5,6 +5,11 @@ import android.os.Parcelable;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.ToMany;
+
 import java.util.List;
 
 /**
@@ -13,6 +18,7 @@ import java.util.List;
  * @Date 2017/7/31
  * @Contact master.jungle68@gmail.com
  */
+@Entity
 public class TagCategoryBean extends CacheBean implements Parcelable {
     /**
      * {
@@ -27,9 +33,10 @@ public class TagCategoryBean extends CacheBean implements Parcelable {
      * ]
      * }
      */
-
+    @Id
     private Long id;
     private String name;
+    @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "tag_category_id")})
     private List<UserTagBean> tags;
 
     public Long getId() {

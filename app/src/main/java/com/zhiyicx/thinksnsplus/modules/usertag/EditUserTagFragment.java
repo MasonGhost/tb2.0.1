@@ -32,10 +32,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View {
+public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View, TagClassAdapter.OnItemClickListener {
     private static final int SPAN_SIZE = 3;
-    private static final int SECTIONS = 10;
-    private static final int SECTION_ITEMS = 5;
 
     @BindView(R.id.tv_choosed_tag_tip)
     TextView mTvChoosedTagTip;
@@ -196,6 +194,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         });
         mRvTagClass.setLayoutManager(mTagClassLayoutManager);
         mTagClassAdapter = new TagClassAdapter(mCategoryTags);
+        mTagClassAdapter.setOnItemClickListener(this);
         mRvTagClass.setAdapter(mTagClassAdapter);
 
     }
@@ -227,7 +226,17 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
      */
     @Override
     public void updateTags(List<TagCategoryBean> tagCategoryBeanList) {
-        this.mCategoryTags = tagCategoryBeanList;
+        if (tagCategoryBeanList == null) {
+            return;
+        }
+        mCategoryTags.clear();
+        this.mCategoryTags.addAll(tagCategoryBeanList);
         mTagClassAdapter.notifyAllSectionsDataSetChanged();
+    }
+
+
+    @Override
+    public void onItemClick(int categoryPosition, int tagPosition) {
+
     }
 }
