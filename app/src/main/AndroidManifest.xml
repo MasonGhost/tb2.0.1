@@ -91,6 +91,16 @@
                 <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
+        <!--第三方登陆相关-->
+        <activity
+                android:name=".modules.third_platform.choose_bind.ChooseBindActivity"
+                android:screenOrientation="portrait"/>
+        <activity
+                android:name=".modules.third_platform.bind.BindOldAccountActivity"
+                android:screenOrientation="portrait"/>
+        <activity
+                android:name=".modules.third_platform.complete.CompleteAccountActivity"
+                android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.chat.ChatActivity"
             android:launchMode="singleTask"

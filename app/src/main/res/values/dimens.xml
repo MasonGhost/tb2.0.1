@@ -61,4 +61,7 @@
     <dimen name="feed_back_item_height">45dp</dimen>
 
     <dimen name="drop_offset_70">85dp</dimen>
+
+    <!--第三方登陆选择框高度-->
+    <dimen name="pop_choose_third_type_height">50dp</dimen>
 </resources>
