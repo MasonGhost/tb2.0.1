@@ -4,6 +4,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
+import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 
 import java.util.List;
 
@@ -71,6 +72,10 @@ public interface ISystemRepository {
      */
     void creatTsHelperConversation();
 
-
+    /**
+     * 获取全部标签
+     * @return
+     */
+    Observable<List<TagCategoryBean>> getAllTags();
 
 }

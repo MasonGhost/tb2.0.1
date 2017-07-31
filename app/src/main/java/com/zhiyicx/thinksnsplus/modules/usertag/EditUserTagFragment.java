@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridLayoutManager;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -23,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe
@@ -133,25 +136,19 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                 RxView.clicks(viewHolder.itemView)
                         .throttleFirst(1, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object o) {
-                                if (mOnItemClickListener != null) {
-                                    int position = viewHolder.getAdapterPosition();
-                                    mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                                }
+                        .subscribe(o -> {
+                            if (mOnItemClickListener != null) {
+                                int position = viewHolder.getAdapterPosition();
+                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
                             }
                         });
 
-                viewHolder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        if (mOnItemClickListener != null) {
-                            int position = viewHolder.getAdapterPosition();
-                            return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                        }
-                        return true;
+                viewHolder.getConvertView().setOnLongClickListener(v -> {
+                    if (mOnItemClickListener != null) {
+                        int position = viewHolder.getAdapterPosition();
+                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
                     }
+                    return true;
                 });
             }
         };
@@ -202,18 +199,14 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     }
 
     private void initListener() {
-//
-//        // 退出登录
-//        RxView.clicks(mBtLoginOut)
-//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                .compose(this.<Void>bindToLifecycle())
-//                .subscribe(new Action1<Void>() {
-//                    @Override
-//                    public void call(Void aVoid) {
-//                        initLoginOutPopupWindow();
-//                        mLoginoutPopupWindow.show();
-//                    }
-//                });
+
+        // 跳过
+        RxView.clicks(mTvJumpOver)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                 
+                });
     }
 
     /**
@@ -225,4 +218,8 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         return mCurrentChooseNums > 0;
     }
 
+    @Override
+    public void updateTags(List<TagCategoryBean> tagCategoryBeanList) {
+
+    }
 }

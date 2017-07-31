@@ -69,6 +69,7 @@
 
     <!-- 设置 -->
     <string name="vertify">认证</string>
+    <string name="tags_manager">标签管理</string>
     <string name="account_manager">账户管理</string>
     <string name="change_password">修改密码</string>
     <string name="clean_cache">清理缓存</string>

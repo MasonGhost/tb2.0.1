@@ -24,6 +24,7 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
+import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -356,6 +357,18 @@ public class SystemRepository implements ISystemRepository {
                         }
                     });
         }
+    }
+
+    /**
+     * 获取全部标签
+     *
+     * @return
+     */
+    @Override
+    public Observable<List<TagCategoryBean>> getAllTags() {
+        return mCommonClient.getAllTags()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**

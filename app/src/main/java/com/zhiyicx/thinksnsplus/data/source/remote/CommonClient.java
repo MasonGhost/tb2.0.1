@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
+import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 
 import java.util.HashMap;
 import java.util.List;
@@ -252,8 +253,8 @@ public interface CommonClient {
     /**
      * 获取所有标签
      */
-    @DELETE(APP_PATH_GET_ALL_TAGS)
-    Observable<BaseJson> getAllTags();
+    @GET(APP_PATH_GET_ALL_TAGS)
+    Observable<List<TagCategoryBean>> getAllTags();
 
 
     /*******************************************  后台任务处理  *********************************************/
