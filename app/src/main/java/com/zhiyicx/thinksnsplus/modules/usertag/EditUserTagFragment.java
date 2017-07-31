@@ -47,7 +47,6 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private GridLayoutManager mChoosedTagLayoutManager;
     private StickyHeaderGridLayoutManager mTagClassLayoutManager;
 
-    private CommonAdapter mChoosedTagAdapter;
 
     private List<UserTagBean> mChoosedTags = new ArrayList<>();
     private List<TagCategoryBean> mCategoryTags = new ArrayList<>();
@@ -55,6 +54,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private int mMaxChooseNums;
     private int mCurrentChooseNums = 0;
     private TagClassAdapter mTagClassAdapter;
+    private CommonAdapter<UserTagBean> mChoosedTagAdapter;
 
 
     public static EditUserTagFragment newInstance() {
@@ -115,20 +115,13 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             @Override
             protected void convert(ViewHolder holder, UserTagBean data
                     , final int position) {
-                TextView textView = holder.getView(R.id.item_info_channel);
-                ImageView delete = holder.getView(R.id.item_info_channel_deal);
-                if (position != 0) {
-                    delete.setVisibility(View.VISIBLE);
-                } else {
-                    delete.setVisibility(View.GONE);
-                }
-                holder.setText(R.id.item_info_channel, "你是豆逼" + position);
+                holder.setText(R.id.item_info_channel, data.getTagName());
             }
 
             @Override
             protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
                 RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(1, TimeUnit.SECONDS)
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())
                         .subscribe(o -> {
                             if (mOnItemClickListener != null) {
@@ -149,19 +142,15 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                mChoosedTagAdapter.removeItem(position);
-//                    mUnSubscribeAdapter.addItem(new InfoTypeMoreCatesBean(bean.getId(),
-//                            bean.getName()));
+                mPresenter.deleteTag(mChoosedTags.get(position).getId(),position);
+
             }
 
             @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-//                if (!isEditor) {
-//                    mFragmentChannelEditor.performClick();
-//                }
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
                 return false;
             }
+
         });
 
         return mChoosedTagAdapter;
@@ -252,8 +241,18 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     @Override
     public void addTagSuccess(int categoryPosition, int tagPosition) {
         mCategoryTags.get(categoryPosition).getTags().get(tagPosition).setMine_has(true);
-        mChoosedTags.add(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
         mPresenter.handleCategoryTagsClick(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
+        mChoosedTags.add(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
+        mChoosedTagAdapter.notifyDataSetChanged();
+        mTagClassAdapter.notifyAllSectionsDataSetChanged();
+    }
+
+    @Override
+    public void deleteTagSuccess(int position) {
+        mChoosedTags.get(position).setMine_has(false);
+        mPresenter.handleCategoryTagsClick(  mChoosedTags.get(position));
+        mChoosedTagAdapter.removeItem(position);
+        mTagClassAdapter.notifyAllSectionsDataSetChanged();
 
     }
 }

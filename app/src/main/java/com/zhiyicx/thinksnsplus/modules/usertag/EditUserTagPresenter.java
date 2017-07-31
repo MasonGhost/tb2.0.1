@@ -63,9 +63,9 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
                 mUserTagBeanGreenDao.saveMultiData(userTags);
             }
             LogUtils.d("------", mTagCategoryBeanGreenDao.getMultiDataFromCache().toString());
-
-            return categorys;
-        }).subscribeOn(Schedulers.io())
+            mRootView.updateMineTagsFromNet(userTags);
+            return mTagCategoryBeanGreenDao.getMultiDataFromCache();
+        }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<TagCategoryBean>>() {
                     @Override
@@ -85,11 +85,34 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
 
     @Override
     public void addTags(Long id, int categoryPosition, int tagPosition) {
-        mUserInfoRepository.addTag(id)
+
+        Subscription subscription = mUserInfoRepository.addTag(id)
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
                         mRootView.addTagSuccess(categoryPosition, tagPosition);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    public void onException(Throwable e) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void deleteTag(Long id, int position) {
+        Subscription subscription = mUserInfoRepository.deleteTag(id)
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mRootView.deleteTagSuccess(position);
                     }
 
                     @Override
@@ -104,5 +127,6 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
+        addSubscrebe(subscription);
     }
 }

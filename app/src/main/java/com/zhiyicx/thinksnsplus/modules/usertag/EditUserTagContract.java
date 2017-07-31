@@ -24,6 +24,8 @@ public interface EditUserTagContract {
         void updateTagsFromNet(List<TagCategoryBean> tagCategoryBeanList);
 
         void addTagSuccess(int categoryPosition, int tagPosition);
+
+        void deleteTagSuccess(int position);
     }
 
     /**
@@ -42,6 +44,8 @@ public interface EditUserTagContract {
         void handleCategoryTagsClick(UserTagBean userTagBean);
 
         void addTags(Long id, int categoryPosition, int tagPosition);
+
+        void deleteTag(Long id, int position);
     }
 
 }
