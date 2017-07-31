@@ -79,7 +79,14 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean>{
 
     private List<Link> setLinks(ExpertBean expertBean) {
         List<Link> links = new ArrayList<>();
-        Link digCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link numberCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
+                .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .normal_for_assist_text))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(numberCountLink);
+        Link digCountLink = new Link(String.valueOf(expertBean.getDig_count())).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .normal_for_assist_text))

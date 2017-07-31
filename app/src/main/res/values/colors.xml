@@ -16,4 +16,6 @@
 
     <!--意见反馈-常见问题背景-->
     <color name="feed_back_question">#f4f5f5</color>
+
+    <color name="expert_search_input_bg">#e7e7e7</color>
 </resources>

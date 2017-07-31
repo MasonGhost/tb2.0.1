@@ -21,6 +21,7 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
@@ -428,7 +429,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? imageBean.getToll_monye() : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye()): null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                     storage_task.add(taskBean);
@@ -448,7 +449,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? imageBean.getToll_monye() : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ?PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())  : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                 }
@@ -505,7 +506,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      */
     private void setSendDynamicState() {
         // 没有内容，并且只有占位图时不能够发送
-        if (!hasContent && (selectedPhotos == null || selectedPhotos.size() <= 1)) {
+        if (!hasContent && (selectedPhotos == null || !isToll&&selectedPhotos.size() <= 1)) {
             mToolbarRight.setEnabled(false);
         } else {
             // 有内容或者有图片时都可以发送

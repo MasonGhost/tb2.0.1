@@ -62,7 +62,7 @@ public class ImageUtils {
      * @param imageView    展示的控件
      */
     public static void loadUserCover(UserInfoBean userInfoBean, ImageView imageView) {
-        long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
+        long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
 
         if (userInfoBean.getUser_id() == currentLoginUerId) {
             mCoverSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_COVER__SIGNATURE);
@@ -90,9 +90,9 @@ public class ImageUtils {
      */
     public static void loadCircleUserHeadPic(UserInfoBean userInfoBean, ImageView imageView) {
         String avatar = "";
-        if (userInfoBean != null&&userInfoBean.getUser_id()!=null) {
+        if (userInfoBean != null && userInfoBean.getUser_id() != null) {
             avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar();
-            long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
+            long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
             if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
 
                 if (userInfoBean.getUser_id() == currentLoginUerId) {
@@ -128,7 +128,7 @@ public class ImageUtils {
         if (userInfoBean != null) {
             avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar();
 
-            long currentLoginUerId = AppApplication.getmCurrentLoginAuth().getUser_id();
+            long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
             if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
 
                 if (userInfoBean.getUser_id() == currentLoginUerId) {

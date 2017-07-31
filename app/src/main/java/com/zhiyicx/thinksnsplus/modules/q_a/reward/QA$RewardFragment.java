@@ -375,18 +375,15 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
         mRulePop.dismiss();
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_CHANGE_EXPERT)
-    public void updateInviteState(Bundle bundle){
-        if (bundle != null){
-            ExpertBean expertBean = bundle.getParcelable(BUNDLE_RESULT);
-            if (expertBean != null){
-                mBtQaSelectExpert.setRightText(expertBean.getName());
-            }
-        }
-    }
-
     @Override
     protected boolean useEventBus() {
         return true;
+    }
+
+    @Override
+    public void setSelectResult(ExpertBean expertBean) {
+        if (expertBean != null){
+            mBtQaSelectExpert.setRightText(expertBean.getName());
+        }
     }
 }

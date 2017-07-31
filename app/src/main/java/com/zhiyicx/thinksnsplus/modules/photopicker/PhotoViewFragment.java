@@ -166,11 +166,8 @@ public class PhotoViewFragment extends TSFragment {
                 maxCount));
         // 初始化选择checkbox
         mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(currentItem)));
-        mRbSelectPhoto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        mRbSelectPhoto.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            }
         });
         mRbSelectPhoto.setOnCheckedChangeListener((buttonView, isChecked) -> {
 

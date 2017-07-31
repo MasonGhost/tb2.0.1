@@ -7,7 +7,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridAdapter;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,85 +20,88 @@ import java.util.List;
  */
 
 public class TagClassAdapter extends StickyHeaderGridAdapter {
-   private List<List<String>> labels;
+    private List<TagCategoryBean> mDatas;
+    private OnItemClickListener mOnItemClickListener;
 
-   TagClassAdapter(int sections, int count) {
-      labels = new ArrayList<>(sections);
-      for (int s = 0; s < sections; ++s) {
-         List<String> labels = new ArrayList<>(count);
-         for (int i = 0; i < count; ++i) {
-            String label = "Item " + String.valueOf(i);
-            /*for (int p = 0; p < s - i; ++p) {
-               label += "*\n";
-            }*/
-            labels.add(label);
-         }
-         this.labels.add(labels);
-      }
-   }
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
 
-   @Override
-   public int getSectionCount() {
-      return labels.size();
-   }
+    TagClassAdapter(List<TagCategoryBean> categoryBeanList) {
 
-   @Override
-   public int getSectionItemCount(int section) {
-      return labels.get(section).size();
-   }
+        if (categoryBeanList == null) {
+            mDatas = new ArrayList<>();
+        } else {
+            mDatas = categoryBeanList;
+        }
 
-   @Override
-   public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup parent, int headerType) {
-      final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_user_tag, parent, false);
-      return new MyHeaderViewHolder(view);
-   }
+    }
 
-   @Override
-   public ItemViewHolder onCreateItemViewHolder(ViewGroup parent, int itemType) {
-      final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_tag_class, parent, false);
-      return new MyItemViewHolder(view);
-   }
+    @Override
+    public int getSectionCount() {
+        return mDatas.size();
+    }
 
-   @Override
-   public void onBindHeaderViewHolder(HeaderViewHolder viewHolder, int section) {
-      final MyHeaderViewHolder holder = (MyHeaderViewHolder)viewHolder;
-      final String label = "Header " + section;
-      holder.labelView.setText(label);
-   }
+    @Override
+    public int getSectionItemCount(int section) {
+        return mDatas.get(section).getTags().size();
+    }
 
-   @Override
-   public void onBindItemViewHolder(ItemViewHolder viewHolder, final int section, final int position) {
-      final MyItemViewHolder holder = (MyItemViewHolder)viewHolder;
-      final String label = labels.get(section).get(position);
-      holder.labelView.setText(label);
-      holder.labelView.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-            final int section = getAdapterPositionSection(holder.getAdapterPosition());
-            final int offset = getItemSectionOffset(section, holder.getAdapterPosition());
+    @Override
+    public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup parent, int headerType) {
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_user_tag, parent, false);
+        return new MyHeaderViewHolder(view);
+    }
 
-            labels.get(section).remove(offset);
-            notifySectionItemRemoved(section, offset);
-            Toast.makeText(holder.labelView.getContext(), label, Toast.LENGTH_SHORT).show();
-         }
-      });
-   }
+    @Override
+    public ItemViewHolder onCreateItemViewHolder(ViewGroup parent, int itemType) {
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_tag_class, parent, false);
+        return new MyItemViewHolder(view);
+    }
 
-   public static class MyHeaderViewHolder extends HeaderViewHolder {
-      TextView labelView;
+    @Override
+    public void onBindHeaderViewHolder(HeaderViewHolder viewHolder, int categoryPosition) {
+        final MyHeaderViewHolder holder = (MyHeaderViewHolder) viewHolder;
+        holder.labelView.setText(mDatas.get(categoryPosition).getName());
+    }
 
-      MyHeaderViewHolder(View itemView) {
-         super(itemView);
-         labelView = (TextView) itemView.findViewById(R.id.label);
-      }
-   }
+    @Override
+    public void onBindItemViewHolder(ItemViewHolder viewHolder, final int categoryPosition, final int tagPosition) {
+        final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
+        final String label = mDatas.get(categoryPosition).getTags().get(tagPosition).getTagName();
+        holder.labelView.setText(label);
+        holder.labelView.setOnClickListener(v -> {
+            final int section1 = getAdapterPositionSection(holder.getAdapterPosition());
+            final int offset = getItemSectionOffset(section1, holder.getAdapterPosition());
+//            mDatas.get(section1).remove(offset);
+//            notifySectionItemRemoved(section1, offset);
+            LogUtils.d("TagClassAdapter","categoryPosition : "+categoryPosition+"-----"+"tagPosition : "+tagPosition+"-----"+"section1 : "+section1+"offset : "+offset);
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(categoryPosition,tagPosition);
+            }
+        });
+    }
 
-   public static class MyItemViewHolder extends ItemViewHolder {
-      TextView labelView;
+    public static class MyHeaderViewHolder extends HeaderViewHolder {
+        TextView labelView;
 
-      MyItemViewHolder(View itemView) {
-         super(itemView);
-         labelView = (TextView) itemView.findViewById(R.id.label);
-      }
-   }
+        MyHeaderViewHolder(View itemView) {
+            super(itemView);
+            labelView = (TextView) itemView.findViewById(R.id.label);
+        }
+    }
+
+    public static class MyItemViewHolder extends ItemViewHolder {
+        TextView labelView;
+
+        MyItemViewHolder(View itemView) {
+            super(itemView);
+            labelView = (TextView) itemView.findViewById(R.id.label);
+        }
+    }
+
+    public interface OnItemClickListener {
+
+        void onItemClick(int categoryPosition, int tagPosition);
+    }
 }

@@ -243,13 +243,13 @@ public class FindPasswordFragment extends TSFragment<FindPasswordContract.Presen
 
     @Override
     protected void setRightClick() {
+        // 重置按钮状态
+        resetUI();
         // 重置UI
         setRightText(mCurrentType == FIND_BY_PHONE ?
                 getString(R.string.find_password_by_email) : getString(R.string.find_password_by_phone));
         // 清空数据
         clearAllData();
-        // 重置按钮状态
-        resetUI();
     }
 
     /**

@@ -26,7 +26,25 @@
                 android:visibility="gone"
                 app:leftText="@string/vertify"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
-                app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+            <!--标签管理-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_tags_manager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:leftText="@string/tags_manager"
+                app:leftTextLeftPadding="@dimen/spacing_mid"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+            <!--账户管理-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                    android:id="@+id/bt_account_manager"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/full_button_height"
+                    android:visibility="visible"
+                    app:leftText="@string/account_manager"
+                    app:leftTextLeftPadding="@dimen/spacing_mid"
+                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--修改密码-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_change_password"
@@ -34,7 +52,7 @@
                 android:layout_height="@dimen/full_button_height"
                 app:leftText="@string/change_password"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
-                app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--清理缓存-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_clean_cache"
@@ -42,7 +60,7 @@
                 android:layout_height="@dimen/full_button_height"
                 app:leftText="@string/clean_cache"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
-                app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--关于我们-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_about_us"
@@ -50,7 +68,7 @@
                 android:layout_height="@dimen/full_button_height"
                 app:leftText="@string/about_us"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
-                app:rightImage="@mipmap/ic_arrow_smallgrey"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--退出登录-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_login_out"
@@ -60,7 +78,7 @@
                 app:leftTextColor="@color/themeColor"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
-                app:showLine="false"></com.zhiyicx.baseproject.widget.button.CombinationButton>
+                app:showLine="false"/>
 
         </LinearLayout>
     </ScrollView>

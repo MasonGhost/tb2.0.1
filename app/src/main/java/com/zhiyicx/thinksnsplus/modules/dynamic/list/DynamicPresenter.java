@@ -33,7 +33,6 @@ import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
@@ -79,8 +78,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repository, DynamicContract.View>
         implements DynamicContract.Presenter, OnShareCallbackListener {
 
-    @Inject
-    DynamicBeanGreenDaoImpl mDynamicBeanGreenDao;
+
     @Inject
     DynamicDetailBeanV2GreenDaoImpl mDynamicDetailBeanV2GreenDao;
     @Inject
@@ -169,6 +167,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public List<DynamicDetailBeanV2> requestCacheData(Long maxId, boolean isLoadMore) {
         List<DynamicDetailBeanV2> datas = null;
+        System.out.println("mDynamicDetailBeanV2GreenDao = " + mDynamicDetailBeanV2GreenDao.getCounts());
         switch (mRootView.getDynamicType()) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
                 if (!isLoadMore) {// 刷新

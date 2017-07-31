@@ -50,8 +50,8 @@ public class CommentRepository implements ICommentRepository {
     public Observable<Object> sendCommentV2(String comment_content, long reply_to_user_id, long comment_mark, String path) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("body", comment_content);
-        params.put("reply_user", reply_to_user_id);
-//        params.put("comment_mark", comment_mark);
+//        params.put("reply_to_user_id", reply_to_user_id);
+        params.put("comment_mark", comment_mark);
         return mCommonClient.handleBackGroundTaskPostV2(path, UpLoadFile.upLoadFileAndParams(null, params))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -63,17 +63,17 @@ public class CommentRepository implements ICommentRepository {
             return path;
         }
         switch (component_type) {
-            case ApiConfig.APP_COMPONENT_FEED:
+            case ApiConfig.APP_LIKE_FEED:
                 path = String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT_V2, source_id);
 
                 break;
-            case ApiConfig.APP_COMPONENT_MUSIC:
+            case ApiConfig.APP_LIKE_MUSIC:
                 path = String.format(ApiConfig.APP_PATH_MUSIC_COMMENT_FORMAT, source_id);
                 break;
             case ApiConfig.APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS:
                 path = String.format(ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT, source_id);
                 break;
-            case ApiConfig.APP_COMPONENT_NEWS:
+            case ApiConfig.APP_LIKE_NEWS:
                 path = String.format(ApiConfig.APP_PATH_INFO_COMMENT_FORMAT, source_id);
                 break;
             default:

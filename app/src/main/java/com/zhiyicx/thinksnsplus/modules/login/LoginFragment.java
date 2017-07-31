@@ -2,11 +2,19 @@ package com.zhiyicx.thinksnsplus.modules.login;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -14,12 +22,19 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
+import com.zhiyicx.thinksnsplus.widget.AccountPopWindow;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -36,7 +51,7 @@ import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIS
  * @contact email:450127106@qq.com
  */
 
-public class LoginFragment extends TSFragment<LoginContract.Presenter> implements LoginContract.View {
+public class LoginFragment extends TSFragment<LoginContract.Presenter> implements LoginContract.View, AccountAdapter.OnItemSelectListener {
 
     @BindView(R.id.et_login_phone)
     EditText mEtLoginPhone;
@@ -50,11 +65,21 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     TextView mTvLookAround;
     @BindView(R.id.tv_forget_password)
     TextView mTvForgetPassword;
+    @BindView(R.id.iv_clear)
+    ImageView mIvClear;
+    @BindView(R.id.et_complete_input)
+    AppCompatAutoCompleteTextView mEtCompleteInput;
 
     private boolean mIsPhoneEdited;
     private boolean mIsPasswordEdited;
 
     private boolean mIsToourist;
+
+    private List<AccountBean> mAccountList; // 历史的账号
+    private AccountBean mAccountBean; // 当前登录的账号
+
+    private ArrayAdapter mArrayAdapter;
+    private AccountAdapter mAccountAdapter;
 
     public static LoginFragment newInstance(boolean isTourist) {
         LoginFragment fragment = new LoginFragment();
@@ -74,7 +99,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
 
     @Override
     protected void initView(View rootView) {
-        initListenter();
+        mEtCompleteInput.setDropDownWidth(UIUtils.getWindowWidth(getContext()));
+        initListener();
         // 游客判断
         mTvLookAround.setVisibility((!mIsToourist && mPresenter.istourist()) ? View.VISIBLE : View.GONE);
         if (mIsToourist || !mPresenter.istourist()) {
@@ -82,13 +108,23 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         }
     }
 
-    private void initListenter() {
+    private void initListener() {
         // 手机号码输入框观察
         RxTextView.textChanges(mEtLoginPhone)
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(charSequence -> {
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
+                });
+        RxTextView.textChanges(mEtCompleteInput)
+                .compose(this.bindToLifecycle())
+                .subscribe(charSequence -> {
+                    mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
+                    mIvClear.setVisibility(TextUtils.isEmpty(charSequence.toString()) ? View.GONE : View.VISIBLE);
+                    if (mArrayAdapter != null){
+                        setAccountListPopHeight(mArrayAdapter.getCount());
+                    }
                 });
         // 密码输入框观察
         RxTextView.textChanges(mEtLoginPassword)
@@ -104,16 +140,24 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
-                        mPresenter.login(mEtLoginPhone.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
+                        mAccountBean.setId(new Date().getTime());
+                        mAccountBean.setAccountName(mEtCompleteInput.getText().toString().trim());
+                        mPresenter.login(mEtCompleteInput.getText().toString().trim(), mEtLoginPassword.getText().toString().trim());
                     } else {// 拒绝权限，但是可以再次请求
                         showErrorTips(getString(R.string.permisson_refused));
                     }
                 });
+        RxView.clicks(mIvClear)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(aVoid -> mEtCompleteInput.setText(""));
     }
 
     @Override
     protected void initData() {
-
+        mAccountList = new ArrayList<>();
+        mAccountBean = new AccountBean();
+        initAccount();
     }
 
     @Override
@@ -201,6 +245,11 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         }
     }
 
+    @Override
+    public AccountBean getAccountBean() {
+        return mAccountBean;
+    }
+
     /**
      * 设置登录按钮是否可点击
      */
@@ -231,4 +280,43 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         getActivity().finish();
     }
 
+    private void initAccount() {
+        List<String> list = new ArrayList<>();
+        Drawable mBackgroundDrawable = new ColorDrawable(Color.WHITE);// 默认为透明;
+//        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
+        mAccountList.addAll(mPresenter.getAllAccountList());
+        if (mAccountAdapter == null){
+            mAccountAdapter = new AccountAdapter(getContext(), mAccountList, this);
+        } else {
+            mAccountAdapter.notifyDataSetChanged();
+        }
+
+        for (AccountBean accountBean : mAccountList){
+            list.add(accountBean.getAccountName());
+        }
+        setAccountListPopHeight(mAccountList.size());
+//        mArrayAdapter = new ArrayAdapter(getContext(), R.layout.item_account, R.id.tv_account_name, list);
+        mEtCompleteInput.setAdapter(mAccountAdapter);
+    }
+
+    @Override
+    public void onItemSelect(AccountBean accountBean) {
+        // 设置填充数据，收起下拉框
+        mEtCompleteInput.setText(accountBean.getAccountName());
+        mEtCompleteInput.setSelection(accountBean.getAccountName().length());
+        mEtCompleteInput.dismissDropDown();
+    }
+
+    @Override
+    public void onDataChange(int size) {
+        setAccountListPopHeight(size);
+    }
+
+    private void setAccountListPopHeight(int size){
+        if (size > 3){
+            mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 140));
+        } else {
+            mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
 }

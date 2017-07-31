@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
 
+import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
 /**
@@ -11,8 +12,20 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @contact email:648129313@qq.com
  */
 
-public class UserTagBean extends BaseListBean{
+public class UserTagBean extends BaseListBean {
+
+    /**
+     * {
+     * "id": 1,
+     * "name": "标签1",
+     * "tag_category_id": 1
+     * }
+     */
+
+    private Long id;
+    @SerializedName("name")
     private String tagName;
+    private long tag_category_id;
 
     public String getTagName() {
         return tagName;
@@ -22,6 +35,21 @@ public class UserTagBean extends BaseListBean{
         this.tagName = tagName;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public long getTag_category_id() {
+        return tag_category_id;
+    }
+
+    public void setTag_category_id(long tag_category_id) {
+        this.tag_category_id = tag_category_id;
+    }
 
     @Override
     public int describeContents() {
@@ -31,7 +59,9 @@ public class UserTagBean extends BaseListBean{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
         dest.writeString(this.tagName);
+        dest.writeLong(this.tag_category_id);
     }
 
     public UserTagBean() {
@@ -39,7 +69,9 @@ public class UserTagBean extends BaseListBean{
 
     protected UserTagBean(Parcel in) {
         super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.tagName = in.readString();
+        this.tag_category_id = in.readLong();
     }
 
     public static final Creator<UserTagBean> CREATOR = new Creator<UserTagBean>() {
@@ -53,4 +85,13 @@ public class UserTagBean extends BaseListBean{
             return new UserTagBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "UserTagBean{" +
+                "id=" + id +
+                ", tagName='" + tagName + '\'' +
+                ", tag_category_id=" + tag_category_id +
+                '}';
+    }
 }
