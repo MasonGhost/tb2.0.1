@@ -97,11 +97,6 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
 
     @Override
     protected void initData() {
-        for (int i = 0; i < 5; i++) {
-            mChoosedTags.add(new UserTagBean());
-        }
-
-        mChoosedTagAdapter.notifyDataSetChanged();
         mPresenter.getAllTags();
     }
 
@@ -225,7 +220,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
      * @param tagCategoryBeanList
      */
     @Override
-    public void updateTags(List<TagCategoryBean> tagCategoryBeanList) {
+    public void updateTagsFromNet(List<TagCategoryBean> tagCategoryBeanList) {
         if (tagCategoryBeanList == null) {
             return;
         }
@@ -234,6 +229,16 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mTagClassAdapter.notifyAllSectionsDataSetChanged();
     }
 
+    @Override
+    public void updateMineTagsFromNet(List<UserTagBean> tags) {
+        if (tags == null) {
+            return;
+        }
+        mChoosedTags.clear();
+        mChoosedTags.addAll(tags);
+        mChoosedTagAdapter.notifyDataSetChanged();
+
+    }
 
     @Override
     public void onItemClick(int categoryPosition, int tagPosition) {

@@ -15,7 +15,7 @@ public class UserTagBeanTest extends AbstractDaoTestLongPk<UserTagBeanDao, UserT
     protected UserTagBean createEntity(Long key) {
         UserTagBean entity = new UserTagBean();
         entity.setId(key);
-        entity.setTag_category_id();
+        entity.setTag_category_id(3l);
         return entity;
     }
 

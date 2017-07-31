@@ -7,6 +7,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author Catherine
@@ -89,6 +90,15 @@ public class UserTagBean extends BaseListBean {
         this.mine_has = in.readByte() != 0;
     }
 
+    @Generated(hash = 490526204)
+    public UserTagBean(Long id, String tagName, long tag_category_id,
+            boolean mine_has) {
+        this.id = id;
+        this.tagName = tagName;
+        this.tag_category_id = tag_category_id;
+        this.mine_has = mine_has;
+    }
+
     public static final Creator<UserTagBean> CREATOR = new Creator<UserTagBean>() {
         @Override
         public UserTagBean createFromParcel(Parcel source) {
@@ -109,5 +119,9 @@ public class UserTagBean extends BaseListBean {
                 ", tag_category_id=" + tag_category_id +
                 ", mine_has=" + mine_has +
                 '}';
+    }
+
+    public boolean getMine_has() {
+        return this.mine_has;
     }
 }
