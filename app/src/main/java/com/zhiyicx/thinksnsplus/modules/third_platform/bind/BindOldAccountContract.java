@@ -11,7 +11,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IThirdPlatformRepository;
  * @contact email:648129313@qq.com
  */
 
-public class BindOldAccountContract {
+public interface BindOldAccountContract {
 
     interface View extends IBaseView<Presenter> {
         void showErrorTips(String message);
@@ -21,7 +21,7 @@ public class BindOldAccountContract {
 
     }
 
-    public interface Repository extends IThirdPlatformRepository{
+    interface Repository extends IThirdPlatformRepository{
 
     }
 }

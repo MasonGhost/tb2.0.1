@@ -55,7 +55,7 @@ public class ChooseBindPopupWindow extends PopupWindow{
         initLayout();
         setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
         setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-        setFocusable(true);
+        setFocusable(false);
         setOutsideTouchable(false);
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
