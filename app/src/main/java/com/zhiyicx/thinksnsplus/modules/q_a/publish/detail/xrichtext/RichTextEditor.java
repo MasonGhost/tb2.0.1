@@ -249,7 +249,6 @@ public class RichTextEditor extends ScrollView {
             addImageViewAtIndex(lastEditIndex + 1, imagePath);
             lastAddEdit.requestFocus();
             lastAddEdit.setSelection(0);
-            fullScroll(ScrollView.FOCUS_DOWN);
 //            lastFocusEdit.requestFocus();
 //            lastFocusEdit.setSelection(editStr1.length(), editStr1.length());//TODO
         }
@@ -302,7 +301,7 @@ public class RichTextEditor extends ScrollView {
         lp.bottomMargin = 10;
         imageView.setLayoutParams(lp);
         imageView.setOnClickListener(v -> {
-
+            fullScroll(ScrollView.FOCUS_DOWN);
         });
 
         allLayout.addView(imageLayout, index);

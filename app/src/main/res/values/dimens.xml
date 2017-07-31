@@ -67,4 +67,7 @@
     <dimen name="qa_top_select_height">30dp</dimen>
     <dimen name="qa_top_select_width">120dp</dimen>
     <dimen name="qa_user_tag_height">20dp</dimen>
+
+    <!--问答-发布问题-->
+    <dimen name="iamge_close_height">50sp</dimen>
 </resources>

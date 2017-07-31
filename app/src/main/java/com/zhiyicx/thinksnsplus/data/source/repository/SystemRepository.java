@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.ImageAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
@@ -105,7 +106,7 @@ public class SystemRepository implements ISystemRepository {
         for (SystemConfigBean.Advert advert : systemConfigBean.getAdverts()) {
             if (advert.getData() instanceof LinkedHashMap) {
                 LinkedHashMap advertMap = (LinkedHashMap) advert.getData();
-                SystemConfigBean.ImageAdvert imageAdvert = new SystemConfigBean.ImageAdvert();
+                ImageAdvert imageAdvert = new ImageAdvert();
                 for (Iterator it = advertMap.keySet().iterator(); it.hasNext(); ) {
                     String key = (String) it.next();
                     String value = (String) advertMap.get(key);

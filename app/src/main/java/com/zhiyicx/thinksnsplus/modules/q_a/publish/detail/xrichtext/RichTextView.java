@@ -14,10 +14,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.thinksnsplus.R;
 
-/**
- * Created by sendtion on 2016/6/24.
- * 显示富文本
- */
 public class RichTextView extends ScrollView {
     private static final int EDIT_PADDING = 10; // edittext常规padding是10dp
 

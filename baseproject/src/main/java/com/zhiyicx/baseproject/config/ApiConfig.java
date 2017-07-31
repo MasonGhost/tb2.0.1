@@ -418,6 +418,8 @@ public class ApiConfig {
      */
     // 获取启动信息
     public static final String APP_PATH_GET_BOOTSTRAPERS_INFO = "api/" + API_VERSION_2 + "/bootstrappers";
+    // 获取所有广告
+    public static final String APP_PATH_GET_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace";
 
     /**
      * 通用 CommonClient

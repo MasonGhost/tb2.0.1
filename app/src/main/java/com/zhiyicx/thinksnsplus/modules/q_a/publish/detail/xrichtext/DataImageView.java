@@ -5,11 +5,6 @@ import android.graphics.Bitmap;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
-/**
- * 这只是一个简单的ImageView，可以存放Bitmap和Path等信息
- *
- * @author xmuSistone
- */
 public class DataImageView extends AppCompatImageView {
 
     private String absolutePath;

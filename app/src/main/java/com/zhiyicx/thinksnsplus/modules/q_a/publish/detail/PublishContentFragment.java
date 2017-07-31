@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -30,7 +31,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import jp.wasabeef.richeditor.RichEditor;
 import rx.Observable;
 
 /**
@@ -81,6 +81,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     protected void initView(View rootView) {
+        AndroidBug5497Workaround.assistActivity(getActivity());
         mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
     }
 
@@ -110,19 +111,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
             return;
         }
         String path = photoList.get(0).getImgUrl();
-        // 加载本地图片
-        Glide.with(getActivity())
-                .load(path)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        int w, h;
-                        w = mRicheTest.getWidth();
-                        h = w * resource.getHeight() / resource.getWidth();
-                        mRicheTest.insertImage(resource,path);
-                    }
-                });
+        mRicheTest.insertImage(path,mRicheTest.getWidth());
     }
 
     private void test() {
