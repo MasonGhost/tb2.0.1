@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+            style="@style/style_edit_white_container">
+
+        <TextView
+                style="@style/style_small_text"
+                android:text="@string/username"/>
+
+        <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+                android:id="@+id/et_login_phone"
+                style="@style/style_edit"
+                android:inputType="textPersonName"
+                android:visibility="visible"/>
+    </LinearLayout>
+
+    <ImageView style="@style/style_divider_horizontal_light"/>
+
+    <!--登录异常相关提示-->
+    <include
+            layout="@layout/include_error_tip_text"/>
+
+    <com.zhiyicx.baseproject.widget.button.LoadingButton
+            android:id="@+id/bt_login_login"
+            style="@style/style_login_button"
+            android:layout_marginTop="@dimen/button_login_margin_top"
+            android:enabled="false"
+            app:text="@string/bt_login"/>
+
+</LinearLayout>
