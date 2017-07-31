@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -176,12 +177,11 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     public void deleteComment(int music_id, int comment_id) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_id", comment_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.DELETE, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, comment_id));
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(),ApiConfig
+                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, music_id,comment_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }

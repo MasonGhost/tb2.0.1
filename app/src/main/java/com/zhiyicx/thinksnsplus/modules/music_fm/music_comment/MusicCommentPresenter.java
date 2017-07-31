@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_comment;
 
+import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -24,6 +25,8 @@ import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicCommentRepositroty;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -224,18 +227,20 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
 //                }).set$$Comment_(createComment, mCommonMetadataProvider)
 //                .handleCommentInBackGroud();
 
-        Subscription subscription = mCommentRepository.sendCommentV2(content, reply_id, 0L, path).doOnSubscribe(new Action0() {
-            @Override
-            public void call() {
-                mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
-            }
-        }).subscribeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = mCommentRepository.sendCommentV2(content, reply_id, 0L, path)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        createComment.setId(((Double) data).longValue());
-                        mCommentListBeanGreenDao.insertOrReplace(createComment);
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            createComment.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            mCommentListBeanGreenDao.insertOrReplace(createComment);
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -273,18 +278,19 @@ public class MusicCommentPresenter extends AppBasePresenter<MusicCommentContract
         mRootView.refreshData();
         path = String.format(path, mRootView.getCommentId());
         Subscription subscription = mCommentRepository.sendComment(createComment.getComment_content(), createComment.getReply_user(),
-                0L, path).doOnSubscribe(new Action0() {
-            @Override
-            public void call() {
-                mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing));
-            }
-        }).subscribeOn(AndroidSchedulers.mainThread())
+                0L, path).doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.comment_ing)))
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
-                        createComment.setId(((Double) data).longValue());
-                        mCommentListBeanGreenDao.insertOrReplace(createComment);
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            createComment.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            mCommentListBeanGreenDao.insertOrReplace(createComment);
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override

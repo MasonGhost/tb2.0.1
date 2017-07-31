@@ -270,16 +270,16 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_DETAILS = "api/" + API_VERSION_2 + "/music/{music_id}";
 
     // 评论歌曲
-    public static final String APP_PATH_MUSIC_COMMENT = "api/" + API_VERSION + "/music/{music_id}/comment";
-    public static final String APP_PATH_MUSIC_COMMENT_FORMAT = "api/" + API_VERSION + "/music/%s/comment";
+    public static final String APP_PATH_MUSIC_COMMENT = "api/" + API_VERSION_2 + "/music/{music_id}/comments";
+    public static final String APP_PATH_MUSIC_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/music/%s/comments";
 
     // 删除音乐评论
-    public static final String APP_PATH_MUSIC_DELETE_COMMENT_FORMAT = "api/" + API_VERSION + "/music/comment/%s";
-    public static final String APP_PATH_MUSIC_DELETE_COMMENT = "api/" + API_VERSION + "/music/comment/{comment_id}";
+    public static final String APP_PATH_MUSIC_DELETE_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/music/%d/comments/%d";
+    public static final String APP_PATH_MUSIC_DELETE_COMMENT = "api/" + API_VERSION_2 + "/music/{music_id}/comments/{comment_id}";
 
     // 评论专辑
-    public static final String APP_PATH_MUSIC_ABLUM_COMMENT = "api/" + API_VERSION + "/music/special/{special_id}/comment";
-    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT = "api/" + API_VERSION + "/music/special/%s/comment";
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT = "api/" + API_VERSION_2 + "/music/specials/{special_id}/comments";
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/music/specials/%s/comments";
 
     // 专辑评论列表
     public static final String APP_PATH_MUSIC_ABLUM_COMMENT_LIST = "api/" + API_VERSION_2 + "/music/specials/{special_id}/comments";

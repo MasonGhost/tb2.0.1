@@ -55,13 +55,13 @@ public class CommentedBeanGreenDaoImpl extends CommonCacheImpl<CommentedBean> {
                 , System.currentTimeMillis() + "");
     }
 
-    public List<CommentedBean> getAblumCommentsCacheDataByType(String channel,long id) {
+    public List<CommentedBean> getAblumCommentsCacheDataByType(String channel, long id) {
         CommentedBeanDao commentedBeanDao = getRDaoSession().getCommentedBeanDao();
         return commentedBeanDao.queryDeep(" where "
-                        + " T." + CommentedBeanDao.Properties.Channel.eq(channel) + " AND "
-                        + " T." + CommentedBeanDao.Properties.Target_id.eq(id)
-                        + " order by " + " T." + CommentedBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
-                , System.currentTimeMillis() + "");
+                        + " T." + CommentedBeanDao.Properties.Channel.columnName + "= ?" + " AND "
+                        + " T." + CommentedBeanDao.Properties.Target_id.columnName + "= ?"
+                        +"< ? order by"+" T." + CommentedBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
+                , new String[] {channel,String.valueOf(id),System.currentTimeMillis() + ""});
     }
 
     @Override
