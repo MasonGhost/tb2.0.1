@@ -242,6 +242,18 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
 
     @Override
     public void onItemClick(int categoryPosition, int tagPosition) {
+        if (mCategoryTags.get(categoryPosition).getTags().get(tagPosition).isMine_has()) {
+            return;
+        }
+        mPresenter.addTags(mCategoryTags.get(categoryPosition).getTags().get(tagPosition).getId(), categoryPosition, tagPosition);
+
+    }
+
+    @Override
+    public void addTagSuccess(int categoryPosition, int tagPosition) {
+        mCategoryTags.get(categoryPosition).getTags().get(tagPosition).setMine_has(true);
+        mChoosedTags.add(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
+        mPresenter.handleCategoryTagsClick(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
 
     }
 }

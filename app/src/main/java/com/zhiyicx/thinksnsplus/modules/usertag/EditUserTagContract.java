@@ -22,6 +22,8 @@ public interface EditUserTagContract {
         void updateMineTagsFromNet(List<UserTagBean> tags);
 
         void updateTagsFromNet(List<TagCategoryBean> tagCategoryBeanList);
+
+        void addTagSuccess(int categoryPosition, int tagPosition);
     }
 
     /**
@@ -36,6 +38,10 @@ public interface EditUserTagContract {
          * 获取全部标签
          */
         void getAllTags();
+
+        void handleCategoryTagsClick(UserTagBean userTagBean);
+
+        void addTags(Long id, int categoryPosition, int tagPosition);
     }
 
 }
