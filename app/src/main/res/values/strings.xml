@@ -332,6 +332,6 @@
 
     <!--打赏-->
     <string name="rewards">打赏</string>
-    <string name="rewards_show">%1d人打赏,共%2.2f元</string>
+    <string name="rewards_show">%1d人打赏,共%2s元</string>
 
 </resources>

@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
@@ -29,6 +30,7 @@ import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -49,6 +51,8 @@ public class ReWardsView extends FrameLayout {
 
     private RecyclerView.LayoutManager mLayoutManager;
     private CommonAdapter mCommonAdapter;
+    private List<RewardsListBean> mListData = new ArrayList<>();
+
 
     public ReWardsView(@NonNull Context context) {
         this(context, null);
@@ -79,7 +83,7 @@ public class ReWardsView extends FrameLayout {
         mRVUsers.setLayoutManager(mLayoutManager);
         mRVUsers.setHasFixedSize(true);
         mRVUsers.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small), getResources().getDimensionPixelOffset(R.dimen.spacing_small)));
-        mCommonAdapter = new CommonAdapter<RewardsListBean>(getContext(), R.layout.item_rewards_user_image, new ArrayList<>()) {
+        mCommonAdapter = new CommonAdapter<RewardsListBean>(getContext(), R.layout.item_rewards_user_image, mListData) {
             @Override
             protected void convert(ViewHolder holder, RewardsListBean rewardsListBean, int position) {
 
@@ -99,6 +103,34 @@ public class ReWardsView extends FrameLayout {
         RxView.clicks(mBtRewards)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> LogUtils.d("h rewards h"));
+    }
+
+    /**
+     * 更新打赏总量
+     *
+     * @param rewardsCountBean
+     */
+    public void updateRewardsCount(RewardsCountBean rewardsCountBean) {
+
+        if (rewardsCountBean == null) {
+            return;
+        }
+
+        mTvRewardsTip.setText(getResources().getString(R.string.rewards_show, rewardsCountBean.getCount(), rewardsCountBean.getAmount()));
+
+    }
+
+    /**
+     * 更新打赏用户列表
+     * @param data
+     */
+    public void updateRewardsUser(List<RewardsListBean> data) {
+        if (data == null) {
+            return;
+        }
+        mListData.clear();
+        mListData.addAll(data);
+        mCommonAdapter.notifyDataSetChanged();
     }
 
 }
