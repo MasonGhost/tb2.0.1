@@ -10,6 +10,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -25,6 +26,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -223,4 +225,32 @@ public class InfoDetailsRepository implements InfoDetailsConstract.Repository {
     public Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id) {
         return mInfoMainClient.getInfoWebContent(news_id);
     }
+
+    /**
+     * @param news_id 咨询 id
+     * @param amount  打赏金额
+     * @return
+     */
+    @Override
+    public Observable<Object> rewardsInfo(long news_id, float amount) {
+        return mInfoMainClient.rewardsInfo(news_id,amount)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param news_id    咨询 id
+     * @param limit      列表返回数据条数
+     * @param since      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param order      翻页标识 排序 正序-asc 倒序 desc
+     * @param order_type 排序规则 date-按时间 amount-按金额
+     * @return
+     */
+    @Override
+    public Observable<List<RewardsListBean>> rewardsInfoList(long news_id, Integer limit, Integer since, String order, String order_type) {
+        return mInfoMainClient.rewardsInfoList(news_id,limit,since,order,order_type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 }

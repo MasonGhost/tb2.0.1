@@ -265,6 +265,12 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DETAILS = "/api/" + API_VERSION + "/news/{news_id}";
     public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/" + API_VERSION + "/news/%d";
 
+    // 咨询打赏
+    public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION +"news/{news_id}/rewards";
+    // 打赏用户列表
+    public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION +"/news/{news_id}/rewards";
+
+
     /**
      * 音乐相关
      */
