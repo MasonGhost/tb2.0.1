@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.usertag;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +13,13 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridLayoutManager;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -39,6 +45,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View, TagClassAdapter.OnItemClickListener {
+    public static final String BUNDLE_IS_FROM_REGISTER = "is_from_register";
+
     private static final int SPAN_SIZE = 3;
 
     @BindView(R.id.tv_choosed_tag_tip)
@@ -62,9 +70,14 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private TagClassAdapter mTagClassAdapter;
     private CommonAdapter<UserTagBean> mChoosedTagAdapter;
 
+    private boolean mIsFromRegister = false;
 
-    public static EditUserTagFragment newInstance() {
-        return new EditUserTagFragment();
+    private CenterInfoPopWindow mRulePop;// 标签提示规则选择弹框
+
+    public static EditUserTagFragment newInstance(Bundle bundle) {
+        EditUserTagFragment editUserTagFragment = new EditUserTagFragment();
+        editUserTagFragment.setArguments(bundle);
+        return editUserTagFragment;
     }
 
     @Override
@@ -93,7 +106,18 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mIsFromRegister = getArguments().getBoolean(BUNDLE_IS_FROM_REGISTER, false);
+        }
+    }
+
+    @Override
     protected void initView(View rootView) {
+        if (mIsFromRegister) { // 隐藏返回键
+            mToolbarLeft.setVisibility(View.INVISIBLE);
+        }
         mMaxChooseNums = getResources().getInteger(R.integer.user_tag_max_nums);
         mTvChoosedTagTip.setText(getString(R.string.user_tag_choosed_tag_format, mMaxChooseNums, mCurrentChooseNums));
         initRvChoosedTag();
@@ -103,7 +127,33 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
 
     @Override
     protected void initData() {
+
+        if (mIsFromRegister) {
+            initTipPop();
+        }
+
         mPresenter.getAllTags();
+    }
+
+    private void initTipPop() {
+        if (mRulePop != null) {
+            mRulePop.show();
+            return;
+        }
+        mRulePop = CenterInfoPopWindow.builder()
+                .titleStr(getString(R.string.tips))
+                .desStr(getString(R.string.tags_tips))
+                .item1Str(getString(R.string.get_it))
+                .item1Color(R.color.themeColor)
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .animationStyle(R.style.style_actionPopupAnimation)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .buildCenterPopWindowItem1ClickListener(() -> mRulePop.hide())
+                .parentView(getView())
+                .build();
+        mRulePop.show();
     }
 
 
@@ -197,6 +247,13 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
 
+                    if (mIsFromRegister) { // 注册就进入主页，设置就返回
+
+                        startActivity(new Intent(getActivity(), HomeActivity.class));
+                    } else {
+                        getActivity().finish();
+
+                    }
                 });
     }
 
@@ -278,5 +335,14 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         }, throwable -> throwable.printStackTrace());
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mIsFromRegister) {
+
+        } else {
+            getActivity().finish();
+        }
     }
 }

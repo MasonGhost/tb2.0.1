@@ -25,9 +25,11 @@ public class EditUserTagActivity extends TSActivity<EditUserTagPresenter, EditUs
 
     @Override
     protected EditUserTagFragment getFragment() {
-        return EditUserTagFragment.newInstance();
+        return EditUserTagFragment.newInstance(getIntent().getExtras());
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }
