@@ -5,6 +5,7 @@ import android.os.Parcel;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.AdvertFormatConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.DynamicListAdvertConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.ImageAdvertConvert;
@@ -44,10 +45,6 @@ public class RealAdvertListBean extends BaseListBean {
     private String updated_at;
     @Convert(converter = AdvertFormatConvert.class, columnType = String.class)
     private AdvertFormat advertFormat;
-    @Convert(converter = ImageAdvertConvert.class, columnType = String.class)
-    private ImageAdvert image;
-    @Convert(converter = DynamicListAdvertConvert.class, columnType = String.class)
-    private DynamicListAdvert analog;
 
 
     public Object getData() {
@@ -59,52 +56,55 @@ public class RealAdvertListBean extends BaseListBean {
     }
 
     public AdvertFormat getAdvertFormat() {
+        if (advertFormat != null) {
+            return advertFormat;
+        } else if (data == null) {
+            return null;
+        } else {
+            advertFormat = new AdvertFormat();
+            Gson gson = new Gson();
+            LogUtils.d("getAdvertFormat::");
+            String json=gson.toJson(data);
+            LogUtils.d("getAdvertFormat::"+json);
+            switch (type) {
+                case ApiConfig.APP_IMAGE_ADVERT:
+                    advertFormat.setImage(gson.fromJson(gson.toJson(data), ImageAdvert.class));
+                    LogUtils.d("getAdvertFormat::"+ApiConfig.APP_IMAGE_ADVERT);
+                    break;
+                case ApiConfig.APP_DYNAMIC_ADVERT:
+                    advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
+                            .class));
+                    LogUtils.d("getAdvertFormat::"+ApiConfig.APP_DYNAMIC_ADVERT);
+                    break;
+            }
+        }
+
         return advertFormat;
     }
 
     public void setAdvertFormat(AdvertFormat advertFormat) {
-        this.advertFormat = advertFormat;
-    }
-
-    public ImageAdvert getImage() {
-        return image;
-    }
-
-    public void setImage(ImageAdvert image) {
-        if (image == null) {
+        if (advertFormat != null) {
+            this.advertFormat = advertFormat;
+        } else {
+            advertFormat = new AdvertFormat();
             Gson gson = new Gson();
+            LogUtils.d("setAdvertFormat::");
+            String json=gson.toJson(data);
+            LogUtils.d("setAdvertFormat::"+json);
             switch (type) {
                 case ApiConfig.APP_IMAGE_ADVERT:
-                    image = (gson.fromJson(gson.toJson(data), ImageAdvert.class));
+                    advertFormat.setImage(gson.fromJson(gson.toJson(data), ImageAdvert.class));
+                    LogUtils.d("setAdvertFormat::"+ApiConfig.APP_IMAGE_ADVERT);
                     break;
                 case ApiConfig.APP_DYNAMIC_ADVERT:
-                    analog = (gson.fromJson(gson.toJson(data), DynamicListAdvert.class));
+                    advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
+                            .class));
                     break;
             }
+            this.advertFormat = advertFormat;
         }
-        this.image = image;
 
     }
-
-    public DynamicListAdvert getAnalog() {
-        return analog;
-    }
-
-    public void setAnalog(DynamicListAdvert analog) {
-        if (analog == null) {
-            Gson gson = new Gson();
-            switch (type) {
-                case ApiConfig.APP_IMAGE_ADVERT:
-                    image = (gson.fromJson(gson.toJson(data), ImageAdvert.class));
-                    break;
-                case ApiConfig.APP_DYNAMIC_ADVERT:
-                    analog = (gson.fromJson(gson.toJson(data), DynamicListAdvert.class));
-                    break;
-            }
-        }
-        this.analog = analog;
-    }
-
 
     public Long getId() {
         return this.id;
@@ -170,8 +170,6 @@ public class RealAdvertListBean extends BaseListBean {
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeParcelable(this.advertFormat, flags);
-        dest.writeParcelable(this.image, flags);
-        dest.writeParcelable(this.analog, flags);
     }
 
     public RealAdvertListBean() {
@@ -187,13 +185,11 @@ public class RealAdvertListBean extends BaseListBean {
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.advertFormat = in.readParcelable(AdvertFormat.class.getClassLoader());
-        this.image = in.readParcelable(ImageAdvert.class.getClassLoader());
-        this.analog = in.readParcelable(DynamicListAdvert.class.getClassLoader());
     }
 
-    @Generated(hash = 970465889)
+    @Generated(hash = 1651798827)
     public RealAdvertListBean(Long id, Long space_id, String title, String type, String created_at,
-            String updated_at, AdvertFormat advertFormat, ImageAdvert image, DynamicListAdvert analog) {
+            String updated_at, AdvertFormat advertFormat) {
         this.id = id;
         this.space_id = space_id;
         this.title = title;
@@ -201,8 +197,6 @@ public class RealAdvertListBean extends BaseListBean {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.advertFormat = advertFormat;
-        this.image = image;
-        this.analog = analog;
     }
 
     public static final Creator<RealAdvertListBean> CREATOR = new Creator<RealAdvertListBean>() {

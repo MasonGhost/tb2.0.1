@@ -30,7 +30,8 @@ import rx.functions.Func1;
  * @Contact master.jungle68@gmail.com
  */
 
-public class GuidePresenter extends BasePresenter<GuideContract.Repository, GuideContract.View> implements GuideContract.Presenter {
+public class GuidePresenter extends BasePresenter<GuideContract.Repository, GuideContract.View>
+        implements GuideContract.Presenter {
 
     @Inject
     AuthRepository mIAuthRepository;
@@ -73,9 +74,10 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
         mRepository.getLaunchAdverts()
                 .flatMap(new Func1<List<AllAdverListBean>, Observable<List<AllAdverListBean>>>() {
                     @Override
-                    public Observable<List<AllAdverListBean>> call(List<AllAdverListBean> allAdverListBeen) {
-                        List<Observable<List<RealAdvertListBean>>> ids=new ArrayList<>();
-                        for (AllAdverListBean adverListBean:allAdverListBeen){
+                    public Observable<List<AllAdverListBean>> call(List<AllAdverListBean>
+                                                                           allAdverListBeen) {
+                        List<Observable<List<RealAdvertListBean>>> ids = new ArrayList<>();
+                        for (AllAdverListBean adverListBean : allAdverListBeen) {
                             ids.add(mRepository.getRealAdverts(adverListBean.getId().intValue()));
                         }
                         Observable.merge(ids).subscribe(realAdvertListBeen -> {
@@ -85,17 +87,21 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                     }
                 })
                 .subscribe(new BaseSubscribeForV2<List<AllAdverListBean>>() {
-            @Override
-            protected void onSuccess(List<AllAdverListBean> data) {
-                // 出入数据库
-                mAllAdvertLIstBeanGreendo.saveMultiData(data);
-            }
-        });
+                    @Override
+                    protected void onSuccess(List<AllAdverListBean> data) {
+                        // 出入数据库
+                        mAllAdvertLIstBeanGreendo.saveMultiData(data);
+                    }
+                });
     }
 
     @Override
-    public AllAdverListBean getBootAdvert() {
-        return mAllAdvertLIstBeanGreendo.getBootAdvert();
+    public List<RealAdvertListBean> getBootAdvert() {
+        AllAdverListBean boot = mAllAdvertLIstBeanGreendo.getBootAdvert();
+        if (boot != null) {
+            return boot.getMRealAdvertListBeen();
+        }
+        return null;
     }
 
     @Override

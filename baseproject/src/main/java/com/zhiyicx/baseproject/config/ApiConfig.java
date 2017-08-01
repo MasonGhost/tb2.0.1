@@ -410,7 +410,7 @@ public class ApiConfig {
     public static final String APP_LIKE_MUSIC = "musics";
     public static final String APP_LIKE_NEWS = "news";
 
-    public static final String APP_IMAGE_ADVERT = "iamge";
+    public static final String APP_IMAGE_ADVERT = "image";
     public static final String APP_DYNAMIC_ADVERT = "analog";
 
 

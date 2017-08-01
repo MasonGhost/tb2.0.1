@@ -39,7 +39,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends SkinCompatAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SqlScoutServer.create(this, getPackageName());
         if (savedInstanceState != null) {
             restoreData(savedInstanceState);
         }

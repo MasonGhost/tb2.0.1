@@ -58,6 +58,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     public void onResume() {
         super.onResume();
+        if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+            mPresenter.getLaunchAdverts();
+        }
         subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(aLong -> mPresenter.getBootAdvert()
@@ -66,7 +69,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
                         if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
-                            mPresenter.getLaunchAdverts();
                             initAdvert();
                         }
                     } else {
@@ -118,6 +120,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     public void onPageSelected(int position) {
         if (mGuideBanner == null)
             return;
+        mBootAdverts = mPresenter.getBootAdvert();
         mPosition = mGuideBanner.getCurrentItem();
         if (mPosition == mGuideBanner.getItemCount() - 1) {
             mGuideBanner.stopAutoPlay();
@@ -153,7 +156,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void OnBannerClick(int position) {
-        CustomWEBActivity.startToWEBActivity(getContext(), mBootAdverts.get(position).getImage().getLink(), "lalala");
+        CustomWEBActivity.startToWEBActivity(getContext(), mBootAdverts.get(position)
+                        .getAdvertFormat().getImage().getLink(),
+                "lalala");
     }
 
     @Override
@@ -165,11 +170,10 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     public void initAdvert() {
         List<String> urls = new ArrayList<>();
-        mBootAdverts = mPresenter.getBootAdvert().getMRealAdvertListBeen();
+        mBootAdverts = mPresenter.getBootAdvert();
         if (mBootAdverts != null) {
             for (RealAdvertListBean realAdvertListBean : mBootAdverts) {
-                realAdvertListBean.getImage().getImage();
-                urls.add("");
+                urls.add(realAdvertListBean.getAdvertFormat().getImage().getImage());
             }
         }
 

@@ -51,6 +51,12 @@ public class RealAdvertListBeanGreenDaoImpl extends CommonCacheImpl<RealAdvertLi
         return mRealAdvertListBeanDao.loadAll();
     }
 
+    public List<RealAdvertListBean> getAdvertById(long id) {
+        return mRealAdvertListBeanDao.queryBuilder().where(RealAdvertListBeanDao.Properties
+                .Space_id.eq
+                (id)).build().list();
+    }
+
     @Override
     public void clearTable() {
         mRealAdvertListBeanDao.deleteAll();
