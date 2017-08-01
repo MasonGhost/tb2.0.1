@@ -2,12 +2,14 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
@@ -41,12 +43,14 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_STATUS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NON_MEMBER_VERTIFYCODE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SINGLE_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVERSATIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
@@ -151,8 +155,14 @@ public interface CommonClient {
     /**
      * 获取广告列表
      */
-    @GET(SYSTEM_LAUNCH_ADVERT)
-    Observable<BaseJson<List<LaunchAdvertBean>>> getLaunchAdvert();
+    @GET(APP_PATH_GET_ADVERT_INFO)
+    Observable<List<AllAdverListBean>> getLaunchAdvert();
+
+    /**
+     * 获取某个广告位广告列表
+     */
+    @GET(APP_PATH_GET_SINGLE_ADVERT_INFO)
+    Observable<List<RealAdvertListBean>> getRealAdvert(@Path("advert_id") long advert_id);
 
     /**
      * 获取支付信息

@@ -5,7 +5,9 @@ import android.content.Context;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 
 import java.util.List;
@@ -42,7 +44,8 @@ public interface GuideContract {
          */
         Observable<String> getDirCacheSize(Context context);
 
-        Observable<BaseJson<List<LaunchAdvertBean>>> getLaunchAdverts();
+        Observable<List<AllAdverListBean>> getLaunchAdverts();
+        Observable<List<RealAdvertListBean>> getRealAdverts(long space_id);
 
     }
 
@@ -53,6 +56,8 @@ public interface GuideContract {
         SystemConfigBean getAdvert();
 
         void getLaunchAdverts();
+
+        AllAdverListBean getBootAdvert();
     }
 
 }

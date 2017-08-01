@@ -173,6 +173,7 @@ dependencies {
     }
     testCompile testDependences.runner
     testCompile testDependences.robolectric
+    testCompile 'com.idescout.sql:sqlscout-server:2.0'
     testCompile testDependences.mockito
     annotationProcessor dataDependences.daggerCompiler
     // Dagger dependencies

@@ -7,8 +7,8 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -54,18 +54,18 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     }
 
     @Override
-    public Observable<List<CommentedBean>> getMusicCommentList(String music_id,
-                                                               long max_id) {
+    public Observable<List<MusicCommentListBean>> getMusicCommentList(String music_id,
+                                                                      long max_id) {
         return mMusicClient.getMusicCommentList(music_id, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
-                .flatMap(new Func1<List<CommentedBean>, Observable<List<CommentedBean>>>() {
+                .flatMap(new Func1<List<MusicCommentListBean>, Observable<List<MusicCommentListBean>>>() {
                     @Override
-                    public Observable<List<CommentedBean>> call(List<CommentedBean> commentedBeens) {
+                    public Observable<List<MusicCommentListBean>> call(List<MusicCommentListBean> commentedBeens) {
                         if (commentedBeens.isEmpty()) {
                             return Observable.just(commentedBeens);
                         } else {
                             final List<Object> user_ids = new ArrayList<>();
-                            for (CommentedBean commentListBean : commentedBeens) {
+                            for (MusicCommentListBean commentListBean : commentedBeens) {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_user());
                             }
@@ -79,17 +79,17 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id()
                                                 .intValue(), userInfoBean);
                                     }
-                                    for (CommentedBean commentListBean : commentedBeens) {
-                                        commentListBean.setCommentUserInfo(
-                                                (userInfoBeanSparseArray.get(commentListBean
-                                                        .getUser_id().intValue())));
+                                    for (MusicCommentListBean commentListBean : commentedBeens) {
+                                        commentListBean.setFromUserInfoBean(
+                                                (userInfoBeanSparseArray.get((int) commentListBean
+                                                        .getUser_id())));
                                         if (commentListBean.getReply_user() == 0) { // 如果
                                             // reply_user_id = 0 回复动态
                                             UserInfoBean userInfoBean = new UserInfoBean();
                                             userInfoBean.setUser_id(0L);
-                                            commentListBean.setReplyUserInfo(userInfoBean);
+                                            commentListBean.setToUserInfoBean(userInfoBean);
                                         } else {
-                                            commentListBean.setReplyUserInfo(userInfoBeanSparseArray.get(commentListBean.getReply_user().intValue()));
+                                            commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
                                         }
 
                                     }
@@ -105,20 +105,20 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
     }
 
     @Override
-    public Observable<List<CommentedBean>> getAblumCommentList(String special_id, Long max_id) {
+    public Observable<List<MusicCommentListBean>> getAblumCommentList(String special_id, Long max_id) {
         return mMusicClient.getAblumCommentList(special_id, max_id,
                 Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
-                .flatMap(new Func1<List<CommentedBean>, Observable<List<CommentedBean>>>() {
+                .flatMap(new Func1<List<MusicCommentListBean>, Observable<List<MusicCommentListBean>>>() {
 
                     @Override
-                    public Observable<List<CommentedBean>> call
-                            (final List<CommentedBean> listBaseJson) {
+                    public Observable<List<MusicCommentListBean>> call
+                            (final List<MusicCommentListBean> listBaseJson) {
 
                         if (listBaseJson.isEmpty()) {
                             return Observable.just(listBaseJson);
                         } else {
                             final List<Object> user_ids = new ArrayList<>();
-                            for (CommentedBean commentListBean : listBaseJson) {
+                            for (MusicCommentListBean commentListBean : listBaseJson) {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_user());
                             }
@@ -132,17 +132,17 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id()
                                                 .intValue(), userInfoBean);
                                     }
-                                    for (CommentedBean commentListBean : listBaseJson) {
-                                        commentListBean.setCommentUserInfo(
-                                                (userInfoBeanSparseArray.get(commentListBean
-                                                        .getUser_id().intValue())));
+                                    for (MusicCommentListBean commentListBean : listBaseJson) {
+                                        commentListBean.setFromUserInfoBean(
+                                                (userInfoBeanSparseArray.get((int) commentListBean
+                                                        .getUser_id())));
                                         if (commentListBean.getReply_user() == 0) { // 如果
                                             // reply_user_id = 0 回复动态
                                             UserInfoBean userInfoBean = new UserInfoBean();
                                             userInfoBean.setUser_id(0L);
-                                            commentListBean.setReplyUserInfo(userInfoBean);
+                                            commentListBean.setToUserInfoBean(userInfoBean);
                                         } else {
-                                            commentListBean.setReplyUserInfo(userInfoBeanSparseArray.get(commentListBean.getReply_user().intValue()));
+                                            commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
                                         }
 
                                     }
@@ -180,8 +180,8 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.DELETE, params);
-        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(),ApiConfig
-                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, music_id,comment_id));
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig
+                .APP_PATH_MUSIC_DELETE_COMMENT_FORMAT, music_id, comment_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }

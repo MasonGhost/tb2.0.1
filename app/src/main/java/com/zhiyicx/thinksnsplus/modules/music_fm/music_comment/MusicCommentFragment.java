@@ -17,7 +17,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
@@ -53,7 +53,7 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  * @Description
  */
 public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Presenter,
-        CommentedBean> implements MusicCommentContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
+        MusicCommentListBean> implements MusicCommentContract.View, OnUserInfoClickListener, OnCommentTextClickListener,
         InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener,
         MusicCommentItem.OnReSendClickListener, MusicCommentHeader.HeadlerClickEvent {
 
@@ -184,7 +184,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
-    public void onReSendClick(CommentedBean musicCommentListBean) {
+    public void onReSendClick(MusicCommentListBean musicCommentListBean) {
         initReSendCommentPopupWindow(musicCommentListBean);
         mReSendCommentPopWindow.show();
     }
@@ -230,7 +230,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
             showCommentView();
             String contentHint = getString(R.string.default_input_hint);
             if (mListDatas.get(position).getReply_user() != mHeaderInfo.getId()) {
-                contentHint = getString(R.string.reply, mListDatas.get(position).getCommentUserInfo().getName());
+                contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
             }
             mIlvComment.setEtContentHint(contentHint);
         }
@@ -257,14 +257,14 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
     }
 
     @Override
-    protected Long getMaxId(@NotNull List<CommentedBean> data) {
+    protected Long getMaxId(@NotNull List<MusicCommentListBean> data) {
         return data.get(data.size() - 1).getId();
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<CommentedBean> data, boolean isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<MusicCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore && data.isEmpty()) { // 增加空数据，用于显示占位图
-            CommentedBean emptyData = new CommentedBean();
+            MusicCommentListBean emptyData = new MusicCommentListBean();
             data.add(emptyData);
             mMusicCommentHeader.setCommentList(0);
         } else if (!isLoadMore && !data.isEmpty()) {
@@ -330,7 +330,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
         DeviceUtils.showSoftKeyboard(getActivity(), mIlvComment.getEtContent());
     }
 
-    private void initDeleteCommentPopupWindow(final CommentedBean data) {
+    private void initDeleteCommentPopupWindow(final MusicCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_delete_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
@@ -353,7 +353,7 @@ public class MusicCommentFragment extends TSListFragment<MusicCommentContract.Pr
                 .build();
     }
 
-    private void initReSendCommentPopupWindow(final CommentedBean commentBean) {
+    private void initReSendCommentPopupWindow(final MusicCommentListBean commentBean) {
         mReSendCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_list_resend_comment))
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))

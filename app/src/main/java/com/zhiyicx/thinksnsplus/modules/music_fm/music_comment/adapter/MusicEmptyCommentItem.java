@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.widget.EmptyView;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.widget.EmptyItem;
@@ -17,9 +17,9 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  * @Date 2017/3/10
  * @Contact master.jungle68@gmail.com
  */
-public class MusicEmptyCommentItem extends EmptyItem<CommentedBean> {
+public class MusicEmptyCommentItem extends EmptyItem<MusicCommentListBean> {
     @Override
-    public boolean isForViewType(CommentedBean item, int position) {
+    public boolean isForViewType(MusicCommentListBean item, int position) {
         return TextUtils.isEmpty(item.getComment_content());
     }
 }

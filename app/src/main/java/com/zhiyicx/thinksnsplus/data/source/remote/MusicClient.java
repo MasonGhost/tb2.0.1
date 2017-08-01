@@ -55,7 +55,7 @@ public interface MusicClient {
 
     // 获取专辑评论列表
     @GET(APP_PATH_MUSIC_ABLUM_COMMENT_LIST)
-    Observable<List<CommentedBean>> getAblumCommentList(@Path("special_id") String
+    Observable<List<MusicCommentListBean>> getAblumCommentList(@Path("special_id") String
                                                                                  music_id,
                                                                   @Query("max_id") Long max_id,
                                                                   @Query("limit") Long limit);
@@ -66,7 +66,7 @@ public interface MusicClient {
 
     // 获取歌曲评论列表
     @GET(APP_PATH_MUSIC_COMMENT)
-    Observable<List<CommentedBean>> getMusicCommentList(@Path("music_id") String
+    Observable<List<MusicCommentListBean>> getMusicCommentList(@Path("music_id") String
                                                                                  music_id,
                                                                          @Query("max_id") Long max_id,
                                                                          @Query("limit") Long limit);

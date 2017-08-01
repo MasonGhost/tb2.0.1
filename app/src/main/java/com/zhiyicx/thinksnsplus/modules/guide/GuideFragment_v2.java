@@ -5,24 +5,18 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.gson.internal.LinkedTreeMap;
 import com.jakewharton.rxbinding.view.RxView;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.BannerImageLoaderUtil;
 import com.zhiyicx.thinksnsplus.widget.TCountTimer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,10 +24,7 @@ import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.guide.GuideFragment.DEFAULT_DELAY_TIME;
 
@@ -49,6 +40,8 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     TCountTimer mTimer;
     Subscription subscription;
     int mPosition;
+
+    private List<RealAdvertListBean> mBootAdverts;
 
     @Override
     protected int getBodyLayoutId() {
@@ -67,10 +60,15 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         super.onResume();
         subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(aLong -> mPresenter.getAdvert() != null && mPresenter.getAdvert().getAdverts() != null)
+                .map(aLong -> mPresenter.getBootAdvert()
+                        != null && mPresenter.getAdvert() != null
+                        && mPresenter.getAdvert().getAdverts() != null)
                 .subscribe(aBoolean -> {
-                    if (aBoolean && com.zhiyicx.common.BuildConfig.USE_ADVERT) {
-                        initAdvert();
+                    if (aBoolean) {
+                        if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+                            mPresenter.getLaunchAdverts();
+                            initAdvert();
+                        }
                     } else {
                         mPresenter.checkLogin();
                     }
@@ -155,7 +153,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void OnBannerClick(int position) {
-        CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala");
+        CustomWEBActivity.startToWEBActivity(getContext(), mBootAdverts.get(position).getImage().getLink(), "lalala");
     }
 
     @Override
@@ -167,12 +165,14 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     public void initAdvert() {
         List<String> urls = new ArrayList<>();
-        List<SystemConfigBean.Advert> advertList = mPresenter.getAdvert().getAdverts();
-        for (SystemConfigBean.Advert advert : advertList) {
-            if (advert.getImageAdvert() != null) {
-                urls.add(advert.getImageAdvert().getImage());
+        mBootAdverts = mPresenter.getBootAdvert().getMRealAdvertListBeen();
+        if (mBootAdverts != null) {
+            for (RealAdvertListBean realAdvertListBean : mBootAdverts) {
+                realAdvertListBean.getImage().getImage();
+                urls.add("");
             }
         }
+
         mGuideText.setVisibility(View.VISIBLE);
         mTimer = TCountTimer.builder()
                 .buildBtn(mGuideText)

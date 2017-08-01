@@ -1,21 +1,27 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
-import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
-import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertLIstBeanGreendoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.RealAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.WalletRepository;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @Describe
@@ -32,6 +38,10 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
     SystemRepository mSystemRepository;
     @Inject
     WalletRepository mWalletRepository;
+    @Inject
+    AllAdvertLIstBeanGreendoImpl mAllAdvertLIstBeanGreendo;
+    @Inject
+    RealAdvertListBeanGreenDaoImpl mRealAdvertListBeanGreenDao;
 
     @Inject
     public GuidePresenter(GuideContract.Repository repository, GuideContract.View rootView) {
@@ -60,12 +70,32 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
 
     @Override
     public void getLaunchAdverts() {
-        mRepository.getLaunchAdverts().subscribe(new BaseSubscribe<List<LaunchAdvertBean>>() {
+        mRepository.getLaunchAdverts()
+                .flatMap(new Func1<List<AllAdverListBean>, Observable<List<AllAdverListBean>>>() {
+                    @Override
+                    public Observable<List<AllAdverListBean>> call(List<AllAdverListBean> allAdverListBeen) {
+                        List<Observable<List<RealAdvertListBean>>> ids=new ArrayList<>();
+                        for (AllAdverListBean adverListBean:allAdverListBeen){
+                            ids.add(mRepository.getRealAdverts(adverListBean.getId().intValue()));
+                        }
+                        Observable.merge(ids).subscribe(realAdvertListBeen -> {
+                            mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
+                        });
+                        return Observable.just(allAdverListBeen);
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<List<AllAdverListBean>>() {
             @Override
-            protected void onSuccess(List<LaunchAdvertBean> data) {
+            protected void onSuccess(List<AllAdverListBean> data) {
                 // 出入数据库
+                mAllAdvertLIstBeanGreendo.saveMultiData(data);
             }
         });
+    }
+
+    @Override
+    public AllAdverListBean getBootAdvert() {
+        return mAllAdvertLIstBeanGreendo.getBootAdvert();
     }
 
     @Override
