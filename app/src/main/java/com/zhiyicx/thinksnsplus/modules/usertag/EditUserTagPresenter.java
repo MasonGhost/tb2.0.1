@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -51,7 +52,7 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
     @Override
     public void getAllTags() {
 
-        Subscription subscription = rx.Observable.zip(mSystemRepository.getAllTags(), mUserInfoRepository.getCurrentUserTags(), (categorys, userTags) -> {
+        Subscription subscription = Observable.zip(mSystemRepository.getAllTags(), mUserInfoRepository.getCurrentUserTags(), (categorys, userTags) -> {
             try {
                 mTagCategoryBeanGreenDao.clearTable();
                 mUserTagBeanGreenDao.clearTable();
@@ -60,9 +61,20 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
 
             if (!categorys.isEmpty()) {
                 mTagCategoryBeanGreenDao.saveMultiData(categorys);
+
+                for (TagCategoryBean category : categorys) {
+                    if (category.getTags() != null) {
+                        mUserTagBeanGreenDao.saveMultiData(category.getTags());
+                    }
+                }
+
+                for (UserTagBean userTag : userTags) {
+                    userTag.setMine_has(true);
+                }
                 mUserTagBeanGreenDao.saveMultiData(userTags);
+
+
             }
-            LogUtils.d("------", mTagCategoryBeanGreenDao.getMultiDataFromCache().toString());
             mRootView.updateMineTagsFromNet(userTags);
             return mTagCategoryBeanGreenDao.getMultiDataFromCache();
         }).subscribeOn(AndroidSchedulers.mainThread())

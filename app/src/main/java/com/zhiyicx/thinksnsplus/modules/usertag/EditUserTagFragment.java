@@ -23,6 +23,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.internal.operators.SingleToObservable;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -255,8 +261,22 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     public void deleteTagSuccess(int position) {
         mChoosedTags.get(position).setMine_has(false);
         mPresenter.handleCategoryTagsClick(mChoosedTags.get(position));
-        mChoosedTagAdapter.removeItem(position);
-        mTagClassAdapter.notifyAllSectionsDataSetChanged();
+        Observable.from(mCategoryTags)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(tagCategoryBean -> tagCategoryBean.getId() == mChoosedTags.get(position).getTag_category_id())
+                .map(tagCategoryBean -> {
+                            for (UserTagBean userTagBean : tagCategoryBean.getTags()) {
+                                userTagBean.setMine_has(false);
+                                return true;
+                            }
+                            return false;
+                        }
+                ).subscribe(aBoolean -> {
+            mChoosedTagAdapter.removeItem(position);
+            mTagClassAdapter.notifyAllSectionsDataSetChanged();
+        }, throwable -> throwable.printStackTrace());
+
 
     }
 }
