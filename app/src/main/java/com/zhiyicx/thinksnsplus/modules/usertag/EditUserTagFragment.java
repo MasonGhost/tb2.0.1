@@ -15,6 +15,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridLayoutManager;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
@@ -51,8 +52,6 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
 
     @BindView(R.id.tv_choosed_tag_tip)
     TextView mTvChoosedTagTip;
-    @BindView(R.id.tv_jump_over)
-    TextView mTvJumpOver;
     @BindView(R.id.rv_choosed_tag)
     RecyclerView mRvChoosedTag;
     @BindView(R.id.rv_tag_class)
@@ -100,9 +99,16 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         return true;
     }
 
+
     @Override
-    protected String setRightTitle() {
-        return getString(R.string.save);
+    protected void setRightClick() {
+        if (mIsFromRegister) { // 注册就进入主页，设置就返回
+
+            startActivity(new Intent(getActivity(), HomeActivity.class));
+        } else {
+            getActivity().finish();
+
+        }
     }
 
     @Override
@@ -117,22 +123,37 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     protected void initView(View rootView) {
         if (mIsFromRegister) { // 隐藏返回键
             mToolbarLeft.setVisibility(View.INVISIBLE);
+            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
+            mToolbarRight.setVisibility(View.VISIBLE);
+        }else
+        {
+            mToolbarRight.setVisibility(View.INVISIBLE);
         }
         mMaxChooseNums = getResources().getInteger(R.integer.user_tag_max_nums);
-        mTvChoosedTagTip.setText(getString(R.string.user_tag_choosed_tag_format, mMaxChooseNums, mCurrentChooseNums));
+        updateChooseTip();
         initRvChoosedTag();
         initRvTagClass();
         initListener();
     }
 
+    private void updateChooseTip() {
+        mTvChoosedTagTip.setText(getString(R.string.user_tag_choosed_tag_format, mMaxChooseNums, mCurrentChooseNums));
+    }
+
     @Override
     protected void initData() {
 
-        if (mIsFromRegister) {
-            initTipPop();
-        }
 
         mPresenter.getAllTags();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (mIsFromRegister) {
+            getView().post(() -> initTipPop());
+        }
+
     }
 
     private void initTipPop() {
@@ -241,20 +262,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
 
     private void initListener() {
 
-        // 跳过
-        RxView.clicks(mTvJumpOver)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
 
-                    if (mIsFromRegister) { // 注册就进入主页，设置就返回
-
-                        startActivity(new Intent(getActivity(), HomeActivity.class));
-                    } else {
-                        getActivity().finish();
-
-                    }
-                });
     }
 
     /**
@@ -262,8 +270,16 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
      *
      * @return
      */
-    private boolean checkSaveEnable() {
-        return mCurrentChooseNums > 0;
+    private void updateChooseAboutView() {
+        mCurrentChooseNums = mChoosedTags.size();
+        updateChooseTip();
+        if (mCurrentChooseNums > 0) {
+            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.themeColor));
+            mToolbarRight.setText(getString(R.string.next));
+        }else {
+            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
+            mToolbarRight.setText(R.string.jump_over);
+        }
     }
 
     /**
@@ -289,7 +305,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mChoosedTags.clear();
         mChoosedTags.addAll(tags);
         mChoosedTagAdapter.notifyDataSetChanged();
-
+        updateChooseAboutView();
     }
 
     @Override
@@ -312,6 +328,8 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mChoosedTags.add(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
         mChoosedTagAdapter.notifyDataSetChanged();
         mTagClassAdapter.notifyAllSectionsDataSetChanged();
+        updateChooseAboutView();
+
     }
 
     @Override
@@ -332,6 +350,8 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
                 ).subscribe(aBoolean -> {
             mChoosedTagAdapter.removeItem(position);
             mTagClassAdapter.notifyAllSectionsDataSetChanged();
+            updateChooseAboutView();
+
         }, throwable -> throwable.printStackTrace());
 
 

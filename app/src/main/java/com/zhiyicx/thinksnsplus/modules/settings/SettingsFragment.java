@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
@@ -23,6 +24,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment.BUNDLE_IS_FROM_REGISTER;
 
 /**
  * @Describe
@@ -113,8 +115,15 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转账户管理页面
-                    Intent intent = new Intent(getActivity(), AccountManagementActivity.class);
+//                    Intent intent = new Intent(getActivity(), AccountManagementActivity.class);
+//                    startActivity(intent);
+
+                    Intent intent = new Intent(getActivity(), EditUserTagActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(BUNDLE_IS_FROM_REGISTER, true);
+                    intent.putExtras(bundle);
                     startActivity(intent);
+                    getActivity().finish();
                 });
         // 修改密码
         RxView.clicks(mBtChangePassword)
