@@ -19,7 +19,11 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -75,9 +79,15 @@ public class ReWardsView extends FrameLayout {
         mRVUsers.setLayoutManager(mLayoutManager);
         mRVUsers.setHasFixedSize(true);
         mRVUsers.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small), getResources().getDimensionPixelOffset(R.dimen.spacing_small)));
-        mCommonAdapter= new CommonAdapter<RewardsListBean>(getContext(), R.layout.item_account, new ArrayList<>()) {
+        mCommonAdapter = new CommonAdapter<RewardsListBean>(getContext(), R.layout.item_rewards_user_image, new ArrayList<>()) {
             @Override
             protected void convert(ViewHolder holder, RewardsListBean rewardsListBean, int position) {
+
+                ImageUtils.loadCircleUserHeadPic(rewardsListBean.getUser(), holder.getView(R.id.iv_head));
+
+                RxView.clicks(holder.getView(R.id.iv_head))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(getContext(), rewardsListBean.getUser()));
 
             }
         };
