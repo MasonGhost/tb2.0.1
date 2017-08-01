@@ -269,6 +269,8 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION +"news/{news_id}/rewards";
     // 打赏用户列表
     public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION +"/news/{news_id}/rewards";
+    // 资讯打赏统计
+    public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION +"/news/{news_id}/rewards/sum";
 
 
     /**

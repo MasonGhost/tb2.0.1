@@ -8,6 +8,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_COUNT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_USER_LIST;
 
 /**
@@ -103,5 +105,12 @@ public interface InfoDetailsConstract {
          */
         Observable<List<RewardsListBean>> rewardsInfoList(long news_id, Integer limit, Integer since, String order, String order_type);
 
+        /**
+         * 资讯打赏统计
+         *
+         * @param news_id 咨询 id
+         * @return
+         */
+        Observable<RewardsCountBean> getRewardsCount(long news_id);
     }
 }
