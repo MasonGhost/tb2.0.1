@@ -1,9 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.reward;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,25 +16,11 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.pingplusplus.android.Pingpp;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.config.PayConfig;
-import com.zhiyicx.baseproject.widget.button.CombinationButton;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
-import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeContract;
-import com.zhiyicx.tspay.TSPayClient;
 
-import org.simple.eventbus.EventBus;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -43,13 +29,14 @@ import butterknife.BindView;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
- * @Describe
+ * @Describe 打赏页
  * @Author Jungle68
  * @Date 2017/05/22
  * @Contact master.jungle68@gmail.com
  */
 public class RewardFragment extends TSFragment<RewardContract.Presenter> implements RewardContract.View {
     public static final String BUNDLE_DATA = "walletconfig";
+    public static final String BUNDLE_REWARD_TYPE = "reward_type";
 
     @BindView(R.id.ll_recharge_choose_money_item)
     LinearLayout mLlRechargeChooseMoneyItem;
@@ -68,11 +55,11 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @BindView(R.id.bt_top)
     TextView mBtTop;
 
-
+    private RewardType mRewardType; // reward type
     private WalletConfigBean mWalletConfigBean; // wallet config info
 
 
-    private double mRechargeMoney; // money choosed for recharge
+    private double mRewardMoney; // money choosed for reward
 
     private List<Float> mRechargeLables; // recharge lables
 
@@ -115,7 +102,6 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -132,9 +118,9 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
                 int id = UIUtils.getResourceByName("pay_" + result, "string", getContext());
-                if (result.contains("success")){
+                if (result.contains("success")) {
                     showSnackSuccessMessage(getString(id));
-                }else{
+                } else {
                     showSnackErrorMessage(getString(id));
                 }
                 if (result.equals("success")) {
@@ -189,18 +175,18 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String mRechargeMoneyStr = charSequence.toString();
             if (mRechargeMoneyStr.replaceAll(" ", "").length() > 0) {
-                mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
+                mRewardMoney = Double.parseDouble(mRechargeMoneyStr);
                 if (mRbDaysGroup.getCheckedRadioButtonId() != -1) {
                     mRbDaysGroup.clearCheck();
                 }
             } else {
-                mRechargeMoney = 0;
+                mRewardMoney = 0;
             }
             configSureButton();
         }, throwable -> {
             throwable.printStackTrace();
             setCustomMoneyDefault();
-            mRechargeMoney = 0;
+            mRewardMoney = 0;
             configSureButton();
         });
 
@@ -212,13 +198,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                     }
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRechargeMoney = mRechargeLables.get(0);
+                            mRewardMoney = mRechargeLables.get(0);
                             break;
                         case R.id.rb_two:
-                            mRechargeMoney = mRechargeLables.get(1);
+                            mRewardMoney = mRechargeLables.get(1);
                             break;
                         case R.id.rb_three:
-                            mRechargeMoney = mRechargeLables.get(2);
+                            mRewardMoney = mRechargeLables.get(2);
                             break;
                     }
                     if (checkedId != -1) {
@@ -236,9 +222,22 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     }
 
     private void configSureButton() {
-        mBtTop.setEnabled(mRechargeMoney > 0);
+        mBtTop.setEnabled(mRewardMoney > 0);
     }
 
 
+    /**
+     *
+     * @param context not application context clink
+     * @param rewardType  reward type {@link RewardType}
+     */
+    public static void startRewardActivity(Context context, RewardType rewardType) {
 
+        Intent intent = new Intent(context, RewardActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_REWARD_TYPE, rewardType);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+
+    }
 }

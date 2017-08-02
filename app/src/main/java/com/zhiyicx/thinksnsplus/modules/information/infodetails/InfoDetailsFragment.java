@@ -28,7 +28,7 @@ import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmp
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.widget.ReWardsView;
+import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -123,9 +123,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 ItemOnWebEventListener()) {
             @Override
             protected void dealRewards(ViewHolder holder) {
-                ((ReWardsView) holder.getView(R.id.v_reward)).updateRewardsCount(mRewardsCountBean);
-                ((ReWardsView) holder.getView(R.id.v_reward)).updateRewardsUser(mRewardsListBeen);
-                ((ReWardsView) holder.getView(R.id.v_reward)).setOnRewardsClickListener(() -> {
+                ((ReWardView) holder.getView(R.id.v_reward)).updateRewardsCount(mRewardsCountBean);
+                ((ReWardView) holder.getView(R.id.v_reward)).updateRewardsUser(mRewardsListBeen);
+                ((ReWardView) holder.getView(R.id.v_reward)).setOnRewardsClickListener(() -> {
                 });
             }
 

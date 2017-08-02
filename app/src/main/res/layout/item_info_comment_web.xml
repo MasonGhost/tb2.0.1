@@ -18,7 +18,7 @@
         layout="@layout/item_dynamic_detail_dig"
         android:visibility="gone"/>
 
-    <com.zhiyicx.thinksnsplus.widget.ReWardsView
+    <com.zhiyicx.thinksnsplus.widget.ReWardView
         android:id="@+id/v_reward"
         android:background="@color/white"
         android:layout_width="match_parent"

@@ -1,10 +1,10 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,19 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.widget.EmptyView;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
@@ -43,7 +40,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class ReWardsView extends FrameLayout {
+public class ReWardView extends FrameLayout {
 
     protected TextView mBtRewards;
     protected TextView mTvRewardsTip;
@@ -56,15 +53,15 @@ public class ReWardsView extends FrameLayout {
     private List<RewardsListBean> mListData = new ArrayList<>();
 
 
-    public ReWardsView(@NonNull Context context) {
+    public ReWardView(@NonNull Context context) {
         this(context, null);
     }
 
-    public ReWardsView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ReWardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ReWardsView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public ReWardView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -108,6 +105,14 @@ public class ReWardsView extends FrameLayout {
                     if (mOnRewardsClickListener != null) {
                         mOnRewardsClickListener.onRewardClick();
                     }
+                    RewardFragment.startRewardActivity(getContext(), RewardType.INFO);
+
+                });
+        // 打赏用户列表
+        RxView.clicks(mIvRightArrow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    // TODO: 2017/8/2 reward list
                 });
     }
 
