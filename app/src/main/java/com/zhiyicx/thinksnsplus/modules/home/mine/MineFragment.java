@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
 
 import javax.inject.Inject;
 
@@ -46,7 +47,8 @@ import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
  * @Date 2017/1/5
  * @Contact master.jungle68@gmail.com
  */
-public class MineFragment extends TSFragment<MineContract.Presenter> implements MineContract.View {
+public class MineFragment extends TSFragment<MineContract.Presenter> implements MineContract.View,
+        CertificationTypePopupWindow.OnTypeSelectListener {
 
     @BindView(R.id.iv_head_icon)
     ImageView mIvHeadIcon;
@@ -76,9 +78,13 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     CombinationButton mBtQuestionAnswer;
     @BindView(R.id.bt_setting)
     CombinationButton mBtSetting;
+    @BindView(R.id.bt_certification)
+    CombinationButton mBtCertification; // 认证
 
     @BindView(R.id.bv_fans_new_count)
     BadgeView mVvFansNewCount;
+
+    private CertificationTypePopupWindow mCertificationWindow; // 选择认证人类的弹窗
 
     @Inject
     public MinePresenter mMinePresenter;
@@ -169,7 +175,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
     }
 
-    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting})
+    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting, R.id.bt_certification})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -222,6 +228,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             case R.id.bt_setting:
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
+            case R.id.bt_certification:
+                // 弹窗选择个人或者机构
+                initCertificationTypePop();
+                break;
             default:
         }
     }
@@ -262,4 +272,23 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
     }
 
+    private void initCertificationTypePop(){
+        if (mCertificationWindow == null){
+            mCertificationWindow = CertificationTypePopupWindow.Builder()
+                    .with(getActivity())
+                    .alpha(0.8f)
+                    .setListener(this)
+                    .build();
+        }
+        mCertificationWindow.show();
+    }
+
+    @Override
+    public void onTypeSelected(int position) {
+        if (position == 0){
+            // 跳转个人认证
+        } else {
+            // 跳转企业认证
+        }
+    }
 }
