@@ -15,6 +15,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
 import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
@@ -180,7 +182,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected void initData() {
         super.initData();
-        mPresenter.reqReWardsData(mInfoMation.getId());
     }
 
     @Override
@@ -261,6 +262,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             data.add(0, position_zero);
         }
         super.onNetResponseSuccess(data, isLoadMore);
+        if (!isLoadMore) {
+            Observable.timer(500, TimeUnit.MILLISECONDS)
+                    .subscribe(aLong -> {
+                        mPresenter.reqReWardsData(mInfoMation.getId());// 刷新打赏
+                    });
+
+        }
     }
 
     @Override
