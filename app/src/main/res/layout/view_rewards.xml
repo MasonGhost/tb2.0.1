@@ -18,7 +18,7 @@
         android:paddingRight="@dimen/spacing_normal_large"
         android:paddingStart="@dimen/spacing_normal_large"
         android:paddingTop="@dimen/spacing_mid_small_8dp"
-        android:text="@string/rewards"
+        android:text="@string/reward"
         android:textColor="@color/white"
         android:textSize="@dimen/size_content_assist"/>
 
@@ -29,7 +29,7 @@
         android:layout_marginTop="@dimen/spacing_mid_small_8dp"
         android:gravity="center"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="@string/rewards_show"/>
+        tools:text="@string/reward_show"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -24,7 +24,7 @@ public interface IRewardRepository {
      * @param amount  打赏金额
      * @return
      */
-    Observable<Object> rewardsInfo(long news_id, float amount);
+    Observable<Object> rewardsInfo(long news_id, double amount);
 
 
     /**

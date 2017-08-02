@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,8 +21,6 @@ import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.list.RewardListFragment;
@@ -86,7 +83,7 @@ public class ReWardView extends FrameLayout {
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
         mRVUsers.setLayoutManager(mLayoutManager);
         mRVUsers.setHasFixedSize(true);
-        mRVUsers.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small),0));
+        mRVUsers.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small), 0));
         mCommonAdapter = new CommonAdapter<RewardsListBean>(getContext(), R.layout.item_rewards_user_image, mListData) {
             @Override
             protected void convert(ViewHolder holder, RewardsListBean rewardsListBean, int position) {
@@ -112,7 +109,7 @@ public class ReWardView extends FrameLayout {
                     if (mOnRewardsClickListener != null) {
                         mOnRewardsClickListener.onRewardClick();
                     }
-                    RewardFragment.startRewardActivity(getContext(), RewardType.INFO);
+                    RewardFragment.startRewardActivity(getContext(), RewardType.INFO,mSourceId);
 
                 });
         // 打赏用户列表
@@ -126,7 +123,7 @@ public class ReWardView extends FrameLayout {
     /**
      * 更新打赏总量
      *
-     * @param rewardsCountBean
+     * @param rewardsCountBean the total rewad data
      */
     public void updateRewardsCount(RewardsCountBean rewardsCountBean) {
 
@@ -143,7 +140,7 @@ public class ReWardView extends FrameLayout {
             e.printStackTrace();
         }
 
-        String result = getResources().getString(R.string.rewards_show, "<" + rewardsCountBean.getCount() + ">", "<" + getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">");
+        String result = getResources().getString(R.string.reward_show, "<" + rewardsCountBean.getCount() + ">", "<" + getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">");
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.money))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
@@ -155,7 +152,7 @@ public class ReWardView extends FrameLayout {
     /**
      * 更新打赏用户列表
      *
-     * @param data
+     * @param data user list for this rewad source
      */
     public void updateRewardsUser(List<RewardsListBean> data) {
         if (data == null) {
@@ -164,7 +161,7 @@ public class ReWardView extends FrameLayout {
         mListData.clear();
         if (data.size() > 10) {
             mIvRightArrow.setVisibility(VISIBLE);
-            mListData.addAll(data.subList(0,9));
+            mListData.addAll(data.subList(0, 9));
         } else {
             mIvRightArrow.setVisibility(INVISIBLE);
             mListData.addAll(data);
@@ -173,8 +170,26 @@ public class ReWardView extends FrameLayout {
 
     }
 
+    /**
+     * 更新资源 id
+     *
+     * @param sourceId source id for this reward
+     */
     public void updateSourceId(long sourceId) {
         this.mSourceId = sourceId;
+    }
+
+    /**
+     * 初始化打赏数据
+     *
+     * @param sourceId         source id for this reward
+     * @param listData         user list for this rewad source
+     * @param rewardsCountBean the total rewad data
+     */
+    public void initData(long sourceId, List<RewardsListBean> listData, RewardsCountBean rewardsCountBean) {
+        updateSourceId(sourceId);
+        updateRewardsUser(listData);
+        updateRewardsCount(rewardsCountBean);
     }
 
     public void setOnRewardsClickListener(OnRewardsClickListener onRewardsClickListener) {

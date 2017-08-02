@@ -9,11 +9,7 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.modules.rank.RankAdapter;
-import com.zhiyicx.thinksnsplus.modules.rank.RankContract;
-import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
@@ -63,7 +59,7 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.rewards_list);
+        return getString(R.string.reward_list);
     }
 
     @Override
@@ -97,11 +93,10 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
     }
 
     /**
-     *
-     * @param context not application context clink
-     * @param rewardType  reward type {@link RewardType}
+     * @param context    not application context clink
+     * @param rewardType reward type {@link RewardType}
      */
-    public static void startRewardActivity(Context context, RewardType rewardType,long sourceId,List<RewardsListBean> data) {
+    public static void startRewardActivity(Context context, RewardType rewardType, long sourceId, List<RewardsListBean> data) {
 
         Intent intent = new Intent(context, RewardListActivity.class);
         Bundle bundle = new Bundle();

@@ -38,8 +38,8 @@ public class BaseRewardRepository implements IRewardRepository {
      * @return
      */
     @Override
-    public Observable<Object> rewardsInfo(long news_id, float amount) {
-        return mInfoMainClient.rewardsInfo(news_id,amount)
+    public Observable<Object> rewardsInfo(long news_id, double amount) {
+        return mInfoMainClient.rewardsInfo(news_id, (float) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -21,6 +21,7 @@ public interface RewardContract {
     interface View extends IBaseView<Presenter> {
 
 
+        void rewardSuccess();
     }
 
     interface Repository extends IRewardRepository {
@@ -28,6 +29,13 @@ public interface RewardContract {
     }
 
     interface Presenter extends IBaseTouristPresenter {
-
+        /**
+         * reward
+         *
+         * @param rewardMoney want to reward money
+         * @param rewardType  type for reward {@link RewardType}
+         * @param sourceId    this reward  target source id
+         */
+        void reward(double rewardMoney, RewardType rewardType, long sourceId);
     }
 }

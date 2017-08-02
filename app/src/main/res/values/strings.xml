@@ -332,10 +332,12 @@
     <string name="tags_tips">标签为全局标签，选择合适的标签，系统可推荐你感兴趣的内容，方便找到相同身份或爱好的人，很重要哦！</string>
 
     <!--打赏-->
-    <string name="rewards">打赏</string>
-    <string name="rewards_list">打赏列表</string>
-    <string name="rewards_show">%1$s人打赏,共%2$s元</string>
+    <string name="reward">打赏</string>
+    <string name="reward_list">打赏列表</string>
+    <string name="reward_show">%1$s人打赏,共%2$s元</string>
     <string name="reward_list_tip">%s打赏了文章</string>
+    <string name="choose_reward_money">选择打赏金额</string>
+    <string name="reward_success">打赏成功</string>
 
     <!--认证-->
     <string name="certification_personage">个人认证</string>
