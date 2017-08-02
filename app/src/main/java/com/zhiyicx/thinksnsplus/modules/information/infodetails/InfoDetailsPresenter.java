@@ -206,7 +206,9 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void reqReWardsData(int id) {
-        Observable.zip(mRepository.getRewardsCount(id), mRepository.rewardsInfoList(id, TSListFragment.DEFAULT_ONE_PAGE_SIZE,null,null,null), (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
+        Observable.zip(mRepository.getRewardsCount(id), mRepository.rewardsInfoList(id
+                , TSListFragment.DEFAULT_ONE_PAGE_SIZE,null,null,null)
+                , (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
 
             mRootView.updateReWardsView(rewardsCountBean,rewardsListBeen);
             return rewardsCountBean;

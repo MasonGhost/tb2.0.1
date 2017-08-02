@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -25,6 +26,7 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.list.RewardListFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -53,6 +55,7 @@ public class ReWardView extends FrameLayout {
     private RecyclerView.LayoutManager mLayoutManager;
     private CommonAdapter mCommonAdapter;
     private List<RewardsListBean> mListData = new ArrayList<>();
+    private long mSourceId;
 
 
     public ReWardView(@NonNull Context context) {
@@ -80,10 +83,10 @@ public class ReWardView extends FrameLayout {
     }
 
     private void initRvUsers() {
-        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true);
         mRVUsers.setLayoutManager(mLayoutManager);
         mRVUsers.setHasFixedSize(true);
-        mRVUsers.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small), getResources().getDimensionPixelOffset(R.dimen.spacing_small)));
+        mRVUsers.addItemDecoration(new LinearDecoration(0, 0, getResources().getDimensionPixelOffset(R.dimen.spacing_small),0));
         mCommonAdapter = new CommonAdapter<RewardsListBean>(getContext(), R.layout.item_rewards_user_image, mListData) {
             @Override
             protected void convert(ViewHolder holder, RewardsListBean rewardsListBean, int position) {
@@ -92,10 +95,12 @@ public class ReWardView extends FrameLayout {
 
                 RxView.clicks(holder.getView(R.id.iv_head))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(getContext(), rewardsListBean.getUser()));
+//                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(getContext(), rewardsListBean.getUser()));
+                        .subscribe(aVoid -> RewardListFragment.startRewardActivity(getContext(), RewardType.INFO, mSourceId, mListData));
 
             }
         };
+        mRVUsers.setAdapter(mCommonAdapter);
 
     }
 
@@ -114,7 +119,7 @@ public class ReWardView extends FrameLayout {
         RxView.clicks(mIvRightArrow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    // TODO: 2017/8/2 reward list
+                    RewardListFragment.startRewardActivity(getContext(), RewardType.INFO, mSourceId, mListData);
                 });
     }
 
@@ -129,9 +134,16 @@ public class ReWardView extends FrameLayout {
             return;
         }
         if (TextUtils.isEmpty(rewardsCountBean.getAmount())) {
-            rewardsCountBean.setAmount("0.00");
+            rewardsCountBean.setAmount("0");
         }
-        String result = getResources().getString(R.string.rewards_show, "<" + rewardsCountBean.getCount() + ">", "<" + rewardsCountBean.getAmount() + ">");
+        double amout = 0;
+        try {
+            amout = Double.parseDouble(rewardsCountBean.getAmount());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String result = getResources().getString(R.string.rewards_show, "<" + rewardsCountBean.getCount() + ">", "<" + getResources().getString(R.string.money_format, PayConfig.realCurrencyFen2Yuan(amout)) + ">");
         CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
                 .innerColor(ContextCompat.getColor(getContext(), R.color.money))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
@@ -150,13 +162,19 @@ public class ReWardView extends FrameLayout {
             return;
         }
         mListData.clear();
-        mListData.addAll(data);
-        mCommonAdapter.notifyDataSetChanged();
-        if (mListData.size() > 10) {
+        if (data.size() > 10) {
             mIvRightArrow.setVisibility(VISIBLE);
+            mListData.addAll(data.subList(0,9));
         } else {
             mIvRightArrow.setVisibility(INVISIBLE);
+            mListData.addAll(data);
         }
+        mCommonAdapter.notifyDataSetChanged();
+
+    }
+
+    public void updateSourceId(long sourceId) {
+        this.mSourceId = sourceId;
     }
 
     public void setOnRewardsClickListener(OnRewardsClickListener onRewardsClickListener) {

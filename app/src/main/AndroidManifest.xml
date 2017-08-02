@@ -369,6 +369,7 @@
         <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
         </activity>
         <activity android:name=".modules.wallet.reward.RewardActivity"/>
+        <activity android:name=".modules.wallet.reward.list.RewardListActivity"/>
     </application>
 
 </manifest>

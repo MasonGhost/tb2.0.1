@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.reward.list;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.view.View;
 
@@ -10,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.modules.rank.RankAdapter;
 import com.zhiyicx.thinksnsplus.modules.rank.RankContract;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
@@ -90,5 +94,22 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
     @Override
     public List<RewardsListBean> getCacheData() {
         return mRewardsListBeen;
+    }
+
+    /**
+     *
+     * @param context not application context clink
+     * @param rewardType  reward type {@link RewardType}
+     */
+    public static void startRewardActivity(Context context, RewardType rewardType,long sourceId,List<RewardsListBean> data) {
+
+        Intent intent = new Intent(context, RewardListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_REWARD_TYPE, rewardType);
+        bundle.putSerializable(BUNDLE_SOURCE_ID, sourceId);
+        bundle.putParcelableArrayList(BUNDLE_DATA, (ArrayList<? extends Parcelable>) data);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+
     }
 }

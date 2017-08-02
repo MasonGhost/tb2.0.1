@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/spacing_large">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="@dimen/spacing_large">
 
     <TextView
         android:id="@+id/bt_rewards"
@@ -20,7 +20,7 @@
         android:paddingTop="@dimen/spacing_mid_small_8dp"
         android:text="@string/rewards"
         android:textColor="@color/white"
-        android:textSize="@dimen/size_content_assist" />
+        android:textSize="@dimen/size_content_assist"/>
 
     <TextView
         android:id="@+id/tv_rewards_tip"
@@ -29,31 +29,35 @@
         android:layout_marginTop="@dimen/spacing_mid_small_8dp"
         android:gravity="center"
         android:textSize="@dimen/size_icon_assist"
-        tools:text="@string/rewards_show" />
+        tools:text="@string/rewards_show"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.RecyclerView
+        <com.zhiyicx.common.widget.NoPullRecycleView
             android:id="@+id/rv_users"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/spacing_mid"
-            android:scrollbars="horizontal" />
+            />
 
         <ImageView
             android:id="@+id/iv_right_arrow"
             android:layout_width="wrap_content"
-            android:src="@mipmap/ic_arrow_smallgrey"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/spacing_small"
-            android:visibility="gone"
             android:layout_marginStart="@dimen/spacing_small"
-            android:layout_gravity="center_vertical" />
+            android:layout_toEndOf="@+id/rv_users"
+            android:layout_toRightOf="@+id/rv_users"
+            android:src="@mipmap/ic_arrow_smallgrey"
+            android:visibility="gone"
+            />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </LinearLayout>
