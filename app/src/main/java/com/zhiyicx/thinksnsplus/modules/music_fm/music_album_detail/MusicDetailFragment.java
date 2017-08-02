@@ -435,7 +435,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
                 if (item.getStorage().getAmount() != 0) {// 有收费
                     Drawable top_drawable = getResources().getDrawable(R.mipmap.musici_pic_pay02);//  musicName.getLineHeight()
-                    top_drawable.setBounds(0, 0, (int) (musicName.getTextSize() * 2), (int) musicName.getTextSize());
+                    top_drawable.setBounds(0, 0, top_drawable.getIntrinsicWidth(), top_drawable.getIntrinsicHeight());
                     ImageSpan imgSpan = new CenterImageSpan(top_drawable);
                     SpannableString spannableString = SpannableString.valueOf("T" + music_name);
                     spannableString.setSpan(imgSpan, 0, 1, Spannable

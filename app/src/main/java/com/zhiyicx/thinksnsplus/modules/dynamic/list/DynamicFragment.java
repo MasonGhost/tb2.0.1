@@ -35,7 +35,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
@@ -66,9 +65,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -208,7 +205,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     private void initAdvert() {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT)
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT && !mDynamicType.equals(ApiConfig.DYNAMIC_TYPE_HOTS))
             return;
         List<String> advertTitle = new ArrayList<>();
         List<String> advertUrls = new ArrayList<>();
@@ -217,8 +214,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mListAdvert = mPresenter.getListAdvert();
         for (RealAdvertListBean advert : advertList) {
             advertTitle.add(advert.getTitle());
-            advertLinks.add(advert.getAdvertFormat().getImage().getImage());
-            advertUrls.add(advert.getAdvertFormat().getImage().getLink());
+            advertUrls.add(advert.getAdvertFormat().getImage().getImage());
+            advertLinks.add(advert.getAdvertFormat().getImage().getLink());
             if (advert.getType().equals("html")) {
                 showStickyHtmlMessage((String) advert.getData());
             }
@@ -228,7 +225,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
                 DynamicBannerHeaderInfo();
         headerInfo.setTitles(advertTitle);
-        headerInfo.setUrls(advertUrls);
+        headerInfo.setLinks(advertTitle);
+        headerInfo.setUrls(advertLinks);
         headerInfo.setDelay(4000);
         headerInfo.setOnBannerListener(position -> {
 
@@ -527,12 +525,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                             mListDatas.get(dataPosition)
                                     .isHas_collect(), shareBitMap);
                     mMyDynamicPopWindow.show();
-                } else if(mListDatas.get(dataPosition).getFeed_from()!=-1){
+                } else if (mListDatas.get(dataPosition).getFeed_from() != -1) {
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
                             mListDatas.get(dataPosition)
                                     .isHas_collect(), shareBitMap);
                     mOtherDynamicPopWindow.show();
-                }else{// 广告
+                } else {// 广告
 
                 }
 

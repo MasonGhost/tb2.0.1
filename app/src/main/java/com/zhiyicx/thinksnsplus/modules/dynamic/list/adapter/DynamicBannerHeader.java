@@ -90,7 +90,16 @@ public class DynamicBannerHeader {
         private int delay;
         private List<String> titles;
         private List<String> urls;
+        private List<String> links;
         private OnBannerListener mOnBannerListener;
+
+        public List<String> getLinks() {
+            return links;
+        }
+
+        public void setLinks(List<String> links) {
+            this.links = links;
+        }
 
         public int getDelay() {
             return delay;
