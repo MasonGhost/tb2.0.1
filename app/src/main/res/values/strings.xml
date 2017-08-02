@@ -33,6 +33,7 @@
     <string name="mine_collect">收藏</string>
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
+    <string name="certification">认证</string>
     <string name="setting">设置</string>
     <string name="wallet">钱包</string>
     <string name="follow">关注</string>
@@ -335,5 +336,9 @@
     <string name="rewards_list">打赏列表</string>
     <string name="rewards_show">%1$s人打赏,共%2$s元</string>
     <string name="reward_list_tip">%s打赏了文章</string>
+
+    <!--认证-->
+    <string name="certification_personage">个人认证</string>
+    <string name="certification_company">企业认证</string>
 
 </resources>
