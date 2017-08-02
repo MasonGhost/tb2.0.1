@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -129,7 +131,12 @@ public class ReWardView extends FrameLayout {
         if (TextUtils.isEmpty(rewardsCountBean.getAmount())) {
             rewardsCountBean.setAmount("0.00");
         }
-        mTvRewardsTip.setText(getResources().getString(R.string.rewards_show, rewardsCountBean.getCount(), rewardsCountBean.getAmount()));
+        String result = getResources().getString(R.string.rewards_show, "<" + rewardsCountBean.getCount() + ">", "<" + rewardsCountBean.getAmount() + ">");
+        CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
+                .innerColor(ContextCompat.getColor(getContext(), R.color.money))
+                .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
+                .format();
+        mTvRewardsTip.setText(charSequence);
 
     }
 

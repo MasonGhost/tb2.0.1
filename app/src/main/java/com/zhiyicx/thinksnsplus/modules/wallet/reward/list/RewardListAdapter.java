@@ -48,26 +48,18 @@ public class RewardListAdapter extends CommonAdapter<RewardsListBean> {
             // 这种情况一般不会发生，为了防止崩溃，做处理
             return;
         }
-        // 设置用户名，用户简介
-        holder.setText(R.id.tv_name, userInfoBean.getName());
-        // 修改点赞数量颜色
-        String digCountString = "";
-        // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常
-        if (TextUtils.isEmpty(digCountString)) {
-            digCountString = 0 + "";
-        }
-        String digContent = "点赞 " + "<" + digCountString + ">";
-        CharSequence charSequence = ColorPhrase.from(digContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(getContext(), R.color.themeColor))
+        String result = getContext().getResources().getString(R.string.reward_list_tip, "<" + userInfoBean.getName() + ">");
+        CharSequence charSequence = ColorPhrase.from(result).withSeparator("<>")
+                .innerColor(ContextCompat.getColor(getContext(), R.color.important_for_content))
                 .outerColor(ContextCompat.getColor(getContext(), R.color.normal_for_assist_text))
                 .format();
-        TextView digCount = holder.getView(R.id.tv_dig_count);
+        TextView digCount = holder.getView(R.id.tv_content);
         digCount.setText(charSequence);
         // 头像加载
         ImageView headPic = holder.getView(R.id.iv_headpic);
         ImageUtils.loadCircleUserHeadPic(userInfoBean, headPic);
         // 添加点击事件
-        RxView.clicks(holder.getConvertView())
+        RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> toUserCenter(getContext(), userInfoBean));
 

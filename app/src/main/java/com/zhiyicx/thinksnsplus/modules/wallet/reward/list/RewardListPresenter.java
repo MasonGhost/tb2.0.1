@@ -75,7 +75,7 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Rep
 
     @Override
     public List<RewardsListBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return new ArrayList<>();
+        return mRootView.getCacheData();
     }
 
     @Override

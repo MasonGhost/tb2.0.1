@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.modules.rank.RankContract;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
 
     private RewardType mRewardType;
     private long mSourceId;
+    private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
 
     public static RewardListFragment newInstance(Bundle bundle) {
         RewardListFragment rankFragment = new RewardListFragment();
@@ -46,7 +48,7 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
         mRewardType = (RewardType) getArguments().getSerializable(BUNDLE_REWARD_TYPE);
         mSourceId = getArguments().getLong(BUNDLE_SOURCE_ID);
         if (getArguments().getSerializable(BUNDLE_DATA) != null) {
-            mListDatas.addAll((Collection<? extends RewardsListBean>) getArguments().getSerializable(BUNDLE_DATA));
+            mRewardsListBeen.addAll((Collection<? extends RewardsListBean>) getArguments().getSerializable(BUNDLE_DATA));
         }
     }
 
@@ -83,5 +85,10 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
     @Override
     public long getSourceId() {
         return mSourceId;
+    }
+
+    @Override
+    public List<RewardsListBean> getCacheData() {
+        return mRewardsListBeen;
     }
 }

@@ -22,7 +22,7 @@
             app:pressShape="circle"/>
 
         <TextView
-            android:id="@+id/tv_name"
+            android:id="@+id/tv_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/iv_headpic"

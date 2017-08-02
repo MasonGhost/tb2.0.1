@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardContract;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 
+import java.util.List;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -30,6 +32,7 @@ public interface RewardListContract {
          */
         long getSourceId();
 
+        List<RewardsListBean> getCacheData();
     }
 
     interface Presenter extends ITSListPresenter<RewardsListBean> {
