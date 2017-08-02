@@ -226,6 +226,33 @@ public class MusicAlbumDetailsBean implements Serializable {
         public static class MusicsBeanIdStorage implements Serializable {
             private static final long serialVersionUID = 1L;
             private int id;
+            private int amount;
+            private int paid_node;
+            private boolean paid;
+
+            public int getAmount() {
+                return amount;
+            }
+
+            public void setAmount(int amount) {
+                this.amount = amount;
+            }
+
+            public int getPaid_node() {
+                return paid_node;
+            }
+
+            public void setPaid_node(int paid_node) {
+                this.paid_node = paid_node;
+            }
+
+            public boolean isPaid() {
+                return paid;
+            }
+
+            public void setPaid(boolean paid) {
+                this.paid = paid;
+            }
 
             public int getId() {
                 return id;

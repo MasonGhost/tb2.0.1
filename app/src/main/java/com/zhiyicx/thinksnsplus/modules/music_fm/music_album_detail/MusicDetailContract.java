@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -31,6 +33,10 @@ public interface MusicDetailContract {
         MusicAlbumDetailsBean getCurrentAblum();
 
         MusicAlbumListBean getmMusicAlbumListBean();
+
+        List<MusicAlbumDetailsBean.MusicsBean> getListDatas();
+
+        void refreshData(int position);
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -45,6 +51,7 @@ public interface MusicDetailContract {
         MusicAlbumDetailsBean getCacheAblumDetail(int id);
 
         void payNote(int position,int note);
+
     }
 
     interface Repository {

@@ -12,16 +12,14 @@ import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
-import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -33,8 +31,6 @@ import org.simple.eventbus.ThreadMode;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
@@ -117,8 +113,10 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
+                ImageView toll = holder.getView(R.id.music_list_toll_flag);
+                toll.setVisibility(musicListBean.getPaid_node() == null ? View.GONE : View.VISIBLE);
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width,width,
+                        .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width, width,
                                 ImageZipConfig.IMAGE_70_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .override(width, width)
@@ -182,7 +180,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
 
-    private void initMusicCenterPopWindow(final int position,float amout,
+    private void initMusicCenterPopWindow(final int position, float amout,
                                           final int note, int strRes) {
         mPayMusicPopWindow = PayPopWindow.builder()
                 .with(getActivity())

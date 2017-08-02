@@ -80,47 +80,48 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
 
     @Override
     public void payNote(int position, int note) {
-//        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-//        double balance = 0;
-//        if (walletBean != null) {
-//            balance = walletBean.getBalance();
-//        }
-//        double amount;
-//        amount = mRootView.getListDatas().get(position).getPaid_node().getAmount();
-//
-//        if (balance < amount) {
-//            mRootView.goRecharge(WalletActivity.class);
-//            return;
-//        }
-//        mCommentRepository.paykNote(note)
-//                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
-//                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
-//                    @Override
-//                    protected void onSuccess(BaseJsonV2<String> data) {
-//                        mRootView.getListDatas().get(position).getPaid_node().setPaid(true);
-//                        mRootView.refreshData(position);
-//                        mMusicAlbumListDao.insertOrReplace(mRootView.getListDatas().get(position));
-//                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
-//                    }
-//
-//                    @Override
-//                    protected void onFailure(String message, int code) {
-//                        super.onFailure(message, code);
-//                        mRootView.showSnackErrorMessage(message);
-//                    }
-//
-//                    @Override
-//                    protected void onException(Throwable throwable) {
-//                        super.onException(throwable);
-//                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//                        super.onCompleted();
-//                        mRootView.hideCenterLoading();
-//                    }
-//                });
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+        double balance = 0;
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
+        }
+        double amount;
+        amount = mRootView.getListDatas().get(position).getStorage().getAmount();
+
+        if (balance < amount) {
+            mRootView.goRecharge(WalletActivity.class);
+            return;
+        }
+        mCommentRepository.paykNote(note)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<String> data) {
+                        mRootView.getListDatas().get(position).getStorage().setPaid(true);
+                        mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
+                        mRootView.refreshData(position);
+                        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.hideCenterLoading();
+                    }
+                });
     }
 
     @Override
