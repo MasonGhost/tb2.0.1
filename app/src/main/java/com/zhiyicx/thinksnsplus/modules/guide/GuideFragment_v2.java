@@ -120,7 +120,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     public void onPageSelected(int position) {
         if (mGuideBanner == null)
             return;
-        mBootAdverts = mPresenter.getBootAdvert();
         mPosition = mGuideBanner.getCurrentItem();
         if (mPosition == mGuideBanner.getItemCount() - 1) {
             mGuideBanner.stopAutoPlay();

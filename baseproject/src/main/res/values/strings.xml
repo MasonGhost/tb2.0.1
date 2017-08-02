@@ -108,6 +108,8 @@
     <string name="buy_pay_desc">您只需¥%.2f元就可查看图片\n会员可免费查看，</string>
     <string name="buy_pay_words_desc">您只需¥%.2f元就可查看\n会员可免费查看，</string>
     <string name="buy_pay_downlaod_desc">您只需¥%.2f元就可查看图片\n会员可免费下载，</string>
+    <string name="buy_pay_music_ablum_desc">该专辑为付费专辑，您只需支付¥%.2f元即可收听该专辑</string>
+    <string name="buy_pay_single_music_desc">该歌曲为付费歌曲，您只需支付¥%.2f元即可收听该歌曲</string>
     <string name="buy_pay_member">成为会员？</string>
     <string name="buy_pay_money">¥%.2f</string>
     <string name="buy_pay_in">购买</string>

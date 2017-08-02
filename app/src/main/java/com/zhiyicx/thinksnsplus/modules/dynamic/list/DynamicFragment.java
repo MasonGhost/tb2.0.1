@@ -527,11 +527,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                             mListDatas.get(dataPosition)
                                     .isHas_collect(), shareBitMap);
                     mMyDynamicPopWindow.show();
-                } else {
+                } else if(mListDatas.get(dataPosition).getFeed_from()!=-1){
                     initOtherDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition,
                             mListDatas.get(dataPosition)
                                     .isHas_collect(), shareBitMap);
                     mOtherDynamicPopWindow.show();
+                }else{// 广告
+
                 }
 
                 break;

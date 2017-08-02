@@ -108,8 +108,6 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
     public AllAdverListBean getDynamicDetailAdvert() {
 
         List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_DYNAMIC_DETAILS_ADVERT)).build().list();
-
-        List<RealAdvertListBean> test=data.get(0).getMRealAdvertListBeen();
         if (data != null && !data.isEmpty()) {
             return data.get(0);
         }

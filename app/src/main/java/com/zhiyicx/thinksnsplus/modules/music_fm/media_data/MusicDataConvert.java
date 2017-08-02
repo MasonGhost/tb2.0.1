@@ -49,7 +49,7 @@ public class MusicDataConvert implements MusicProviderSource {
         String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(),50,50,100));
         LogUtils.d("buildMusic--needData.getId:::" + needData.getId());
         //noinspection ResourceType
-        return new MediaMetadataCompat.Builder()
+        return new MediaMetadataCompat.Builder()// 局限性有点大
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID,
                         "" + needData.getId())
 
@@ -58,6 +58,7 @@ public class MusicDataConvert implements MusicProviderSource {
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, needData.getTitle())
                 .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, needData.isHas_like() + "")
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, needData.getSinger().getName())
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, needData.getLast_time() * 1000)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, needData.getLast_time() * 1000)
                 .putString(MediaMetadataCompat.METADATA_KEY_GENRE, METADATA_KEY_GENRE)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, imageUrl)

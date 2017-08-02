@@ -45,6 +45,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_T
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_All_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_STATUS;
@@ -167,7 +168,7 @@ public interface CommonClient {
     /**
      * 批量获取广告位广告列表
      */
-    @GET(APP_PATH_GET_SINGLE_ADVERT_INFO)
+    @GET(APP_PATH_GET_All_ADVERT_INFO)
     Observable<List<RealAdvertListBean>> getAllRealAdvert(@Query("space") String advert_id);
 
     /**

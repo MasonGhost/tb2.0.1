@@ -27,8 +27,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -60,6 +62,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
@@ -131,6 +134,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private MediaBrowserCompatProvider mCompatProvider;
     private MusicAlbumListBean mMusicAlbumListBean;
     private MusicAlbumDetailsBean mAlbumDetailsBean;
+    private PayPopWindow mPayMusicPopWindow;
 
     /**
      * 音乐切换回掉
@@ -410,7 +414,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 TextView authorName = holder.getView(R.id.item_music_author);
                 musicName.setText(item.getDescription().getTitle());
                 authorName.setText("-" + item.getDescription().getSubtitle());
-
                 Integer cachedState = (Integer) holder.itemView.getTag(R.id
                         .tag_mediaitem_state_cache);
                 int state = getMediaItemState(item);
@@ -639,17 +642,9 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Subscriber(tag = EVENT_MUSIC_LIKE, mode = ThreadMode.MAIN)
     public void onLikeCountUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
 
-        Observable.from(mAlbumDetailsBean.getMusics()).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
-            @Override
-            public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                return e_albumListBean.getId() == musicsBean.getId();
-            }
-        }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
-            @Override
-            public void call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                musicsBean.setHas_like(e_albumListBean.isHas_like());
-                musicsBean.setComment_count(e_albumListBean.getComment_count());
-            }
+        Observable.from(mAlbumDetailsBean.getMusics()).filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId()).subscribe(musicsBean -> {
+            musicsBean.setHas_like(e_albumListBean.isHas_like());
+            musicsBean.setComment_count(e_albumListBean.getComment_count());
         });
         LogUtils.d("EVENT_MUSIC_LIKE");
     }
@@ -667,5 +662,44 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mPresenter.getMusicDetails(change + "");
         mAdapter.notifyDataSetChanged();
         LogUtils.d("EVENT_MUSIC_CHANGE");
+    }
+
+    private void initMusicCenterPopWindow(final int position,float amout,
+                                          final int note, int strRes) {
+        mPayMusicPopWindow = PayPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildLinksStr(getString(R.string.buy_pay_member))
+                .buildTitleStr(getString(R.string.buy_pay))
+                .buildItem1Str(getString(R.string.buy_pay_in))
+                .buildItem2Str(getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(position, note);
+                    mPayMusicPopWindow.hide();
+                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayMusicPopWindow.hide())
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
+
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayMusicPopWindow.show();
+
     }
 }

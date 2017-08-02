@@ -43,6 +43,8 @@ public interface MusicDetailContract {
         void getMusicDetails(String music_id);
 
         MusicAlbumDetailsBean getCacheAblumDetail(int id);
+
+        void payNote(int position,int note);
     }
 
     interface Repository {
