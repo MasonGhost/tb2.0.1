@@ -20,17 +20,21 @@ import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.widget.ReWardsView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -84,6 +88,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
+    /**
+     * 打赏
+     */
+    private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
+    private RewardsCountBean mRewardsCountBean;
+
     public static InfoDetailsFragment newInstance(Bundle params) {
         InfoDetailsFragment fragment = new InfoDetailsFragment();
         fragment.setArguments(params);
@@ -112,6 +122,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailWebItem(getActivity(), new
                 ItemOnWebEventListener()) {
             @Override
+            protected void dealRewards(ViewHolder holder) {
+                ((ReWardsView) holder.getView(R.id.v_reward)).updateRewardsCount(mRewardsCountBean);
+                ((ReWardsView) holder.getView(R.id.v_reward)).updateRewardsUser(mRewardsListBeen);
+
+            }
+
+            @Override
             public void dealCommentCount(ViewHolder holder) {
                 if (mListDatas.get(mListDatas.size() - 1).getComment_content() != null) {
                     holder.getView(R.id.info_detail_comment).setVisibility(View.VISIBLE);
@@ -127,6 +144,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
         return multiItemTypeAdapter;
+    }
+
+    @Override
+    public void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> datas) {
+        this.mRewardsCountBean = rewardsCountBean;
+        this.mRewardsListBeen.clear();
+        this.mRewardsListBeen.addAll(datas);
+        refreshData();
     }
 
     @Override
@@ -149,6 +174,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mInfoMation.setIs_collection_news(mPresenter.isCollected() ? 1 : 0);
         mInfoMation.setIs_digg_news(mPresenter.isDiged() ? 1 : 0);
         setDigg(mPresenter.isDiged());
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        mPresenter.reqReWardsData(mInfoMation.getId());
     }
 
     @Override

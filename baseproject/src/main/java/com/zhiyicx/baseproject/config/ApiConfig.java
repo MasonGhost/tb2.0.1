@@ -30,9 +30,9 @@ public class ApiConfig {
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
-    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
+//    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 开发服
 
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
@@ -266,11 +266,11 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/" + API_VERSION + "/news/%d";
 
     // 咨询打赏
-    public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION +"news/{news_id}/rewards";
+    public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION + "news/{news_id}/rewards";
     // 打赏用户列表
-    public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION +"/news/{news_id}/rewards";
+    public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION + "/news/{news_id}/rewards";
     // 资讯打赏统计
-    public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION +"/news/{news_id}/rewards/sum";
+    public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION + "/news/{news_id}/rewards/sum";
 
 
     /**

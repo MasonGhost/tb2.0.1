@@ -253,7 +253,10 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
         web.loadUrl(url);
         LogUtils.d("convertUrl:::" + url);
         dealCommentCount(holder);
+        dealRewards(holder);
     }
+
+    protected abstract void dealRewards(ViewHolder holder);
 
     public abstract void dealCommentCount(ViewHolder holder);
 

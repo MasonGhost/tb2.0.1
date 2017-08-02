@@ -47,6 +47,8 @@ public interface InfoDetailsConstract {
         void infoMationHasBeDeleted();
 
         void loadAllError();
+
+        void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> rewadslist);
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean> {
@@ -64,6 +66,8 @@ public interface InfoDetailsConstract {
         boolean isCollected();
 
         boolean isDiged();
+
+        void reqReWardsData(int id);
     }
 
     interface Repository {
