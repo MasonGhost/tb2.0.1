@@ -352,11 +352,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showCenterLoading(String msg) {
+        if (mCenterLoadingDialog!=null)
         mCenterLoadingDialog.showStateIng(msg);
     }
 
     @Override
     public void hideCenterLoading() {
+        if (mCenterLoadingDialog!=null)
         mCenterLoadingDialog.onDestroy();
     }
 

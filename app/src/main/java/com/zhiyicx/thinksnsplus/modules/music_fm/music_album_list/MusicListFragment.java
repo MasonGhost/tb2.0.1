@@ -113,8 +113,7 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
-                ImageView toll = holder.getView(R.id.music_list_toll_flag);
-                toll.setVisibility(musicListBean.getPaid_node() == null ? View.GONE : View.VISIBLE);
+                holder.setVisible(R.id.music_list_toll_flag,musicListBean.getPaid_node() == null ? View.GONE : View.VISIBLE);
                 Glide.with(getContext())
                         .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width, width,
                                 ImageZipConfig.IMAGE_70_ZIP))
@@ -131,9 +130,17 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         comAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+
+                MusicAlbumListBean albumListBean = mListDatas.get(position);
+                if (albumListBean.getPaid_node() != null && !albumListBean.getPaid_node().isPaid()) {
+                    initMusicCenterPopWindow(position, albumListBean.getPaid_node().getAmount(),
+                            albumListBean.getPaid_node().getNode(), R.string.buy_pay_music_ablum_desc);
+                    return;
+                }
+
                 Intent intent = new Intent(getActivity(), MusicDetailActivity.class);
                 Bundle bundle = new Bundle();
-                MusicAlbumListBean albumListBean = mListDatas.get(position);
+
                 bundle.putParcelable(BUNDLE_MUSIC_ABLUM, albumListBean);
                 intent.putExtra(BUNDLE_MUSIC_ABLUM, bundle);
                 WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();

@@ -434,8 +434,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 authorName.setText("-" + item.getSinger().getName());
 
                 if (item.getStorage().getAmount() != 0) {// 有收费
-                    Drawable top_drawable = getResources().getDrawable(R.mipmap.musici_pic_pay02);
-                    top_drawable.setBounds(0, 0, (int) (musicName.getTextSize()), musicName.getLineHeight());
+                    Drawable top_drawable = getResources().getDrawable(R.mipmap.musici_pic_pay02);//  musicName.getLineHeight()
+                    top_drawable.setBounds(0, 0, (int) (musicName.getTextSize() * 2), (int) musicName.getTextSize());
                     ImageSpan imgSpan = new CenterImageSpan(top_drawable);
                     SpannableString spannableString = SpannableString.valueOf("T" + music_name);
                     spannableString.setSpan(imgSpan, 0, 1, Spannable
@@ -462,6 +462,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 if (TouristConfig.MUSIC_CAN_PLAY || !mPresenter.handleTouristControl()) {
 
                     MusicAlbumDetailsBean.MusicsBean item = mAdapterList.get(position);
+
+                    if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
+                        initMusicCenterPopWindow(position, item.getStorage().getAmount(),
+                                item.getStorage().getPaid_node(), R.string.buy_pay_music_ablum_desc);
+                        return;
+                    }
+
                     Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
