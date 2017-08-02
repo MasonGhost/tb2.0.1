@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -49,6 +50,7 @@ public class ReWardsView extends FrameLayout {
     protected RecyclerView mRVUsers;
     protected ImageView mIvRightArrow;
 
+    private OnRewardsClickListener mOnRewardsClickListener;
     private RecyclerView.LayoutManager mLayoutManager;
     private CommonAdapter mCommonAdapter;
     private List<RewardsListBean> mListData = new ArrayList<>();
@@ -102,7 +104,11 @@ public class ReWardsView extends FrameLayout {
         // 打赏
         RxView.clicks(mBtRewards)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> LogUtils.d("h rewards h"));
+                .subscribe(aVoid -> {
+                    if (mOnRewardsClickListener != null) {
+                        mOnRewardsClickListener.onRewardClick();
+                    }
+                });
     }
 
     /**
@@ -115,13 +121,16 @@ public class ReWardsView extends FrameLayout {
         if (rewardsCountBean == null) {
             return;
         }
-
+        if (TextUtils.isEmpty(rewardsCountBean.getAmount())) {
+            rewardsCountBean.setAmount("0.00");
+        }
         mTvRewardsTip.setText(getResources().getString(R.string.rewards_show, rewardsCountBean.getCount(), rewardsCountBean.getAmount()));
 
     }
 
     /**
      * 更新打赏用户列表
+     *
      * @param data
      */
     public void updateRewardsUser(List<RewardsListBean> data) {
@@ -131,6 +140,19 @@ public class ReWardsView extends FrameLayout {
         mListData.clear();
         mListData.addAll(data);
         mCommonAdapter.notifyDataSetChanged();
+        if (mListData.size() > 10) {
+            mIvRightArrow.setVisibility(VISIBLE);
+        } else {
+            mIvRightArrow.setVisibility(INVISIBLE);
+        }
     }
 
+    public void setOnRewardsClickListener(OnRewardsClickListener onRewardsClickListener) {
+        mOnRewardsClickListener = onRewardsClickListener;
+    }
+
+    public interface OnRewardsClickListener {
+
+        void onRewardClick();
+    }
 }

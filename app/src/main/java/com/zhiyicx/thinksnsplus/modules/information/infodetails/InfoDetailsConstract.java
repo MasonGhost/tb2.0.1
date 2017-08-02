@@ -68,6 +68,7 @@ public interface InfoDetailsConstract {
         boolean isDiged();
 
         void reqReWardsData(int id);
+
     }
 
     interface Repository {

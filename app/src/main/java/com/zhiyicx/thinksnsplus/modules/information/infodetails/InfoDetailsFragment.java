@@ -125,7 +125,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             protected void dealRewards(ViewHolder holder) {
                 ((ReWardsView) holder.getView(R.id.v_reward)).updateRewardsCount(mRewardsCountBean);
                 ((ReWardsView) holder.getView(R.id.v_reward)).updateRewardsUser(mRewardsListBeen);
-
+                ((ReWardsView) holder.getView(R.id.v_reward)).setOnRewardsClickListener(() -> {
+                });
             }
 
             @Override
