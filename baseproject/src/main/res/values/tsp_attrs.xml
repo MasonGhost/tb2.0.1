@@ -44,6 +44,20 @@
         <attr name="showLines" format="reference|integer"></attr>
     </declare-styleable>
 
+    <!--组合输入框 文字 输入框-->
+    <declare-styleable name="inputContainHint">
+        <!--是否显示分割线-->
+        <attr name="showDiver" format="reference|boolean"/>
+        <!--是否必填-->
+        <attr name="isRequired" format="reference|boolean"/>
+        <!--左边文字-->
+        <attr name="leftHintText" format="reference|string"/>
+        <!--输入框提示-->
+        <attr name="hint" format="reference|string"/>
+        <!--输入的类型-->
+        <attr name="rightInputType" format="reference|string"/>
+    </declare-styleable>
+
     <!--有加载动画的按钮-->
     <declare-styleable name="loadButton">
         <!--按钮文字-->
