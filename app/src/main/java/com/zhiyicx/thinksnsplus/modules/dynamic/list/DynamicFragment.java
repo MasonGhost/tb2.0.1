@@ -205,8 +205,12 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     private void initAdvert() {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT && !mDynamicType.equals(ApiConfig.DYNAMIC_TYPE_HOTS))
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
+        }
+        if (!mDynamicType.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {
+            return;
+        }
         List<String> advertTitle = new ArrayList<>();
         List<String> advertUrls = new ArrayList<>();
         List<String> advertLinks = new ArrayList<>();
@@ -225,8 +229,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
                 DynamicBannerHeaderInfo();
         headerInfo.setTitles(advertTitle);
-        headerInfo.setLinks(advertTitle);
-        headerInfo.setUrls(advertLinks);
+        headerInfo.setLinks(advertLinks);
+        headerInfo.setUrls(advertUrls);
         headerInfo.setDelay(4000);
         headerInfo.setOnBannerListener(position -> {
 

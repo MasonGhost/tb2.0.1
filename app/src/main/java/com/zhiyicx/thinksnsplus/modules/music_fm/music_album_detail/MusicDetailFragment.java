@@ -313,6 +313,16 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Override
     public void refreshData(int position) {
         mAdapter.notifyItemChanged(position);
+        if (mAlbumDetailsBean != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            MediaControllerCompat controller = getActivity()
+                    .getSupportMediaController();
+            controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+
+            mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
+            mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+        }
     }
 
     @Override

@@ -114,7 +114,7 @@ public class DynamicListAdvert implements Serializable,Parcelable{
         userInfoBean.setUser_id(-1L);
         dynamicDetailBeanV2.setUser_id(-1L);
         userInfoBean.setName(advert.getName());
-        userInfoBean.setAvatar("http://"+advert.getAvatar());
+        userInfoBean.setAvatar(advert.getAvatar());
         dynamicDetailBeanV2.setUserInfoBean(userInfoBean);
         dynamicDetailBeanV2.setFeed_content(advert.getContent());
         dynamicDetailBeanV2.setCreated_at(advert.getTime());

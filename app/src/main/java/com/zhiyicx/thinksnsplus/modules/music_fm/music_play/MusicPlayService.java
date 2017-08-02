@@ -125,20 +125,17 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     public void onLoadChildren(@NonNull final String parentMediaId,
                                @NonNull final Result<List<MediaBrowserCompat.MediaItem>> result) {
         if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
-            result.sendResult(new ArrayList<MediaBrowserCompat.MediaItem>());
+            result.sendResult(new ArrayList<>());
         } else if (mMusicProvider.isInitialized()) {
             List<MediaBrowserCompat.MediaItem> data;
             data = mMusicProvider.getChildren(parentMediaId, getResources());
             result.sendResult(data);
         } else {
             result.detach();
-            mMusicProvider.retrieveMediaAsync(new MusicProvider.Callback() {
-                @Override
-                public void onMusicCatalogReady(boolean success) {
-                    List<MediaBrowserCompat.MediaItem> data;
-                    data = mMusicProvider.getChildren(parentMediaId, getResources());
-                    result.sendResult(data);
-                }
+            mMusicProvider.retrieveMediaAsync(success -> {
+                List<MediaBrowserCompat.MediaItem> data;
+                data = mMusicProvider.getChildren(parentMediaId, getResources());
+                result.sendResult(data);
             });
         }
     }

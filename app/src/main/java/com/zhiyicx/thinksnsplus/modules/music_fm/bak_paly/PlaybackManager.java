@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
@@ -139,7 +140,7 @@ public class PlaybackManager implements Playback.Callback {
                 EVENT_SEND_MUSIC_COMPLETE);
         switch (orderType) {
             case ORDERRANDOM:
-                Random random=new Random();
+                Random random = new Random();
                 if (mQueueManager.skipQueuePosition(random.nextInt(mQueueManager.getCurrentQueueSize()))) {
                     handlePlayRequest();
                     mQueueManager.updateMetadata();
@@ -188,7 +189,7 @@ public class PlaybackManager implements Playback.Callback {
         mServiceCallback.onBufferingUpdate(percent);
     }
 
-    public int getState(){
+    public int getState() {
         return mPlayback.getState();
     }
 
@@ -289,10 +290,10 @@ public class PlaybackManager implements Playback.Callback {
 
         @Override
         public void onCustomAction(@NonNull String action, Bundle extras) {
-            if (action.equals(ORDER_ACTION)){
-                setOrderType(extras.getInt(ORDER_ACTION,ORDERLOOP));
-            }else if(action.equals(MUSIC_ACTION)){
-                mServiceCallback.onCustomAction(action,extras);
+            if (action.equals(ORDER_ACTION)) {
+                setOrderType(extras.getInt(ORDER_ACTION, ORDERLOOP));
+            } else if (action.equals(MUSIC_ACTION)) {
+                mServiceCallback.onCustomAction(action, extras);
             }
         }
 
@@ -323,7 +324,7 @@ public class PlaybackManager implements Playback.Callback {
     }
 
     public void setOrderType(int orderType) {
-        LogUtils.d("setOrderType:::"+orderType);
+        LogUtils.d("setOrderType:::" + orderType);
         if (orderType > 2 && orderType < 0) {
             return;
         }

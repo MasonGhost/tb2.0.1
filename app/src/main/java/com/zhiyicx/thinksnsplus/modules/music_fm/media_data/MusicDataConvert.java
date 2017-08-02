@@ -3,9 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.music_fm.media_data;
 import android.support.v4.media.MediaMetadataCompat;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,7 +36,8 @@ public class MusicDataConvert implements MusicProviderSource {
         }
         for (MusicAlbumDetailsBean.MusicsBean data : mAlbumDetailsBean.getMusics()) {
             LogUtils.d("Iterator<MediaMetadataCompat> :::" + data.getTitle());
-            tracks.add(buildMusic(data));
+            if (data.getStorage().getAmount() == 0 || data.getStorage().isPaid())// 跳过收费
+                tracks.add(buildMusic(data));
         }
         return tracks.iterator();
     }
@@ -46,7 +47,7 @@ public class MusicDataConvert implements MusicProviderSource {
         String musicUrl = String.format(ApiConfig.MUSIC_PATH,
                 needData.getStorage().getId());
 
-        String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(),50,50,100));
+        String imageUrl = String.format(ImageUtils.imagePathConvertV2(needData.getSinger().getCover().getId(), 50, 50, 100));
         LogUtils.d("buildMusic--needData.getId:::" + needData.getId());
         //noinspection ResourceType
         return new MediaMetadataCompat.Builder()// 局限性有点大
@@ -59,6 +60,8 @@ public class MusicDataConvert implements MusicProviderSource {
                 .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, needData.isHas_like() + "")
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, needData.getSinger().getName())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, needData.getLast_time() * 1000)
+                .putLong(MediaMetadataCompat.METADATA_KEY_YEAR,
+                        (needData.getStorage().getAmount() == 0 || needData.getStorage().isPaid()) ? 1L : -1L)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, needData.getLast_time() * 1000)
                 .putString(MediaMetadataCompat.METADATA_KEY_GENRE, METADATA_KEY_GENRE)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, imageUrl)
