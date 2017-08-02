@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:id="@+id/rl_left"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_large"
+        android:paddingBottom="@dimen/spacing_large"
+        tools:context="com.zhiyicx.thinksnsplus.modules.wallet.reward.list.RewardListActivity">
+
+        <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+            android:id="@+id/iv_headpic"
+            android:layout_width="@dimen/headpic_for_list"
+            android:layout_height="@dimen/headpic_for_list"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:src="@mipmap/pic_default_portrait1"
+            app:pressShape="circle"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_headpic"
+            android:maxLines="1"
+            android:includeFontPadding="false"
+           android:layout_centerVertical="true"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content"
+            tools:text="张三"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/tv_name"
+            android:layout_alignParentRight="true"
+            android:maxLines="1"
+            android:layout_centerVertical="true"
+            android:textColor="@color/general_for_hint"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="2016-05-06"/>
+
+    </RelativeLayout>

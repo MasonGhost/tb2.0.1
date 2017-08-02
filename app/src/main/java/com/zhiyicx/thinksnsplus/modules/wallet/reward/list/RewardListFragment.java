@@ -52,17 +52,12 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
 
     @Override
     protected CommonAdapter<RewardsListBean> getAdapter() {
-        return new RewardListAdapter(getContext(), R.layout.item_mine_dig_list, mListDatas);
+        return new RewardListAdapter(getContext(), R.layout.item_reward_user, mListDatas);
     }
 
     @Override
     protected String setCenterTitle() {
         return getString(R.string.rewards_list);
-    }
-
-    @Override
-    protected boolean isNeedRefreshDataWhenComeIn() {
-        return true;
     }
 
     @Override
@@ -82,11 +77,11 @@ public class RewardListFragment extends TSListFragment<RewardListContract.Presen
 
     @Override
     public RewardType getCurrentType() {
-        return null;
+        return mRewardType;
     }
 
     @Override
     public long getSourceId() {
-        return 0l;
+        return mSourceId;
     }
 }
