@@ -59,9 +59,9 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     protected Context mContext;
     protected AuthBean mAuthBean;
 
-    private boolean showToolMenu = true;// 是否显示工具栏:默认显示
-    private boolean showCommentList = true;// 是否显示评论内容:默认显示
-    private boolean showReSendBtn = true;// 是否显示重发按钮
+    protected boolean showToolMenu = true;// 是否显示工具栏:默认显示
+    protected boolean showCommentList = true;// 是否显示评论内容:默认显示
+    protected boolean showReSendBtn = true;// 是否显示重发按钮
 
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         mOnImageClickListener = onImageClickListener;
@@ -227,70 +227,74 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
 
                 contentView.setVisibility(View.VISIBLE);
             }
-                setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
-                setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
+            setUserInfoClick(holder.getView(R.id.iv_headpic), dynamicBean);
+            setUserInfoClick(holder.getView(R.id.tv_name), dynamicBean);
 
-                holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
-                // 分割线跟随工具栏显示隐藏
-                holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
-                if (showToolMenu) {
-                    // 显示工具栏
-                    DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
-                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                            .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
-                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                            .getFeed_comment_count()), false, 1);
-                    dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
-                                    .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
-                            false, 2);// 浏览量没有 0
-                    // 控制更多按钮的显示隐藏
-                    dynamicListMenuView.setItemPositionVisiable(3, View.VISIBLE);
-                    // 设置工具栏的点击事件
-                    dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
-                        if (mOnMenuItemClickLisitener != null) {
-                            mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
-                        }
-                    });
-                }
-
-                holder.setVisible(R.id.fl_tip, showReSendBtn ? View.VISIBLE : View.GONE);
-                if (showReSendBtn) {
-                    // 设置动态发送状态
-                    if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
-                        holder.setVisible(R.id.fl_tip, View.VISIBLE);
-                    } else {
-                        holder.setVisible(R.id.fl_tip, View.GONE);
+            holder.setVisible(R.id.dlmv_menu, showToolMenu ? View.VISIBLE : View.GONE);
+            // 分割线跟随工具栏显示隐藏
+            holder.setVisible(R.id.v_line, showToolMenu ? View.VISIBLE : View.GONE);
+            if (showToolMenu) {
+                // 显示工具栏
+                DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+                dynamicListMenuView.setImageNormalResourceIds(getToolImages());
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                        .getFeed_digg_count()), dynamicBean.isHas_digg(), 0);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                        .getFeed_comment_count()), false, 1);
+                dynamicListMenuView.setItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                                .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
+                        false, 2);// 浏览量没有 0
+                // 控制更多按钮的显示隐藏
+                dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
+                dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
+                dynamicListMenuView.setItemPositionVisiable(2, getVisibleThree());
+                dynamicListMenuView.setItemPositionVisiable(3, getVisibleFour());
+                // 设置工具栏的点击事件
+                dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
+                    if (mOnMenuItemClickLisitener != null) {
+                        mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
                     }
-                    RxView.clicks(holder.getView(R.id.fl_tip))
-                            .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                            .subscribe(aVoid -> {
-                                if (mOnReSendClickListener != null) {
-                                    mOnReSendClickListener.onReSendClick(position);
-                                }
-                            });
-                }
-
-                holder.setVisible(R.id.dcv_comment, showCommentList ? View.VISIBLE : View.GONE);
-                if (showCommentList) {
-                    // 设置评论内容
-                    DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
-                    if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
-                        comment.setVisibility(View.GONE);
-                    } else {
-                        comment.setVisibility(View.VISIBLE);
-                    }
-
-                    comment.setData(dynamicBean);
-                    comment.setOnCommentClickListener(mOnCommentClickListener);
-                    comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
-                    comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
-
-                }
-
-            } catch(NullPointerException e){
-                e.printStackTrace();
+                });
             }
+
+            holder.setVisible(R.id.fl_tip, showReSendBtn ? View.VISIBLE : View.GONE);
+            if (showReSendBtn) {
+                // 设置动态发送状态
+                if (dynamicBean.getState() == DynamicBean.SEND_ERROR) {
+                    holder.setVisible(R.id.fl_tip, View.VISIBLE);
+                } else {
+                    holder.setVisible(R.id.fl_tip, View.GONE);
+                }
+                RxView.clicks(holder.getView(R.id.fl_tip))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> {
+                            if (mOnReSendClickListener != null) {
+                                mOnReSendClickListener.onReSendClick(position);
+                            }
+                        });
+            }
+
+            holder.setVisible(R.id.dcv_comment, showCommentList ? View.VISIBLE : View.GONE);
+            if (showCommentList) {
+                // 设置评论内容
+                DynamicListCommentView comment = holder.getView(R.id.dcv_comment);
+                if (dynamicBean.getComments() == null || dynamicBean.getComments().isEmpty()) {
+                    comment.setVisibility(View.GONE);
+                } else {
+                    comment.setVisibility(View.VISIBLE);
+                }
+
+                comment.setData(dynamicBean);
+                comment.setOnCommentClickListener(mOnCommentClickListener);
+                comment.setOnMoreCommentClickListener(mOnMoreCommentClickListener);
+                comment.setOnCommentStateClickListener(mOnCommentStateClickListener);
+
+            }
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
+    }
 
     private void setUserInfoClick(View view, final DynamicDetailBeanV2 dynamicBean) {
         RxView.clicks(view)
@@ -440,6 +444,26 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
     public void setOnSpanTextClickListener(TextViewUtils.OnSpanTextClickListener
                                                    onSpanTextClickListener) {
         mOnSpanTextClickListener = onSpanTextClickListener;
+    }
+
+    protected int[] getToolImages() {
+        return null;
+    }
+
+    protected int getVisibleOne() {
+        return View.VISIBLE;
+    }
+
+    protected int getVisibleTwo() {
+        return View.VISIBLE;
+    }
+
+    protected int getVisibleThree() {
+        return View.VISIBLE;
+    }
+
+    protected int getVisibleFour() {
+        return View.VISIBLE;
     }
 }
 

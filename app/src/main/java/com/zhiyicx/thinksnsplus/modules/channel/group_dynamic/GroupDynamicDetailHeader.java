@@ -31,6 +31,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListFragment;
@@ -68,7 +69,7 @@ public class GroupDynamicDetailHeader {
         return mDynamicDetailHeader;
     }
 
-    public GroupDynamicDetailHeader(Context context, List<SystemConfigBean.Advert> adverts) {
+    public GroupDynamicDetailHeader(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_dynamic_detial, null);
@@ -86,10 +87,10 @@ public class GroupDynamicDetailHeader {
                 (R.dimen.spacing_normal) * 2;
     }
 
-    private void initAdvert(Context context, List<SystemConfigBean.Advert> adverts) {
+    private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }

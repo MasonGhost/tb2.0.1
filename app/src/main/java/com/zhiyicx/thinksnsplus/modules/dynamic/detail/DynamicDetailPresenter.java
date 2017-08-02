@@ -8,7 +8,6 @@ import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -31,9 +30,10 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
@@ -96,6 +96,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     public SharePolicy mSharePolicy;
     @Inject
     UserInfoRepository mUserInfoRepository;
+    @Inject
+    AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+
     private boolean mIsNeedDynamicListRefresh = false;
 
 
@@ -173,7 +176,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public boolean insertOrUpdateData( List<DynamicCommentBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(List<DynamicCommentBean> data, boolean isLoadMore) {
         if (data == null) {
             return false;
         }
@@ -598,19 +601,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public List<SystemConfigBean.Advert> getAdvert() {
-        List<SystemConfigBean.Advert> imageAdvert = new ArrayList<>();
-        if (mSystemRepository.getBootstrappersInfoFromLocal()
-                .getAdverts() == null) {
-            return imageAdvert;
-        }
-        for (SystemConfigBean.Advert advert : mSystemRepository.getBootstrappersInfoFromLocal()
-                .getAdverts()) {
-            if (advert.getImageAdvert() != null) {
-                imageAdvert.add(advert);
-            }
-        }
-        return imageAdvert;
+    public List<RealAdvertListBean> getAdvert() {
+        return mAllAdvertListBeanGreenDao.getDynamicDetailAdvert().getMRealAdvertListBeen();
     }
 
     @Override

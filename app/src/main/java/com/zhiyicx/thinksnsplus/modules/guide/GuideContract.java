@@ -46,6 +46,7 @@ public interface GuideContract {
 
         Observable<List<AllAdverListBean>> getLaunchAdverts();
         Observable<List<RealAdvertListBean>> getRealAdverts(long space_id);
+        Observable<List<RealAdvertListBean>> getAllRealAdverts(List<Object> space_id);
 
     }
 

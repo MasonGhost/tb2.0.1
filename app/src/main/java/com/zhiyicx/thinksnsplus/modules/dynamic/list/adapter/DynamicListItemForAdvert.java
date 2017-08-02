@@ -2,14 +2,24 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.TextViewUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
@@ -46,11 +56,15 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         return IMAGE_COUNTS;
     }
 
+    @Override
+    public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
+        return item.getFeed_from() == -1;
+    }
 
     @Override
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
-        super.convert(holder, dynamicBean, lastT, position, itemCounts);
-        initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
+        super.convert(holder,dynamicBean,lastT,position,itemCounts);
+        initImageView(holder, holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 
     /**
@@ -98,16 +112,32 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnImageClickListener != null) {
+                        mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
                     }
                 });
     }
 
+    @Override
+    protected int getVisibleThree() {
+        return View.GONE;
+    }
+
+    @Override
+    protected int getVisibleTwo() {
+        return View.GONE;
+    }
+
+    @Override
+    protected int[] getToolImages() {
+        return new int[]{
+                com.zhiyicx.baseproject.R.mipmap.topbar_close,
+                com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
+                com.zhiyicx.baseproject.R.mipmap.home_ico_eye_normal,
+                com.zhiyicx.baseproject.R.mipmap.home_ico_more
+        };
+    }
 
     @Override
     protected int getCurrenCloums() {

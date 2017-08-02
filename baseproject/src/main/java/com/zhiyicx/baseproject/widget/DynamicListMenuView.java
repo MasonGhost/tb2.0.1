@@ -313,6 +313,28 @@ public class DynamicListMenuView extends FrameLayout {
         mOnItemListener = listener;
     }
 
+    /**
+     * 设置未选中情况下的图片
+     */
+    public void setImageNormalResourceIds(int[] normalResourceIds) {
+        if (normalResourceIds==null){
+            return;
+        }
+        this.mImageNormalResourceIds = normalResourceIds;
+        // 初始化所有的控件图片
+        mIvDynamicListLike.setImageResource(normalResourceIds[0]);
+        mIvDynamicListComment.setImageResource(normalResourceIds[1]);
+        mIvDynamicListShare.setImageResource(normalResourceIds[2]);
+        mIvDynamicListMore.setImageResource(normalResourceIds[3]);
+    }
+
+    /**
+     * 设置选中情况下的图片
+     */
+    public void setImageCheckedResourceIds(int[] checkedResourceIds) {
+        this.mImageCheckedResourceIds = checkedResourceIds;
+    }
+
     public interface OnItemClickListener {
         void onItemClick(ViewGroup parent, View v, int postion);
     }

@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -67,7 +68,7 @@ public class DynamicDetailHeader {
         return mDynamicDetailHeader;
     }
 
-    public DynamicDetailHeader(Context context, List<SystemConfigBean.Advert> adverts) {
+    public DynamicDetailHeader(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_dynamic_detial, null);
@@ -85,10 +86,10 @@ public class DynamicDetailHeader {
                 (R.dimen.spacing_normal) * 2;
     }
 
-    private void initAdvert(Context context, List<SystemConfigBean.Advert> adverts) {
+    private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }

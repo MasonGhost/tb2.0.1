@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.List;
@@ -16,12 +18,12 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class AllAdvertLIstBeanGreendoImpl extends CommonCacheImpl<AllAdverListBean> {
+public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListBean> {
 
     private AllAdverListBeanDao mAllAdverListBeanDao;
 
     @Inject
-    public AllAdvertLIstBeanGreendoImpl(Application context) {
+    public AllAdvertListBeanGreenDaoImpl(Application context) {
         super(context);
         mAllAdverListBeanDao = getWDaoSession().getAllAdverListBeanDao();
     }
@@ -78,7 +80,36 @@ public class AllAdvertLIstBeanGreendoImpl extends CommonCacheImpl<AllAdverListBe
 
     public AllAdverListBean getBootAdvert() {
 
-        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Channel.eq("boot")).build().list();
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_BOOT_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
+
+    public AllAdverListBean getDynamicBannerAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_DYNAMIC_BANNER_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
+
+    public AllAdverListBean getDynamicListAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_DYNAMIC_LIST_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
+
+    public AllAdverListBean getDynamicDetailAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_DYNAMIC_DETAILS_ADVERT)).build().list();
+
+        List<RealAdvertListBean> test=data.get(0).getMRealAdvertListBeen();
         if (data != null && !data.isEmpty()) {
             return data.get(0);
         }

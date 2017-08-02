@@ -35,12 +35,9 @@ public class DynamicBannerHeader {
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 //        mDynamicBannerHeader.setPadding(0, 10, 0, 0);
         mBanner = (Banner) mDynamicBannerHeader.findViewById(R.id.item_banner);
-        mBanner.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(int position) {
-                if (mHeadlerClickEvent != null) {
-                    mHeadlerClickEvent.headClick();
-                }
+        mBanner.setOnBannerListener(position -> {
+            if (mHeadlerClickEvent != null) {
+                mHeadlerClickEvent.headClick();
             }
         });
     }
@@ -49,12 +46,9 @@ public class DynamicBannerHeader {
         this.mContext = context;
         mDynamicBannerHeader = LayoutInflater.from(context).inflate(R.layout.item_banner, null);
         mBanner = (Banner) mDynamicBannerHeader.findViewById(R.id.item_banner);
-        mBanner.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(int position) {
-                if (mHeadlerClickEvent != null) {
-                    mHeadlerClickEvent.headClick();
-                }
+        mBanner.setOnBannerListener(position -> {
+            if (mHeadlerClickEvent != null) {
+                mHeadlerClickEvent.headClick();
             }
         });
         setHeadInfo(headInfo);

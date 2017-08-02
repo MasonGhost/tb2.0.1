@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
@@ -135,7 +136,8 @@ public interface DynamicContract {
          */
         void shareDynamic(DynamicDetailBeanV2 dynamicBean, Bitmap bitmap);
 
-        List<SystemConfigBean.Advert> getAdvert();
+        List<RealAdvertListBean> getBannerAdvert();
+        List<RealAdvertListBean> getListAdvert();
 
         void checkNote(int note);
 

@@ -165,6 +165,12 @@ public interface CommonClient {
     Observable<List<RealAdvertListBean>> getRealAdvert(@Path("advert_id") long advert_id);
 
     /**
+     * 批量获取广告位广告列表
+     */
+    @GET(APP_PATH_GET_SINGLE_ADVERT_INFO)
+    Observable<List<RealAdvertListBean>> getAllRealAdvert(@Query("space") String advert_id);
+
+    /**
      * 获取支付信息
      */
     @FormUrlEncoded

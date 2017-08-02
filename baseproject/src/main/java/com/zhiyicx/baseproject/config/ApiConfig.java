@@ -410,8 +410,13 @@ public class ApiConfig {
     public static final String APP_LIKE_MUSIC = "musics";
     public static final String APP_LIKE_NEWS = "news";
 
-    public static final String APP_IMAGE_ADVERT = "image";
-    public static final String APP_DYNAMIC_ADVERT = "analog";
+    public static final String APP_IMAGE_TYPE_ADVERT = "image";
+    public static final String APP_DYNAMIC_TYPE_ADVERT = "analog";
+
+    public static final String APP_DYNAMIC_BANNER_ADVERT = "feed:list:top";
+    public static final String APP_DYNAMIC_LIST_ADVERT = "feed:list:analog";
+    public static final String APP_DYNAMIC_DETAILS_ADVERT = "feed:single";
+    public static final String APP_BOOT_ADVERT = "boot";
 
 
     /*******************************************  API V2  *********************************************/
@@ -425,6 +430,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace";
     // 获取一个广告位的广告列表
     public static final String APP_PATH_GET_SINGLE_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace/{advert_id}/advertising";
+    // 获取批量广告位的广告列表
+    public static final String APP_PATH_GET_All_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace/advertising";
 
     /**
      * 通用 CommonClient

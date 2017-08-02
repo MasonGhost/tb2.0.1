@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * @Author Jliuer
@@ -105,4 +106,21 @@ public class DynamicListAdvert implements Serializable,Parcelable{
             return new DynamicListAdvert[size];
         }
     };
+
+    public static DynamicDetailBeanV2 advert2Dynamic(DynamicListAdvert advert){
+        DynamicDetailBeanV2 dynamicDetailBeanV2=new DynamicDetailBeanV2();
+        dynamicDetailBeanV2.setFeed_from(-1);
+        UserInfoBean userInfoBean=new UserInfoBean();
+        userInfoBean.setUser_id(-1L);
+        userInfoBean.setName(advert.getName());
+        userInfoBean.setAvatar("http://"+advert.getAvatar());
+        dynamicDetailBeanV2.setUserInfoBean(userInfoBean);
+        dynamicDetailBeanV2.setFeed_content(advert.getContent());
+        dynamicDetailBeanV2.setCreated_at(advert.getTime());
+        dynamicDetailBeanV2.setUpdated_at(advert.getTime());
+        DynamicDetailBeanV2.ImagesBean imageBean=new DynamicDetailBeanV2.ImagesBean();
+        imageBean.setImgUrl(advert.getImage());
+        dynamicDetailBeanV2.setImages(Arrays.asList(imageBean));
+        return dynamicDetailBeanV2;
+    }
 }

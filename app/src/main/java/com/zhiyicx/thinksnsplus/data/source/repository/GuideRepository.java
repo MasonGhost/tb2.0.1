@@ -69,4 +69,14 @@ public class GuideRepository implements GuideContract.Repository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Observable<List<RealAdvertListBean>> getAllRealAdverts(List<Object> space_id) {
+        String space_ids = space_id.toString();
+        space_ids = space_ids.replace("[", "");
+        space_ids = space_ids.replace("]", "");
+        return mCommonClient.getAllRealAdvert(space_ids)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

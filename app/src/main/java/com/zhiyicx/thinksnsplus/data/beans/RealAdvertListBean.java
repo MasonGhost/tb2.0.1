@@ -63,18 +63,13 @@ public class RealAdvertListBean extends BaseListBean {
         } else {
             advertFormat = new AdvertFormat();
             Gson gson = new Gson();
-            LogUtils.d("getAdvertFormat::");
-            String json=gson.toJson(data);
-            LogUtils.d("getAdvertFormat::"+json);
             switch (type) {
-                case ApiConfig.APP_IMAGE_ADVERT:
+                case ApiConfig.APP_IMAGE_TYPE_ADVERT:
                     advertFormat.setImage(gson.fromJson(gson.toJson(data), ImageAdvert.class));
-                    LogUtils.d("getAdvertFormat::"+ApiConfig.APP_IMAGE_ADVERT);
                     break;
-                case ApiConfig.APP_DYNAMIC_ADVERT:
+                case ApiConfig.APP_DYNAMIC_TYPE_ADVERT:
                     advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
                             .class));
-                    LogUtils.d("getAdvertFormat::"+ApiConfig.APP_DYNAMIC_ADVERT);
                     break;
             }
         }
@@ -88,15 +83,11 @@ public class RealAdvertListBean extends BaseListBean {
         } else {
             advertFormat = new AdvertFormat();
             Gson gson = new Gson();
-            LogUtils.d("setAdvertFormat::");
-            String json=gson.toJson(data);
-            LogUtils.d("setAdvertFormat::"+json);
             switch (type) {
-                case ApiConfig.APP_IMAGE_ADVERT:
+                case ApiConfig.APP_IMAGE_TYPE_ADVERT:
                     advertFormat.setImage(gson.fromJson(gson.toJson(data), ImageAdvert.class));
-                    LogUtils.d("setAdvertFormat::"+ApiConfig.APP_IMAGE_ADVERT);
                     break;
-                case ApiConfig.APP_DYNAMIC_ADVERT:
+                case ApiConfig.APP_DYNAMIC_TYPE_ADVERT:
                     advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
                             .class));
                     break;
