@@ -12,8 +12,8 @@ import java.util.Arrays;
  * @Email Jliuer@aliyun.com
  * @Description 动态列表模拟数据广告
  */
-public class DynamicListAdvert implements Serializable,Parcelable{
-    private static final long serialVersionUID=124L;
+public class DynamicListAdvert implements Serializable, Parcelable {
+    private static final long serialVersionUID = 124L;
 
     /**
      * avatar : 头像图|string
@@ -107,19 +107,20 @@ public class DynamicListAdvert implements Serializable,Parcelable{
         }
     };
 
-    public static DynamicDetailBeanV2 advert2Dynamic(DynamicListAdvert advert){
-        DynamicDetailBeanV2 dynamicDetailBeanV2=new DynamicDetailBeanV2();
+    public static DynamicDetailBeanV2 advert2Dynamic(DynamicListAdvert advert, long max_id) {
+        DynamicDetailBeanV2 dynamicDetailBeanV2 = new DynamicDetailBeanV2();
         dynamicDetailBeanV2.setFeed_from(-1);
-        UserInfoBean userInfoBean=new UserInfoBean();
+        UserInfoBean userInfoBean = new UserInfoBean();
         userInfoBean.setUser_id(-1L);
         dynamicDetailBeanV2.setUser_id(-1L);
         userInfoBean.setName(advert.getName());
         userInfoBean.setAvatar(advert.getAvatar());
+        dynamicDetailBeanV2.setMaxId(max_id);
         dynamicDetailBeanV2.setUserInfoBean(userInfoBean);
         dynamicDetailBeanV2.setFeed_content(advert.getContent());
         dynamicDetailBeanV2.setCreated_at(advert.getTime());
         dynamicDetailBeanV2.setUpdated_at(advert.getTime());
-        DynamicDetailBeanV2.ImagesBean imageBean=new DynamicDetailBeanV2.ImagesBean();
+        DynamicDetailBeanV2.ImagesBean imageBean = new DynamicDetailBeanV2.ImagesBean();
         imageBean.setImgUrl(advert.getImage());
         dynamicDetailBeanV2.setImages(Arrays.asList(imageBean));
         return dynamicDetailBeanV2;

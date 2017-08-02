@@ -305,7 +305,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         try {// 添加广告
             RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
             DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
-            data.add(DynamicListAdvert.advert2Dynamic(advert));
+            long max_id = data.get(data.size() - 1).getMaxId();
+            data.add(DynamicListAdvert.advert2Dynamic(advert, max_id));
         } catch (Exception e) {
             e.printStackTrace();
         }
