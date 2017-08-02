@@ -51,6 +51,8 @@
     <dimen name="textview_spacing_offset_height">-1.5dp</dimen>
     <!-- 加载更多 -->
     <dimen name="load_more_height">35dp</dimen>
+    <!--认证输入的item高度-->
+    <dimen name="certification_input_item_height">55dp</dimen>
 
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->

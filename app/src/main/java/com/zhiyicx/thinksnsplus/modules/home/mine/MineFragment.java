@@ -18,6 +18,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
@@ -40,6 +41,8 @@ import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
 /**
  * @Describe 我的页面
@@ -285,10 +288,16 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void onTypeSelected(int position) {
+        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+        Bundle bundle = new Bundle();
         if (position == 0){
             // 跳转个人认证
+            bundle.putInt(BUNDLE_TYPE, 0);
         } else {
             // 跳转企业认证
+            bundle.putInt(BUNDLE_TYPE, 1);
         }
+        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+        startActivity(intent);
     }
 }

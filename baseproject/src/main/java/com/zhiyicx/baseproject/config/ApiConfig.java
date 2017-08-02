@@ -89,6 +89,9 @@ public class ApiConfig {
     public static final String APP_PATH_CURRENT_USER_ADD_TAGS = "api/" + API_VERSION_2 + "/user/tags/{tag_id}";// 当前认证用户附加一个标签
     public static final String APP_PATH_CURRENT_USER_DELETE_TAGS = "api/" + API_VERSION_2 + "/user/tags/{tag_id}";// 当前认证用户分离一个标签
 
+    // 认证
+    public static final String APP_PATH_CERTIFICATION = "api/" + API_VERSION_2 + "/user/certification"; // GET-获取认证信息 POST-申请认证 PACTH-更新认证
+
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
      *
@@ -473,4 +476,5 @@ public class ApiConfig {
     // 凭据回执
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/wallet/charges/{charge}?mode=retrieve";
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
+
 }
