@@ -13,7 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicToolBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import org.simple.eventbus.EventBus;

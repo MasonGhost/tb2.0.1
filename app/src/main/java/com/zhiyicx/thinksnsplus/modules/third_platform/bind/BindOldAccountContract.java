@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.third_platform.bind;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.source.repository.IThirdPlatformRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IThirdPlatformRepository;
 
 /**
  * @author Catherine

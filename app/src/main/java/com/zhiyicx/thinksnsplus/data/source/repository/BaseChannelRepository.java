@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.ChannelSubscripBeanGreenDaoImp
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ChannelClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.ArrayList;

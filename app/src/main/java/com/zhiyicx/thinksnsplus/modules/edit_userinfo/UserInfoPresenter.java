@@ -13,7 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.EventBus;

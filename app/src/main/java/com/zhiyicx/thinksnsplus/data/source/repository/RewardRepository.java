@@ -25,11 +25,12 @@ import static com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository.
  * @Date 2017/4/25
  * @Contact master.jungle68@gmail.com
  */
-public class RewardRepository implements RewardContract.Repository {
+public class RewardRepository extends BaseRewardRepository implements RewardContract.Repository {
 
 
     @Inject
     public RewardRepository(ServiceManager serviceManager) {
+        super(serviceManager);
     }
 
 }

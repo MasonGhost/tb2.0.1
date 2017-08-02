@@ -1,0 +1,92 @@
+package com.zhiyicx.thinksnsplus.modules.wallet.reward.list;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
+
+import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.modules.rank.RankAdapter;
+import com.zhiyicx.thinksnsplus.modules.rank.RankContract;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * @Describe 我的排行榜
+ * @Author Jungle68
+ * @Date 2017/1/
+ * @Contact master.jungle68@gmail.com
+ */
+public class RewardListFragment extends TSListFragment<RewardListContract.Presenter, RewardsListBean> implements RewardListContract.View {
+    private static final String BUNDLE_REWARD_TYPE = "reward_type";
+    private static final String BUNDLE_SOURCE_ID = "source_id";
+    private static final String BUNDLE_DATA = "data";
+
+    private RewardType mRewardType;
+    private long mSourceId;
+
+    public static RewardListFragment newInstance(Bundle bundle) {
+        RewardListFragment rankFragment = new RewardListFragment();
+        rankFragment.setArguments(bundle);
+        return rankFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() == null || getArguments().getLong(BUNDLE_SOURCE_ID) == 0) {
+            throw new IllegalArgumentException("source_id  not be 0");
+        }
+
+        mRewardType = (RewardType) getArguments().getSerializable(BUNDLE_REWARD_TYPE);
+        mSourceId = getArguments().getLong(BUNDLE_SOURCE_ID);
+        if (getArguments().getSerializable(BUNDLE_DATA) != null) {
+            mListDatas.addAll((Collection<? extends RewardsListBean>) getArguments().getSerializable(BUNDLE_DATA));
+        }
+    }
+
+    @Override
+    protected CommonAdapter<RewardsListBean> getAdapter() {
+        return new RewardListAdapter(getContext(), R.layout.item_mine_dig_list, mListDatas);
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.rewards_list);
+    }
+
+    @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+    }
+
+    @Override
+    protected int setEmptView() {
+        return R.mipmap.img_default_nobody;
+    }
+
+    @Override
+    public RewardType getCurrentType() {
+        return null;
+    }
+
+    @Override
+    public long getSourceId() {
+        return 0l;
+    }
+}

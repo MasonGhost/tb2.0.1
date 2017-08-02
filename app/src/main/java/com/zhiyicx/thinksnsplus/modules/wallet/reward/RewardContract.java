@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.RechargeSuccessBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IRewardRepository;
 import com.zhiyicx.tspay.TSPayClient;
 
 import rx.Observable;
@@ -22,7 +23,7 @@ public interface RewardContract {
 
     }
 
-    interface Repository {
+    interface Repository extends IRewardRepository {
 
     }
 

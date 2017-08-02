@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.data.source.repository;
+package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
 import rx.Observable;
 

@@ -3,11 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.channel.list;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
 
 import java.util.List;
 
