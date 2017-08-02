@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
@@ -9,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
@@ -253,6 +255,25 @@ public interface UserInfoClient {
      */
     @DELETE(ApiConfig.APP_PATH_CURRENT_USER_DELETE_TAGS)
     Observable<Object> deleteTag(@Path("tag_id") long tag_id);
+
+    /**
+     * 获取用户认证信息
+     */
+    @GET(ApiConfig.APP_PATH_CERTIFICATION)
+    Observable<UserCertificationInfo> getUserCertificationInfo();
+
+    /**
+     * 提交认证信息
+     */
+    @POST(ApiConfig.APP_PATH_CERTIFICATION)
+    Observable<BaseJsonV2> sendUserCertificationInfo(@Body RequestBody requestBody);
+
+    /**
+     * 更新认证信息
+     */
+    @PATCH(ApiConfig.APP_PATH_CERTIFICATION)
+    Observable<BaseJsonV2> updateUserCertificationInfo();
+
 
 
 }
