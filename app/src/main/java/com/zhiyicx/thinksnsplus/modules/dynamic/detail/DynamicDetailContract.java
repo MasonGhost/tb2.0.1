@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -88,6 +89,7 @@ public interface DynamicDetailContract {
 
         void updateDynamic(DynamicDetailBeanV2 detailBeanV2);
 
+        void setRewardListBeans(List<RewardsListBean> rewardsListBeens);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -102,12 +104,6 @@ public interface DynamicDetailContract {
     }
 
     interface Presenter extends ITSListPresenter<DynamicCommentBean> {
-        /**
-         * 获取当前动态
-         *
-         * @param feed_id
-         */
-        void getCurrentDynamic(long feed_id);
 
         /**
          * 获取当前动态详情 V2

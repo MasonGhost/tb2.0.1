@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnCommentTextClickListener;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -39,6 +40,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.adapter.DynamicDetailComm
 import com.zhiyicx.thinksnsplus.modules.dynamic.topdynamic_comment.DynamicCommentTopActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicCommentEmptyItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -47,6 +49,7 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -102,6 +105,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @BindView(R.id.toolbar_top_blank)
     View mToolbarTopBlank;
 
+    private List<RewardsListBean> mRewardsListBeens = new ArrayList<>();
     private DynamicDetailBeanV2 mDynamicBean;// 上一个页面传进来的数据
     private boolean mIsLookMore = false;
     private DynamicDetailHeader mDynamicDetailHeader;
@@ -193,7 +197,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                        mPresenter.handleFollowUser(mDynamicBean.getUserInfoBean());
+                    mPresenter.handleFollowUser(mDynamicBean.getUserInfoBean());
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -351,6 +355,15 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     @Override
+    public void setRewardListBeans(List<RewardsListBean> rewardsListBeens) {
+        if (rewardsListBeens == null) {
+            return;
+        }
+        mRewardsListBeens.clear();
+        mRewardsListBeens.addAll(rewardsListBeens);
+    }
+
+    @Override
     public Bundle getArgumentsBundle() {
         return getArguments();
     }
@@ -408,6 +421,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
 //        设置动态详情列表数据
         mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
+        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(), RewardType.DYNAMIC);
         updateCommentCountAndDig();
         onNetResponseSuccess(mDynamicBean.getComments(), false);
         if (mIsLookMore) {
@@ -504,11 +518,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
      */
     private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
         mTvToolbarRight.setVisibility(View.VISIBLE);
-        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+        if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
-        }else if(userInfoBean1.isFollower()){
+        } else if (userInfoBean1.isFollower()) {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
-        }else {
+        } else {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
         }
     }

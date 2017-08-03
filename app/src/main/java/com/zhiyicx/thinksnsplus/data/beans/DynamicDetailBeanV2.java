@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
@@ -111,6 +112,11 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Convert(converter = DynamicDigListBeanConverter.class, columnType = String.class)
     private List<DynamicDigListBean> digUserInfoList;// 点赞用户的信息列表
 
+
+    @Convert(converter = RewardCountBeanConverter.class, columnType = String.class)
+    private RewardsCountBean reward;// 打赏总额
+
+
     public boolean isFollowed() {
         return isFollowed;
     }
@@ -155,6 +161,14 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     @Keep
     public void setDigUserInfoList(List<DynamicDigListBean> digUserInfoList) {
         this.digUserInfoList = digUserInfoList;
+    }
+
+    public RewardsCountBean getReward() {
+        return reward;
+    }
+
+    public void setReward(RewardsCountBean reward) {
+        this.reward = reward;
     }
 
     public int getState() {
@@ -748,6 +762,19 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     }
 
 
+    /**
+     * list<FollowFansBean> 转 String 形式存入数据库
+     */
+    public static class DynamicDigListBeanConverter extends BaseConvert<List<DynamicDigListBean>> {
+    }
+
+    /**
+     * RewardCountBean 转 String 形式存入数据库
+     */
+    public static class RewardCountBeanConverter extends BaseConvert<RewardsCountBean> {
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -786,6 +813,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         dest.writeInt(this.state);
         dest.writeInt(this.top);
         dest.writeTypedList(this.digUserInfoList);
+        dest.writeParcelable(this.reward, flags);
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
@@ -870,15 +898,17 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.state = in.readInt();
         this.top = in.readInt();
         this.digUserInfoList = in.createTypedArrayList(DynamicDigListBean.CREATOR);
+        this.reward = in.readParcelable(RewardsCountBean.class.getClassLoader());
     }
 
-    @Generated(hash = 306175443)
-    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at, Long user_id,
-            String feed_content, int feed_from, int feed_digg_count, int feed_view_count, int feed_comment_count,
-            String feed_latitude, String feed_longtitude, String feed_geohash, int audit_status, Long feed_mark,
-            boolean has_digg, boolean has_collect, double amount, List<DynamicLikeBean> likes, boolean paid,
-            List<ImagesBean> images, List<Integer> diggs, PaidNote paid_node, Long hot_creat_time, boolean isFollowed,
-            int state, int top, List<DynamicDigListBean> digUserInfoList) {
+    @Generated(hash = 1721432406)
+    public DynamicDetailBeanV2(Long id, String created_at, String updated_at, String deleted_at,
+            Long user_id, String feed_content, int feed_from, int feed_digg_count, int feed_view_count,
+            int feed_comment_count, String feed_latitude, String feed_longtitude, String feed_geohash,
+            int audit_status, Long feed_mark, boolean has_digg, boolean has_collect, double amount,
+            List<DynamicLikeBean> likes, boolean paid, List<ImagesBean> images, List<Integer> diggs,
+            PaidNote paid_node, Long hot_creat_time, boolean isFollowed, int state, int top,
+            List<DynamicDigListBean> digUserInfoList, RewardsCountBean reward) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -907,6 +937,7 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
         this.state = state;
         this.top = top;
         this.digUserInfoList = digUserInfoList;
+        this.reward = reward;
     }
 
     public static final Creator<DynamicDetailBeanV2> CREATOR = new Creator<DynamicDetailBeanV2>() {
@@ -928,28 +959,5 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private transient DynamicDetailBeanV2Dao myDao;
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
-
-    /**
-     * list<FollowFansBean> 转 String 形式存入数据库
-     */
-    public static class DynamicDigListBeanConverter implements PropertyConverter<List<DynamicDigListBean>, String> {
-
-        @Override
-        public List<DynamicDigListBean> convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(List<DynamicDigListBean> entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-
-    }
 
 }

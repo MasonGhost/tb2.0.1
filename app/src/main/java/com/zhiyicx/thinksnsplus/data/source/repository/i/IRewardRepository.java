@@ -61,24 +61,24 @@ public interface IRewardRepository {
     /**
      * 对一条动态打赏
      *
-     * @param news_id 动态 id
+     * @param feed_id 动态 id
      * @param amount  打赏金额
      * @return
      */
-    Observable<Object> rewardDynamic(long news_id, float amount);
+    Observable<Object> rewardDynamic(long feed_id, double amount);
 
 
     /**
      * 动态打赏列表
      *
-     * @param news_id    动态 id
+     * @param feed_id    动态 id
      * @param limit      列表返回数据条数
      * @param since      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
      * @param order      翻页标识 排序 正序-asc 倒序 desc
      * @param order_type 排序规则 date-按时间 amount-按金额
      * @return
      */
-    Observable<List<RewardsListBean>> rewardDynamicList(long news_id, Integer limit, Integer since, String order, String order_type);
+    Observable<List<RewardsListBean>> rewardDynamicList(long feed_id, Integer limit, Integer since, String order, String order_type);
 
 
 }

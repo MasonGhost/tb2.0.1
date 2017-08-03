@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
@@ -41,6 +42,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.RewardRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
@@ -90,6 +92,8 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     SystemRepository mSystemRepository;
     @Inject
     CommentRepository mCommentRepository;
+    @Inject
+    RewardRepository mRewardRepository;
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
@@ -173,7 +177,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     }
 
     @Override
-    public boolean insertOrUpdateData( List<DynamicCommentBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(List<DynamicCommentBean> data, boolean isLoadMore) {
         if (data == null) {
             return false;
         }
@@ -181,36 +185,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                 .getFeed_mark());// 删除本条动态的本地评论
         mDynamicCommentBeanGreenDao.insertOrReplace(data);
         return true;
-    }
-
-    @Override
-    public void getCurrentDynamic(final long feed_id) {
-        Subscription subscription = mRepository.getDynamicListV2(ApiConfig.DYNAMIC_TYPE_NEW,
-                DEFAULT_PAGE_MAX_ID, null, false)
-                .subscribe(new BaseSubscribeForV2<List<DynamicDetailBeanV2>>() {
-                    @Override
-                    protected void onSuccess(List<DynamicDetailBeanV2> data) {
-                        if (data.isEmpty()) {
-                            onFailure("", ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED);
-                            return;
-                        }
-                        mRootView.initDynamicDetial(data.get(0));
-                        mDynamicDetailBeanV2GreenDao.insertOrReplace(data.get(0));
-                        mDynamicCommentBeanGreenDao.insertOrReplace(data.get(0).getComments());
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        LogUtils.e(message);
-                        handleDynamicHasBeDeleted(code, feed_id);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.loadAllError();
-                    }
-                });
-        addSubscrebe(subscription);
     }
 
     @Override
@@ -243,8 +217,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     public void getDetailAll(final Long feed_id, Long max_id, final String user_ids, final int
             topFlag) {
         Subscription subscription = Observable.zip(mRepository.getDynamicDigListV2(feed_id, max_id)
-                , mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), mRootView.getCurrentDynamic().getId(), max_id)
-                , (mDynamicDigs, listBaseJson3) -> {
+                , mRepository.getDynamicCommentListV2(mRootView.getCurrentDynamic().getFeed_mark(), feed_id, max_id)
+                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+                , (mDynamicDigs, listBaseJson3, rewardsListBeens) -> {
                     DynamicDetailBeanV2 dynamicBean = new DynamicDetailBeanV2();
                     dynamicBean.setDigUserInfoList(mDynamicDigs);
                     List<DynamicCommentBean> data = listBaseJson3;
@@ -267,7 +242,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     }
                     dynamicBean.setComments(data);
 
-
+                    mRootView.setRewardListBeans(rewardsListBeens);
                     return dynamicBean;
                 })
                 .subscribeOn(Schedulers.io())

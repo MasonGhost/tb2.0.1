@@ -71,15 +71,11 @@ public interface DynamicClient {
      * 获取动态列表
      *
      * @param type     "" 代表最新；follows 代表关注 ； hots 代表热门
-     * @param max_id   用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
+     * @param after   用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
+     * @param user_id     动态所属人
      * @param limit    请求数据条数 默认10条
-     * @param page     页码 热门选填
-     * @param feed_ids 可以是以逗号隔开的id  可以是数组
      * @return dynamic list
      */
-    @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST)
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(@Path("type") String type, @Query("max_id") Long max_id, @Query("limit") Long limit, @Query("page") int page, @Query("feed_ids") String feed_ids);
-
     @GET(ApiConfig.APP_PATH_GET_DYNAMIC_LIST_V2)
     Observable<DynamicBeanV2> getDynamicListV2(@Query("type") String type, @Query
             ("after") Long after, @Query("user") Long user_id, @Query("limit") Long limit);

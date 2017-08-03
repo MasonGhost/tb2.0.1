@@ -76,19 +76,19 @@ public class BaseRewardRepository implements IRewardRepository {
     /*******************************************  动态打赏  *********************************************/
 
     /**
-     * @param news_id 动态 id
+     * @param feed_id 动态 id
      * @param amount  打赏金额
      * @return
      */
     @Override
-    public Observable<Object> rewardDynamic(long news_id, float amount) {
-        return mDynamicClient.rewardDynamic(news_id, (float) amount)
+    public Observable<Object> rewardDynamic(long feed_id, double amount) {
+        return mDynamicClient.rewardDynamic(feed_id, (float) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
-     * @param news_id    动态 id
+     * @param feed_id    动态 id
      * @param limit      列表返回数据条数
      * @param since      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
      * @param order      翻页标识 排序 正序-asc 倒序 desc
@@ -96,8 +96,8 @@ public class BaseRewardRepository implements IRewardRepository {
      * @return
      */
     @Override
-    public Observable<List<RewardsListBean>> rewardDynamicList(long news_id, Integer limit, Integer since, String order, String order_type) {
-        return mDynamicClient.rewardDynamicList(news_id, limit, since, order, order_type)
+    public Observable<List<RewardsListBean>> rewardDynamicList(long feed_id, Integer limit, Integer since, String order, String order_type) {
+        return mDynamicClient.rewardDynamicList(feed_id, limit, since, order, order_type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
