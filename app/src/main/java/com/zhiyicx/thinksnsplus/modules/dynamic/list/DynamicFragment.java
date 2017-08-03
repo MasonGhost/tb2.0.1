@@ -308,7 +308,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             long max_id = data.get(data.size() - 1).getMaxId();
             data.add(DynamicListAdvert.advert2Dynamic(advert, max_id));
         } catch (Exception e) {
-            e.printStackTrace();
         }
         super.onNetResponseSuccess(data, isLoadMore);
     }
