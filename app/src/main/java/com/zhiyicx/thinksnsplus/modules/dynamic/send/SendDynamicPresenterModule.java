@@ -3,9 +3,8 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 

@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -279,7 +280,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
             // 进行后台任务请求
             backgroundRequestTaskBean = new BackgroundRequestTaskBean();
             backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART,followFansBean.getUser_id()));
+            backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_CANCEL_FOLLOW_USER_FORMART, followFansBean.getUser_id()));
             if (followFansBean.getExtra().getFollowings_count() > 0)
                 followFansBean.getExtra().setFollowings_count(followFansBean.getExtra().getFollowings_count() - 1);
 
@@ -289,7 +290,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         hashMap.put("user_id", followFansBean.getUser_id() + "");
         backgroundRequestTaskBean.setParams(hashMap);
         BackgroundTaskManager.getInstance(mContext).
-        addBackgroundRequestTask(backgroundRequestTaskBean);
+                addBackgroundRequestTask(backgroundRequestTaskBean);
         // 本地数据库,关注状态
         mUserInfoBeanGreenDao.insertOrReplace(followFansBean);
         // 更新动态关注状态
@@ -465,6 +466,37 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         return Observable.just(listBaseJson);
                     }
                 });
+    }
+
+    /*******************************************  标签  *********************************************/
+
+
+    @Override
+    public Observable<List<UserTagBean>> getUserTags(long user_id) {
+        return mUserInfoClient.getUserTags(user_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<UserTagBean>> getCurrentUserTags() {
+        return mUserInfoClient.getCurrentUserTags()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<Object> addTag(long tag_id) {
+        return mUserInfoClient.addTag(tag_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<Object> deleteTag(long tag_id) {
+        return mUserInfoClient.deleteTag(tag_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 }

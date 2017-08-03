@@ -5,8 +5,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -34,6 +37,7 @@ import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -41,6 +45,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
@@ -135,7 +140,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle("ThinkSNS+\b\b资讯");
-        shareContent.setUrl(String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
+        shareContent.setUrl(String.format(Locale.getDefault(),APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());
 
@@ -200,6 +205,21 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     }
 
     @Override
+    public void reqReWardsData(int id) {
+        Observable.zip(mRepository.getRewardsCount(id), mRepository.rewardsInfoList(id
+                , TSListFragment.DEFAULT_ONE_PAGE_SIZE,null,null,null)
+                , (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
+
+            mRootView.updateReWardsView(rewardsCountBean,rewardsListBeen);
+            return rewardsCountBean;
+        }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(o -> {
+
+        }, throwable -> throwable.printStackTrace());
+    }
+
+    @Override
     public void deleteComment(InfoCommentListBean data) {
         mInfoCommentListBeanDao.deleteSingleCache(data);
         mRootView.getListDatas().remove(data);
@@ -224,40 +244,29 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         Observable.just(infoCommentListBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<InfoCommentListBean, Integer>() {
-                    @Override
-                    public Integer call(InfoCommentListBean infoCommentListBean1) {
-                        int size = mRootView.getListDatas().size();
-                        int infoPosition = -1;
-                        for (int i = 0; i < size; i++) {
-                            if (mRootView.getListDatas().get(i).getComment_mark()
-                                    == infoCommentListBean1.getComment_mark()) {
-                                infoPosition = i;
-                                mRootView.getListDatas().get(i).setState(infoCommentListBean1
-                                        .getState());
-                                mRootView.getListDatas().get(i).setId(infoCommentListBean1.getId());
-                                mRootView.getListDatas().get(i).setComment_mark
-                                        (infoCommentListBean1.getComment_mark());
-                                break;
-                            }
+                .map(infoCommentListBean1 -> {
+                    int size = mRootView.getListDatas().size();
+                    int infoPosition = -1;
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getComment_mark()
+                                == infoCommentListBean1.getComment_mark()) {
+                            infoPosition = i;
+                            mRootView.getListDatas().get(i).setState(infoCommentListBean1
+                                    .getState());
+                            mRootView.getListDatas().get(i).setId(infoCommentListBean1.getId());
+                            mRootView.getListDatas().get(i).setComment_mark
+                                    (infoCommentListBean1.getComment_mark());
+                            break;
                         }
-                        return infoPosition;
                     }
+                    return infoPosition;
                 })
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        if (integer > 0) {
-                            mRootView.refreshData(); // 加上 header
-                        }
+                .subscribe(integer -> {
+                    if (integer > 0) {
+                        mRootView.refreshData(); // 加上 header
+                    }
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                }, throwable -> throwable.printStackTrace());
 
     }
 

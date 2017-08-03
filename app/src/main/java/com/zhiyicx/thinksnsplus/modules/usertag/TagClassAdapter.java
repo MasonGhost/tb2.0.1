@@ -6,13 +6,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridAdapter;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * Created by Sergej Kravcenko on 4/24/2017.
@@ -68,18 +74,27 @@ public class TagClassAdapter extends StickyHeaderGridAdapter {
     @Override
     public void onBindItemViewHolder(ItemViewHolder viewHolder, final int categoryPosition, final int tagPosition) {
         final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
-        final String label = mDatas.get(categoryPosition).getTags().get(tagPosition).getTagName();
-        holder.labelView.setText(label);
-        holder.labelView.setOnClickListener(v -> {
-            final int section1 = getAdapterPositionSection(holder.getAdapterPosition());
-            final int offset = getItemSectionOffset(section1, holder.getAdapterPosition());
+        UserTagBean userTagBean=mDatas.get(categoryPosition).getTags().get(tagPosition);
+        holder.labelView.setText(userTagBean.getTagName());
+
+        holder.labelView.setTextColor(SkinUtils.getColor(userTagBean.isMine_has()? R.color.important_for_theme:R.color.normal_for_dynamic_list_content));
+        holder.labelView.setBackgroundResource(userTagBean.isMine_has()? R.drawable.item_react_bg_blue:R.drawable.item_react_bg_gray);
+        // 跳过
+        RxView.clicks(holder.labelView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    final int section1 = getAdapterPositionSection(holder.getAdapterPosition());
+                    final int offset = getItemSectionOffset(section1, holder.getAdapterPosition());
 //            mDatas.get(section1).remove(offset);
 //            notifySectionItemRemoved(section1, offset);
-            LogUtils.d("TagClassAdapter","categoryPosition : "+categoryPosition+"-----"+"tagPosition : "+tagPosition+"-----"+"section1 : "+section1+"offset : "+offset);
-            if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(categoryPosition,tagPosition);
-            }
-        });
+                    LogUtils.d("TagClassAdapter", "categoryPosition : " + categoryPosition + "-----" + "tagPosition : " + tagPosition + "-----" + "section1 : " + section1 + "offset : " + offset);
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick(categoryPosition, tagPosition);
+                    }
+                });
+
+
+
     }
 
     public static class MyHeaderViewHolder extends HeaderViewHolder {

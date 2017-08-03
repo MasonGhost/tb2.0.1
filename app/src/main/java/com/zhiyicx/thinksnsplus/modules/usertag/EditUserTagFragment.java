@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.usertag;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +13,14 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridLayoutManager;
+import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -23,6 +30,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.internal.operators.SingleToObservable;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -32,15 +45,13 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View {
+public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View, TagClassAdapter.OnItemClickListener {
+    public static final String BUNDLE_IS_FROM_REGISTER = "is_from_register";
+
     private static final int SPAN_SIZE = 3;
-    private static final int SECTIONS = 10;
-    private static final int SECTION_ITEMS = 5;
 
     @BindView(R.id.tv_choosed_tag_tip)
     TextView mTvChoosedTagTip;
-    @BindView(R.id.tv_jump_over)
-    TextView mTvJumpOver;
     @BindView(R.id.rv_choosed_tag)
     RecyclerView mRvChoosedTag;
     @BindView(R.id.rv_tag_class)
@@ -49,7 +60,6 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private GridLayoutManager mChoosedTagLayoutManager;
     private StickyHeaderGridLayoutManager mTagClassLayoutManager;
 
-    private CommonAdapter mChoosedTagAdapter;
 
     private List<UserTagBean> mChoosedTags = new ArrayList<>();
     private List<TagCategoryBean> mCategoryTags = new ArrayList<>();
@@ -57,10 +67,16 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private int mMaxChooseNums;
     private int mCurrentChooseNums = 0;
     private TagClassAdapter mTagClassAdapter;
+    private CommonAdapter<UserTagBean> mChoosedTagAdapter;
 
+    private boolean mIsFromRegister = false;
 
-    public static EditUserTagFragment newInstance() {
-        return new EditUserTagFragment();
+    private CenterInfoPopWindow mRulePop;// 标签提示规则选择弹框
+
+    public static EditUserTagFragment newInstance(Bundle bundle) {
+        EditUserTagFragment editUserTagFragment = new EditUserTagFragment();
+        editUserTagFragment.setArguments(bundle);
+        return editUserTagFragment;
     }
 
     @Override
@@ -83,28 +99,82 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         return true;
     }
 
+
     @Override
-    protected String setRightTitle() {
-        return getString(R.string.save);
+    protected void setRightClick() {
+        if (mIsFromRegister) { // 注册就进入主页，设置就返回
+
+            startActivity(new Intent(getActivity(), HomeActivity.class));
+        } else {
+            getActivity().finish();
+
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mIsFromRegister = getArguments().getBoolean(BUNDLE_IS_FROM_REGISTER, false);
+        }
     }
 
     @Override
     protected void initView(View rootView) {
+        if (mIsFromRegister) { // 隐藏返回键
+            mToolbarLeft.setVisibility(View.INVISIBLE);
+            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
+            mToolbarRight.setVisibility(View.VISIBLE);
+        }else
+        {
+            mToolbarRight.setVisibility(View.INVISIBLE);
+        }
         mMaxChooseNums = getResources().getInteger(R.integer.user_tag_max_nums);
-        mTvChoosedTagTip.setText(getString(R.string.user_tag_choosed_tag_format, mMaxChooseNums, mCurrentChooseNums));
+        updateChooseTip();
         initRvChoosedTag();
         initRvTagClass();
         initListener();
     }
 
+    private void updateChooseTip() {
+        mTvChoosedTagTip.setText(getString(R.string.user_tag_choosed_tag_format, mMaxChooseNums, mCurrentChooseNums));
+    }
+
     @Override
     protected void initData() {
-        for (int i = 0; i < 5; i++) {
-            mChoosedTags.add(new UserTagBean());
+
+
+        mPresenter.getAllTags();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (mIsFromRegister) {
+            getView().post(() -> initTipPop());
         }
 
-        mChoosedTagAdapter.notifyDataSetChanged();
-        mPresenter.getAllTags();
+    }
+
+    private void initTipPop() {
+        if (mRulePop != null) {
+            mRulePop.show();
+            return;
+        }
+        mRulePop = CenterInfoPopWindow.builder()
+                .titleStr(getString(R.string.tips))
+                .desStr(getString(R.string.tags_tips))
+                .item1Str(getString(R.string.get_it))
+                .item1Color(R.color.themeColor)
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .animationStyle(R.style.style_actionPopupAnimation)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .buildCenterPopWindowItem1ClickListener(() -> mRulePop.hide())
+                .parentView(getView())
+                .build();
+        mRulePop.show();
     }
 
 
@@ -122,20 +192,13 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             @Override
             protected void convert(ViewHolder holder, UserTagBean data
                     , final int position) {
-                TextView textView = holder.getView(R.id.item_info_channel);
-                ImageView delete = holder.getView(R.id.item_info_channel_deal);
-                if (position != 0) {
-                    delete.setVisibility(View.VISIBLE);
-                } else {
-                    delete.setVisibility(View.GONE);
-                }
-                holder.setText(R.id.item_info_channel, "你是豆逼" + position);
+                holder.setText(R.id.item_info_channel, data.getTagName());
             }
 
             @Override
             protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
                 RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(1, TimeUnit.SECONDS)
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())
                         .subscribe(o -> {
                             if (mOnItemClickListener != null) {
@@ -156,19 +219,15 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                mChoosedTagAdapter.removeItem(position);
-//                    mUnSubscribeAdapter.addItem(new InfoTypeMoreCatesBean(bean.getId(),
-//                            bean.getName()));
+                mPresenter.deleteTag(mChoosedTags.get(position).getId(), position);
+
             }
 
             @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int
-                    position) {
-//                if (!isEditor) {
-//                    mFragmentChannelEditor.performClick();
-//                }
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
                 return false;
             }
+
         });
 
         return mChoosedTagAdapter;
@@ -196,19 +255,14 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         });
         mRvTagClass.setLayoutManager(mTagClassLayoutManager);
         mTagClassAdapter = new TagClassAdapter(mCategoryTags);
+        mTagClassAdapter.setOnItemClickListener(this);
         mRvTagClass.setAdapter(mTagClassAdapter);
 
     }
 
     private void initListener() {
 
-        // 跳过
-        RxView.clicks(mTvJumpOver)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
 
-                });
     }
 
     /**
@@ -216,8 +270,16 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
      *
      * @return
      */
-    private boolean checkSaveEnable() {
-        return mCurrentChooseNums > 0;
+    private void updateChooseAboutView() {
+        mCurrentChooseNums = mChoosedTags.size();
+        updateChooseTip();
+        if (mCurrentChooseNums > 0) {
+            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.themeColor));
+            mToolbarRight.setText(getString(R.string.next));
+        }else {
+            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
+            mToolbarRight.setText(R.string.jump_over);
+        }
     }
 
     /**
@@ -226,8 +288,81 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
      * @param tagCategoryBeanList
      */
     @Override
-    public void updateTags(List<TagCategoryBean> tagCategoryBeanList) {
-        this.mCategoryTags = tagCategoryBeanList;
+    public void updateTagsFromNet(List<TagCategoryBean> tagCategoryBeanList) {
+        if (tagCategoryBeanList == null) {
+            return;
+        }
+        mCategoryTags.clear();
+        this.mCategoryTags.addAll(tagCategoryBeanList);
         mTagClassAdapter.notifyAllSectionsDataSetChanged();
+    }
+
+    @Override
+    public void updateMineTagsFromNet(List<UserTagBean> tags) {
+        if (tags == null) {
+            return;
+        }
+        mChoosedTags.clear();
+        mChoosedTags.addAll(tags);
+        mChoosedTagAdapter.notifyDataSetChanged();
+        updateChooseAboutView();
+    }
+
+    @Override
+    public void onItemClick(int categoryPosition, int tagPosition) {
+        if (mCategoryTags.get(categoryPosition).getTags().get(tagPosition).isMine_has()) {
+            return;
+        }
+        if (mChoosedTags.size() >= mMaxChooseNums) {
+            showSnackErrorMessage(getString(R.string.user_tag_choosed_tag_format_tip, mMaxChooseNums));
+            return;
+        }
+        mPresenter.addTags(mCategoryTags.get(categoryPosition).getTags().get(tagPosition).getId(), categoryPosition, tagPosition);
+
+    }
+
+    @Override
+    public void addTagSuccess(int categoryPosition, int tagPosition) {
+        mCategoryTags.get(categoryPosition).getTags().get(tagPosition).setMine_has(true);
+        mPresenter.handleCategoryTagsClick(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
+        mChoosedTags.add(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
+        mChoosedTagAdapter.notifyDataSetChanged();
+        mTagClassAdapter.notifyAllSectionsDataSetChanged();
+        updateChooseAboutView();
+
+    }
+
+    @Override
+    public void deleteTagSuccess(int position) {
+        mChoosedTags.get(position).setMine_has(false);
+        mPresenter.handleCategoryTagsClick(mChoosedTags.get(position));
+        Observable.from(mCategoryTags)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(tagCategoryBean -> tagCategoryBean.getId() == mChoosedTags.get(position).getTag_category_id())
+                .map(tagCategoryBean -> {
+                            for (UserTagBean userTagBean : tagCategoryBean.getTags()) {
+                                userTagBean.setMine_has(false);
+                                return true;
+                            }
+                            return false;
+                        }
+                ).subscribe(aBoolean -> {
+            mChoosedTagAdapter.removeItem(position);
+            mTagClassAdapter.notifyAllSectionsDataSetChanged();
+            updateChooseAboutView();
+
+        }, throwable -> throwable.printStackTrace());
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mIsFromRegister) {
+
+        } else {
+            getActivity().finish();
+        }
     }
 }

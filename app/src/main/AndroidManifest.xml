@@ -79,10 +79,12 @@
             android:name=".modules.password.changepassword.ChangePasswordActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.settings.account.AccountManagementActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".modules.settings.bind.AccountBindActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.settings.account.AccountManagementActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.settings.bind.AccountBindActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.password.findpassword.FindPasswordActivity"
             android:screenOrientation="portrait">
@@ -98,6 +100,16 @@
                 <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
+        <!--第三方登陆相关-->
+        <activity
+            android:name=".modules.third_platform.choose_bind.ChooseBindActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.third_platform.bind.BindOldAccountActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.third_platform.complete.CompleteAccountActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.chat.ChatActivity"
             android:launchMode="singleTask"
@@ -383,6 +395,8 @@
         <activity android:name=".modules.q_a.publish.detail.PublishContentActivity"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
+        <activity android:name=".modules.wallet.reward.RewardActivity"/>
+        <activity android:name=".modules.wallet.reward.list.RewardListActivity"/>
     </application>
 
 </manifest>

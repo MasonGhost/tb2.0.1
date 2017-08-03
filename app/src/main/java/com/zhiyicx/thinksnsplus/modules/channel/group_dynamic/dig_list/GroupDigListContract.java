@@ -5,7 +5,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
 
 import java.util.List;
 

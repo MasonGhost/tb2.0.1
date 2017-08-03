@@ -4,7 +4,7 @@ import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.source.repository.IVertifyCodeRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IVertifyCodeRepository;
 
 import rx.Observable;
 

@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.personal_center;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.PersonalCenterRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 

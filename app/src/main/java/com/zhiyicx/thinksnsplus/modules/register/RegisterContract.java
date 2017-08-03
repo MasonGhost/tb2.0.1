@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.register;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.IVertifyCodeRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IVertifyCodeRepository;
 
 import rx.Observable;
 
