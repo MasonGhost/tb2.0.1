@@ -364,7 +364,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      * @param positon         当前点击位置
      */
     private void toChat(MessageItemBean messageItemBean, int positon) {
-        if (messageItemBean == null || messageItemBean.getUserInfo() == null) {
+        if (messageItemBean == null || messageItemBean.getUserInfo() == null||messageItemBean.getUserInfo().getUser_id()==null) {
             return;
         }
         Intent to = new Intent(getActivity(), ChatActivity.class);

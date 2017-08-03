@@ -615,7 +615,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 跳转到当前的个人中心页面
      */
     public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
-        if (userInfoBean == null) {
+        if (userInfoBean == null||userInfoBean.getUser_id()==null) {
             return;
         }
         String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());

@@ -18,6 +18,8 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.rule.WalletRuleFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity;
@@ -129,7 +131,14 @@ public class WalletFragment extends TSFragment<WalletContract.Presenter> impleme
         RxView.clicks(mTvReChargeAndWithdrawRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), "http://www.baidu.com"));
+                .subscribe(aVoid -> {
+
+                    Intent intent = new Intent(getActivity(), WalletRuleActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(WalletRuleFragment.BUNDLE_RULE, mPresenter.getTipPopRule());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                });
     }
 
     /**

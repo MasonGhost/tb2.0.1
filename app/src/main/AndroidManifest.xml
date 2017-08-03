@@ -46,8 +46,8 @@
 
         <activity
             android:name=".modules.guide.GuideActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/BackGroundLauncherTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -202,6 +202,10 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:name=".modules.wallet.rule.WalletRuleActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name=".modules.dynamic.detail.DynamicDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
@@ -254,21 +258,21 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-                android:name=".modules.q_a.reward.expert_search.ExpertSearchActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustPan"/>
+            android:name=".modules.q_a.reward.expert_search.ExpertSearchActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
 
         <!--认证相关页面-->
         <activity
-                android:name=".modules.certification.input.CertificationInputActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustPan"/>
+            android:name=".modules.certification.input.CertificationInputActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
-                android:name=".modules.certification.send.SendCertificationActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
+            android:name=".modules.certification.send.SendCertificationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
-       <service
+        <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"
             tools:ignore="ExportedService">
@@ -403,7 +407,8 @@
         </activity>
         <activity android:name=".modules.q_a.QA_Activity">
         </activity>
-        <activity android:name=".modules.q_a.publish.detail.PublishContentActivity"
+        <activity
+            android:name=".modules.q_a.publish.detail.PublishContentActivity"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity android:name=".modules.wallet.reward.RewardActivity"/>
