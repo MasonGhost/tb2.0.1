@@ -1,7 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.certification.input;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 
 import javax.inject.Inject;
 

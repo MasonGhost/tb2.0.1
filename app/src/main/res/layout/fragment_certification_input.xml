@@ -1,17 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wcy.overscroll.OverScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@color/white">
 
-    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
-            android:id="@+id/tv_name"
+    <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/certification_input_item_height"
-            app:isRequired="true"
-            app:leftHintText="@string/certification_basic_info_name"
-            app:hint="@string/name_hint"
-            app:rightInputType="text"/>
+            android:layout_height="wrap_content">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <!--个人认证填写信息-->
+                <LinearLayout
+                        android:id="@+id/ll_company_personage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                    <!--个人认证-->
+                    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                            android:id="@+id/tv_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/certification_input_item_height"
+                            app:isRequired="true"
+                            app:leftHintText="@string/certification_basic_info_name"
+                            app:rightHint="@string/name_hint"
+                            app:rightMaxLength="8"
+                            app:rightInputType="text"/>
 
-</LinearLayout>
+                    <!--身份证号码-->
+                    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                            android:id="@+id/tv_id_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/certification_input_item_height"
+                            app:isRequired="true"
+                            app:leftHintText="@string/certification_basic_info_id_card"
+                            app:rightHint="@string/id_card_hint"
+                            app:rightMaxLength="18"
+                            app:rightInputType="number"/>
+
+                    <!--手机号码-->
+                    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                            android:id="@+id/tv_phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/certification_input_item_height"
+                            app:isRequired="true"
+                            app:leftHintText="@string/certification_basic_info_phone"
+                            app:rightHint="@string/info_phone_hint"
+                            app:rightMaxLength="11"
+                            app:rightInputType="phone"/>
+                </LinearLayout>
+
+                <!--企业认证填写信息-->
+                <LinearLayout
+                        android:id="@+id/ll_company"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                    <!--机构名称-->
+                    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                            android:id="@+id/tv_company_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/certification_input_item_height"
+                            app:isRequired="true"
+                            app:leftHintText="@string/certification_basic_info_company_name"
+                            app:rightHint="@string/company_name_hint"
+                            app:rightMaxLength="20"
+                            app:rightInputType="text"/>
+                    <!--机构地址-->
+                    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                            android:id="@+id/tv_company_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/certification_input_item_height"
+                            app:isRequired="true"
+                            app:leftHintText="@string/certification_basic_info_company_address"
+                            app:rightHint="@string/company_address_hint"
+                            app:rightMaxLength="50"
+                            app:rightInputType="text"/>
+                    <!--机构负责人-->
+                    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                            android:id="@+id/tv_company_principal"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/certification_input_item_height"
+                            app:isRequired="true"
+                            app:leftHintText="@string/certification_basic_info_company_principal_name"
+                            app:rightHint="@string/principal_name_hint"
+                            app:rightMaxLength="8"
+                            app:rightInputType="text"/>
+                    <!--机构负责人身份证号码-->
+                    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                            android:id="@+id/tv_company_principal_id_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/certification_input_item_height"
+                            app:isRequired="true"
+                            app:leftHintText="@string/certification_basic_info_principal_id_card"
+                            app:rightHint="@string/company_principal_id_card_hint"
+                            app:rightMaxLength="18"
+                            app:rightInputType="number"/>
+                    <!--机构负责人电话-->
+                    <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                            android:id="@+id/tv_company_principal_phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/certification_input_item_height"
+                            app:isRequired="true"
+                            app:leftHintText="@string/certification_basic_info_company_principal_phone"
+                            app:rightHint="@string/info_phone_hint"
+                            app:rightMaxLength="11"
+                            app:rightInputType="phone"/>
+                </LinearLayout>
+            </FrameLayout>
+
+            <!--认证描述-->
+            <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                    android:id="@+id/tv_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/certification_input_item_height"
+                    app:isRequired="true"
+                    app:leftHintText="@string/certification_basic_info_description"
+                    app:rightHint="@string/description_hint"
+                    app:rightInputType="text"
+                    app:rightMaxLines="5"/>
+
+            <!--登录异常相关提示-->
+            <include
+                    layout="@layout/include_error_tip_text"/>
+
+            <com.zhiyicx.baseproject.widget.button.LoadingButton
+                    android:id="@+id/bt_to_send"
+                    style="@style/style_login_button"
+                    android:layout_marginTop="@dimen/button_login_margin_top"
+                    android:enabled="false"
+                    app:text="@string/next"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+</com.wcy.overscroll.OverScrollLayout>
