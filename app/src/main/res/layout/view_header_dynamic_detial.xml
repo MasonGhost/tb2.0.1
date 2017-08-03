@@ -13,6 +13,9 @@
         />
 
     <include
+        layout="@layout/include_reward"/>
+
+    <include
         layout="@layout/advert_details"
         />
 

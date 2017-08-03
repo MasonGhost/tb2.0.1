@@ -38,7 +38,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -281,7 +281,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
+    protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         // 按照添加顺序，先判断成功后，后面的item就不会继续判断了，类似if else
         setAdapter(adapter, new PersonalCenterDynamicListForZeroImage(getContext()));
@@ -815,7 +815,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mReSendDynamicPopWindow.hide();
-                    mListDatas.get(position).setState(DynamicBean.SEND_ING);
+                    mListDatas.get(position).setState(DynamicDetailBeanV2.SEND_ING);
                     refreshData();
                     mPresenter.reSendDynamic(position);
                 })

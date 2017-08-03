@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
@@ -89,6 +90,9 @@ public interface DynamicDetailContract {
 
         void updateDynamic(DynamicDetailBeanV2 detailBeanV2);
 
+        void setRewardListBeans(List<RewardsListBean> rewardsListBeens);
+
+        void updateReward();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -103,24 +107,18 @@ public interface DynamicDetailContract {
     }
 
     interface Presenter extends ITSListPresenter<DynamicCommentBean> {
-        /**
-         * 获取当前动态
-         *
-         * @param feed_id
-         */
-        void getCurrentDynamic(long feed_id);
 
         /**
          * 获取当前动态详情 V2
          *
          * @param feed_id
          */
-        void getCurrentDynamicDetail(long feed_id,int topFlag);
+        void getCurrentDynamicDetail(long feed_id, int topFlag);
 
         /**
          * 获取当前动态的点赞列表
          */
-        void getDetailAll(Long feed_id, Long max_id, String user_ids,int topFlag);
+        void getDetailAll(Long feed_id, Long max_id, String user_ids, int topFlag);
 
         /**
          * 获取当前动态的点赞列表
@@ -164,7 +162,6 @@ public interface DynamicDetailContract {
          * @param comment_id      comment's id
          * @param commentPosition comment curren position
          */
-        void deleteComment(long comment_id, int commentPosition);
         void deleteCommentV2(long comment_id, int commentPosition);
 
         /**
@@ -176,10 +173,31 @@ public interface DynamicDetailContract {
          */
         boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark);
 
+        /**
+         * @return
+         */
         List<RealAdvertListBean> getAdvert();
+
+        /**
+         * @param note
+         */
 
         void checkNote(int note);
 
-        void payNote(int imagePosition,int note,boolean isImage);
+        /**
+         * pay note
+         *
+         * @param imagePosition image position
+         * @param note
+         * @param isImage
+         */
+        void payNote(int imagePosition, int note, boolean isImage);
+
+        /**
+         * update reward data
+         *
+         * @param id  source id
+         */
+        void updateRewardData(Long id);
     }
 }

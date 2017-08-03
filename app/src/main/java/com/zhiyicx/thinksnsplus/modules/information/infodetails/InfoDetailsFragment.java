@@ -130,7 +130,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 ItemOnWebEventListener()) {
             @Override
             protected void dealRewards(ViewHolder holder) {
-                ((ReWardView) holder.getView(R.id.v_reward)).initData(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean);
+                ((ReWardView) holder.getView(R.id.v_reward)).initData(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean,RewardType.INFO);
                 ((ReWardView) holder.getView(R.id.v_reward)).setOnRewardsClickListener(() -> {
                 });
             }
@@ -498,8 +498,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        LogUtils.d("requestCode : " + requestCode);
-        if (requestCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             if (requestCode == RewardType.INFO.id) {
                 mPresenter.reqReWardsData(mInfoMation.getId());
             }
