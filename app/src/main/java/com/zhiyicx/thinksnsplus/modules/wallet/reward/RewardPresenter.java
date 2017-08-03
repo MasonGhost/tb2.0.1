@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 
 /**
  * @Describe
@@ -18,7 +19,7 @@ import rx.Observable;
  */
 
 public class RewardPresenter extends AppBasePresenter<RewardContract.Repository, RewardContract.View> implements RewardContract.Presenter {
-    public static final int DEFAULT_DELAY_TIME = 3;
+    public static final int DEFAULT_DELAY_TIME = 2;
 
     @Inject
     public RewardPresenter(RewardContract.Repository repository, RewardContract.View rootView) {
@@ -29,36 +30,40 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
     public void reward(double rewardMoney, RewardType rewardType, long sourceId) {
         switch (rewardType) {
             case INFO:
-                mRepository.rewardInfo(sourceId, rewardMoney)
-                        .subscribe(new BaseSubscribeForV2<Object>() {
-                            @Override
-                            protected void onSuccess(Object data) {
-                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.reward_success));
-                                Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.SECONDS)
-                                        .subscribe(aLong -> {
-                                            mRootView.rewardSuccess();
-                                        });
-
-                            }
-
-                            @Override
-                            protected void onFailure(String message, int code) {
-                                mRootView.showSnackErrorMessage(message);
-                            }
-
-                            @Override
-                            protected void onException(Throwable throwable) {
-                                mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
-                            }
-                        });
+                hanldeRewardResult(mRepository.rewardInfo(sourceId, rewardMoney));
 
                 break;
             case DYNAMIC:
-
+                hanldeRewardResult(mRepository.rewardDynamic(sourceId, rewardMoney));
                 break;
 
             default:
 
         }
+    }
+
+    private void hanldeRewardResult(Observable<Object> result) {
+        Subscription subscription = result.subscribe(new BaseSubscribeForV2<Object>() {
+            @Override
+            protected void onSuccess(Object data) {
+                mRootView.showSnackSuccessMessage(mContext.getString(R.string.reward_success));
+                Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.SECONDS)
+                        .subscribe(aLong -> {
+                            mRootView.rewardSuccess();
+                        });
+
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                mRootView.showSnackErrorMessage(message);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+            }
+        });
+        addSubscrebe(subscription);
     }
 }
