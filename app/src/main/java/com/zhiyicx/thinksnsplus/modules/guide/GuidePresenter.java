@@ -1,6 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
+import com.bumptech.glide.Glide;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -74,15 +77,20 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                     @Override
                     public Observable<List<AllAdverListBean>> call(List<AllAdverListBean>
                                                                            allAdverListBeen) {
-                        List<Observable<List<RealAdvertListBean>>> adverts = new ArrayList<>();
                         List<Object> ids = new ArrayList<>();
                         for (AllAdverListBean adverListBean : allAdverListBeen) {
+
                             ids.add(adverListBean.getId());
-                            adverts.add(mRepository.getRealAdverts(adverListBean.getId().intValue()));
                         }
                         return mRepository.getAllRealAdverts(ids).flatMap(new Func1<List<RealAdvertListBean>, Observable<List<AllAdverListBean>>>() {
                             @Override
                             public Observable<List<AllAdverListBean>> call(List<RealAdvertListBean> realAdvertListBeen) {
+                                for (RealAdvertListBean boot : realAdvertListBeen) {
+                                    if (boot.getType().equals(ApiConfig.APP_IMAGE_TYPE_ADVERT)) {
+                                        Glide.with(mContext).load(boot.getAdvertFormat().getImage().getImage()).downloadOnly(DeviceUtils.getScreenWidth(mContext),
+                                                DeviceUtils.getScreenHeight(mContext));
+                                    }
+                                }
                                 mRealAdvertListBeanGreenDao.saveMultiData(realAdvertListBeen);
                                 return Observable.just(allAdverListBeen);
                             }
