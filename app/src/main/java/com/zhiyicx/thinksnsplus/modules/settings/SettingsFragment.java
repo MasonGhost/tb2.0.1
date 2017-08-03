@@ -38,8 +38,6 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
     CombinationButton mBtLoginOut;
     @BindView(R.id.bt_set_vertify)
     CombinationButton mBtSetVertify;
-    @BindView(R.id.bt_tags_manager)
-    CombinationButton mBtTagsManager;
     @BindView(R.id.bt_change_password)
     CombinationButton mBtChangePassword;
     @BindView(R.id.bt_clean_cache)
@@ -100,15 +98,6 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> showSnackSuccessMessage("vertify"));
-        // 标签管理
-        RxView.clicks(mBtTagsManager)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    // 跳转标签管理页面
-                    Intent intent = new Intent(getActivity(), EditUserTagActivity.class);
-                    startActivity(intent);
-                });
         // 账户管理页面
         RxView.clicks(mBtAccountManager)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

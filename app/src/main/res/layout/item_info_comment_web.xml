@@ -18,11 +18,8 @@
         layout="@layout/item_dynamic_detail_dig"
         android:visibility="gone"/>
 
-    <com.zhiyicx.thinksnsplus.widget.ReWardView
-        android:id="@+id/v_reward"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <include
+        layout="@layout/include_reward"/>
 
     <FrameLayout
         android:id="@+id/info_detail_comment"

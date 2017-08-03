@@ -43,8 +43,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
@@ -206,7 +204,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void reqReWardsData(int id) {
-        Observable.zip(mRepository.getRewardsCount(id), mRepository.rewardsInfoList(id
+        Observable.zip(mRepository.getRewardCount(id), mRepository.rewardInfoList(id
                 , TSListFragment.DEFAULT_ONE_PAGE_SIZE,null,null,null)
                 , (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
 

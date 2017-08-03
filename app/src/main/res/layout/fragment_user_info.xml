@@ -97,7 +97,7 @@
             </LinearLayout>
 
             <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"></include>
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
             <!--修改性别-->
             <LinearLayout
                 android:id="@+id/ll_sex_container"
@@ -135,7 +135,7 @@
             </LinearLayout>
 
             <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"></include>
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
             <!--修改城市-->
             <LinearLayout
                 android:id="@+id/ll_city_container"
@@ -173,7 +173,46 @@
             </LinearLayout>
 
             <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"></include>
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
+            <!--修改标签-->
+            <LinearLayout
+                android:id="@+id/ll_tag_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/userinfo_btn_height"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:text="@string/tag"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_sub_title"/>
+
+                <com.zhy.view.flowlayout.TagFlowLayout
+                    android:id="@+id/fl_tags"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:paddingTop="@dimen/spacing_normal"
+                    app:max_select="0"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:src="@mipmap/ic_arrow_smallgrey"/>
+            </LinearLayout>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
             <!--修改简介-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -205,7 +244,7 @@
                     android:visibility="visible"
                     app:hintContent="@string/edit_introduce"
                     app:limitSize="@integer/introduce_input_max_size"
-                    app:showLimitSize="@integer/show_introduce_input_size"></com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView>
+                    app:showLimitSize="@integer/show_introduce_input_size"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

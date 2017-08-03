@@ -56,6 +56,11 @@ public interface UserInfoContract {
          */
         void initUserInfo(UserInfoBean mUserInfoBean);
 
+        /**
+         * 更新用户标签
+         * @param datas tags
+         */
+        void updateTags(List<UserTagBean> datas);
     }
 
     interface Repository {
@@ -227,5 +232,6 @@ public interface UserInfoContract {
          */
         void initUserInfo();
 
+        void getCurrentUserTags();
     }
 }

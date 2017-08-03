@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.ColorPhrase;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -53,6 +54,7 @@ public class ReWardView extends FrameLayout {
     private CommonAdapter mCommonAdapter;
     private List<RewardsListBean> mListData = new ArrayList<>();
     private long mSourceId;
+    private RewardType mRewardType = RewardType.INFO;
 
 
     public ReWardView(@NonNull Context context) {
@@ -93,7 +95,7 @@ public class ReWardView extends FrameLayout {
                 RxView.clicks(holder.getView(R.id.iv_head))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
 //                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(getContext(), rewardsListBean.getUser()));
-                        .subscribe(aVoid -> RewardListFragment.startRewardActivity(getContext(), RewardType.INFO, mSourceId, mListData));
+                        .subscribe(aVoid -> RewardListFragment.startRewardActivity(getContext(), mRewardType, mSourceId, mListData));
 
             }
         };
@@ -109,14 +111,14 @@ public class ReWardView extends FrameLayout {
                     if (mOnRewardsClickListener != null) {
                         mOnRewardsClickListener.onRewardClick();
                     }
-                    RewardFragment.startRewardActivity(getContext(), RewardType.INFO,mSourceId);
+                    RewardFragment.startRewardActivity(getContext(), mRewardType, mSourceId);
 
                 });
         // 打赏用户列表
         RxView.clicks(mIvRightArrow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    RewardListFragment.startRewardActivity(getContext(), RewardType.INFO, mSourceId, mListData);
+                    RewardListFragment.startRewardActivity(getContext(), mRewardType, mSourceId, mListData);
                 });
     }
 
@@ -180,16 +182,26 @@ public class ReWardView extends FrameLayout {
     }
 
     /**
+     * 更新打赏类型
+     *
+     * @param rewardTyped
+     */
+    public void updateRewardType(RewardType rewardTyped) {
+        this.mRewardType = rewardTyped;
+    }
+
+    /**
      * 初始化打赏数据
      *
      * @param sourceId         source id for this reward
      * @param listData         user list for this rewad source
      * @param rewardsCountBean the total rewad data
      */
-    public void initData(long sourceId, List<RewardsListBean> listData, RewardsCountBean rewardsCountBean) {
+    public void initData(long sourceId, List<RewardsListBean> listData, RewardsCountBean rewardsCountBean, RewardType rewardType) {
         updateSourceId(sourceId);
         updateRewardsUser(listData);
         updateRewardsCount(rewardsCountBean);
+        updateRewardType(rewardType);
     }
 
     public void setOnRewardsClickListener(OnRewardsClickListener onRewardsClickListener) {

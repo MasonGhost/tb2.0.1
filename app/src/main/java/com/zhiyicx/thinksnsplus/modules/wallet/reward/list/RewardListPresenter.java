@@ -2,16 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.wallet.reward.list;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.data.source.local.DigRankBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.modules.rank.RankContract;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,7 +47,7 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Rep
     }
 
     private void getInfoRewardUsers(final boolean isLoadMore) {
-        Subscription subscription = mRepository.rewardsInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE,mRootView.getPage(),null,null)
+        Subscription subscription = mRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE,mRootView.getPage(),null,null)
                 .subscribe(new BaseSubscribeForV2<List<RewardsListBean>>() {
                     @Override
                     protected void onSuccess(List<RewardsListBean> data) {

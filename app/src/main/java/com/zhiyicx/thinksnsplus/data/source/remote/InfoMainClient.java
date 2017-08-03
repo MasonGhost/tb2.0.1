@@ -99,6 +99,8 @@ public interface InfoMainClient {
     Observable<BaseJson<Integer>> commentInfo(@Field("comment_content") String comment_content,
                                               @Field("reply_to_user_id") int reply_to_user_id);
 
+    /*******************************************  打赏  *********************************************/
+
 
     /**
      * 对一条资讯打赏
@@ -109,7 +111,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_INFO_REWARDS)
-    Observable<Object> rewardsInfo(@Path("news_id") long news_id, @Field("amount") float amount);
+    Observable<Object> rewardInfo(@Path("news_id") long news_id, @Field("amount") float amount);
 
 
     /**
@@ -123,7 +125,7 @@ public interface InfoMainClient {
      * @return
      */
     @GET(APP_PATH_INFO_REWARDS_USER_LIST)
-    Observable<List<RewardsListBean>> rewardsInfoList(@Path("news_id") long news_id, @Query("limit") Integer limit, @Query("since") Integer since, @Query("order") String order, @Query("order_type") String order_type);
+    Observable<List<RewardsListBean>> rewardInfoList(@Path("news_id") long news_id, @Query("limit") Integer limit, @Query("since") Integer since, @Query("order") String order, @Query("order_type") String order_type);
 
     /**
      * 资讯打赏统计
@@ -132,5 +134,5 @@ public interface InfoMainClient {
      * @return
      */
     @GET(APP_PATH_INFO_REWARDS_COUNT)
-    Observable<RewardsCountBean> getRewardsCount(@Path("news_id") long news_id);
+    Observable<RewardsCountBean> getRewardCount(@Path("news_id") long news_id);
 }

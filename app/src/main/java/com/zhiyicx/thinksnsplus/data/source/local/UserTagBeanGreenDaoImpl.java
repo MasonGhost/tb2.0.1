@@ -66,6 +66,20 @@ public class UserTagBeanGreenDaoImpl extends CommonCacheImpl<UserTagBean> {
                 .where(UserTagBeanDao.Properties.Tag_category_id.eq(categoryId))
                 .list();
     }
+    /**
+     * 获取当前用户的标签
+     *
+     * @return
+     */
+    public List<UserTagBean> getCurrentUsertags() {
+        UserTagBeanDao userTagBeanDao = getRDaoSession().getUserTagBeanDao();
+        return userTagBeanDao.queryBuilder()
+                .where(UserTagBeanDao.Properties.Mine_has.eq(true))
+                .list();
+    }
+
+
+
 
     /**
      * 标记当前用户上否有这个 tag
