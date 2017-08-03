@@ -235,6 +235,14 @@ public class ApiConfig {
     public static final String APP_PATH_HANDLE_UNCOLLECT_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/uncollect";
     public static final String APP_PATH_HANDLE_UNCOLLECT_V2_FORMAT = "api/" + API_VERSION_2 + "/feeds/%s/uncollect";
 
+
+    // 动态打赏
+    public static final String APP_PATH_DYNAMIC_REWARDS = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
+    // 动态用户列表
+    public static final String APP_PATH_DYNAMIC_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
+
+
+
     /**
      * 资讯相关
      */

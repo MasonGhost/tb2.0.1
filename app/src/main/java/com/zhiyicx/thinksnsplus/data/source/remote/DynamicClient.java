@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 
 import java.util.List;
@@ -28,6 +29,10 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_COMMENT_PAID_V2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_USER_LIST;
 
 /**
  * @author LiuChao
@@ -232,4 +237,36 @@ public interface DynamicClient {
     @DELETE(ApiConfig.APP_PATH_APPROVED_DYNAMIC_COMMENT)
     Observable<BaseJsonV2> deleteTopComment(@Path("feed_id") Long feed_id, @Path("comment_id")
             int comment_id);
+
+
+    /*******************************************  打赏  *********************************************/
+
+
+    /**
+     * 对一条动态打赏
+     *
+     * @param news_id 动态 id
+     * @param amount  打赏金额
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_DYNAMIC_REWARDS)
+    Observable<Object> rewardDynamic(@Path("feed_id") long news_id, @Field("amount") float amount);
+
+
+    /**
+     * 动态打赏列表
+     *
+     * @param news_id    动态 id
+     * @param limit      列表返回数据条数
+     * @param since      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param order      翻页标识 排序 正序-asc 倒序 desc
+     * @param order_type 排序规则 date-按时间 amount-按金额
+     * @return
+     */
+    @GET(APP_PATH_DYNAMIC_REWARDS_USER_LIST)
+    Observable<List<RewardsListBean>> rewardDynamicList(@Path("feed_id") long news_id, @Query("limit") Integer limit, @Query("since") Integer since, @Query("order") String order, @Query("order_type") String order_type);
+
+
+
 }

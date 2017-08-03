@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -30,7 +29,7 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
     public void reward(double rewardMoney, RewardType rewardType, long sourceId) {
         switch (rewardType) {
             case INFO:
-                mRepository.rewardsInfo(sourceId, rewardMoney)
+                mRepository.rewardInfo(sourceId, rewardMoney)
                         .subscribe(new BaseSubscribeForV2<Object>() {
                             @Override
                             protected void onSuccess(Object data) {
