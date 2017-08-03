@@ -363,6 +363,7 @@
     <string name="alert_error_id_card">请输入正确的身份证号码</string>
 
     <string name="certification_basic_info_description">认证描述</string>
+    <string name="certification_basic_info_data">认证资料</string>
     <string name="description_hint">认证相关信息</string>
     
     <string name="send_certification_data">上传资料</string>
@@ -375,5 +376,6 @@
     <string name="certification_state_success">已认证</string>
     <string name="certification_state_failed">申请失败</string>
     <string name="certification_state_ing">待审核</string>
+    <string name="certification_ing_hint">认证信息审核中，我们会在7个工作日内给您答复</string>
 
 </resources>

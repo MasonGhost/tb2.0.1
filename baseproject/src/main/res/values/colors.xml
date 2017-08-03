@@ -41,4 +41,5 @@
     <color name="launch_advert">#33000000</color>
     <!--提现明细分割线-->
     <color name="withdrawals_item_line">#efefef</color>
+    <color name="certification_result_hint_bg">#b34bb893</color>
 </resources>
