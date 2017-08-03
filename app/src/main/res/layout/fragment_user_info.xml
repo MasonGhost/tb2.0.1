@@ -174,6 +174,44 @@
 
             <include
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"></include>
+            <!--修改标签-->
+            <LinearLayout
+                android:id="@+id/ll_tag_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/userinfo_btn_height"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/uerinfo_sub_title_hint_with"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:text="@string/tag"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:textSize="@dimen/size_sub_title"/>
+
+                <TextView
+                    android:id="@+id/tv_tag"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/select_city"
+                    android:text=""
+                    android:textColor="@color/important_for_content"
+                    android:textColorHint="@color/general_for_hint"
+                    android:textSize="@dimen/size_sub_title"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_mid"
+                    android:src="@mipmap/ic_arrow_smallgrey"/>
+            </LinearLayout>
+
+            <include
+                layout="@layout/include_horizontal_userinfo_white_bg_divider"></include>
             <!--修改简介-->
             <LinearLayout
                 android:layout_width="match_parent"
