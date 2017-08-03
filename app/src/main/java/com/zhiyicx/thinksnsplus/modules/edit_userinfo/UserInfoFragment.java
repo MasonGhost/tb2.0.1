@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -67,7 +68,7 @@ import rx.functions.Func1;
  * @contact email:450127106@qq.com
  */
 public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements
-        UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener, TagFlowLayout.OnTagClickListener {
+        UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener{
     private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
     private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
     /**
@@ -198,7 +199,12 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 });
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);
-        mFlTags.setOnTagClickListener(this);
+        mFlTags.setOnTouchListener((view, motionEvent) -> {
+            if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                jumpToEditUserTag();
+            }
+            return true;
+        });
     }
 
 
@@ -269,7 +275,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return true;
     }
 
-    @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container, R.id.ll_tag_container, R.id.fl_tags})
+    @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container, R.id.ll_tag_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
@@ -715,9 +721,4 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
 
     }
 
-    @Override
-    public boolean onTagClick(View view, int position, FlowLayout parent) {
-        jumpToEditUserTag();
-        return true;
-    }
 }
