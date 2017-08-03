@@ -1,8 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.reward;
 
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +24,8 @@ import rx.Subscription;
 
 public class RewardPresenter extends AppBasePresenter<RewardContract.Repository, RewardContract.View> implements RewardContract.Presenter {
     public static final int DEFAULT_DELAY_TIME = 2;
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
     public RewardPresenter(RewardContract.Repository repository, RewardContract.View rootView) {
@@ -28,6 +34,17 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
 
     @Override
     public void reward(double rewardMoney, RewardType rewardType, long sourceId) {
+
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+        double balance = 0;
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
+        }
+
+        if (balance < rewardMoney) {
+            mRootView.goRecharge(WalletActivity.class);
+            return;
+        }
         switch (rewardType) {
             case INFO:
                 hanldeRewardResult(mRepository.rewardInfo(sourceId, rewardMoney));
