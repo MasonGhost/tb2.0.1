@@ -8,6 +8,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
+        android:gravity="center_vertical"
         android:id="@+id/ll_dynamic_list_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,6 +24,7 @@
             />
 
         <TextView
+            android:layout_gravity="center_vertical"
             android:id="@+id/tv_dynamic_list_like"
             android:layout_width="@dimen/dynamic_menu_text_with"
             android:layout_height="@dimen/icon_for_assist_small"

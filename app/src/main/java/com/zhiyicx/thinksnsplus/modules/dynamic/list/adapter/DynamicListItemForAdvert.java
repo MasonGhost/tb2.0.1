@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -12,20 +11,12 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.SkinUtils;
-import com.zhiyicx.common.utils.TextViewUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
-import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -63,7 +54,29 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
 
     @Override
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
-        super.convert(holder,dynamicBean,lastT,position,itemCounts);
+        super.convert(holder, dynamicBean, lastT, position, itemCounts);
+        if (showToolMenu) {
+            // 显示工具栏
+            DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+            dynamicListMenuView.setImageNormalResourceIds(getToolImages());
+            dynamicListMenuView.setAdvertItemTextAndStatus("广告", dynamicBean.isHas_digg(), 0);
+            dynamicListMenuView.setAdvertItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                    .getFeed_comment_count()), false, 1);
+            dynamicListMenuView.setAdvertItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                            .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
+                    false, 2);// 浏览量没有 0
+            // 控制更多按钮的显示隐藏
+            dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
+            dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
+            dynamicListMenuView.setItemPositionVisiable(2, getVisibleThree());
+            dynamicListMenuView.setItemPositionVisiable(3, getVisibleFour());
+            // 设置工具栏的点击事件
+            dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
+                if (mOnMenuItemClickLisitener != null) {
+                    mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+                }
+            });
+        }
         initImageView(holder, holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 

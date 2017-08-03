@@ -28,6 +28,15 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     private String content;
     private String image;
     private String time;
+    private String link;
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
 
     public String getAvatar() {
         return avatar;
@@ -70,6 +79,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     }
 
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -79,6 +89,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.avatar);
         dest.writeString(this.name);
+        dest.writeString(this.link);
         dest.writeString(this.content);
         dest.writeString(this.image);
         dest.writeString(this.time);
@@ -90,6 +101,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     protected DynamicListAdvert(Parcel in) {
         this.avatar = in.readString();
         this.name = in.readString();
+        this.link = in.readString();
         this.content = in.readString();
         this.image = in.readString();
         this.time = in.readString();
@@ -109,19 +121,20 @@ public class DynamicListAdvert implements Serializable, Parcelable {
 
     public static DynamicDetailBeanV2 advert2Dynamic(DynamicListAdvert advert, long max_id) {
         DynamicDetailBeanV2 dynamicDetailBeanV2 = new DynamicDetailBeanV2();
-        dynamicDetailBeanV2.setFeed_from(-1);
+        dynamicDetailBeanV2.setFeed_from(-1);// 广告位标识
         UserInfoBean userInfoBean = new UserInfoBean();
         userInfoBean.setUser_id(-1L);
         dynamicDetailBeanV2.setUser_id(-1L);
-        userInfoBean.setName(advert.getName());
-        userInfoBean.setAvatar(advert.getAvatar());
-        dynamicDetailBeanV2.setMaxId(max_id);
+        userInfoBean.setName(advert.getName());// 广告名字
+        userInfoBean.setAvatar(advert.getAvatar());// 广告头像
+        dynamicDetailBeanV2.setMaxId(max_id);// max_id 转移
+        dynamicDetailBeanV2.setDeleted_at(advert.getLink());// 广告外链
         dynamicDetailBeanV2.setUserInfoBean(userInfoBean);
-        dynamicDetailBeanV2.setFeed_content(advert.getContent());
-        dynamicDetailBeanV2.setCreated_at(advert.getTime());
-        dynamicDetailBeanV2.setUpdated_at(advert.getTime());
+        dynamicDetailBeanV2.setFeed_content(advert.getContent());// 广告内容
+        dynamicDetailBeanV2.setCreated_at(advert.getTime());// 广告时间
+        dynamicDetailBeanV2.setUpdated_at(advert.getTime());// 广告时间
         DynamicDetailBeanV2.ImagesBean imageBean = new DynamicDetailBeanV2.ImagesBean();
-        imageBean.setImgUrl(advert.getImage());
+        imageBean.setImgUrl(advert.getImage());// 广告图片
         dynamicDetailBeanV2.setImages(Arrays.asList(imageBean));
         return dynamicDetailBeanV2;
     }

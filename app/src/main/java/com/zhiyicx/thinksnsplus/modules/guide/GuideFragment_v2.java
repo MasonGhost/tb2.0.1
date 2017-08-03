@@ -41,7 +41,23 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     Subscription subscription;
     int mPosition;
 
+    boolean isFinish;
+    boolean isClick;
+    boolean isFirst = true;
+
+    public static final String ADVERT="advert";
+
     private List<RealAdvertListBean> mBootAdverts;
+
+    public void onNewIntent(Intent intent) {
+        isClick = false;
+        isFirst = false;
+        if (isFinish) {
+            mPresenter.checkLogin();
+            return;
+        }
+        mGuideBanner.startAutoPlay();
+    }
 
     @Override
     protected int getBodyLayoutId() {
@@ -58,6 +74,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     @Override
     public void onResume() {
         super.onResume();
+        if (!isFirst) {
+            return;
+        }
         if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             mPresenter.getLaunchAdverts();
         }
@@ -91,7 +110,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     protected void initData() {
-
     }
 
     @Override
@@ -124,6 +142,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (mPosition == mGuideBanner.getItemCount() - 1) {
             mGuideBanner.stopAutoPlay();
         }
+
         if (mPosition > 0) {
             mTimer.replease();
             mGuideBanner.setDelayTime(position * 2000);
@@ -150,14 +169,23 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void onFinish() {
+        isFinish = true;
+        if (isClick) {
+            return;
+        }
         mPresenter.checkLogin();
     }
 
     @Override
     public void OnBannerClick(int position) {
-        CustomWEBActivity.startToWEBActivity(getContext(), mBootAdverts.get(position)
+        isClick = true;
+        if (isFinish) {
+            return;
+        }
+        mGuideBanner.stopAutoPlay();
+        CustomWEBActivity.startToWEBActivity(getActivity(), mBootAdverts.get(position)
                         .getAdvertFormat().getImage().getLink(),
-                "lalala");
+                mBootAdverts.get(position).getTitle(),ADVERT);
     }
 
     @Override
