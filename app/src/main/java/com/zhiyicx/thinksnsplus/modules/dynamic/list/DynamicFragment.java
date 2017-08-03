@@ -58,6 +58,7 @@ import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.home.HomeFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicNoPullRecycleView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -94,7 +95,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .OnCommentClickListener, DynamicListCommentView.OnMoreCommentClickListener,
         DynamicListBaseItem.OnReSendClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
         DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,
-        MultiItemTypeAdapter.OnItemClickListener, TextViewUtils.OnSpanTextClickListener {
+        MultiItemTypeAdapter.OnItemClickListener, TextViewUtils.OnSpanTextClickListener,
+        DynamicBannerHeader.DynamicBannerHeadlerClickEvent {
 
     protected static final String BUNDLE_DYNAMIC_TYPE = "dynamic_type";
     public static final long ITEM_SPACING = 5L; // 单位dp
@@ -123,6 +125,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     private DynamicBannerHeader mDynamicBannerHeader;
     private DynamicDetailBeanV2 mCurrentPayDynamic;
     private List<RealAdvertListBean> mListAdvert;
+    private List<RealAdvertListBean> mHeaderAdvert;
 
 
     public void setOnCommentClickListener(OnCommentClickListener onCommentClickListener) {
@@ -138,6 +141,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         args.putString(BUNDLE_DYNAMIC_TYPE, dynamicType);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void headClick(int position) {
+        toAdvert(mHeaderAdvert.get(position).getAdvertFormat().getImage().getLink(), mHeaderAdvert.get(position).getTitle());
+    }
+
+    private void toAdvert(String link, String title) {
+        CustomWEBActivity.startToWEBActivity(getActivity(), link, title);
     }
 
     @Override
@@ -216,6 +228,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         List<String> advertLinks = new ArrayList<>();
         List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
         mListAdvert = mPresenter.getListAdvert();
+        mHeaderAdvert = mPresenter.getBannerAdvert();
         for (RealAdvertListBean advert : advertList) {
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());
@@ -226,6 +239,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
 
         mDynamicBannerHeader = new DynamicBannerHeader(getActivity());
+        mDynamicBannerHeader.setHeadlerClickEvent(this);
         DynamicBannerHeader.DynamicBannerHeaderInfo headerInfo = mDynamicBannerHeader.new
                 DynamicBannerHeaderInfo();
         headerInfo.setTitles(advertTitle);
@@ -312,6 +326,18 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         super.onNetResponseSuccess(data, isLoadMore);
     }
 
+    @Override
+    public void onCacheResponseSuccess(List<DynamicDetailBeanV2> data, boolean isLoadMore) {
+        try {// 添加广告
+            RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
+            DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
+            long max_id = data.get(data.size() - 1).getMaxId();
+            data.add(DynamicListAdvert.advert2Dynamic(advert, max_id));
+        } catch (Exception e) {
+        }
+        super.onCacheResponseSuccess(data, isLoadMore);
+    }
+
     /**
      * scan imags
      *
@@ -323,7 +349,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
-        if (dynamicBean.getFeed_from() == -1) {
+        if (dynamicBean.getFeed_from() == -1) {// 广告
+            toAdvert(dynamicBean.getDeleted_at(), dynamicBean.getFeed_content());
             return;
         }
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
@@ -455,6 +482,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         }
         DynamicDetailBeanV2 detailBeanV2 = mListDatas.get(position);
         if (detailBeanV2.getFeed_from() == -1) {
+            toAdvert(detailBeanV2.getDeleted_at(), detailBeanV2.getFeed_content());
             return;
         }
         boolean canNotLookWords = detailBeanV2.getPaid_node() != null &&

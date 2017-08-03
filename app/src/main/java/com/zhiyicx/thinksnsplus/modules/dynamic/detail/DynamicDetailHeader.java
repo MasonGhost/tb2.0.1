@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
@@ -101,7 +102,13 @@ public class DynamicDetailHeader {
         }
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(adverts);
-        mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) -> ToastUtils.showToast(position1 + ""));
+        mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
+                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(),adverts.get(position1).getTitle())
+        );
+    }
+
+    private void toAdvert(String link, String title) {
+        CustomWEBActivity.startToWEBActivity(mContext, link, title);
     }
 
     /**

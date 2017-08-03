@@ -24,6 +24,7 @@ import java.util.List;
 public class DynamicBannerHeader {
     private View mDynamicBannerHeader;
     private Context mContext;
+    private DynamicBannerHeaderInfo mHeaderInfo;
 
     private Banner mBanner;
     private DynamicBannerHeadlerClickEvent mHeadlerClickEvent;
@@ -36,8 +37,8 @@ public class DynamicBannerHeader {
 //        mDynamicBannerHeader.setPadding(0, 10, 0, 0);
         mBanner = (Banner) mDynamicBannerHeader.findViewById(R.id.item_banner);
         mBanner.setOnBannerListener(position -> {
-            if (mHeadlerClickEvent != null) {
-                mHeadlerClickEvent.headClick();
+            if (mHeadlerClickEvent != null && mHeaderInfo != null) {
+                mHeadlerClickEvent.headClick(position);
             }
         });
     }
@@ -48,7 +49,7 @@ public class DynamicBannerHeader {
         mBanner = (Banner) mDynamicBannerHeader.findViewById(R.id.item_banner);
         mBanner.setOnBannerListener(position -> {
             if (mHeadlerClickEvent != null) {
-                mHeadlerClickEvent.headClick();
+                mHeadlerClickEvent.headClick(position);
             }
         });
         setHeadInfo(headInfo);
@@ -57,6 +58,7 @@ public class DynamicBannerHeader {
     public void setHeadInfo(DynamicBannerHeaderInfo headInfo) {
         if (headInfo == null || mBanner == null)
             return;
+        mHeaderInfo = headInfo;
         mBanner.setDelayTime(headInfo.getDelay());
         mBanner.setImageLoader(new BannerImageLoaderUtil());
         mBanner.setImages(headInfo.getUrls());
@@ -65,6 +67,11 @@ public class DynamicBannerHeader {
         mBanner.setBannerTitles(headInfo.getTitles());
         mBanner.setOnBannerListener(headInfo.getOnBannerListener());
         mBanner.start();
+        mBanner.setOnBannerListener(position -> {
+            if (mHeadlerClickEvent != null && mHeaderInfo != null) {
+                mHeadlerClickEvent.headClick(position);
+            }
+        });
     }
 
     public void stopBanner() {
@@ -135,6 +142,6 @@ public class DynamicBannerHeader {
     }
 
     public interface DynamicBannerHeadlerClickEvent {
-        void headClick();
+        void headClick(int position);
     }
 }
