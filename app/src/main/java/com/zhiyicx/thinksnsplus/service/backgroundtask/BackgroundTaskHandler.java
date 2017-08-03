@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -41,6 +42,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.BaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SendCertificationRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SendDynamicRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
@@ -117,6 +119,9 @@ public class BackgroundTaskHandler {
 
     @Inject
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2Dao;
+
+    @Inject
+    SendCertificationRepository mSendCertificationRepository;
 
     private Queue<BackgroundRequestTaskBean> mTaskBeanConcurrentLinkedQueue = new ConcurrentLinkedQueue<>();// 线程安全的队列
 
@@ -331,6 +336,9 @@ public class BackgroundTaskHandler {
                 break;
             case SEND_INFO_COMMENT:
                 sendInfoComment(backgroundRequestTaskBean);
+                break;
+            case SEND_CERTIFICATION:
+                sendCertification(backgroundRequestTaskBean);
                 break;
             default:
         }
@@ -1161,6 +1169,72 @@ public class BackgroundTaskHandler {
                     }
                 });
 
+    }
+
+    /**
+     * 处理后台发布申请认证
+     */
+    private void sendCertification(final BackgroundRequestTaskBean backgroundRequestTaskBean){
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        SendCertificationBean bean = (SendCertificationBean) params.get("sendCertification");
+        if (bean == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        // 上传图片
+        List<ImageBean> photos = bean.getPicList();
+        Observable<BaseJson<Object>> observable;
+        // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
+        if (photos != null && !photos.isEmpty()) {
+            // 先处理图片上传，图片上传成功后，在进行动态发布
+            List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
+            for (int i = 0; i < photos.size(); i++) {
+                ImageBean imageBean = photos.get(i);
+                String filePath = imageBean.getImgUrl();
+                int photoWidth = (int) imageBean.getWidth();
+                int photoHeight = (int) imageBean.getHeight();
+                String photoMimeType = imageBean.getImgMimeType();
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+            }
+            observable = Observable.combineLatest(upLoadPics, args -> {
+                // 得到图片上传的结果
+                List<Integer> integers = new ArrayList<>();
+                for (int i = 0; i < args.length; i++) {
+                    BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
+                    if (baseJson.isStatus()) {
+                        bean.getFiles().add(baseJson.getData());
+                    } else {
+                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                    }
+                }
+                return integers;
+            }).map(integers -> bean).flatMap(new Func1<SendCertificationBean, Observable<BaseJson<Object>>>() {
+                @Override
+                public Observable<BaseJson<Object>> call(SendCertificationBean bean) {
+                    return mSendCertificationRepository.sendCertification(bean)
+                            .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                                @Override
+                                public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                                    BaseJson<Object> baseJson = new BaseJson<>();
+                                    baseJson.setData((double) objectBaseJsonV2.getId());
+                                    String msg = objectBaseJsonV2.getMessage().get(0);
+                                    baseJson.setStatus(msg.equals("发布成功"));
+                                    baseJson.setMessage(msg);
+                                    return Observable.just(baseJson);
+                                }
+                            });
+                }
+            });
+            observable.subscribeOn(Schedulers.io())
+                    .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseSubscribeForV2<BaseJson<Object>>() {
+                        @Override
+                        protected void onSuccess(BaseJson<Object> data) {
+
+                        }
+                    });
+        }
     }
 
     /**

@@ -258,7 +258,17 @@
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="adjustPan"/>
 
-        <service
+        <!--认证相关页面-->
+        <activity
+                android:name=".modules.certification.input.CertificationInputActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".modules.certification.send.SendCertificationActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
+
+       <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"
             tools:ignore="ExportedService">

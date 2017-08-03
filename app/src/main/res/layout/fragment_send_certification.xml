@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingLeft="@dimen/spacing_mid"
+              android:paddingRight="@dimen/spacing_mid"
+              android:background="@color/white">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginBottom="@dimen/spacing_mid"
+            android:text="@string/send_certification_id_card"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_comment"/>
+
+    <!--身份证1/营业执照-->
+    <FrameLayout
+            android:id="@+id/fl_upload_pic_one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_upload_pic_bg">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/ico_identi_camera"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:drawablePadding="@dimen/spacing_normal"
+                android:text="@string/send_certification_pic_hint"
+                android:textSize="@dimen/size_content_comment"/>
+        <ImageView
+                android:id="@+id/iv_pic_one"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
+    </FrameLayout>
+
+
+    <!--身份证1/营业执照-->
+    <FrameLayout
+            android:id="@+id/fl_upload_pic_two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_upload_pic_bg"
+            android:layout_marginTop="@dimen/spacing_mid">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/ico_identi_camera"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:drawablePadding="@dimen/spacing_normal"
+                android:text="@string/send_certification_pic_next"
+                android:textSize="@dimen/size_content_comment"/>
+
+        <ImageView
+                android:id="@+id/iv_pic_two"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
+    </FrameLayout>
+
+</LinearLayout>
