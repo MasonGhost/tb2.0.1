@@ -130,4 +130,10 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     public int getBalanceRatio() {
         return mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATON_SUCCESS)
+    public void sendSuccess(){
+        // 发布成功
+        mRootView.updateCertification();
+    }
 }

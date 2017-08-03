@@ -15,6 +15,7 @@ public interface CertificationInputContract {
 
     interface View extends IBaseView<Presenter>{
         void showErrorTips(String error);
+        void sendSuccess();
     }
 
     interface Presenter extends IBasePresenter{

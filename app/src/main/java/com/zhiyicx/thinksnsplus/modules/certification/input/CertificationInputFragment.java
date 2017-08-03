@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.certification.input;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
+import com.zhiyicx.thinksnsplus.modules.certification.send.SendCertificationActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +27,7 @@ import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.certification.send.SendCertificationActivity.BUNDLE_SEND_CERTIFICATION;
 
 /**
  * @author Catherine
@@ -155,7 +158,12 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
                 .subscribe(aVoid -> {
                     if (checkData()) {
                         // 数据正常 跳转到下一页 选择图片
-
+                        showErrorTips("");
+                        Intent intent = new Intent(getActivity(), SendCertificationActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(BUNDLE_SEND_CERTIFICATION, mSendBean);
+                        intent.putExtra(BUNDLE_SEND_CERTIFICATION, bundle);
+                        startActivity(intent);
                     }
                 });
     }
@@ -198,6 +206,11 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
             mTvErrorTip.setVisibility(View.VISIBLE);
             mTvErrorTip.setText(error);
         }
+    }
+
+    @Override
+    public void sendSuccess() {
+        getActivity().finish();
     }
 
     /**
