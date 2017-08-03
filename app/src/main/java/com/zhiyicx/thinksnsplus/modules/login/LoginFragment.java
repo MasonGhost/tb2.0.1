@@ -30,6 +30,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
+import com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity;
 import com.zhiyicx.thinksnsplus.widget.AccountPopWindow;
 
 import java.util.ArrayList;
@@ -69,6 +70,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     ImageView mIvClear;
     @BindView(R.id.et_complete_input)
     AppCompatAutoCompleteTextView mEtCompleteInput;
+    @BindView(R.id.tv_login_by_qq)
+    TextView mTvLoginByQq;
 
     private boolean mIsPhoneEdited;
     private boolean mIsPasswordEdited;
@@ -122,7 +125,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                     mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
                     setConfirmEnable();
                     mIvClear.setVisibility(TextUtils.isEmpty(charSequence.toString()) ? View.GONE : View.VISIBLE);
-                    if (mArrayAdapter != null){
+                    if (mArrayAdapter != null) {
                         setAccountListPopHeight(mArrayAdapter.getCount());
                     }
                 });
@@ -151,6 +154,14 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> mEtCompleteInput.setText(""));
+
+        RxView.clicks(mTvLoginByQq)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(aVoid -> {
+                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
+                    startActivity(intent);
+                });
     }
 
     @Override
@@ -285,13 +296,13 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         Drawable mBackgroundDrawable = new ColorDrawable(Color.WHITE);// 默认为透明;
 //        mEtCompleteInput.setDropDownBackgroundDrawable(mBackgroundDrawable);
         mAccountList.addAll(mPresenter.getAllAccountList());
-        if (mAccountAdapter == null){
+        if (mAccountAdapter == null) {
             mAccountAdapter = new AccountAdapter(getContext(), mAccountList, this);
         } else {
             mAccountAdapter.notifyDataSetChanged();
         }
 
-        for (AccountBean accountBean : mAccountList){
+        for (AccountBean accountBean : mAccountList) {
             list.add(accountBean.getAccountName());
         }
         setAccountListPopHeight(mAccountList.size());
@@ -312,8 +323,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         setAccountListPopHeight(size);
     }
 
-    private void setAccountListPopHeight(int size){
-        if (size > 3){
+    private void setAccountListPopHeight(int size) {
+        if (size > 3) {
             mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 140));
         } else {
             mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);

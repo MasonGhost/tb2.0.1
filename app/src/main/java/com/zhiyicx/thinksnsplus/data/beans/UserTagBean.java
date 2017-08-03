@@ -5,13 +5,17 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @author Catherine
  * @describe
  * @date 2017/7/28
  * @contact email:648129313@qq.com
  */
-
+@Entity
 public class UserTagBean extends BaseListBean {
 
     /**
@@ -21,11 +25,12 @@ public class UserTagBean extends BaseListBean {
      * "tag_category_id": 1
      * }
      */
-
+    @Id
     private Long id;
     @SerializedName("name")
     private String tagName;
     private long tag_category_id;
+    private boolean mine_has; // 用于本地标签当前用户上否有这个标签
 
     public String getTagName() {
         return tagName;
@@ -51,6 +56,15 @@ public class UserTagBean extends BaseListBean {
         this.tag_category_id = tag_category_id;
     }
 
+    public boolean isMine_has() {
+        return mine_has;
+    }
+
+    public void setMine_has(boolean mine_has) {
+        this.mine_has = mine_has;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -62,6 +76,7 @@ public class UserTagBean extends BaseListBean {
         dest.writeValue(this.id);
         dest.writeString(this.tagName);
         dest.writeLong(this.tag_category_id);
+        dest.writeByte(this.mine_has ? (byte) 1 : (byte) 0);
     }
 
     public UserTagBean() {
@@ -72,6 +87,16 @@ public class UserTagBean extends BaseListBean {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.tagName = in.readString();
         this.tag_category_id = in.readLong();
+        this.mine_has = in.readByte() != 0;
+    }
+
+    @Generated(hash = 490526204)
+    public UserTagBean(Long id, String tagName, long tag_category_id,
+            boolean mine_has) {
+        this.id = id;
+        this.tagName = tagName;
+        this.tag_category_id = tag_category_id;
+        this.mine_has = mine_has;
     }
 
     public static final Creator<UserTagBean> CREATOR = new Creator<UserTagBean>() {
@@ -92,6 +117,11 @@ public class UserTagBean extends BaseListBean {
                 "id=" + id +
                 ", tagName='" + tagName + '\'' +
                 ", tag_category_id=" + tag_category_id +
+                ", mine_has=" + mine_has +
                 '}';
+    }
+
+    public boolean getMine_has() {
+        return this.mine_has;
     }
 }

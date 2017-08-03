@@ -4,15 +4,10 @@ import android.graphics.Bitmap;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
-import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
 
 import rx.Observable;
 

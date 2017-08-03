@@ -69,4 +69,6 @@
     <color name="copy_right_color">#f3f6f7</color>
     <color name="input_view_bg_color">#fafafa</color>
     <color name="tag_bg_color">#def0f7</color>
+    <!--money-->
+    <color name="money">#f76c69</color>
 </resources>

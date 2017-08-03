@@ -1,11 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -15,28 +17,37 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
 import rx.functions.Action1;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -84,6 +95,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
+    /**
+     * 打赏
+     */
+    private List<RewardsListBean> mRewardsListBeen = new ArrayList<>();
+    private RewardsCountBean mRewardsCountBean;
+
     public static InfoDetailsFragment newInstance(Bundle params) {
         InfoDetailsFragment fragment = new InfoDetailsFragment();
         fragment.setArguments(params);
@@ -112,6 +129,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailWebItem(getActivity(), new
                 ItemOnWebEventListener()) {
             @Override
+            protected void dealRewards(ViewHolder holder) {
+                ((ReWardView) holder.getView(R.id.v_reward)).initData(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean);
+                ((ReWardView) holder.getView(R.id.v_reward)).setOnRewardsClickListener(() -> {
+                });
+            }
+
+            @Override
             public void dealCommentCount(ViewHolder holder) {
                 if (mListDatas.get(mListDatas.size() - 1).getComment_content() != null) {
                     holder.getView(R.id.info_detail_comment).setVisibility(View.VISIBLE);
@@ -127,6 +151,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
         return multiItemTypeAdapter;
+    }
+
+    @Override
+    public void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> datas) {
+        this.mRewardsCountBean = rewardsCountBean;
+        this.mRewardsListBeen.clear();
+        this.mRewardsListBeen.addAll(datas);
+        refreshData();
     }
 
     @Override
@@ -149,6 +181,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mInfoMation.setIs_collection_news(mPresenter.isCollected() ? 1 : 0);
         mInfoMation.setIs_digg_news(mPresenter.isDiged() ? 1 : 0);
         setDigg(mPresenter.isDiged());
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
     }
 
     @Override
@@ -229,6 +266,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             data.add(0, position_zero);
         }
         super.onNetResponseSuccess(data, isLoadMore);
+        if (!isLoadMore) {
+            Observable.timer(500, TimeUnit.MILLISECONDS)
+                    .subscribe(aLong -> {
+                        mPresenter.reqReWardsData(mInfoMation.getId());// 刷新打赏
+                    });
+
+        }
     }
 
     @Override
@@ -449,5 +493,17 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         public void onUserInfoClick(UserInfoBean userInfoBean) {
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        LogUtils.d("requestCode : " + requestCode);
+        if (requestCode == RESULT_OK) {
+            if (requestCode == RewardType.INFO.id) {
+                mPresenter.reqReWardsData(mInfoMation.getId());
+            }
+        }
+
     }
 }

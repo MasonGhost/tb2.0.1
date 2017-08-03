@@ -84,6 +84,17 @@ public class ApiConfig {
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     public static final String APP_PATH_UPDATE_USER_AVATAR = "api/" + API_VERSION_2 + "/user/avatar";// 修改用户头像
     public static final String APP_PATH_UPDATE_USER_BG = "api/" + API_VERSION_2 + "/user/bg";// 修改用户背景
+
+
+    // 用户标签
+    public static final String APP_PATH_GET_USER_TAGS = "api/" + API_VERSION_2 + "/users/{user_id}/tags";// 获取一个用户的标签
+    public static final String APP_PATH_GET_CURRENT_USER_TAGS = "api/" + API_VERSION_2 + "/user/tags";// 获取当前认证用户的标签
+    public static final String APP_PATH_CURRENT_USER_ADD_TAGS = "api/" + API_VERSION_2 + "/user/tags/{tag_id}";// 当前认证用户附加一个标签
+    public static final String APP_PATH_CURRENT_USER_DELETE_TAGS = "api/" + API_VERSION_2 + "/user/tags/{tag_id}";// 当前认证用户分离一个标签
+
+    // 认证
+    public static final String APP_PATH_CERTIFICATION = "api/" + API_VERSION_2 + "/user/certification"; // GET-获取认证信息 POST-申请认证 PACTH-更新认证
+
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
      *
@@ -260,6 +271,14 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DETAILS = "/api/" + API_VERSION + "/news/{news_id}";
     public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/" + API_VERSION + "/news/%d";
 
+    // 咨询打赏
+    public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
+    // 打赏用户列表
+    public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
+    // 资讯打赏统计
+    public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards/sum";
+
+
     /**
      * 音乐相关 升级到V2
      */
@@ -338,6 +357,7 @@ public class ApiConfig {
     // 标签
     public static final String APP_PATH_GET_ALL_TAGS = "api/" + API_VERSION_2 + "/tags";// 获取全部标签
 
+
     /**
      * 分享相关
      */
@@ -399,10 +419,10 @@ public class ApiConfig {
     /**
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
      */
-    public static final String APP_COMPONENT_FEED = "feed";
-    public static final String APP_COMPONENT_MUSIC = "musics";
-    public static final String APP_COMPONENT_NEWS = "news";
-    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_specials";
+//    public static final String APP_COMPONENT_FEED = "feed";
+//    public static final String APP_COMPONENT_MUSIC = "music";
+//    public static final String APP_COMPONENT_NEWS = "news";
+    public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_special";
     /**
      * @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/likes.md}
      */
@@ -473,4 +493,5 @@ public class ApiConfig {
     // 凭据回执
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/wallet/charges/{charge}?mode=retrieve";
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
+
 }

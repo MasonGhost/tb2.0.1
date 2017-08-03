@@ -33,6 +33,7 @@
     <string name="mine_collect">收藏</string>
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
+    <string name="certification">认证</string>
     <string name="setting">设置</string>
     <string name="wallet">钱包</string>
     <string name="follow">关注</string>
@@ -324,8 +325,33 @@
     <!--用户标签-->
     <string name="jump_over">跳过</string>
     <string name="save">保存</string>
+    <string name="next">下一步</string>
     <string name="user_tag_choose_tag">选择标签</string>
     <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已经选择%2$d个标签</string>
+    <string name="user_tag_choosed_tag_format_tip">最多只能选择%d个标签</string>
+    <string name="tips">温馨提示</string>
+    <string name="tags_tips">标签为全局标签，选择合适的标签，系统可推荐你感兴趣的内容，方便找到相同身份或爱好的人，很重要哦！</string>
+
+    <!--打赏-->
+    <string name="reward">打赏</string>
+    <string name="reward_list">打赏列表</string>
+    <string name="reward_show">%1$s人打赏,共%2$s元</string>
+    <string name="reward_list_tip">%s打赏了文章</string>
+    <string name="choose_reward_money">选择打赏金额</string>
+    <string name="reward_success">打赏成功</string>
+
+    <!--认证-->
+    <string name="certification_personage">个人认证</string>
+    <string name="certification_company">企业认证</string>
+    <string name="certification_basic_info">基本信息</string>
+    <string name="certification_basic_info_name">真实姓名</string>
+    <string name="name_hint">输入真实姓名</string>
+    <string name="certification_basic_info_id_card">身份证号码</string>
+    <string name="id_card_hint">输入正确的身份证号码</string>
+    <string name="certification_basic_info_phone">手机号码</string>
+    <string name="info_phone_hint">输入11位手机号码</string>
+    <string name="certification_basic_info_description">认证描述</string>
+    <string name="description_hint">认证相关信息</string>
 
 
     <!--问答相关-->

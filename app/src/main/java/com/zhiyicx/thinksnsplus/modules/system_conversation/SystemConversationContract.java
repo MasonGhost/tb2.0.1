@@ -3,7 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.system_conversation;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.ISystemRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.ISystemRepository;
 
 /**
  * @Describe

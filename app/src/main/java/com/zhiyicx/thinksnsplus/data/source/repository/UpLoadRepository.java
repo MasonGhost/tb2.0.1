@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 
 import java.io.File;
 import java.util.HashMap;
