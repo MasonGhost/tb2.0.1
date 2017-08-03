@@ -364,6 +364,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      * @param positon         当前点击位置
      */
     private void toChat(MessageItemBean messageItemBean, int positon) {
+        if (messageItemBean == null || messageItemBean.getUserInfo() == null) {
+            return;
+        }
         Intent to = new Intent(getActivity(), ChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ChatFragment.BUNDLE_MESSAGEITEMBEAN, messageItemBean);
