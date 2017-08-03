@@ -12,6 +12,9 @@
         android:background="@drawable/item_react_bg_gray"
         android:gravity="center"
         android:padding="@dimen/spacing_mid_small_8dp"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/normal_for_dynamic_list_content"
         android:textSize="@dimen/size_content_assist"/>
 

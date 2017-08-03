@@ -869,5 +869,4 @@ public class DynamicDetailBeanV2 extends BaseListBean implements Parcelable, Ser
     private transient DynamicDetailBeanV2Dao myDao;
     @Generated(hash = 1005780391)
     private transient Long userInfoBean__resolvedKey;
-
 }
