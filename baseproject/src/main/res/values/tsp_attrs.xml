@@ -53,9 +53,15 @@
         <!--左边文字-->
         <attr name="leftHintText" format="reference|string"/>
         <!--输入框提示-->
-        <attr name="hint" format="reference|string"/>
+        <attr name="rightHint" format="reference|string"/>
         <!--输入的类型-->
         <attr name="rightInputType" format="reference|string"/>
+        <!--输入长度-->
+        <attr name="rightMaxLength" format="reference|integer"/>
+        <!--内容高度-->
+        <attr name="totalMinHeight" format="reference|dimension"/>
+        <!--输入行数最高-->
+        <attr name="rightMaxLines" format="reference|integer"/>
     </declare-styleable>
 
     <!--有加载动画的按钮-->
