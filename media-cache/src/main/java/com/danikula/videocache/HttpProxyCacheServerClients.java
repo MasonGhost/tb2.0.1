@@ -24,14 +24,16 @@ final class HttpProxyCacheServerClients {
 
     private final AtomicInteger clientsCount = new AtomicInteger(0);
     private final String url;
+    private final String token;
     private volatile HttpProxyCache proxyCache;
     private final List<CacheListener> listeners = new CopyOnWriteArrayList<>();
     private final CacheListener uiCacheListener;
     private final Config config;
 
-    public HttpProxyCacheServerClients(String url, Config config) {
+    public HttpProxyCacheServerClients(String url,String token, Config config) {
         this.url = checkNotNull(url);
         this.config = checkNotNull(config);
+        this.token = checkNotNull(token);
         this.uiCacheListener = new UiListenerHandler(url, listeners);
     }
 
@@ -79,7 +81,7 @@ final class HttpProxyCacheServerClients {
     }
 
     private HttpProxyCache newHttpProxyCache() throws ProxyCacheException {
-        HttpUrlSource source = new HttpUrlSource(url, config.sourceInfoStorage);
+        HttpUrlSource source = new HttpUrlSource(url,token, config.sourceInfoStorage);
         FileCache cache = new FileCache(config.generateCacheFile(url), config.diskUsage);
         HttpProxyCache httpProxyCache = new HttpProxyCache(source, cache);
         httpProxyCache.registerCacheListener(uiCacheListener);

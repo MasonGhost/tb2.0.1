@@ -39,14 +39,14 @@ public class HttpUrlSource implements Source {
     private InputStream inputStream;
 
     public HttpUrlSource(String url) {
-        this(url, SourceInfoStorageFactory.newEmptySourceInfoStorage());
+        this(url, "",SourceInfoStorageFactory.newEmptySourceInfoStorage());
     }
 
-    public HttpUrlSource(String url, SourceInfoStorage sourceInfoStorage) {
+    public HttpUrlSource(String url, String token ,SourceInfoStorage sourceInfoStorage) {
         this.sourceInfoStorage = checkNotNull(sourceInfoStorage);
         SourceInfo sourceInfo = sourceInfoStorage.get(url);
         this.sourceInfo = sourceInfo != null ? sourceInfo :
-                new SourceInfo(url, Integer.MIN_VALUE, ProxyCacheUtils.getSupposablyMime(url));
+                new SourceInfo(url, token,Integer.MIN_VALUE, ProxyCacheUtils.getSupposablyMime(url));
     }
 
     public HttpUrlSource(HttpUrlSource source) {
@@ -61,7 +61,7 @@ public class HttpUrlSource implements Source {
             String mime = connection.getContentType();
             inputStream = new BufferedInputStream(connection.getInputStream(), DEFAULT_BUFFER_SIZE);
             int length = readSourceAvailableBytes(connection, offset, connection.getResponseCode());
-            this.sourceInfo = new SourceInfo(sourceInfo.url, length, mime);
+            this.sourceInfo = new SourceInfo(sourceInfo.url,sourceInfo.token, length, mime);
             this.sourceInfoStorage.put(sourceInfo.url, sourceInfo);
         } catch (IOException e) {
             throw new ProxyCacheException("Error opening connection for " + sourceInfo.url + " " +
@@ -118,7 +118,7 @@ public class HttpUrlSource implements Source {
             int length = urlConnection.getContentLength();
             String mime = urlConnection.getContentType();
             inputStream = urlConnection.getInputStream();
-            this.sourceInfo = new SourceInfo(sourceInfo.url, length, mime);
+            this.sourceInfo = new SourceInfo(sourceInfo.url, sourceInfo.token,length, mime);
             this.sourceInfoStorage.put(sourceInfo.url, sourceInfo);
             LOG.debug("Source info fetched: " + sourceInfo);
         } catch (IOException e) {
@@ -137,10 +137,12 @@ public class HttpUrlSource implements Source {
         boolean redirected;
         int redirectCount = 0;
         String url = this.sourceInfo.url;
+        String token = this.sourceInfo.token;
         do {
             LOG.debug("Open connection " + (offset > 0 ? " with offset " + offset : "") + " to "
                     + url);
             connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestProperty("Authorization", " Bearer " + token);
             if (offset > 0) {
                 connection.setRequestProperty("Range", "bytes=" + offset + "-");
             }

@@ -70,6 +70,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHAN
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
@@ -676,10 +677,26 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Subscriber(tag = EVENT_MUSIC_LIKE, mode = ThreadMode.MAIN)
     public void onLikeCountUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
 
-        Observable.from(mAlbumDetailsBean.getMusics()).filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId()).subscribe(musicsBean -> {
-            musicsBean.setHas_like(e_albumListBean.isHas_like());
-            musicsBean.setComment_count(e_albumListBean.getComment_count());
-        });
+        Observable.from(mAlbumDetailsBean.getMusics())
+                .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                .subscribe(musicsBean -> {
+                    musicsBean.setHas_like(e_albumListBean.isHas_like());
+                    musicsBean.setComment_count(e_albumListBean.getComment_count());
+                    musicsBean.setStorage(e_albumListBean.getStorage());
+                });
+        if (mAlbumDetailsBean != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
+                    MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+            bundle.putString(MUSIC_ID,id);
+            MediaControllerCompat controller = getActivity()
+                    .getSupportMediaController();
+            controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+
+            mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
+            mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+        }
         LogUtils.d("EVENT_MUSIC_LIKE");
     }
 
@@ -693,7 +710,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
     public void onMusicChange(int change) {
         mCurrentMediaId = change + "";
-        mPresenter.getMusicDetails(change + "");
+        mPresenter.getMusicDetails(change + "");// 增加收听数量
         mAdapter.notifyDataSetChanged();
         LogUtils.d("EVENT_MUSIC_CHANGE");
     }

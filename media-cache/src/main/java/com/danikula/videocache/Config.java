@@ -14,12 +14,14 @@ import java.io.File;
 class Config {
 
     public final File cacheRoot;
+    public final String token;
     public final FileNameGenerator fileNameGenerator;
     public final DiskUsage diskUsage;
     public final SourceInfoStorage sourceInfoStorage;
 
-    Config(File cacheRoot, FileNameGenerator fileNameGenerator, DiskUsage diskUsage, SourceInfoStorage sourceInfoStorage) {
+    Config(File cacheRoot,String token, FileNameGenerator fileNameGenerator, DiskUsage diskUsage, SourceInfoStorage sourceInfoStorage) {
         this.cacheRoot = cacheRoot;
+        this.token = token;
         this.fileNameGenerator = fileNameGenerator;
         this.diskUsage = diskUsage;
         this.sourceInfoStorage = sourceInfoStorage;

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -15,6 +16,13 @@ import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import javax.inject.Inject;
 
@@ -27,6 +35,13 @@ import javax.inject.Inject;
 @FragmentScoped
 public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Repository,
         MusicPlayContract.View> implements MusicPlayContract.Presenter, OnShareCallbackListener {
+
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    @Inject
+    CommentRepository mCommentRepository;
+    @Inject
+    MusicAlbumDetailsBeanGreenDaoImpl mMusicAlbumDetailsBeanGreenDao;
 
     @Inject
     public MusicPlayPresenter(MusicPlayContract.Repository repository, MusicPlayContract
@@ -44,6 +59,52 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
 
     @Inject
     public SharePolicy mSharePolicy;
+
+    @Override
+    public void payNote(int position, int note) {
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+        double balance = 0;
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
+        }
+        double amount;
+        amount = mRootView.getListDatas().get(position).getStorage().getAmount();
+
+        if (balance < amount) {
+            mRootView.goRecharge(WalletActivity.class);
+            return;
+        }
+        mCommentRepository.paykNote(note)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<String> data) {
+                        mRootView.getListDatas().get(position).getStorage().setPaid(true);
+                        mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
+                        mRootView.refreshData(position);
+                        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.hideCenterLoading();
+                    }
+                });
+    }
 
     @Override
     public void shareMusic(Bitmap bitmap) {

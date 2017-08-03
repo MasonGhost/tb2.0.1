@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.PowerManager;
 import android.support.v4.media.MediaMetadataCompat;
@@ -23,6 +24,8 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.media.MediaPlayer.OnCompletionListener;
 import static android.media.MediaPlayer.OnErrorListener;
@@ -219,8 +222,14 @@ public class LocalPlayback implements Playback, AudioManager.OnAudioFocusChangeL
                 isCached = AppApplication.getProxy().isCached(source);
                 if (isCached) {
                     mCallback.onBuffering(100);
+                    mMediaPlayer.setDataSource(proxyUrl);
+                } else {
+                    Map<String, String> header = new HashMap<>();
+                    header.put("Authorization", " Bearer " + AppApplication.getmCurrentLoginAuth().getToken());
+                    Uri uri=Uri.parse(source);
+                    mMediaPlayer.setDataSource(mContext, uri, header);
                 }
-                mMediaPlayer.setDataSource(proxyUrl);
+
 
                 mMediaPlayer.prepareAsync();
                 EventBus.getDefault().post(-1,

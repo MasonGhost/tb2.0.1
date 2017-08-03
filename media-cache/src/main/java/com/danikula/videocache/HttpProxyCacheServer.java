@@ -130,7 +130,7 @@ public class HttpProxyCacheServer {
         checkAllNotNull(cacheListener, url);
         synchronized (clientsLock) {
             try {
-                getClients(url).registerCacheListener(cacheListener);
+                getClients(url,config.token).registerCacheListener(cacheListener);
             } catch (ProxyCacheException e) {
                 LOG.warn("Error registering cache listener", e);
             }
@@ -141,7 +141,7 @@ public class HttpProxyCacheServer {
         checkAllNotNull(cacheListener, url);
         synchronized (clientsLock) {
             try {
-                getClients(url).unregisterCacheListener(cacheListener);
+                getClients(url,config.token).unregisterCacheListener(cacheListener);
             } catch (ProxyCacheException e) {
                 LOG.warn("Error registering cache listener", e);
             }
@@ -237,7 +237,7 @@ public class HttpProxyCacheServer {
             if (pinger.isPingRequest(url)) {
                 pinger.responseToPing(socket);
             } else {
-                HttpProxyCacheServerClients clients = getClients(url);
+                HttpProxyCacheServerClients clients = getClients(url,config.token);
                 clients.processRequest(request, socket);
             }
         } catch (SocketException e) {
@@ -253,11 +253,11 @@ public class HttpProxyCacheServer {
         }
     }
 
-    private HttpProxyCacheServerClients getClients(String url) throws ProxyCacheException {
+    private HttpProxyCacheServerClients getClients(String url,String token) throws ProxyCacheException {
         synchronized (clientsLock) {
             HttpProxyCacheServerClients clients = clientsMap.get(url);
             if (clients == null) {
-                clients = new HttpProxyCacheServerClients(url, config);
+                clients = new HttpProxyCacheServerClients(url, token,config);
                 clientsMap.put(url, clients);
             }
             return clients;
@@ -357,6 +357,7 @@ public class HttpProxyCacheServer {
         private static final long DEFAULT_MAX_SIZE = 200 * 1024 * 1024;
 
         private File cacheRoot;
+        private String token;
         private FileNameGenerator fileNameGenerator;
         private DiskUsage diskUsage;
         private SourceInfoStorage sourceInfoStorage;
@@ -426,6 +427,11 @@ public class HttpProxyCacheServer {
             return this;
         }
 
+        public Builder token(String token) {
+            this.token = token;
+            return this;
+        }
+
         /**
          * Builds new instance of {@link HttpProxyCacheServer}.
          *
@@ -437,7 +443,7 @@ public class HttpProxyCacheServer {
         }
 
         private Config buildConfig() {
-            return new Config(cacheRoot, fileNameGenerator, diskUsage, sourceInfoStorage);
+            return new Config(cacheRoot, token,fileNameGenerator, diskUsage, sourceInfoStorage);
         }
 
     }

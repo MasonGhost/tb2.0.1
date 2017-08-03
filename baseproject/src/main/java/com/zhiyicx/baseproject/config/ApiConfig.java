@@ -420,7 +420,7 @@ public class ApiConfig {
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
      */
 //    public static final String APP_COMPONENT_FEED = "feed";
-//    public static final String APP_COMPONENT_MUSIC = "music";
+    public static final String APP_COMPONENT_MUSIC = "music";
 //    public static final String APP_COMPONENT_NEWS = "news";
     public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_special";
     /**

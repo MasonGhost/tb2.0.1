@@ -50,7 +50,6 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
 
     @Inject
     MusicAlbumDetailsBeanGreenDaoImpl mMusicAlbumDetailsBeanGreenDao;
-
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
     @Inject
