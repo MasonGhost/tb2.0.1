@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -63,7 +62,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_PAGE_MAX_ID;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
 
@@ -187,6 +185,12 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         return true;
     }
 
+    /**
+     * 获取当前动态数据
+     *
+     * @param feed_id
+     * @param topFlag
+     */
     @Override
     public void getCurrentDynamicDetail(final long feed_id, int topFlag) {
         Subscription subscription = mRepository.getDynamicDetailBeanV2(feed_id)
@@ -213,6 +217,39 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
         addSubscrebe(subscription);
     }
 
+    /**
+     * 更新打赏数据
+     *
+     * @param feed_id
+     */
+    @Override
+    public void updateRewardData(Long feed_id) {
+        Subscription subscription = Observable.zip(mRepository.getDynamicDetailBeanV2(feed_id)
+                , mRewardRepository.rewardDynamicList(feed_id, TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
+                , (currenDynamic, rewardsListBeens) -> {
+                    mRootView.setRewardListBeans(rewardsListBeens);
+                    mRootView.getCurrentDynamic().setReward(currenDynamic.getReward());
+                    mDynamicDetailBeanV2GreenDao.insertOrReplace(currenDynamic);
+                    mDynamicCommentBeanGreenDao.insertOrReplace(currenDynamic.getComments());
+                    return currenDynamic;
+
+                }).subscribe(new BaseSubscribeForV2<Object>() {
+            @Override
+            protected void onSuccess(Object data) {
+                mRootView.updateReward();
+            }
+        });
+        addSubscrebe(subscription);
+    }
+
+    /**
+     * 获取动态详情所有数据
+     *
+     * @param feed_id
+     * @param max_id
+     * @param user_ids
+     * @param topFlag
+     */
     @Override
     public void getDetailAll(final Long feed_id, Long max_id, final String user_ids, final int
             topFlag) {
@@ -413,25 +450,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
     public void handleFollowUser(UserInfoBean userInfoBean) {
         mUserInfoRepository.handleFollow(userInfoBean);
         mRootView.upDateFollowFansState(userInfoBean);
-    }
-
-
-    @Override
-    public void deleteComment(long comment_id, int commentPositon) {
-        mIsNeedDynamicListRefresh = true;
-        mRootView.getCurrentDynamic().setFeed_comment_count(mRootView.getCurrentDynamic()
-                .getFeed_comment_count() - 1);
-        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getCurrentDynamic());
-        mDynamicCommentBeanGreenDao.deleteSingleCache(mRootView.getCurrentDynamic().getComments()
-                .get(commentPositon));
-        mRootView.getListDatas().remove(commentPositon);
-        if (mRootView.getListDatas().isEmpty()) {
-            DynamicCommentBean emptyData = new DynamicCommentBean();
-            mRootView.getListDatas().add(emptyData);
-        }
-        mRootView.refreshData();
-        mRootView.updateCommentCountAndDig();
-        mRepository.deleteComment(mRootView.getCurrentDynamic().getId(), comment_id);
     }
 
     @Override

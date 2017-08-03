@@ -90,6 +90,8 @@ public interface DynamicDetailContract {
         void updateDynamic(DynamicDetailBeanV2 detailBeanV2);
 
         void setRewardListBeans(List<RewardsListBean> rewardsListBeens);
+
+        void updateReward();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -110,12 +112,12 @@ public interface DynamicDetailContract {
          *
          * @param feed_id
          */
-        void getCurrentDynamicDetail(long feed_id,int topFlag);
+        void getCurrentDynamicDetail(long feed_id, int topFlag);
 
         /**
          * 获取当前动态的点赞列表
          */
-        void getDetailAll(Long feed_id, Long max_id, String user_ids,int topFlag);
+        void getDetailAll(Long feed_id, Long max_id, String user_ids, int topFlag);
 
         /**
          * 获取当前动态的点赞列表
@@ -159,7 +161,6 @@ public interface DynamicDetailContract {
          * @param comment_id      comment's id
          * @param commentPosition comment curren position
          */
-        void deleteComment(long comment_id, int commentPosition);
         void deleteCommentV2(long comment_id, int commentPosition);
 
         /**
@@ -171,10 +172,32 @@ public interface DynamicDetailContract {
          */
         boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark);
 
+        /**
+         * @return
+         */
+
         List<SystemConfigBean.Advert> getAdvert();
+
+        /**
+         * @param note
+         */
 
         void checkNote(int note);
 
-        void payNote(int imagePosition,int note,boolean isImage);
+        /**
+         * pay note
+         *
+         * @param imagePosition image position
+         * @param note
+         * @param isImage
+         */
+        void payNote(int imagePosition, int note, boolean isImage);
+
+        /**
+         * update reward data
+         *
+         * @param id  source id
+         */
+        void updateRewardData(Long id);
     }
 }

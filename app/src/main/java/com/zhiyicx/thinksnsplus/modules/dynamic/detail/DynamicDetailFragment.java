@@ -55,6 +55,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_3;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -421,7 +422,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         initBottomToolData(mDynamicBean);// 初始化底部工具栏数据
 //        设置动态详情列表数据
         mDynamicDetailHeader.setDynamicDetial(mDynamicBean);
-        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(), RewardType.DYNAMIC);
+        updateReward();
         updateCommentCountAndDig();
         onNetResponseSuccess(mDynamicBean.getComments(), false);
         if (mIsLookMore) {
@@ -436,6 +437,11 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
             mTvToolbarRight.setVisibility(View.VISIBLE);
             setToolBarRightFollowState(mDynamicBean.getUserInfoBean());
         }
+    }
+    @Override
+    public void updateReward() {
+
+        mDynamicDetailHeader.updateReward(mDynamicBean.getId(), mRewardsListBeens, mDynamicBean.getReward(), RewardType.DYNAMIC);
     }
 
 
@@ -730,5 +736,19 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     public void onCommentTextClick(int position) {
         handleItemClick(position);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RewardType.DYNAMIC.id) {
+                if (mDynamicBean != null) {
+                    mPresenter.updateRewardData(mDynamicBean.getId());
+                }
+            }
+        }
+
+
     }
 }
