@@ -275,6 +275,11 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         setToolBarRightImage(isShow ? ico_me_message_remind : ico_me_message_normal);
     }
 
+    @Override
+    public void updateCertification() {
+        mBtCertification.setRightText(getString(R.string.certification_state_ing));
+    }
+
     private void initCertificationTypePop(){
         if (mCertificationWindow == null){
             mCertificationWindow = CertificationTypePopupWindow.Builder()

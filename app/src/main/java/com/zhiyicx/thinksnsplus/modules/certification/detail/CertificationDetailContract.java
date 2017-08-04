@@ -1,21 +1,19 @@
-package com.zhiyicx.thinksnsplus.modules.certification.input;
+package com.zhiyicx.thinksnsplus.modules.certification.detail;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
-import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 
 /**
  * @author Catherine
  * @describe
- * @date 2017/8/2
+ * @date 2017/8/3
  * @contact email:648129313@qq.com
  */
 
-public interface CertificationInputContract {
+public interface CertificationDetailContract {
 
     interface View extends IBaseView<Presenter>{
-        void showErrorTips(String error);
-        void sendSuccess();
+
     }
 
     interface Presenter extends IBasePresenter{

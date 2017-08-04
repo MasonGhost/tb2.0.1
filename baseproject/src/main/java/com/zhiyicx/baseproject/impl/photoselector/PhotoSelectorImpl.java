@@ -58,6 +58,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     public static final int NO_CRAFT = 0;// 不剪切
     public static final int SHAPE_SQUARE = 1;// 正方形
     public static final int SHAPE_RCTANGLE = 2;// 长方形，宽度占满
+    public static final int SHAPE_RECTANGLE = 3;// 长方形，宽度占满，认证裁剪
     private static final int SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
     private static final int CAMERA_PHOTO_CODE = 8888;
 
@@ -191,6 +192,9 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 break;
             case SHAPE_RCTANGLE:// 更换封面
                 options.setToolbarTitle(mContext.getString(R.string.change_bg_cover));
+                break;
+            case SHAPE_RECTANGLE:
+                options.setToolbarTitle(mContext.getString(R.string.select_certification));
                 break;
             default:// 一般不会发生
                 options.setToolbarTitle(mContext.getString(R.string.crop_photo));
@@ -366,6 +370,10 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                 options.setCropViewPadding(ConvertUtils.dp2px(mContext, SQUARE_LEFT_MARGIN), 0);
                 break;
             case SHAPE_RCTANGLE:// 更换封面
+                uCrop.withAspectRatio(1, 0.5f);// 矩形高度为屏幕宽度的一半
+                options.setCropViewPadding(0, 0);
+                break;
+            case SHAPE_RECTANGLE: // 认证的照片
                 uCrop.withAspectRatio(1, 0.5f);// 矩形高度为屏幕宽度的一半
                 options.setCropViewPadding(0, 0);
                 break;

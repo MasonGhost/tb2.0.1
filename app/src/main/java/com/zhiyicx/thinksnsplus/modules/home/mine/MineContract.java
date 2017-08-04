@@ -31,6 +31,8 @@ public interface MineContract {
          */
         void setNewSystemInfo(boolean isShow);
 
+        void updateCertification();
+
     }
 
     interface Presenter extends IBasePresenter {

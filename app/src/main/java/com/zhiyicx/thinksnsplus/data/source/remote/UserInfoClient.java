@@ -266,13 +266,13 @@ public interface UserInfoClient {
      * 提交认证信息
      */
     @POST(ApiConfig.APP_PATH_CERTIFICATION)
-    Observable<BaseJsonV2> sendUserCertificationInfo(@Body RequestBody requestBody);
+    Observable<BaseJsonV2<Object>> sendUserCertificationInfo(@Body RequestBody requestBody);
 
     /**
      * 更新认证信息
      */
     @PATCH(ApiConfig.APP_PATH_CERTIFICATION)
-    Observable<BaseJsonV2> updateUserCertificationInfo();
+    Observable<BaseJsonV2<Object>> updateUserCertificationInfo();
 
 
 

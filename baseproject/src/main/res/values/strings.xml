@@ -41,6 +41,7 @@
     <string name="sure">确认</string>
     <string name="change_head_icon">更换头像</string>
     <string name="change_bg_cover">更换封面</string>
+    <string name="select_certification">选择证件图片</string>
     <string name="crop_photo">裁剪图片</string>
     <string name="publish">发布</string>
     <string name="skip">跳过</string>
