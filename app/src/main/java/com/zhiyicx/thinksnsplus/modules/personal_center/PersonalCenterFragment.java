@@ -737,10 +737,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private void initDeletDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position, final Bitmap shareBitmap) {
         boolean isCollected = dynamicBean.isHas_collect();
         Long feed_id = dynamicBean.getId();
-        boolean feedIdIsNull = feed_id == null || feed_id == 0;
+        feed_id=feed_id==null?0:feed_id;
+        boolean feedIdIsNull = feed_id == 0;
+        boolean feedIsMy = feed_id.intValue()==AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
-                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item2Str(getString(feedIsMy?R.string.empty :R.string.dynamic_list_delete_dynamic))
                 .item3Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
