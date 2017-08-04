@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
+import android.os.Bundle;
+
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -149,9 +151,21 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
                 });
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
-    public void sendSuccess(){
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS)
+    public void updateCertification(Bundle bundle) {
         // 发布成功
-        mRootView.updateCertification(null);
+        if (bundle != null) {
+            UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
+            mRootView.updateCertification(info);
+        }
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
+    public void sendSuccess(Bundle bundle) {
+        if (bundle != null) {
+            UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS);
+            mRootView.updateCertification(info);
+        }
+    }
+
 }

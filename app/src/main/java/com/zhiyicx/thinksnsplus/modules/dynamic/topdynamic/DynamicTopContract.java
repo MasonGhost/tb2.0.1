@@ -23,7 +23,7 @@ public interface DynamicTopContract {
 
         int getTopDyas();
 
-        float getInputMoney();
+        double getInputMoney();
 
         void topSuccess();
     }
@@ -35,6 +35,6 @@ public interface DynamicTopContract {
     }
 
     interface Repository {
-        Observable<BaseJsonV2<Integer>> stickTop(long feed_id, int amount, int day);
+        Observable<BaseJsonV2<Integer>> stickTop(long feed_id, double amount, int day);
     }
 }

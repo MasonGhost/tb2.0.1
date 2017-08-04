@@ -60,7 +60,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
 
     private List<Integer> mSelectDays;
     private int mCurrentDays;
-    private float mInputMoney;
+    private double mInputMoney;
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
     public static DynamicCommentTopFragment newInstance(long feed_id, long comment_id) {
@@ -113,7 +113,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
     }
 
     @Override
-    public float getInputMoney() {
+    public double getInputMoney() {
         return mInputMoney;
     }
 
@@ -155,12 +155,12 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (!TextUtils.isEmpty(charSequence)) {
-                        mInputMoney = Float.parseFloat(charSequence.toString());
+                        mInputMoney = Double.parseDouble(charSequence.toString());
                     } else {
-                        mInputMoney = 0f;
+                        mInputMoney = 0d;
                     }
                     setConfirmEnable();
-                }, throwable -> mInputMoney = 0f);
+                }, throwable -> mInputMoney = 0d);
 
         RxTextView.textChanges(mEtTopTotal)
                 .compose(this.bindToLifecycle())
@@ -171,7 +171,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mPresenter.topDynamicComment(getArguments().getLong(TOP_DYNAMIC_ID),
-                        getArguments().getLong(TOP_DYNAMIC_COMMENT_ID), (int) mInputMoney, mCurrentDays));
+                        getArguments().getLong(TOP_DYNAMIC_COMMENT_ID),mInputMoney, mCurrentDays));
     }
 
     private void initSelectDays(List<Integer> mSelectDays) {

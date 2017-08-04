@@ -308,6 +308,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         } else {
             mBtCertification.setRightText("");
         }
+        if (mCertificationWindow != null){
+            mCertificationWindow.dismiss();
+        }
     }
 
     private void initCertificationTypePop(){

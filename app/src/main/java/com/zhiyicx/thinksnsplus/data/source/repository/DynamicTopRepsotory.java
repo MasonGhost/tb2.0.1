@@ -27,8 +27,8 @@ public class DynamicTopRepsotory implements DynamicTopContract.Repository {
     }
 
     @Override
-    public Observable<BaseJsonV2<Integer>> stickTop(long feed_id, int amount, int day) {
-        return mDynamicClient.stickTopDynamic(feed_id, amount, day)
+    public Observable<BaseJsonV2<Integer>> stickTop(long feed_id, double amount, int day) {
+        return mDynamicClient.stickTopDynamic(feed_id, (int) amount, day)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
