@@ -11,7 +11,9 @@
             android:layout_height="@dimen/certification_result_hint"
             android:background="@color/certification_result_hint_bg"
             android:textColor="@color/white"
-            android:text="@string/certification_ing_hint"/>
+            android:text="@string/certification_ing_hint"
+            android:gravity="center"
+            android:textSize="@dimen/size_icon_assist"/>
 
     <FrameLayout
             android:layout_width="match_parent"
@@ -79,23 +81,30 @@
 
             <LinearLayout
                     style="@style/CertificationDetailContainer"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="top">
                 <TextView
                         style="@style/CertificationDetailText"
+                        android:layout_height="@dimen/certification_input_item_height"
                         android:layout_width="@dimen/certification_detail_width"
                         android:textColor="@color/normal_for_assist_text"
+                        android:gravity="bottom"
                         android:text="@string/certification_basic_info_data"/>
+
                 <ImageView
                         android:id="@+id/iv_pic_one"
                         android:layout_width="@dimen/certification_detail_img_width"
                         android:layout_height="@dimen/certification_detail_img_height"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="@dimen/certification_input_item_height"/>
+
                 <ImageView
                         android:id="@+id/iv_pic_two"
                         android:layout_width="@dimen/certification_detail_img_width"
                         android:layout_height="@dimen/certification_detail_img_height"
                         android:layout_marginLeft="@dimen/spacing_small"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="@dimen/certification_input_item_height"/>
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

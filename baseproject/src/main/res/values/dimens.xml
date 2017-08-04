@@ -56,7 +56,7 @@
     <dimen name="certification_detail_width">100dp</dimen>
     <dimen name="certification_detail_img_width">200dp</dimen>
     <dimen name="certification_detail_img_height">100dp</dimen>
-    <dimen name="certification_result_hint">60dp</dimen>
+    <dimen name="certification_result_hint">30dp</dimen>
 
     <!--#########################################      圆角尺寸       ################################-->
     <!--提示信息背景角度-->
