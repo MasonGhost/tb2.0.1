@@ -161,8 +161,11 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
-    public void sendSuccess() {
-        mRootView.updateCertification(null);
+    public void sendSuccess(Bundle bundle) {
+        if (bundle != null) {
+            UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS);
+            mRootView.updateCertification(info);
+        }
     }
 
 }

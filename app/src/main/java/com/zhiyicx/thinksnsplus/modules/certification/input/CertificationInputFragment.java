@@ -229,7 +229,7 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
-    public void close(){
+    public void close(Bundle bundle){
         // 发布成功
         sendSuccess();
     }
