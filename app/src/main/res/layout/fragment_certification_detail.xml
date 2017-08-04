@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/certification_result_hint"
+            android:background="@color/certification_result_hint_bg"
+            android:textColor="@color/white"
+            android:text="@string/certification_ing_hint"
+            android:gravity="center"
+            android:textSize="@dimen/size_icon_assist"/>
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <LinearLayout
+                    style="@style/CertificationDetailContainer">
+                <TextView
+                        style="@style/CertificationDetailText"
+                        android:layout_width="@dimen/certification_detail_width"
+                        android:textColor="@color/normal_for_assist_text"
+                        android:text="@string/certification_basic_info_name"/>
+                <TextView
+                        android:id="@+id/tv_name"
+                        style="@style/CertificationDetailText"
+                        android:layout_gravity="bottom"
+                        tools:text="xxxxx"/>
+
+            </LinearLayout>
+            <LinearLayout
+                style="@style/CertificationDetailContainer">
+            <TextView
+                    style="@style/CertificationDetailText"
+                    android:layout_width="@dimen/certification_detail_width"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:text="@string/certification_basic_info_id_card"/>
+            <TextView
+                    android:id="@+id/tv_id_card"
+                    style="@style/CertificationDetailText"
+                    android:layout_gravity="bottom"
+                    tools:text="xxxxx"/>
+
+        </LinearLayout>
+            <LinearLayout
+                    style="@style/CertificationDetailContainer">
+                <TextView
+                        style="@style/CertificationDetailText"
+                        android:layout_width="@dimen/certification_detail_width"
+                        android:textColor="@color/normal_for_assist_text"
+                        android:text="@string/certification_basic_info_phone"/>
+                <TextView
+                        android:id="@+id/tv_id_phone"
+                        style="@style/CertificationDetailText"
+                        android:layout_gravity="bottom"
+                        tools:text="xxxxx"/>
+
+            </LinearLayout>
+            <LinearLayout
+                    style="@style/CertificationDetailContainer">
+                <TextView
+                        style="@style/CertificationDetailText"
+                        android:layout_width="@dimen/certification_detail_width"
+                        android:textColor="@color/normal_for_assist_text"
+                        android:text="@string/certification_basic_info_description"/>
+                <TextView
+                        android:id="@+id/tv_description"
+                        style="@style/CertificationDetailText"
+                        android:layout_gravity="bottom"
+                        tools:text="xxxxx"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    style="@style/CertificationDetailContainer"
+                    android:layout_height="wrap_content"
+                    android:gravity="top">
+                <TextView
+                        style="@style/CertificationDetailText"
+                        android:layout_height="@dimen/certification_input_item_height"
+                        android:layout_width="@dimen/certification_detail_width"
+                        android:textColor="@color/normal_for_assist_text"
+                        android:gravity="bottom"
+                        android:text="@string/certification_basic_info_data"/>
+
+                <ImageView
+                        android:id="@+id/iv_pic_one"
+                        android:layout_width="@dimen/certification_detail_img_width"
+                        android:layout_height="@dimen/certification_detail_img_height"
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="@dimen/certification_input_item_height"/>
+
+                <ImageView
+                        android:id="@+id/iv_pic_two"
+                        android:layout_width="@dimen/certification_detail_img_width"
+                        android:layout_height="@dimen/certification_detail_img_height"
+                        android:layout_marginLeft="@dimen/spacing_small"
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="@dimen/certification_input_item_height"/>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>
