@@ -128,5 +128,12 @@
         <attr name="compoundDrawableWidth" format="dimension"/>
         <attr name="compoundDrawableHeight" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="userAvatarView">
+        <!--头像大小-->
+        <attr name="ts_avatare_size" format="dimension"/>
+        <attr name="ts_ratio" format="float"/>
+
+    </declare-styleable>
+
 
 </resources>

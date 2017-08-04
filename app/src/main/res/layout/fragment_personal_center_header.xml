@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:id="@+id/personal_header"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -24,12 +25,13 @@
             android:scaleType="centerCrop"
             android:src="@mipmap/default_pic_personal"/>
 
-        <ImageView
+        <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_head_icon"
             android:layout_width="@dimen/headpic_for_user_home"
             android:layout_height="@dimen/headpic_for_user_home"
             android:layout_gravity="center_horizontal|bottom"
             android:scaleType="centerCrop"
+            app:ts_avatare_size="@dimen/headpic_for_user_home"
             android:src="@mipmap/pic_default_portrait2"/>
 
     </FrameLayout>

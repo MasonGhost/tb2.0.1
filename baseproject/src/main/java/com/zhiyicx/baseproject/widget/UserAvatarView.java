@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.widget;
+package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.zhiyicx.baseproject.R;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
-import com.zhiyicx.thinksnsplus.R;
 
 /**
  * @Describe
@@ -54,7 +54,7 @@ public class UserAvatarView extends FrameLayout {
         }
         mVerifySize = (int) (mAvatarSize / mVerifyRatio);
 
-        mIvAvatar = (FilterImageView) findViewById(R.id.iv_headpic);
+        mIvAvatar = (FilterImageView) findViewById(R.id.iv_avatar);
 
         mIvAvatar.getLayoutParams().height = mAvatarSize;
         mIvAvatar.getLayoutParams().width = mAvatarSize;

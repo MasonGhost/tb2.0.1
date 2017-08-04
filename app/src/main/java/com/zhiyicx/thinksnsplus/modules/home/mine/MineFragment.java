@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,7 +32,7 @@ import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationAc
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
-import com.zhiyicx.thinksnsplus.widget.UserAvatarView;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 
 import javax.inject.Inject;
 
@@ -247,7 +246,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         this.mUserInfoBean = userInfoBean;
         // 设置用户头像
-        ImageUtils.loadCircleUserHeadPicAvata(mUserInfoBean,mIvHeadIcon);
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean,mIvHeadIcon);
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
