@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationAc
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
+import com.zhiyicx.thinksnsplus.widget.UserAvatarView;
 
 import javax.inject.Inject;
 
@@ -54,7 +55,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         CertificationTypePopupWindow.OnTypeSelectListener {
 
     @BindView(R.id.iv_head_icon)
-    ImageView mIvHeadIcon;
+    UserAvatarView mIvHeadIcon;
     @BindView(R.id.tv_user_name)
     TextView mTvUserName;
     @BindView(R.id.tv_user_signature)
@@ -246,7 +247,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         this.mUserInfoBean = userInfoBean;
         // 设置用户头像
-        ImageUtils.loadCircleUserHeadPic(mUserInfoBean,mIvHeadIcon);
+        ImageUtils.loadCircleUserHeadPicAvata(mUserInfoBean,mIvHeadIcon);
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
