@@ -358,6 +358,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         if (listBaseJson.getComments() != null && listBaseJson.getComments().size() > 1) {
                             Collections.sort(listBaseJson.getComments(), new TimeStringSortClass());
                         }
+                        for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
+                            dynamicCommentBean.setPinned(1);
+                        }
                         listBaseJson.getPinneds().addAll(listBaseJson.getComments());
                         for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
                             user_ids.add(dynamicCommentBean.getUser_id());
