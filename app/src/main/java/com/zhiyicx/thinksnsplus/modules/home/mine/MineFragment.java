@@ -240,7 +240,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
             case R.id.bt_certification:
                 // 弹窗选择个人或者机构
-                if (mUserCertificationInfo != null){
+                if (mUserCertificationInfo != null && mUserCertificationInfo.getId() != 0){
                     Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                     Bundle bundleData = new Bundle();
                     if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)){
@@ -298,11 +298,15 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void updateCertification(UserCertificationInfo data) {
-        mUserCertificationInfo = data;
-        if (data != null && data.getStatus() == 1){
-            mBtCertification.setRightText(getString(R.string.certification_state_success));
+        if (data != null && data.getId() != 0){
+            mUserCertificationInfo = data;
+            if (data.getStatus() == 1){
+                mBtCertification.setRightText(getString(R.string.certification_state_success));
+            } else if (data.getStatus() == 0){
+                mBtCertification.setRightText(getString(R.string.certification_state_ing));
+            }
         } else {
-            mBtCertification.setRightText(getString(R.string.certification_state_ing));
+            mBtCertification.setRightText("");
         }
     }
 
