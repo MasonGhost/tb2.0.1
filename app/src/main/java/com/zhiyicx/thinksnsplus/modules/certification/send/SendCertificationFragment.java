@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
@@ -50,6 +51,8 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
     ImageView mIvPicTwo;
     @BindView(R.id.fl_upload_pic_two)
     FrameLayout mFlUploadPicTwo;
+    @BindView(R.id.tv_type_hint)
+    TextView mTvTypeHint;
 
     private PhotoSelectorImpl mPhotoSelector;
     private SendCertificationBean mSendBean;
@@ -75,6 +78,9 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
     @Override
     protected void initData() {
         mSendBean = getArguments().getParcelable(BUNDLE_SEND_CERTIFICATION);
+        if (mSendBean != null && mSendBean.getType().equals(SendCertificationBean.ORG)){
+            mTvTypeHint.setText(getString(R.string.send_certification_company));
+        }
         setRightClickable();
         selectedPhotos = new ArrayList<>();
         initListener();
@@ -191,7 +197,7 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
         }
         if (mSendBean.getType().equals(SendCertificationBean.ORG)
                 && mSendBean.getPicList() != null
-                && mSendBean.getPicList().size() == 2){
+                && mSendBean.getPicList().size() == 1){
             clickable = true;
         }
         mToolbarRight.setClickable(clickable);
