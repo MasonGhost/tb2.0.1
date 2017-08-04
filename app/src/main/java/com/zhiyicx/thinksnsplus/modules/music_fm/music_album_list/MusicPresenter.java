@@ -57,6 +57,9 @@ public class MusicPresenter extends AppBasePresenter<MusicContract.Repository, M
 
     @Override
     public void payNote(int position, int note) {
+        if (handleTouristControl()){
+            return;
+        }
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {
