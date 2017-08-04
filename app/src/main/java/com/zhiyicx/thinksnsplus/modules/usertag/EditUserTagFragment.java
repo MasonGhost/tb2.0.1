@@ -125,8 +125,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             mToolbarLeft.setVisibility(View.INVISIBLE);
             mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
             mToolbarRight.setVisibility(View.VISIBLE);
-        }else
-        {
+        } else {
             mToolbarRight.setVisibility(View.INVISIBLE);
         }
         mMaxChooseNums = getResources().getInteger(R.integer.user_tag_max_nums);
@@ -276,7 +275,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         if (mCurrentChooseNums > 0) {
             mToolbarRight.setTextColor(SkinUtils.getColor(R.color.themeColor));
             mToolbarRight.setText(getString(R.string.next));
-        }else {
+        } else {
             mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
             mToolbarRight.setText(R.string.jump_over);
         }
@@ -336,24 +335,21 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     public void deleteTagSuccess(int position) {
         mChoosedTags.get(position).setMine_has(false);
         mPresenter.handleCategoryTagsClick(mChoosedTags.get(position));
-        Observable.from(mCategoryTags)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(tagCategoryBean -> tagCategoryBean.getId() == mChoosedTags.get(position).getTag_category_id())
-                .map(tagCategoryBean -> {
-                            for (UserTagBean userTagBean : tagCategoryBean.getTags()) {
-                                userTagBean.setMine_has(false);
-                                return true;
-                            }
-                            return false;
-                        }
-                ).subscribe(aBoolean -> {
-            mChoosedTagAdapter.removeItem(position);
-            mTagClassAdapter.notifyAllSectionsDataSetChanged();
-            updateChooseAboutView();
 
-        }, throwable -> throwable.printStackTrace());
-
+        for (TagCategoryBean categoryTag : mCategoryTags) {
+            if (categoryTag.getId() == mChoosedTags.get(position).getTag_category_id()) {
+                for (UserTagBean userTagBean : categoryTag.getTags()) {
+                    if (userTagBean.getId() == mChoosedTags.get(position).getId()) {
+                        userTagBean.setMine_has(false);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        mChoosedTagAdapter.removeItem(position);
+        mTagClassAdapter.notifyAllSectionsDataSetChanged();
+        updateChooseAboutView();
 
     }
 
