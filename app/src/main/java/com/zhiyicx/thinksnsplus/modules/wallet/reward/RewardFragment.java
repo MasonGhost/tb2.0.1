@@ -114,7 +114,6 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     public void rewardSuccess() {
         getActivity().setResult(RESULT_OK);
         getActivity().finish();
-
     }
 
     private void initRechargeLables() {
@@ -150,6 +149,11 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         }
     }
 
+    @Override
+    public void showSnackErrorMessage(String message) {
+        super.showSnackErrorMessage(message);
+        mBtTop.setEnabled(true);
+    }
 
     private void initListener() {
 
@@ -157,7 +161,10 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId));// 传入的是真实货币分单位
+                .subscribe(aVoid -> {
+                    mBtTop.setEnabled(false);
+                    mPresenter.reward(PayConfig.realCurrencyYuan2Fen(mRewardMoney), mRewardType, mSourceId);
+                });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String mRechargeMoneyStr = charSequence.toString();

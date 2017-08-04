@@ -67,7 +67,6 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
                         .subscribe(aLong -> {
                             mRootView.rewardSuccess();
                         });
-
             }
 
             @Override
