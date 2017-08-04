@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
+import com.zhiyicx.baseproject.widget.edittext.SEditText;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -59,8 +61,8 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     InfoInputEditText mTvCompanyPrincipalPhone;
     @BindView(R.id.ll_company)
     LinearLayout mLlCompany;
-    @BindView(R.id.tv_description)
-    InfoInputEditText mTvDescription;
+    @BindView(R.id.edit_input_description)
+    SEditText mTvDescription;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
     @BindView(R.id.bt_to_send)
@@ -144,7 +146,7 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
                     setConfirmEnable();
                 });
         // 描述 公用
-        RxTextView.textChanges(mTvDescription.getEditInput())
+        RxTextView.textChanges(mTvDescription)
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setDesc(String.valueOf(charSequence));
