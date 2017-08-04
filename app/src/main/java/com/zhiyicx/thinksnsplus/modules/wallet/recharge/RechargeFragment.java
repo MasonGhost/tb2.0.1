@@ -205,6 +205,11 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         }
     }
 
+    @Override
+    public void showSnackErrorMessage(String message) {
+        super.showSnackErrorMessage(message);
+        mBtTop.setEnabled(true);
+    }
 
     private void initListener() {
 
@@ -220,7 +225,10 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney)));// 传入的是真实货币分单位
+                .subscribe(aVoid -> {
+                    mBtTop.setEnabled(false);
+                    mPresenter.getPayStr(mPayType, PayConfig.realCurrencyYuan2Fen(mRechargeMoney));
+                });// 传入的是真实货币分单位
 
         RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
             String mRechargeMoneyStr = charSequence.toString();

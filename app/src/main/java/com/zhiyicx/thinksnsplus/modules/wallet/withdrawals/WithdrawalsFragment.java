@@ -140,10 +140,17 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         mEtWithdrawInput.setText("");
     }
 
+    @Override
+    public void showSnackErrorMessage(String message) {
+        super.showSnackErrorMessage(message);
+        mBtSure.setEnabled(true);
+    }
+
     private void initListener() {
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    mBtSure.setEnabled(false);
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
                     mPresenter.withdraw(mWithdrawalsMoney
                             , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());

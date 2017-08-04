@@ -10,8 +10,6 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectD
 
 public class SelectDynamicTypeActivity extends TSActivity {
 
-
-
     @Nullable
     @Override
     protected void onCreate(Bundle savedInstanceState) {

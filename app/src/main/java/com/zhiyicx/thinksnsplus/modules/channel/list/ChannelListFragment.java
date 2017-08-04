@@ -51,7 +51,7 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
                 .channelListPresenterModule(new ChannelListPresenterModule(this))
                 .build().inject(this);
         super.initView(rootView);
-        initAdvert();
+        //initAdvert();
     }
 
     private void initAdvert() {
