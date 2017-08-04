@@ -32,7 +32,6 @@ public class InfoInputEditText extends LinearLayout{
     private TextView mTvLeftText;
     private EditText mEditInput;
     private ImageView mIvBottomDiver;
-    private RelativeLayout mLlContent;
 
     private boolean isRequired = true; // 是否必填 默认必填
     private boolean isShowDiver = true; // 是否显示分割线 默认必填
@@ -48,7 +47,6 @@ public class InfoInputEditText extends LinearLayout{
         mTvLeftText = (TextView) findViewById(R.id.tv_left_text);
         mEditInput = (EditText) findViewById(R.id.edit_input);
         mIvBottomDiver = (ImageView) findViewById(R.id.iv_bottom_diver);
-        mLlContent = (RelativeLayout) findViewById(R.id.ll_content);
         TypedArray array = context.obtainStyledAttributes(attrs,
                 R.styleable.inputContainHint);
         String leftText = array.getString(R.styleable.inputContainHint_leftHintText);
@@ -76,7 +74,7 @@ public class InfoInputEditText extends LinearLayout{
             mEditInput.setFilters(filters);
         }
         if (minHeight != 0){
-            mLlContent.setMinimumHeight(minHeight);
+            mEditInput.setMinHeight(minHeight);
         }
         if (!TextUtils.isEmpty(inputType)){
             switch (inputType){
