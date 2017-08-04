@@ -3,9 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.certification.send;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -77,9 +75,7 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
     @Override
     protected void initData() {
         mSendBean = getArguments().getParcelable(BUNDLE_SEND_CERTIFICATION);
-        if (mSendBean != null) {
-
-        }
+        setRightClickable();
         selectedPhotos = new ArrayList<>();
         initListener();
     }
@@ -142,7 +138,7 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
             }
         }
         mSendBean.setPicList(selectedPhotos);
-        setRightCickable();
+        setRightClickable();
     }
 
     @Override
@@ -186,7 +182,7 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
         Glide.with(getActivity()).load("");
     }
 
-    private void setRightCickable(){
+    private void setRightClickable(){
         boolean clickable = false;
         if (mSendBean.getType().equals(SendCertificationBean.USER)
                 && mSendBean.getPicList() != null

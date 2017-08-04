@@ -1,12 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.certification.input;
 
-import android.text.TextUtils;
-
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
-import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 
 import org.simple.eventbus.Subscriber;
 
@@ -28,7 +24,7 @@ public class CertificationInputPresenter extends BasePresenter<CertificationInpu
         super(repository, rootView);
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATON_SUCCESS)
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
     public void sendSuccess(){
         // 发布成功
         mRootView.sendSuccess();
