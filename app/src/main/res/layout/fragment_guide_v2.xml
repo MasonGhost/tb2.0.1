@@ -1,38 +1,50 @@
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.zhiyicx.thinksnsplus.modules.guide.GuideFragment">
+    android:orientation="vertical"
+    android:layout_height="match_parent">
 
-    <com.youth.banner.Banner
-        android:id="@+id/guide_banner"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_weight="1"
+        android:layout_height="0dp">
 
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/guide_text"
-        android:layout_width="@dimen/launch_advert_width"
-        android:layout_height="@dimen/launch_advert_height"
-        android:layout_gravity="top|right"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_mid"
-        android:background="@drawable/shape_button_corner_advert_big"
-        android:clickable="false"
-        android:gravity="center"
-        android:minWidth="@dimen/info_channel_20dp"
-        android:textColor="@color/copy_right_color"
-        android:textSize="@dimen/size_advert_launche"/>
+        <com.youth.banner.Banner
+            android:id="@+id/guide_banner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-    <TextView
+        <TextView
+            android:id="@+id/guide_text"
+            android:layout_width="@dimen/launch_advert_width"
+            android:layout_height="@dimen/launch_advert_height"
+            android:layout_gravity="top|right"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:background="@drawable/shape_button_corner_advert_big"
+            android:clickable="false"
+            android:gravity="center"
+            android:minWidth="@dimen/info_channel_20dp"
+            android:textColor="@color/copy_right_color"
+            android:textSize="@dimen/size_advert_launche"
+            android:visibility="gone"/>
+
+        <TextView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:gravity="center"
+            android:text="@string/copyright"
+            android:textColor="@color/copy_right_color"
+            android:textSize="@dimen/copyright_text_size"
+            />
+    </FrameLayout>
+
+    <ImageView
+        android:src="@mipmap/pic_adver_logo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/spacing_large"
-        android:gravity="center"
-        android:text="@string/copyright"
-        android:textColor="@color/copy_right_color"
-        android:textSize="@dimen/copyright_text_size"
-        />
-</FrameLayout>
+        android:layout_height="@dimen/iamge_logo_height"/>
+</LinearLayout>
