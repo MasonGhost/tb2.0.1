@@ -48,7 +48,7 @@
             android:name=".modules.guide.GuideActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/TranslucentLauncherTheme">
+            android:theme="@style/BackGroundLauncherTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
