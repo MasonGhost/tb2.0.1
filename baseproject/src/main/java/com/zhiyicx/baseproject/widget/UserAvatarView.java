@@ -22,7 +22,7 @@ import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
  */
 
 public class UserAvatarView extends FrameLayout {
-    private static final float DEFAULT_RATIO = 3.4f;
+    private static final float DEFAULT_RATIO = 3.5f;
 
     private FilterImageView mIvAvatar;
     private ImageView mIvVerify;
