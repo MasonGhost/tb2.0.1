@@ -92,6 +92,7 @@ public class EventBusTagConfig {
 
     // 认证相关
     public static final String EVENT_SEND_CERTIFICATION_SUCCESS = "event_send_certification_success";
+    public static final String EVENT_UPDATE_CERTIFICATION_SUCCESS = "event_update_certification";
 
     /**
      * IM 相关

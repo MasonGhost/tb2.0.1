@@ -23,6 +23,7 @@ public class VerifiedBean extends CacheBean implements Parcelable ,Serializable{
 
     private String type;
     private String icon;
+    private int status;
 
     public String getType() {
         return type;
@@ -40,6 +41,25 @@ public class VerifiedBean extends CacheBean implements Parcelable ,Serializable{
         this.icon = icon;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public VerifiedBean() {
+    }
+
+    @Override
+    public String toString() {
+        return "VerifiedBean{" +
+                "type='" + type + '\'' +
+                ", icon='" + icon + '\'' +
+                ", status=" + status +
+                '}';
+    }
 
     @Override
     public int describeContents() {
@@ -50,17 +70,16 @@ public class VerifiedBean extends CacheBean implements Parcelable ,Serializable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.type);
         dest.writeString(this.icon);
-    }
-
-    public VerifiedBean() {
+        dest.writeInt(this.status);
     }
 
     protected VerifiedBean(Parcel in) {
         this.type = in.readString();
         this.icon = in.readString();
+        this.status = in.readInt();
     }
 
-    public static final Parcelable.Creator<VerifiedBean> CREATOR = new Parcelable.Creator<VerifiedBean>() {
+    public static final Creator<VerifiedBean> CREATOR = new Creator<VerifiedBean>() {
         @Override
         public VerifiedBean createFromParcel(Parcel source) {
             return new VerifiedBean(source);
@@ -71,12 +90,4 @@ public class VerifiedBean extends CacheBean implements Parcelable ,Serializable{
             return new VerifiedBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "VerifiedBean{" +
-                "type='" + type + '\'' +
-                ", icon='" + icon + '\'' +
-                '}';
-    }
 }

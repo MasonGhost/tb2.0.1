@@ -6,9 +6,14 @@ import android.os.Parcelable;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @author Catherine
@@ -16,7 +21,7 @@ import java.util.List;
  * @date 2017/8/2
  * @contact email:648129313@qq.com
  */
-
+@Entity
 public class UserCertificationInfo extends BaseListBean{
 
     /*{
@@ -44,14 +49,17 @@ public class UserCertificationInfo extends BaseListBean{
             }
     }*/
 
+    @Id
     private long id;
     private long user_id;
     private String certification_name;
+    @Convert(converter = DataConvert.class, columnType = String.class)
     private UserCertificationData data;
     private long examiner;
     private long status;
     private String created_at;
     private String updated_at;
+    @Convert(converter = CategoryConvert.class, columnType = String.class)
     private CertificationCategory category;
     private String icon;
 
@@ -393,6 +401,22 @@ public class UserCertificationInfo extends BaseListBean{
         this.updated_at = in.readString();
         this.category = in.readParcelable(CertificationCategory.class.getClassLoader());
         this.icon = in.readString();
+    }
+
+    @Generated(hash = 22762421)
+    public UserCertificationInfo(long id, long user_id, String certification_name, UserCertificationData data,
+            long examiner, long status, String created_at, String updated_at, CertificationCategory category,
+            String icon) {
+        this.id = id;
+        this.user_id = user_id;
+        this.certification_name = certification_name;
+        this.data = data;
+        this.examiner = examiner;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.category = category;
+        this.icon = icon;
     }
 
     public static final Creator<UserCertificationInfo> CREATOR = new Creator<UserCertificationInfo>() {
