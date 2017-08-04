@@ -124,7 +124,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore) {
         Observable<DynamicBeanV2> observable;
         if (type.equals(DYNAMIC_TYPE_MY_COLLECTION)) {// 收藏的动态地址和返回大不一样，真滴难受
-            observable = mDynamicClient.getCollectDynamicListV2(after, user_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+            observable = mDynamicClient.getCollectDynamicListV2(after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                     .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<DynamicBeanV2>>() {
                         @Override
                         public Observable<DynamicBeanV2> call(List<DynamicDetailBeanV2> detailBeanV2) {
@@ -134,7 +134,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         }
                     });
         } else {
-            observable = mDynamicClient.getDynamicListV2(type, after, user_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
+            observable = mDynamicClient.getDynamicListV2(type, after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE);
         }
         return dealWithDynamicListV2(observable, type, isLoadMore);
     }
