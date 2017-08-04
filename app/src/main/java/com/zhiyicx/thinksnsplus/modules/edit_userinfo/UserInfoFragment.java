@@ -3,15 +3,11 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,8 +39,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
-import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
@@ -53,9 +49,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -86,7 +80,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public static final String USER_LOCAL_IMG_PATH = "localImgPath";
 
     @BindView(R.id.iv_head_icon)
-    ImageView mIvHeadIcon;
+    UserAvatarView mIvHeadIcon;
     @BindView(R.id.rl_change_head_container)
     RelativeLayout mRlChangeHeadContainer;
     @BindView(R.id.et_user_name)
@@ -472,7 +466,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(path)
-                .imagerView(mIvHeadIcon)
+                .imagerView(mIvHeadIcon.getIvAvatar())
                 .placeholder(R.drawable.shape_default_image_circle)
                 .errorPic(R.drawable.shape_default_image_circle)
                 .transformation(new GlideCircleTransform(getContext()))

@@ -90,7 +90,7 @@ public class ReWardView extends FrameLayout {
             @Override
             protected void convert(ViewHolder holder, RewardsListBean rewardsListBean, int position) {
 
-                ImageUtils.loadCircleUserHeadPic(rewardsListBean.getUser(), holder.getView(R.id.iv_head));
+                ImageUtils. loadCircleUserHeadPic(rewardsListBean.getUser(), holder.getView(R.id.iv_head));
 
                 RxView.clicks(holder.getView(R.id.iv_head))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

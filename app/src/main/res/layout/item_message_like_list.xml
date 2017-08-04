@@ -10,11 +10,12 @@
     android:paddingTop="@dimen/spacing_mid"
     tools:context="com.zhiyicx.thinksnsplus.modules.home.HomeActivity">
 
-    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+    <com.zhiyicx.baseproject.widget.UserAvatarView
         android:id="@+id/iv_headpic"
         app:pressShape="circle"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_marginRight="@dimen/spacing_mid"
+        app:ts_avatare_size="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
         tools:src="@mipmap/ic_launcher"/>
 

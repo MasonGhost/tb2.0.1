@@ -1,5 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.Gson;
 import com.zhiyicx.common.utils.ConvertUtils;
 
@@ -29,7 +32,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REP
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class TSPNotificationBean {
+public class TSPNotificationBean implements Parcelable {
 
 
     /**
@@ -49,37 +52,6 @@ public class TSPNotificationBean {
     private long user_id;// 这条通知的操作者
     @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfo;
-
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 523085633)
-    private transient TSPNotificationBeanDao myDao;
-
-
-    @Generated(hash = 1589879726)
-    public TSPNotificationBean(Long _id, String id, String read_at, String created_at, DataBean data, long user_id) {
-        this._id = _id;
-        this.id = id;
-        this.read_at = read_at;
-        this.created_at = created_at;
-        this.data = data;
-        this.user_id = user_id;
-    }
-
-    @Generated(hash = 1606766504)
-    public TSPNotificationBean() {
-    }
-
-    @Generated(hash = 2066097151)
-    private transient Long userInfo__resolvedKey;
-
 
     public String getId() {
         return id;
@@ -172,78 +144,6 @@ public class TSPNotificationBean {
 
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
-    @Generated(hash = 669954399)
-    public UserInfoBean getUserInfo() {
-        long __key = this.user_id;
-        if (userInfo__resolvedKey == null || !userInfo__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean userInfoNew = targetDao.load(__key);
-            synchronized (this) {
-                userInfo = userInfoNew;
-                userInfo__resolvedKey = __key;
-            }
-        }
-        return userInfo;
-    }
-
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
-    @Generated(hash = 1286036388)
-    public void setUserInfo(@NotNull UserInfoBean userInfo) {
-        if (userInfo == null) {
-            throw new DaoException("To-one property 'user_id' has not-null constraint; cannot set to-one to null");
-        }
-        synchronized (this) {
-            this.userInfo = userInfo;
-            user_id = userInfo.getUser_id();
-            userInfo__resolvedKey = user_id;
-        }
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
     public static class DataBean implements Serializable {
         private static final long serialVersionUID = 6464434974795251975L;
         /**
@@ -324,22 +224,6 @@ public class TSPNotificationBean {
     }
 
     @Override
-    public String toString() {
-        return "TSPNotificationBean{" +
-                "_id=" + _id +
-                ", id='" + id + '\'' +
-                ", read_at='" + read_at + '\'' +
-                ", created_at='" + created_at + '\'' +
-                ", data=" + data +
-                ", user_id=" + user_id +
-                ", userInfo=" + userInfo +
-                ", daoSession=" + daoSession +
-                ", myDao=" + myDao +
-                ", userInfo__resolvedKey=" + userInfo__resolvedKey +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -355,10 +239,150 @@ public class TSPNotificationBean {
         return id.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return "TSPNotificationBean{" +
+                "_id=" + _id +
+                ", id='" + id + '\'' +
+                ", read_at='" + read_at + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", data=" + data +
+                ", user_id=" + user_id +
+                ", userInfo=" + userInfo +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this._id);
+        dest.writeString(this.id);
+        dest.writeString(this.read_at);
+        dest.writeString(this.created_at);
+        dest.writeSerializable(this.data);
+        dest.writeLong(this.user_id);
+        dest.writeParcelable(this.userInfo, flags);
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 669954399)
+    public UserInfoBean getUserInfo() {
+        long __key = this.user_id;
+        if (userInfo__resolvedKey == null || !userInfo__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean userInfoNew = targetDao.load(__key);
+            synchronized (this) {
+                userInfo = userInfoNew;
+                userInfo__resolvedKey = __key;
+            }
+        }
+        return userInfo;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1286036388)
+    public void setUserInfo(@NotNull UserInfoBean userInfo) {
+        if (userInfo == null) {
+            throw new DaoException("To-one property 'user_id' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.userInfo = userInfo;
+            user_id = userInfo.getUser_id();
+            userInfo__resolvedKey = user_id;
+        }
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2063187465)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTSPNotificationBeanDao() : null;
     }
+
+    public TSPNotificationBean() {
+    }
+
+    protected TSPNotificationBean(Parcel in) {
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
+        this.id = in.readString();
+        this.read_at = in.readString();
+        this.created_at = in.readString();
+        this.data = (DataBean) in.readSerializable();
+        this.user_id = in.readLong();
+        this.userInfo = in.readParcelable(UserInfoBean.class.getClassLoader());
+    }
+
+    @Generated(hash = 1589879726)
+    public TSPNotificationBean(Long _id, String id, String read_at, String created_at, DataBean data, long user_id) {
+        this._id = _id;
+        this.id = id;
+        this.read_at = read_at;
+        this.created_at = created_at;
+        this.data = data;
+        this.user_id = user_id;
+    }
+
+    public static final Parcelable.Creator<TSPNotificationBean> CREATOR = new Parcelable.Creator<TSPNotificationBean>() {
+        @Override
+        public TSPNotificationBean createFromParcel(Parcel source) {
+            return new TSPNotificationBean(source);
+        }
+
+        @Override
+        public TSPNotificationBean[] newArray(int size) {
+            return new TSPNotificationBean[size];
+        }
+    };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 523085633)
+    private transient TSPNotificationBeanDao myDao;
+    @Generated(hash = 2066097151)
+    private transient Long userInfo__resolvedKey;
 }

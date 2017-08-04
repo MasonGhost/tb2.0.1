@@ -11,9 +11,13 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  */
 
 public class CertificationDetailActivity extends TSActivity<CertificationDetailPresenter, CertificationDetailFragment>{
+
+    public static final String BUNDLE_DETAIL_DATA = "bundle_detail_data";
+    public static final String BUNDLE_DETAIL_TYPE = "bundle_detail_type";
+
     @Override
     protected CertificationDetailFragment getFragment() {
-        return new CertificationDetailFragment();
+        return new CertificationDetailFragment().instance(getIntent().getBundleExtra(BUNDLE_DETAIL_TYPE));
     }
 
     @Override
