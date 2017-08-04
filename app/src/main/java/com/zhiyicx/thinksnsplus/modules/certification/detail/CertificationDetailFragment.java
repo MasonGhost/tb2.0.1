@@ -81,9 +81,8 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
     protected void initData() {
         if (mInfo != null){
             setCertificationInfo(mInfo);
-        } else {
-            mPresenter.getCertificationInfo();
         }
+        mPresenter.getCertificationInfo();
     }
 
     @Override

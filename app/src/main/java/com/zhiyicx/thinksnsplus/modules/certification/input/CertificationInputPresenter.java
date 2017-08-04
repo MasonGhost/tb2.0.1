@@ -23,15 +23,4 @@ public class CertificationInputPresenter extends BasePresenter<CertificationInpu
                                        CertificationInputContract.View rootView) {
         super(repository, rootView);
     }
-
-    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
-    public void sendSuccess(){
-        // 发布成功
-        mRootView.sendSuccess();
-    }
-
-    @Override
-    protected boolean useEventBus() {
-        return true;
-    }
 }
