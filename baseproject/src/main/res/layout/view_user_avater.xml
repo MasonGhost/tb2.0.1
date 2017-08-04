@@ -12,7 +12,7 @@
         android:layout_width="@dimen/spacing_big_large"
         android:layout_height="@dimen/spacing_big_large"
         app:pressShape="circle"
-        app:src="@mipmap/pic_default_portrait1"/>
+        android:src="@mipmap/pic_default_portrait1"/>
 
     <ImageView
         android:id="@+id/iv_verify"
