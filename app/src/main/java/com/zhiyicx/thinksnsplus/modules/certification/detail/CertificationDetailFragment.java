@@ -134,14 +134,14 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
         if (files != null){
             if (files.size() > 0){
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(0), 100, 50 , ImageZipConfig.IMAGE_80_ZIP))
+                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(0), 200, 100 , ImageZipConfig.IMAGE_100_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .into(mIvPicOne);
             }
             if (files.size() > 1){
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(1), 100, 50 , ImageZipConfig.IMAGE_80_ZIP))
+                        .load(ImageUtils.imagePathConvertV2(info.getData().getFiles().get(1), 200, 100 , ImageZipConfig.IMAGE_100_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .error(R.drawable.shape_default_image)
                         .into(mIvPicTwo);
