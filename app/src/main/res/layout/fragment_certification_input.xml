@@ -41,8 +41,7 @@
                         app:isRequired="true"
                         app:leftHintText="@string/certification_basic_info_id_card"
                         app:rightHint="@string/id_card_hint"
-                        app:rightMaxLength="18"
-                        app:rightInputType="number"/>
+                        app:rightMaxLength="18"/>
 
                 <!--手机号码-->
                 <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
@@ -101,8 +100,7 @@
                         app:isRequired="true"
                         app:leftHintText="@string/certification_basic_info_principal_id_card"
                         app:rightHint="@string/company_principal_id_card_hint"
-                        app:rightMaxLength="18"
-                        app:rightInputType="number"/>
+                        app:rightMaxLength="18"/>
                 <!--机构负责人电话-->
                 <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
                         android:id="@+id/tv_company_principal_phone"
