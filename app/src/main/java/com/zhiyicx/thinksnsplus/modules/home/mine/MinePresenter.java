@@ -8,11 +8,13 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -44,6 +46,9 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+
+    @Inject
+    CertificationDetailRepository mCertificationDetailRepository;
 
     @Inject
     public MinePresenter(MineContract.Repository repository, MineContract.View rootView) {
@@ -131,9 +136,22 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
         return mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
     }
 
-    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATON_SUCCESS)
+    @Override
+    public void getCertificationInfo() {
+        mCertificationDetailRepository.getCertificationInfo()
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
+
+                    @Override
+                    protected void onSuccess(UserCertificationInfo data) {
+                        mRootView.updateCertification(data);
+                    }
+                });
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
     public void sendSuccess(){
         // 发布成功
-        mRootView.updateCertification();
+        mRootView.updateCertification(null);
     }
 }

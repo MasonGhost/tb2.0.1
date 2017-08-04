@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 /**
@@ -31,7 +32,7 @@ public interface MineContract {
          */
         void setNewSystemInfo(boolean isShow);
 
-        void updateCertification();
+        void updateCertification(UserCertificationInfo info);
 
     }
 
@@ -53,6 +54,8 @@ public interface MineContract {
         void updateUserInfo();
 
         int getBalanceRatio();
+
+        void getCertificationInfo();
     }
 
     interface Repository {

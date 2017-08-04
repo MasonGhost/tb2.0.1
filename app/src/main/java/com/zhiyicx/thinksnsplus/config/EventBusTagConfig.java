@@ -91,7 +91,7 @@ public class EventBusTagConfig {
     public static final String EVENT_WALLET_RECHARGE = "event_wallet_recharge";
 
     // 认证相关
-    public static final String EVENT_SEND_CERTIFICATON_SUCCESS = "event_send_certification_success";
+    public static final String EVENT_SEND_CERTIFICATION_SUCCESS = "event_send_certification_success";
 
     /**
      * IM 相关

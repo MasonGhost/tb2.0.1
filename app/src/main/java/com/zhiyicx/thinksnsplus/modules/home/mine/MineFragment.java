@@ -16,7 +16,10 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
@@ -41,6 +44,8 @@ import butterknife.OnClick;
 
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_normal;
 import static com.zhiyicx.thinksnsplus.R.mipmap.ico_me_message_remind;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_DATA;
+import static com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity.BUNDLE_DETAIL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 
@@ -93,6 +98,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public MinePresenter mMinePresenter;
 
     private UserInfoBean mUserInfoBean;
+    private UserCertificationInfo mUserCertificationInfo;
 
     public MineFragment() {
     }
@@ -115,6 +121,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .minePresenterModule(new MinePresenterModule(this))
                 .build().inject(this);
+        mPresenter.getCertificationInfo();
     }
 
     @Override
@@ -233,7 +240,22 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
             case R.id.bt_certification:
                 // 弹窗选择个人或者机构
-                initCertificationTypePop();
+                if (mUserCertificationInfo != null && mUserCertificationInfo.getId() != 0){
+                    Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+                    Bundle bundleData = new Bundle();
+                    if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)){
+                        // 跳转个人认证
+                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+                    } else {
+                        // 跳转企业认证
+                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+                    }
+                    bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+                    intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+                    startActivity(intentToDetail);
+                } else {
+                    initCertificationTypePop();
+                }
                 break;
             default:
         }
@@ -262,7 +284,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
             myMoney = userInfoBean.getWallet().getBalance();
         }
         mBtWallet.setRightText(getString(R.string.money_format_with_unit, PayConfig.realCurrencyFen2Yuan(myMoney)));
-
     }
 
     @Override
@@ -276,8 +297,17 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @Override
-    public void updateCertification() {
-        mBtCertification.setRightText(getString(R.string.certification_state_ing));
+    public void updateCertification(UserCertificationInfo data) {
+        if (data != null && data.getId() != 0){
+            mUserCertificationInfo = data;
+            if (data.getStatus() == 1){
+                mBtCertification.setRightText(getString(R.string.certification_state_success));
+            } else if (data.getStatus() == 0){
+                mBtCertification.setRightText(getString(R.string.certification_state_ing));
+            }
+        } else {
+            mBtCertification.setRightText("");
+        }
     }
 
     private void initCertificationTypePop(){

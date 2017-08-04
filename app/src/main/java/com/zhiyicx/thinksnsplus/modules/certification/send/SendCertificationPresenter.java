@@ -42,7 +42,7 @@ public class SendCertificationPresenter extends BasePresenter<SendCertificationC
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
                         mRootView.updateSendState(false, false, message);
-                        EventBus.getDefault().post("", EventBusTagConfig.EVENT_SEND_CERTIFICATON_SUCCESS);
+                        EventBus.getDefault().post("", EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS);
                     }
 
 
