@@ -142,6 +142,7 @@ public class ImageUtils {
 //                        : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
 //                .into(imageView);
 //    }
+
     /**
      * 加载用户头像
      *
@@ -171,6 +172,32 @@ public class ImageUtils {
      * @param withBorder   是否需要边框
      */
     public static void loadUserHead(UserInfoBean userInfoBean, UserAvatarView imageView, boolean withBorder) {
+        loadUserAvatar(userInfoBean, imageView.getIvAvatar(), withBorder);
+        if (userInfoBean.getVerified() != null) {
+            Glide.with(imageView.getContext())
+                    .load(userInfoBean.getVerified().getIcon())
+                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+                    .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap.pic_identi_individual)
+                    .error(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap.pic_identi_individual)
+                    .transform(withBorder ?
+                            new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
+                            : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
+                    .into(imageView.getIvVerify());
+        }
+    }
+
+    /**
+     * 加载用户圆形图像
+     *
+     * @param userInfoBean 用户信息
+     * @param imageView    显示头像的控件
+     * @param withBorder   是否需要边框
+     */
+    public static void loadUserHead(UserInfoBean userInfoBean, ImageView imageView, boolean withBorder) {
+        loadUserAvatar(userInfoBean, imageView, withBorder);
+    }
+
+    private static void loadUserAvatar(UserInfoBean userInfoBean, ImageView imageView, boolean withBorder) {
         String avatar = "";
         if (userInfoBean != null && userInfoBean.getUser_id() != null) {
             avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar();
@@ -198,19 +225,7 @@ public class ImageUtils {
                 .transform(withBorder ?
                         new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
                         : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
-                .into(imageView.getIvAvatar());
-
-        if (userInfoBean.getVerified() != null) {
-            Glide.with(imageView.getContext())
-                    .load(userInfoBean.getVerified().getIcon())
-                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
-                    .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap.pic_identi_individual)
-                    .error(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap.pic_identi_individual)
-                    .transform(withBorder ?
-                            new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
-                            : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
-                    .into(imageView.getIvVerify());
-        }
+                .into(imageView);
     }
 
 
