@@ -20,8 +20,11 @@ import com.zhiyicx.baseproject.widget.edittext.SEditText;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.modules.certification.send.SendCertificationActivity;
+
+import org.simple.eventbus.Subscriber;
 
 import java.util.concurrent.TimeUnit;
 
@@ -194,7 +197,7 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
      * 检查数据
      */
     private boolean checkData() {
-        if (RegexUtils.isIDCard18(mSendBean.getNumber())) {
+        if (!RegexUtils.isIDCard18(mSendBean.getNumber())) {
             showErrorTips(getString(R.string.alert_error_id_card));
             return false;
         }
@@ -216,8 +219,19 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     }
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     public void sendSuccess() {
         getActivity().finish();
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
+    public void close(){
+        // 发布成功
+        sendSuccess();
     }
 
     /**
