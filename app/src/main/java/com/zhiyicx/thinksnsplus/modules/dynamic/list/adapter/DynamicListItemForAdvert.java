@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -111,7 +112,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         } else {
             url = imageBean.getImgUrl();
         }
-
+        view.setLayoutParams(new LinearLayout.LayoutParams(with, with));
         Glide.with(mContext)
                 .load(url)
                 .asBitmap()
