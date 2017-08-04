@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.certification.input;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.DigitsKeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,10 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
         } else {
             mLlCompany.setVisibility(View.VISIBLE);
         }
+        // 限制身份证输入英文和数字
+        String digists = "0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        mTvIdCard.getEditInput().setKeyListener(DigitsKeyListener.getInstance(digists));
+        mTvCompanyPrincipalIdCard.getEditInput().setKeyListener(DigitsKeyListener.getInstance(digists));
     }
 
     @Override
