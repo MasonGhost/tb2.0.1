@@ -487,4 +487,71 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public void setVerified(VerifiedBean verified) {
         this.verified = verified;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.name);
+        dest.writeString(this.phone);
+        dest.writeString(this.email);
+        dest.writeString(this.intro);
+        dest.writeInt(this.sex);
+        dest.writeString(this.sexString);
+        dest.writeString(this.location);
+        dest.writeString(this.province);
+        dest.writeString(this.city);
+        dest.writeString(this.area);
+        dest.writeByte(this.following ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.follower ? (byte) 1 : (byte) 0);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeString(this.avatar);
+        dest.writeString(this.cover);
+        dest.writeParcelable(this.wallet, flags);
+        dest.writeParcelable(this.extra, flags);
+        dest.writeParcelable(this.verified, flags);
+    }
+
+    protected UserInfoBean(Parcel in) {
+        super(in);
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.name = in.readString();
+        this.phone = in.readString();
+        this.email = in.readString();
+        this.intro = in.readString();
+        this.sex = in.readInt();
+        this.sexString = in.readString();
+        this.location = in.readString();
+        this.province = in.readString();
+        this.city = in.readString();
+        this.area = in.readString();
+        this.following = in.readByte() != 0;
+        this.follower = in.readByte() != 0;
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.avatar = in.readString();
+        this.cover = in.readString();
+        this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
+        this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
+        this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
+    }
+
+    public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
+        @Override
+        public UserInfoBean createFromParcel(Parcel source) {
+            return new UserInfoBean(source);
+        }
+
+        @Override
+        public UserInfoBean[] newArray(int size) {
+            return new UserInfoBean[size];
+        }
+    };
 }

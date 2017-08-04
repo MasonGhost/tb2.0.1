@@ -2,6 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <FrameLayout
@@ -46,5 +47,5 @@
     <ImageView
         android:src="@mipmap/pic_adver_logo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/iamge_logo_height"/>
+        android:layout_height="wrap_content"/>
 </LinearLayout>
