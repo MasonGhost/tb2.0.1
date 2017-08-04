@@ -48,7 +48,6 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
         switch (rewardType) {
             case INFO:
                 hanldeRewardResult(mRepository.rewardInfo(sourceId, rewardMoney));
-
                 break;
             case DYNAMIC:
                 hanldeRewardResult(mRepository.rewardDynamic(sourceId, rewardMoney));

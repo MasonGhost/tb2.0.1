@@ -1,36 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.rule;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletContract;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter;
-import com.zhiyicx.thinksnsplus.modules.wallet.bill.BillActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.recharge.RechargeFragment;
-import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsActivity;
-import com.zhiyicx.thinksnsplus.modules.wallet.withdrawals.WithdrawalsFragment;
-
-import org.simple.eventbus.Subscriber;
-import org.simple.eventbus.ThreadMode;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_WALLET_RECHARGE;
 
 /**
  * @Describe

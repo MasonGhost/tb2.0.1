@@ -158,7 +158,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 RxTextView.textChanges(mBtWithdrawStyle.getCombinedButtonRightTextView()),
                 (charSequence, charSequence2, charSequence3) -> {
                     String mWithdrawalsMoneyStr = charSequence.toString();
-                    if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0 && !mWithdrawalsMoneyStr.contains(".")) {
+                    if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0) {
                         mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
                     } else {
                         mWithdrawalsMoney = 0;

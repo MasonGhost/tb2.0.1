@@ -188,13 +188,13 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
             case 4:
             case 3:
                 mRbThree.setVisibility(View.VISIBLE);
-                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2) / 100f));
+                mRbThree.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(2) / PayConfig.MONEY_UNIT));
             case 2:
                 mRbTwo.setVisibility(View.VISIBLE);
-                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1) / 100f));
+                mRbTwo.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(1) / PayConfig.MONEY_UNIT));
             case 1:
                 mRbOne.setVisibility(View.VISIBLE);
-                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0) / 100f));
+                mRbOne.setText(String.format(getString(R.string.dynamic_send_toll_select_money), mRechargeLables.get(0) / PayConfig.MONEY_UNIT));
                 mLlRechargeChooseMoneyItem.setVisibility(View.VISIBLE);
                 break;
             case 0:
@@ -211,7 +211,7 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         // 选择充值方式
         RxView.clicks(mBtRechargeStyle)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     DeviceUtils.hideSoftKeyboard(getContext(), mBtRechargeStyle);
                     initPayStylePop();
@@ -241,20 +241,20 @@ public class RechargeFragment extends TSFragment<RechargeContract.Presenter> imp
         });
 
         RxRadioGroup.checkedChanges(mRbDaysGroup)
-                .compose(this.<Integer>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .subscribe(checkedId -> {
                     if (checkedId != -1) {
                         setCustomMoneyDefault();
                     }
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRechargeMoney = mRechargeLables.get(0);
+                            mRechargeMoney = mRechargeLables.get(0)/PayConfig.MONEY_UNIT;
                             break;
                         case R.id.rb_two:
-                            mRechargeMoney = mRechargeLables.get(1);
+                            mRechargeMoney = mRechargeLables.get(1)/PayConfig.MONEY_UNIT;
                             break;
                         case R.id.rb_three:
-                            mRechargeMoney = mRechargeLables.get(2);
+                            mRechargeMoney = mRechargeLables.get(2)/PayConfig.MONEY_UNIT;
                             break;
                     }
                     if (checkedId != -1) {

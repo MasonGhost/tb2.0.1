@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.rule;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.wallet.WalletFragment;
 
 /**
  * @Describe 钱包充值提现规则页
