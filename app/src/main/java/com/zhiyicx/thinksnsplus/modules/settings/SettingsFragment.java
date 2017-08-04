@@ -104,15 +104,8 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转账户管理页面
-//                    Intent intent = new Intent(getActivity(), AccountManagementActivity.class);
-//                    startActivity(intent);
-
-                    Intent intent = new Intent(getActivity(), EditUserTagActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(BUNDLE_IS_FROM_REGISTER, true);
-                    intent.putExtras(bundle);
+                    Intent intent = new Intent(getActivity(), AccountManagementActivity.class);
                     startActivity(intent);
-                    getActivity().finish();
                 });
         // 修改密码
         RxView.clicks(mBtChangePassword)
