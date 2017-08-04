@@ -2,6 +2,7 @@ package com.youth.banner;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -42,6 +43,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
     private int delayTime = BannerConfig.TIME;
     private int scrollTime = BannerConfig.DURATION;
     private boolean isAutoPlay = BannerConfig.IS_AUTO_PLAY;
+    private boolean isDownStopAutoPlay = BannerConfig.IS_AUTO_PLAY;
     private boolean isScroll = BannerConfig.IS_SCROLL;
     private boolean isEnableScroll = BannerConfig.IS_ENABLE_SCROLL;
     private int mIndicatorSelectedResId = R.drawable.gray_radius;
@@ -144,6 +146,11 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
 
     public Banner isAutoPlay(boolean isAutoPlay) {
         this.isAutoPlay = isAutoPlay;
+        return this;
+    }
+
+    public Banner isDownStopAutoPlay(boolean isDownStopAutoPlay) {
+        this.isDownStopAutoPlay = isDownStopAutoPlay;
         return this;
     }
 
@@ -497,7 +504,9 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
                     || action == MotionEvent.ACTION_OUTSIDE) {
                 startAutoPlay();
             } else if (action == MotionEvent.ACTION_DOWN) {
-                stopAutoPlay();
+                if (isDownStopAutoPlay){
+                    stopAutoPlay();
+                }
             }
         }
         return super.dispatchTouchEvent(ev);

@@ -45,7 +45,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     boolean isClick;
     boolean isFirst = true;
 
-    public static final String ADVERT="advert";
+    public static final String ADVERT = "advert";
 
     private List<RealAdvertListBean> mBootAdverts;
 
@@ -54,9 +54,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         isFirst = false;
         if (isFinish) {
             mPresenter.checkLogin();
-            return;
         }
-        mGuideBanner.startAutoPlay();
     }
 
     @Override
@@ -164,7 +162,6 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void onTick() {
-
     }
 
     @Override
@@ -182,10 +179,10 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         if (isFinish) {
             return;
         }
-        mGuideBanner.stopAutoPlay();
+        // mGuideBanner.stopAutoPlay();
         CustomWEBActivity.startToWEBActivity(getActivity(), mBootAdverts.get(position)
                         .getAdvertFormat().getImage().getLink(),
-                mBootAdverts.get(position).getTitle(),ADVERT);
+                mBootAdverts.get(position).getTitle(), ADVERT);
     }
 
     @Override
@@ -215,6 +212,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         mGuideBanner.setBannerStyle(BannerConfig.NOT_INDICATOR);
         mGuideBanner.setImageLoader(new BannerImageLoaderUtil());
         mGuideBanner.setImages(urls);
+        mGuideBanner.isDownStopAutoPlay(false);
         mGuideBanner.setViewPagerIsScroll(false);
         mGuideBanner.setDelayTime(5000);
         mGuideBanner.setOnBannerListener(this);
