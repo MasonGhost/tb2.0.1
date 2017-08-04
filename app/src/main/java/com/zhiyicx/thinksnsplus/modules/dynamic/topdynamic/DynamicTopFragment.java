@@ -107,7 +107,7 @@ public class DynamicTopFragment extends TSFragment<DynamicTopContract.Presenter>
     }
 
     @Override
-    public float getInputMoney() {
+    public double getInputMoney() {
         return mInputMoney;
     }
 

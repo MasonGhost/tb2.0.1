@@ -46,6 +46,7 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
     protected void onPause() {
         super.onPause();
         if (flag.equals(GuideFragment_v2.ADVERT)) {
+            finish();
             startActivity(new Intent(this, GuideActivity.class));
         }
     }

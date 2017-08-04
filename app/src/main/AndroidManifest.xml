@@ -29,6 +29,7 @@
         android:icon="@mipmap/icon_256"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/TSTheme"
         tools:replace="android:allowBackup">
@@ -46,7 +47,7 @@
 
         <activity
             android:name=".modules.guide.GuideActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/BackGroundLauncherTheme">
             <intent-filter>

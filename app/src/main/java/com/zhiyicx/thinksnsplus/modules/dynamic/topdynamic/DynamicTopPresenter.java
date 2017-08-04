@@ -76,7 +76,7 @@ public class DynamicTopPresenter extends AppBasePresenter<DynamicTopContract.Rep
         if (feed_id < 0) {
             return;
         }
-        Subscription subscription = mRepository.stickTop(feed_id, (int) mRootView.getInputMoney(), mRootView.getTopDyas())
+        Subscription subscription = mRepository.stickTop(feed_id, PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney()*mRootView.getTopDyas()), mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
                 )
