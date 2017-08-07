@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.certification.input;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.DigitsKeyListener;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
 import com.zhiyicx.baseproject.widget.edittext.SEditText;
+import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -31,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 
+import static android.view.View.VISIBLE;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.send.SendCertificationActivity.BUNDLE_SEND_CERTIFICATION;
@@ -71,9 +74,14 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     TextView mTvErrorTip;
     @BindView(R.id.bt_to_send)
     LoadingButton mBtToSend;
+    @BindView(R.id.tv_limit_tip)
+    TextView mTvLimitTip;
 
     private int mType; // 申请的类型
     private SendCertificationBean mSendBean;
+    private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
+    private int mLimitMaxSize;
+    private int mShowLimitMaxSize;
 
     public CertificationInputFragment instance(Bundle bundle) {
         CertificationInputFragment fragment = new CertificationInputFragment();
@@ -85,9 +93,9 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     protected void initView(View rootView) {
         mType = getArguments().getInt(BUNDLE_TYPE);
         if (mType == 0) {
-            mLlCompanyPersonage.setVisibility(View.VISIBLE);
+            mLlCompanyPersonage.setVisibility(VISIBLE);
         } else {
-            mLlCompany.setVisibility(View.VISIBLE);
+            mLlCompany.setVisibility(VISIBLE);
         }
         // 限制身份证输入英文和数字
         String digists = "0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -99,6 +107,8 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     protected void initData() {
         mSendBean = new SendCertificationBean();
         mSendBean.setType(mType == 0 ? SendCertificationBean.USER : SendCertificationBean.ORG);
+        mLimitMaxSize = getResources().getInteger(R.integer.certification_description_max_length);
+        mShowLimitMaxSize = getResources().getInteger(R.integer.certification_description_show_limit_length);
         initListener();
     }
 
@@ -157,8 +167,21 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
         RxTextView.textChanges(mTvDescription)
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(charSequence -> {
+                    // 监听描述的输入
                     mSendBean.setDesc(String.valueOf(charSequence));
                     setConfirmEnable();
+                    // 设置提示语
+                    if (!TextUtils.isEmpty(charSequence) && charSequence.length() > mShowLimitMaxSize){
+                        mLimitTipStr = "<" + charSequence.length() + ">" + "/" + mLimitMaxSize;
+                        CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
+                                .innerColor(ContextCompat.getColor(getContext(), R.color.important_for_note))
+                                .outerColor(ContextCompat.getColor(getContext(), R.color.general_for_hint))
+                                .format();
+                        mTvLimitTip.setText(chars);
+                        mTvLimitTip.setVisibility(VISIBLE);
+                    } else {
+                        mTvLimitTip.setVisibility(View.GONE);
+                    }
                 });
 
 
@@ -213,7 +236,7 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
         if (TextUtils.isEmpty(error)) {
             mTvErrorTip.setVisibility(View.INVISIBLE);
         } else {
-            mTvErrorTip.setVisibility(View.VISIBLE);
+            mTvErrorTip.setVisibility(VISIBLE);
             mTvErrorTip.setText(error);
         }
     }

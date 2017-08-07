@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
@@ -188,7 +189,7 @@ public class FindFragment extends TSFragment {
             case R.id.find_nearby:
                 break;
             case R.id.find_qa:
-                startActivity(new Intent(getActivity(), PublishContentActivity.class));
+                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
                 break;
             case R.id.find_quiz:
                 startActivity(new Intent(getActivity(), QA_RewardActivity.class));
