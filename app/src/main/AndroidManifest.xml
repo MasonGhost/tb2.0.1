@@ -416,8 +416,7 @@
         <activity android:name=".modules.wallet.reward.RewardActivity"/>
         <activity android:name=".modules.wallet.reward.list.RewardListActivity"/>
         <activity android:name=".modules.information.publish.PublishInfoActivity"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

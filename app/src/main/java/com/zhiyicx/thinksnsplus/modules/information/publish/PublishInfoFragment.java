@@ -49,6 +49,8 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private int[] mImageIdArray;// 图片id
+    private int mPicTag;
 
     public static PublishInfoFragment getInstance(Bundle bundle) {
         PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
@@ -85,6 +87,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     protected void initData() {
+        mImageIdArray = new int[100];
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
@@ -108,8 +111,22 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         if (photoList.isEmpty()) {
             return;
         }
+        mImageIdArray[mPicTag] = mPicTag;
         String path = photoList.get(0).getImgUrl();
+        mPresenter.uploadPic(path, "", true, 0, 0);
         mRicheTest.insertImage(path, mRicheTest.getWidth());
+
+    }
+
+    @Override
+    public void uploadPicSuccess(int id) {
+        mImageIdArray[mPicTag] = id;
+        mPicTag++;
+    }
+
+    @Override
+    public void uploadPicFailed() {
+        mPicTag--;
     }
 
     @Override
@@ -163,15 +180,32 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private void initLisenter() {
         RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
             Rect viewRect = new Rect();
+            int[] viewLacotion = new int[2];
             mRlPublishTool.getGlobalVisibleRect(viewRect);
+            mRlPublishTool.getLocationOnScreen(viewLacotion);
             if (viewRect.top > mRlPublishTool.getHeight()) {
                 View rootview = getActivity().getWindow().getDecorView();
                 View aaa = rootview.findFocus();
                 if (aaa != null) {
-                    int textBottom = aaa.getBottom();
-                    LogUtils.d(textBottom);
+                    Rect aaaRect = new Rect();
+                    int[] aaaLacotion = new int[2];
+                    aaa.getGlobalVisibleRect(aaaRect);
+                    aaa.getLocationOnScreen(aaaLacotion);
+                    LogUtils.d(aaa.getVisibility() == View.VISIBLE);
+                    LogUtils.d(aaaRect.toString());
                     LogUtils.d(viewRect.toString());
-                    mRicheTest.smoothScrollBy(0, textBottom - viewRect.top);
+                    LogUtils.d("::"+viewLacotion[0]+"::"+viewLacotion[1]);
+                    LogUtils.d("::"+aaaLacotion[0]+"::"+aaaLacotion[1]);
+
+
+                    int dy = aaaRect.bottom - viewRect.top;
+
+                    int dy_ = aaaLacotion[1] - viewLacotion[1];
+
+
+                    LogUtils.d(dy);
+                    LogUtils.d(dy_);
+                    mRicheTest.smoothScrollBy(0, Math.max(dy, dy_));
                 }
             }
         });

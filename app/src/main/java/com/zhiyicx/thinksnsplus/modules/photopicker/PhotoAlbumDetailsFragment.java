@@ -205,7 +205,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                         selectedItemCount -= 1;
                     }
                     photos.clear();
-                    photoGridAdapter.notifyDataSetChanged();
+                   //photoGridAdapter.notifyDataSetChanged();
                 }
                 // 设置当前选择的数量
                 mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));

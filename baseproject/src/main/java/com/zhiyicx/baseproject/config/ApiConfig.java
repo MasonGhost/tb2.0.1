@@ -253,6 +253,9 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_COMMENT = "api/" + API_VERSION + "/news/{news_id}/comment";// 评论资讯
     public static final String APP_PATH_INFO_COMMENT_FORMAT = "api/" + API_VERSION + "/news/%s/comment";// 评论资讯
 
+    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION + "/news/categories/{category}/news";// 资讯投稿
+    public static final String APP_PATH_PUBLISH_INFO_FORMAT = "api/" + API_VERSION + "/news/categories/%d/news";// 资讯投稿
+
     // 删除资讯评论
     public static final String APP_PATH_INFO_DELETE_COMMENT_FORMAT = "api/" + API_VERSION + "/news/%s/comment/%s";
     public static final String APP_PATH_INFO_DELETE_COMMENT = "api/" + API_VERSION + "/news/{news_id}/comment/{comment_id}";
