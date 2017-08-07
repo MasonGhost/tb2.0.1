@@ -119,7 +119,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
 
-
     @Override
     public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore) {
         Observable<DynamicBeanV2> observable;
@@ -238,7 +237,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     }
 
 
-
     @Override
     public void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> dynamicBeens, final String type) {
         Observable.just(dynamicBeens)
@@ -260,7 +258,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                     mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
                 }, throwable -> throwable.printStackTrace());
     }
-
 
 
     private void dealLocalTypeDataV2(DynamicDetailBeanV2 dynamicBeanTmp) {
@@ -359,7 +356,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             Collections.sort(listBaseJson.getComments(), new TimeStringSortClass());
                         }
                         for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
-                            dynamicCommentBean.setPinned(1);
+                            dynamicCommentBean.setPinned(true);
                         }
                         listBaseJson.getPinneds().addAll(listBaseJson.getComments());
                         for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
@@ -675,7 +672,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         for (DynamicDetailBeanV2 data : topData) {
                             data.setTop(DynamicDetailBeanV2.TOP_SUCCESS);
                         }
-                        if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) {
+                        if (!type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) && !type.equals(ApiConfig.DYNAMIC_TYPE_USERS)) {
                             dynamicBeanV2.getFeeds().addAll(0, topData);
                         }
                     }
@@ -723,7 +720,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                         for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
                                             dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getUser_id().intValue()));
                                             for (int i = 0; i < dynamicBean.getComments().size(); i++) {
-                                                if(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id())!=null) {
+                                                if (userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()) != null) {
                                                     dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
                                                 }
                                                 if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态

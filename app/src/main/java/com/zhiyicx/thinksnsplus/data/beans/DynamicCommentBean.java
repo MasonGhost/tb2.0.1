@@ -55,7 +55,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
     @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean replyUser;// 被评论的用户信息
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
-    private int pinned ;// 是否是被固定（置顶）的评论
+    private boolean pinned ;// 是否是被固定（置顶）的评论 1 置顶 0 不置顶
 
 
     public DynamicCommentBean() {
@@ -150,11 +150,11 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         return comment_id;
     }
 
-    public int getPinned() {
+    public boolean getPinned() {
         return this.pinned;
     }
 
-    public void setPinned(int pinned) {
+    public void setPinned(boolean pinned) {
         this.pinned = pinned;
     }
 
@@ -183,6 +183,28 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.commentable_id = commentable_id;
     }
 
+    @Override
+    public String toString() {
+        return "DynamicCommentBean{" +
+                "_id=" + _id +
+                ", comment_id=" + comment_id +
+                ", feed_mark=" + feed_mark +
+                ", comment_mark=" + comment_mark +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", comment_content='" + comment_content + '\'' +
+                ", commentable_type='" + commentable_type + '\'' +
+                ", commentable_id=" + commentable_id +
+                ", feed_user_id=" + feed_user_id +
+                ", user_id=" + user_id +
+                ", commentUser=" + commentUser +
+                ", reply_to_user_id=" + reply_to_user_id +
+                ", replyUser=" + replyUser +
+                ", state=" + state +
+                ", pinned=" + pinned +
+                '}';
+    }
+
 
     @Override
     public int describeContents() {
@@ -207,92 +229,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         dest.writeLong(this.reply_to_user_id);
         dest.writeParcelable(this.replyUser, flags);
         dest.writeInt(this.state);
-        dest.writeInt(this.pinned);
-    }
-
-    protected DynamicCommentBean(Parcel in) {
-        super(in);
-        this._id = (Long) in.readValue(Long.class.getClassLoader());
-        this.comment_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.comment_mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.created_at = in.readString();
-        this.updated_at = in.readString();
-        this.comment_content = in.readString();
-        this.commentable_type = in.readString();
-        this.commentable_id = in.readLong();
-        this.feed_user_id = in.readLong();
-        this.user_id = in.readLong();
-        this.commentUser = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.reply_to_user_id = in.readLong();
-        this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.state = in.readInt();
-        this.pinned = in.readInt();
-    }
-
-    @Generated(hash = 1663186291)
-    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark,
-            String created_at, String updated_at, String comment_content, String commentable_type,
-            long commentable_id, long feed_user_id, long user_id, long reply_to_user_id, int state,
-            int pinned) {
-        this._id = _id;
-        this.comment_id = comment_id;
-        this.feed_mark = feed_mark;
-        this.comment_mark = comment_mark;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.comment_content = comment_content;
-        this.commentable_type = commentable_type;
-        this.commentable_id = commentable_id;
-        this.feed_user_id = feed_user_id;
-        this.user_id = user_id;
-        this.reply_to_user_id = reply_to_user_id;
-        this.state = state;
-        this.pinned = pinned;
-    }
-
-    public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {
-        @Override
-        public DynamicCommentBean createFromParcel(Parcel source) {
-            return new DynamicCommentBean(source);
-        }
-
-        @Override
-        public DynamicCommentBean[] newArray(int size) {
-            return new DynamicCommentBean[size];
-        }
-    };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1852910231)
-    private transient DynamicCommentBeanDao myDao;
-    @Generated(hash = 734177030)
-    private transient Long commentUser__resolvedKey;
-    @Generated(hash = 1789712289)
-    private transient Long replyUser__resolvedKey;
-
-    @Override
-    public String toString() {
-        return "DynamicCommentBean{" +
-                "_id=" + _id +
-                ", comment_id=" + comment_id +
-                ", feed_mark=" + feed_mark +
-                ", comment_mark=" + comment_mark +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", comment_content='" + comment_content + '\'' +
-                ", commentable_type='" + commentable_type + '\'' +
-                ", commentable_id=" + commentable_id +
-                ", feed_user_id=" + feed_user_id +
-                ", user_id=" + user_id +
-                ", commentUser=" + commentUser +
-                ", reply_to_user_id=" + reply_to_user_id +
-                ", replyUser=" + replyUser +
-                ", state=" + state +
-                ", pinned=" + pinned +
-                '}';
+        dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
     }
 
     /** To-one relationship, resolved on first access. */
@@ -403,5 +340,67 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDynamicCommentBeanDao() : null;
     }
-    
+
+    protected DynamicCommentBean(Parcel in) {
+        super(in);
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
+        this.comment_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.feed_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.comment_mark = (Long) in.readValue(Long.class.getClassLoader());
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.comment_content = in.readString();
+        this.commentable_type = in.readString();
+        this.commentable_id = in.readLong();
+        this.feed_user_id = in.readLong();
+        this.user_id = in.readLong();
+        this.commentUser = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.reply_to_user_id = in.readLong();
+        this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.state = in.readInt();
+        this.pinned = in.readByte() != 0;
+    }
+
+    @Generated(hash = 706783494)
+    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark,
+            String created_at, String updated_at, String comment_content, String commentable_type,
+            long commentable_id, long feed_user_id, long user_id, long reply_to_user_id, int state,
+            boolean pinned) {
+        this._id = _id;
+        this.comment_id = comment_id;
+        this.feed_mark = feed_mark;
+        this.comment_mark = comment_mark;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.comment_content = comment_content;
+        this.commentable_type = commentable_type;
+        this.commentable_id = commentable_id;
+        this.feed_user_id = feed_user_id;
+        this.user_id = user_id;
+        this.reply_to_user_id = reply_to_user_id;
+        this.state = state;
+        this.pinned = pinned;
+    }
+
+    public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {
+        @Override
+        public DynamicCommentBean createFromParcel(Parcel source) {
+            return new DynamicCommentBean(source);
+        }
+
+        @Override
+        public DynamicCommentBean[] newArray(int size) {
+            return new DynamicCommentBean[size];
+        }
+    };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1852910231)
+    private transient DynamicCommentBeanDao myDao;
+    @Generated(hash = 734177030)
+    private transient Long commentUser__resolvedKey;
+    @Generated(hash = 1789712289)
+    private transient Long replyUser__resolvedKey;
 }
