@@ -29,8 +29,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> implements AddInfoContract.View {
 
 
-    @BindView(R.id.bt_set_vertify)
-    CombinationButton mBtSetVertify;
+    @BindView(R.id.bt_add_category)
+    CombinationButton mBtAddCategory;
     @BindView(R.id.fl_tags)
     TagFlowLayout mFlTags;
     @BindView(R.id.ll_tag_container)
@@ -87,12 +87,16 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
 
     private void initListener() {
-        // 认证
-        RxView.clicks(mBtSetVertify)
+        // 栏目
+        RxView.clicks(mBtAddCategory)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> showSnackSuccessMessage("vertify"));
-        // 账户管理页面
+                .subscribe(aVoid -> showSnackSuccessMessage("category"));
+        // 标签
+        RxView.clicks(mLlTagContainer)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> showSnackSuccessMessage("tags"));
 
     }
 
