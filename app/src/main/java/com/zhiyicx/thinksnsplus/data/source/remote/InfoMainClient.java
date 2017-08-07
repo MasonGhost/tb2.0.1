@@ -27,10 +27,12 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT_LIS
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_COUNT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_USER_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_SEARCH;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TOP_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE_V2;
 
 /**
@@ -56,6 +58,26 @@ public interface InfoMainClient {
                                                    @Query("max_id") Long max_id,
                                                    @Query("limit") Long limit,
                                                    @Query("page") Long page);
+
+    /**
+     * 获取资讯列表
+     *
+     * @param key         搜索用的关键字
+     * @param isRecommend 是否是推荐 1-推荐
+     */
+    @GET(APP_PATH_INFO_LIST_V2)
+    Observable<List<InfoListDataBean>> getInfoListV2(@Query("cate_id") String cate_id,
+                                                     @Query("after") Long max_id,
+                                                     @Query("limit") Long limit,
+                                                     @Query("page") Long page,
+                                                     @Query("key") String key,
+                                                     @Query("recommend") int isRecommend);
+
+    /**
+     * 获取置顶的资讯列表
+     */
+    @GET(APP_PATH_INFO_TOP_LIST)
+    Observable<List<InfoListDataBean>> getInfoTopList(@Query("cate_id") String cate_id);
 
     // 获取收藏的资讯列表
     @GET(APP_PATH_INFO_COLLECT_LIST)
@@ -92,7 +114,6 @@ public interface InfoMainClient {
      *
      * @param comment_content  内容
      * @param reply_to_user_id 被评论者id 对评论进行评论时传入
-     * @return
      */
     @FormUrlEncoded
     @POST(APP_PATH_INFO_COMMENT)
@@ -107,7 +128,6 @@ public interface InfoMainClient {
      *
      * @param news_id 咨询 id
      * @param amount  打赏金额
-     * @return
      */
     @FormUrlEncoded
     @POST(APP_PATH_INFO_REWARDS)
@@ -122,7 +142,6 @@ public interface InfoMainClient {
      * @param since      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
      * @param order      翻页标识 排序 正序-asc 倒序 desc
      * @param order_type 排序规则 date-按时间 amount-按金额
-     * @return
      */
     @GET(APP_PATH_INFO_REWARDS_USER_LIST)
     Observable<List<RewardsListBean>> rewardInfoList(@Path("news_id") long news_id, @Query("limit") Integer limit, @Query("since") Integer since, @Query("order") String order, @Query("order_type") String order_type);
@@ -131,7 +150,6 @@ public interface InfoMainClient {
      * 资讯打赏统计
      *
      * @param news_id 咨询 id
-     * @return
      */
     @GET(APP_PATH_INFO_REWARDS_COUNT)
     Observable<RewardsCountBean> getRewardCount(@Path("news_id") long news_id);

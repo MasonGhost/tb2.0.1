@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBeanDao;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -93,5 +94,18 @@ public class InfoListDataBeanGreenDaoImpl extends CommonCacheImpl<InfoListDataBe
             return false;
         }
 
+    }
+
+    /**
+     * 根据分类id来获取列表
+     * @param cate_id 分类id
+     * @return list
+     */
+    public List<InfoListDataBean> getInfoByType(Long cate_id){
+        try {
+            return mInfoListDataBeanDao.queryBuilder().where(InfoListDataBeanDao.Properties.Info_type.eq(cate_id)).build().list();
+        } catch (Exception e){
+            return new ArrayList<InfoListDataBean>();
+        }
     }
 }
