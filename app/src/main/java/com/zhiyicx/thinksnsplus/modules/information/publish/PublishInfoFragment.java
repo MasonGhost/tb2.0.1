@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.thinksnsplus.R;
 
 /**
  * @Author Jliuer
@@ -10,10 +12,12 @@ import com.zhiyicx.baseproject.base.TSFragment;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublishInfoFragment extends TSFragment {
-    @Override
-    public void setPresenter(Object presenter) {
+public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presenter> implements PublishInfoContract.View {
 
+    public static PublishInfoFragment getInstance(Bundle bundle) {
+        PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
+        publishInfoFragment.setArguments(bundle);
+        return publishInfoFragment;
     }
 
     @Override
@@ -28,6 +32,6 @@ public class PublishInfoFragment extends TSFragment {
 
     @Override
     protected int getBodyLayoutId() {
-        return 0;
+        return R.layout.fragment_publish_info;
     }
 }
