@@ -293,7 +293,9 @@ public class MessageRepository implements MessageContract.Repository {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
                                     for (int i = 0; i < datas.size(); i++) {
-                                        datas.get(i).setUserInfo(userInfoBeanSparseArray.get((int) datas.get(i).getUser_id()));
+                                        if (userInfoBeanSparseArray.get((int) datas.get(i).getUser_id())!=null) {
+                                            datas.get(i).setUserInfo(userInfoBeanSparseArray.get((int) datas.get(i).getUser_id()));
+                                        }
                                     }
                                     mUserInfoBeanGreenDao.insertOrReplace(userInfoBeens);
                                     return datas;
