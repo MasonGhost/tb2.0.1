@@ -67,7 +67,7 @@ public class InfoInputEditText extends LinearLayout{
             mEditInput.setHint(hint);
         }
         if (maxLines != 0){
-            mEditInput.setMaxLines(maxLines);
+            mEditInput.setLines(maxLines);
         }
         if (maxLength != 0){
             InputFilter[] filters = {new InputFilter.LengthFilter(maxLength)};
