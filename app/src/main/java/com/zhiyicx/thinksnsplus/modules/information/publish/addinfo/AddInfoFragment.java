@@ -1,27 +1,23 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
-import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.SettingsContract;
-import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
-import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity;
+import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
+import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
@@ -32,23 +28,22 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> implements AddInfoContract.View {
 
-    @BindView(R.id.bt_login_out)
-    CombinationButton mBtLoginOut;
+
     @BindView(R.id.bt_set_vertify)
     CombinationButton mBtSetVertify;
-    @BindView(R.id.bt_change_password)
-    CombinationButton mBtChangePassword;
-    @BindView(R.id.bt_clean_cache)
-    CombinationButton mBtCleanCache;
-    @BindView(R.id.bt_about_us)
-    CombinationButton mBtAboutUs;
-    @BindView(R.id.bt_account_manager)
-    CombinationButton mBtAccountManager;
-
-    //    private AlertDialog.Builder mLoginoutDialogBuilder;// 退出登录选择弹框
-//    private AlertDialog.Builder mCleanCacheDialogBuilder;// 清理缓存选择弹框
+    @BindView(R.id.fl_tags)
+    TagFlowLayout mFlTags;
+    @BindView(R.id.ll_tag_container)
+    LinearLayout mLlTagContainer;
+    @BindView(R.id.tv_from)
+    InfoInputEditText mTvFrom;
+    @BindView(R.id.tv_author)
+    InfoInputEditText mTvAuthor;
+    @BindView(R.id.v_horizontal_line)
+    View mVHorizontalLine;
+    @BindView(R.id.et_info_summary)
+    UserInfoInroduceInputView mEtInfoSummary;
     private ActionPopupWindow mLoginoutPopupWindow;// 退出登录选择弹框
-    private ActionPopupWindow mCleanCachePopupWindow;// 清理缓存选择弹框
 
     public static AddInfoFragment newInstance(Bundle bundle) {
 
@@ -63,7 +58,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_settings;
+        return R.layout.fragment_info_publish_add_info;
     }
 
     @Override
@@ -88,7 +83,6 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
     @Override
     protected void initData() {
-        mBtAboutUs.setRightText("V" + DeviceUtils.getVersionName(getContext()));
     }
 
 
@@ -99,39 +93,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> showSnackSuccessMessage("vertify"));
         // 账户管理页面
-        RxView.clicks(mBtAccountManager)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    // 跳转账户管理页面
-                    Intent intent = new Intent(getActivity(), AccountManagementActivity.class);
-                    startActivity(intent);
-                });
-        // 修改密码
-        RxView.clicks(mBtChangePassword)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> startActivity(new Intent(getActivity(), ChangePasswordActivity.class)));
-        // 清理缓存
-        RxView.clicks(mBtCleanCache)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    mCleanCachePopupWindow.show();
-                });
-        // 关于我们
-        RxView.clicks(mBtAboutUs)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala"));
-        // 退出登录
-        RxView.clicks(mBtLoginOut)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    initLoginOutPopupWindow();
-                    mLoginoutPopupWindow.show();
-                });
+
     }
 
     /**

@@ -15,7 +15,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!--选择栏目-->
@@ -23,10 +23,10 @@
                 android:id="@+id/bt_set_vertify"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
-                android:visibility="gone"
-                app:leftText="@string/vertify"
+                app:leftText="@string/info_choose_categorys"
                 app:leftTextLeftPadding="@dimen/spacing_mid"
-                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:rightText="@string/info_choose_categorys"/>
             <!--修改标签-->
             <LinearLayout
                 android:id="@+id/ll_tag_container"
@@ -63,6 +63,26 @@
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:src="@mipmap/ic_arrow_smallgrey"/>
             </LinearLayout>
+            <!--来源-->
+            <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                android:id="@+id/tv_from"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/certification_input_item_height"
+                app:isRequired="false"
+                app:leftHintText="@string/info_from"
+                app:rightHint="@string/info_from_hint"
+                app:rightInputType="text"
+                />
+            <!--作者-->
+            <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
+                android:id="@+id/tv_author"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/certification_input_item_height"
+                app:isRequired="false"
+                app:leftHintText="@string/info_author"
+                app:rightHint="@string/info_author_hint"
+                app:rightInputType="text"
+                />
 
             <include
                 layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
@@ -81,12 +101,12 @@
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:layout_marginTop="@dimen/introduce_padding_top"
                     android:gravity="center_vertical"
-                    android:text="@string/introduce"
+                    android:text="@string/info_summary"
                     android:textColor="@color/normal_for_assist_text"
                     android:textSize="@dimen/size_sub_title"/>
                 <!--简介编辑框-->
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
-                    android:id="@+id/et_user_introduce"
+                    android:id="@+id/et_info_summary"
                     style="@style/style_edit_cursor"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -95,7 +115,7 @@
                     android:paddingBottom="@dimen/spacing_mid"
                     android:paddingTop="@dimen/introduce_padding_top"
                     android:visibility="visible"
-                    app:hintContent="@string/edit_introduce"
+                    app:hintContent="@string/info_summary_hint"
                     app:limitSize="@integer/introduce_input_max_size"
                     app:showLimitSize="@integer/show_introduce_input_size"/>
             </LinearLayout>

@@ -122,6 +122,17 @@
     <string name="edit_info">编辑文章</string>
     <string name="info_title_hint">输入标题，20字以内</string>
     <string name="info_content_hint">编辑文章正文</string>
+    <string name="info_choose_categorys">选择栏目</string>
+    <string name="info_choose_tags">选择标签</string>
+    <string name="info_max_choose_tags_format">最多选择%d个选择</string>
+    <string name="info_from">文章来源</string>
+    <string name="info_from_hint">不填写则默认为原创</string>
+    <string name="info_author">作者</string>
+    <string name="info_author_hint">不填写则默认为本站用户名</string>
+    <string name="info_summary">摘要</string>
+    <string name="info_summary_hint">不填写则默认为文章前200字</string>
+
+
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
