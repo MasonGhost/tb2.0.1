@@ -119,6 +119,9 @@
     <!--资讯-->
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
+    <string name="edit_info">编辑文章</string>
+    <string name="info_title_hint">输入标题，20字以内</string>
+    <string name="info_content_hint">编辑文章正文</string>
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
