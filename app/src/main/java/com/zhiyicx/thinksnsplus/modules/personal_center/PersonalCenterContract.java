@@ -119,11 +119,6 @@ public interface PersonalCenterContract {
         List<DynamicDetailBeanV2> requestCacheData(Long max_Id, boolean isLoadMore, long user_id);
 
         /**
-         * 设置进入个人中心是的用户关注状态
-         */
-        void initFollowState(long user_id);
-
-        /**
          * 处理关注状态
          */
         void handleFollow(UserInfoBean followFansBean);

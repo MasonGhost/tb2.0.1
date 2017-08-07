@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_send_info"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
-        android:id="@+id/et_info_title"
-        style="@style/style_edit_cursor"
+    <LinearLayout
+        android:id="@+id/ll_send_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_normal"
-        android:layout_marginLeft="@dimen/spacing_normal_large"
-        android:layout_marginRight="@dimen/spacing_normal_large"
-        android:layout_marginTop="@dimen/spacing_large"
-        app:hintContent="@string/dynamic_title_hint"
-        app:limitSize="@integer/dynamic_title_max_size"
-        app:showLimitSize="@integer/dynamic_title_input_size"/>
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
 
-    <include
-        layout="@layout/include_horizontal_divider_light"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_line"
-        android:layout_marginLeft="@dimen/spacing_large"
-        android:layout_marginRight="@dimen/spacing_large"
-        />
+        <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
+            android:id="@+id/et_info_title"
+            style="@style/style_edit_cursor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginLeft="@dimen/spacing_normal_large"
+            android:layout_marginRight="@dimen/spacing_normal_large"
+            android:layout_marginTop="@dimen/spacing_large"
+            app:hintContent="@string/info_title_hint"
+            app:limitSize="@integer/dynamic_title_max_size"
+            app:showLimitSize="@integer/dynamic_title_input_size"/>
 
-    <com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor
-        android:id="@+id/riche_test"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/size_sub_title"
-        android:paddingBottom="@dimen/full_button_height"
-        android:textColor="@color/important_for_content"/>
-    <include layout="@layout/include_horizontal_divider_light"/>
+        <include
+            layout="@layout/include_horizontal_divider_light"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            android:layout_marginBottom="@dimen/spacing_tiny"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"/>
 
-</LinearLayout>
+        <com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor
+            android:id="@+id/riche_test"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/full_button_height"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/view_publish"/>
+</FrameLayout>

@@ -120,6 +120,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .subscribe(aLong -> {
                     View rootview = getActivity().getWindow().getDecorView();
                     View aaa = rootview.findFocus();
+
                     LogUtils.i(aaa.getClass().getSimpleName());
                 });
     }

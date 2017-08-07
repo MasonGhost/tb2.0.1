@@ -4,6 +4,7 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,7 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 可编辑富文本
+ * @Author Jliuer
+ * @Date 2017/8/7 11:08
+ * @Email Jliuer@aliyun.com
+ * @Description 图文混排编辑
  */
 public class RichTextEditor extends ScrollView {
     private static final int EDIT_PADDING = 10; // edittext常规padding是10dp
@@ -88,7 +92,8 @@ public class RichTextEditor extends ScrollView {
         LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         //editNormalPadding = dip2px(EDIT_PADDING);
-        EditText firstEdit = createEditText("请输入内容", dip2px(context, EDIT_PADDING));
+        EditText firstEdit = createEditText(getResources().getString(R.string.info_content_hint), dip2px(context, EDIT_PADDING));
+        firstEdit.setHintTextColor(getResources().getColor(R.color.general_for_hint));
         allLayout.addView(firstEdit, firstEditParam);
         lastFocusEdit = firstEdit;
     }
