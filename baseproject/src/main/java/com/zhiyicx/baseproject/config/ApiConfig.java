@@ -32,9 +32,9 @@ public class ApiConfig {
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
 //    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
 
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
 
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
     public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION + "/system/about";// 关于我们网站
@@ -481,6 +481,9 @@ public class ApiConfig {
      */
     // 资讯分类列表
     public static final String APP_PATH_INFO_TYPE_V2 = "api/" + API_VERSION_2 + "/news/cates";
+    public static final String APP_PATH_INFO_LIST_V2 = "api/" + API_VERSION_2 + "/news";// 资讯列表
+    public static final String APP_PATH_INFO_TOP_LIST = "api/" + API_VERSION_2 + "/news/categories/pinneds";// 获取置顶资讯
+
 
     /**
      * 钱包
