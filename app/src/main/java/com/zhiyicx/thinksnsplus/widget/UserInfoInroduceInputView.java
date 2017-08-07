@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,9 +16,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.common.utils.ColorPhrase;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PictureAndTextEditorView;
+
+import static android.support.annotation.Dimension.PX;
+import static android.support.annotation.Dimension.SP;
 
 /**
  * @author LiuChao
@@ -33,6 +39,7 @@ public class UserInfoInroduceInputView extends FrameLayout {
     private int mshowLimitSize;// 当输入值达到 mshowLimitSize 时，显示提示
     private String mHintContent;// 编辑框的hint提示文字
     private int mShowLines;// 编辑框显示最大行数，超过改行数就滚动
+    private int mContentGrvatiy;
     private ContentChangedListener mContentChangedListener;
 
     private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
@@ -67,6 +74,11 @@ public class UserInfoInroduceInputView extends FrameLayout {
             mshowLimitSize = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_showLimitSize, context.getResources().getInteger(com.zhiyicx.baseproject.R.integer.show_comment_input_size));
             mHintContent = array.getString(com.zhiyicx.baseproject.R.styleable.inputLimitView_hintContent);
             mShowLines = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_showLines, 0);// 如果为0就不要设置maxLine了
+            mContentGrvatiy = array.getInteger(com.zhiyicx.baseproject.R.styleable.inputLimitView_content_gravity, Gravity.LEFT);// 如果为0就不要设置maxLine了
+            mEtContent.setGravity(mContentGrvatiy);
+            if (array.getDimensionPixelSize(R.styleable.inputLimitView_content_size, 0) != 0)
+                mEtContent.setTextSize(SP, ConvertUtils.px2dp(getContext(),array.getDimension(R.styleable.inputLimitView_content_size,0)));
+
             array.recycle();
         } else {
             mLimitMaxSize = context.getResources().getInteger(com.zhiyicx.baseproject.R.integer.comment_input_max_size);

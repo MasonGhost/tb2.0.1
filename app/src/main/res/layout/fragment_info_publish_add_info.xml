@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:gravity="center_vertical"
-                android:minHeight="@dimen/userinfo_btn_height"
+                android:minHeight="@dimen/full_button_height"
                 android:orientation="horizontal">
 
                 <TextView
@@ -43,8 +43,8 @@
                     android:layout_marginLeft="@dimen/spacing_mid"
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:text="@string/tag"
-                    android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content_assist"/>
 
                 <com.zhy.view.flowlayout.TagFlowLayout
                     android:id="@+id/fl_tags"
@@ -63,13 +63,20 @@
                     android:layout_marginRight="@dimen/spacing_mid"
                     android:src="@mipmap/ic_arrow_smallgrey"/>
             </LinearLayout>
+
+            <View
+                android:id="@+id/v_horizontal_line"
+                style="@style/style_divider_horizontal_light"
+                />
             <!--来源-->
             <com.zhiyicx.baseproject.widget.edittext.InfoInputEditText
                 android:id="@+id/tv_from"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/certification_input_item_height"
-                app:isRequired="false"
+                app:isRequired="gone"
+                android:background="@color/white"
                 app:leftHintText="@string/info_from"
+                android:paddingLeft="@dimen/spacing_mid"
                 app:rightHint="@string/info_from_hint"
                 app:rightInputType="text"
                 />
@@ -78,20 +85,19 @@
                 android:id="@+id/tv_author"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/certification_input_item_height"
-                app:isRequired="false"
+                app:isRequired="gone"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/spacing_mid"
                 app:leftHintText="@string/info_author"
                 app:rightHint="@string/info_author_hint"
                 app:rightInputType="text"
                 />
-
-            <include
-                layout="@layout/include_horizontal_userinfo_white_bg_divider"/>
             <!--修改简介-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:minHeight="@dimen/userinfo_btn_height"
+                android:minHeight="@dimen/full_button_height"
                 android:orientation="horizontal">
 
                 <TextView
@@ -102,8 +108,8 @@
                     android:layout_marginTop="@dimen/introduce_padding_top"
                     android:gravity="center_vertical"
                     android:text="@string/info_summary"
-                    android:textColor="@color/normal_for_assist_text"
-                    android:textSize="@dimen/size_sub_title"/>
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content_assist"/>
                 <!--简介编辑框-->
                 <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
                     android:id="@+id/et_info_summary"
@@ -115,6 +121,8 @@
                     android:paddingBottom="@dimen/spacing_mid"
                     android:paddingTop="@dimen/introduce_padding_top"
                     android:visibility="visible"
+                    app:content_gravity="right"
+                    app:content_size="@dimen/size_content_assist"
                     app:hintContent="@string/info_summary_hint"
                     app:limitSize="@integer/introduce_input_max_size"
                     app:showLimitSize="@integer/show_introduce_input_size"/>

@@ -117,6 +117,7 @@
     <string name="music_lyric">暂无歌词</string>
 
     <!--资讯-->
+    <string name="info_title">完善文章信息</string>
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
     <string name="edit_info">编辑文章</string>

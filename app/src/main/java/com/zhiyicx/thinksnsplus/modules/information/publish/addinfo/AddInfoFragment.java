@@ -63,7 +63,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.setting);
+        return getString(R.string.info_title);
     }
 
     @Override
