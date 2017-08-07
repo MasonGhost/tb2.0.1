@@ -84,65 +84,6 @@ public class ImageUtils {
                 .into(imageView);
     }
 
-//    /**
-//     * 加载用户头像
-//     *
-//     * @param userInfoBean 用户信息
-//     * @param imageView    展示的控件
-//     */
-//    public static void loadCircleUserHeadPic(UserInfoBean userInfoBean, ImageView imageView) {
-//        loadUserHead(userInfoBean, imageView, false);
-//    }
-//
-//
-//    /**
-//     * 加载用户头像带有白色边框
-//     *
-//     * @param userInfoBean 用户信息
-//     * @param imageView    展示的控件
-//     */
-//    public static void loadCircleUserHeadPicWithBorder(UserInfoBean userInfoBean, ImageView imageView) {
-//        loadUserHead(userInfoBean, imageView, true);
-//    }
-//
-//    /**
-//     * 加载用户圆形图像
-//     *
-//     * @param userInfoBean 用户信息
-//     * @param imageView    显示头像的控件
-//     * @param withBorder   是否需要边框
-//     */
-//    public static void loadUserHead(UserInfoBean userInfoBean, ImageView imageView, boolean withBorder) {
-//        String avatar = "";
-//        if (userInfoBean != null && userInfoBean.getUser_id() != null) {
-//            avatar = TextUtils.isEmpty(userInfoBean.getAvatar()) ? getUserAvatar(userInfoBean.getUser_id()) : userInfoBean.getAvatar();
-//            long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
-//            if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getUser_id() == currentLoginUerId) {
-//
-//                if (userInfoBean.getUser_id() == currentLoginUerId) {
-//                    mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
-//                } else {
-//                    mHeadPicSigture = SharePreferenceUtils.getLong(imageView.getContext().getApplicationContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
-//                }
-//                if (System.currentTimeMillis() - mHeadPicSigture > DEFAULT_USER_CACHE_TIME) {
-//                    mHeadPicSigture = System.currentTimeMillis();
-//                }
-//                SharePreferenceUtils.saveLong(imageView.getContext().getApplicationContext()
-//                        , userInfoBean.getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
-//            }
-//            laste_request_time = System.currentTimeMillis();
-//        }
-//        Glide.with(imageView.getContext())
-//                .load(avatar)
-//                .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
-//                .placeholder(R.mipmap.pic_default_portrait1)
-//                .error(R.mipmap.pic_default_portrait1)
-//                .transform(withBorder ?
-//                        new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
-//                        : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
-//                .into(imageView);
-//    }
-
     /**
      * 加载用户头像
      *
@@ -173,7 +114,7 @@ public class ImageUtils {
      */
     public static void loadUserHead(UserInfoBean userInfoBean, UserAvatarView imageView, boolean withBorder) {
         loadUserAvatar(userInfoBean, imageView.getIvAvatar(), withBorder);
-        if (userInfoBean.getVerified() != null && !TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
+        if (userInfoBean != null && userInfoBean.getVerified() != null && !TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
             Glide.with(imageView.getContext())
                     .load(userInfoBean.getVerified().getIcon())
                     .signature(new StringSignature(String.valueOf(mHeadPicSigture)))

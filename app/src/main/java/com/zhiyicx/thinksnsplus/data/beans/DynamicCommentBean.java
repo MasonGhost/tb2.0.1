@@ -55,7 +55,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
     @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean replyUser;// 被评论的用户信息
     private int state = SEND_SUCCESS;// 动态发送状态 0 发送失败 1 正在发送 2 发送成功
-    private int pinned ;// 是否是被固定（置顶）的评论
+    private boolean pinned ;// 是否是被固定（置顶）的评论
 
 
     public DynamicCommentBean() {
@@ -150,11 +150,11 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         return comment_id;
     }
 
-    public int getPinned() {
+    public boolean getPinned() {
         return this.pinned;
     }
 
-    public void setPinned(int pinned) {
+    public void setPinned(boolean pinned) {
         this.pinned = pinned;
     }
 
@@ -183,6 +183,28 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.commentable_id = commentable_id;
     }
 
+    @Override
+    public String toString() {
+        return "DynamicCommentBean{" +
+                "_id=" + _id +
+                ", comment_id=" + comment_id +
+                ", feed_mark=" + feed_mark +
+                ", comment_mark=" + comment_mark +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", comment_content='" + comment_content + '\'' +
+                ", commentable_type='" + commentable_type + '\'' +
+                ", commentable_id=" + commentable_id +
+                ", feed_user_id=" + feed_user_id +
+                ", user_id=" + user_id +
+                ", commentUser=" + commentUser +
+                ", reply_to_user_id=" + reply_to_user_id +
+                ", replyUser=" + replyUser +
+                ", state=" + state +
+                ", pinned=" + pinned +
+                '}';
+    }
+
 
     @Override
     public int describeContents() {
@@ -207,7 +229,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         dest.writeLong(this.reply_to_user_id);
         dest.writeParcelable(this.replyUser, flags);
         dest.writeInt(this.state);
-        dest.writeInt(this.pinned);
+        dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
     }
 
     protected DynamicCommentBean(Parcel in) {
@@ -227,28 +249,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.reply_to_user_id = in.readLong();
         this.replyUser = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.state = in.readInt();
-        this.pinned = in.readInt();
-    }
-
-    @Generated(hash = 1663186291)
-    public DynamicCommentBean(Long _id, Long comment_id, Long feed_mark, Long comment_mark,
-            String created_at, String updated_at, String comment_content, String commentable_type,
-            long commentable_id, long feed_user_id, long user_id, long reply_to_user_id, int state,
-            int pinned) {
-        this._id = _id;
-        this.comment_id = comment_id;
-        this.feed_mark = feed_mark;
-        this.comment_mark = comment_mark;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.comment_content = comment_content;
-        this.commentable_type = commentable_type;
-        this.commentable_id = commentable_id;
-        this.feed_user_id = feed_user_id;
-        this.user_id = user_id;
-        this.reply_to_user_id = reply_to_user_id;
-        this.state = state;
-        this.pinned = pinned;
+        this.pinned = in.readByte() != 0;
     }
 
     public static final Creator<DynamicCommentBean> CREATOR = new Creator<DynamicCommentBean>() {
@@ -262,146 +263,4 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
             return new DynamicCommentBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1852910231)
-    private transient DynamicCommentBeanDao myDao;
-    @Generated(hash = 734177030)
-    private transient Long commentUser__resolvedKey;
-    @Generated(hash = 1789712289)
-    private transient Long replyUser__resolvedKey;
-
-    @Override
-    public String toString() {
-        return "DynamicCommentBean{" +
-                "_id=" + _id +
-                ", comment_id=" + comment_id +
-                ", feed_mark=" + feed_mark +
-                ", comment_mark=" + comment_mark +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", comment_content='" + comment_content + '\'' +
-                ", commentable_type='" + commentable_type + '\'' +
-                ", commentable_id=" + commentable_id +
-                ", feed_user_id=" + feed_user_id +
-                ", user_id=" + user_id +
-                ", commentUser=" + commentUser +
-                ", reply_to_user_id=" + reply_to_user_id +
-                ", replyUser=" + replyUser +
-                ", state=" + state +
-                ", pinned=" + pinned +
-                '}';
-    }
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 397031426)
-    public UserInfoBean getCommentUser() {
-        long __key = this.user_id;
-        if (commentUser__resolvedKey == null || !commentUser__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean commentUserNew = targetDao.load(__key);
-            synchronized (this) {
-                commentUser = commentUserNew;
-                commentUser__resolvedKey = __key;
-            }
-        }
-        return commentUser;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1714457217)
-    public void setCommentUser(@NotNull UserInfoBean commentUser) {
-        if (commentUser == null) {
-            throw new DaoException(
-                    "To-one property 'user_id' has not-null constraint; cannot set to-one to null");
-        }
-        synchronized (this) {
-            this.commentUser = commentUser;
-            user_id = commentUser.getUser_id();
-            commentUser__resolvedKey = user_id;
-        }
-    }
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 2112537803)
-    public UserInfoBean getReplyUser() {
-        long __key = this.reply_to_user_id;
-        if (replyUser__resolvedKey == null || !replyUser__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean replyUserNew = targetDao.load(__key);
-            synchronized (this) {
-                replyUser = replyUserNew;
-                replyUser__resolvedKey = __key;
-            }
-        }
-        return replyUser;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1942204408)
-    public void setReplyUser(@NotNull UserInfoBean replyUser) {
-        if (replyUser == null) {
-            throw new DaoException(
-                    "To-one property 'reply_to_user_id' has not-null constraint; cannot set to-one to null");
-        }
-        synchronized (this) {
-            this.replyUser = replyUser;
-            reply_to_user_id = replyUser.getUser_id();
-            replyUser__resolvedKey = reply_to_user_id;
-        }
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 938647494)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDynamicCommentBeanDao() : null;
-    }
-    
 }
