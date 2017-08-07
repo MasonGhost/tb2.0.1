@@ -315,8 +315,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private void requestData() {
         // 获取个人主页用户信息，显示在headerView中
         mPresenter.setCurrentUserInfo(mUserInfoBean.getUser_id());
-        // 获取关注状态
-        mPresenter.initFollowState(mUserInfoBean.getUser_id());
         // 获取动态列表
         mPresenter.requestNetData(DEFAULT_PAGE_MAX_ID, false, mUserInfoBean.getUser_id());
     }

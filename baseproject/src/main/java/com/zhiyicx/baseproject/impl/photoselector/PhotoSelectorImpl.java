@@ -273,7 +273,6 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                         mTolls.clear();
                         mTolls.addAll(tolls);
                     } catch (Exception e1) {
-                        e1.printStackTrace();
                     }
 
                 }

@@ -199,36 +199,6 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
     }
 
     @Override
-    public void initFollowState(long user_id) {
-        if (AppApplication.getmCurrentLoginAuth() == null) {
-            return;
-        }
-
-//        Subscription subscription = mRepository.getUserFollowState(user_id + "")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new BaseSubscribe<FollowFansBean>() {
-//                    @Override
-//                    protected void onSuccess(FollowFansBean data) {
-//                        mInterfaceNum++;
-//                        mRootView.setFollowState(data);
-//                        allready();
-//                    }
-//
-//                    @Override
-//                    protected void onFailure(String message, int code) {
-//                        mRootView.loadAllError();
-//                    }
-//
-//                    @Override
-//                    protected void onException(Throwable throwable) {
-//                        mRootView.loadAllError();
-//                    }
-//                });
-//        addSubscrebe(subscription);
-    }
-
-    @Override
     public void handleFollow(UserInfoBean followFansBean) {
         mUserInfoRepository.handleFollow(followFansBean);
         // ui进行刷新
