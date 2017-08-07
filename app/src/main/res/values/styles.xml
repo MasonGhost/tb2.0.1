@@ -56,4 +56,28 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@null</item>
     </style>
+
+    <style name="ThirdLoginButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/important_for_content</item>
+        <item name="android:textSize">@dimen/size_icon_assist</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">@dimen/margin_10dp</item>
+    </style>
+    <style name="CertificationDetailContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/certification_input_item_height</item>
+        <item name="android:layout_marginLeft">@dimen/spacing_mid</item>
+        <item name="android:layout_marginRight">@dimen/spacing_mid</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <style name="CertificationDetailText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/size_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/important_for_content</item>
+    </style>
 </resources>

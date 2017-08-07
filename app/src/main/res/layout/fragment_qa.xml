@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/qa_mian"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_toolbar_container_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:background="@color/white"
+            android:id="@+id/rl_toolbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
+                android:src="@mipmap/topbar_back"/>
+
+            <RadioGroup
+                android:id="@+id/rg_qa_type"
+                android:layout_width="@dimen/qa_top_select_width"
+                android:layout_height="@dimen/qa_top_select_height"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <RadioButton
+                    android:id="@+id/rb_qa"
+                    android:button="@null"
+                    android:background="@drawable/selector_qa_left_select_stated"
+                    android:textSize="@dimen/size_sub_title"
+                    android:text="问答"
+                    android:textColor="@color/selector_qa_select_textcolor"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"/>
+
+                <RadioButton
+                    android:id="@+id/rb_topic"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:textColor="@color/selector_qa_select_textcolor"
+                    android:background="@drawable/selector_qa_right_select_stated"
+                    android:textSize="@dimen/size_sub_title"
+                    android:text="话题"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"/>
+
+            </RadioGroup>
+
+            <ImageView
+                android:id="@+id/iv_serach"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:src="@mipmap/search_icon_search"
+                android:visibility="visible"/>
+
+        </RelativeLayout>
+
+        <include layout="@layout/include_horizontal_divider"/>
+
+        <FrameLayout
+            android:id="@+id/qa_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btn_send_dynamic"
+        android:layout_width="@dimen/channel_detail_float_btn_height"
+        android:layout_height="@dimen/channel_detail_float_btn_height"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/floating_button_bottom_margin"
+        android:scaleType="fitXY"
+        android:src="@mipmap/channel_btn_suspension"
+        android:visibility="visible"/>
+
+</FrameLayout>

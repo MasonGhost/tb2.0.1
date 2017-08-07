@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PictureAndTextEditorView
+        android:id="@+id/et_qusetion_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:textColor="@color/important_for_content"
+        android:textColorHint="@color/general_for_hint"
+        android:textSize="@dimen/size_sub_title"
+        android:layout_marginLeft="@dimen/spacing_normal_large"
+        android:layout_marginRight="@dimen/spacing_normal_large"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:hint="@string/dynamic_content_hint"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/full_button_height"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:background="@color/general_for_loading_more">
+
+        <include
+            layout="@layout/include_horizontal_divider_light"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_line"
+            />
+
+        <ImageView
+            android:id="@+id/im_arrowc"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/sec_nav_arrow"/>
+
+        <ImageView
+            android:id="@+id/im_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_toLeftOf="@+id/im_setting"
+            android:src="@mipmap/icon_picture_grey"/>
+
+        <ImageView
+            android:id="@+id/im_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/icon_install_grey"/>
+
+    </RelativeLayout>
+</FrameLayout>

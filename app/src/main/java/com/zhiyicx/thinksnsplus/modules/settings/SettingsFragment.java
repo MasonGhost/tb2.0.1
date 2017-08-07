@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
@@ -14,6 +15,7 @@ import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity;
+import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +24,7 @@ import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment.BUNDLE_IS_FROM_REGISTER;
 
 /**
  * @Describe
@@ -93,13 +96,8 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         // 认证
         RxView.clicks(mBtSetVertify)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        showSnackSuccessMessage("vertify");
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> showSnackSuccessMessage("vertify"));
         // 账户管理页面
         RxView.clicks(mBtAccountManager)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -112,44 +110,28 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         // 修改密码
         RxView.clicks(mBtChangePassword)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> startActivity(new Intent(getActivity(), ChangePasswordActivity.class)));
         // 清理缓存
         RxView.clicks(mBtCleanCache)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        initCleanCachePopupWindow();
-                        mCleanCachePopupWindow.show();
-                    }
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    initCleanCachePopupWindow();
+                    mCleanCachePopupWindow.show();
                 });
         // 关于我们
         RxView.clicks(mBtAboutUs)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala");
-                    }
-                });
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala"));
         // 退出登录
         RxView.clicks(mBtLoginOut)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        initLoginOutPopupWindow();
-                        mLoginoutPopupWindow.show();
-                    }
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    initLoginOutPopupWindow();
+                    mLoginoutPopupWindow.show();
                 });
     }
 
@@ -169,19 +151,11 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPresenter.cleanCache();
-                        mCleanCachePopupWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    mPresenter.cleanCache();
+                    mCleanCachePopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mCleanCachePopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mCleanCachePopupWindow.hide()).build();
 
     }
 
@@ -201,21 +175,13 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
                 .isFocus(true)
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        if (mPresenter.loginOut()) {
-                            startActivity(new Intent(getActivity(), LoginActivity.class));
-                        }
-                        mLoginoutPopupWindow.hide();
+                .item2ClickListener(() -> {
+                    if (mPresenter.loginOut()) {
+                        startActivity(new Intent(getActivity(), LoginActivity.class));
                     }
+                    mLoginoutPopupWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mLoginoutPopupWindow.hide();
-                    }
-                }).build();
+                .bottomClickListener(() -> mLoginoutPopupWindow.hide()).build();
 
     }
 //    /**

@@ -9,13 +9,14 @@
     android:paddingLeft="@dimen/spacing_normal"
     android:paddingTop="@dimen/spacing_mid">
 
-    <com.zhiyicx.baseproject.widget.imageview.FilterImageView
+    <com.zhiyicx.baseproject.widget.UserAvatarView
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
         android:layout_marginRight="@dimen/spacing_mid"
         android:src="@mipmap/pic_default_portrait1"
-        app:pressShape="circle"/>
+        app:pressShape="circle"
+        app:ts_avatare_size="@dimen/headpic_for_list"/>
 
 
     <TextView
@@ -85,9 +86,9 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_mid"
-        android:visibility="invisible"
         android:paddingLeft="@dimen/spacing_mid"
         android:paddingRight="@dimen/spacing_mid"
-        android:src="@mipmap/ico_me_follow"/>
+        android:src="@mipmap/ico_me_follow"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

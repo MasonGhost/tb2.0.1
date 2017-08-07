@@ -16,7 +16,6 @@ import javax.inject.Inject;
  * @Date 2017/4/11
  * @Contact master.jungle68@gmail.com
  */
-
 public class CommentedBeanGreenDaoImpl extends CommonCacheImpl<CommentedBean> {
 
     @Inject
@@ -54,6 +53,15 @@ public class CommentedBeanGreenDaoImpl extends CommonCacheImpl<CommentedBean> {
                         + " T." + CommentedBeanDao.Properties.Id.columnName + " < ? "
                         + " order by " + " T." + CommentedBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
                 , System.currentTimeMillis() + "");
+    }
+
+    public List<CommentedBean> getAblumCommentsCacheDataByType(String channel, long id) {
+        CommentedBeanDao commentedBeanDao = getRDaoSession().getCommentedBeanDao();
+        return commentedBeanDao.queryDeep(" where "
+                        + " T." + CommentedBeanDao.Properties.Channel.columnName + "= ?" + " AND "
+                        + " T." + CommentedBeanDao.Properties.Target_id.columnName + "= ?"
+                        +"< ? order by"+" T." + CommentedBeanDao.Properties.Id.columnName + " DESC"// 按频道id倒序
+                , new String[] {channel,String.valueOf(id),System.currentTimeMillis() + ""});
     }
 
     @Override

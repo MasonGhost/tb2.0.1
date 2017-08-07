@@ -159,6 +159,31 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
     }
 
 
+    public String getUpdated_at() {
+        return this.updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public String getCommentable_type() {
+        return this.commentable_type;
+    }
+
+    public void setCommentable_type(String commentable_type) {
+        this.commentable_type = commentable_type;
+    }
+
+    public long getCommentable_id() {
+        return this.commentable_id;
+    }
+
+    public void setCommentable_id(long commentable_id) {
+        this.commentable_id = commentable_id;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -270,30 +295,6 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
                 '}';
     }
 
-    public String getUpdated_at() {
-        return this.updated_at;
-    }
-
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
-    }
-
-    public String getCommentable_type() {
-        return this.commentable_type;
-    }
-
-    public void setCommentable_type(String commentable_type) {
-        this.commentable_type = commentable_type;
-    }
-
-    public long getCommentable_id() {
-        return this.commentable_id;
-    }
-
-    public void setCommentable_id(long commentable_id) {
-        this.commentable_id = commentable_id;
-    }
-
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 397031426)
     public UserInfoBean getCommentUser() {
@@ -402,4 +403,5 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDynamicCommentBeanDao() : null;
     }
+    
 }

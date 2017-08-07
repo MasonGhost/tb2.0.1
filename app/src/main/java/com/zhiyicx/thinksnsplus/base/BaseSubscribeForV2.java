@@ -44,7 +44,7 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
                             }.getType());
                     for (String[] value : errorMessageMap.values()) {
                         onFailure(value[0], 0); //  app 端只需要一个
-                        break;
+                        return;
                     }
                 } else {
                     handleError(e);

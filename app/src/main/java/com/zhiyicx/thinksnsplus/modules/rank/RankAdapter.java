@@ -98,8 +98,7 @@ public class RankAdapter extends CommonAdapter<DigRankBean> {
         TextView digCount = holder.getView(R.id.tv_dig_count);
         digCount.setText(charSequence);
         // 头像加载
-        ImageView headPic = holder.getView(R.id.iv_headpic);
-        ImageUtils.loadCircleUserHeadPic(userInfoBean, headPic);
+        ImageUtils.loadCircleUserHeadPic(userInfoBean, holder.getView(R.id.iv_headpic));
         // 添加点击事件
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

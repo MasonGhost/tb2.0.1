@@ -23,6 +23,12 @@ import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
+
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;
@@ -42,6 +48,8 @@ public class FindFragment extends TSFragment {
 
     @BindView(R.id.find_info)
     CombinationButton mFindInfo;
+    @BindView(R.id.find_qa)
+    CombinationButton mFindQa;
     @BindView(R.id.find_chanel)
     CombinationButton mFindChanel;
     @BindView(R.id.find_active)
@@ -54,6 +62,8 @@ public class FindFragment extends TSFragment {
     CombinationButton mFindPerson;
     @BindView(R.id.find_nearby)
     CombinationButton mFindNearby;
+    @BindView(R.id.find_quiz)
+    CombinationButton mFindQuiz;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -120,7 +130,7 @@ public class FindFragment extends TSFragment {
     }
 
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
-            R.id.find_person, R.id.find_nearby})
+            R.id.find_person, R.id.find_nearby, R.id.find_quiz,R.id.find_qa})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
@@ -177,6 +187,12 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_nearby:
                 break;
+            case R.id.find_qa:
+                startActivity(new Intent(getActivity(), PublishContentActivity.class));
+                break;
+            case R.id.find_quiz:
+                startActivity(new Intent(getActivity(), QA_RewardActivity.class));
+                break;
             default:
                 break;
         }
@@ -197,15 +213,12 @@ public class FindFragment extends TSFragment {
                         com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
 
                 .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mActionPopupWindow.hide();
-                        if (isOppoR9s) {
-                            DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
-                        } else {
-                            DeviceUtils.openAppDetail(getActivity());
-                        }
+                .item2ClickListener(() -> {
+                    mActionPopupWindow.hide();
+                    if (isOppoR9s) {
+                        DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
+                    } else {
+                        DeviceUtils.openAppDetail(getActivity());
                     }
                 })
                 .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {

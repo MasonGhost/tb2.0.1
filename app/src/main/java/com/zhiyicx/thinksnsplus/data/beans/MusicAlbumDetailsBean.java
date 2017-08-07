@@ -1,16 +1,16 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
-import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.PaidNoteConverter;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.StorageConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Author Jliuer
@@ -22,44 +22,49 @@ import java.util.List;
 public class MusicAlbumDetailsBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
+
     /**
-     * id : 1
-     * created_at : 2017-03-15 17:01:17
-     * updated_at : 2017-03-21 02:29:48
-     * title : 专辑1
-     * storage : 2
-     * taste_count : 4
-     * share_count : 0
-     * comment_count : 0
-     * collect_count : 0
-     * musics : [{"id":1,"created_at":"2017-03-16 17:22:39","updated_at":"2017-03-16 17:22:42",
-     * "special_id":1,"music_id":1,"music_info":{"id":1,"created_at":"2017-03-16 17:11:26",
-     * "updated_at":"2017-03-21 02:29:48","deleted_at":null,"title":"水手公园","singer":{"id":1,
-     * "created_at":"2017-03-16 17:22:04","updated_at":"2017-03-16 17:22:08","name":"汤圆毛",
-     * "cover":{"id":2,"image_width":3264,"image_height":2448}},"storage":129,"last_time":180,
-     * "lyric":"lalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallal","taste_count":4,"share_count":0,"comment_count":0}},{"id":2,"created_at":"2017-03-16 17:22:48","updated_at":"2017-03-16 17:22:50","special_id":1,"music_id":2,"music_info":{"id":2,"created_at":"2017-03-16 17:20:40","updated_at":"2017-03-16 17:20:43","deleted_at":null,"title":"thankyou","singer":{"id":2,"created_at":"2017-03-16 17:22:18","updated_at":"2017-03-16 17:22:20","name":"刘zz","cover":{"id":54,"image_width":690,"image_height":932}},"storage":130,"last_time":240,"lyric":"sdafasfasdfasdfasdfasdfsadf","taste_count":0,"share_count":0,"comment_count":0}}]
+     * id : 2
+     * created_at : 2017-03-15 17:04:31
+     * updated_at : 2017-06-27 18:40:56
+     * title : 少女情怀总是诗
+     * intro : 耶嘿 杀乌鸡
+     * storage : {"id":108,"size":"3024x3024"}
+     * taste_count : 845
+     * share_count : 21
+     * comment_count : 97
+     * collect_count : 9
+     * paid_node : {"paid":true,"node":1,"amount":200}
+     * has_collect : true
+     * musics : [{"id":7,"created_at":"2017-04-17 15:27:59","updated_at":"2017-07-06 03:53:04","deleted_at":null,"title":"umbrella","singer":{"id":2,"created_at":"2017-03-16 17:22:18","updated_at":"2017-03-16 17:22:20","name":"佚名","cover":null},"storage":{"id":113},"last_time":300,"lyric":null,"taste_count":0,"share_count":0,"comment_count":0,"has_like":true},{"id":3,"created_at":"2017-03-16 17:21:09","updated_at":"2017-07-06 08:01:18","deleted_at":null,"title":"别碰我的人","singer":{"id":1,"created_at":"2017-03-16 17:22:04","updated_at":"2017-03-16 17:22:08","name":"群星","cover":null},"storage":{"id":109},"last_time":200,"lyric":null,"taste_count":297,"share_count":0,"comment_count":23,"has_like":true}]
      */
-    @Id(autoincrement = true)
-    private Long _id;
-    @Unique
-    private int id;
+    @Id
+    private Long id;
     private String created_at;
     private String updated_at;
     private String title;
     private String intro;
-    @Convert(converter = MusicAlbumLIstConverter.class, columnType = String.class)
+    @Convert(converter = StorageConvert.class,columnType = String.class)
     private StorageBean storage;
     private int taste_count;
     private int share_count;
     private int comment_count;
     private int collect_count;
-    private int is_collection;
-    @Convert(converter = MusicListConverter.class, columnType = String.class)
+    @Convert(converter = PaidNoteConverter.class,columnType = String.class)
+    private PaidNote paid_node;
+    private boolean has_collect;
+    @Convert(converter = MusicsBeanConvert.class,columnType = String.class)
     private List<MusicsBean> musics;
 
-    @Generated(hash = 2031763002)
-    public MusicAlbumDetailsBean(Long _id, int id, String created_at, String updated_at, String title, String intro, StorageBean storage, int taste_count, int share_count, int comment_count, int collect_count, int is_collection, List<MusicsBean> musics) {
-        this._id = _id;
+
+
+    @Generated(hash = 1417869479)
+    public MusicAlbumDetailsBean() {
+    }
+
+
+    @Generated(hash = 641474225)
+    public MusicAlbumDetailsBean(Long id, String created_at, String updated_at, String title, String intro, StorageBean storage, int taste_count, int share_count, int comment_count, int collect_count, PaidNote paid_node, boolean has_collect, List<MusicsBean> musics) {
         this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
@@ -70,37 +75,11 @@ public class MusicAlbumDetailsBean implements Serializable {
         this.share_count = share_count;
         this.comment_count = comment_count;
         this.collect_count = collect_count;
-        this.is_collection = is_collection;
+        this.paid_node = paid_node;
+        this.has_collect = has_collect;
         this.musics = musics;
     }
 
-    @Generated(hash = 1417869479)
-    public MusicAlbumDetailsBean() {
-    }
-
-    public String getIntro() {
-        return intro;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
-    }
-
-    public int getIs_collection() {
-        return is_collection;
-    }
-
-    public void setIs_collection(int is_collection) {
-        this.is_collection = is_collection;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getCreated_at() {
         return created_at;
@@ -126,6 +105,21 @@ public class MusicAlbumDetailsBean implements Serializable {
         this.title = title;
     }
 
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public StorageBean getStorage() {
+        return storage;
+    }
+
+    public void setStorage(StorageBean storage) {
+        this.storage = storage;
+    }
 
     public int getTaste_count() {
         return taste_count;
@@ -159,6 +153,14 @@ public class MusicAlbumDetailsBean implements Serializable {
         this.collect_count = collect_count;
     }
 
+    public boolean isHas_collect() {
+        return has_collect;
+    }
+
+    public void setHas_collect(boolean has_collect) {
+        this.has_collect = has_collect;
+    }
+
     public List<MusicsBean> getMusics() {
         return musics;
     }
@@ -167,44 +169,99 @@ public class MusicAlbumDetailsBean implements Serializable {
         this.musics = musics;
     }
 
-    public StorageBean getStorage() {
-        return this.storage;
+    public PaidNote getPaid_node() {
+        return this.paid_node;
     }
 
-    public void setStorage(StorageBean storage) {
-        this.storage = storage;
+    public void setPaid_node(PaidNote paid_node) {
+        this.paid_node = paid_node;
     }
 
-    public Long get_id() {
-        return this._id;
+    public boolean getHas_collect() {
+        return this.has_collect;
     }
 
-    public void set_id(Long _id) {
-        this._id = _id;
+
+    public Long getId() {
+        return this.id;
     }
 
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public static class MusicsBean implements Serializable {
         private static final long serialVersionUID = 1L;
         /**
-         * id : 1
-         * created_at : 2017-03-16 17:22:39
-         * updated_at : 2017-03-16 17:22:42
-         * special_id : 1
-         * music_id : 1
-         * music_info : {"id":1,"created_at":"2017-03-16 17:11:26","updated_at":"2017-03-21
-         * 02:29:48","deleted_at":null,"title":"水手公园","singer":{"id":1,"created_at":"2017-03-16
-         * 17:22:04","updated_at":"2017-03-16 17:22:08","name":"汤圆毛","cover":{"id":2,
-         * "image_width":3264,"image_height":2448}},"storage":129,"last_time":180,
-         * "lyric":"lalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallal","taste_count":4,"share_count":0,"comment_count":0}
+         * id : 7
+         * created_at : 2017-04-17 15:27:59
+         * updated_at : 2017-07-06 03:53:04
+         * deleted_at : null
+         * title : umbrella
+         * singer : {"id":2,"created_at":"2017-03-16 17:22:18","updated_at":"2017-03-16 17:22:20","name":"佚名","cover":null}
+         * storage : {"id":113}
+         * last_time : 300
+         * lyric : null
+         * taste_count : 0
+         * share_count : 0
+         * comment_count : 0
+         * has_like : true
          */
 
         private int id;
         private String created_at;
         private String updated_at;
-        private int special_id;
-        private int music_id;
-        private MusicInfoBean music_info;
+        private String deleted_at;
+        private String title;
+        private SingerBean singer;
+        private MusicsBeanIdStorage storage;
+        private int last_time;
+        private String lyric;
+        private int taste_count;
+        private int share_count;
+        private int comment_count;
+        private boolean has_like;
+
+        public static class MusicsBeanIdStorage implements Serializable {
+            private static final long serialVersionUID = 1L;
+            private int id;
+            private int amount;
+            private int paid_node;
+            private boolean paid;
+
+            public int getAmount() {
+                return amount;
+            }
+
+            public void setAmount(int amount) {
+                this.amount = amount;
+            }
+
+            public int getPaid_node() {
+                return paid_node;
+            }
+
+            public void setPaid_node(int paid_node) {
+                this.paid_node = paid_node;
+            }
+
+            public boolean isPaid() {
+                return paid;
+            }
+
+            public void setPaid(boolean paid) {
+                this.paid = paid;
+            }
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+        }
 
         public int getId() {
             return id;
@@ -230,70 +287,101 @@ public class MusicAlbumDetailsBean implements Serializable {
             this.updated_at = updated_at;
         }
 
-        public int getSpecial_id() {
-            return special_id;
+        public String getDeleted_at() {
+            return deleted_at;
         }
 
-        public void setSpecial_id(int special_id) {
-            this.special_id = special_id;
+        public void setDeleted_at(String deleted_at) {
+            this.deleted_at = deleted_at;
         }
 
-        public int getMusic_id() {
-            return music_id;
+        public String getTitle() {
+            return title;
         }
 
-        public void setMusic_id(int music_id) {
-            this.music_id = music_id;
+        public void setTitle(String title) {
+            this.title = title;
         }
 
-        public MusicInfoBean getMusic_info() {
-            return music_info;
+        public SingerBean getSinger() {
+            return singer;
         }
 
-        public void setMusic_info(MusicInfoBean music_info) {
-            this.music_info = music_info;
+        public void setSinger(SingerBean singer) {
+            this.singer = singer;
         }
 
-        public static class MusicInfoBean implements Serializable {
+        public MusicsBeanIdStorage getStorage() {
+            return storage;
+        }
+
+        public void setStorage(MusicsBeanIdStorage storage) {
+            this.storage = storage;
+        }
+
+        public int getLast_time() {
+            return last_time;
+        }
+
+        public void setLast_time(int last_time) {
+            this.last_time = last_time;
+        }
+
+        public String getLyric() {
+            return lyric;
+        }
+
+        public void setLyric(String lyric) {
+            this.lyric = lyric;
+        }
+
+        public int getTaste_count() {
+            return taste_count;
+        }
+
+        public void setTaste_count(int taste_count) {
+            this.taste_count = taste_count;
+        }
+
+        public int getShare_count() {
+            return share_count;
+        }
+
+        public void setShare_count(int share_count) {
+            this.share_count = share_count;
+        }
+
+        public int getComment_count() {
+            return comment_count;
+        }
+
+        public void setComment_count(int comment_count) {
+            this.comment_count = comment_count;
+        }
+
+        public boolean isHas_like() {
+            return has_like;
+        }
+
+        public void setHas_like(boolean has_like) {
+            this.has_like = has_like;
+        }
+
+        public static class SingerBean implements Serializable {
             private static final long serialVersionUID = 1L;
             /**
-             * id : 1
-             * created_at : 2017-03-16 17:11:26
-             * updated_at : 2017-03-21 02:29:48
-             * deleted_at : null
-             * title : 水手公园
-             * singer : {"id":1,"created_at":"2017-03-16 17:22:04","updated_at":"2017-03-16
-             * 17:22:08","name":"汤圆毛","cover":{"id":2,"image_width":3264,"image_height":2448}}
-             * storage : 129
-             * last_time : 180
-             * lyric :
-             * lalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallal
-             * taste_count : 4
-             * share_count : 0
-             * comment_count : 0
+             * id : 2
+             * created_at : 2017-03-16 17:22:18
+             * updated_at : 2017-03-16 17:22:20
+             * name : 佚名
+             * cover : null
              */
 
             private int id;
             private String created_at;
             private String updated_at;
-            private Object deleted_at;
-            private String title;
-            private SingerBean singer;
-            private int storage;
-            private int last_time;
-            private String lyric;
-            private int taste_count;
-            private int share_count;
-            private int comment_count;
-            private int isdiggmusic;
-
-            public int getIsdiggmusic() {
-                return isdiggmusic;
-            }
-
-            public void setIsdiggmusic(int isdiggmusic) {
-                this.isdiggmusic = isdiggmusic;
-            }
+            private String name;
+            private StorageBean cover;
 
             public int getId() {
                 return id;
@@ -319,170 +407,40 @@ public class MusicAlbumDetailsBean implements Serializable {
                 this.updated_at = updated_at;
             }
 
-            public Object getDeleted_at() {
-                return deleted_at;
+            public String getName() {
+                return name;
             }
 
-            public void setDeleted_at(Object deleted_at) {
-                this.deleted_at = deleted_at;
+            public void setName(String name) {
+                this.name = name;
             }
 
-            public String getTitle() {
-                return title;
+            public StorageBean getCover() {
+                return cover;
             }
 
-            public void setTitle(String title) {
-                this.title = title;
+            public void setCover(StorageBean cover) {
+                this.cover = cover;
+            }
+        }
+
+        public static class StorageBeanX implements Serializable {
+            private static final long serialVersionUID = 1L;
+            /**
+             * id : 113
+             */
+
+            private int id;
+
+            public int getId() {
+                return id;
             }
 
-            public SingerBean getSinger() {
-                return singer;
-            }
-
-            public void setSinger(SingerBean singer) {
-                this.singer = singer;
-            }
-
-            public int getStorage() {
-                return storage;
-            }
-
-            public void setStorage(int storage) {
-                this.storage = storage;
-            }
-
-            public int getLast_time() {
-                return last_time;
-            }
-
-            public void setLast_time(int last_time) {
-                this.last_time = last_time;
-            }
-
-            public String getLyric() {
-                return lyric;
-            }
-
-            public void setLyric(String lyric) {
-                this.lyric = lyric;
-            }
-
-            public int getTaste_count() {
-                return taste_count;
-            }
-
-            public void setTaste_count(int taste_count) {
-                this.taste_count = taste_count;
-            }
-
-            public int getShare_count() {
-                return share_count;
-            }
-
-            public void setShare_count(int share_count) {
-                this.share_count = share_count;
-            }
-
-            public int getComment_count() {
-                return comment_count;
-            }
-
-            public void setComment_count(int comment_count) {
-                this.comment_count = comment_count;
-            }
-
-            public static class SingerBean implements Serializable {
-                private static final long serialVersionUID = 1L;
-                /**
-                 * id : 1
-                 * created_at : 2017-03-16 17:22:04
-                 * updated_at : 2017-03-16 17:22:08
-                 * name : 汤圆毛
-                 * cover : {"id":2,"image_width":3264,"image_height":2448}
-                 */
-
-                private int id;
-                private String created_at;
-                private String updated_at;
-                private String name;
-                private StorageBean cover;
-
-                public int getId() {
-                    return id;
-                }
-
-                public void setId(int id) {
-                    this.id = id;
-                }
-
-                public String getCreated_at() {
-                    return created_at;
-                }
-
-                public void setCreated_at(String created_at) {
-                    this.created_at = created_at;
-                }
-
-                public String getUpdated_at() {
-                    return updated_at;
-                }
-
-                public void setUpdated_at(String updated_at) {
-                    this.updated_at = updated_at;
-                }
-
-                public String getName() {
-                    return name;
-                }
-
-                public void setName(String name) {
-                    this.name = name;
-                }
-
-                public StorageBean getCover() {
-                    return cover;
-                }
-
-                public void setCover(StorageBean cover) {
-                    this.cover = cover;
-                }
+            public void setId(int id) {
+                this.id = id;
             }
         }
     }
 
-    public static class MusicListConverter implements PropertyConverter<List<MusicsBean>, String> {
-        @Override
-        public List<MusicsBean> convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(List<MusicsBean> entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
-
-    public static class MusicAlbumLIstConverter implements PropertyConverter<StorageBean, String> {
-        @Override
-        public StorageBean convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(StorageBean entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
-    }
+    public static class MusicsBeanConvert extends BaseConvert<List<MusicsBean>>{}
 }

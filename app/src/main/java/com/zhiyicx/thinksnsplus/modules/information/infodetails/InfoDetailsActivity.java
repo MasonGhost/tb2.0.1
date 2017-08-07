@@ -37,5 +37,6 @@ public class InfoDetailsActivity extends TSActivity<InfoDetailsPresenter, InfoDe
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
+        mContanierFragment.onActivityResult(requestCode,resultCode,data);
     }
 }

@@ -8,13 +8,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -46,16 +46,15 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         if (realData.getStorage() == null) {
             imageView.setVisibility(View.GONE);
         } else {
-            imageView.post(() -> {
-                imageView.setVisibility(View.VISIBLE);
-                Glide.with(BaseApplication.getContext())
-                        .load(ImageUtils.imagePathConvertV2(realData.getStorage().getId(),imageView.getWidth(),imageView.getHeight(),
-                                ImageZipConfig.IMAGE_80_ZIP))
-                        .placeholder(R.drawable.shape_default_image)
-                        .error(R.drawable.shape_default_image)
-                        .override(imageView.getWidth(),imageView.getHeight())
-                        .into(imageView);
-            });
+            imageView.setVisibility(View.VISIBLE);
+            Glide.with(BaseApplication.getContext())
+                    .load(ImageUtils.imagePathConvertV2(realData.getStorage().getId(), imageView.getWidth(), imageView.getHeight(),
+                            ImageZipConfig.IMAGE_80_ZIP))
+                    .placeholder(R.drawable.shape_default_image)
+                    .error(R.drawable.shape_default_image)
+                    .override(imageView.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_image_width)
+                            , imageView.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_height))
+                    .into(imageView);
         }
         String from = TextUtils.isEmpty(realData.getFrom()) ? "" : "\b\b\b来自\b" + realData.getFrom();
         holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData

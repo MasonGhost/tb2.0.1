@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PictureAndTextEditorView;
 
 /**
  * @author LiuChao

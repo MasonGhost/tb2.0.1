@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideActivity;
+import com.zhiyicx.thinksnsplus.modules.guide.GuideFragment_v2;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 
 /**
@@ -17,6 +19,7 @@ import com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter;
 
 public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFragment> {
 
+    private static String flag = "";
 
     public static void startToWEBActivity(Context context, String... args) {
         Intent intent = new Intent(context, CustomWEBActivity.class);
@@ -25,17 +28,27 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
             try {
                 bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_URL, args[0]);
                 bundle.putString(CustomWEBFragment.BUNDLE_PARAMS_WEB_TITLE, args[1]);
+                flag = args[2];
             } catch (Exception e) {
             }
             intent.putExtras(bundle);
         }
-
         context.startActivity(intent);
+
     }
 
     @Override
     protected void componentInject() {
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (flag.equals(GuideFragment_v2.ADVERT)) {
+            finish();
+            startActivity(new Intent(this, GuideActivity.class));
+        }
     }
 
     @Override

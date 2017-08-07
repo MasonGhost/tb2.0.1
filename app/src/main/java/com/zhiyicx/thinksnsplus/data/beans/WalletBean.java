@@ -8,6 +8,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 /**
  * @Describe 钱包的数据类
  * @Author Jungle68
@@ -15,7 +17,8 @@ import org.greenrobot.greendao.annotation.Generated;
   @Contact master.jungle68@gmail.com
  */
 @Entity
-public class WalletBean implements Parcelable {
+public class WalletBean implements Parcelable ,Serializable{
+    private static final long serialVersionUID=123L;
 
     /**
      * id : 1

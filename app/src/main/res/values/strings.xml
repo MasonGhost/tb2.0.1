@@ -33,6 +33,7 @@
     <string name="mine_collect">收藏</string>
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
+    <string name="certification">认证</string>
     <string name="setting">设置</string>
     <string name="wallet">钱包</string>
     <string name="follow">关注</string>
@@ -45,8 +46,9 @@
     <string name="active">活动</string>
     <string name="buy_goods">购物</string>
     <string name="find_person">找人</string>
-    <string name="near_person">附件的人</string>
+    <string name="near_person">附近的人</string>
     <string name="group">圈子</string>
+    <string name="quiz">问答</string>
 
     <!--个人资料-->
     <string name="user_info">个人资料</string>
@@ -57,6 +59,7 @@
     <string name="select_sex">选择性别</string>
     <string name="city">城市</string>
     <string name="select_city">选择居住地</string>
+    <string name="tag">标签</string>
     <string name="introduce">简介</string>
     <string name="edit_introduce">编辑简介</string>
     <string name="all">全部</string>
@@ -69,6 +72,7 @@
 
     <!-- 设置 -->
     <string name="vertify">认证</string>
+    <string name="tags_manager">标签管理</string>
     <string name="account_manager">账户管理</string>
     <string name="change_password">修改密码</string>
     <string name="clean_cache">清理缓存</string>
@@ -318,4 +322,96 @@
     <string name="normal_qustion_three">怎么更换个人主页相册封面？</string>
     <string name="input_instructions">输入提示</string>
     <string name="input_instructions_detail">输入格式错误，手机号码或邮箱仅支持数字或字母</string>
+
+    <!--用户标签-->
+    <string name="jump_over">跳过</string>
+    <string name="save">保存</string>
+    <string name="next">下一步</string>
+    <string name="user_tag_choose_tag">选择标签</string>
+    <string name="user_tag_choosed_tag_format">可选择%1$d个标签，已经选择%2$d个标签</string>
+    <string name="user_tag_choosed_tag_format_tip">最多只能选择%d个标签</string>
+    <string name="tips">温馨提示</string>
+    <string name="tags_tips">标签为全局标签，选择合适的标签，系统可推荐你感兴趣的内容，方便找到相同身份或爱好的人，很重要哦！</string>
+
+    <!--打赏-->
+    <string name="reward">打赏</string>
+    <string name="reward_list">打赏列表</string>
+    <string name="reward_show">%1$s人打赏,共%2$s元</string>
+    <string name="reward_list_tip">%s打赏了文章</string>
+    <string name="choose_reward_money">选择打赏金额</string>
+    <string name="reward_success">打赏成功</string>
+
+    <!--认证-->
+    <string name="certification_personage">个人认证</string>
+    <string name="certification_company">企业认证</string>
+    <string name="certification_basic_info">基本信息</string>
+    <string name="certification_basic_info_name">真实姓名</string>
+    <string name="name_hint">输入真实姓名</string>
+    <string name="certification_basic_info_id_card">身份证号码</string>
+    <string name="id_card_hint">输入正确的身份证号码</string>
+    <string name="certification_basic_info_phone">手机号码</string>
+    <string name="info_phone_hint">输入11位手机号码</string>
+
+    <string name="certification_basic_info_company_name">机构名称</string>
+    <string name="company_name_hint">输入机构名称</string>
+    <string name="certification_basic_info_company_address">机构地址</string>
+    <string name="company_address_hint">输入机构地址</string>
+    <string name="certification_basic_info_company_principal_name">负责人</string>
+    <string name="principal_name_hint">填写机构负责人</string>
+    <string name="certification_basic_info_principal_id_card">身份证号码</string>
+    <string name="company_principal_id_card_hint">输入负责人身份证号码</string>
+    <string name="certification_basic_info_company_principal_phone">负责人电话</string>
+    <string name="alert_error_id_card">请输入正确的身份证号码</string>
+
+    <string name="certification_basic_info_description">认证描述</string>
+    <string name="certification_basic_info_data">认证资料</string>
+    <string name="description_hint">认证相关信息</string>
+    
+    <string name="send_certification_data">上传资料</string>
+    <string name="send_certification_id_card">上传身份证正反面</string>
+    <string name="send_certification_company">上传企业机构营业执照</string>
+    <string name="send_certification_pic_hint">点击上传照片</string>
+    <string name="send_certification_pic_next">继续上传</string>
+    <string name="send_certification">上传</string>
+    <string name="send_certification_ing">上传中</string>
+    <string name="certification_state_success">已认证</string>
+    <string name="certification_state_failed">申请失败</string>
+    <string name="certification_state_ing">待审核</string>
+    <string name="certification_ing_hint">认证信息审核中，我们会在7个工作日内给您答复</string>
+
+
+    <!--问答相关-->
+    <string name="qa_publish">发布问题</string>
+    <string name="qa_detail">问题详情</string>
+    <string name="qa_publish_next">下一步</string>
+    <string name="qa_publish_title_hint">请输入问题并以问号结尾</string>
+    <string name="qa_publish_title_toast">输入问题请以“？”结束</string>
+    <string name="qa_publish_content_hint">详细描述你的问题，有助于准确收到准确的回答</string>
+    <string name="qa_publish_anonymous">匿名提问</string>
+    <string name="qa_publish_enable_anonymous">启用匿名</string>
+    <string name="qa_topic">话题</string>
+    <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
+    <string name="qa_publish_search_topic">搜索话题</string>
+    <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
+    <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
+    <string name="qa_publish_reward">悬赏</string>
+    <string name="qa_publish_reset_money">重置</string>
+    <string name="qa_publish_reward_set_money">设置悬赏金额</string>
+    <string name="qa_publish_reward_set_onlooker_money">设置围观金额</string>
+    <string name="qa_publish_reward_custom_money">自定义金额</string>
+    <string name="qa_publish_reward_invite">邀请</string>
+    <string name="qa_publish_reward_rule">悬赏规则</string>
+    <string name="qa_publish_reward_onlookers">围观</string>
+    <string name="qa_publish_recommend_expert">推荐专家</string>
+    <string name="qa_publish_show_expert">%1$d 回答  ·  %2$d 赞</string>
+    <string name="qa_publish_expert_show_hit_recommend">推荐专家</string>
+    <string name="qa_publish_btn">发布</string>
+    <string name="qa_topic_all">全部话题</string>
+    <string name="qa_topic_user_followed">我关注的</string>
+    <string name="qa_topic_follow">关注</string>
+    <string name="qa_topic_followed">已关注</string>
+    <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
+    <string name="qa_show_topic_followed_reward">%1$d 关注  ·  %2$d 回答  ·  ￥%3$.1f 悬赏</string>
+    <string name="edit_quit">放弃编辑</string>
+    <string name="save_to_draft_box">保存至草稿箱</string>
 </resources>

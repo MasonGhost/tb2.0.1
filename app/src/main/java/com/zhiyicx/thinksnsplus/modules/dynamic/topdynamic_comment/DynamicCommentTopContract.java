@@ -24,17 +24,17 @@ public interface DynamicCommentTopContract {
 
         int getTopDyas();
 
-        float getInputMoney();
+        double getInputMoney();
 
         void topSuccess();
     }
 
     interface Presenter extends IBasePresenter {
         double getBalance();
-        void topDynamicComment(long feed_id,long comment_id, int amount, int day);
+        void topDynamicComment(long feed_id,long comment_id, double amount, int day);
     }
 
     interface Repository {
-        Observable<BaseJsonV2<Integer>> stickTop(long feed_id,long comment_id, int amount, int day);
+        Observable<BaseJsonV2<Integer>> stickTop(long feed_id,long comment_id, double amount, int day);
     }
 }

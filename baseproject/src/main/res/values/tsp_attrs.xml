@@ -44,6 +44,26 @@
         <attr name="showLines" format="reference|integer"></attr>
     </declare-styleable>
 
+    <!--组合输入框 文字 输入框-->
+    <declare-styleable name="inputContainHint">
+        <!--是否显示分割线-->
+        <attr name="showDiver" format="reference|boolean"/>
+        <!--是否必填-->
+        <attr name="isRequired" format="reference|boolean"/>
+        <!--左边文字-->
+        <attr name="leftHintText" format="reference|string"/>
+        <!--输入框提示-->
+        <attr name="rightHint" format="reference|string"/>
+        <!--输入的类型-->
+        <attr name="rightInputType" format="reference|string"/>
+        <!--输入长度-->
+        <attr name="rightMaxLength" format="reference|integer"/>
+        <!--内容高度-->
+        <attr name="totalMinHeight" format="reference|dimension"/>
+        <!--输入行数最高-->
+        <attr name="rightMaxLines" format="reference|integer"/>
+    </declare-styleable>
+
     <!--有加载动画的按钮-->
     <declare-styleable name="loadButton">
         <!--按钮文字-->
@@ -108,5 +128,12 @@
         <attr name="compoundDrawableWidth" format="dimension"/>
         <attr name="compoundDrawableHeight" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="userAvatarView">
+        <!--头像大小-->
+        <attr name="ts_avatare_size" format="dimension"/>
+        <attr name="ts_ratio" format="float"/>
+
+    </declare-styleable>
+
 
 </resources>

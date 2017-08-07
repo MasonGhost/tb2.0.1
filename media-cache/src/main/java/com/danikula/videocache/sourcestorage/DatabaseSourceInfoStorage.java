@@ -21,13 +21,15 @@ class DatabaseSourceInfoStorage extends SQLiteOpenHelper implements SourceInfoSt
     private static final String TABLE = "SourceInfo";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_URL = "url";
+    private static final String COLUMN_TOKEN = "token";
     private static final String COLUMN_LENGTH = "length";
     private static final String COLUMN_MIME = "mime";
-    private static final String[] ALL_COLUMNS = new String[]{COLUMN_ID, COLUMN_URL, COLUMN_LENGTH, COLUMN_MIME};
+    private static final String[] ALL_COLUMNS = new String[]{COLUMN_ID, COLUMN_URL, COLUMN_TOKEN,COLUMN_LENGTH, COLUMN_MIME};
     private static final String CREATE_SQL =
             "CREATE TABLE " + TABLE + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     COLUMN_URL + " TEXT NOT NULL," +
+                    COLUMN_TOKEN + " TEXT," +
                     COLUMN_MIME + " TEXT," +
                     COLUMN_LENGTH + " INTEGER" +
                     ");";
@@ -83,6 +85,7 @@ class DatabaseSourceInfoStorage extends SQLiteOpenHelper implements SourceInfoSt
     private SourceInfo convert(Cursor cursor) {
         return new SourceInfo(
                 cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_URL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TOKEN)),
                 cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_LENGTH)),
                 cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MIME))
         );
@@ -91,6 +94,7 @@ class DatabaseSourceInfoStorage extends SQLiteOpenHelper implements SourceInfoSt
     private ContentValues convert(SourceInfo sourceInfo) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_URL, sourceInfo.url);
+        values.put(COLUMN_TOKEN, sourceInfo.token);
         values.put(COLUMN_LENGTH, sourceInfo.length);
         values.put(COLUMN_MIME, sourceInfo.mime);
         return values;

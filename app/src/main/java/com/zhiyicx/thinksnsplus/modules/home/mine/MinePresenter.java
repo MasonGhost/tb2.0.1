@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
+import android.os.Bundle;
+
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
@@ -8,11 +10,13 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
+import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -44,6 +48,9 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+
+    @Inject
+    CertificationDetailRepository mCertificationDetailRepository;
 
     @Inject
     public MinePresenter(MineContract.Repository repository, MineContract.View rootView) {
@@ -130,4 +137,35 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     public int getBalanceRatio() {
         return mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
     }
+
+    @Override
+    public void getCertificationInfo() {
+        mCertificationDetailRepository.getCertificationInfo()
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<UserCertificationInfo>() {
+
+                    @Override
+                    protected void onSuccess(UserCertificationInfo data) {
+                        mRootView.updateCertification(data);
+                    }
+                });
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS)
+    public void updateCertification(Bundle bundle) {
+        // 发布成功
+        if (bundle != null) {
+            UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_UPDATE_CERTIFICATION_SUCCESS);
+            mRootView.updateCertification(info);
+        }
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS)
+    public void sendSuccess(Bundle bundle) {
+        if (bundle != null) {
+            UserCertificationInfo info = bundle.getParcelable(EventBusTagConfig.EVENT_SEND_CERTIFICATION_SUCCESS);
+            mRootView.updateCertification(info);
+        }
+    }
+
 }

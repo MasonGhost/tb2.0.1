@@ -30,9 +30,11 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
@@ -104,6 +106,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Inject
     SystemRepository mSystemRepository;
+    @Inject
+    AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
     SparseArray<Long> msendingStatus = new SparseArray<>();
 
@@ -167,7 +171,6 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     @Override
     public List<DynamicDetailBeanV2> requestCacheData(Long maxId, boolean isLoadMore) {
         List<DynamicDetailBeanV2> datas = null;
-        System.out.println("mDynamicDetailBeanV2GreenDao = " + mDynamicDetailBeanV2GreenDao.getCounts());
         switch (mRootView.getDynamicType()) {
             case ApiConfig.DYNAMIC_TYPE_FOLLOWS:
                 if (!isLoadMore) {// 刷新
@@ -368,7 +371,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             creatComment.setReplyUser(mUserInfoBeanGreenDao.getSingleDataFromCache(replyToUserId));
         }
         creatComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
-        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache((long) AppApplication.getmCurrentLoginAuth().getUser_id()));
+        creatComment.setCommentUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
         creatComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         List<DynamicCommentBean> commentBeanList = new ArrayList<>();
         commentBeanList.add(creatComment);
@@ -450,8 +453,13 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
     }
 
     @Override
-    public List<SystemConfigBean.Advert> getAdvert() {
-        return mSystemRepository.getBootstrappersInfoFromLocal().getAdverts();
+    public List<RealAdvertListBean> getBannerAdvert() {
+        return mAllAdvertListBeanGreenDao.getDynamicBannerAdvert().getMRealAdvertListBeen();
+    }
+
+    @Override
+    public List<RealAdvertListBean> getListAdvert() {
+        return mAllAdvertListBeanGreenDao.getDynamicListAdvert().getMRealAdvertListBeen();
     }
 
     @Override
@@ -467,6 +475,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void payNote(final int dynamicPosition, final int imagePosition, int note, final boolean isImage) {
+        if (handleTouristControl()){
+            return;
+        }
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
         if (walletBean != null) {

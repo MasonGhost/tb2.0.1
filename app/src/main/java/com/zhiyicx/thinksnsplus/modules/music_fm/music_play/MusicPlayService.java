@@ -34,6 +34,7 @@ import java.util.List;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
         .MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
@@ -125,20 +126,17 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     public void onLoadChildren(@NonNull final String parentMediaId,
                                @NonNull final Result<List<MediaBrowserCompat.MediaItem>> result) {
         if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
-            result.sendResult(new ArrayList<MediaBrowserCompat.MediaItem>());
+            result.sendResult(new ArrayList<>());
         } else if (mMusicProvider.isInitialized()) {
             List<MediaBrowserCompat.MediaItem> data;
             data = mMusicProvider.getChildren(parentMediaId, getResources());
             result.sendResult(data);
         } else {
             result.detach();
-            mMusicProvider.retrieveMediaAsync(new MusicProvider.Callback() {
-                @Override
-                public void onMusicCatalogReady(boolean success) {
-                    List<MediaBrowserCompat.MediaItem> data;
-                    data = mMusicProvider.getChildren(parentMediaId, getResources());
-                    result.sendResult(data);
-                }
+            mMusicProvider.retrieveMediaAsync(success -> {
+                List<MediaBrowserCompat.MediaItem> data;
+                data = mMusicProvider.getChildren(parentMediaId, getResources());
+                result.sendResult(data);
             });
         }
     }
@@ -177,12 +175,16 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     public void onCustomAction(String action, Bundle extras) {
         LogUtils.d("onCustomAction");
         MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable(MUSIC_ACTION);
+        String tym = extras.getString(MUSIC_ID,MUSIC_ID);
         if (musicAblum!=null){
             MusicProvider newMusicProvider = new MusicProvider(new MusicDataConvert(musicAblum));
             newMusicProvider.retrieveMediaAsync(null);// 很重要
             mMusicProvider = newMusicProvider;
             mQueueManager.setMusicProvider(mMusicProvider);
             mLocalPlayback.setMusicProvider(mMusicProvider);
+            if (!tym.equals(MUSIC_ID)){// 加入播放队列
+                mQueueManager.setQueueFromMusic(tym);
+            }
         }
 
     }

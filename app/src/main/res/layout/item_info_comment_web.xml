@@ -18,6 +18,9 @@
         layout="@layout/item_dynamic_detail_dig"
         android:visibility="gone"/>
 
+    <include
+        layout="@layout/include_reward"/>
+
     <FrameLayout
         android:id="@+id/info_detail_comment"
         android:layout_width="match_parent"

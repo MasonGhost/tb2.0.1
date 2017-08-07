@@ -28,7 +28,7 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
         return new CommonMetadata.Builder()
                 .putInteger(CommonMetadata.METADATA_KEY_COMMENT_ID, commentData.getId() == null ? -1 : commentData.getId().intValue())
                 .putInteger(CommonMetadata.METADATA_KEY_COMMENT_STATE, mStates[commentData.getState()])
-                .putInteger(CommonMetadata.METADATA_KEY_TO_USER_ID, commentData.getReply_to_user_id())
+                .putInteger(CommonMetadata.METADATA_KEY_TO_USER_ID, (int)commentData.getReply_user())
                 .putLong(CommonMetadata.METADATA_KEY_COMMENT_MARK, commentData.getComment_mark())
                 .putString(CommonMetadata.METADATA_KEY_COMMENT_CONTENT, commentData.getComment_content())
                 .putString(CommonMetadata.METADATA_KEY_CREATED_DATE, commentData.getCreated_at())
@@ -48,8 +48,8 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
         commonMetadataBean.setComment_content(commentData.getComment_content());
         commonMetadataBean.setComment_id(commentData.getId() == null ? -1 : commentData.getId().intValue());
         commonMetadataBean.setSource_id(commentData.getMusic_id() != 0 ? commentData.getMusic_id() : commentData.getSpecial_id());
-        commonMetadataBean.setTo_user(commentData.getReply_to_user_id());
-        commonMetadataBean.setFrom_user(commentData.getUser_id());
+        commonMetadataBean.setTo_user((int)commentData.getReply_user());
+        commonMetadataBean.setFrom_user((int)commentData.getUser_id());
         commonMetadataBean.setComment_type(commentData.getMusic_id() == 0 ?
                 CommentTypeConfig.TS_SPECIAL_COMMENT : CommentTypeConfig.TS_MUSIC_COMMENT);
         commonMetadataBean.setComment_url(commentData.getMusic_id() == 0 ?
@@ -65,9 +65,9 @@ public class TCommonMetadataProvider extends CommonMetadataProvider<MusicComment
     @Override
     public MusicCommentListBean buildRealNeedData(CommonMetadataBean commonMetadataBean) {
         MusicCommentListBean musicCommentListBean = new MusicCommentListBean();
-        musicCommentListBean.setComment_id(commonMetadataBean.getComment_id());
+        musicCommentListBean.setId((long)commonMetadataBean.getComment_id());
         musicCommentListBean.setUser_id(commonMetadataBean.getFrom_user());
-        musicCommentListBean.setReply_to_user_id(commonMetadataBean.getTo_user());
+        musicCommentListBean.setReply_user(commonMetadataBean.getTo_user());
         musicCommentListBean.setComment_content(commonMetadataBean.getComment_content());
         musicCommentListBean.setComment_mark(commonMetadataBean.getComment_mark());
         musicCommentListBean.setCreated_at(commonMetadataBean.getCreated_at());

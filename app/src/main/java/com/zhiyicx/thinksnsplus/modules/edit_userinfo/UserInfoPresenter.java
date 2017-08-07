@@ -11,9 +11,12 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.IUploadRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.EventBus;
@@ -24,8 +27,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -44,6 +49,11 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     AuthRepository mIAuthRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    UserTagBeanGreenDaoImpl mUserTagBeanGreenDao;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View
@@ -161,6 +171,35 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void getCurrentUserTags() {
+        List<UserTagBean> datas = mUserTagBeanGreenDao.getCurrentUsertags();
+        if (datas.isEmpty()) {
+            getCurrentUserTagsFromNet();
+        }else {
+            mRootView.updateTags(datas);
+        }
+
+    }
+
+    private void getCurrentUserTagsFromNet() {
+        Subscription sub=  mUserInfoRepository.getCurrentUserTags()
+                  .map(userTagBeens -> {
+                      for (UserTagBean userTagBean : userTagBeens) {
+                          userTagBean.setMine_has(true);
+                      }
+                      mUserTagBeanGreenDao.saveMultiData(userTagBeens);
+                      return userTagBeens;
+                  })
+                  .subscribe(new BaseSubscribeForV2<List<UserTagBean>>() {
+                      @Override
+                      protected void onSuccess(List<UserTagBean> data) {
+                          mRootView.updateTags(data);
+                      }
+                  });
+        addSubscrebe(sub);
     }
 
     @Override

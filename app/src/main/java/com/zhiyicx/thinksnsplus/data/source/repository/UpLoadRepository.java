@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 
 import java.io.File;
 import java.util.HashMap;
@@ -119,21 +120,11 @@ public class UpLoadRepository implements IUploadRepository {
                                 if (method.equalsIgnoreCase("put")) {
                                     // 使用map操作符携带任务id，继续向下传递
                                     return mCommonClient.upLoadFileByPut(uri, headerMap, UpLoadFile.upLoadFileAndParams(fileMap, optionsMap))
-                                            .map(new Func1<String, String[]>() {
-                                                @Override
-                                                public String[] call(String s) {
-                                                    return new String[]{s, storageTaskId + ""};
-                                                }
-                                            });
+                                            .map(s -> new String[]{s, storageTaskId + ""});
                                 } else if (method.equalsIgnoreCase("post")) {
                                     // 使用map操作符携带任务id，继续向下传递
                                     return mCommonClient.upLoadFileByPost(uri, headerMap, UpLoadFile.upLoadFileAndParams(fileMap, optionsMap))
-                                            .map(new Func1<String, String[]>() {
-                                                @Override
-                                                public String[] call(String s) {
-                                                    return new String[]{s, storageTaskId + ""};
-                                                }
-                                            });
+                                            .map(s -> new String[]{s, storageTaskId + ""});
                                 } else {
                                     return Observable.just(new String[]{"failure", ""});// 没有合适的方法上传文件，这一般是不会发生的
                                 }
@@ -161,16 +152,13 @@ public class UpLoadRepository implements IUploadRepository {
                                 return Observable.just(failure);
                             default:// 调用通知任务
                                 return mCommonClient.notifyStorageTask(s[1], s[0], null)
-                                        .map(new Func1<BaseJson, BaseJson<Integer>>() {
-                                            @Override
-                                            public BaseJson<Integer> call(BaseJson baseJson) {
-                                                BaseJson<Integer> newBaseJson = new BaseJson<Integer>();
-                                                newBaseJson.setCode(baseJson.getCode());
-                                                newBaseJson.setStatus(baseJson.isStatus());
-                                                newBaseJson.setMessage(baseJson.getMessage());
-                                                newBaseJson.setData(Integer.parseInt(s[1]));
-                                                return newBaseJson;
-                                            }
+                                        .map(baseJson -> {
+                                            BaseJson<Integer> newBaseJson = new BaseJson<Integer>();
+                                            newBaseJson.setCode(baseJson.getCode());
+                                            newBaseJson.setStatus(baseJson.isStatus());
+                                            newBaseJson.setMessage(baseJson.getMessage());
+                                            newBaseJson.setData(Integer.parseInt(s[1]));
+                                            return newBaseJson;
                                         });
                         }
                     }

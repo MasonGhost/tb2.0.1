@@ -1,0 +1,81 @@
+package com.zhiyicx.thinksnsplus.data.source.repository.i;
+
+import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
+import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
+
+import java.util.List;
+
+import retrofit2.http.Field;
+import rx.Observable;
+
+/**
+ * @Describe 认证相关接口
+ * @Author Jungle68
+ * @Date 2017/1/19
+ * @Contact master.jungle68@gmail.com
+ */
+
+public interface ISystemRepository {
+
+    /**
+     * 去获取服务器启动信息
+     */
+    void getBootstrappersInfoFromServer();
+
+    /**
+     * 获取本地启动信息
+     */
+    SystemConfigBean getBootstrappersInfoFromLocal();
+
+    /**
+     * ts 助手配置
+     */
+    String checkTShelper(long user_id);
+    /**
+     * 意见反馈
+     *
+     * @param content 反馈内容
+     * @return
+     */
+    Observable<BaseJson<Object>> systemFeedback(String content, long system_mark);
+
+    /**
+     * 获取系统会话列表
+     *
+     * @param max_id
+     * @param limit
+     * @return
+     */
+    Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(long max_id, int limit);
+
+    /**
+     * 获取支付信息
+     * @param channel 支付渠道
+     * @param amount 支付金额
+     * @return
+     */
+    Observable<PayStrBean> getPayStr(String channel, double amount);
+
+    /**
+     * 获取本地系统会话列表
+     *
+     * @param max_Id
+     * @return
+     */
+    List<SystemConversationBean> requestCacheData(long max_Id);
+
+    /**
+     * 创建ts helper 对话
+     */
+    void creatTsHelperConversation();
+
+    /**
+     * 获取全部标签
+     * @return
+     */
+    Observable<List<TagCategoryBean>> getAllTags();
+
+}

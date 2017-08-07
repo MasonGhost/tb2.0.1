@@ -4,6 +4,7 @@ import android.animation.AnimatorInflater;
 import android.animation.LayoutTransition;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -17,9 +18,12 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -33,10 +37,12 @@ import android.widget.TextView;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideMusicBgTransform;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
@@ -50,6 +56,7 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailA
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.MusicListPopupWindow;
 import com.zhiyicx.thinksnsplus.widget.PlayerSeekBar;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.LoopPagerRecyclerView;
@@ -72,6 +79,7 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
@@ -137,6 +145,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @BindView(R.id.fragment_music_paly_container)
     RelativeLayout mFragmentMusicPalyContainer;
 
+    private PayPopWindow mPayMusicPopWindow;
+
     /**
      * 播放进度条更新间隔
      */
@@ -148,6 +158,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private ImageLoader mImageLoader;
     private CommonAdapter mAdapter;
+    private CommonAdapter popAdapter;
     private List<MusicAlbumDetailsBean.MusicsBean> mMusicList = new ArrayList<>();
     /**
      * 播放模式
@@ -361,6 +372,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     @Override
     protected void initData() {
+        mCurrentMediaId = MediaIDHelper.extractMusicIDFromMediaID(AppApplication.getmQueueManager().getCurrentMusic()
+                .getDescription().getMediaId());
         mMusicAlbumDetailsBean = (MusicAlbumDetailsBean) getArguments().getSerializable
                 (MUSIC_INFO);
         mMusicList = mMusicAlbumDetailsBean.getMusics();
@@ -372,6 +385,22 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 .data(mMusicList)
                 .adapter(getPopListAdapter())
                 .build();
+    }
+
+    @Override
+    public List<MusicAlbumDetailsBean.MusicsBean> getListDatas() {
+        return popAdapter.getDatas();
+    }
+
+    @Override
+    public void refreshData(int position) {
+        popAdapter.notifyItemChanged(position);
+        EventBus.getDefault().post(getListDatas().get(position), EVENT_MUSIC_LIKE);
+    }
+
+    @Override
+    public MusicAlbumDetailsBean getCurrentAblum() {
+        return mMusicAlbumDetailsBean;
     }
 
     @Override
@@ -489,8 +518,8 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private void updateCurrentMusic(final String mediaId) {
         Observable.from(mMusicList).filter(musicsBean -> {
-            LogUtils.i(musicsBean.getMusic_info().getId() + ":::" + mediaId);
-            return (musicsBean.getMusic_info().getId() + "").equals(mediaId);
+            LogUtils.i(musicsBean.getId() + ":::" + mediaId);
+            return (musicsBean.getId() + "").equals(mediaId);
         }).subscribe(musicsBean -> {
             mCurrentMusic = musicsBean;
             dealCurrentMusic();
@@ -510,23 +539,23 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             mFragmentMusicPalyProgress.setLoading(true);
         }
 
-        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+        if (mCurrentMusic.getComment_count() > 0) {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_incomplete);
-            mFragmentMusicPalyCommentCount.setText(String.valueOf(mCurrentMusic.getMusic_info()
+            mFragmentMusicPalyCommentCount.setText(String.valueOf(mCurrentMusic
                     .getComment_count()));
         } else {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_complete);
             mFragmentMusicPalyCommentCount.setText("");
         }
-        String lyric = mCurrentMusic.getMusic_info().getLyric();
+        String lyric = mCurrentMusic.getLyric();
         if (TextUtils.isEmpty(lyric)) {
             lyric = getString(R.string.music_lyric);
         }
         mFragmentMusicPalyLrc.setText(lyric);
 
-        if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
+        if (mCurrentMusic.isHas_like()) {
             mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
         } else {
             mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
@@ -731,12 +760,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     // 评论数量改变
     @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
     public void onCommentCountUpdate(MusicCommentHeader.HeaderInfo headerInfo) {
-        mCurrentMusic.getMusic_info().setComment_count(headerInfo.getCommentCount());
-        if (mCurrentMusic.getMusic_info().getComment_count() > 0) {
+        mCurrentMusic.setComment_count(headerInfo.getCommentCount());
+        if (mCurrentMusic.getComment_count() > 0) {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_incomplete);
-            mFragmentMusicPalyCommentCount.setText("" + mCurrentMusic.getMusic_info()
-                    .getComment_count());
+            mFragmentMusicPalyCommentCount.setText(mCurrentMusic.getComment_count() + "");
         } else {
             mFragmentMusicPalyComment.setImageResource(
                     R.mipmap.music_ico_comment_complete);
@@ -824,17 +852,30 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     // 音乐播放列表适配器
     @NonNull
     private CommonAdapter getPopListAdapter() {
-        CommonAdapter adapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity()
+        popAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity()
                 , R.layout.item_music_detail_list, mMusicList) {
             @Override
-            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean s, int
+            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean item, int
                     position) {
                 TextView musicName = holder.getView(R.id.item_music_name);
                 TextView authorName = holder.getView(R.id.item_music_author);
-                musicName.setText(s.getMusic_info().getTitle());
-                authorName.setText("-" + s.getMusic_info().getSinger().getName());
+                String music_name = item.getTitle();
+                musicName.setText(music_name);
+                authorName.setText("-" + item.getSinger().getName());
 
-                if (mCurrentMediaId.equals(s.getMusic_info().getId() + "")) {
+                if (item.getStorage().getAmount() != 0) {// 有收费
+                    Drawable top_drawable = getResources().getDrawable(R.mipmap.musici_pic_pay02);//  musicName.getLineHeight()
+                    top_drawable.setBounds(0, 0, top_drawable.getIntrinsicWidth(), top_drawable.getIntrinsicHeight());
+                    ImageSpan imgSpan = new CenterImageSpan(top_drawable);
+                    SpannableString spannableString = SpannableString.valueOf("T" + music_name);
+                    spannableString.setSpan(imgSpan, 0, 1, Spannable
+                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+                    musicName.setText(spannableString);
+                } else {
+                    musicName.setText(music_name);
+                }
+
+                if (mCurrentMediaId.equals(item.getId() + "")) {
                     musicName.setTextColor(getColor(R.color.important_for_theme));
                     authorName.setTextColor(getColor(R.color.important_for_theme));
                 } else {
@@ -845,13 +886,20 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
             }
         };
-        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+        popAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                MusicAlbumDetailsBean.MusicsBean musicsBean = mMusicList.get(position);
+                MusicAlbumDetailsBean.MusicsBean item = mMusicList.get(position);
+
+                if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
+                    initMusicCenterPopWindow(position, item.getStorage().getAmount(),
+                            item.getStorage().getPaid_node(), R.string.buy_pay_music_ablum_desc);
+                    return;
+                }
+
                 MediaControllerCompat controllerCompat = getActivity()
                         .getSupportMediaController();
-                String id = MediaIDHelper.createMediaID("" + musicsBean.getMusic_info().getId(),
+                String id = MediaIDHelper.createMediaID("" + item.getId(),
                         MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
                 controllerCompat.getTransportControls()
                         .playFromMediaId(id, null);
@@ -863,7 +911,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 return false;
             }
         });
-        return adapter;
+        return popAdapter;
     }
 
     // 音乐磁盘适配器
@@ -877,7 +925,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             int position) {
                 ImageView image = holder.getView(R.id.fragment_music_paly_img);
                 String imageUrl = ImageUtils.imagePathConvertV2(
-                        o.getMusic_info().getSinger().getCover().getId(), imageSize, imageSize, ImageZipConfig.IMAGE_70_ZIP);
+                        o.getSinger().getCover().getId(), imageSize, imageSize, ImageZipConfig.IMAGE_70_ZIP);
 
                 mImageLoader.loadImage(getActivity(), GlideImageConfig.builder()
                         .imagerView(image)
@@ -930,14 +978,14 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                         mCurrentImageView.getDrawable(), R.mipmap.icon_256));
                 break;
             case R.id.fragment_music_paly_like: // 点赞
-                mPresenter.handleLike(mCurrentMusic.getMusic_info().getIsdiggmusic() == 0,
+                mPresenter.handleLike(!mCurrentMusic.isHas_like(),
                         mMediaDescriptionCompat.getMediaId());
-                if (mCurrentMusic.getMusic_info().getIsdiggmusic() == 1) {
-                    mCurrentMusic.getMusic_info().setIsdiggmusic(0);
+                if (mCurrentMusic.isHas_like()) {
+                    mCurrentMusic.setHas_like(false);
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_normal);
                 } else {
                     mFragmentMusicPalyLike.setImageResource(R.mipmap.music_ico_like_high);
-                    mCurrentMusic.getMusic_info().setIsdiggmusic(1);
+                    mCurrentMusic.setHas_like(true);
                 }
                 EventBus.getDefault().post(mCurrentMusic, EVENT_MUSIC_LIKE);
                 break;
@@ -945,11 +993,11 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 Intent intent = new Intent(getActivity(), MusicCommentActivity.class);
                 Bundle musicBundle = new Bundle();
                 MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
-                headerInfo.setCommentCount(mCurrentMusic.getMusic_info().getComment_count());
-                headerInfo.setId(mCurrentMusic.getMusic_id());
-                headerInfo.setTitle(mCurrentMusic.getMusic_info().getTitle());
-                headerInfo.setLitenerCount(mCurrentMusic.getMusic_info().getTaste_count() + "");
-                headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mCurrentMusic.getMusic_info()
+                headerInfo.setCommentCount(mCurrentMusic.getComment_count());
+                headerInfo.setId(mCurrentMusic.getId());
+                headerInfo.setTitle(mCurrentMusic.getTitle());
+                headerInfo.setLitenerCount(mCurrentMusic.getTaste_count() + "");
+                headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mCurrentMusic
                                 .getSinger().getCover().getId()
                         , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
                         , getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
@@ -1031,5 +1079,44 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
             default:
                 break;
         }
+    }
+
+    private void initMusicCenterPopWindow(final int position, float amout,
+                                          final int note, int strRes) {
+        mPayMusicPopWindow = PayPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildLinksStr(getString(R.string.buy_pay_member))
+                .buildTitleStr(getString(R.string.buy_pay))
+                .buildItem1Str(getString(R.string.buy_pay_in))
+                .buildItem2Str(getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(position, note);
+                    mPayMusicPopWindow.hide();
+                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayMusicPopWindow.hide())
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
+
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayMusicPopWindow.show();
+
     }
 }

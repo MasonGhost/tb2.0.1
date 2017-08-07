@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,9 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -27,10 +31,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideStokeTransform;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FastBlur;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -42,6 +48,7 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActiv
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 import com.zhiyicx.thinksnsplus.widget.NestedScrollLineayLayout;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -57,15 +64,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE;
 
 /**
  * @Author Jliuer
@@ -113,7 +122,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     FrameLayout fragmentAlbumDetail;
 
     private CommonAdapter mAdapter;
-    private List<MediaBrowserCompat.MediaItem> mAdapterList = new ArrayList<>();
+    private List<MusicAlbumDetailsBean.MusicsBean> mAdapterList = new ArrayList<>();
 
     public static final String ARG_MEDIA_ID = "media_id";
     public static final String MUSIC_INFO = "music_info";
@@ -131,6 +140,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private MediaBrowserCompatProvider mCompatProvider;
     private MusicAlbumListBean mMusicAlbumListBean;
     private MusicAlbumDetailsBean mAlbumDetailsBean;
+    private PayPopWindow mPayMusicPopWindow;
 
     /**
      * 音乐切换回掉
@@ -173,7 +183,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     }
                     fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
                     LogUtils.d("onChildrenLoaded:::" + children.size());
-                    mAdapter.dataChange(children);
+                    // mAdapter.dataChange(children);
+                    mAdapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -272,12 +283,12 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         closeLoadingView();
         mAlbumDetailsBean = musicAblum;
-
+        mAdapter.dataChange(musicAblum.getMusics());
         WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();
         ablumHeadInfo.setCommentCount(musicAblum.getComment_count());
         ablumHeadInfo.setShareCount(musicAblum.getShare_count());
         ablumHeadInfo.setListenCount(musicAblum.getTaste_count());
-        ablumHeadInfo.setAblumId(musicAblum.getId());
+        ablumHeadInfo.setAblumId(musicAblum.getId().intValue());
         ablumHeadInfo.setLikeCount(musicAblum.getCollect_count());
         WindowUtils.setAblumHeadInfo(ablumHeadInfo);
 
@@ -285,13 +296,33 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         mFragmentMusicDetailCenterSubTitle.setText(mAlbumDetailsBean.getIntro());
         mFragmentMusicDetailDec.setText(mAlbumDetailsBean.getIntro());
 
-        mMusicAlbumListBean.setIs_collection(mAlbumDetailsBean.getIs_collection());
+        mMusicAlbumListBean.setHas_collect(mAlbumDetailsBean.getHas_collect());
 
-        if (mAlbumDetailsBean.getIs_collection() != 0) {
+        if (mAlbumDetailsBean.getHas_collect()) {
             mFragmentMusicDetailFavorite.setIconRes(R.mipmap.detail_ico_collect);
         }
         if (mCompatProvider.getMediaBrowser().isConnected()) {
             onConnected();
+        }
+    }
+
+    @Override
+    public List<MusicAlbumDetailsBean.MusicsBean> getListDatas() {
+        return mAdapter.getDatas();
+    }
+
+    @Override
+    public void refreshData(int position) {
+        mAdapter.notifyItemChanged(position);
+        if (mAlbumDetailsBean != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            MediaControllerCompat controller = getActivity()
+                    .getSupportMediaController();
+            controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+
+            mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
+            mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         }
     }
 
@@ -399,26 +430,33 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @NonNull
-    private CommonAdapter<MusicAlbumListBean> getCommonAdapter() {
-        mAdapter = new CommonAdapter<MediaBrowserCompat.MediaItem>(getActivity(), R.layout
+    private CommonAdapter<MusicAlbumDetailsBean.MusicsBean> getCommonAdapter() {
+        mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(), R.layout
                 .item_music_detail_list,
                 mAdapterList) {
             @Override
-            protected void convert(ViewHolder holder, MediaBrowserCompat.MediaItem item, int
+            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean item, int
                     position) {
                 TextView musicName = holder.getView(R.id.item_music_name);
                 TextView authorName = holder.getView(R.id.item_music_author);
-                musicName.setText(item.getDescription().getTitle());
-                authorName.setText("-" + item.getDescription().getSubtitle());
 
-                Integer cachedState = (Integer) holder.itemView.getTag(R.id
-                        .tag_mediaitem_state_cache);
-                int state = getMediaItemState(item);
-                if (cachedState == null || cachedState != state) {
-                    holder.itemView.setTag(R.id.tag_mediaitem_state_cache, state);
+                String music_name = item.getTitle();
+
+                authorName.setText("-" + item.getSinger().getName());
+
+                if (item.getStorage().getAmount() != 0) {// 有收费
+                    Drawable top_drawable = getResources().getDrawable(R.mipmap.musici_pic_pay02);//  musicName.getLineHeight()
+                    top_drawable.setBounds(0, 0, top_drawable.getIntrinsicWidth(), top_drawable.getIntrinsicHeight());
+                    ImageSpan imgSpan = new CenterImageSpan(top_drawable);
+                    SpannableString spannableString = SpannableString.valueOf("T" + music_name);
+                    spannableString.setSpan(imgSpan, 0, 1, Spannable
+                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+                    musicName.setText(spannableString);
+                } else {
+                    musicName.setText(music_name);
                 }
-                if (mCurrentMediaId.equals(MediaIDHelper.extractMusicIDFromMediaID(item.getMediaId
-                        ()))) {
+
+                if (mCurrentMediaId.equals(item.getId())) {
                     musicName.setTextColor(getResources().getColor(R.color.important_for_theme));
                     authorName.setTextColor(getResources().getColor(R.color.important_for_theme));
                 } else {
@@ -434,11 +472,18 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (TouristConfig.MUSIC_CAN_PLAY || !mPresenter.handleTouristControl()) {
 
-                    MediaBrowserCompat.MediaItem item = mAdapterList.get(position);
+                    MusicAlbumDetailsBean.MusicsBean item = mAdapterList.get(position);
+
+                    if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
+                        initMusicCenterPopWindow(position, item.getStorage().getAmount(),
+                                item.getStorage().getPaid_node(), R.string.buy_pay_music_ablum_desc);
+                        return;
+                    }
+
                     Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
-                    bundle.putString(ARG_MEDIA_ID, MediaIDHelper.extractMusicIDFromMediaID(item.getMediaId()));
+                    bundle.putString(ARG_MEDIA_ID, item.getId() + "");
                     intent.putExtra(MUSIC_INFO, bundle);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     WindowUtils.setMusicAlbumDetailsBean(bundle);
@@ -454,19 +499,12 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         mMediaId = mCurrentMusic.getDescription().getMediaId();
                     }
 
-                    if (item.isPlayable()) {
-                        MediaControllerCompat controllerCompat = getActivity()
-                                .getSupportMediaController();
-
-                        controllerCompat.getTransportControls()
-                                .playFromMediaId(item.getMediaId(), null);
-                        mMediaId = item.getMediaId();
-
-                    } else if (item.isBrowsable()) {
-                        mCompatProvider.getMediaBrowser().unsubscribe(item.getMediaId());
-                        mCompatProvider.getMediaBrowser().subscribe(item.getMediaId(),
-                                mSubscriptionCallback);
-                    }
+                    MediaControllerCompat controllerCompat = getActivity()
+                            .getSupportMediaController();
+                    String id = MediaIDHelper.createMediaID("" + item.getId(),
+                            MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+                    controllerCompat.getTransportControls()
+                            .playFromMediaId(id, null);
 
                 }
             }
@@ -625,7 +663,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 break;
             case R.id.fragment_music_detail_favorite:
                 if (!mPresenter.handleTouristControl()) {
-                    mPresenter.handleCollect(mAlbumDetailsBean.getIs_collection() == 0, mAlbumDetailsBean.getId() + "");
+                    mPresenter.handleCollect(!mAlbumDetailsBean.getHas_collect(), mAlbumDetailsBean.getId() + "");
                 }
                 break;
             case R.id.fragment_music_detail_back:
@@ -639,18 +677,26 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Subscriber(tag = EVENT_MUSIC_LIKE, mode = ThreadMode.MAIN)
     public void onLikeCountUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
 
-        Observable.from(mAlbumDetailsBean.getMusics()).filter(new Func1<MusicAlbumDetailsBean.MusicsBean, Boolean>() {
-            @Override
-            public Boolean call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                return e_albumListBean.getId() == musicsBean.getId();
-            }
-        }).subscribe(new Action1<MusicAlbumDetailsBean.MusicsBean>() {
-            @Override
-            public void call(MusicAlbumDetailsBean.MusicsBean musicsBean) {
-                musicsBean.getMusic_info().setIsdiggmusic(e_albumListBean.getMusic_info().getIsdiggmusic());
-                musicsBean.getMusic_info().setComment_count(e_albumListBean.getMusic_info().getComment_count());
-            }
-        });
+        Observable.from(mAlbumDetailsBean.getMusics())
+                .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                .subscribe(musicsBean -> {
+                    musicsBean.setHas_like(e_albumListBean.isHas_like());
+                    musicsBean.setComment_count(e_albumListBean.getComment_count());
+                    musicsBean.setStorage(e_albumListBean.getStorage());
+                });
+        if (mAlbumDetailsBean != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
+                    MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+            bundle.putString(MUSIC_ID,id);
+            MediaControllerCompat controller = getActivity()
+                    .getSupportMediaController();
+            controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+
+            mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
+            mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+        }
         LogUtils.d("EVENT_MUSIC_LIKE");
     }
 
@@ -664,8 +710,47 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @Subscriber(tag = EVENT_MUSIC_CHANGE, mode = ThreadMode.MAIN)
     public void onMusicChange(int change) {
         mCurrentMediaId = change + "";
-        mPresenter.getMusicDetails(change + "");
+        mPresenter.getMusicDetails(change + "");// 增加收听数量
         mAdapter.notifyDataSetChanged();
         LogUtils.d("EVENT_MUSIC_CHANGE");
+    }
+
+    private void initMusicCenterPopWindow(final int position, float amout,
+                                          final int note, int strRes) {
+        mPayMusicPopWindow = PayPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildLinksStr(getString(R.string.buy_pay_member))
+                .buildTitleStr(getString(R.string.buy_pay))
+                .buildItem1Str(getString(R.string.buy_pay_in))
+                .buildItem2Str(getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(position, note);
+                    mPayMusicPopWindow.hide();
+                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayMusicPopWindow.hide())
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
+
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayMusicPopWindow.show();
+
     }
 }

@@ -11,15 +11,15 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -31,9 +31,8 @@ import org.simple.eventbus.ThreadMode;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
 
 /**
@@ -45,13 +44,14 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLL
 public class MusicListFragment extends TSListFragment<MusicContract.Presenter, MusicAlbumListBean>
         implements MusicContract.View {
 
-    private ImageLoader mImageLoader;
     public static final String BUNDLE_MUSIC_ABLUM = "music_ablum";
 
     /**
      * 数量改变 event_bus 来的
      */
     private MusicAlbumListBean mMusicAlbumListBean;
+
+    private PayPopWindow mPayMusicPopWindow;
 
     @Override
     public void onResume() {
@@ -74,7 +74,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         mRvList.setPadding(20, 20, 0, 0);
         mRvList.addItemDecoration(new TGridDecoration(20, 20, true));
         mRvList.setBackgroundColor(0xffffffff);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
     }
 
     @Override
@@ -114,8 +113,9 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
+                holder.setVisible(R.id.music_list_toll_flag,musicListBean.getPaid_node() == null ? View.GONE : View.VISIBLE);
                 Glide.with(getContext())
-                        .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width,width,
+                        .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width, width,
                                 ImageZipConfig.IMAGE_70_ZIP))
                         .placeholder(R.drawable.shape_default_image)
                         .override(width, width)
@@ -130,9 +130,17 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
         comAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+
+                MusicAlbumListBean albumListBean = mListDatas.get(position);
+                if (albumListBean.getPaid_node() != null && !albumListBean.getPaid_node().isPaid()) {
+                    initMusicCenterPopWindow(position, albumListBean.getPaid_node().getAmount(),
+                            albumListBean.getPaid_node().getNode(), R.string.buy_pay_music_ablum_desc);
+                    return;
+                }
+
                 Intent intent = new Intent(getActivity(), MusicDetailActivity.class);
                 Bundle bundle = new Bundle();
-                MusicAlbumListBean albumListBean = mListDatas.get(position);
+
                 bundle.putParcelable(BUNDLE_MUSIC_ABLUM, albumListBean);
                 intent.putExtra(BUNDLE_MUSIC_ABLUM, bundle);
                 WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();
@@ -167,22 +175,54 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     @Subscriber(tag = EVENT_ABLUM_COLLECT, mode = ThreadMode.MAIN)
     public void onCollectCountUpdate(MusicAlbumListBean e_albumListBean) {
         mMusicAlbumListBean = e_albumListBean;
-        Observable.from(mListDatas).filter(new Func1<MusicAlbumListBean, Boolean>() {
-            @Override
-            public Boolean call(MusicAlbumListBean albumListBean) {
-                return mMusicAlbumListBean.getId() == albumListBean.getId();
-            }
-        }).subscribe(new Action1<MusicAlbumListBean>() {
-            @Override
-            public void call(MusicAlbumListBean albumListBean_same) {
-                albumListBean_same.setCollect_count(mMusicAlbumListBean.getCollect_count());
-                albumListBean_same.setShare_count(mMusicAlbumListBean.getShare_count());
-                albumListBean_same.setIs_collection(mMusicAlbumListBean.getIs_collection());
-                albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
-                albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
-                mPresenter.updateOneMusic(albumListBean_same);
-                mHeaderAndFooterWrapper.notifyDataSetChanged();
-            }
+        Observable.from(mListDatas).filter(albumListBean -> mMusicAlbumListBean.getId() == albumListBean.getId()).subscribe(albumListBean_same -> {
+            albumListBean_same.setCollect_count(mMusicAlbumListBean.getCollect_count());
+            albumListBean_same.setShare_count(mMusicAlbumListBean.getShare_count());
+            albumListBean_same.setHas_collect(mMusicAlbumListBean.getHas_collect());
+            albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
+            albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
+            mPresenter.updateOneMusic(albumListBean_same);
+            mHeaderAndFooterWrapper.notifyDataSetChanged();
         });
+    }
+
+
+    private void initMusicCenterPopWindow(final int position, float amout,
+                                          final int note, int strRes) {
+        mPayMusicPopWindow = PayPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .buildLinksColor1(R.color.themeColor)
+                .buildLinksColor2(R.color.important_for_content)
+                .contentView(R.layout.ppw_for_center)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildDescrStr(String.format(getString(strRes), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildLinksStr(getString(R.string.buy_pay_member))
+                .buildTitleStr(getString(R.string.buy_pay))
+                .buildItem1Str(getString(R.string.buy_pay_in))
+                .buildItem2Str(getString(R.string.buy_pay_out))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildCenterPopWindowItem1ClickListener(() -> {
+                    mPresenter.payNote(position, note);
+                    mPayMusicPopWindow.hide();
+                })
+                .buildCenterPopWindowItem2ClickListener(() -> mPayMusicPopWindow.hide())
+                .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                        .CenterPopWindowLinkClickListener() {
+                    @Override
+                    public void onLongClick() {
+
+                    }
+
+                    @Override
+                    public void onClicked() {
+
+                    }
+                })
+                .build();
+        mPayMusicPopWindow.show();
+
     }
 }

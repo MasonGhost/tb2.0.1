@@ -29,6 +29,7 @@
         android:icon="@mipmap/icon_256"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/TSTheme"
         tools:replace="android:allowBackup">
@@ -46,6 +47,7 @@
 
         <activity
             android:name=".modules.guide.GuideActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/BackGroundLauncherTheme">
             <intent-filter>
@@ -54,6 +56,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".modules.usertag.EditUserTagActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+
         <activity
             android:name=".modules.register.RegisterActivity"
             android:screenOrientation="portrait">
@@ -72,10 +81,12 @@
             android:name=".modules.password.changepassword.ChangePasswordActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.settings.account.AccountManagementActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".modules.settings.bind.AccountBindActivity"
-                android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.settings.account.AccountManagementActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.settings.bind.AccountBindActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.password.findpassword.FindPasswordActivity"
             android:screenOrientation="portrait">
@@ -91,6 +102,16 @@
                 <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
+        <!--第三方登陆相关-->
+        <activity
+            android:name=".modules.third_platform.choose_bind.ChooseBindActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.third_platform.bind.BindOldAccountActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.third_platform.complete.CompleteAccountActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.chat.ChatActivity"
             android:launchMode="singleTask"
@@ -182,6 +203,10 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:name=".modules.wallet.rule.WalletRuleActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name=".modules.dynamic.detail.DynamicDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
@@ -206,12 +231,48 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
 
-        <!--圈子相关页面-->
+        <!-- 圈子相关页面 -->
         <activity
-                android:name=".modules.channel.group_dynamic.GroupDynamicDetailActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".modules.channel.group_dynamic.dig_list.GroupDigListActivity"
+            android:name=".modules.channel.group_dynamic.GroupDynamicDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".modules.channel.group_dynamic.dig_list.GroupDigListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <!-- 问答相关 -->
+        <activity
+            android:name=".modules.q_a.qa_main.qa_container.QA_InfoContainerActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".modules.q_a.publish.question.PublishQuestionActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".modules.q_a.publish.add_topic.AddTopicActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".modules.q_a.reward.QA_RewardActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".modules.q_a.reward.expert_search.ExpertSearchActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+
+        <!--认证相关页面-->
+        <activity
+            android:name=".modules.certification.input.CertificationInputActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".modules.certification.send.SendCertificationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".modules.certification.detail.CertificationDetailActivity"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="adjustResize"/>
 
@@ -285,12 +346,12 @@
             </intent-filter>
         </activity>
 
-        <!--Ping++ 支付SDK-->
+        <!-- Ping++ 支付SDK -->
         <activity
             android:name="com.pingplusplus.android.PaymentActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <!-- 微信支付结果类 -->
@@ -298,7 +359,7 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"/>
-        <!--支付宝-->
+        <!-- 支付宝 -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
@@ -312,7 +373,7 @@
             android:screenOrientation="behind">
         </activity>
 
-        <!--频道-->
+        <!-- 频道 -->
         <activity
             android:name=".modules.channel.list.ChannelListActivity"
             android:screenOrientation="portrait">
@@ -348,6 +409,14 @@
         </activity>
         <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
         </activity>
+        <activity android:name=".modules.q_a.QA_Activity">
+        </activity>
+        <activity
+            android:name=".modules.q_a.publish.detail.PublishContentActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+        <activity android:name=".modules.wallet.reward.RewardActivity"/>
+        <activity android:name=".modules.wallet.reward.list.RewardListActivity"/>
     </application>
 
 </manifest>

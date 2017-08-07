@@ -2,20 +2,22 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.widget.DynamicListMenuView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -46,11 +48,37 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         return IMAGE_COUNTS;
     }
 
+    @Override
+    public boolean isForViewType(DynamicDetailBeanV2 item, int position) {
+        return item.getFeed_from() == -1;
+    }
 
     @Override
     public void convert(ViewHolder holder, final DynamicDetailBeanV2 dynamicBean, DynamicDetailBeanV2 lastT, int position, int itemCounts) {
         super.convert(holder, dynamicBean, lastT, position, itemCounts);
-        initImageView(holder, (ImageView) holder.getView(R.id.siv_0), dynamicBean, 0, 1);
+        if (showToolMenu) {
+            // 显示工具栏
+            DynamicListMenuView dynamicListMenuView = holder.getView(R.id.dlmv_menu);
+            dynamicListMenuView.setImageNormalResourceIds(getToolImages());
+            dynamicListMenuView.setAdvertItemTextAndStatus("广告", dynamicBean.isHas_digg(), 0);
+            dynamicListMenuView.setAdvertItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                    .getFeed_comment_count()), false, 1);
+            dynamicListMenuView.setAdvertItemTextAndStatus(ConvertUtils.numberConvert(dynamicBean
+                            .getFeed_view_count() == 0 ? 1 : dynamicBean.getFeed_view_count()),
+                    false, 2);// 浏览量没有 0
+            // 控制更多按钮的显示隐藏
+            dynamicListMenuView.setItemPositionVisiable(0, getVisibleOne());
+            dynamicListMenuView.setItemPositionVisiable(1, getVisibleTwo());
+            dynamicListMenuView.setItemPositionVisiable(2, getVisibleThree());
+            dynamicListMenuView.setItemPositionVisiable(3, getVisibleFour());
+            // 设置工具栏的点击事件
+            dynamicListMenuView.setItemOnClick((parent, v, menuPostion) -> {
+                if (mOnMenuItemClickLisitener != null) {
+                    mOnMenuItemClickLisitener.onMenuItemClick(v, position, menuPostion);
+                }
+            });
+        }
+        initImageView(holder, holder.getView(R.id.siv_0), dynamicBean, 0, 1);
     }
 
     /**
@@ -84,7 +112,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         } else {
             url = imageBean.getImgUrl();
         }
-
+        view.setLayoutParams(new LinearLayout.LayoutParams(with, with));
         Glide.with(mContext)
                 .load(url)
                 .asBitmap()
@@ -98,16 +126,32 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
         }
         RxView.clicks(view)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnImageClickListener != null) {
-                            mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
-                        }
+                .subscribe(aVoid -> {
+                    if (mOnImageClickListener != null) {
+                        mOnImageClickListener.onImageClick(holder, dynamicBean, positon);
                     }
                 });
     }
 
+    @Override
+    protected int getVisibleThree() {
+        return View.GONE;
+    }
+
+    @Override
+    protected int getVisibleTwo() {
+        return View.GONE;
+    }
+
+    @Override
+    protected int[] getToolImages() {
+        return new int[]{
+                com.zhiyicx.baseproject.R.mipmap.topbar_close,
+                com.zhiyicx.baseproject.R.mipmap.home_ico_comment_normal,
+                com.zhiyicx.baseproject.R.mipmap.home_ico_eye_normal,
+                com.zhiyicx.baseproject.R.mipmap.home_ico_more
+        };
+    }
 
     @Override
     protected int getCurrenCloums() {

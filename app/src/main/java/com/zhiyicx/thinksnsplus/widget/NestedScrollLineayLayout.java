@@ -180,11 +180,34 @@ public class NestedScrollLineayLayout extends LinearLayout implements NestedScro
 
         // 设置动画
         ValueAnimator anim = ObjectAnimator.ofFloat(distance, 0.0F).setDuration((long) (distance * SCROLL_RATIO));
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                LogUtils.d("onAnimationEnd");
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 dealScale((Float) animation.getAnimatedValue());
             }
+
+
         });
         anim.start();
 

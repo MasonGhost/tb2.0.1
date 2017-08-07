@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
@@ -521,15 +522,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     }
 
     @Override
-    public List<SystemConfigBean.Advert> getAdvert() {
-        List<SystemConfigBean.Advert> imageAdvert = new ArrayList<>();
-        for (SystemConfigBean.Advert advert : mSystemRepository.getBootstrappersInfoFromLocal()
-                .getAdverts()) {
-            if (advert.getImageAdvert() != null) {
-                imageAdvert.add(advert);
-            }
-        }
-        return imageAdvert;
+    public List<RealAdvertListBean> getAdvert() {
+
+        return new ArrayList<>();
     }
 
     @Override

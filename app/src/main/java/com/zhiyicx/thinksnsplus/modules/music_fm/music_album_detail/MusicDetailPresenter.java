@@ -7,6 +7,7 @@ import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -17,10 +18,15 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import org.simple.eventbus.EventBus;
 
@@ -44,6 +50,10 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
 
     @Inject
     MusicAlbumDetailsBeanGreenDaoImpl mMusicAlbumDetailsBeanGreenDao;
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
+    @Inject
+    CommentRepository mCommentRepository;
 
     @Inject
     public SharePolicy mSharePolicy;
@@ -68,9 +78,55 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
     }
 
     @Override
+    public void payNote(int position, int note) {
+        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+        double balance = 0;
+        if (walletBean != null) {
+            balance = walletBean.getBalance();
+        }
+        double amount;
+        amount = mRootView.getListDatas().get(position).getStorage().getAmount();
+
+        if (balance < amount) {
+            mRootView.goRecharge(WalletActivity.class);
+            return;
+        }
+        mCommentRepository.paykNote(note)
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<String> data) {
+                        mRootView.getListDatas().get(position).getStorage().setPaid(true);
+                        mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
+                        mRootView.refreshData(position);
+                        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        mRootView.hideCenterLoading();
+                    }
+                });
+    }
+
+    @Override
     public void getMusicAblum(String id) {
         mMusicDetailRepository.getMusicAblum(id).compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<MusicAlbumDetailsBean>() {
+                .subscribe(new BaseSubscribeForV2<MusicAlbumDetailsBean>() {
                     @Override
                     protected void onSuccess(MusicAlbumDetailsBean data) {
                         mMusicAlbumDetailsBeanGreenDao.insertOrReplace(data);
@@ -92,7 +148,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
     @Override
     public void getMusicDetails(String music_id) {
         mMusicDetailRepository.getMusicDetails(music_id).compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<MusicDetaisBean>() {
+                .subscribe(new BaseSubscribeForV2<MusicDetaisBean>() {
                     @Override
                     protected void onSuccess(MusicDetaisBean data) {
 
@@ -113,9 +169,9 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
     @Override
     public void handleCollect(boolean isUnCollected, String special_id) {
 
-        int is_collect = mRootView.getCurrentAblum().getIs_collection() == 0 ? 1 : 0;
-        mRootView.getCurrentAblum().setIs_collection(is_collect);
-        mRootView.getmMusicAlbumListBean().setIs_collection(is_collect);
+        boolean is_collect = !mRootView.getCurrentAblum().getHas_collect();
+        mRootView.getCurrentAblum().setHas_collect(is_collect);
+        mRootView.getmMusicAlbumListBean().setHas_collect(is_collect);
         int countChange = isUnCollected ? 1 : -1;
         mRootView.getmMusicAlbumListBean().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);
         mRootView.getCurrentAblum().setCollect_count(mRootView.getCurrentAblum().getCollect_count() + countChange);

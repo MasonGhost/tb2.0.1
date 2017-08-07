@@ -8,15 +8,15 @@ apply plugin: 'com.android.library'
 //}
 android {
     def gConfig = rootProject.extensions.getByName("ext")
-    compileSdkVersion gConfig.getAt("compileSdkVersion")
-    buildToolsVersion gConfig.getAt("buildToolsVersion")
+    compileSdkVersion gConfig["compileSdkVersion"]
+    buildToolsVersion gConfig["buildToolsVersion"]
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        minSdkVersion gConfig.getAt("minSdkVersion")
-        targetSdkVersion gConfig.getAt("targetSdkVersion")
-        versionCode gConfig.getAt("versionCode")
-        versionName gConfig.getAt("versionName")
+        minSdkVersion gConfig["minSdkVersion"]
+        targetSdkVersion gConfig["targetSdkVersion"]
+        versionCode gConfig["versionCode"]
+        versionName gConfig["versionName"]
         testInstrumentationRunner gConfig.testDependencies.androidJUnitRunner
     }
     buildTypes {

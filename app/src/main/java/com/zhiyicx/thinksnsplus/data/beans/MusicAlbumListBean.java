@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.PaidNoteConverter;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -57,7 +58,9 @@ public class MusicAlbumListBean extends BaseListBean implements Serializable {
     private int share_count;
     private int comment_count;
     private int collect_count;
-    private int is_collection;
+    private boolean has_collect;
+    @Convert(converter = PaidNoteConverter.class, columnType = String.class)
+    private PaidNote paid_node;
 
     public int getId() {
         return id;
@@ -131,9 +134,6 @@ public class MusicAlbumListBean extends BaseListBean implements Serializable {
         this.collect_count = collect_count;
     }
 
-
-
-
     public static class MusicAlbumLIstConverter implements PropertyConverter<StorageBean, String> {
         @Override
         public StorageBean convertToEntityProperty(String databaseValue) {
@@ -152,6 +152,7 @@ public class MusicAlbumListBean extends BaseListBean implements Serializable {
         }
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -160,23 +161,19 @@ public class MusicAlbumListBean extends BaseListBean implements Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
         dest.writeInt(this.id);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeString(this.title);
         dest.writeParcelable(this.storage, flags);
         dest.writeInt(this.taste_count);
+        dest.writeString(this.intro);
         dest.writeInt(this.share_count);
         dest.writeInt(this.comment_count);
         dest.writeInt(this.collect_count);
-    }
-
-    public String getIntro() {
-        return this.intro;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
+        dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.paid_node, flags);
     }
 
     public Long get_id() {
@@ -187,35 +184,54 @@ public class MusicAlbumListBean extends BaseListBean implements Serializable {
         this._id = _id;
     }
 
-    public int getIs_collection() {
-        return this.is_collection;
+    public String getIntro() {
+        return this.intro;
     }
 
-    public void setIs_collection(int is_collection) {
-        this.is_collection = is_collection;
+    public void setIntro(String intro) {
+        this.intro = intro;
     }
 
+    public boolean getHas_collect() {
+        return this.has_collect;
+    }
 
+    public void setHas_collect(boolean has_collect) {
+        this.has_collect = has_collect;
+    }
+
+    public PaidNote getPaid_node() {
+        return this.paid_node;
+    }
+
+    public void setPaid_node(PaidNote paid_node) {
+        this.paid_node = paid_node;
+    }
 
     public MusicAlbumListBean() {
     }
 
     protected MusicAlbumListBean(Parcel in) {
         super(in);
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
         this.id = in.readInt();
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.title = in.readString();
         this.storage = in.readParcelable(StorageBean.class.getClassLoader());
         this.taste_count = in.readInt();
+        this.intro = in.readString();
         this.share_count = in.readInt();
         this.comment_count = in.readInt();
         this.collect_count = in.readInt();
+        this.has_collect = in.readByte() != 0;
+        this.paid_node = in.readParcelable(PaidNote.class.getClassLoader());
     }
 
-    @Generated(hash = 1923011377)
-    public MusicAlbumListBean(Long _id, int id, String created_at, String updated_at, String title, StorageBean storage,
-            int taste_count, String intro, int share_count, int comment_count, int collect_count, int is_collection) {
+    @Generated(hash = 78686052)
+    public MusicAlbumListBean(Long _id, int id, String created_at, String updated_at, String title,
+            StorageBean storage, int taste_count, String intro, int share_count, int comment_count,
+            int collect_count, boolean has_collect, PaidNote paid_node) {
         this._id = _id;
         this.id = id;
         this.created_at = created_at;
@@ -227,7 +243,8 @@ public class MusicAlbumListBean extends BaseListBean implements Serializable {
         this.share_count = share_count;
         this.comment_count = comment_count;
         this.collect_count = collect_count;
-        this.is_collection = is_collection;
+        this.has_collect = has_collect;
+        this.paid_node = paid_node;
     }
 
     public static final Creator<MusicAlbumListBean> CREATOR = new Creator<MusicAlbumListBean>() {

@@ -90,7 +90,7 @@ public class CommentTest {
     private MusicCommentListBean buildComment() throws Exception {
         MusicCommentListBean createComment = new MusicCommentListBean();
         createComment.setState(SEND_ING);
-        createComment.setReply_to_user_id(0);
+        createComment.setReply_user(0);
         createComment.setComment_content("COMMENT_TEST");
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id()
                 + "" + System.currentTimeMillis();

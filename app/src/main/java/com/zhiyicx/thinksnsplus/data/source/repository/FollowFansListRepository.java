@@ -54,15 +54,6 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-//        return mFollowFansClient.getUserFollowsList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
-//                .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
-//                    @Override
-//                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
-//                        GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
-//                        final List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFollows();
-//                        return packageData(gsonFollowFansBeanBaseJson, userId, followFansBeanList);
-//                    }
-//                });
     }
 
     @Override
@@ -76,15 +67,6 @@ public class FollowFansListRepository implements FollowFansListContract.Reposito
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-//        return mFollowFansClient.getUserFansList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
-//                .flatMap(new Func1<BaseJson<GsonFollowFansBean>, Observable<BaseJson<List<FollowFansBean>>>>() {
-//                    @Override
-//                    public Observable<BaseJson<List<FollowFansBean>>> call(BaseJson<GsonFollowFansBean> gsonFollowFansBeanBaseJson) {
-//                        GsonFollowFansBean gsonFollowFansBean = gsonFollowFansBeanBaseJson.getData();
-//                        List<FollowFansBean> followFansBeanList = gsonFollowFansBean.getFolloweds();
-//                        return packageData(gsonFollowFansBeanBaseJson, userId, followFansBeanList);
-//                    }
-//                });
 
     }
 

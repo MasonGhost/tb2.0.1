@@ -90,6 +90,10 @@ public class EventBusTagConfig {
     // 钱包余额充值成功后更新钱包界面
     public static final String EVENT_WALLET_RECHARGE = "event_wallet_recharge";
 
+    // 认证相关
+    public static final String EVENT_SEND_CERTIFICATION_SUCCESS = "event_send_certification_success";
+    public static final String EVENT_UPDATE_CERTIFICATION_SUCCESS = "event_update_certification";
+
     /**
      * IM 相关
      */
@@ -117,5 +121,8 @@ public class EventBusTagConfig {
      * 消息通知
      */
     public static final String EVENT_UNREAD_NOTIFICATION_LIMIT="unread-notification-limit";
+
+    /*问答相关*/
+    public static final String EVENT_CHANGE_EXPERT = "event_change_expert";
 
 }

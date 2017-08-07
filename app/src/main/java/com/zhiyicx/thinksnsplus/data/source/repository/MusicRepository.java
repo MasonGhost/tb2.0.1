@@ -32,7 +32,7 @@ public class MusicRepository implements MusicContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id) {
+    public Observable<List<MusicAlbumListBean>> getMusicAblumList(long max_id) {
         return mMusicClient.getMusicList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
     }
 

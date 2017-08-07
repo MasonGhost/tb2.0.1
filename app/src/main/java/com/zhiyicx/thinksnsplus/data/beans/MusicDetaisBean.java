@@ -3,6 +3,11 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Id;
+
 import java.io.Serializable;
 
 /**
@@ -12,42 +17,43 @@ import java.io.Serializable;
  * @Description 音乐详情
  */
 public class MusicDetaisBean implements Parcelable {
-
-
     /**
      * id : 1
-     * created_at : 2017-03-10 18:05:22
-     * updated_at : 2017-03-15 01:37:34
-     * deleted_at : 22
-     * title : 音乐1
-     * singer : {"id":1,"created_at":"2017-03-15 09:36:06","updated_at":"2017-03-15 09:36:07",
-     * "name":"歌手1","cover":3}
-     * storage : 2
+     * created_at : 2017-03-16 17:11:26
+     * updated_at : 2017-07-20 03:39:00
+     * deleted_at : null
+     * title : 水手公园
+     * singer : {"id":1,"created_at":"2017-03-16 17:22:04","updated_at":"2017-03-16 17:22:08","name":"群星","cover":{"id":108,"size":"3024x3024"}}
+     * storage : {"id":105,"amount":100,"type":"download","paid":true,"paid_node":2}
      * last_time : 180
-     * lyric : 啦啦啦啦啦啦
-     * taste_count : 3
+     * lyric : lalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallalalaallal
+     * taste_count : 314
      * share_count : 0
-     * comment_count : 0
+     * comment_count : 12
+     * has_like : true
      */
-
-    private int id;
+    @Id
+    private Long id;
     private String created_at;
     private String updated_at;
     private String deleted_at;
     private String title;
+    @Convert(columnType = String.class,converter = SingerConvert.class)
     private SingerBean singer;
-    private int storage;
+    @Convert(columnType = String.class,converter = MusicStorageConvert.class)
+    private MusicStorageBean storage;
     private int last_time;
     private String lyric;
     private int taste_count;
     private int share_count;
     private int comment_count;
+    private boolean has_like;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -91,11 +97,11 @@ public class MusicDetaisBean implements Parcelable {
         this.singer = singer;
     }
 
-    public int getStorage() {
+    public MusicStorageBean getStorage() {
         return storage;
     }
 
-    public void setStorage(int storage) {
+    public void setStorage(MusicStorageBean storage) {
         this.storage = storage;
     }
 
@@ -139,58 +145,31 @@ public class MusicDetaisBean implements Parcelable {
         this.comment_count = comment_count;
     }
 
-    public static class SingerBean implements Parcelable{
+    public boolean isHas_like() {
+        return has_like;
+    }
+
+    public void setHas_like(boolean has_like) {
+        this.has_like = has_like;
+    }
+
+    public static class SingerBean implements Parcelable,Serializable{
+
+        private static final long serialVersionUID=1243L;
+
         /**
          * id : 1
-         * created_at : 2017-03-15 09:36:06
-         * updated_at : 2017-03-15 09:36:07
-         * name : 歌手1
-         * cover : 3
+         * created_at : 2017-03-16 17:22:04
+         * updated_at : 2017-03-16 17:22:08
+         * name : 群星
+         * cover : {"id":108,"size":"3024x3024"}
          */
 
         private int id;
         private String created_at;
         private String updated_at;
         private String name;
-        private CoverBean cover;
-
-        public static class CoverBean implements Serializable {
-            private static final long serialVersionUID = 1L;
-            /**
-             * id : 2
-             * image_width : 3264
-             * image_height : 2448
-             */
-
-            private int id;
-            private int image_width;
-            private int image_height;
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public int getImage_width() {
-                return image_width;
-            }
-
-            public void setImage_width(int image_width) {
-                this.image_width = image_width;
-            }
-
-            public int getImage_height() {
-                return image_height;
-            }
-
-            public void setImage_height(int image_height) {
-                this.image_height = image_height;
-            }
-        }
-
+        private StorageBean cover;
 
         public int getId() {
             return id;
@@ -224,16 +203,12 @@ public class MusicDetaisBean implements Parcelable {
             this.name = name;
         }
 
-        public CoverBean getCover() {
+        public StorageBean getCover() {
             return cover;
         }
 
-        public void setCover(CoverBean cover) {
+        public void setCover(StorageBean cover) {
             this.cover = cover;
-        }
-
-
-        public SingerBean() {
         }
 
 
@@ -248,7 +223,10 @@ public class MusicDetaisBean implements Parcelable {
             dest.writeString(this.created_at);
             dest.writeString(this.updated_at);
             dest.writeString(this.name);
-            dest.writeSerializable(this.cover);
+            dest.writeParcelable(this.cover, flags);
+        }
+
+        public SingerBean() {
         }
 
         protected SingerBean(Parcel in) {
@@ -256,7 +234,7 @@ public class MusicDetaisBean implements Parcelable {
             this.created_at = in.readString();
             this.updated_at = in.readString();
             this.name = in.readString();
-            this.cover = (CoverBean) in.readSerializable();
+            this.cover = in.readParcelable(StorageBean.class.getClassLoader());
         }
 
         public static final Creator<SingerBean> CREATOR = new Creator<SingerBean>() {
@@ -272,6 +250,106 @@ public class MusicDetaisBean implements Parcelable {
         };
     }
 
+    public static class MusicStorageBean implements Parcelable,Serializable{
+
+        private static final long serialVersionUID=1243L;
+        /**
+         * id : 105
+         * amount : 100
+         * type : download
+         * paid : true
+         * paid_node : 2
+         */
+
+        private int id;
+        private int amount;
+        private String type;
+        private boolean paid;
+        private int paid_node;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
+
+        public void setAmount(int amount) {
+            this.amount = amount;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public boolean isPaid() {
+            return paid;
+        }
+
+        public void setPaid(boolean paid) {
+            this.paid = paid;
+        }
+
+        public int getPaid_node() {
+            return paid_node;
+        }
+
+        public void setPaid_node(int paid_node) {
+            this.paid_node = paid_node;
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.id);
+            dest.writeInt(this.amount);
+            dest.writeString(this.type);
+            dest.writeByte(this.paid ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.paid_node);
+        }
+
+        public MusicStorageBean() {
+        }
+
+        protected MusicStorageBean(Parcel in) {
+            this.id = in.readInt();
+            this.amount = in.readInt();
+            this.type = in.readString();
+            this.paid = in.readByte() != 0;
+            this.paid_node = in.readInt();
+        }
+
+        public static final Creator<MusicStorageBean> CREATOR = new Creator<MusicStorageBean>() {
+            @Override
+            public MusicStorageBean createFromParcel(Parcel source) {
+                return new MusicStorageBean(source);
+            }
+
+            @Override
+            public MusicStorageBean[] newArray(int size) {
+                return new MusicStorageBean[size];
+            }
+        };
+    }
+
+    public static class SingerConvert extends BaseConvert<SingerBean>{}
+    public static class MusicStorageConvert extends BaseConvert<MusicStorageBean>{}
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -279,36 +357,38 @@ public class MusicDetaisBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
+        dest.writeValue(this.id);
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeString(this.deleted_at);
         dest.writeString(this.title);
         dest.writeParcelable(this.singer, flags);
-        dest.writeInt(this.storage);
+        dest.writeParcelable(this.storage, flags);
         dest.writeInt(this.last_time);
         dest.writeString(this.lyric);
         dest.writeInt(this.taste_count);
         dest.writeInt(this.share_count);
         dest.writeInt(this.comment_count);
+        dest.writeByte(this.has_like ? (byte) 1 : (byte) 0);
     }
 
     public MusicDetaisBean() {
     }
 
     protected MusicDetaisBean(Parcel in) {
-        this.id = in.readInt();
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.deleted_at = in.readString();
         this.title = in.readString();
         this.singer = in.readParcelable(SingerBean.class.getClassLoader());
-        this.storage = in.readInt();
+        this.storage = in.readParcelable(MusicStorageBean.class.getClassLoader());
         this.last_time = in.readInt();
         this.lyric = in.readString();
         this.taste_count = in.readInt();
         this.share_count = in.readInt();
         this.comment_count = in.readInt();
+        this.has_like = in.readByte() != 0;
     }
 
     public static final Creator<MusicDetaisBean> CREATOR = new Creator<MusicDetaisBean>() {

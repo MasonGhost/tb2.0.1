@@ -6,11 +6,13 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -32,6 +34,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class DynamicListMenuView extends FrameLayout {
     public static final int DEFAULT_RESOURES_ID = -1; // 默认 id ，当子类使用默认 id 时，进行占位判断
+    public static final int DEFAULT_RESOURES_ID_ = -2; // 默认 id ，当子类使用默认 id 时，进行占位判断
     // item 数量
     private static final int ITEM_NUMS_MAX = 4;
     private static final int ITEM_POSITION_0 = 0;
@@ -213,16 +216,25 @@ public class DynamicListMenuView extends FrameLayout {
         setItemIsChecked(isChecked, postion, true);
     }
 
+    public void setAdvertItemTextAndStatus(String string, boolean isChecked, int postion) {
+        if (postion >= ITEM_NUMS_MAX) {
+            throw new IllegalArgumentException("postion is out of index");
+        }
+        mText[postion] = string;
+        setAdvertItemIsChecked(isChecked, postion, true, false);
+    }
+
     /**
-     *  设置 item 可见
+     * 设置 item 可见
+     *
      * @param position
      * @param visibility
      */
-    public void setItemPositionVisiable(int position,int visibility){
+    public void setItemPositionVisiable(int position, int visibility) {
 
         switch (position) {
             case ITEM_POSITION_0:
-               mLlDynamicListLike.setVisibility(visibility);
+                mLlDynamicListLike.setVisibility(visibility);
                 break;
             case ITEM_POSITION_1:
                 mLlDynamicListComment.setVisibility(visibility);
@@ -263,6 +275,27 @@ public class DynamicListMenuView extends FrameLayout {
                 break;
             default:
         }
+    }
+
+    private void setAdvertItemIsChecked(boolean isChecked, int postion, boolean isNeedSetText, boolean isNeedImage) {
+
+        switch (postion) {
+            case ITEM_POSITION_0:
+                setAdvertItemState(isChecked, mLlDynamicListLike, mIvDynamicListLike, mTvDynamicListLike,
+                        postion, isNeedSetText, isNeedImage);
+                break;
+            case ITEM_POSITION_1:
+                setAdvertItemState(isChecked, mLlDynamicListComment, mIvDynamicListComment, mTvDynamicListComment, postion, isNeedSetText, isNeedImage);
+
+                break;
+            case ITEM_POSITION_2:
+                setAdvertItemState(isChecked, mLlDynamicListPageviews, mIvDynamicListShare, mTvDynamicListPageviewst, postion, isNeedSetText, isNeedImage);
+                break;
+            case ITEM_POSITION_3:
+                setAdvertItemState(isChecked, mFlDynamicListMore, mIvDynamicListMore, null, postion, isNeedSetText, isNeedImage);
+                break;
+            default:
+        }
 
     }
 
@@ -299,7 +332,46 @@ public class DynamicListMenuView extends FrameLayout {
                 textView.setTextColor(ContextCompat.getColor(getContext(), mTextNormalColor));
             }
         }
-        if (textView!=null&&isNeedSetText&&mText[position]!=null) {
+        if (textView != null && isNeedSetText && mText[position] != null) {
+            textView.setText(mText[position]);
+        }
+    }
+
+    private void setAdvertItemState(boolean isChecked, View viewParent, ImageView imageView, TextView textView,
+                                    int position, boolean isNeedSetText, boolean isNeedImage) {
+        if (mImageNormalResourceIds[position] == DEFAULT_RESOURES_ID && viewParent != null) { // 当没有资源的时候是否需要占位置
+            if (isNeedPlaceholder()) {
+                viewParent.setVisibility(INVISIBLE);
+            } else {
+                viewParent.setVisibility(GONE);
+            }
+            return;
+        }
+        if (!isNeedImage) {
+            imageView.setVisibility(GONE);
+        }
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(textView.getLayoutParams());
+        params.gravity = Gravity.CENTER;
+        params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        textView.setLayoutParams(params);
+        textView.setBackgroundResource(R.drawable.advert_bg);
+        if (isChecked) {
+            if (imageView != null) {
+                imageView.setImageResource(mImageCheckedResourceIds[position]);
+            }
+            if (textView != null) {
+                textView.setTextColor(ContextCompat.getColor(getContext(), mTextCheckedColor));
+            }
+        } else {
+            if (imageView != null) {
+                imageView.setImageResource(mImageNormalResourceIds[position]);
+            }
+            if (textView != null) {
+                textView.setTextColor(ContextCompat.getColor(getContext(), mTextNormalColor));
+            }
+        }
+        if (textView != null && isNeedSetText && mText[position] != null) {
             textView.setText(mText[position]);
         }
     }
@@ -311,6 +383,29 @@ public class DynamicListMenuView extends FrameLayout {
      */
     public void setItemOnClick(OnItemClickListener listener) {
         mOnItemListener = listener;
+    }
+
+    /**
+     * 设置未选中情况下的图片
+     */
+    public void setImageNormalResourceIds(int[] normalResourceIds) {
+        if (normalResourceIds == null) {
+            return;
+        }
+        this.mImageNormalResourceIds = normalResourceIds;
+
+        // 初始化所有的控件图片
+        mIvDynamicListLike.setImageResource(normalResourceIds[0]);
+        mIvDynamicListComment.setImageResource(normalResourceIds[1]);
+        mIvDynamicListShare.setImageResource(normalResourceIds[2]);
+        mIvDynamicListMore.setImageResource(normalResourceIds[3]);
+    }
+
+    /**
+     * 设置选中情况下的图片
+     */
+    public void setImageCheckedResourceIds(int[] checkedResourceIds) {
+        this.mImageCheckedResourceIds = checkedResourceIds;
     }
 
     public interface OnItemClickListener {

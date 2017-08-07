@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/item_info_channel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_mid_small"
+        android:background="@drawable/item_react_bg_gray"
+        android:gravity="center"
+        android:padding="@dimen/spacing_mid_small_8dp"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/normal_for_dynamic_list_content"
+        android:textSize="@dimen/size_content_assist"/>
+
+    <ImageView
+        android:id="@+id/item_info_channel_deal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/information_ico_delete"/>
+
+</FrameLayout>
+
+
+
+
+

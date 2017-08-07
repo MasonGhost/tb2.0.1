@@ -126,7 +126,7 @@ greendao {
      * generateTests 设置是否自动生成单元测试。
      * targetGenDirTest 生成的单元测试的根目录。
      */
-    schemaVersion 42
+    schemaVersion 46
     daoPackage 'com.zhiyicx.thinksnsplus.data.beans'
     generateTests true
     //targetGenDir 'src/main/java'
@@ -156,6 +156,7 @@ dependencies {
     compile supportDependences.appcompatV7
     compile supportDependences.paletteV7
     compile supportDependences.supportV4
+    compile supportDependences.constraintLayout
 
     // Test
     testCompile testDependences.junit
@@ -196,6 +197,10 @@ dependencies {
     compile dataDependences.jiguangJcore
 
     compile dataDependences.greendaoSqlcipher
+    compile dataDependences.markdown
+    compile dataDependences.editor
     compile(name: 'lint-library-release', ext: 'aar')
+
+    compile dataDependences.flowlayout
 }
 

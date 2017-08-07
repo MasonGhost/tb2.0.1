@@ -371,7 +371,7 @@ public class AppApplication extends TSApplication {
 
     private static HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(BaseApplication.getContext())
-                .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext(), false)// liuchao 2017.3.27修改获取缓存历经
+                .cacheDirectory(new File(FileUtils.getCacheFile(BaseApplication.getContext(), false)// liuchao 2017.3.27修改获取缓存路径
                         , "/media"))
                 .maxCacheFilesCount(100)
                 .build();

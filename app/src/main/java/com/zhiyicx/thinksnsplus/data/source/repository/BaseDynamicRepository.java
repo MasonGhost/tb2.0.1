@@ -13,7 +13,6 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CollectGroupDyanmciListBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBeanV2;
@@ -21,7 +20,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicToolBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
@@ -120,29 +118,13 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         return mDynamicClient.sendDynamicV2(body);
     }
 
-    /**
-     * get dynamic list
-     *
-     * @param type       "" 代表最新；follows 代表关注 ； hots 代表热门
-     * @param max_id     用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
-     * @param page       页码 热门选填
-     * @param feeds_id
-     * @param isLoadMore 是否是刷新
-     * @return
-     */
-    @Override
-    public Observable<BaseJson<List<DynamicBean>>> getDynamicList(final String type, Long max_id, int page, String feeds_id, final boolean isLoadMore) {
-        feeds_id = feeds_id.replace("[", "");
-        feeds_id = feeds_id.replace("]", "");
-        return dealWithDynamicList(mDynamicClient.getDynamicList(type, max_id,
-                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, feeds_id), type, isLoadMore);
-    }
+
 
     @Override
     public Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id, final boolean isLoadMore) {
         Observable<DynamicBeanV2> observable;
         if (type.equals(DYNAMIC_TYPE_MY_COLLECTION)) {// 收藏的动态地址和返回大不一样，真滴难受
-            observable = mDynamicClient.getCollectDynamicListV2(after, user_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+            observable = mDynamicClient.getCollectDynamicListV2(after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                     .flatMap(new Func1<List<DynamicDetailBeanV2>, Observable<DynamicBeanV2>>() {
                         @Override
                         public Observable<DynamicBeanV2> call(List<DynamicDetailBeanV2> detailBeanV2) {
@@ -152,7 +134,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         }
                     });
         } else {
-            observable = mDynamicClient.getDynamicListV2(type, after, user_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
+            observable = mDynamicClient.getDynamicListV2(type, after, user_id, (long) TSListFragment.DEFAULT_PAGE_SIZE);
         }
         return dealWithDynamicListV2(observable, type, isLoadMore);
     }
@@ -255,29 +237,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    @Override
-    public void updateOrInsertDynamic(List<DynamicBean> dynamicBeens, final String type) {
 
-        Observable.just(dynamicBeens)
-                .observeOn(Schedulers.io())
-                .subscribe(datas -> {
-                    mDynamicBeanGreenDao.deleteDynamicByType(type); // 清除旧数据
-                    List<DynamicDetailBean> dynamicDetailBeen = new ArrayList<>();
-                    List<DynamicCommentBean> dynamicCommentBeen = new ArrayList<>();
-                    List<DynamicToolBean> dynamicToolBeen = new ArrayList<>();
-                    for (DynamicBean dynamicBeanTmp : datas) {
-                        // 处理关注和热门数据
-                        dealLocalTypeData(dynamicBeanTmp);
-                        dynamicDetailBeen.add(dynamicBeanTmp.getFeed());
-                        dynamicCommentBeen.addAll(dynamicBeanTmp.getComments());
-                        dynamicToolBeen.add(dynamicBeanTmp.getTool());
-                    }
-                    mDynamicBeanGreenDao.insertOrReplace(datas);
-                    mDynamicDetailBeanGreenDao.insertOrReplace(dynamicDetailBeen);
-                    mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBeen);
-                    mDynamicToolBeanGreenDao.insertOrReplace(dynamicToolBeen);
-                }, throwable -> throwable.printStackTrace());
-    }
 
     @Override
     public void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> dynamicBeens, final String type) {
@@ -301,17 +261,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                 }, throwable -> throwable.printStackTrace());
     }
 
-    private void dealLocalTypeData(DynamicBean dynamicBeanTmp) {
-        DynamicBean localDynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
-        if (localDynamicBean != null) {
-            if ((dynamicBeanTmp.getHot_creat_time() == null || dynamicBeanTmp.getHot_creat_time() == 0) && localDynamicBean.getHot_creat_time() != null && localDynamicBean.getHot_creat_time() != 0) {
-                dynamicBeanTmp.setHot_creat_time(localDynamicBean.getHot_creat_time());
-            }
-            if (localDynamicBean.getIsFollowed()) {
-                dynamicBeanTmp.setIsFollowed(localDynamicBean.getIsFollowed());
-            }
-        }
-    }
+
 
     private void dealLocalTypeDataV2(DynamicDetailBeanV2 dynamicBeanTmp) {
         DynamicDetailBeanV2 localDynamicBean = mDynamicDetailBeanV2GreenDao.getDynamicByFeedMark(dynamicBeanTmp.getFeed_mark());
@@ -407,6 +357,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         final List<Object> user_ids = new ArrayList<>();
                         if (listBaseJson.getComments() != null && listBaseJson.getComments().size() > 1) {
                             Collections.sort(listBaseJson.getComments(), new TimeStringSortClass());
+                        }
+                        for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
+                            dynamicCommentBean.setPinned(1);
                         }
                         listBaseJson.getPinneds().addAll(listBaseJson.getComments());
                         for (DynamicCommentBean dynamicCommentBean : listBaseJson.getPinneds()) {
@@ -537,86 +490,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
         return dealWithDynamic(mDynamicClient.getDynamicDetailBeanV2(feed_id));
     }
 
-    protected Observable<BaseJson<List<DynamicBean>>> dealWithDynamicList(Observable<BaseJson<List<DynamicBean>>> observable,
-                                                                          final String type, final boolean isLoadMore) {
-        return observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<DynamicBean>>, Observable<BaseJson<List<DynamicBean>>>>() {
-                    @Override
-                    public Observable<BaseJson<List<DynamicBean>>> call(final BaseJson<List<DynamicBean>> listBaseJson) {
-                        if (listBaseJson.isStatus() && listBaseJson.getData() != null && !listBaseJson.getData().isEmpty()) {
-                            final List<Object> user_ids = new ArrayList<>();
-                            if (!isLoadMore && type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) {// 如果是热门，需要初始化时间
-                                for (int i = listBaseJson.getData().size() - 1; i >= 0; i--) {
-                                    listBaseJson.getData().get(i).setHot_creat_time(System.currentTimeMillis());
-                                }
-                            }
-                            for (DynamicBean dynamicBean : listBaseJson.getData()) {
-                                user_ids.add(dynamicBean.getUser_id());
-                                // 把详情中的 feed_id 设置到 dynamicBean 中
-                                dynamicBean.setFeed_id(dynamicBean.getFeed().getFeed_id());
-                                // 把 feed_mark 设置到详情中去
-                                dynamicBean.getFeed().setFeed_mark(dynamicBean.getFeed_mark());
-                                dynamicBean.getTool().setFeed_mark(dynamicBean.getFeed_mark());
-                                if (type.equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS)) { //如果是关注，需要初始化标记
-                                    dynamicBean.setIsFollowed(true);
-                                }
-                                if (type.equals(ApiConfig.DYNAMIC_TYPE_HOTS)) { // 热门的 max_id 是通过 hot_creat_time 标识，最新与关注都是通过 feed_id 标识
-                                    dynamicBean.setMaxId(dynamicBean.getHot_creat_time());
-                                } else {
-                                    dynamicBean.setMaxId(dynamicBean.getFeed().getFeed_id());
-                                }
-                                for (DynamicCommentBean dynamicCommentBean : dynamicBean.getComments()) {
-                                    user_ids.add(dynamicCommentBean.getUser_id());
-                                    user_ids.add(dynamicCommentBean.getReply_to_user_id());
-                                    dynamicCommentBean.setFeed_mark(dynamicBean.getFeed_mark()); // 评论中增加 feed_mark \和用户标记
-                                    dynamicCommentBean.setFeed_user_id(dynamicBean.getUser_id());
-                                }
-                                mDynamicCommentBeanGreenDao.deleteCacheByFeedMark(dynamicBean.getFeed_mark());// 删除本条动态的本地评论
-                            }
-
-                            return mUserInfoRepository.getUserInfo(user_ids)
-                                    .map(userinfobeans -> {
-                                        if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                            }
-                                            for (DynamicBean dynamicBean : listBaseJson.getData()) {
-                                                dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get((int) dynamicBean.getUser_id()));
-                                                for (int i = 0; i < dynamicBean.getComments().size(); i++) {
-                                                    UserInfoBean tmpUserinfo = userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id());
-                                                    if (tmpUserinfo != null) {
-                                                        dynamicBean.getComments().get(i).setCommentUser(tmpUserinfo);
-                                                    }
-                                                    if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
-                                                        UserInfoBean userInfoBean = new UserInfoBean();
-                                                        userInfoBean.setUser_id(0L);
-                                                        dynamicBean.getComments().get(i).setReplyUser(userInfoBean);
-                                                    } else {
-                                                        if (userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()) != null) {
-                                                            dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
-                                                        }
-
-                                                    }
-                                                }
-
-                                            }
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                        } else {
-                                            listBaseJson.setStatus(userinfobeans.isStatus());
-                                            listBaseJson.setCode(userinfobeans.getCode());
-                                            listBaseJson.setMessage(userinfobeans.getMessage());
-                                        }
-                                        return listBaseJson;
-                                    });
-                        } else {
-                            return Observable.just(listBaseJson);
-                        }
-
-                    }
-                });
-    }
 
     protected Observable<List<GroupDynamicListBean>> dealWithGroupDynamicList(Observable<List<GroupDynamicListBean>> observable,
                                                                               final String type, final boolean isLoadMore) {
@@ -850,7 +723,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                         for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
                                             dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getUser_id().intValue()));
                                             for (int i = 0; i < dynamicBean.getComments().size(); i++) {
-                                                dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
+                                                if(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id())!=null) {
+                                                    dynamicBean.getComments().get(i).setCommentUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getUser_id()));
+                                                }
                                                 if (dynamicBean.getComments().get(i).getReply_to_user_id() == 0) { // 如果 reply_user_id = 0 回复动态
                                                     UserInfoBean userInfoBean = new UserInfoBean();
                                                     userInfoBean.setUser_id(0L);

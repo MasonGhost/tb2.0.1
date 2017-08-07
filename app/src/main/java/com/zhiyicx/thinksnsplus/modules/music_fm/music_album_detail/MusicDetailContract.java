@@ -9,6 +9,8 @@ import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -31,6 +33,10 @@ public interface MusicDetailContract {
         MusicAlbumDetailsBean getCurrentAblum();
 
         MusicAlbumListBean getmMusicAlbumListBean();
+
+        List<MusicAlbumDetailsBean.MusicsBean> getListDatas();
+
+        void refreshData(int position);
     }
 
     interface Presenter extends IBaseTouristPresenter {
@@ -43,12 +49,15 @@ public interface MusicDetailContract {
         void getMusicDetails(String music_id);
 
         MusicAlbumDetailsBean getCacheAblumDetail(int id);
+
+        void payNote(int position,int note);
+
     }
 
     interface Repository {
-        Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(String id);
+        Observable<MusicAlbumDetailsBean> getMusicAblum(String id);
 
-        Observable<BaseJson<MusicDetaisBean>> getMusicDetails(String music_id);
+        Observable<MusicDetaisBean> getMusicDetails(String music_id);
 
         void handleCollect(boolean isCollected, String special_id);
 

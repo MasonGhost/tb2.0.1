@@ -117,4 +117,12 @@ public class MusicCommentListBeanGreenDaoImpl extends CommonCacheImpl<MusicComme
     public long insertOrReplace(MusicCommentListBean newData) {
         return mMusicCommentListBeanDao.insertOrReplace(newData);
     }
+
+    public List<MusicCommentListBean> getAblumCommentsCacheDataByType(String channel, long id) {
+        return mMusicCommentListBeanDao.queryDeep(" where "
+                        + " T." + MusicCommentListBeanDao.Properties.Channel.columnName + "= ?" + " AND "
+                        + " T." + MusicCommentListBeanDao.Properties.Id.columnName + "= ?"
+                        +"< ? order by"+" T." + MusicCommentListBeanDao.Properties.Id.columnName + " DESC"
+                , new String[] {channel,String.valueOf(id),System.currentTimeMillis() + ""});
+    }
 }

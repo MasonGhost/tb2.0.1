@@ -5,6 +5,7 @@ import android.content.Intent;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, DynamicDetailFragment> {
@@ -23,10 +24,12 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
                 .dynamicDetailPresenterModule(new DynamicDetailPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
+        mContanierFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -34,4 +37,5 @@ public class DynamicDetailActivity extends TSActivity<DynamicDetailPresenter, Dy
         super.onDestroy();
         UmengSharePolicyImpl.onDestroy(this);
     }
+
 }

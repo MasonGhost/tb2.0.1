@@ -24,7 +24,8 @@ public enum BackgroundTaskRequestMethodConfig {
     SEND_GROUP_DYNAMIC(12),
     SEND_GROUP_DYNAMIC_COMMENT(13),
     DELETE_V2(14),
-    PUT(15);
+    PUT(15),
+    SEND_CERTIFICATION(16); // 发布认证申请
 
     public final int id;
 

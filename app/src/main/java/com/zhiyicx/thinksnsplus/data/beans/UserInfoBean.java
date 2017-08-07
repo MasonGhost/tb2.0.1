@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -98,6 +99,8 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     @Convert(converter = ExtraParamsConverter.class, columnType = String.class)
     private UserInfoExtraBean extra;
+    @Convert(converter = VerifiedBeanConverter.class, columnType = String.class)
+    private VerifiedBean verified;
 
 
     public String getSexString() {
@@ -295,6 +298,27 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public UserInfoBean() {
     }
 
+    @Generated(hash = 1781470643)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.sex = sex;
+        this.location = location;
+        this.following = following;
+        this.follower = follower;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar = avatar;
+        this.cover = cover;
+        this.extra = extra;
+        this.verified = verified;
+    }
+
     /**
      * {
      * "user_id": 1,
@@ -431,49 +455,39 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     /**
      * UserInfoExtraBean 转 String 形式存入数据库
      */
-    public static class ExtraParamsConverter implements PropertyConverter<UserInfoExtraBean, String> {
+    public static class ExtraParamsConverter extends BaseConvert<UserInfoExtraBean> {
 
-        @Override
-        public UserInfoExtraBean convertToEntityProperty(String databaseValue) {
-            if (databaseValue == null) {
-                return null;
-            }
-            return ConvertUtils.base64Str2Object(databaseValue);
-        }
-
-        @Override
-        public String convertToDatabaseValue(UserInfoExtraBean entityProperty) {
-            if (entityProperty == null) {
-                return null;
-            }
-            return ConvertUtils.object2Base64Str(entityProperty);
-        }
     }
+
+    /**
+     * VerifiedBean 转 String 形式存入数据库
+     */
+    public static class VerifiedBeanConverter extends BaseConvert<VerifiedBean> {
+
+    }
+
 
     @Override
-    public String toString() {
-        return "UserInfoBean{" +
-                "user_id=" + user_id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", intro='" + intro + '\'' +
-                ", sex=" + sex +
-                ", sexString='" + sexString + '\'' +
-                ", location='" + location + '\'' +
-                ", province='" + province + '\'' +
-                ", city='" + city + '\'' +
-                ", area='" + area + '\'' +
-                ", following=" + following +
-                ", follower=" + follower +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", cover='" + cover + '\'' +
-                ", wallet=" + wallet +
-                ", extra=" + extra +
-                '}';
+    public Long getMaxId() {
+        return user_id;
     }
+
+    public boolean getFollowing() {
+        return this.following;
+    }
+
+    public boolean getFollower() {
+        return this.follower;
+    }
+
+    public VerifiedBean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(VerifiedBean verified) {
+        this.verified = verified;
+    }
+
 
     @Override
     public int describeContents() {
@@ -482,6 +496,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeValue(this.user_id);
         dest.writeString(this.name);
         dest.writeString(this.phone);
@@ -501,9 +516,11 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeString(this.cover);
         dest.writeParcelable(this.wallet, flags);
         dest.writeParcelable(this.extra, flags);
+        dest.writeParcelable(this.verified, flags);
     }
 
     protected UserInfoBean(Parcel in) {
+        super(in);
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.phone = in.readString();
@@ -523,26 +540,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.cover = in.readString();
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
-    }
-
-    @Generated(hash = 1469305731)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, UserInfoExtraBean extra) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.following = following;
-        this.follower = follower;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.extra = extra;
+        this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -556,17 +554,4 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             return new UserInfoBean[size];
         }
     };
-
-    @Override
-    public Long getMaxId() {
-        return user_id;
-    }
-
-    public boolean getFollowing() {
-        return this.following;
-    }
-
-    public boolean getFollower() {
-        return this.follower;
-    }
 }

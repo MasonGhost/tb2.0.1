@@ -17,7 +17,7 @@ public class MusicAlbumListBeanTest extends AbstractDaoTestLongPk<MusicAlbumList
         entity.setShare_count(213);
         entity.setComment_count(12);
         entity.setCollect_count(32);
-        entity.setIs_collection(1);
+        entity.setHas_collect(true);
         return entity;
     }
 

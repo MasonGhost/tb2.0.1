@@ -24,6 +24,7 @@ import java.util.List;
 public class DynamicBannerHeader {
     private View mDynamicBannerHeader;
     private Context mContext;
+    private DynamicBannerHeaderInfo mHeaderInfo;
 
     private Banner mBanner;
     private DynamicBannerHeadlerClickEvent mHeadlerClickEvent;
@@ -35,12 +36,9 @@ public class DynamicBannerHeader {
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 //        mDynamicBannerHeader.setPadding(0, 10, 0, 0);
         mBanner = (Banner) mDynamicBannerHeader.findViewById(R.id.item_banner);
-        mBanner.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(int position) {
-                if (mHeadlerClickEvent != null) {
-                    mHeadlerClickEvent.headClick();
-                }
+        mBanner.setOnBannerListener(position -> {
+            if (mHeadlerClickEvent != null && mHeaderInfo != null) {
+                mHeadlerClickEvent.headClick(position);
             }
         });
     }
@@ -49,12 +47,9 @@ public class DynamicBannerHeader {
         this.mContext = context;
         mDynamicBannerHeader = LayoutInflater.from(context).inflate(R.layout.item_banner, null);
         mBanner = (Banner) mDynamicBannerHeader.findViewById(R.id.item_banner);
-        mBanner.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(int position) {
-                if (mHeadlerClickEvent != null) {
-                    mHeadlerClickEvent.headClick();
-                }
+        mBanner.setOnBannerListener(position -> {
+            if (mHeadlerClickEvent != null) {
+                mHeadlerClickEvent.headClick(position);
             }
         });
         setHeadInfo(headInfo);
@@ -63,6 +58,7 @@ public class DynamicBannerHeader {
     public void setHeadInfo(DynamicBannerHeaderInfo headInfo) {
         if (headInfo == null || mBanner == null)
             return;
+        mHeaderInfo = headInfo;
         mBanner.setDelayTime(headInfo.getDelay());
         mBanner.setImageLoader(new BannerImageLoaderUtil());
         mBanner.setImages(headInfo.getUrls());
@@ -71,6 +67,11 @@ public class DynamicBannerHeader {
         mBanner.setBannerTitles(headInfo.getTitles());
         mBanner.setOnBannerListener(headInfo.getOnBannerListener());
         mBanner.start();
+        mBanner.setOnBannerListener(position -> {
+            if (mHeadlerClickEvent != null && mHeaderInfo != null) {
+                mHeadlerClickEvent.headClick(position);
+            }
+        });
     }
 
     public void stopBanner() {
@@ -96,7 +97,16 @@ public class DynamicBannerHeader {
         private int delay;
         private List<String> titles;
         private List<String> urls;
+        private List<String> links;
         private OnBannerListener mOnBannerListener;
+
+        public List<String> getLinks() {
+            return links;
+        }
+
+        public void setLinks(List<String> links) {
+            this.links = links;
+        }
 
         public int getDelay() {
             return delay;
@@ -132,6 +142,6 @@ public class DynamicBannerHeader {
     }
 
     public interface DynamicBannerHeadlerClickEvent {
-        void headClick();
+        void headClick(int position);
     }
 }

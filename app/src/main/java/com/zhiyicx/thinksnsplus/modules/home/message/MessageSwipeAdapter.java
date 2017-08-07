@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SimpleSwipeListener;
@@ -23,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +67,7 @@ public class MessageSwipeAdapter extends RecyclerSwipeAdapter<MessageSwipeAdapte
 
                 break;
             case ChatType.CHAT_TYPE_GROUP:// 群组
-                holder.mIvHeadpic.setImageResource(R.drawable.shape_default_image_circle);
+                holder.mIvHeadpic.getIvAvatar().setImageResource(R.drawable.shape_default_image_circle);
                 holder.mTvName.setText(TextUtils.isEmpty(messageItemBean.getConversation().getName())
                         ? mContext.getString(R.string.default_message_group) : messageItemBean.getConversation().getName());
                 break;
@@ -153,7 +153,7 @@ public class MessageSwipeAdapter extends RecyclerSwipeAdapter<MessageSwipeAdapte
         SwipeLayout mSwipeLayout;
         TextView mTvRight;
         // left
-        ImageView mIvHeadpic;
+        UserAvatarView mIvHeadpic;
         TextView mTvName;
         TextView mTvContent;
         TextView mTvTime;
@@ -167,7 +167,7 @@ public class MessageSwipeAdapter extends RecyclerSwipeAdapter<MessageSwipeAdapte
             mTvContent = (TextView) itemView.findViewById(R.id.tv_content);
             mTvTime = (TextView) itemView.findViewById(R.id.tv_time);
             mTvTip = (BadgeView) itemView.findViewById(R.id.tv_tip);
-            mIvHeadpic = (ImageView) itemView.findViewById(R.id.iv_headpic);
+            mIvHeadpic = (UserAvatarView) itemView.findViewById(R.id.iv_headpic);
         }
     }
 }

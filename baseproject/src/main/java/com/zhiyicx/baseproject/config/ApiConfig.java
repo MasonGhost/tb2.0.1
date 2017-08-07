@@ -29,10 +29,11 @@ public class ApiConfig {
 
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
-    public static final boolean APP_IS_NEED_SSH_CERTIFICATE = false;// 在线测试服务器 2
+    public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
 //    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
 
 //    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+
     public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
@@ -81,6 +82,17 @@ public class ApiConfig {
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     public static final String APP_PATH_UPDATE_USER_AVATAR = "api/" + API_VERSION_2 + "/user/avatar";// 修改用户头像
     public static final String APP_PATH_UPDATE_USER_BG = "api/" + API_VERSION_2 + "/user/bg";// 修改用户背景
+
+
+    // 用户标签
+    public static final String APP_PATH_GET_USER_TAGS = "api/" + API_VERSION_2 + "/users/{user_id}/tags";// 获取一个用户的标签
+    public static final String APP_PATH_GET_CURRENT_USER_TAGS = "api/" + API_VERSION_2 + "/user/tags";// 获取当前认证用户的标签
+    public static final String APP_PATH_CURRENT_USER_ADD_TAGS = "api/" + API_VERSION_2 + "/user/tags/{tag_id}";// 当前认证用户附加一个标签
+    public static final String APP_PATH_CURRENT_USER_DELETE_TAGS = "api/" + API_VERSION_2 + "/user/tags/{tag_id}";// 当前认证用户分离一个标签
+
+    // 认证
+    public static final String APP_PATH_CERTIFICATION = "api/" + API_VERSION_2 + "/user/certification"; // GET-获取认证信息 POST-申请认证 PACTH-更新认证
+
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
      *
@@ -224,6 +236,13 @@ public class ApiConfig {
     public static final String APP_PATH_HANDLE_UNCOLLECT_V2 = "api/" + API_VERSION_2 + "/feeds/{feed_id}/uncollect";
     public static final String APP_PATH_HANDLE_UNCOLLECT_V2_FORMAT = "api/" + API_VERSION_2 + "/feeds/%s/uncollect";
 
+
+    // 动态打赏
+    public static final String APP_PATH_DYNAMIC_REWARDS = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
+    // 动态用户列表
+    public static final String APP_PATH_DYNAMIC_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
+
+
     /**
      * 资讯相关
      */
@@ -257,29 +276,37 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DETAILS = "/api/" + API_VERSION + "/news/{news_id}";
     public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/" + API_VERSION + "/news/%d";
 
+    // 咨询打赏
+    public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
+    // 打赏用户列表
+    public static final String APP_PATH_INFO_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
+    // 资讯打赏统计
+    public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards/sum";
+
+
     /**
-     * 音乐相关
+     * 音乐相关 升级到V2
      */
-    public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/" + API_VERSION + "/music/specials";// 专辑列表
-    public static final String APP_PATH_MUSIC_COLLECT_ABLUM_LIST = "api/" + API_VERSION + "/music/special/collections";// 专辑列表
+    public static final String APP_PATH_MUSIC_ABLUM_LIST = "api/" + API_VERSION_2 + "/music/specials";// 专辑列表
+    public static final String APP_PATH_MUSIC_COLLECT_ABLUM_LIST = "api/" + API_VERSION_2 + "/music/collections";// 收藏的专辑列表
 
     // 歌曲详情
-    public static final String APP_PATH_MUSIC_DETAILS = "api/" + API_VERSION + "/music/{music_id}";
+    public static final String APP_PATH_MUSIC_DETAILS = "api/" + API_VERSION_2 + "/music/{music_id}";
 
     // 评论歌曲
-    public static final String APP_PATH_MUSIC_COMMENT = "api/" + API_VERSION + "/music/{music_id}/comment";
-    public static final String APP_PATH_MUSIC_COMMENT_FORMAT = "api/" + API_VERSION + "/music/%s/comment";
+    public static final String APP_PATH_MUSIC_COMMENT = "api/" + API_VERSION_2 + "/music/{music_id}/comments";
+    public static final String APP_PATH_MUSIC_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/music/%s/comments";
 
     // 删除音乐评论
-    public static final String APP_PATH_MUSIC_DELETE_COMMENT_FORMAT = "api/" + API_VERSION + "/music/comment/%s";
-    public static final String APP_PATH_MUSIC_DELETE_COMMENT = "api/" + API_VERSION + "/music/comment/{comment_id}";
+    public static final String APP_PATH_MUSIC_DELETE_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/music/%d/comments/%d";
+    public static final String APP_PATH_MUSIC_DELETE_COMMENT = "api/" + API_VERSION_2 + "/music/{music_id}/comments/{comment_id}";
 
     // 评论专辑
-    public static final String APP_PATH_MUSIC_ABLUM_COMMENT = "api/" + API_VERSION + "/music/special/{special_id}/comment";
-    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT = "api/" + API_VERSION + "/music/special/%s/comment";
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT = "api/" + API_VERSION_2 + "/music/specials/{special_id}/comments";
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/music/specials/%s/comments";
 
     // 专辑评论列表
-    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_LIST = "api/" + API_VERSION + "/music/special/{special_id}/comment";
+    public static final String APP_PATH_MUSIC_ABLUM_COMMENT_LIST = "api/" + API_VERSION_2 + "/music/specials/{special_id}/comments";
 
     // 收藏专辑
     public static final String APP_PATH_MUSIC_ABLUM_COLLECT = "api/" + API_VERSION + "/music/special/{special_id}/collection";
@@ -290,7 +317,7 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/" + API_VERSION + "/music/%s/digg";
 
     // 专辑详情
-    public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/" + API_VERSION + "/music/specials/{special_id}";
+    public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/" + API_VERSION_2 + "/music/specials/{special_id}";
 
     // 分享歌曲
     public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION + "/music/%s/share";
@@ -331,6 +358,10 @@ public class ApiConfig {
     public static final String APP_PATH_STORAGE_UPLAOD_FILE = "api/" + API_VERSION_2 + "/files";// 文件上传 V2
 
     public static final String APP_PATH_STORAGE_GET_FILE = "api/" + API_VERSION_2 + "/files/{file}";// 文件获取 V2
+
+    // 标签
+    public static final String APP_PATH_GET_ALL_TAGS = "api/" + API_VERSION_2 + "/tags";// 获取全部标签
+
 
     /**
      * 分享相关
@@ -394,8 +425,8 @@ public class ApiConfig {
      * 组件 目前：动态（feed）、音乐（music）、资讯（news）
      */
 //    public static final String APP_COMPONENT_FEED = "feed";
-//    public static final String APP_COMPONENT_MUSIC = "music";
-//    public static final String APP_COMPONENT_NEWS = "news";
+    public static final String APP_COMPONENT_MUSIC = "music";
+    //    public static final String APP_COMPONENT_NEWS = "news";
     public static final String APP_COMPONENT_SOURCE_TABLE_MUSIC_SPECIALS = "music_special";
     /**
      * @see{https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/likes.md}
@@ -403,6 +434,14 @@ public class ApiConfig {
     public static final String APP_LIKE_FEED = "feeds";
     public static final String APP_LIKE_MUSIC = "musics";
     public static final String APP_LIKE_NEWS = "news";
+
+    public static final String APP_IMAGE_TYPE_ADVERT = "image";
+    public static final String APP_DYNAMIC_TYPE_ADVERT = "analog";
+
+    public static final String APP_DYNAMIC_BANNER_ADVERT = "feed:list:top";
+    public static final String APP_DYNAMIC_LIST_ADVERT = "feed:list:analog";
+    public static final String APP_DYNAMIC_DETAILS_ADVERT = "feed:single";
+    public static final String APP_BOOT_ADVERT = "boot";
 
 
     /*******************************************  API V2  *********************************************/
@@ -412,6 +451,12 @@ public class ApiConfig {
      */
     // 获取启动信息
     public static final String APP_PATH_GET_BOOTSTRAPERS_INFO = "api/" + API_VERSION_2 + "/bootstrappers";
+    // 获取所有广告
+    public static final String APP_PATH_GET_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace";
+    // 获取一个广告位的广告列表
+    public static final String APP_PATH_GET_SINGLE_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace/{advert_id}/advertising";
+    // 获取批量广告位的广告列表
+    public static final String APP_PATH_GET_All_ADVERT_INFO = "api/" + API_VERSION_2 + "/advertisingspace/advertising";
 
     /**
      * 通用 CommonClient
@@ -453,4 +498,5 @@ public class ApiConfig {
     // 凭据回执
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/wallet/charges/{charge}?mode=retrieve";
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
+
 }

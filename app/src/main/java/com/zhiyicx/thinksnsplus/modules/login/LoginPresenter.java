@@ -68,6 +68,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
+                        mAuthRepository.clearAuthBean();
                         // 登录成功跳转
                         mAuthRepository.saveAuthBean(data);// 保存auth信息
                         // IM 登录 需要 token ,所以需要先保存登录信息

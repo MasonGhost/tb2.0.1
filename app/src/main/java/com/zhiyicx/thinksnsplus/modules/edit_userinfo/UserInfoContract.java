@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -10,11 +11,16 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -50,6 +56,11 @@ public interface UserInfoContract {
          */
         void initUserInfo(UserInfoBean mUserInfoBean);
 
+        /**
+         * 更新用户标签
+         * @param datas tags
+         */
+        void updateTags(List<UserTagBean> datas);
     }
 
     interface Repository {
@@ -100,7 +111,8 @@ public interface UserInfoContract {
         Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids);
 
         /**
-         *  搜索用户的用户信息
+         * 搜索用户的用户信息
+         *
          * @param user_ids Get multiple designated users, multiple IDs using , split.
          * @param name     Used to retrieve users whose username contains name.
          * @param since    The integer ID of the last User that you've seen.
@@ -162,6 +174,40 @@ public interface UserInfoContract {
          * @return
          */
         Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key);
+
+
+/*******************************************  标签  *********************************************/
+
+        /**
+         * 获取一个用户的标签
+         *
+         * @param user_id
+         * @return
+         */
+        Observable<List<UserTagBean>> getUserTags(long user_id);
+
+        /**
+         * 获取当前认证用户的标签
+         *
+         * @return
+         */
+        Observable<List<UserTagBean>> getCurrentUserTags();
+
+        /**
+         * 当前认证用户附加一个标签
+         *
+         * @param tag_id
+         * @return
+         */
+        Observable<Object> addTag(long tag_id);
+
+        /**
+         * 当前认证用户分离一个标签
+         *
+         * @param tag_id
+         * @return
+         */
+        Observable<Object> deleteTag(long tag_id);
     }
 
     interface Presenter extends IBasePresenter {
@@ -186,5 +232,6 @@ public interface UserInfoContract {
          */
         void initUserInfo();
 
+        void getCurrentUserTags();
     }
 }

@@ -5,9 +5,9 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,7 +25,6 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -37,7 +36,12 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
+import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +62,7 @@ import rx.functions.Func1;
  * @contact email:450127106@qq.com
  */
 public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements
-        UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
+        UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener{
     private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
     private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
     /**
@@ -76,7 +80,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public static final String USER_LOCAL_IMG_PATH = "localImgPath";
 
     @BindView(R.id.iv_head_icon)
-    ImageView mIvHeadIcon;
+    UserAvatarView mIvHeadIcon;
     @BindView(R.id.rl_change_head_container)
     RelativeLayout mRlChangeHeadContainer;
     @BindView(R.id.et_user_name)
@@ -97,6 +101,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     View mVHorizontalLine;
     @BindView(R.id.overscroll)
     OverScrollLayout mDvViewGroup;
+    @BindView(R.id.fl_tags)
+    TagFlowLayout mFlTags;
+    @BindView(R.id.ll_tag_container)
+    LinearLayout mLlTagContainer;
 
     private TSnackbar mTSnackbarUserInfo;
     private TSnackbar mTSnackbarUploadIcon;
@@ -119,6 +127,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private String path;// 上传成功的图片本地路径
 
     private int locationLevel = LOCATION_2LEVEL;
+
+    private UserInfoTagsAdapter mUserInfoTagsAdapter;
+    private List<UserTagBean> mUserTagBeens = new ArrayList<>();
 
     @Override
     protected int getBodyLayoutId() {
@@ -180,6 +191,14 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         }
                     }
                 });
+        mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
+        mFlTags.setAdapter(mUserInfoTagsAdapter);
+        mFlTags.setOnTouchListener((view, motionEvent) -> {
+            if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                jumpToEditUserTag();
+            }
+            return true;
+        });
     }
 
 
@@ -250,7 +269,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return true;
     }
 
-    @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container})
+    @OnClick({R.id.rl_change_head_container, R.id.ll_sex_container, R.id.ll_city_container, R.id.ll_tag_container})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_change_head_container:
@@ -270,8 +289,19 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
                 mAreaPickerView.show();
                 break;
+            case R.id.ll_tag_container:
+                jumpToEditUserTag();
+                break;
             default:
         }
+    }
+
+    /**
+     * 跳转标签管理页面
+     */
+    private void jumpToEditUserTag() {
+        Intent intent = new Intent(getActivity(), EditUserTagActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -280,6 +310,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mPresenter.changUserInfo(packageUserInfo(), false);
     }
 
+    /**
+     * @param options1Items
+     * @param options2Items
+     * @param options3Items
+     */
     @Override
     public void setAreaData(ArrayList<AreaBean> options1Items, ArrayList<ArrayList<AreaBean>>
             options2Items, ArrayList<ArrayList<ArrayList<AreaBean>>> options3Items) {
@@ -295,6 +330,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mAreaPickerView.setCyclic(false);// 设置是否可以循环滚动
     }
 
+    /**
+     * @param upLoadState -1 失败 0进行中 1 图片上传成功 2图片用户信息修改成功
+     */
     @Override
     public void setUpLoadHeadIconState(int upLoadState) {
         // 上传成功，可以进行修改
@@ -322,6 +360,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
+    /**
+     * @param changeUserInfoState -1 失败 1进行中 2 成功
+     * @param message
+     */
     @Override
     public void setChangeUserInfoState(int changeUserInfoState, String message) {
         switch (changeUserInfoState) {
@@ -352,6 +394,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
+    /**
+     * @param mUserInfoBean
+     */
     @Override
     public void initUserInfo(UserInfoBean mUserInfoBean) {
         this.mUserInfoBean = mUserInfoBean;
@@ -367,7 +412,20 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         String intro = getIntro(mUserInfoBean);
         mEtUserIntroduce.setText(intro);// 设置简介
 
-        ImageUtils.loadCircleUserHeadPic(mUserInfoBean,mIvHeadIcon);
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean, mIvHeadIcon);
+    }
+
+    /**
+     * @param datas tags
+     */
+    @Override
+    public void updateTags(List<UserTagBean> datas) {
+        if (datas == null) {
+            return;
+        }
+        mUserTagBeens.clear();
+        mUserTagBeens.addAll(datas);
+        mUserInfoTagsAdapter.notifyDataChanged();
     }
 
     @Override
@@ -382,12 +440,20 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * @param photoList
+     */
     @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         if (photoList.isEmpty()) {
@@ -400,13 +466,16 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         ImageLoader imageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
         imageLoader.loadImage(getContext(), GlideImageConfig.builder()
                 .url(path)
-                .imagerView(mIvHeadIcon)
+                .imagerView(mIvHeadIcon.getIvAvatar())
                 .placeholder(R.drawable.shape_default_image_circle)
                 .errorPic(R.drawable.shape_default_image_circle)
                 .transformation(new GlideCircleTransform(getContext()))
                 .build());
     }
 
+    /**
+     * @param errorMsg
+     */
     @Override
     public void getPhotoFailure(String errorMsg) {
         ToastUtils.showToast(errorMsg);
@@ -639,5 +708,11 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.getCurrentUserTags();
+
+    }
 
 }

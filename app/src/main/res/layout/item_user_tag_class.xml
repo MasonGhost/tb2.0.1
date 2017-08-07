@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:addStatesFromChildren="true"
+    android:padding="@dimen/spacing_mid_small"
+    android:foreground="?attr/selectableItemBackground">
+
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:background="@drawable/item_react_bg_gray"
+        android:padding="@dimen/spacing_mid_small_8dp"
+        android:textColor="@color/normal_for_dynamic_list_content"
+        android:textSize="@dimen/size_content_assist"/>
+
+</FrameLayout>

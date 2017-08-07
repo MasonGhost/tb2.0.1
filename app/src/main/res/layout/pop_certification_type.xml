@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white">
+
+    <TextView
+            android:id="@+id/tv_certification_personage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_button_list_item_height"
+            android:text="@string/certification_personage"
+            android:gravity="center"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
+
+    <ImageView style="@style/style_divider_horizontal"/>
+
+    <TextView
+            android:id="@+id/tv_certification_company"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_button_list_item_height"
+            android:text="@string/certification_company"
+            android:gravity="center"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
+
+    <View
+            style="@style/style_divider_horizontal"
+            android:layout_height="@dimen/spacing_small"
+            android:background="@color/general_for_bg_light"/>
+
+    <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_button_list_item_height"
+            android:text="@string/cancel"
+            android:gravity="center"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"/>
+
+</LinearLayout>

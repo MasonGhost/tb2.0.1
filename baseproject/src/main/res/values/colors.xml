@@ -35,9 +35,12 @@
     <color name="origin_divider_color">#66ffffff</color>
     <!--资讯订阅-->
     <color name="like_theme">#d9eef6</color>
+    <!--标签选中背景-->
+    <color name="tag_choosed_bg">#e6f4f9</color>
     <!--启动广告-->
     <color name="launch_advert">#33000000</color>
     <!--提现明细分割线-->
     <color name="withdrawals_item_line">#efefef</color>
-
+    <color name="user_tag_bg">#def0f7</color>
+    <color name="certification_result_hint_bg">#b34bb893</color>
 </resources>

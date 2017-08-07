@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 /**
@@ -48,7 +49,7 @@ public class PersonalCenterHeaderViewItem {
      ********************************/
     private FrameLayout fl_cover_contaner;// 封面图的容器
     private ImageView iv_background_cover;// 封面
-    private ImageView iv_head_icon;// 用户头像
+    private UserAvatarView iv_head_icon;// 用户头像
     private TextView tv_user_name;// 用户名
     private TextView tv_user_intro;// 用户简介
     private TextView tv_user_follow;// 用户关注数量
@@ -297,7 +298,7 @@ public class PersonalCenterHeaderViewItem {
         headerView.setLayoutParams(headerLayoutParams);
         fl_cover_contaner = (FrameLayout) headerView.findViewById(R.id.fl_cover_contaner);
         iv_background_cover = (ImageView) headerView.findViewById(R.id.iv_background_cover);
-        iv_head_icon = (ImageView) headerView.findViewById(R.id.iv_head_icon);
+        iv_head_icon = (UserAvatarView) headerView.findViewById(R.id.iv_head_icon);
         tv_user_name = (TextView) headerView.findViewById(R.id.tv_user_name);
         tv_user_intro = (TextView) headerView.findViewById(R.id.tv_user_intro);
         tv_user_follow = (TextView) headerView.findViewById(R.id.tv_user_follow);
@@ -387,6 +388,6 @@ public class PersonalCenterHeaderViewItem {
     }
 
     public ImageView getHeadView() {
-        return iv_head_icon;
+        return iv_head_icon.getIvAvatar();
     }
 }

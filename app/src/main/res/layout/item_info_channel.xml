@@ -12,6 +12,8 @@
         android:background="@drawable/item_channel_bg_normal"
         android:gravity="center"
         android:padding="@dimen/spacing_small"
+        android:singleLine="true"
+        android:maxLines="1"
         android:text="大哥"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content"/>

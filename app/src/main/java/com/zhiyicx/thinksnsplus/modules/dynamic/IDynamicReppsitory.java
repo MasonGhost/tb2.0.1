@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.dynamic;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
@@ -45,14 +44,11 @@ public interface IDynamicReppsitory {
      * get dynamic list
      *
      * @param type       "" 代表最新；follows 代表关注 ； hots 代表热门
-     * @param max_id     用来翻页的记录id(对应数据体里的feed_id ,最新和关注选填)
-     * @param page       页码 热门选填
-     * @param feed_ids   可以是以逗号隔开的id  可以是数组
+     * @param after     用来翻页的记录id(对应数据体里的 feed_id ,最新和关注选填)
+     * @param user_id   动态所属人
      * @param isLoadMore 是否是刷新
      * @return dynamic list
      */
-    Observable<BaseJson<List<DynamicBean>>> getDynamicList(String type, Long max_id, int page, String feed_ids, boolean isLoadMore);
-
     Observable<List<DynamicDetailBeanV2>> getDynamicListV2(String type, Long after, Long user_id,boolean isLoadMore);
 
     /**
@@ -90,13 +86,7 @@ public interface IDynamicReppsitory {
      */
     void sendCommentV2(String commentContent, final Long feed_id, Long reply_to_user_id, Long comment_mark);
 
-    /**
-     * 插入或者更新动态列表
-     *
-     * @param datas
-     * @param type
-     */
-    void updateOrInsertDynamic(List<DynamicBean> datas, String type);
+
 
     void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> datas, String type);
 

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:background="@color/white"
+                                             android:layout_height="match_parent"
+                                             android:layout_marginTop="0dp"
+                                             android:orientation="vertical"
+                                             app:layout_constraintTop_toTopOf="@+id/et_qustion"
+                                             tools:layout_editor_absoluteX="0dp">
+
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:id="@+id/fl_topics"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:max_select="-1"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingRight="@dimen/spacing_mid"/>
+
+    <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+        android:id="@+id/et_qustion"
+        style="@style/style_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:paddingTop="@dimen/spacing_mid"
+        android:background="@color/white"
+        android:drawableLeft="@mipmap/search_icon_search"
+        android:drawablePadding="@dimen/spacing_mid"
+        android:drawableStart="@mipmap/search_icon_search"
+        android:hint="@string/qa_publish_title_hint"
+        android:padding="@dimen/spacing_large"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fl_topics"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"/>
+
+    <include
+        layout="@layout/fragment_tslist"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
+        />
+
+    <View
+        android:id="@+id/line"
+        style="@style/style_divider_horizontal_light"
+        app:layout_constraintTop_toBottomOf="@+id/et_qustion"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:visibility="invisible"
+        tools:layout_constraintTop_creator="1"
+        />
+
+</android.support.constraint.ConstraintLayout>

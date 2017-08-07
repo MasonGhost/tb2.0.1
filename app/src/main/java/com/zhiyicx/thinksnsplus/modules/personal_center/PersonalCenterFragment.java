@@ -38,10 +38,9 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -88,7 +87,6 @@ import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalC
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_BLACK_ICON;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_DIVIDER_RGB;
 import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem.TOOLBAR_WHITE_ICON;
-import static com.zhiyicx.thinksnsplus.utils.ImageUtils.updateCurrentLoginUserCoverSignature;
 
 /**
  * @author LiuChao
@@ -283,7 +281,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected MultiItemTypeAdapter<DynamicBean> getAdapter() {
+    protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         // 按照添加顺序，先判断成功后，后面的item就不会继续判断了，类似if else
         setAdapter(adapter, new PersonalCenterDynamicListForZeroImage(getContext()));
@@ -617,6 +615,9 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 跳转到当前的个人中心页面
      */
     public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
+        if (userInfoBean == null||userInfoBean.getUser_id()==null) {
+            return;
+        }
         String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
         if (!TextUtils.isEmpty(tsHelperUrl)) {
             CustomWEBActivity.startToWEBActivity(context, tsHelperUrl);
@@ -736,10 +737,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private void initDeletDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position, final Bitmap shareBitmap) {
         boolean isCollected = dynamicBean.isHas_collect();
         Long feed_id = dynamicBean.getId();
-        boolean feedIdIsNull = feed_id == null || feed_id == 0;
+        feed_id=feed_id==null?0:feed_id;
+        boolean feedIdIsNull = feed_id == 0;
+        boolean feedIsMy = feed_id.intValue()==AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
-                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item2Str(getString(feedIsMy?R.string.empty :R.string.dynamic_list_delete_dynamic))
                 .item3Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -817,7 +820,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mReSendDynamicPopWindow.hide();
-                    mListDatas.get(position).setState(DynamicBean.SEND_ING);
+                    mListDatas.get(position).setState(DynamicDetailBeanV2.SEND_ING);
                     refreshData();
                     mPresenter.reSendDynamic(position);
                 })

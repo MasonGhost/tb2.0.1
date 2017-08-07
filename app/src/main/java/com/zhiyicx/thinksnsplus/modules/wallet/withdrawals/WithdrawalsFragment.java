@@ -140,10 +140,17 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
         mEtWithdrawInput.setText("");
     }
 
+    @Override
+    public void showSnackErrorMessage(String message) {
+        super.showSnackErrorMessage(message);
+        mBtSure.setEnabled(true);
+    }
+
     private void initListener() {
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
+                    mBtSure.setEnabled(false);
                     DeviceUtils.hideSoftKeyboard(getContext(), mEtWithdrawInput);
                     mPresenter.withdraw(mWithdrawalsMoney
                             , mWithdrawalsType, mEtWithdrawAccountInput.getText().toString());
@@ -158,7 +165,7 @@ public class WithdrawalsFragment extends TSFragment<WithDrawalsConstract.Present
                 RxTextView.textChanges(mBtWithdrawStyle.getCombinedButtonRightTextView()),
                 (charSequence, charSequence2, charSequence3) -> {
                     String mWithdrawalsMoneyStr = charSequence.toString();
-                    if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0 && !mWithdrawalsMoneyStr.contains(".")) {
+                    if (mWithdrawalsMoneyStr.replaceAll(" ", "").length() > 0) {
                         mWithdrawalsMoney = Double.parseDouble(charSequence.toString());
                     } else {
                         mWithdrawalsMoney = 0;

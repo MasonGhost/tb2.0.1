@@ -19,6 +19,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -36,6 +41,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
+import com.zhiyicx.thinksnsplus.widget.ReWardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +60,7 @@ public class DynamicDetailHeader {
     private TextView mTitle;
     private View mDynamicDetailHeader;
     private FrameLayout fl_comment_count_container;
+    private ReWardView mReWardView;
     private Context mContext;
     private int screenWidth;
     private int picWidth;
@@ -67,7 +74,7 @@ public class DynamicDetailHeader {
         return mDynamicDetailHeader;
     }
 
-    public DynamicDetailHeader(Context context, List<SystemConfigBean.Advert> adverts) {
+    public DynamicDetailHeader(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_dynamic_detial, null);
@@ -83,18 +90,25 @@ public class DynamicDetailHeader {
         screenWidth = UIUtils.getWindowWidth(context);
         picWidth = UIUtils.getWindowWidth(context) - context.getResources().getDimensionPixelSize
                 (R.dimen.spacing_normal) * 2;
+        mReWardView = (ReWardView) mDynamicDetailHeader.findViewById(R.id.v_reward);
     }
 
-    private void initAdvert(Context context, List<SystemConfigBean.Advert> adverts) {
+    private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(adverts);
-        mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) -> ToastUtils.showToast(position1 + ""));
+        mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
+                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(),adverts.get(position1).getTitle())
+        );
+    }
+
+    private void toAdvert(String link, String title) {
+        CustomWEBActivity.startToWEBActivity(mContext, link, title);
     }
 
     /**
@@ -206,6 +220,18 @@ public class DynamicDetailHeader {
                             .getFeed_comment_count())));
             fl_comment_count_container.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * 更新打赏内容
+     *
+     * @param sourceId         source id  for this reward
+     * @param data             reward's users
+     * @param rewardsCountBean all reward data
+     * @param rewardType       reward type
+     */
+    public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType) {
+        mReWardView.initData(sourceId, data, rewardsCountBean, rewardType);
     }
 
     private void showContentImage(Context context, List<DynamicDetailBeanV2.ImagesBean> photoList, final int position, final int user_id,

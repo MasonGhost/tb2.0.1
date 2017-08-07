@@ -10,9 +10,10 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.repository.IBaseChannelRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
 
 import java.util.List;
 
@@ -154,7 +155,7 @@ public interface GroupDynamicDetailContract {
          */
         boolean checkCurrentDynamicIsDeleted(Long user_id, Long feed_mark);
 
-        List<SystemConfigBean.Advert> getAdvert();
+        List<RealAdvertListBean> getAdvert();
 
         void checkNote(int note);
 

@@ -1,19 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -39,7 +38,7 @@ public class DigListAdapter extends CommonAdapter<DynamicDigListBean> {
 
     @Override
     protected void convert(ViewHolder holder, final DynamicDigListBean dynamicDigListBean, final int position) {
-        final FilterImageView filterImageView = holder.getView(R.id.iv_headpic);
+        final UserAvatarView filterImageView = holder.getView(R.id.iv_headpic);
         TextView tv_name = holder.getView(R.id.tv_name);
         TextView tv_content = holder.getView(R.id.tv_content);
         ImageView iv_follow = holder.getView(R.id.iv_follow);

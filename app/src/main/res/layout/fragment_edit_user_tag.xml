@@ -1,0 +1,41 @@
+<!--<com.wcy.overscroll.OverScrollLayout--><!--xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:id="@+id/overscroll"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:background="@color/bgColor"--><!--android:orientation="vertical">-->
+
+<!--<ScrollView--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:background="@color/bgColor">-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_choosed_tag_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingTop="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingStart="@dimen/spacing_mid"
+        tools:text="可选择角度看江苏高考倒计时老公" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_choosed_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:overScrollMode="never"
+        android:padding="@dimen/spacing_small"
+        android:scrollbars="none" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_tag_class"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:padding="@dimen/spacing_small" />
+
+
+</LinearLayout><!--</ScrollView>--><!--</com.wcy.overscroll.OverScrollLayout>-->

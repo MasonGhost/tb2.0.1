@@ -23,10 +23,11 @@ public interface MusicContract {
 
     interface Presenter extends ITSListPresenter<MusicAlbumListBean> {
         void updateOneMusic(MusicAlbumListBean albumListBean);
+        void payNote(int position,int note);
     }
 
     interface Repository {
-        Observable<BaseJson<List<MusicAlbumListBean>>> getMusicAblumList(long max_id);
+        Observable<List<MusicAlbumListBean>> getMusicAblumList(long max_id);
 
         List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId);
     }

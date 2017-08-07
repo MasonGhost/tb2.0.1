@@ -42,12 +42,12 @@ public class MusicDetailRepository implements MusicDetailContract.Repository {
     }
 
     @Override
-    public Observable<BaseJson<MusicAlbumDetailsBean>> getMusicAblum(String id) {
+    public Observable<MusicAlbumDetailsBean> getMusicAblum(String id) {
         return mMusicClient.getMusicAblum(id);
     }
 
     @Override
-    public Observable<BaseJson<MusicDetaisBean>> getMusicDetails(String music_id) {
+    public Observable<MusicDetaisBean> getMusicDetails(String music_id) {
         return mMusicClient.getMusicDetails(music_id);
     }
 
@@ -55,31 +55,23 @@ public class MusicDetailRepository implements MusicDetailContract.Repository {
     public void handleCollect(boolean isCollected, final String special_id) {
         Observable.just(isCollected)
                 .observeOn(Schedulers.io())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        BackgroundRequestTaskBean backgroundRequestTaskBean;
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("special_id", special_id);
-                        // 后台处理
-                        if (aBoolean) {
-                            backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                    (BackgroundTaskRequestMethodConfig.POST, params);
-                        } else {
-                            backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                    (BackgroundTaskRequestMethodConfig.DELETE, params);
-                        }
-                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                                .APP_PATH_MUSIC_ABLUM_COLLECT_FORMAT, special_id));
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                                (backgroundRequestTaskBean);
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("special_id", special_id);
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.POST, params);
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.DELETE, params);
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                            .APP_PATH_MUSIC_ABLUM_COLLECT_FORMAT, special_id));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
     }
 
     @Override

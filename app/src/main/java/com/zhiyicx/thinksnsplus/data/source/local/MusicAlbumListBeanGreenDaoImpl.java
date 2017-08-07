@@ -87,7 +87,7 @@ public class MusicAlbumListBeanGreenDaoImpl extends CommonCacheImpl<MusicAlbumLi
     public List<MusicAlbumListBean> getMyCollectAlbum() {
         MusicAlbumListBeanDao musicAlbumListBeanDao = getRDaoSession().getMusicAlbumListBeanDao();
         QueryBuilder queryBuilder = musicAlbumListBeanDao.queryBuilder();
-        queryBuilder.where(MusicAlbumListBeanDao.Properties.Is_collection.eq(1))// 已收藏
+        queryBuilder.where(MusicAlbumListBeanDao.Properties.Has_collect.eq(true))// 已收藏
                 .limit(TSListFragment.DEFAULT_PAGE_SIZE)// 每次取20条
                 .orderDesc(MusicAlbumListBeanDao.Properties.Id);// 专辑id倒序
         return queryBuilder.list();

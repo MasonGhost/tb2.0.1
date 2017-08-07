@@ -31,7 +31,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.dig_list.GroupDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
@@ -54,6 +54,7 @@ public class GroupDynamicDetailHeader {
     private TextView mContent;
     private TextView mTitle;
     private View mDynamicDetailHeader;
+    private View mReward;
     private FrameLayout fl_comment_count_container;
     private Context mContext;
     private int screenWidth;
@@ -68,10 +69,12 @@ public class GroupDynamicDetailHeader {
         return mDynamicDetailHeader;
     }
 
-    public GroupDynamicDetailHeader(Context context, List<SystemConfigBean.Advert> adverts) {
+    public GroupDynamicDetailHeader(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mDynamicDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .view_header_dynamic_detial, null);
+        mReward = mDynamicDetailHeader.findViewById(R.id.v_reward);
+        mReward.setVisibility(View.GONE);
         mDynamicDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
         mTitle = (TextView) mDynamicDetailHeader.findViewById(R.id.tv_dynamic_title);
@@ -86,10 +89,10 @@ public class GroupDynamicDetailHeader {
                 (R.dimen.spacing_normal) * 2;
     }
 
-    private void initAdvert(Context context, List<SystemConfigBean.Advert> adverts) {
+    private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mDynamicDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }

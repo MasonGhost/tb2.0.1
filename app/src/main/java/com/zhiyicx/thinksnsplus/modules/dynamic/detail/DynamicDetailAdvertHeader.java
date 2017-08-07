@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class DynamicDetailAdvertHeader {
         mTitle.setText(title);
     }
 
-    public void setAdverts(List<SystemConfigBean.Advert> adverts) {
+    public void setAdverts(List<RealAdvertListBean> adverts) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, mContext.getResources().getDimensionPixelSize(R.dimen.channel_advert_height));
         params.weight = 1;
         adverts = adverts.subList(0, adverts.size() >= 3 ? 3 : adverts.size());
@@ -59,20 +60,17 @@ public class DynamicDetailAdvertHeader {
             imageView.setLayoutParams(params);
             mAdvertContainer.addView(imageView);
             final int position = i;
-            final String url = adverts.get(i).getImageAdvert().getImage();
-            final String link = adverts.get(i).getImageAdvert().getLink();
+            final String url = adverts.get(i).getAdvertFormat().getImage().getImage();
+            final String link = adverts.get(i).getAdvertFormat().getImage().getLink();
             AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
                     .url(url)
                     .placeholder(R.drawable.shape_default_image)
                     .errorPic(R.drawable.shape_default_image)
                     .imagerView(imageView)
                     .build());
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mOnItemClickListener != null)
-                        mOnItemClickListener.onItemClik(v, position, link);
-                }
+            imageView.setOnClickListener(v -> {
+                if (mOnItemClickListener != null)
+                    mOnItemClickListener.onItemClik(v, position, link);
             });
         }
     }

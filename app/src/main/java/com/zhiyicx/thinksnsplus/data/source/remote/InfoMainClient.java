@@ -6,6 +6,8 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 
 import java.util.List;
 
@@ -25,6 +27,9 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT_LIS
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_COUNT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_USER_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_SEARCH;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_TYPE_V2;
 
@@ -94,5 +99,40 @@ public interface InfoMainClient {
     Observable<BaseJson<Integer>> commentInfo(@Field("comment_content") String comment_content,
                                               @Field("reply_to_user_id") int reply_to_user_id);
 
+    /*******************************************  打赏  *********************************************/
 
+
+    /**
+     * 对一条资讯打赏
+     *
+     * @param news_id 咨询 id
+     * @param amount  打赏金额
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_INFO_REWARDS)
+    Observable<Object> rewardInfo(@Path("news_id") long news_id, @Field("amount") float amount);
+
+
+    /**
+     * 资讯打赏列表
+     *
+     * @param news_id    咨询 id
+     * @param limit      列表返回数据条数
+     * @param since      翻页标识 时间排序时为数据 id 金额排序时为打赏金额 amount
+     * @param order      翻页标识 排序 正序-asc 倒序 desc
+     * @param order_type 排序规则 date-按时间 amount-按金额
+     * @return
+     */
+    @GET(APP_PATH_INFO_REWARDS_USER_LIST)
+    Observable<List<RewardsListBean>> rewardInfoList(@Path("news_id") long news_id, @Query("limit") Integer limit, @Query("since") Integer since, @Query("order") String order, @Query("order_type") String order_type);
+
+    /**
+     * 资讯打赏统计
+     *
+     * @param news_id 咨询 id
+     * @return
+     */
+    @GET(APP_PATH_INFO_REWARDS_COUNT)
+    Observable<RewardsCountBean> getRewardCount(@Path("news_id") long news_id);
 }

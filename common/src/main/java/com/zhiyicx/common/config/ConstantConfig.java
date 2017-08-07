@@ -22,6 +22,10 @@ public class ConstantConfig {
      */
     public static final int JITTER_SPACING_TIME = 1;
     /**
+     * 搜索抖动间隔时间，单位 ms
+     */
+    public static final int SEARCH_JITTER_SPACING_TIME = 400;
+    /**
      * 手机号码长度
      */
     public static final int MOBILE_PHONE_NUMBER_LENGHT = 11;
@@ -99,6 +103,7 @@ public class ConstantConfig {
      * 正则：身份证号码18位
      */
     public static final String REGEX_ID_CARD18 = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9Xx])$";
+//    public static final String REGEX_ID_CARD18 = "^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}$";
     /**
      * 正则：邮箱
      */

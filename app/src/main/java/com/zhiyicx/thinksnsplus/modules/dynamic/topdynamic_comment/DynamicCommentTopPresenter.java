@@ -42,7 +42,7 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
     }
 
     @Override
-    public void topDynamicComment(long feed_id, long comment_id, int amount, int day) {
+    public void topDynamicComment(long feed_id, long comment_id, double amount, int day) {
 
         if (mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
             mRootView.initStickTopInstructionsPop();
@@ -55,8 +55,8 @@ public class DynamicCommentTopPresenter extends AppBasePresenter<DynamicCommentT
         if (feed_id * comment_id < 0) {
             return;
         }
-
-        Subscription subscription = mRepository.stickTop(feed_id, comment_id, amount, day)
+        
+        Subscription subscription = mRepository.stickTop(feed_id, comment_id, PayConfig.realCurrencyYuan2Fen(amount*day), day)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing)))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
