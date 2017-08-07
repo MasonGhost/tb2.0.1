@@ -150,8 +150,21 @@
                     android:hint="@string/description_hint"
                     style="@style/style_edit"
                     android:maxLines="5"
+                    android:maxLength="@integer/certification_description_max_length"
                     tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
         </LinearLayout>
+
+        <TextView
+                android:id="@+id/tv_limit_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="@dimen/spacing_mid"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_small"
+                android:textColor="@color/important_for_note"
+                android:textSize="@dimen/size_note_assist"
+                tools:text="210/255"/>
 
         <ImageView style="@style/style_divider_horizontal"/>
 
