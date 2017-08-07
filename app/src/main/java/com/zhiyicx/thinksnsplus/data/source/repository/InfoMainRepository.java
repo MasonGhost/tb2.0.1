@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,13 +24,11 @@ import rx.functions.Func1;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoMainRepository implements InfoMainContract.Reppsitory {
-
-    InfoMainClient mInfoMainClient;
+public class InfoMainRepository extends BaseInfoRepository implements InfoMainContract.Repository {
 
     @Inject
     public InfoMainRepository(ServiceManager serviceManager) {
-        mInfoMainClient = serviceManager.getInfoMainClient();
+        super(serviceManager);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class InfoListPresenterModule {
     }
 
     @Provides
-    InfoMainContract.Reppsitory provideInfoMainRepository(InfoMainRepository infoMainRepository) {
+    InfoMainContract.Repository provideInfoMainRepository(InfoMainRepository infoMainRepository) {
         return infoMainRepository;
     }
 

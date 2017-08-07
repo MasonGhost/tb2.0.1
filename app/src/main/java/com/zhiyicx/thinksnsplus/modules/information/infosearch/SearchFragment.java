@@ -116,12 +116,12 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
                 }
                 title.setText(realData.getTitle());
 
-                if (realData.getStorage() == null) {
+                if (realData.getImage() == null) {
                     imageView.setVisibility(View.GONE);
                 } else {
                     imageView.setVisibility(View.VISIBLE);
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
-                            .url(ImageUtils.imagePathConvertV2(realData.getStorage().getId()
+                            .url(ImageUtils.imagePathConvertV2(realData.getImage().getId()
                                     ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
                                     ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
                                     , ImageZipConfig.IMAGE_50_ZIP))

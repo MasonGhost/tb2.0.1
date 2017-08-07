@@ -118,6 +118,11 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         return mInfoType;
     }
 
+    @Override
+    public int isRecommend() {
+        return mInfoType.equals(RECOMMEND_INFO) ? 1 : 0;
+    }
+
 
     @Override
     public void setPresenter(InfoMainContract.InfoListPresenter presenter) {

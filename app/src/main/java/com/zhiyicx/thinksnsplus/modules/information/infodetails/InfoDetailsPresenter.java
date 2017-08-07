@@ -148,9 +148,9 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
             shareContent.setBitmap(bitmap);
         }
 
-        if (mRootView.getCurrentInfo().getStorage() != null) {
+        if (mRootView.getCurrentInfo().getImage() != null) {
             shareContent.setImage(ImageUtils.imagePathConvertV2(mRootView.getCurrentInfo()
-                    .getStorage().getId()
+                    .getImage().getId()
                     ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
                     ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
                     , ImageZipConfig.IMAGE_70_ZIP));
