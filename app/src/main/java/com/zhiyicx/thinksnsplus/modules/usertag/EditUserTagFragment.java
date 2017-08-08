@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.usertag;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +10,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -30,12 +31,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.internal.operators.SingleToObservable;
-import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -46,7 +41,9 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presenter> implements EditUserTagContract.View, TagClassAdapter.OnItemClickListener {
-    public static final String BUNDLE_IS_FROM_REGISTER = "is_from_register";
+    public static final String BUNDLE_IS_FROM = "is_from";
+    public static final String BUNDLE_CHOOSED_TAGS = "choosed_tags";
+
 
     private static final int SPAN_SIZE = 3;
 
@@ -61,7 +58,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private StickyHeaderGridLayoutManager mTagClassLayoutManager;
 
 
-    private List<UserTagBean> mChoosedTags = new ArrayList<>();
+    private ArrayList<UserTagBean> mChoosedTags = new ArrayList<>();
     private List<TagCategoryBean> mCategoryTags = new ArrayList<>();
 
     private int mMaxChooseNums;
@@ -69,9 +66,27 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     private TagClassAdapter mTagClassAdapter;
     private CommonAdapter<UserTagBean> mChoosedTagAdapter;
 
-    private boolean mIsFromRegister = false;
+    private TagFrom mFrom = TagFrom.REGISTER;
 
     private CenterInfoPopWindow mRulePop;// 标签提示规则选择弹框
+
+    /**
+     * 标签选择页
+     */
+    public static void startToEditTagActivity(Context context, TagFrom from, ArrayList<UserTagBean> choosedTags) {
+
+        Intent intent = new Intent(context, EditUserTagActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_IS_FROM, from);
+        bundle.putParcelableArrayList(BUNDLE_CHOOSED_TAGS, choosedTags);
+        intent.putExtras(bundle);
+        if (context instanceof Activity) {
+            ((Activity) context).startActivityForResult(intent, from.id);
+        } else {
+            throw new IllegalAccessError("context must instance of Activity");
+        }
+    }
+
 
     public static EditUserTagFragment newInstance(Bundle bundle) {
         EditUserTagFragment editUserTagFragment = new EditUserTagFragment();
@@ -102,37 +117,65 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
 
     @Override
     protected void setRightClick() {
-        if (mIsFromRegister) { // 注册就进入主页，设置就返回
 
-            startActivity(new Intent(getActivity(), HomeActivity.class));
-        } else {
-            getActivity().finish();
+        switch (mFrom) {
 
+            case REGISTER:
+                // 注册就进入主页，设置就返回
+                startActivity(new Intent(getActivity(), HomeActivity.class));
+                break;
+            case USER_EDIT:
+                setresult();
+                break;
+            case INFO_PUBLISH:
+
+                break;
+            default:
         }
+
+    }
+
+    @Override
+    protected void setLeftClick() {
+        setresult();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mIsFromRegister = getArguments().getBoolean(BUNDLE_IS_FROM_REGISTER, false);
+            mFrom = (TagFrom) getArguments().getSerializable(BUNDLE_IS_FROM);
+            if (getArguments().getParcelableArrayList(BUNDLE_CHOOSED_TAGS) != null) {
+                mChoosedTags.addAll(getArguments().getParcelableArrayList(BUNDLE_CHOOSED_TAGS));
+            }
+
         }
     }
 
     @Override
     protected void initView(View rootView) {
-        if (mIsFromRegister) { // 隐藏返回键
-            mToolbarLeft.setVisibility(View.INVISIBLE);
-            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
-            mToolbarRight.setVisibility(View.VISIBLE);
-        } else {
-            mToolbarRight.setVisibility(View.INVISIBLE);
-        }
         mMaxChooseNums = getResources().getInteger(R.integer.user_tag_max_nums);
+        switch (mFrom) {
+
+            case REGISTER:
+                mToolbarLeft.setVisibility(View.INVISIBLE);
+                mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
+                mToolbarRight.setVisibility(View.VISIBLE);
+                break;
+            case USER_EDIT:
+                mToolbarRight.setVisibility(View.INVISIBLE);
+                break;
+            case INFO_PUBLISH:
+                mToolbarRight.setVisibility(View.INVISIBLE);
+                break;
+            default:
+        }
         updateChooseTip();
         initRvChoosedTag();
         initRvTagClass();
         initListener();
+
+
     }
 
     private void updateChooseTip() {
@@ -149,8 +192,17 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (mIsFromRegister) {
-            getView().post(() -> initTipPop());
+        switch (mFrom) {
+
+            case REGISTER:
+                getView().post(() -> initTipPop());
+                break;
+            case USER_EDIT:
+                break;
+            case INFO_PUBLISH:
+
+                break;
+            default:
         }
 
     }
@@ -218,7 +270,17 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         mChoosedTagAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                mPresenter.deleteTag(mChoosedTags.get(position).getId(), position);
+                switch (mFrom) {
+                    case INFO_PUBLISH:
+                        deleteTagSuccess(position);
+                        break;
+                    case REGISTER:
+                    case USER_EDIT:
+                        mPresenter.deleteTag(mChoosedTags.get(position).getId(), position);
+                        break;
+                    default:
+                }
+
 
             }
 
@@ -301,10 +363,20 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
         if (tags == null) {
             return;
         }
-        mChoosedTags.clear();
-        mChoosedTags.addAll(tags);
-        mChoosedTagAdapter.notifyDataSetChanged();
-        updateChooseAboutView();
+        switch (mFrom) {
+            case INFO_PUBLISH:
+                break;
+            case REGISTER:
+            case USER_EDIT:
+                mChoosedTags.clear();
+                mChoosedTags.addAll(tags);
+                mChoosedTagAdapter.notifyDataSetChanged();
+                updateChooseAboutView();
+                break;
+            default:
+        }
+
+
     }
 
     @Override
@@ -316,14 +388,30 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             showSnackErrorMessage(getString(R.string.user_tag_choosed_tag_format_tip, mMaxChooseNums));
             return;
         }
-        mPresenter.addTags(mCategoryTags.get(categoryPosition).getTags().get(tagPosition).getId(), categoryPosition, tagPosition);
+        switch (mFrom) {
+            case INFO_PUBLISH:
+                addTagSuccess(categoryPosition, tagPosition);
+                break;
+            case REGISTER:
+            case USER_EDIT:
+                mPresenter.addTags(mCategoryTags.get(categoryPosition).getTags().get(tagPosition).getId(), categoryPosition, tagPosition);
+                break;
+            default:
+        }
+
 
     }
 
     @Override
     public void addTagSuccess(int categoryPosition, int tagPosition) {
         mCategoryTags.get(categoryPosition).getTags().get(tagPosition).setMine_has(true);
-        mPresenter.handleCategoryTagsClick(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
+        switch (mFrom) {
+            case REGISTER:
+            case USER_EDIT:
+                mPresenter.handleCategoryTagsClick(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
+                break;
+            default:
+        }
         mChoosedTags.add(mCategoryTags.get(categoryPosition).getTags().get(tagPosition));
         mChoosedTagAdapter.notifyDataSetChanged();
         mTagClassAdapter.notifyAllSectionsDataSetChanged();
@@ -334,7 +422,13 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     @Override
     public void deleteTagSuccess(int position) {
         mChoosedTags.get(position).setMine_has(false);
-        mPresenter.handleCategoryTagsClick(mChoosedTags.get(position));
+        switch (mFrom) {
+            case REGISTER:
+            case USER_EDIT:
+                mPresenter.handleCategoryTagsClick(mChoosedTags.get(position));
+                break;
+            default:
+        }
 
         for (TagCategoryBean categoryTag : mCategoryTags) {
             if (categoryTag.getId() == mChoosedTags.get(position).getTag_category_id()) {
@@ -355,10 +449,27 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
 
     @Override
     public void onBackPressed() {
-        if (mIsFromRegister) {
+        switch (mFrom) {
 
-        } else {
-            getActivity().finish();
+            case REGISTER:
+                break;
+            case USER_EDIT:
+                setresult();
+                break;
+            case INFO_PUBLISH:
+                setresult();
+                break;
+            default:
         }
+
+    }
+
+    private void setresult() {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(BUNDLE_CHOOSED_TAGS, mChoosedTags);
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 }

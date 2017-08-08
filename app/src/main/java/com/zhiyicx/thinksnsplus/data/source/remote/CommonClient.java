@@ -304,5 +304,5 @@ public interface CommonClient {
 
     @Multipart
     @PATCH(APP_PATH_HANDLE_BACKGROUND_TASK)
-    Observable<BaseJson<Object>> handleBackGroundTaskPatch(@Path("path") String path, @Part List<MultipartBody.Part> partList);
+    Observable<BaseJsonV2<Object>> handleBackGroundTaskPatch(@Path("path") String path, @Part List<MultipartBody.Part> partList);
 }

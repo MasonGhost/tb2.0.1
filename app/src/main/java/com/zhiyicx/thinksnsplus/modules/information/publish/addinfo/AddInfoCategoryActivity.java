@@ -5,20 +5,18 @@ import android.content.Intent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoFragment;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoPresenter;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoPresenterModule;
+
 /**
  * @Describe  完善资讯信息
  * @Author Jungle68
  * @Date 2017/8/7
  * @Contact master.jungle68@gmail.com
  */
-public class AddInfoActivity extends TSActivity<AddInfoPresenter, AddInfoFragment> {
+public class AddInfoCategoryActivity extends TSActivity<AddInfoPresenter, AddInfoCategoryFragment> {
 
     @Override
-    protected AddInfoFragment getFragment() {
-        return AddInfoFragment.newInstance(getIntent().getExtras());
+    protected AddInfoCategoryFragment getFragment() {
+        return AddInfoCategoryFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

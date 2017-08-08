@@ -253,7 +253,7 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_COMMENT = "api/" + API_VERSION + "/news/{news_id}/comment";// 评论资讯
     public static final String APP_PATH_INFO_COMMENT_FORMAT = "api/" + API_VERSION + "/news/%s/comment";// 评论资讯
 
-    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION + "/news/categories/{category}/news";// 资讯投稿
+    public static final String APP_PATH_PUBLISH_INFO = "api/" + API_VERSION_2 + "/news/categories/{category}/news";// 资讯投稿
     public static final String APP_PATH_PUBLISH_INFO_FORMAT = "api/" + API_VERSION + "/news/categories/%d/news";// 资讯投稿
 
     // 删除资讯评论
@@ -272,7 +272,7 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DIG_FORMAT = "api/" + API_VERSION + "/news/%s/digg";
 
     // 订阅资讯频道
-    public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION + "/news/cates/follow";
+    public static final String APP_PATH_INFO_FOLLOW_LIST = "api/" + API_VERSION_2 + "/news/categories/follows";
     public static final String APP_PATH_INFO_SEARCH = "/api/" + API_VERSION + "/news/search";
 
     // 资讯详情网页

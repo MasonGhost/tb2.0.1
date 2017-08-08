@@ -53,10 +53,10 @@
                     android:id="@+id/fl_tags"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/white"
                     android:paddingBottom="@dimen/spacing_normal"
-                    android:paddingTop="@dimen/spacing_normal"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/white"
                     app:max_select="0"
                     />
 
