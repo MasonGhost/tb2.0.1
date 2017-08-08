@@ -8,10 +8,11 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -27,8 +28,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -117,6 +116,104 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                         }
                     }
                 });
+    }
+
+    @Override
+    public Observable<InfoCommentBean> getInfoCommentListV2(String news_id, Long max_id, Long limit) {
+        return mInfoMainClient.getInfoCommentListV2(news_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .flatMap(new Func1<InfoCommentBean, Observable<InfoCommentBean>>() {
+                    @Override
+                    public Observable<InfoCommentBean> call(InfoCommentBean infoCommentBean) {
+                        final List<Object> user_ids = new ArrayList<>();
+                        if (infoCommentBean.getPinneds() != null) {
+                            for (InfoCommentListBean commentListBean : infoCommentBean.getPinneds()) {
+                                user_ids.add(commentListBean.getUser_id());
+                                user_ids.add(commentListBean.getReply_to_user_id());
+                            }
+                        }
+                        if (infoCommentBean.getComments() != null) {
+                            for (InfoCommentListBean commentListBean : infoCommentBean.getComments()) {
+                                user_ids.add(commentListBean.getUser_id());
+                                user_ids.add(commentListBean.getReply_to_user_id());
+                            }
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(userInfoBeanList -> {
+                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                            SparseArray<>();
+                                    for (UserInfoBean userInfoBean : userInfoBeanList.getData()) {
+                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                                .intValue(), userInfoBean);
+                                    }
+                                    dealCommentData(infoCommentBean.getPinneds(), userInfoBeanSparseArray);
+                                    dealCommentData(infoCommentBean.getComments(), userInfoBeanSparseArray);
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList
+                                            .getData());
+                                    return infoCommentBean;
+                                });
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<InfoDigListBean>> getInfoDigListV2(String news_id, Long max_id) {
+        return mInfoMainClient.getInfoDigList(news_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
+                .flatMap(new Func1<List<InfoDigListBean>, Observable<List<InfoDigListBean>>>() {
+                    @Override
+                    public Observable<List<InfoDigListBean>> call(List<InfoDigListBean> infoDigListBeen) {
+                        List<Object> user_ids = new ArrayList<>();
+                        for (InfoDigListBean digListBean : infoDigListBeen) {
+                            user_ids.add(digListBean.getUser_id());
+                            user_ids.add(digListBean.getTarget_user());
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(listBaseJson -> {
+                                    if (listBaseJson.isStatus()) {
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
+                                        for (InfoDigListBean digListBean : infoDigListBeen) {
+                                            digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
+                                            digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
+                                        }
+                                    }
+                                    return infoDigListBeen;
+                                });
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<InfoListDataBean>> getRelateInfoList(String news_id) {
+        return mInfoMainClient.getRelateInfoList(news_id);
+    }
+
+    @Override
+    public Observable<InfoListDataBean> getInfoDetail(String news_id) {
+        return mInfoMainClient.getInfoDetail(news_id);
+    }
+
+    private void dealCommentData(List<InfoCommentListBean> list, SparseArray<UserInfoBean> userInfoBeanSparseArray) {
+        if (list != null) {
+            for (InfoCommentListBean commentListBean : list) {
+                commentListBean.setFromUserInfoBean
+                        (userInfoBeanSparseArray.get((int) commentListBean
+                                .getUser_id()));
+                if (commentListBean.getReply_to_user_id() == 0) { // 如果
+                    // reply_user_id = 0 回复动态
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUser_id(0L);
+                    commentListBean.setToUserInfoBean(userInfoBean);
+                } else {
+                    commentListBean.setToUserInfoBean
+                            (userInfoBeanSparseArray.get(
+                                    (int) commentListBean
+                                            .getReply_to_user_id()));
+                }
+            }
+        }
     }
 
     @Override

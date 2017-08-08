@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
@@ -30,8 +32,12 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAIL;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAIL_RELATION;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DIG_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_FOLLOW_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_GET_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_LIST_V2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
@@ -83,6 +89,25 @@ public interface InfoMainClient {
     @GET(APP_PATH_INFO_TOP_LIST)
     Observable<List<InfoListDataBean>> getInfoTopList(@Query("cate_id") String cate_id);
 
+    /**
+     * 获取资讯详情
+     *
+     * @param news_id 资讯id
+     */
+    @GET(APP_PATH_INFO_DETAIL)
+    Observable<InfoListDataBean> getInfoDetail(@Path("news") String news_id);
+
+    @GET(APP_PATH_INFO_DIG_LIST)
+    Observable<List<InfoDigListBean>> getInfoDigList(@Path("news") String news_id,
+                                                     @Query("after") Long max_id,
+                                                     @Query("limit") int limit);
+
+    /**
+     * 获取一条资讯的相关资讯
+     */
+    @GET(APP_PATH_INFO_DETAIL_RELATION)
+    Observable<List<InfoListDataBean>> getRelateInfoList(@Path("news") String news_id);
+
     // 获取收藏的资讯列表
     @GET(APP_PATH_INFO_COLLECT_LIST)
     Observable<BaseJson<List<InfoListDataBean>>> getInfoCollectList(@Query("max_id") Long max_id,
@@ -107,6 +132,11 @@ public interface InfoMainClient {
     Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(@Path("feed_id") String feed_id,
                                                                        @Query("max_id") Long max_id,
                                                                        @Query("limit") Long limit);
+
+    @GET(APP_PATH_INFO_GET_COMMENT)
+    Observable<InfoCommentBean> getInfoCommentListV2(@Path("news") String news_id,
+                                                     @Query("after") Long max_id,
+                                                     @Query("limit") Long limit);
 
     @GET(APP_PATH_INFO_SEARCH)
     Observable<BaseJson<List<InfoListDataBean>>> searchInfoList(@Query("key") String key,
