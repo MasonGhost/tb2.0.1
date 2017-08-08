@@ -21,22 +21,21 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
+import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
+import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
 import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
-import static com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment.BUNDLE_IS_FROM_REGISTER;
+import static com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment.BUNDLE_IS_FROM;
 
 /**
  * @Describe
@@ -288,12 +287,7 @@ public class RegisterFragment extends TSFragment<RegisterContract.Presenter> imp
     public void goHome() {
         DeviceUtils.hideSoftKeyboard(getContext(), mEtRegistPassword);
         ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
-
-        Intent intent = new Intent(getActivity(), EditUserTagActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(BUNDLE_IS_FROM_REGISTER, true);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        EditUserTagFragment.startToEditTagActivity(getActivity(),TagFrom.REGISTER,null);
         getActivity().finish();
     }
 
