@@ -124,6 +124,11 @@
     <string name="info_list_count">%1$s  ·  %2$d 浏览  ·  %3$s</string>
     <string name="info_publish_original">原创</string>
     <string name="info_top">顶</string>
+    <string name="info_publish_hint">提示</string>
+    <string name="info_publish_hint_certification">只有认证过的用户才可以投稿，是否去认证?</string>
+    <string name="info_publish_go_to_certification">去认证</string>
+    <string name="info_publish_hint_pay">投稿一次需付费10.00元，是否继续投稿？</string>
+    <string name="info_publish_go_to_next">继续投稿</string>
     <string name="edit_info">编辑文章</string>
     <string name="info_title_hint">输入标题，20字以内</string>
     <string name="info_content_hint">编辑文章正文</string>

@@ -1,10 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
 import javax.inject.Inject;
@@ -26,6 +31,8 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
 
     @Inject
     InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
 
     @Inject
     public InfoContainerPresenter(InfoMainContract.Repository repository,
@@ -50,6 +57,15 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public boolean checkCertification() {
+        UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
+        if (userInfoBean != null && userInfoBean.getVerified()!= null && !TextUtils.isEmpty(userInfoBean.getVerified().getIcon())){
+            return true;
+        }
+        return false;
     }
 
 }
