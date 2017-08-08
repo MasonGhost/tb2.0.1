@@ -60,6 +60,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected String setCenterTitle() {
         return getString(R.string.edit_info);
     }
@@ -187,33 +192,16 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     private void initLisenter() {
         RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
-            Rect viewRect = new Rect();
             int[] viewLacotion = new int[2];
-            mRlPublishTool.getGlobalVisibleRect(viewRect);
             mRlPublishTool.getLocationOnScreen(viewLacotion);
-            if (viewRect.top > mRlPublishTool.getHeight()) {
+            if (viewLacotion[1] > mRlPublishTool.getHeight()) {
                 View rootview = getActivity().getWindow().getDecorView();
-                View aaa = rootview.findFocus();
-                if (aaa != null) {
-                    Rect aaaRect = new Rect();
-                    int[] aaaLacotion = new int[2];
-                    aaa.getGlobalVisibleRect(aaaRect);
-                    aaa.getLocationOnScreen(aaaLacotion);
-                    LogUtils.d(aaa.getVisibility() == View.VISIBLE);
-                    LogUtils.d(aaaRect.toString());
-                    LogUtils.d(viewRect.toString());
-                    LogUtils.d("::"+viewLacotion[0]+"::"+viewLacotion[1]);
-                    LogUtils.d("::"+aaaLacotion[0]+"::"+aaaLacotion[1]);
-
-
-                    int dy = aaaRect.bottom - viewRect.top;
-
-                    int dy_ = aaaLacotion[1] - viewLacotion[1];
-
-
-                    LogUtils.d(dy);
-                    LogUtils.d(dy_);
-                    mRicheTest.smoothScrollBy(0, Math.max(dy, dy_));
+                View currentEdit = rootview.findFocus();
+                if (currentEdit != null) {
+                    int[] currentEditLacotion = new int[2];
+                    currentEdit.getLocationOnScreen(currentEditLacotion);
+                    int dy = currentEditLacotion[1] - viewLacotion[1] + currentEdit.getHeight();
+                    mRicheTest.smoothScrollBy(0, dy);
                 }
             }
         });
