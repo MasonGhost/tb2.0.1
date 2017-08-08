@@ -2,6 +2,9 @@ package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
+import org.w3c.dom.Text;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +18,6 @@ import java.util.List;
 public class InfoPublishBean implements Parcelable {
     /**
      * {@linnk https://github.com/slimkit/plus-component-news/blob/master/docs/contribute.md}
-     *
      */
 
     private String title;
@@ -45,6 +47,14 @@ public class InfoPublishBean implements Parcelable {
     }
 
     public String getSubject() {
+        if (TextUtils.isEmpty(subject) && !TextUtils.isEmpty(content)) {
+            if (content.length() > 200) {
+                subject = content.substring(0, 200);
+            } else {
+                subject = content;
+            }
+
+        }
         return subject;
     }
 

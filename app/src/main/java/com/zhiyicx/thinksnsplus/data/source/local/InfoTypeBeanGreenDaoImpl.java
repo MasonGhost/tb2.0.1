@@ -112,4 +112,10 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
                 .build().list();
     }
 
+    public List<InfoTypeCatesBean> getAllCatesList() {
+        List<InfoTypeCatesBean> datas=getMyCatesList();
+        datas.addAll(getMoreCatesList());
+        return datas;
+    }
+
 }

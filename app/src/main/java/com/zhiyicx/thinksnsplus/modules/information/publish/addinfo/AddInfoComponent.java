@@ -15,6 +15,8 @@ import dagger.Component;
  * @Contact master.jungle68@gmail.com
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class,modules = AddInfoPresenterModule.class)
+@Component(dependencies = AppComponent.class, modules = AddInfoPresenterModule.class)
 public interface AddInfoComponent extends InjectComponent<AddInfoActivity> {
+
+    void inject(AddInfoCategoryActivity addInfoCategoryActivity);
 }

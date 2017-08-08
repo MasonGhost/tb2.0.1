@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,9 +12,9 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
@@ -23,7 +22,6 @@ import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +40,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> implements AddInfoContract.View {
 
     public static final String BUNDLE_PUBLISH_BEAN = "publish_bean";
+    private static final int REQUST_CODE_CATEGORY = 5000;
 
     @BindView(R.id.bt_add_category)
     CombinationButton mBtAddCategory;
@@ -147,7 +146,8 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-//                    new Intent(getArguments)
+                    Intent intent = new Intent(getActivity(), AddInfoCategoryActivity.class);
+                    startActivityForResult(intent, REQUST_CODE_CATEGORY);
                 });
         // 标签
         RxView.clicks(mLlTagContainer)
@@ -181,17 +181,36 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == TagFrom.INFO_PUBLISH.id && data != null && data.getExtras() != null) {
+        if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
+
+            if (requestCode == TagFrom.INFO_PUBLISH.id) {
                 ArrayList<UserTagBean> choosedTags = data.getExtras().getParcelableArrayList(EditUserTagFragment.BUNDLE_CHOOSED_TAGS);
                 mUserTagBeens.clear();
                 mUserTagBeens.addAll(choosedTags);
                 mUserInfoTagsAdapter.notifyDataChanged();
                 mInfoPublishBean.setTags(mUserTagBeens);
-                LogUtils.d("minfo publish bean : " + mInfoPublishBean.toString());
+
+            } else if (requestCode == REQUST_CODE_CATEGORY) {
+                InfoTypeCatesBean category = data.getExtras().getParcelable(AddInfoCategoryFragment.BUNDLE_PUBLISH_CATEGORY);
+                if (category == null) {
+                    return;
+                }
+                mInfoPublishBean.setCategoryId(category.getId());
+                mBtAddCategory.setRightText(category.getName());
 
             }
+            checkNextButton();
         }
+
+    }
+
+    private void checkNextButton() {
+        if (mInfoPublishBean.getCategoryId() != 0) {
+            mToolbarRight.setEnabled(true);
+        } else {
+            mToolbarRight.setEnabled(false);
+        }
+
 
     }
 }
