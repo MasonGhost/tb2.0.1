@@ -2,6 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
+
+import java.util.List;
 
 /**
  * @Author Jliuer
@@ -10,7 +14,13 @@ import com.zhiyicx.common.mvp.i.IBaseView;
  * @Description
  */
 public interface AddInfoContract {
-    interface View extends IBaseView<Presenter>{}
-    interface Presenter extends IBasePresenter{}
-    interface Repository{}
+    interface View extends IBaseView<Presenter> {
+    }
+
+    interface Presenter extends IBasePresenter {
+        List<InfoTypeMoreCatesBean> getInfoTypeBean();
+    }
+
+    interface Repository {
+    }
 }

@@ -416,12 +416,19 @@
         <activity android:name=".modules.wallet.reward.RewardActivity"/>
         <activity android:name=".modules.wallet.reward.list.RewardListActivity"/>
         <!--资讯发布-->
-        <activity android:name=".modules.information.publish.PublishInfoActivity"
-                  android:screenOrientation="portrait">
+        <activity
+            android:name=".modules.information.publish.PublishInfoActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.information.publish.addinfo.AddInfoActivity"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+        <activity
+            android:name=".modules.information.publish.addinfo.AddInfoActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+        </activity>
+        <activity
+            android:name=".modules.information.publish.addinfo.AddInfoCategoryActivity"
+            android:screenOrientation="portrait"
+            >
         </activity>
 
     </application>
