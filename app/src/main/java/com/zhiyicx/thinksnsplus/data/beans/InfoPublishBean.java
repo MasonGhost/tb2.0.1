@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Describe
@@ -21,7 +22,7 @@ public class InfoPublishBean implements Parcelable {
     private String subject;
     private String content;
     private long categoryId;
-    private long[] tags;
+    private List<UserTagBean> tags;
     private String from;
     private String author;
     private int image;
@@ -67,11 +68,11 @@ public class InfoPublishBean implements Parcelable {
         this.categoryId = categoryId;
     }
 
-    public long[] getTags() {
+    public List<UserTagBean> getTags() {
         return tags;
     }
 
-    public void setTags(long[] tags) {
+    public void setTags(List<UserTagBean> tags) {
         this.tags = tags;
     }
 
@@ -101,6 +102,20 @@ public class InfoPublishBean implements Parcelable {
 
 
     @Override
+    public String toString() {
+        return "InfoPublishBean{" +
+                "title='" + title + '\'' +
+                ", subject='" + subject + '\'' +
+                ", content='" + content + '\'' +
+                ", categoryId=" + categoryId +
+                ", tags=" + tags +
+                ", from='" + from + '\'' +
+                ", author='" + author + '\'' +
+                ", image=" + image +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -111,7 +126,7 @@ public class InfoPublishBean implements Parcelable {
         dest.writeString(this.subject);
         dest.writeString(this.content);
         dest.writeLong(this.categoryId);
-        dest.writeLongArray(this.tags);
+        dest.writeTypedList(this.tags);
         dest.writeString(this.from);
         dest.writeString(this.author);
         dest.writeInt(this.image);
@@ -126,14 +141,14 @@ public class InfoPublishBean implements Parcelable {
         this.subject = in.readString();
         this.content = in.readString();
         this.categoryId = in.readLong();
-        this.tags = in.createLongArray();
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
         this.from = in.readString();
         this.author = in.readString();
         this.image = in.readInt();
         this.amout = in.readInt();
     }
 
-    public static final Parcelable.Creator<InfoPublishBean> CREATOR = new Parcelable.Creator<InfoPublishBean>() {
+    public static final Creator<InfoPublishBean> CREATOR = new Creator<InfoPublishBean>() {
         @Override
         public InfoPublishBean createFromParcel(Parcel source) {
             return new InfoPublishBean(source);
@@ -144,18 +159,4 @@ public class InfoPublishBean implements Parcelable {
             return new InfoPublishBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "InfoPublishBean{" +
-                "title='" + title + '\'' +
-                ", subject='" + subject + '\'' +
-                ", content='" + content + '\'' +
-                ", categoryId=" + categoryId +
-                ", tags=" + Arrays.toString(tags) +
-                ", from='" + from + '\'' +
-                ", author='" + author + '\'' +
-                ", image=" + image +
-                '}';
-    }
 }

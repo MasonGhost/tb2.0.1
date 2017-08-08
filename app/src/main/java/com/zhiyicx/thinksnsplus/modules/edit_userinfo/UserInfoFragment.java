@@ -38,6 +38,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
+import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
+import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
@@ -300,8 +302,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      * 跳转标签管理页面
      */
     private void jumpToEditUserTag() {
-        Intent intent = new Intent(getActivity(), EditUserTagActivity.class);
-        startActivity(intent);
+        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.USER_EDIT,null);
     }
 
     @Override

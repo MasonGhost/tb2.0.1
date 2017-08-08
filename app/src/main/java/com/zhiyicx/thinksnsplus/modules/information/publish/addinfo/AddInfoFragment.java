@@ -2,29 +2,39 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
-import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
+import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
- * @Describe
+ * @Describe 完善文章信息界面
  * @Author Jungle68
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
@@ -47,8 +57,9 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     View mVHorizontalLine;
     @BindView(R.id.et_info_summary)
     UserInfoInroduceInputView mEtInfoSummary;
-    private ActionPopupWindow mLoginoutPopupWindow;// 退出登录选择弹框
 
+    private UserInfoTagsAdapter mUserInfoTagsAdapter;
+    private List<UserTagBean> mUserTagBeens = new ArrayList<>();
     private InfoPublishBean mInfoPublishBean;
 
     public static AddInfoFragment newInstance(Bundle bundle) {
@@ -64,6 +75,9 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
         if (getArguments() != null) {
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
+        }
+        if (mInfoPublishBean == null) {
+            mInfoPublishBean = new InfoPublishBean();
         }
     }
 
@@ -102,7 +116,24 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
     @Override
     protected void initView(View rootView) {
+        mToolbarRight.setEnabled(false);
         initListener();
+        if (mInfoPublishBean.getTags() != null) {
+            mUserTagBeens.addAll(mInfoPublishBean.getTags());
+        }
+        mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
+        mFlTags.setAdapter(mUserInfoTagsAdapter);
+        mFlTags.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                jumpToEditUserTag();
+            }
+            return true;
+        });
+
+    }
+
+    private void jumpToEditUserTag() {
+        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.INFO_PUBLISH, (ArrayList<UserTagBean>) mUserTagBeens);
     }
 
     @Override
@@ -115,37 +146,52 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         RxView.clicks(mBtAddCategory)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> showSnackSuccessMessage("category"));
+                .subscribe(aVoid -> {
+//                    new Intent(getArguments)
+                });
         // 标签
         RxView.clicks(mLlTagContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> showSnackSuccessMessage("tags"));
+                .subscribe(aVoid -> {
+                    jumpToEditUserTag();
+                });
+        // 来源
+        RxTextView.afterTextChangeEvents(mTvFrom.getEditInput())
+                .compose(this.bindToLifecycle())
+                .subscribe(charSeques -> {
+                    mInfoPublishBean.setFrom(charSeques.editable().toString().trim());
+                });
+        // 作者
+        RxTextView.afterTextChangeEvents(mTvAuthor.getEditInput())
+                .compose(this.bindToLifecycle())
+                .subscribe(charSeques -> {
+                    mInfoPublishBean.setAuthor(charSeques.editable().toString().trim());
+                });
+        // 摘要
+        RxTextView.afterTextChangeEvents(mEtInfoSummary.getEtContent())
+                .compose(this.bindToLifecycle())
+                .subscribe(charSeques -> {
+                    mInfoPublishBean.setSubject(charSeques.editable().toString().trim());
+                });
+
 
     }
 
-    /**
-     * 初始化登录选择弹框
-     */
-    private void initLoginOutPopupWindow() {
-        if (mLoginoutPopupWindow != null) {
-            return;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == TagFrom.INFO_PUBLISH.id && data != null && data.getExtras() != null) {
+                ArrayList<UserTagBean> choosedTags = data.getExtras().getParcelableArrayList(EditUserTagFragment.BUNDLE_CHOOSED_TAGS);
+                mUserTagBeens.clear();
+                mUserTagBeens.addAll(choosedTags);
+                mUserInfoTagsAdapter.notifyDataChanged();
+                mInfoPublishBean.setTags(mUserTagBeens);
+                LogUtils.d("minfo publish bean : " + mInfoPublishBean.toString());
+
+            }
         }
-        mLoginoutPopupWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.is_sure_login_out))
-                .item2Str(getString(R.string.login_out_sure))
-                .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(0.8f)
-                .with(getActivity())
-                .item2ClickListener(() -> {
-                    mLoginoutPopupWindow.hide();
-                })
-                .bottomClickListener(() -> mLoginoutPopupWindow.hide()).build();
 
     }
-
-
 }
