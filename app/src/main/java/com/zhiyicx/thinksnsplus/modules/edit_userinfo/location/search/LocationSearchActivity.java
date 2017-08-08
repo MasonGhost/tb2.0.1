@@ -16,7 +16,7 @@ import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.DaggerAddInf
  * @Date 2017/8/7
  * @Contact master.jungle68@gmail.com
  */
-public class LocationSearchActivity extends TSActivity<AddInfoPresenter, LocationSearchFragment> {
+public class LocationSearchActivity extends TSActivity<LocationSearchPresenter, LocationSearchFragment> {
 
     @Override
     protected LocationSearchFragment getFragment() {

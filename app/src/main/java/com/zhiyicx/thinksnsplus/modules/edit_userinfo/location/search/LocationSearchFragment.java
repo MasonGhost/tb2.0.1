@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
@@ -13,10 +14,12 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
@@ -25,6 +28,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
 
 /**
@@ -35,6 +39,8 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  */
 public class LocationSearchFragment extends TSListFragment<LocationSearchContract.Presenter, LocationBean> implements LocationSearchContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
+    public static final String BUNDLE_DATA = "DATA";
+    public static final String BUNDLE_LOCATION_STRING = "location_string";
 
     @BindView(R.id.fragment_search_back)
     ImageView mFragmentInfoSearchBack;
@@ -42,8 +48,16 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     DeleteEditText mFragmentInfoSearchEdittext;
     @BindView(R.id.fragment_search_cancle)
     TextView mFragmentInfoSearchCancle;
-    @BindView(R.id.fragment_info_search_container)
+    @BindView(R.id.fragment_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
+
+
+    public static LocationSearchFragment newInstance(Bundle args) {
+
+        LocationSearchFragment fragment = new LocationSearchFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     protected int getBodyLayoutId() {
@@ -82,15 +96,31 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
                 (v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                         mPresenter.searchLocation(mFragmentInfoSearchEdittext.getText().toString());
+                        DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
                         return true;
                     }
                     return false;
                 });
+        mRvList.setBackgroundResource(R.color.white);
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(BUNDLE_LOCATION_STRING))) {
+            mFragmentInfoSearchEdittext.setText(getArguments().getString(BUNDLE_LOCATION_STRING));
+            mFragmentInfoSearchEdittext.setSelection(getArguments().getString(BUNDLE_LOCATION_STRING).length());
+        }
     }
 
     @Override
     protected boolean showToolbar() {
         return false;
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0f;
     }
 
     @OnClick({R.id.fragment_search_back, R.id.fragment_search_cancle})
@@ -107,7 +137,7 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        MultiItemTypeAdapter adapter = new LocationSearchListAdapter(getActivity(),R.layout.item_location_search, mListDatas);
+        MultiItemTypeAdapter adapter = new LocationSearchListAdapter(getActivity(), R.layout.item_location_search, mListDatas);
         adapter.setOnItemClickListener(this);
         return adapter;
 
@@ -123,10 +153,18 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
 
+        LocationBean bean = mListDatas.get(position);
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_DATA, bean);
+        intent.putExtras(bundle);
+        getActivity().setResult(RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         return false;
     }
+
 }

@@ -60,7 +60,7 @@ public class LocationSearchListAdapter extends CommonAdapter<LocationBean> {
 //        RxView.clicks(holder.getView(R.id.iv_headpic))
 //                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
 //                .subscribe(aVoid -> toUserCenter(getContext(), userInfoBean));
-
+        holder.setText(R.id.tv_content, locationBean.getTree().getName());
 
     }
 

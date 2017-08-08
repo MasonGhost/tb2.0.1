@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -35,8 +36,12 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
+import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoCategoryActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
@@ -64,9 +69,11 @@ import rx.functions.Func1;
  * @contact email:450127106@qq.com
  */
 public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> implements
-        UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener{
+        UserInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
     private static final int LOCATION_2LEVEL = 2;// 地区选择可选的级数为2，2级联动
     private static final int LOCATION_3LEVEL = 3;// 地区选择可选的级数为3
+
+    private static final int REQUST_CODE_AREA = 8100;
     /**
      * 定义这些常数，用来封装被修改的用户信息
      * 通过hashmap进行封装，而不是使用Usrinfobean，主要是以后可能配置用户信息，方便以后拓展
@@ -196,7 +203,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(mUserTagBeens, getContext());
         mFlTags.setAdapter(mUserInfoTagsAdapter);
         mFlTags.setOnTouchListener((view, motionEvent) -> {
-            if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 jumpToEditUserTag();
             }
             return true;
@@ -285,11 +292,20 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mGenderPopupWindow.show();
                 break;
             case R.id.ll_city_container:
-                initCityPickerFirstTime();
-                mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
+//                initCityPickerFirstTime();
+//                mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
+//                // 尝试隐藏键盘
+//                DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
+//                mAreaPickerView.show();
                 // 尝试隐藏键盘
                 DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
-                mAreaPickerView.show();
+
+                Intent intent = new Intent(getActivity(), LocationSearchActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(LocationSearchFragment.BUNDLE_LOCATION_STRING, mTvCity.getText().toString().trim());
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUST_CODE_AREA);
+
                 break;
             case R.id.ll_tag_container:
                 jumpToEditUserTag();
@@ -302,7 +318,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      * 跳转标签管理页面
      */
     private void jumpToEditUserTag() {
-        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.USER_EDIT,null);
+        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.USER_EDIT, null);
     }
 
     @Override
@@ -450,6 +466,17 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUST_CODE_AREA&&data!=null&&data.getExtras()!=null) {
+            LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
+            if (locationBean != null) {
+
+                mUserInfoBean.setLocation(locationBean.getTree().getName());
+                setCity(locationBean.getTree().getName());
+            }
+
+        }
+
     }
 
     /**
@@ -715,5 +742,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         mPresenter.getCurrentUserTags();
 
     }
+
 
 }

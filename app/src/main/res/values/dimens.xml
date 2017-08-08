@@ -83,4 +83,7 @@
     <dimen name="pop_choose_third_type_height">50dp</dimen>
     <!--第三方登陆分割线边距-->
     <dimen name="third_margin">40dp</dimen>
+
+    <!--地区搜索 item 间距-->
+    <dimen name="location_search_item_space">18dp</dimen>
 </resources>

@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/fragment_info_search_container"
+        android:id="@+id/fragment_search_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
         android:background="@color/white">
@@ -43,7 +43,7 @@
             android:textSize="@dimen/size_sub_title"/>
 
         <TextView
-            android:id="@+id/fragment_info_search_cancle"
+            android:id="@+id/fragment_search_cancle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
