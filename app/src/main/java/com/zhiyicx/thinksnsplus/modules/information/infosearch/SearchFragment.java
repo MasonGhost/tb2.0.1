@@ -9,23 +9,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
-import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
-import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,11 +38,11 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
 public class SearchFragment extends TSListFragment<SearchContract.Presenter, InfoListDataBean>
         implements SearchContract.View {
 
-    @BindView(R.id.fragment_info_search_back)
+    @BindView(R.id.fragment_search_back)
     ImageView mFragmentInfoSearchBack;
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
-    @BindView(R.id.fragment_info_search_cancle)
+    @BindView(R.id.fragment_search_cancle)
     TextView mFragmentInfoSearchCancle;
     @BindView(R.id.fragment_info_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
@@ -92,13 +85,13 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
         return false;
     }
 
-    @OnClick({R.id.fragment_info_search_back, R.id.fragment_info_search_cancle})
+    @OnClick({R.id.fragment_search_back, R.id.fragment_search_cancle})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fragment_info_search_back:
+            case R.id.fragment_search_back:
                 getActivity().finish();
                 break;
-            case R.id.fragment_info_search_cancle:
+            case R.id.fragment_search_cancle:
                 getActivity().finish();
                 break;
         }

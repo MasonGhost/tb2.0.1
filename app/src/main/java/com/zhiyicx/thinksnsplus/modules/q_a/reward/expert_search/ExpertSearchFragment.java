@@ -34,11 +34,11 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QA$RewardFragment.BUND
 public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Presenter, ExpertBean>
         implements ExpertSearchContract.View {
 
-    @BindView(R.id.fragment_info_search_back)
+    @BindView(R.id.fragment_search_back)
     ImageView mFragmentInfoSearchBack;
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
-    @BindView(R.id.fragment_info_search_cancle)
+    @BindView(R.id.fragment_search_cancle)
     TextView mFragmentInfoSearchCancel;
     @BindView(R.id.tv_recommend_hint)
     TextView mTvRecommendHint;
