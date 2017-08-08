@@ -25,7 +25,15 @@ public class InfoPublishBean implements Parcelable {
     private String from;
     private String author;
     private int image;
+    private int amout;
 
+    public int getAmout() {
+        return amout;
+    }
+
+    public void setAmout(int amout) {
+        this.amout = amout;
+    }
 
     public String getTitle() {
         return title;
@@ -107,6 +115,7 @@ public class InfoPublishBean implements Parcelable {
         dest.writeString(this.from);
         dest.writeString(this.author);
         dest.writeInt(this.image);
+        dest.writeInt(this.amout);
     }
 
     public InfoPublishBean() {
@@ -121,6 +130,7 @@ public class InfoPublishBean implements Parcelable {
         this.from = in.readString();
         this.author = in.readString();
         this.image = in.readInt();
+        this.amout = in.readInt();
     }
 
     public static final Parcelable.Creator<InfoPublishBean> CREATOR = new Parcelable.Creator<InfoPublishBean>() {

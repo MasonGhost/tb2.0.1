@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import javax.inject.Inject;
@@ -46,5 +49,15 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                     }
                 });
 
+    }
+
+    @Override
+    public void publishInfo(InfoPublishBean infoPublishBean) {
+        mRepository.publishInfo(infoPublishBean).subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+            @Override
+            protected void onSuccess(BaseJsonV2<Object> data) {
+
+            }
+        });
     }
 }

@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
@@ -11,10 +13,13 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -119,6 +124,10 @@ public interface InfoMainClient {
     @POST(APP_PATH_INFO_COMMENT)
     Observable<BaseJson<Integer>> commentInfo(@Field("comment_content") String comment_content,
                                               @Field("reply_to_user_id") int reply_to_user_id);
+
+    @Headers({"Content-type:application/json;charset=UTF-8"})
+    @POST(ApiConfig.APP_PATH_PUBLISH_INFO)
+    Observable<BaseJsonV2<Object>> publishInfo(@Path("category") long category, @Body RequestBody body);
 
     /*******************************************  打赏  *********************************************/
 

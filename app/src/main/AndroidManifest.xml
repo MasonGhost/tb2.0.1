@@ -424,6 +424,8 @@
                   android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
 
+        <activity android:name=".modules.information.publish.uploadcover.UploadCoverActivity"/>
+
     </application>
 
 </manifest>

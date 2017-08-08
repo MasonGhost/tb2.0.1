@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoPublishAddInfoRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoPublishRepository;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
 
 import dagger.Module;
 import dagger.Provides;

@@ -1,30 +1,31 @@
-package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
+package com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover;
 
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoFragment;
+import com.zhiyicx.thinksnsplus.modules.information.publish.DaggerPublishInfoComponent;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoPresenter;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoPresenterModule;
+
 /**
- * @Describe  完善资讯信息
+ * @Describe 完善资讯信息
  * @Author Jungle68
  * @Date 2017/8/7
  * @Contact master.jungle68@gmail.com
  */
-public class AddInfoActivity extends TSActivity<AddInfoPresenter, AddInfoFragment> {
+public class UploadCoverActivity extends TSActivity<PublishInfoPresenter, UploadCoverFragment> {
 
     @Override
-    protected AddInfoFragment getFragment() {
-        return AddInfoFragment.newInstance(getIntent().getExtras());
+    protected UploadCoverFragment getFragment() {
+        return UploadCoverFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
     protected void componentInject() {
-        DaggerAddInfoComponent
+        DaggerPublishInfoComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .addInfoPresenterModule(new AddInfoPresenterModule(mContanierFragment))
+                .publishInfoPresenterModule(new PublishInfoPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
 }

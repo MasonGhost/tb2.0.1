@@ -120,10 +120,13 @@
     <string name="buy_pay_downlaod_desc">您只需¥%.2f元就可查看图片</string>
     <string name="buy_pay_music_ablum_desc">该专辑为付费专辑，您只需\n支付¥%.2f元即可收听该专辑</string>
     <string name="buy_pay_single_music_desc">该歌曲为付费歌曲，您只需\n支付¥%.2f元即可收听该歌曲</string>
+    <string name="publish_pay_info">本次投稿您需支付¥%.2f元\n是否继续投稿</string>
     <string name="buy_pay_member">""</string>
     <string name="buy_pay_money">¥%.2f</string>
     <string name="buy_pay_in">购买</string>
     <string name="buy_pay_out">返回</string>
+    <string name="publish_info_pay_in">确认投稿</string>
+    <string name="publish_info_pay_out">暂不考虑</string>
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
@@ -148,6 +151,9 @@
     <string name="info_hot">热门</string>
     <string name="info_recommend">推荐</string>
     <string name="info_close">收起</string>
+    <string name="publish_info">支付并发布文章</string>
+    <string name="upload_info_cover">点击上传封面</string>
+    <string name="upload_info_cover_des">不上传封面则默认为文章内第一张图</string>
 
 
     <!--分享类型-->
