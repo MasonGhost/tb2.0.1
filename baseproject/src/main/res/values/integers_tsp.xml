@@ -59,6 +59,10 @@
 
     <integer name="certification_description_max_length">200</integer>
     <integer name="certification_description_show_limit_length">170</integer>
+    <!--资讯摘要-->
+    <integer name="info_summary_max_length">200</integer>
+    <integer name="info_summary_show_limit_length">150</integer>
+
 
     <!--#########################################      浏览器相关       ################################-->
     <!-- 浏览器最大长度-->

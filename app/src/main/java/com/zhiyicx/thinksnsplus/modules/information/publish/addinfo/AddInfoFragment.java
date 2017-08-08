@@ -67,6 +67,11 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     }
 
     @Override
+    protected String setRightTitle() {
+        return getString(R.string.next);
+    }
+
+    @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
     }
