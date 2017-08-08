@@ -38,6 +38,11 @@
     <!--咨询中的 banner hight-->
     <dimen name="info_banner_hight">187dp</dimen>
     <dimen name="info_banner_title_hight">80dp</dimen>
+
+    <!--咨询上传封面-->
+    <dimen name="upload_info_cover_height">67.5dp</dimen>
+    <dimen name="upload_info_cover_width">95dp</dimen>
+
     <!--滑动删除按钮的宽度-->
     <dimen name="slide_button_with">80dp</dimen>
 

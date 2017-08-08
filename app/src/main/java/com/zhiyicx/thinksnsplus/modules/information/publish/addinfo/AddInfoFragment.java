@@ -76,7 +76,6 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-
             mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
         }
         if (mInfoPublishBean == null) {
@@ -101,7 +100,10 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
     @Override
     protected void setRightClick() {
-        super.setRightClick();
+//        Intent intent = new Intent(getActivity(), UploadCoverActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, mInfoPublishBean);
+//        startActivity(intent);
     }
 
     @Override

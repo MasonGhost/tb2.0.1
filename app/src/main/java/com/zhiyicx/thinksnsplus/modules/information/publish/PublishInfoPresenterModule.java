@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.InfoPublishRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.PublishInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,7 +25,7 @@ public class PublishInfoPresenterModule {
     }
 
     @Provides
-    PublishInfoContract.Repository providesPublishInfoContractRepository(InfoPublishRepository infoPublishRepository){
+    PublishInfoContract.Repository providesPublishInfoContractRepository(PublishInfoRepository infoPublishRepository){
         return infoPublishRepository;
     }
 }

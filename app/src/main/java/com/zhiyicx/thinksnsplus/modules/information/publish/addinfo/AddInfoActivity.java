@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.information.publish.DaggerPublishInfoComponent;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoFragment;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoPresenter;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoPresenterModule;

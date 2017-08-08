@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,22 +8,26 @@ import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.SkinUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment.BUNDLE_PUBLISH_BEAN;
 
 /**
  * @Author Jliuer
@@ -52,6 +55,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private int[] mImageIdArray;// 图片id
     private int mPicTag;
+    private int mPicAddTag;
 
     public static PublishInfoFragment getInstance(Bundle bundle) {
         PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
@@ -87,7 +91,23 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        InfoPublishBean infoPublishBean = new InfoPublishBean();
+        infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+        StringBuilder builder = new StringBuilder();
+        List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
+        for (RichTextEditor.EditData editData : datas) {
+            builder.append(editData.inputStr);
+            if (!editData.imagePath.isEmpty()) {
+                builder.append(String.format(Locale.getDefault(),
+                        MarkdownConfig.IMAGE_TAG, "iamge", mImageIdArray[mPicAddTag]));
+                mPicAddTag++;
+            }
+        }
+        String content=builder.toString();
+        infoPublishBean.setContent(content);
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, infoPublishBean);
         startActivity(intent);
     }
 
