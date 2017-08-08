@@ -40,6 +40,7 @@ public class ActionPopupWindow extends PopupWindow {
     private String mItem3Str;
     private String mItem4Str;
     private String mItem5Str;
+    private String mItem6Str;
     private String mDesStr;
     private String mBottomStr;
 
@@ -50,6 +51,7 @@ public class ActionPopupWindow extends PopupWindow {
     private int mItem3Color;
     private int mItem4Color;
     private int mItem5Color;
+    private int mItem6Color;
     private int mItemDesColor;
     private int mItemBottomColor;
 
@@ -64,6 +66,7 @@ public class ActionPopupWindow extends PopupWindow {
     private ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
     private ActionPopupWindowDesClickListener mActionPopupWindowDesClickListener;
     private ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
+    private ActionPopupWindowItem6ClickListener mActionPopupWindowItem6ClickListener;
     private ActionPopupWindowShowOrDismissListener mActionPopupWindowDismissListener;
 
     private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
@@ -76,6 +79,7 @@ public class ActionPopupWindow extends PopupWindow {
         this.mItem3Str = builder.mItem3Str;
         this.mItem4Str = builder.mItem4Str;
         this.mItem5Str = builder.mItem5Str;
+        this.mItem6Str = builder.mItem6Str;
         this.mAnimationStyle = builder.mAnimationStyle;
         this.mDesStr = builder.mDesStr;
         this.mBottomStr = builder.mBottomStr;
@@ -84,6 +88,7 @@ public class ActionPopupWindow extends PopupWindow {
         this.mItem3Color = builder.mItem3Color;
         this.mItem4Color = builder.mItem4Color;
         this.mItem5Color = builder.mItem5Color;
+        this.mItem6Color = builder.mItem6Color;
         this.mItemDesColor = builder.mItemDesColor;
         this.mItemBottomColor = builder.mItemBottomColor;
         this.mIsOutsideTouch = builder.mIsOutsideTouch;
@@ -94,6 +99,7 @@ public class ActionPopupWindow extends PopupWindow {
         this.mActionPopupWindowItem3ClickListener = builder.mActionPopupWindowItem3ClickListener;
         this.mActionPopupWindowItem4ClickListener = builder.mActionPopupWindowItem4ClickListener;
         this.mActionPopupWindowItem5ClickListener = builder.mActionPopupWindowItem5ClickListener;
+        this.mActionPopupWindowItem6ClickListener = builder.mActionPopupWindowItem6ClickListener;
         this.mActionPopupWindowDesClickListener = builder.mActionPopupWindowDesClickListener;
         this.mActionPopupWindowBottomClickListener = builder.mActionPopupWindowBottomClickListener;
         this.mActionPopupWindowDismissListener = builder.mActionPopupWindowDismissListener;
@@ -148,6 +154,7 @@ public class ActionPopupWindow extends PopupWindow {
         initItemView(R.id.tv_pop_item4, mItem4Color, mItem4Str, mActionPopupWindowItem4ClickListener);
         initItemView(R.id.tv_pop_des, mItemDesColor, mDesStr, mActionPopupWindowDesClickListener);
         initItemView(R.id.tv_pop_item5, mItem5Color, mItem5Str, mActionPopupWindowItem5ClickListener);
+        initItemView(R.id.tv_pop_item6, mItem6Color, mItem6Str, mActionPopupWindowItem6ClickListener);
         initItemView(R.id.tv_pop_bottom, mItem5Color, mBottomStr, mActionPopupWindowBottomClickListener);
         setOnDismissListener(new OnDismissListener() {
             @Override
@@ -252,6 +259,7 @@ public class ActionPopupWindow extends PopupWindow {
         private String mItem3Str;
         private String mItem4Str;
         private String mItem5Str;
+        private String mItem6Str;
         private String mDesStr;
         private String mBottomStr;
 
@@ -261,6 +269,7 @@ public class ActionPopupWindow extends PopupWindow {
         private int mItem3Color;
         private int mItem4Color;
         private int mItem5Color;
+        private int mItem6Color;
         private int mItemDesColor;
         private int mItemBottomColor;
 
@@ -272,6 +281,7 @@ public class ActionPopupWindow extends PopupWindow {
         private ActionPopupWindowItem3ClickListener mActionPopupWindowItem3ClickListener;
         private ActionPopupWindowItem4ClickListener mActionPopupWindowItem4ClickListener;
         private ActionPopupWindowItem5ClickListener mActionPopupWindowItem5ClickListener;
+        private ActionPopupWindowItem6ClickListener mActionPopupWindowItem6ClickListener;
         private ActionPopupWindowShowOrDismissListener mActionPopupWindowDismissListener;
         private ActionPopupWindowDesClickListener mActionPopupWindowDesClickListener;
         private ActionPopupWindow.ActionPopupWindowBottomClickListener mActionPopupWindowBottomClickListener;
@@ -287,6 +297,7 @@ public class ActionPopupWindow extends PopupWindow {
             this.mItem3Str = popupWindow.mItem3Str;
             this.mItem4Str = popupWindow.mItem4Str;
             this.mItem5Str = popupWindow.mItem5Str;
+            this.mItem6Str = popupWindow.mItem6Str;
             this.mAnimationStyle = popupWindow.mAnimationStyle;
             this.mDesStr = popupWindow.mDesStr;
             this.mBottomStr = popupWindow.mBottomStr;
@@ -295,6 +306,7 @@ public class ActionPopupWindow extends PopupWindow {
             this.mItem3Color = popupWindow.mItem3Color;
             this.mItem4Color = popupWindow.mItem4Color;
             this.mItem5Color = popupWindow.mItem5Color;
+            this.mItem6Color = popupWindow.mItem6Color;
             this.mItemDesColor = popupWindow.mItemDesColor;
             this.mItemBottomColor = popupWindow.mItemBottomColor;
             this.mIsOutsideTouch = popupWindow.mIsOutsideTouch;
@@ -305,6 +317,7 @@ public class ActionPopupWindow extends PopupWindow {
             this.mActionPopupWindowItem3ClickListener = popupWindow.mActionPopupWindowItem3ClickListener;
             this.mActionPopupWindowItem4ClickListener = popupWindow.mActionPopupWindowItem4ClickListener;
             this.mActionPopupWindowItem5ClickListener = popupWindow.mActionPopupWindowItem5ClickListener;
+            this.mActionPopupWindowItem6ClickListener = popupWindow.mActionPopupWindowItem6ClickListener;
             this.mActionPopupWindowDesClickListener = popupWindow.mActionPopupWindowDesClickListener;
             this.mActionPopupWindowBottomClickListener = popupWindow.mActionPopupWindowBottomClickListener;
             this.mActionPopupWindowDismissListener = popupWindow.mActionPopupWindowDismissListener;
@@ -342,6 +355,11 @@ public class ActionPopupWindow extends PopupWindow {
 
         public ActionPopupWindow.Builder item5Str(String item5Str) {
             this.mItem5Str = item5Str;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item6Str(String item6Str) {
+            this.mItem6Str = item6Str;
             return this;
         }
 
@@ -385,6 +403,11 @@ public class ActionPopupWindow extends PopupWindow {
             return this;
         }
 
+        public ActionPopupWindow.Builder item6Color(int color) {
+            this.mItem6Color = color;
+            return this;
+        }
+
         public ActionPopupWindow.Builder itemDesColor(int color) {
             this.mItemDesColor = color;
             return this;
@@ -412,6 +435,11 @@ public class ActionPopupWindow extends PopupWindow {
 
         public ActionPopupWindow.Builder item5ClickListener(ActionPopupWindowItem5ClickListener actionPopupWindowItem5ClickListener) {
             this.mActionPopupWindowItem5ClickListener = actionPopupWindowItem5ClickListener;
+            return this;
+        }
+
+        public ActionPopupWindow.Builder item6ClickListener(ActionPopupWindowItem6ClickListener actionPopupWindowItem6ClickListener) {
+            this.mActionPopupWindowItem6ClickListener = actionPopupWindowItem6ClickListener;
             return this;
         }
 
@@ -467,6 +495,9 @@ public class ActionPopupWindow extends PopupWindow {
     }
 
     public interface ActionPopupWindowItem5ClickListener extends ItemClickListener {
+    }
+
+    public interface ActionPopupWindowItem6ClickListener extends ItemClickListener {
     }
 
     public interface ActionPopupWindowDesClickListener extends ItemClickListener {

@@ -12,11 +12,17 @@ import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
@@ -37,12 +43,14 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.functions.Action1;
 
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
@@ -52,7 +60,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Description 资讯的分类
  */
 public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoContainerPresenter>
-        implements InfoMainContract.InfoContainerView {
+        implements InfoMainContract.InfoContainerView, ActionPopupWindow.ActionPopupWindowItem6ClickListener {
 
     @BindView(R.id.fragment_infocontainer_indoctor)
     MagicIndicator mFragmentInfocontainerIndoctor;
@@ -60,6 +68,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     ImageView mFragmentInfocontainerChange;
     @BindView(R.id.fragment_infocontainer_content)
     ViewPager mFragmentInfocontainerContent;
+    private TextView mTvRightTwo;
 
     public static final String SUBSCRIBE_EXTRA = "mycates";
     protected static final int DEFAULT_OFFSET_PAGE = 3;
@@ -97,6 +106,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     private InfoTypeBean mInfoTypeBean;
     private CommonNavigator mCommonNavigator;
 
+    private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
+    private ActionPopupWindow mPayAlertPopWindow; // 提示需要付钱的
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_infocontainer;
@@ -109,6 +121,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         initMagicIndicator(initTitles());
         initFragments();
         mFragmentInfocontainerContent.setAdapter(mMyAdapter);
+        initPopWindow();
     }
 
     @Override
@@ -118,16 +131,17 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @Override
     protected int setRightImg() {
-        return R.mipmap.ico_search;
+        return R.mipmap.ico_news_contribute;
     }
 
     @Override
     protected void setRightClick() {
-
-        if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
-            return;
+        // 发布提示 1、首先需要认证 2、需要付费
+        if (mPresenter.checkCertification()){
+            mPayAlertPopWindow.show();
+        } else {
+            mCertificationAlertPopWindow.show();
         }
-        startActivity(new Intent(getActivity(), SearchActivity.class));
     }
 
     @Override
@@ -200,6 +214,58 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         mPresenter = infoContainerPresenter;
     }
 
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_right_two_img;
+    }
+
+    @Override
+    protected void initDefaultToolBar(View toolBarContainer) {
+        super.initDefaultToolBar(toolBarContainer);
+        mTvRightTwo = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right_two);
+        mTvRightTwo.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_search), null, null, null);
+        RxView.clicks(mTvRightTwo)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(aVoid -> {
+                    if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
+                        return;
+                    }
+                    startActivity(new Intent(getActivity(), SearchActivity.class));
+                });
+    }
+
+    private void initPopWindow(){
+        if (mCertificationAlertPopWindow == null){
+            mCertificationAlertPopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .item6Str(getString(R.string.info_publish_go_to_certification))
+                    .desStr(getString(R.string.info_publish_hint_certification))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
+                    .item6ClickListener(this)
+                    .build();
+        }
+        if (mPayAlertPopWindow == null){
+            mPayAlertPopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .item6Str(getString(R.string.info_publish_go_to_next))
+                    .desStr(getString(R.string.info_publish_hint_pay))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .bottomClickListener(() -> mPayAlertPopWindow.hide())
+                    .item6ClickListener(this)
+                    .build();
+        }
+    }
+
     protected List<String> initTitles() {
         if (mTitle == null) {
             mTitle = new ArrayList<>();
@@ -262,6 +328,15 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         mFragmentInfocontainerIndoctor.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mFragmentInfocontainerIndoctor, mFragmentInfocontainerContent);
 
+    }
+
+    @Override
+    public void onItemClicked() {
+        if (mPresenter.checkCertification()){
+            // 继续投稿
+        } else {
+            // 去认证
+        }
     }
 
     class MyAdapter extends FragmentStatePagerAdapter {
