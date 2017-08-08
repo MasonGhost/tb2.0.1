@@ -1,10 +1,14 @@
 package com.zhiyicx.thinksnsplus;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -278,13 +282,38 @@ public class JavaTest {
             c = a[1].toString();
             d = a[5].toString();
         } catch (Exception e) {
-          e.printStackTrace();
+            e.printStackTrace();
         }
 
         Assert.assertTrue(a[1].equals("4569"));
         Assert.assertTrue(b.equals("123"));
         Assert.assertTrue(c.equals("4569"));
         Assert.assertTrue(d == null);
+    }
+
+    /**
+     * 地区解析测试
+     */
+    @Test
+    public void locationParseTest() {
+        String data = "[{\"items\":[{\"id\":3,\"name\":\"市辖区\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\"},{\"id\":18,\"name\":\"县\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:49\",\"updated_at\":\"2017-04-28 07:49:49\"}],\"tree\":{\"id\":2,\"name\":\"北京市\",\"pid\":1,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":{\"id\":1,\"name\":\"中国\",\"pid\":0,\"extends\":\"3\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
+        List<LocationContainerBean> lodAta = new Gson().fromJson(data, new TypeToken<List<LocationContainerBean>>() {
+        }.getType());
+        List<LocationBean> result = new ArrayList<>();
+
+        for (LocationContainerBean locationContainerBean : lodAta) {
+            if (locationContainerBean.getItems() == null || locationContainerBean.getItems().isEmpty()) {
+                result.add(locationContainerBean.getTree());
+            } else {
+                for (LocationBean locationBean : locationContainerBean.getItems()) {
+                    locationBean.setParent(locationContainerBean.getTree());
+                    result.add(locationBean);
+                }
+            }
+        }
+        Assert.assertTrue(LocationBean.getlocation(result.get(0)).equals("中国，北京市，市辖区"));
+        Assert.assertTrue(LocationBean.getlocation(result.get(1)).equals("中国，北京市，县"));
+
     }
 
 }

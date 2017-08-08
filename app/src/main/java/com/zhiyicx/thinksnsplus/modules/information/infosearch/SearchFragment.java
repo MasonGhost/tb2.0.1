@@ -44,7 +44,7 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
     DeleteEditText mFragmentInfoSearchEdittext;
     @BindView(R.id.fragment_search_cancle)
     TextView mFragmentInfoSearchCancle;
-    @BindView(R.id.fragment_info_search_container)
+    @BindView(R.id.fragment_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
 
     @Override

@@ -470,9 +470,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         if (requestCode == REQUST_CODE_AREA&&data!=null&&data.getExtras()!=null) {
             LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
             if (locationBean != null) {
-
-                mUserInfoBean.setLocation(locationBean.getTree().getName());
-                setCity(locationBean.getTree().getName());
+//                mUserInfoBean.setLocation();
+                setCity(LocationBean.getlocation(locationBean));
             }
 
         }

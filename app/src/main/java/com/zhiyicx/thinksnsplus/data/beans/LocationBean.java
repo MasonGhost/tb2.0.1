@@ -1,11 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.zhiyicx.baseproject.base.BaseListBean;
-
-import java.util.List;
 
 /**
  * @Describe
@@ -13,372 +12,82 @@ import java.util.List;
  * @Date 2017/8/8
  * @Contact master.jungle68@gmail.com
  */
-public class LocationBean extends BaseListBean{
+public class LocationBean extends BaseListBean {
+
 
     /**
-     * items : [{"id":2508,"name":"成都市","pid":2507,"extends":"","created_at":"2017-06-02 08:44:10","updated_at":"2017-06-02 08:44:10"}]
-     * tree : {"id":2507,"name":"四川省","pid":1,"extends":"","created_at":"2017-06-02 08:44:10","updated_at":"2017-06-02 08:44:10","parent":{"id":1,"name":"中国","pid":0,"extends":"3","created_at":"2017-06-02 08:43:54","updated_at":"2017-06-02 08:43:54","parent":null}}
+     * id : 2507
+     * name : 四川省
+     * pid : 1
+     * extends :
+     * created_at : 2017-06-02 08:44:10
+     * updated_at : 2017-06-02 08:44:10
+     * parent : null
      */
 
-    private TreeBean tree;
-    private List<ItemsBean> items;
+    private int id;
+    private String name;
+    private int pid;
+    @SerializedName("extends")
+    private String extendsX;
+    private String created_at;
+    private String updated_at;
+    private LocationBean parent;
 
-    public TreeBean getTree() {
-        return tree;
+    public int getId() {
+        return id;
     }
 
-    public void setTree(TreeBean tree) {
-        this.tree = tree;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public List<ItemsBean> getItems() {
-        return items;
+    public String getName() {
+        return name;
     }
 
-    public void setItems(List<ItemsBean> items) {
-        this.items = items;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public static class TreeBean implements android.os.Parcelable {
-        /**
-         * id : 2507
-         * name : 四川省
-         * pid : 1
-         * extends :
-         * created_at : 2017-06-02 08:44:10
-         * updated_at : 2017-06-02 08:44:10
-         * parent : {"id":1,"name":"中国","pid":0,"extends":"3","created_at":"2017-06-02 08:43:54","updated_at":"2017-06-02 08:43:54","parent":null}
-         */
-
-        private int id;
-        private String name;
-        private int pid;
-        @SerializedName("extends")
-        private String extendsX;
-        private String created_at;
-        private String updated_at;
-        private ParentBean parent;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getPid() {
-            return pid;
-        }
-
-        public void setPid(int pid) {
-            this.pid = pid;
-        }
-
-        public String getExtendsX() {
-            return extendsX;
-        }
-
-        public void setExtendsX(String extendsX) {
-            this.extendsX = extendsX;
-        }
-
-        public String getCreated_at() {
-            return created_at;
-        }
-
-        public void setCreated_at(String created_at) {
-            this.created_at = created_at;
-        }
-
-        public String getUpdated_at() {
-            return updated_at;
-        }
-
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-        public ParentBean getParent() {
-            return parent;
-        }
-
-        public void setParent(ParentBean parent) {
-            this.parent = parent;
-        }
-
-        public static class ParentBean implements android.os.Parcelable {
-            /**
-             * id : 1
-             * name : 中国
-             * pid : 0
-             * extends : 3
-             * created_at : 2017-06-02 08:43:54
-             * updated_at : 2017-06-02 08:43:54
-             * parent : null
-             */
-
-            private int id;
-            private String name;
-            private int pid;
-            @SerializedName("extends")
-            private String extendsX;
-            private String created_at;
-            private String updated_at;
-            private ParentBean parent;
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public int getPid() {
-                return pid;
-            }
-
-            public void setPid(int pid) {
-                this.pid = pid;
-            }
-
-            public String getExtendsX() {
-                return extendsX;
-            }
-
-            public void setExtendsX(String extendsX) {
-                this.extendsX = extendsX;
-            }
-
-            public String getCreated_at() {
-                return created_at;
-            }
-
-            public void setCreated_at(String created_at) {
-                this.created_at = created_at;
-            }
-
-            public String getUpdated_at() {
-                return updated_at;
-            }
-
-            public void setUpdated_at(String updated_at) {
-                this.updated_at = updated_at;
-            }
-
-            public ParentBean getParent() {
-                return parent;
-            }
-
-            public void setParent(ParentBean parent) {
-                this.parent = parent;
-            }
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-                dest.writeInt(this.id);
-                dest.writeString(this.name);
-                dest.writeInt(this.pid);
-                dest.writeString(this.extendsX);
-                dest.writeString(this.created_at);
-                dest.writeString(this.updated_at);
-                dest.writeParcelable(this.parent, flags);
-            }
-
-            public ParentBean() {
-            }
-
-            protected ParentBean(Parcel in) {
-                this.id = in.readInt();
-                this.name = in.readString();
-                this.pid = in.readInt();
-                this.extendsX = in.readString();
-                this.created_at = in.readString();
-                this.updated_at = in.readString();
-                this.parent = in.readParcelable(ParentBean.class.getClassLoader());
-            }
-
-            public static final Creator<ParentBean> CREATOR = new Creator<ParentBean>() {
-                @Override
-                public ParentBean createFromParcel(Parcel source) {
-                    return new ParentBean(source);
-                }
-
-                @Override
-                public ParentBean[] newArray(int size) {
-                    return new ParentBean[size];
-                }
-            };
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeString(this.name);
-            dest.writeInt(this.pid);
-            dest.writeString(this.extendsX);
-            dest.writeString(this.created_at);
-            dest.writeString(this.updated_at);
-            dest.writeParcelable(this.parent, flags);
-        }
-
-        public TreeBean() {
-        }
-
-        protected TreeBean(Parcel in) {
-            this.id = in.readInt();
-            this.name = in.readString();
-            this.pid = in.readInt();
-            this.extendsX = in.readString();
-            this.created_at = in.readString();
-            this.updated_at = in.readString();
-            this.parent = in.readParcelable(ParentBean.class.getClassLoader());
-        }
-
-        public static final Creator<TreeBean> CREATOR = new Creator<TreeBean>() {
-            @Override
-            public TreeBean createFromParcel(Parcel source) {
-                return new TreeBean(source);
-            }
-
-            @Override
-            public TreeBean[] newArray(int size) {
-                return new TreeBean[size];
-            }
-        };
+    public int getPid() {
+        return pid;
     }
 
-    public static class ItemsBean implements android.os.Parcelable {
-        /**
-         * id : 2508
-         * name : 成都市
-         * pid : 2507
-         * extends :
-         * created_at : 2017-06-02 08:44:10
-         * updated_at : 2017-06-02 08:44:10
-         */
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
 
-        private int id;
-        private String name;
-        private int pid;
-        @SerializedName("extends")
-        private String extendsX;
-        private String created_at;
-        private String updated_at;
+    public String getExtendsX() {
+        return extendsX;
+    }
 
-        public int getId() {
-            return id;
-        }
+    public void setExtendsX(String extendsX) {
+        this.extendsX = extendsX;
+    }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+    public String getCreated_at() {
+        return created_at;
+    }
 
-        public String getName() {
-            return name;
-        }
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
 
-        public void setName(String name) {
-            this.name = name;
-        }
+    public String getUpdated_at() {
+        return updated_at;
+    }
 
-        public int getPid() {
-            return pid;
-        }
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
 
-        public void setPid(int pid) {
-            this.pid = pid;
-        }
+    public LocationBean getParent() {
+        return parent;
+    }
 
-        public String getExtendsX() {
-            return extendsX;
-        }
-
-        public void setExtendsX(String extendsX) {
-            this.extendsX = extendsX;
-        }
-
-        public String getCreated_at() {
-            return created_at;
-        }
-
-        public void setCreated_at(String created_at) {
-            this.created_at = created_at;
-        }
-
-        public String getUpdated_at() {
-            return updated_at;
-        }
-
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeString(this.name);
-            dest.writeInt(this.pid);
-            dest.writeString(this.extendsX);
-            dest.writeString(this.created_at);
-            dest.writeString(this.updated_at);
-        }
-
-        public ItemsBean() {
-        }
-
-        protected ItemsBean(Parcel in) {
-            this.id = in.readInt();
-            this.name = in.readString();
-            this.pid = in.readInt();
-            this.extendsX = in.readString();
-            this.created_at = in.readString();
-            this.updated_at = in.readString();
-        }
-
-        public static final Creator<ItemsBean> CREATOR = new Creator<ItemsBean>() {
-            @Override
-            public ItemsBean createFromParcel(Parcel source) {
-                return new ItemsBean(source);
-            }
-
-            @Override
-            public ItemsBean[] newArray(int size) {
-                return new ItemsBean[size];
-            }
-        };
+    public void setParent(LocationBean parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -389,8 +98,13 @@ public class LocationBean extends BaseListBean{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeParcelable(this.tree, flags);
-        dest.writeTypedList(this.items);
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeInt(this.pid);
+        dest.writeString(this.extendsX);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeParcelable(this.parent, flags);
     }
 
     public LocationBean() {
@@ -398,8 +112,13 @@ public class LocationBean extends BaseListBean{
 
     protected LocationBean(Parcel in) {
         super(in);
-        this.tree = in.readParcelable(TreeBean.class.getClassLoader());
-        this.items = in.createTypedArrayList(ItemsBean.CREATOR);
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.pid = in.readInt();
+        this.extendsX = in.readString();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.parent = in.readParcelable(LocationBean.class.getClassLoader());
     }
 
     public static final Creator<LocationBean> CREATOR = new Creator<LocationBean>() {
@@ -413,4 +132,45 @@ public class LocationBean extends BaseListBean{
             return new LocationBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "LocationBean{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", pid=" + pid +
+                ", extendsX='" + extendsX + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", parent=" + parent +
+                '}';
+    }
+
+    /**
+     * 获取当前地址，最多四级
+     *
+     * @param locationBean
+     * @return
+     */
+    public static String getlocation(LocationBean locationBean) {
+        String location = getLocationString(locationBean);
+        if (location.endsWith("，")) {
+            location = location.substring(0, location.length() - 1);
+        }
+        return location;
+    }
+
+    @NonNull
+    private static String getLocationString(LocationBean locationBean) {
+        String location = "";
+        if (locationBean.getParent() != null) {
+            location = locationBean.getName() + "，" + location;
+            location = getLocationString(locationBean.getParent()) + location;
+        } else {
+            location = locationBean.getName() + "，" + location;
+
+        }
+        return location;
+    }
+
 }

@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
 import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -282,7 +283,7 @@ public interface CommonClient {
      * @return
      */
     @GET(APP_PATH_SEARDCH_LOCATION)
-    Observable<List<LocationBean>> searchLocation(@Query("name") String name);
+    Observable<List<LocationContainerBean>> searchLocation(@Query("name") String name);
 
 
     /*******************************************  后台任务处理  *********************************************/

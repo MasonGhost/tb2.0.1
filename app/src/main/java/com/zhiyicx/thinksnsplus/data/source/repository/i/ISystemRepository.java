@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
@@ -89,7 +90,7 @@ public interface ISystemRepository {
      * @param name search content
      * @return
      */
-    Observable<List<LocationBean>> searchLocation(String name);
+    Observable<List<LocationContainerBean>> searchLocation(String name);
 
 
 }
