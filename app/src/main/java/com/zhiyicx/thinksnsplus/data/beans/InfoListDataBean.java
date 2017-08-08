@@ -11,11 +11,13 @@ import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class InfoListDataBean extends BaseListBean implements Serializable {
@@ -35,7 +37,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private int is_collection_news;
     private int is_digg_news;
     private String title;
+    private String content;
     private String from;
+    private String created_at;
     private String updated_at;
     @Convert(converter = InfoStorageBeanConverter.class, columnType = String.class)
     private StorageBean image;
@@ -48,13 +52,22 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private boolean isTop; // 是否是置顶的资讯
     private String author; // 如果from是原创 则展示author
     private int hits;
+    @Convert(converter = TagConvert.class, columnType = String.class)
+    private List<UserTagBean> tags;
+    private int digg_count;
+    private int comment_count;
+    private int is_recommend;
+    private int audit_count;
 
     @Override
     public String toString() {
         return "InfoListDataBean{" +
                 "id=" + id +
+                ", info_type=" + info_type +
                 ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
                 ", from='" + from + '\'' +
+                ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
                 ", image=" + image +
                 ", subject='" + subject + '\'' +
@@ -64,6 +77,11 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
                 ", isTop=" + isTop +
                 ", author='" + author + '\'' +
                 ", hits=" + hits +
+                ", tags=" + tags +
+                ", digg_count=" + digg_count +
+                ", comment_count=" + comment_count +
+                ", is_recommend=" + is_recommend +
+                ", audit_count=" + audit_count +
                 '}';
     }
 
@@ -171,6 +189,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.hits = hits;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public InfoListDataBean() {
     }
 
@@ -182,6 +208,45 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this._id = _id;
     }
 
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public int getDigg_count() {
+        return digg_count;
+    }
+
+    public void setDigg_count(int digg_count) {
+        this.digg_count = digg_count;
+    }
+
+    public int getComment_count() {
+        return comment_count;
+    }
+
+    public void setComment_count(int comment_count) {
+        this.comment_count = comment_count;
+    }
+
+    public int getIs_recommend() {
+        return is_recommend;
+    }
+
+    public void setIs_recommend(int is_recommend) {
+        this.is_recommend = is_recommend;
+    }
+
+    public int getAudit_count() {
+        return audit_count;
+    }
+
+    public void setAudit_count(int audit_count) {
+        this.audit_count = audit_count;
+    }
 
     public static class InfoStorageBeanConverter implements PropertyConverter<StorageBean, String> {
 
@@ -320,6 +385,49 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.isTop = isTop;
     }
 
+
+
+    @Generated(hash = 1161353270)
+    public InfoListDataBean(Long _id, int id, Long info_type, int is_collection_news, int is_digg_news,
+            String title, String content, String from, String created_at, String updated_at,
+            StorageBean image, String subject, boolean has_collect, boolean has_like,
+            InfoCategory category, boolean isTop, String author, int hits, List<UserTagBean> tags,
+            int digg_count, int comment_count, int is_recommend, int audit_count) {
+        this._id = _id;
+        this.id = id;
+        this.info_type = info_type;
+        this.is_collection_news = is_collection_news;
+        this.is_digg_news = is_digg_news;
+        this.title = title;
+        this.content = content;
+        this.from = from;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.image = image;
+        this.subject = subject;
+        this.has_collect = has_collect;
+        this.has_like = has_like;
+        this.category = category;
+        this.isTop = isTop;
+        this.author = author;
+        this.hits = hits;
+        this.tags = tags;
+        this.digg_count = digg_count;
+        this.comment_count = comment_count;
+        this.is_recommend = is_recommend;
+        this.audit_count = audit_count;
+    }
+
+    public static class TagConvert extends BaseConvert<List<UserTagBean>>{}
+
+    public List<UserTagBean> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(List<UserTagBean> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -334,7 +442,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         dest.writeInt(this.is_collection_news);
         dest.writeInt(this.is_digg_news);
         dest.writeString(this.title);
+        dest.writeString(this.content);
         dest.writeString(this.from);
+        dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeParcelable(this.image, flags);
         dest.writeString(this.subject);
@@ -344,6 +454,11 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         dest.writeByte(this.isTop ? (byte) 1 : (byte) 0);
         dest.writeString(this.author);
         dest.writeInt(this.hits);
+        dest.writeTypedList(this.tags);
+        dest.writeInt(this.digg_count);
+        dest.writeInt(this.comment_count);
+        dest.writeInt(this.is_recommend);
+        dest.writeInt(this.audit_count);
     }
 
     protected InfoListDataBean(Parcel in) {
@@ -354,7 +469,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.is_collection_news = in.readInt();
         this.is_digg_news = in.readInt();
         this.title = in.readString();
+        this.content = in.readString();
         this.from = in.readString();
+        this.created_at = in.readString();
         this.updated_at = in.readString();
         this.image = in.readParcelable(StorageBean.class.getClassLoader());
         this.subject = in.readString();
@@ -364,29 +481,11 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.isTop = in.readByte() != 0;
         this.author = in.readString();
         this.hits = in.readInt();
-    }
-
-    @Generated(hash = 1371744052)
-    public InfoListDataBean(Long _id, int id, Long info_type, int is_collection_news, int is_digg_news,
-            String title, String from, String updated_at, StorageBean image, String subject,
-            boolean has_collect, boolean has_like, InfoCategory category, boolean isTop, String author,
-            int hits) {
-        this._id = _id;
-        this.id = id;
-        this.info_type = info_type;
-        this.is_collection_news = is_collection_news;
-        this.is_digg_news = is_digg_news;
-        this.title = title;
-        this.from = from;
-        this.updated_at = updated_at;
-        this.image = image;
-        this.subject = subject;
-        this.has_collect = has_collect;
-        this.has_like = has_like;
-        this.category = category;
-        this.isTop = isTop;
-        this.author = author;
-        this.hits = hits;
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.digg_count = in.readInt();
+        this.comment_count = in.readInt();
+        this.is_recommend = in.readInt();
+        this.audit_count = in.readInt();
     }
 
     public static final Creator<InfoListDataBean> CREATOR = new Creator<InfoListDataBean>() {
