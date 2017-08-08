@@ -15,8 +15,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
 import com.zhiyicx.thinksnsplus.widget.pager_recyclerview.itemtouch.DefaultItemTouchHelpCallback;
@@ -56,8 +55,8 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     @BindView(R.id.info_prompt)
     TextView mInfoPrompt;
 
-    private List<InfoTypeMyCatesBean> mMyCatesBeen;
-    private List<InfoTypeMoreCatesBean> mMoreCatesBeen;
+    private List<InfoTypeCatesBean> mMyCatesBeen;
+    private List<InfoTypeCatesBean> mMoreCatesBeen;
     private CommonAdapter mSubscribeAdapter;
     private CommonAdapter mUnSubscribeAdapter;
     private boolean isEditor;
@@ -180,6 +179,7 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
                 infoTypeBean.setMy_cates(mMyCatesBeen);
                 mPresenter.updateLocalInfoType(infoTypeBean);
                 mPresenter.handleSubscribe(getFollows(mMyCatesBeen));
+                mInfoTypeBean = infoTypeBean;
                 backInfo();
                 break;
         }
@@ -206,8 +206,6 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     }
 
     private void backInfo() {
-        mInfoTypeBean.setMore_cates(mMoreCatesBeen);
-        mInfoTypeBean.setMy_cates(mMyCatesBeen);
         Intent intent = new Intent(getActivity(), InfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SUBSCRIBE_EXTRA, mInfoTypeBean);
@@ -216,9 +214,9 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         getActivity().finish();
     }
 
-    private String getFollows(List<InfoTypeMyCatesBean> bean) {
+    private String getFollows(List<InfoTypeCatesBean> bean) {
         StringBuilder ids = new StringBuilder();
-        for (InfoTypeMyCatesBean data : bean) {
+        for (InfoTypeCatesBean data : bean) {
             if (data.getId() != -1) {
                 ids.append(data.getId());
                 ids.append(",");
@@ -228,10 +226,10 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     }
 
     private CommonAdapter initUnsubscribeAdapter() {
-        mUnSubscribeAdapter = new CommonAdapter<InfoTypeMoreCatesBean>(getActivity(),
+        mUnSubscribeAdapter = new CommonAdapter<InfoTypeCatesBean>(getActivity(),
                 R.layout.item_info_channel, mMoreCatesBeen) {
             @Override
-            protected void convert(ViewHolder holder, InfoTypeMoreCatesBean data,
+            protected void convert(ViewHolder holder, InfoTypeCatesBean data,
                                    int position) {
                 holder.setText(R.id.item_info_channel, data.getName());
             }
@@ -241,25 +239,19 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
                 RxView.clicks(viewHolder.itemView)
                         .throttleFirst(1, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object o) {
-                                if (mOnItemClickListener != null) {
-                                    int position = viewHolder.getAdapterPosition();
-                                    mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                                }
+                        .subscribe(o -> {
+                            if (mOnItemClickListener != null) {
+                                int position = viewHolder.getAdapterPosition();
+                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
                             }
                         });
 
-                viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        if (mOnItemClickListener != null) {
-                            int position = viewHolder.getAdapterPosition();
-                            return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                        }
-                        return true;
+                viewHolder.itemView.setOnLongClickListener(v -> {
+                    if (mOnItemClickListener != null) {
+                        int position = viewHolder.getAdapterPosition();
+                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
                     }
+                    return true;
                 });
             }
         };
@@ -267,9 +259,9 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
         mUnSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                InfoTypeMoreCatesBean bean = mMoreCatesBeen.get(position);
-                mSubscribeAdapter.addItem(new InfoTypeMyCatesBean(bean.getId(),
-                        bean.getName()));
+                InfoTypeCatesBean bean = mMoreCatesBeen.get(position);
+                mSubscribeAdapter.addItem(new InfoTypeCatesBean(bean.getId(),
+                        bean.getName(), true));
                 mUnSubscribeAdapter.removeItem(position);
                 if (!isEditor) {
                     mFragmentChannelEditor.performClick();
@@ -287,10 +279,10 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
     }
 
     private CommonAdapter initSubscribeAdapter() {
-        mSubscribeAdapter = new CommonAdapter<InfoTypeMyCatesBean>(getActivity(), R.layout
+        mSubscribeAdapter = new CommonAdapter<InfoTypeCatesBean>(getActivity(), R.layout
                 .item_info_channel, mMyCatesBeen) {
             @Override
-            protected void convert(ViewHolder holder, InfoTypeMyCatesBean data
+            protected void convert(ViewHolder holder, InfoTypeCatesBean data
                     , final int position) {
                 TextView textView = holder.getView(R.id.item_info_channel);
                 ImageView delete = holder.getView(R.id.item_info_channel_deal);
@@ -316,25 +308,19 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
                 RxView.clicks(viewHolder.itemView)
                         .throttleFirst(1, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())
-                        .subscribe(new Action1<Object>() {
-                            @Override
-                            public void call(Object o) {
-                                if (mOnItemClickListener != null) {
-                                    int position = viewHolder.getAdapterPosition();
-                                    mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                                }
+                        .subscribe(o -> {
+                            if (mOnItemClickListener != null) {
+                                int position = viewHolder.getAdapterPosition();
+                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
                             }
                         });
 
-                viewHolder.getConvertView().setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        if (mOnItemClickListener != null) {
-                            int position = viewHolder.getAdapterPosition();
-                            return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                        }
-                        return true;
+                viewHolder.getConvertView().setOnLongClickListener(v -> {
+                    if (mOnItemClickListener != null) {
+                        int position = viewHolder.getAdapterPosition();
+                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
                     }
+                    return true;
                 });
             }
         };
@@ -342,10 +328,10 @@ public class InfoChannelFragment extends TSFragment<InfoChannelConstract.Present
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (isEditor && position != 0) {
-                    InfoTypeMyCatesBean bean = mMyCatesBeen.get(position);
+                    InfoTypeCatesBean bean = mMyCatesBeen.get(position);
                     mSubscribeAdapter.removeItem(position);
-                    mUnSubscribeAdapter.addItem(new InfoTypeMoreCatesBean(bean.getId(),
-                            bean.getName()));
+                    mUnSubscribeAdapter.addItem(new InfoTypeCatesBean(bean.getId(),
+                            bean.getName(), false));
                 }
             }
 

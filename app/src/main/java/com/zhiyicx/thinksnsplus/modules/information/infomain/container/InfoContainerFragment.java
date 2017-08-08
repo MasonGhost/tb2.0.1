@@ -22,9 +22,8 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
@@ -48,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
@@ -195,9 +193,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setInfoType(InfoTypeBean infoType) {
         mInfoTypeBean = infoType;
-        mInfoTypeBean.getMy_cates().add(0, new InfoTypeMyCatesBean(-1L, getString(R.string
-                .info_recommend)));
-        for (InfoTypeMyCatesBean myCatesBean : infoType.getMy_cates()) {
+        mInfoTypeBean.getMy_cates().add(0, new InfoTypeCatesBean(-1L, getString(R.string
+                .info_recommend),true));
+        for (InfoTypeCatesBean myCatesBean : infoType.getMy_cates()) {
             if (mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
                     && !mTitle.contains(myCatesBean.getName())) {
                 LogUtils.d(myCatesBean.getName());

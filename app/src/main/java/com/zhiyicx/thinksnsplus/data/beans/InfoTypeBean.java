@@ -17,22 +17,22 @@ public class InfoTypeBean extends BaseListBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id = 1L;
-    private List<InfoTypeMyCatesBean> my_cates;
-    private List<InfoTypeMoreCatesBean> more_cates;
+    private List<InfoTypeCatesBean> my_cates;
+    private List<InfoTypeCatesBean> more_cates;
 
-    public List<InfoTypeMyCatesBean> getMy_cates() {
+    public List<InfoTypeCatesBean> getMy_cates() {
         return my_cates;
     }
 
-    public void setMy_cates(List<InfoTypeMyCatesBean> my_cates) {
+    public void setMy_cates(List<InfoTypeCatesBean> my_cates) {
         this.my_cates = my_cates;
     }
 
-    public List<InfoTypeMoreCatesBean> getMore_cates() {
+    public List<InfoTypeCatesBean> getMore_cates() {
         return more_cates;
     }
 
-    public void setMore_cates(List<InfoTypeMoreCatesBean> more_cates) {
+    public void setMore_cates(List<InfoTypeCatesBean> more_cates) {
         this.more_cates = more_cates;
     }
 
@@ -55,8 +55,8 @@ public class InfoTypeBean extends BaseListBean implements Serializable {
     protected InfoTypeBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.my_cates = in.createTypedArrayList(InfoTypeMyCatesBean.CREATOR);
-        this.more_cates = in.createTypedArrayList(InfoTypeMoreCatesBean.CREATOR);
+        this.my_cates = in.createTypedArrayList(InfoTypeCatesBean.CREATOR);
+        this.more_cates = in.createTypedArrayList(InfoTypeCatesBean.CREATOR);
     }
 
     public static final Creator<InfoTypeBean> CREATOR = new Creator<InfoTypeBean>() {
