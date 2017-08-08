@@ -175,7 +175,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
             public void dealInfoDigList(ViewHolder holder) {
                 if (mInfoDetailBean != null
                         && mInfoDetailBean.getInfoDigList() != null
-                        && mInfoDetailBean.getInfoDigList().size() > 0){
+                        && mInfoDetailBean.getInfoDigList().size() > 0) {
                     holder.setVisible(R.id.detail_dig_view, VISIBLE);
                     DynamicHorizontalStackIconView digListView = holder.getView(R.id.detail_dig_view);
                     digListView.setDigCount(mInfoMation.getDigg_count());
@@ -200,7 +200,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
             @Override
             public void dealInfoWebContent(MarkdownView markdownView) {
-                if (!TextUtils.isEmpty(mInfoMation.getContent())){
+                if (!TextUtils.isEmpty(mInfoMation.getContent())) {
                     markdownView.loadMarkdown(dealPic(mInfoMation.getContent()));
                 }
             }
@@ -212,14 +212,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         return multiItemTypeAdapter;
     }
 
-    public String dealPic(String markDownContent){
+    public String dealPic(String markDownContent) {
         // 替换图片id 为地址
-        while (markDownContent.contains("@![image](")){
+        while (markDownContent.contains("@![image](")) {
             int position = markDownContent.indexOf("@![image](");
             String id = String.valueOf(markDownContent.charAt(position + 1));
             String imgPath = APP_DOMAIN + API_VERSION_2 + "files/" + id + "?q=80";
-            markDownContent = markDownContent.replace("("+id, imgPath);
-            markDownContent = markDownContent.replace("@![image](", "![image]");
+            markDownContent = markDownContent.replace("@![image](" + id + ")", "![image](" + imgPath + ")");
         }
         return markDownContent;
     }
@@ -272,7 +271,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected void initData() {
         super.initData();
-        if (mInfoMation != null){
+        if (mInfoMation != null) {
             mPresenter.getInfoDetail(String.valueOf(mInfoMation.getId()));
         }
     }
