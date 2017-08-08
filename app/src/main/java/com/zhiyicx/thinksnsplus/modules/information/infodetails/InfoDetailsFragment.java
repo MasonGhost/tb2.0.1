@@ -7,9 +7,11 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -20,19 +22,23 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
+import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -43,11 +49,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import br.tiagohm.markdownview.MarkdownView;
 import butterknife.BindView;
 import rx.Observable;
 import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -92,6 +103,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private InfoListDataBean mInfoMation;
     private boolean isFirstIn = true;
+    private InfoDetailBean mInfoDetailBean;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -130,7 +142,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 ItemOnWebEventListener()) {
             @Override
             protected void dealRewards(ViewHolder holder) {
-                ((ReWardView) holder.getView(R.id.v_reward)).initData(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean,RewardType.INFO);
+                ((ReWardView) holder.getView(R.id.v_reward)).initData(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO);
                 ((ReWardView) holder.getView(R.id.v_reward)).setOnRewardsClickListener(() -> {
                 });
             }
@@ -145,6 +157,53 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     holder.getView(R.id.info_detail_comment).setVisibility(View.GONE);
                 }
             }
+
+            @Override
+            public void dealInfoHeader(ViewHolder holder) {
+                holder.setText(R.id.tv_info_title, mInfoMation.getTitle());
+                holder.setVisible(R.id.tv_from_channel, mInfoMation.getCategory() == null ? GONE : VISIBLE);
+                holder.setText(R.id.tv_from_channel, mInfoMation.getCategory() == null ? "" : mInfoMation.getCategory().getName());
+                String from = mInfoMation.getFrom().equals(getString(R.string.info_publish_original)) ?
+                        mInfoMation.getAuthor() : mInfoMation.getFrom();
+                String infoData = String.format(getString(R.string.info_list_count)
+                        , from, mInfoMation.getHits(), TimeUtils.getTimeFriendlyNormal(mInfoMation
+                                .getUpdated_at()));
+                holder.setText(R.id.item_info_timeform, infoData);
+            }
+
+            @Override
+            public void dealInfoDigList(ViewHolder holder) {
+                if (mInfoDetailBean != null
+                        && mInfoDetailBean.getInfoDigList() != null
+                        && mInfoDetailBean.getInfoDigList().size() > 0){
+                    holder.setVisible(R.id.detail_dig_view, VISIBLE);
+                    DynamicHorizontalStackIconView digListView = holder.getView(R.id.detail_dig_view);
+                    digListView.setDigCount(mInfoMation.getDigg_count());
+                    digListView.setPublishTime(mInfoMation.getUpdated_at());
+                    digListView.setViewerCount(mInfoMation.getHits());
+                    // 设置点赞头像
+                    digListView.setDigUserHeadIconInfo(mInfoDetailBean.getInfoDigList());
+
+                    // 设置跳转到点赞列表
+                    digListView.setDigContainerClickListener(digContainer -> {
+                        Bundle bundle = new Bundle();
+//                        bundle.putParcelable(DigListFragment.DIG_LIST_DATA, dynamicBean);
+//                        Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity
+//                                .class);
+//                        intent.putExtras(bundle);
+//                        mDynamicDetailHeader.getContext().startActivity(intent);
+                    });
+                } else {
+                    holder.setVisible(R.id.detail_dig_view, GONE);
+                }
+            }
+
+            @Override
+            public void dealInfoWebContent(MarkdownView markdownView) {
+                if (!TextUtils.isEmpty(mInfoMation.getContent())){
+                    markdownView.loadMarkdown(dealPic(mInfoMation.getContent()));
+                }
+            }
         });
         InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
                 ItemOnCommentListener());
@@ -153,12 +212,39 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         return multiItemTypeAdapter;
     }
 
+    public String dealPic(String markDownContent){
+        // 替换图片id 为地址
+        while (markDownContent.contains("@![image](")){
+            int position = markDownContent.indexOf("@![image](");
+            String id = String.valueOf(markDownContent.charAt(position + 1));
+            String imgPath = APP_DOMAIN + API_VERSION_2 + "files/" + id + "?q=80";
+            markDownContent = markDownContent.replace("("+id, imgPath);
+            markDownContent = markDownContent.replace("@![image](", "![image]");
+        }
+        return markDownContent;
+    }
+
     @Override
     public void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> datas) {
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
         refreshData();
+    }
+
+    @Override
+    public void updateInfoHeader(InfoDetailBean infoDetailBean) {
+        closeLoadingView();
+        mCoordinatorLayout.setEnabled(true);
+        this.mInfoDetailBean = infoDetailBean;
+        this.mInfoMation = infoDetailBean.getInfoData();
+        onNetResponseSuccess(infoDetailBean.getInfoCommentList(), false);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public InfoDetailBean getDetailBean() {
+        return mInfoDetailBean;
     }
 
     @Override
@@ -186,6 +272,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected void initData() {
         super.initData();
+        if (mInfoMation != null){
+            mPresenter.getInfoDetail(String.valueOf(mInfoMation.getId()));
+        }
     }
 
     @Override
