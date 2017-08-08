@@ -8,5 +8,5 @@ package com.zhiyicx.baseproject.config;
  */
 public class MarkdownConfig {
     public static final String IMAGE_TAG = "@![%s](%d)";//@![title](file id)
-    public static final String IMAGE_TITLE = "iamge";
+    public static final String IMAGE_TITLE = "image";
 }
