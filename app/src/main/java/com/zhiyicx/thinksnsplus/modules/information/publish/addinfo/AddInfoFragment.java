@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -11,6 +12,7 @@ import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
@@ -28,6 +30,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> implements AddInfoContract.View {
 
+    public static final String BUNDLE_PUBLISH_BEAN = "publish_bean";
 
     @BindView(R.id.bt_add_category)
     CombinationButton mBtAddCategory;
@@ -45,6 +48,8 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     UserInfoInroduceInputView mEtInfoSummary;
     private ActionPopupWindow mLoginoutPopupWindow;// 退出登录选择弹框
 
+    private InfoPublishBean mInfoPublishBean;
+
     public static AddInfoFragment newInstance(Bundle bundle) {
 
         AddInfoFragment fragment = new AddInfoFragment();
@@ -52,8 +57,14 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         return fragment;
     }
 
-    public static AddInfoFragment newInstance() {
-        return new AddInfoFragment();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+
+            mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
+        }
     }
 
     @Override
