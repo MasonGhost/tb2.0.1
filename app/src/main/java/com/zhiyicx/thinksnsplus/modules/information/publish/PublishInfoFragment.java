@@ -92,7 +92,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     protected void setRightClick() {
         super.setRightClick();
         InfoPublishBean infoPublishBean = new InfoPublishBean();
-        infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+
         StringBuilder builder = new StringBuilder();
         List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
         for (RichTextEditor.EditData editData : datas) {
@@ -105,9 +105,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         }
         String content=builder.toString();
         infoPublishBean.setContent(content);
+        infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISH_BEAN, infoPublishBean);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

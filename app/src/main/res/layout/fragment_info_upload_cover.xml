@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/tv_info_cover_container"
+        android:id="@+id/fl_info_cover_container"
         android:layout_width="@dimen/upload_info_cover_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_bigger_large"
@@ -53,7 +53,7 @@
         android:id="@+id/bt_sure"
         style="@style/style_login_button"
         android:layout_marginTop="@dimen/button_login_margin_top"
-        android:enabled="false"
+        android:enabled="true"
         android:text="@string/publish_info"
         tools:text="@string/publish_info"/>
 

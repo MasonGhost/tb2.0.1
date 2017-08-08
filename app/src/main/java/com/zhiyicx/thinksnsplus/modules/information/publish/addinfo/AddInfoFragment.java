@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover.UploadCoverActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
@@ -97,10 +98,11 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
     @Override
     protected void setRightClick() {
-//        Intent intent = new Intent(getActivity(), UploadCoverActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, mInfoPublishBean);
-//        startActivity(intent);
+        Intent intent = new Intent(getActivity(), UploadCoverActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, mInfoPublishBean);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

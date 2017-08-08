@@ -20,6 +20,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -51,9 +52,7 @@ public interface InfoMainClient {
     // 获取资讯分类
     @GET(APP_PATH_INFO_TYPE_V2)
     Observable<InfoTypeBean> getInfoType();
-//    Observable<BaseJson<InfoTypeBean>> getInfoType();
 
-    // 获取资讯分类
     @GET(APP_PATH_INFO_DETAILS)
     Observable<BaseJson<InfoWebBean>> getInfoWebContent(@Path("news_id") String news_id);
 
@@ -92,8 +91,8 @@ public interface InfoMainClient {
 
     // 订阅某类资讯
     @FormUrlEncoded
-    @POST(APP_PATH_INFO_FOLLOW_LIST)
-    Observable<BaseJson<Integer>> doSubscribe(@Field("follows") String follows);
+    @PATCH(APP_PATH_INFO_FOLLOW_LIST)
+    Observable<BaseJsonV2<Object>> doSubscribe(@Field("follows") String follows);
 
     // 收藏资讯
     @POST(APP_PATH_INFO_COLLECT)

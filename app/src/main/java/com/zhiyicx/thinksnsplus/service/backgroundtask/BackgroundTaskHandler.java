@@ -485,9 +485,10 @@ public class BackgroundTaskHandler {
     private void PatchMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
         mServiceManager.getCommonClient().handleBackGroundTaskPatch(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
-                .subscribe(new BaseSubscribe<Object>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+
                     @Override
-                    protected void onSuccess(Object data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     }
 
@@ -1174,7 +1175,7 @@ public class BackgroundTaskHandler {
     /**
      * 处理后台发布申请认证
      */
-    private void sendCertification(final BackgroundRequestTaskBean backgroundRequestTaskBean){
+    private void sendCertification(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         SendCertificationBean bean = (SendCertificationBean) params.get("sendCertification");
         if (bean == null) {
