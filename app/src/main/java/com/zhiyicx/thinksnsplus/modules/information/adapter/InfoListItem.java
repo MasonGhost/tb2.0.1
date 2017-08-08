@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,12 +42,12 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         }
 
         title.setText(realData.getTitle());
-        if (realData.getStorage() == null) {
+        if (realData.getImage() == null) {
             imageView.setVisibility(View.GONE);
         } else {
             imageView.setVisibility(View.VISIBLE);
             Glide.with(BaseApplication.getContext())
-                    .load(ImageUtils.imagePathConvertV2(realData.getStorage().getId(), imageView.getWidth(), imageView.getHeight(),
+                    .load(ImageUtils.imagePathConvertV2(realData.getImage().getId(), imageView.getWidth(), imageView.getHeight(),
                             ImageZipConfig.IMAGE_80_ZIP))
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
@@ -56,10 +55,18 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                             , imageView.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_height))
                     .into(imageView);
         }
-        String from = TextUtils.isEmpty(realData.getFrom()) ? "" : "\b\b\b来自\b" + realData.getFrom();
-        holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
-                .getUpdated_at()) + from);
-
+        // 来自单独分开
+        String category = realData.getCategory() == null ? "" : realData.getCategory().getName();
+        holder.setText(R.id.tv_from_channel, category);
+        // 投稿来源，浏览数，时间
+        String from = realData.getFrom().equals(title.getContext().getString(R.string.info_publish_original)) ?
+                realData.getAuthor() : realData.getFrom();
+        String infoData = String.format(title.getContext().getString(R.string.info_list_count)
+                , from, realData.getHits(), TimeUtils.getTimeFriendlyNormal(realData
+                        .getUpdated_at()));
+        holder.setText(R.id.item_info_timeform, infoData);
+        // 是否置顶
+        holder.setVisible(R.id.tv_top_flag, realData.isTop() ? View.VISIBLE : View.GONE);
         holder.itemView.setOnClickListener(v -> itemClick(position, imageView, title, realData));
     }
 

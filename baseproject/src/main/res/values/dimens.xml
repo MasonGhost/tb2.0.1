@@ -52,7 +52,7 @@
     <!-- 加载更多 -->
     <dimen name="load_more_height">35dp</dimen>
     <!--认证输入的item高度-->
-    <dimen name="certification_input_item_height">55dp</dimen>
+    <dimen name="certification_input_item_height">50dp</dimen>
     <dimen name="certification_detail_width">100dp</dimen>
     <dimen name="certification_detail_img_width">100dp</dimen>
     <dimen name="certification_detail_img_height">50dp</dimen>

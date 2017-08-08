@@ -19,13 +19,12 @@ import rx.Observable;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoSearchRepository implements SearchContract.Repository {
+public class InfoSearchRepository extends BaseInfoRepository implements SearchContract.Repository {
 
-    private InfoMainClient mInfoMainClient;
 
     @Inject
     public InfoSearchRepository(ServiceManager serviceManager) {
-        mInfoMainClient = serviceManager.getInfoMainClient();
+        super(serviceManager);
     }
 
     @Override

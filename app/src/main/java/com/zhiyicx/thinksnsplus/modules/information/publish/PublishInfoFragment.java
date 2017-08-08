@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
@@ -76,6 +77,13 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected int setLeftImg() {
         return 0;
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        Intent intent = new Intent(getActivity(), AddInfoActivity.class);
+        startActivity(intent);
     }
 
     @Override

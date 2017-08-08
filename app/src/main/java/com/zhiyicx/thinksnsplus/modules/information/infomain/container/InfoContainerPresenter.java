@@ -12,8 +12,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -23,14 +21,14 @@ import rx.schedulers.Schedulers;
  * @Description
  */
 @FragmentScoped
-public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Reppsitory
+public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Repository
         , InfoMainContract.InfoContainerView> implements InfoMainContract.InfoContainerPresenter {
 
     @Inject
     InfoTypeBeanGreenDaoImpl mInfoTypeBeanGreenDao;
 
     @Inject
-    public InfoContainerPresenter(InfoMainContract.Reppsitory repository,
+    public InfoContainerPresenter(InfoMainContract.Repository repository,
                                   InfoMainContract.InfoContainerView rootContainerView) {
         super(repository, rootContainerView);
     }

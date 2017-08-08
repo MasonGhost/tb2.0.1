@@ -7,7 +7,11 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBaseInfoRepository;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -35,6 +39,7 @@ public interface InfoMainContract {
      */
     interface InfoListView extends ITSListView<BaseListBean,InfoListPresenter> {
         String getInfoType();
+        int isRecommend();
     }
 
     interface InfoListPresenter extends ITSListPresenter<BaseListBean> {
@@ -43,7 +48,7 @@ public interface InfoMainContract {
     }
 
 
-    interface Reppsitory {
+    interface Repository extends IBaseInfoRepository{
         Observable<InfoTypeBean> getInfoType();
 
         /**
