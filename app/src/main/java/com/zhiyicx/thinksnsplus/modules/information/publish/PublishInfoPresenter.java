@@ -8,6 +8,10 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import javax.inject.Inject;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * @Author Jliuer
  * @Date 2017/08/07/9:59
@@ -28,6 +32,8 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
     @Override
     public void uploadPic(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
         mUpLoadRepository.upLoadSingleFileV2(filePath, mimeType, true, photoWidth, photoHeight)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribe<Integer>() {
                     @Override
                     protected void onSuccess(Integer data) {
@@ -56,7 +62,19 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
         mRepository.publishInfo(infoPublishBean).subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
             @Override
             protected void onSuccess(BaseJsonV2<Object> data) {
+                mRootView.showSnackSuccessMessage("发布成功");
+            }
 
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+                mRootView.showSnackErrorMessage(message);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.showSnackErrorMessage(throwable.getMessage());
             }
         });
     }

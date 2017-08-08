@@ -17,6 +17,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
@@ -45,16 +46,32 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     FrameLayout mFlInfoCoverContainer;
     @BindView(R.id.iv_info_cover_iamge)
     ImageView mIvInfoCoverIamge;
+    @BindView(R.id.tv_info_cover)
+    TextView mTvInfoCover;
 
     private InfoPublishBean mInfoPublishBean;
     private PayPopWindow mPayInfoPopWindow;
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private ActionPopupWindow mCoverInstructionsPopupWindow;
 
     public static UploadCoverFragment newInstance(Bundle bundle) {
         UploadCoverFragment fragment = new UploadCoverFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected String setRightTitle() {
+        return "重置封面";
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mIvInfoCoverIamge.setVisibility(View.GONE);
+        mTvInfoCover.setVisibility(View.VISIBLE);
+        mInfoPublishBean.setImage(mInfoPublishBean.getCover());
     }
 
     @Override
@@ -70,11 +87,22 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         }
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
-        Glide.with(getContext())
+        mTvInfoCover.setVisibility(View.GONE);
+        mIvInfoCoverIamge.setVisibility(View.VISIBLE);
+        Glide.with(getActivity())
                 .load(path)
-                .crossFade()
                 .centerCrop()
                 .into(mIvInfoCoverIamge);
+    }
+
+    @Override
+    public void publishInfoFailed() {
+
+    }
+
+    @Override
+    public void publishInfoSuccess() {
+
     }
 
     @Override
@@ -166,6 +194,11 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
+                    mInfoPublishBean.getSubject();
+                    if (mInfoPublishBean.getImage() * mInfoPublishBean.getCover() <= 0) {
+                        initWithdrawalsInstructionsPop();
+                        return;
+                    }
                     mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
@@ -217,5 +250,23 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 })
                 .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
         mPhotoPopupWindow.show();
+    }
+
+    public void initWithdrawalsInstructionsPop() {
+        if (mCoverInstructionsPopupWindow != null) {
+            mCoverInstructionsPopupWindow.show();
+            return;
+        }
+        mCoverInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.instructions))
+                .desStr(getString(R.string.upload_info_cover_instructions))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mCoverInstructionsPopupWindow.hide())
+                .build();
+        mCoverInstructionsPopupWindow.show();
     }
 }

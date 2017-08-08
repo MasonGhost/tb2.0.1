@@ -4,9 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import org.w3c.dom.Text;
+import com.google.gson.annotations.Expose;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,11 +23,31 @@ public class InfoPublishBean implements Parcelable {
     private String subject;
     private String content;
     private long categoryId;
-    private List<UserTagBean> tags;
+    @Expose
+    private List<UserTagBean> ids;
+    private String tags;
     private String from;
     private String author;
     private int image;
+    @Expose
+    private int cover;
     private int amout;
+
+    public String getIds() {
+        return tags;
+    }
+
+    public void setIds(String ids) {
+        this.tags = ids;
+    }
+
+    public int getCover() {
+        return cover;
+    }
+
+    public void setCover(int cover) {
+        this.cover = cover;
+    }
 
     public int getAmout() {
         return amout;
@@ -49,13 +68,13 @@ public class InfoPublishBean implements Parcelable {
     public String getSubject() {
         if (TextUtils.isEmpty(subject) && !TextUtils.isEmpty(content)) {
             if (content.length() > 200) {
-                subject = content.substring(0, 200);
+                this.subject = "> " + content.substring(0, 200);
             } else {
-                subject = content;
+                this.subject = "> " + content;
             }
 
         }
-        return subject;
+        return this.subject;
     }
 
     public void setSubject(String subject) {
@@ -79,11 +98,17 @@ public class InfoPublishBean implements Parcelable {
     }
 
     public List<UserTagBean> getTags() {
-        return tags;
+        return ids;
     }
 
     public void setTags(List<UserTagBean> tags) {
-        this.tags = tags;
+        this.ids = tags;
+        StringBuilder builder = new StringBuilder();
+        for (UserTagBean tag : tags) {
+            builder.append(tag.getId());
+            builder.append(",");
+        }
+        setIds(builder.toString());
     }
 
     public String getFrom() {
@@ -125,6 +150,7 @@ public class InfoPublishBean implements Parcelable {
                 '}';
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -136,10 +162,12 @@ public class InfoPublishBean implements Parcelable {
         dest.writeString(this.subject);
         dest.writeString(this.content);
         dest.writeLong(this.categoryId);
-        dest.writeTypedList(this.tags);
+        dest.writeTypedList(this.ids);
+        dest.writeString(this.tags);
         dest.writeString(this.from);
         dest.writeString(this.author);
         dest.writeInt(this.image);
+        dest.writeInt(this.cover);
         dest.writeInt(this.amout);
     }
 
@@ -151,10 +179,12 @@ public class InfoPublishBean implements Parcelable {
         this.subject = in.readString();
         this.content = in.readString();
         this.categoryId = in.readLong();
-        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.ids = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.tags = in.readString();
         this.from = in.readString();
         this.author = in.readString();
         this.image = in.readInt();
+        this.cover = in.readInt();
         this.amout = in.readInt();
     }
 

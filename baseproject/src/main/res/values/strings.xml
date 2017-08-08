@@ -153,6 +153,7 @@
     <string name="info_close">收起</string>
     <string name="publish_info">支付并发布文章</string>
     <string name="upload_info_cover">点击上传封面</string>
+    <string name="upload_info_cover_instructions">请上传封面</string>
     <string name="upload_info_cover_des">不上传封面则默认为文章内第一张图</string>
 
 
