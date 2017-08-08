@@ -13,7 +13,7 @@ import javax.inject.Inject;
  */
 
 public class AddInfoPresenter extends AppBasePresenter<AddInfoContract.Repository,AddInfoContract.View>
-        implements PublishInfoContract.Presenter{
+        implements AddInfoContract.Presenter{
 
     @Inject
     public AddInfoPresenter(AddInfoContract.Repository repository, AddInfoContract.View rootView) {
