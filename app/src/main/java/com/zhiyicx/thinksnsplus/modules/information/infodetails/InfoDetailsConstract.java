@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import android.graphics.Bitmap;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;

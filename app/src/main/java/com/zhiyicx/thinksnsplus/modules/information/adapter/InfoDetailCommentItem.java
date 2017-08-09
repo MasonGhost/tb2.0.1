@@ -55,7 +55,7 @@ public class InfoDetailCommentItem implements ItemViewDelegate<InfoCommentListBe
 
     @Override
     public boolean isForViewType(InfoCommentListBean item, int position) {
-        return !TextUtils.isEmpty(item.getComment_content());
+        return position == 0 || !TextUtils.isEmpty(item.getComment_content());
     }
 
     @Override
