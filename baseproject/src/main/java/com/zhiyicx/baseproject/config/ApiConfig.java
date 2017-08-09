@@ -93,6 +93,9 @@ public class ApiConfig {
     // 认证
     public static final String APP_PATH_CERTIFICATION = "api/" + API_VERSION_2 + "/user/certification"; // GET-获取认证信息 POST-申请认证 PACTH-更新认证
 
+    // 打赏
+    public static final String APP_PATH_REWARD_USER = "api/" + API_VERSION_2 + "/user/{user_id}/rewards"; // 打赏一个用户
+
     /**
      * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
      *
@@ -239,7 +242,7 @@ public class ApiConfig {
 
     // 动态打赏
     public static final String APP_PATH_DYNAMIC_REWARDS = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
-    // 动态用户列表
+    // 动态打赏用户列表
     public static final String APP_PATH_DYNAMIC_REWARDS_USER_LIST = "/api/" + API_VERSION_2 + "/feeds/{feed_id}/rewards";
 
 

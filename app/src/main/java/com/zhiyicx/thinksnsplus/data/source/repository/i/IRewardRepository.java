@@ -15,6 +15,7 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 
 /**
  * @Describe
@@ -23,6 +24,17 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_
  * @Contact master.jungle68@gmail.com
  */
 public interface IRewardRepository {
+
+    /*******************************************  用户打赏  *********************************************/
+
+    /**
+     * 打赏一个用户
+     *
+     * @param user_id target user
+     * @param amount  reward amount 真实货币的分单位
+     * @return
+     */
+    Observable<Object> rewardUser(long user_id, double amount);
 
     /*******************************************  咨询打赏  *********************************************/
 

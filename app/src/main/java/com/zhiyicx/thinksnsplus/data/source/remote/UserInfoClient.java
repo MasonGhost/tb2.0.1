@@ -21,6 +21,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -33,11 +34,13 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BATCH_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CURRENT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 
 /**
  * @author LiuChao
@@ -256,6 +259,8 @@ public interface UserInfoClient {
     @DELETE(ApiConfig.APP_PATH_CURRENT_USER_DELETE_TAGS)
     Observable<Object> deleteTag(@Path("tag_id") long tag_id);
 
+    /*******************************************  认证  *********************************************/
+
     /**
      * 获取用户认证信息
      */
@@ -274,6 +279,19 @@ public interface UserInfoClient {
     @PATCH(ApiConfig.APP_PATH_CERTIFICATION)
     Observable<BaseJsonV2<Object>> updateUserCertificationInfo();
 
+
+    /*******************************************  打赏  *********************************************/
+
+    /**
+     * 打赏一个用户
+     *
+     * @param user_id target user
+     * @param amount  reward amount 真实货币的分单位
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_REWARD_USER)
+    Observable<Object> rewardUser(@Path("user_id") long user_id, @Field("amount") float amount);
 
 
 }
