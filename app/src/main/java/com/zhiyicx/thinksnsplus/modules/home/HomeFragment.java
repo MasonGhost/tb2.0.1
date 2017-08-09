@@ -36,6 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +107,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private int mCurrenPage;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
+    private CheckInPopWindow mCheckInPopWindow; // 签到弹窗
+
 
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
@@ -168,7 +171,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     private void supportFlymeSutsusbar() {
-        Observable.timer(1500,TimeUnit.MILLISECONDS)
+        Observable.timer(1500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -457,6 +460,12 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 })
                 .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
         mPhotoPopupWindow.show();
+    }
+
+    @Override
+    public void showCheckInPop() {
+        mCheckInPopWindow = new CheckInPopWindow(getContentView());
+        mCheckInPopWindow.show();
     }
 
 }

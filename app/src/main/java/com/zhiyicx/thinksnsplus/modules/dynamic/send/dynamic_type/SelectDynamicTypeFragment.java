@@ -46,6 +46,8 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
 
     @BindView(R.id.send_words_dynamic)
     IconTextView mSendWordsDynamic;
+    @BindView(R.id.check_in)
+    IconTextView mCheckIn;
     @BindView(R.id.send_image_dynamic)
     IconTextView mSendImageDynamic;
     @BindView(R.id.im_close_dynamic)
@@ -77,6 +79,9 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         Observable.timer(300, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendImageDynamic));
+        Observable.timer(600, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> initAnimation(mCheckIn));
     }
 
     @Override

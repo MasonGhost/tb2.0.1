@@ -1,14 +1,34 @@
 package com.zhiyicx.thinksnsplus.widget.popwindow;
 
 import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.zhiyicx.baseproject.R;
+import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 
 /**
@@ -18,170 +38,114 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
  * @Contact master.jungle68@gmail.com
  */
 
-public class CheckInPopWindow extends CustomPopupWindow {
+public class CheckInPopWindow extends PopupWindow {
+    protected View mContentView;
+    protected View mParentView;
 
-    private CenterPopWindowItem1ClickListener mCenterPopWindowItem1ClickListener;
+    protected TextView mTvTotalCheckIn;
+    protected TextView mTvTotoalGold;
+    protected TextView mTvCheckInGetGold;
+    protected TextView mTvCheckIn;
+    protected RecyclerView mRvUserCheckInList;
 
-    private String titleStr;
-    private String desStr;
-    private String item1Str;
+    protected boolean isWrap = true;
+    protected float mAlpha = CustomPopupWindow.POPUPWINDOW_ALPHA;
+    protected Drawable mBackgroundDrawable = new ColorDrawable(0x00000000);// 默认为透明
+    protected int mAnimationStyle = -1;
 
-    private int titleColor;
-    private int desColor;
-    private int item1Color;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private CommonAdapter mCommonAdapter;
+    private List<UserInfoBean> mListData = new ArrayList<>();
 
-    public static CBuilder builder() {
-        return new CBuilder();
+    public CheckInPopWindow(View parentView) {
+        this.mParentView = parentView;
+        initLayout();
+        initData();
     }
 
-    private CheckInPopWindow(CBuilder builder) {
-        super(builder);
-        this.titleStr = builder.titleStr;
-        this.desStr = builder.desStr;
-        this.item1Str = builder.item1Str;
-        this.titleColor = builder.titleColor;
-        this.desColor = builder.desColor;
-        this.item1Color = builder.item1Color;
-        this.mCenterPopWindowItem1ClickListener = builder.mCenterPopWindowItem1ClickListener;
-        initView();
+    private void initData() {
+
     }
 
-    protected void initView() {
-        initTextView(titleStr, titleColor, R.id.ppw_center_title, null);
-        initTextView(desStr, desColor, R.id.ppw_center_description, null);
-        initTextView(item1Str, item1Color, R.id.ppw_center_item, mCenterPopWindowItem1ClickListener);
-    }
-
-    protected void initTextView(String text, int colorId, int resId, final CenterPopWindowItem1ClickListener clickListener) {
-        if (!TextUtils.isEmpty(text)) {
-            TextView textView = (TextView) mContentView.findViewById(resId);
-            textView.setVisibility(View.VISIBLE);
-            textView.setText(text);
-            if (colorId != 0) {
-                textView.setTextColor(ContextCompat.getColor(mActivity, colorId));
+    protected void initLayout() {
+        mContentView = LayoutInflater.from(mParentView.getContext()).inflate(R.layout.pop_check_in, null);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                setWindowAlpha(1.0f);
             }
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (clickListener != null) {
-                        clickListener.onClicked();
-                    }
-                }
-            });
-        }
+        });
+        setWidth(isWrap ? LinearLayout.LayoutParams.WRAP_CONTENT : LinearLayout.LayoutParams.MATCH_PARENT);
+        setHeight(isWrap ? LinearLayout.LayoutParams.WRAP_CONTENT : LinearLayout.LayoutParams.MATCH_PARENT);
+        setOutsideTouchable(true);
+        setFocusable(true);
+        setBackgroundDrawable(mBackgroundDrawable);
+        if (mAnimationStyle != -1)//如果设置了对话则使用对话
+            setAnimationStyle(mAnimationStyle);
+        setContentView(mContentView);
+
+        mContentView.findViewById(R.id.iv_cancle).setOnClickListener(view -> dismiss());
+        mTvTotalCheckIn = (TextView) mContentView.findViewById(R.id.tv_total_check_in);
+        mTvTotalCheckIn.setText(mParentView.getContext().getString(R.string.check_in_total_day_format, 6));
+
+        mTvTotoalGold = (TextView) mContentView.findViewById(R.id.tv_totoal_gold);
+        mTvTotoalGold.setText("300");
+
+        mTvCheckInGetGold = (TextView) mContentView.findViewById(R.id.tv_check_in_get_gold);
+        mTvCheckInGetGold.setText(mParentView.getContext().getString(R.string.check_in_today_get_gold_format, 6));
+
+        mTvCheckIn = (TextView) mContentView.findViewById(R.id.tv_check_in);
+
+
+        mRvUserCheckInList = (RecyclerView) mContentView.findViewById(R.id.rv_user_check_in_list);
+
+        mLayoutManager = new LinearLayoutManager(mParentView.getContext(), LinearLayoutManager.HORIZONTAL, true);
+        mRvUserCheckInList.setLayoutManager(mLayoutManager);
+        mRvUserCheckInList.setHasFixedSize(true);
+        mRvUserCheckInList.addItemDecoration(new LinearDecoration(0, 0, mParentView.getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small), 0));
+
+        UserInfoBean e = new UserInfoBean();
+        e.setUser_id(3l);
+        mListData.add(e);
+
+        mCommonAdapter = new CommonAdapter<UserInfoBean>(mParentView.getContext(), R.layout.item_check_in_user, mListData) {
+            @Override
+            protected void convert(ViewHolder holder, UserInfoBean userInfoBean, int position) {
+
+                ImageUtils.loadUserHead(userInfoBean, (ImageView) holder.getView(com.zhiyicx.thinksnsplus.R.id.iv_head), false);
+                holder.setText(R.id.tv_rank, String.valueOf(position+1));
+                RxView.clicks(holder.getView(com.zhiyicx.thinksnsplus.R.id.iv_head))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean));
+
+            }
+        };
+        mRvUserCheckInList.setAdapter(mCommonAdapter);
 
     }
 
-    public static final class CBuilder extends Builder {
 
-        private CenterPopWindowItem1ClickListener mCenterPopWindowItem1ClickListener;
-        private String titleStr;
-        private String desStr;
-        private String item1Str;
-
-        private int titleColor;
-        private int desColor;
-        private int item1Color;
-
-        public CBuilder buildCenterPopWindowItem1ClickListener(CenterPopWindowItem1ClickListener mCenterPopWindowItem1ClickListener) {
-            this.mCenterPopWindowItem1ClickListener = mCenterPopWindowItem1ClickListener;
-            return this;
-        }
-
-        @Override
-        public CBuilder backgroundAlpha(float alpha) {
-            super.backgroundAlpha(alpha);
-            return this;
-        }
-
-        @Override
-        public CBuilder width(int width) {
-            super.width(width);
-            return this;
-        }
-
-        @Override
-        public CBuilder height(int height) {
-            super.height(height);
-            return this;
-        }
-
-        public CBuilder desColor(int descrColor) {
-            this.desColor = descrColor;
-            return this;
-        }
-
-        public CBuilder item1Color(int item1Color) {
-            this.item1Color = item1Color;
-            return this;
-        }
-
-        public CBuilder titleColor(int titleColor) {
-            this.titleColor = titleColor;
-            return this;
-        }
-
-        public CBuilder titleStr(String titleStr) {
-            this.titleStr = titleStr;
-            return this;
-        }
-
-        public CBuilder desStr(String desStr) {
-            this.desStr = desStr;
-            return this;
-        }
-
-        public CBuilder item1Str(String item1Str) {
-            this.item1Str = item1Str;
-            return this;
-        }
-
-
-        @Override
-        public CBuilder with(Activity activity) {
-            super.with(activity);
-            return this;
-        }
-
-        @Override
-        public CBuilder isOutsideTouch(boolean isOutsideTouch) {
-            super.isOutsideTouch(isOutsideTouch);
-            return this;
-        }
-
-        @Override
-        public CBuilder isFocus(boolean isFocus) {
-            super.isFocus(isFocus);
-            return this;
-        }
-
-        @Override
-        public CBuilder backgroundDrawable(Drawable backgroundDrawable) {
-            super.backgroundDrawable(backgroundDrawable);
-            return this;
-        }
-
-        @Override
-        public CBuilder animationStyle(int animationStyle) {
-            super.animationStyle(animationStyle);
-            return this;
-        }
-
-        public CBuilder parentView(View parentView) {
-            super.parentView(parentView);
-            return this;
-        }
-
-        @Override
-        public CheckInPopWindow build() {
-            contentViewId = R.layout.ppw_for_center_info;
-            isWrap = true;
-            return new CheckInPopWindow(this);
+    /**
+     * 默认显示到中间
+     */
+    public void show() {
+        setWindowAlpha(mAlpha);
+        if (mParentView == null) {
+            showAtLocation(mContentView, Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
+        } else {
+            showAtLocation(mParentView, Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
         }
     }
 
-    public interface CenterPopWindowItem1ClickListener {
-        void onClicked();
+    private void setWindowAlpha(float alpha) {
+        try {
+            WindowManager.LayoutParams params = ((Activity) mParentView.getContext()).getWindow().getAttributes();
+            params.alpha = alpha;
+            params.verticalMargin = 100;
+            ((Activity) mParentView.getContext()).getWindow().setAttributes(params);
+        } catch (Exception e) {
+        }
     }
+
 
 }
