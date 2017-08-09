@@ -95,6 +95,7 @@ public class RichTextEditor extends ScrollView {
         firstEdit.setHintTextColor(getResources().getColor(R.color.general_for_hint));
         allLayout.addView(firstEdit, firstEditParam);
         lastFocusEdit = firstEdit;
+        lastAddEdit = firstEdit;
     }
 
     /**

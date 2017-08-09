@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -169,9 +170,17 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     public void uploadPicFailed() {
-        mPicTag--;
-        mRicheTest.deleteImage();
         mPbImageUpload.setVisibility(View.GONE);
+        if (mPicTag > 0) {
+            mPicTag--;
+        }
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        if (prompt == Prompt.ERROR) {
+            mRicheTest.deleteImage();
+        }
     }
 
     @Override
