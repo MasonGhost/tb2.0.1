@@ -4,6 +4,8 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -28,7 +30,7 @@ import java.util.List;
  * @Email Jliuer@aliyun.com
  * @Description 图文混排编辑
  */
-public class RichTextEditor extends ScrollView {
+public class RichTextEditor extends ScrollView implements TextWatcher {
     private static final int EDIT_PADDING = 10; // edittext常规padding是10dp
 
     private int viewTagIndex = 1; // 新生的view都会打一个tag，对每个view来说，这个tag是唯一的。
@@ -42,6 +44,9 @@ public class RichTextEditor extends ScrollView {
     private LayoutTransition mTransitioner; // 只在图片View添加或remove时，触发transition动画
     private int editNormalPadding = 0; //
     private int disappearingImageIndex = 0;
+
+    private OnContentChangeListener mOnContentChangeListener;
+    private boolean hasContent;
 
     public RichTextEditor(Context context) {
         this(context, null);
@@ -93,8 +98,10 @@ public class RichTextEditor extends ScrollView {
         //editNormalPadding = dip2px(EDIT_PADDING);
         EditText firstEdit = createEditText(getResources().getString(R.string.info_content_hint), dip2px(context, EDIT_PADDING));
         firstEdit.setHintTextColor(getResources().getColor(R.color.general_for_hint));
+        firstEdit.addTextChangedListener(this);
         allLayout.addView(firstEdit, firstEditParam);
         lastFocusEdit = firstEdit;
+        lastAddEdit = firstEdit;
     }
 
     /**
@@ -145,6 +152,7 @@ public class RichTextEditor extends ScrollView {
                 if (preView instanceof RelativeLayout) {
                     // 光标EditText的上一个view对应的是图片
                     onImageCloseClick(preView);
+                    onTextChanged("", 0, 0, 0);
                 } else if (preView instanceof EditText) {
                     // 光标EditText的上一个view对应的还是文本框EditText
                     String str1 = editTxt.getText().toString();
@@ -161,6 +169,10 @@ public class RichTextEditor extends ScrollView {
                 }
             }
         }
+    }
+
+    public void deleteImage() {
+        onBackspacePress(lastAddEdit);
     }
 
     /**
@@ -200,6 +212,7 @@ public class RichTextEditor extends ScrollView {
         editText.setPadding(editNormalPadding, paddingTop, editNormalPadding, paddingTop);
         editText.setHint(hint);
         editText.setOnFocusChangeListener(focusListener);
+        editText.addTextChangedListener(this);
         return editText;
     }
 
@@ -274,7 +287,7 @@ public class RichTextEditor extends ScrollView {
      * @param index   位置
      * @param editStr EditText显示的文字
      */
-    public void addEditTextAtIndex(final int index, CharSequence editStr) {
+    private void addEditTextAtIndex(final int index, CharSequence editStr) {
         lastAddEdit = createEditText("", EDIT_PADDING);
         lastAddEdit.setText(editStr);
         lastAddEdit.setOnFocusChangeListener(focusListener);
@@ -285,7 +298,7 @@ public class RichTextEditor extends ScrollView {
     /**
      * 在特定位置添加ImageView
      */
-    public void addImageViewAtIndex(final int index, String imagePath) {
+    private void addImageViewAtIndex(final int index, String imagePath) {
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
         Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
@@ -304,11 +317,8 @@ public class RichTextEditor extends ScrollView {
                 LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
         lp.bottomMargin = 10;
         imageView.setLayoutParams(lp);
-        imageView.setOnClickListener(v -> {
-            fullScroll(ScrollView.FOCUS_DOWN);
-        });
-
         allLayout.addView(imageLayout, index);
+        onTextChanged("", 0, 0, 0);
     }
 
     /**
@@ -349,8 +359,39 @@ public class RichTextEditor extends ScrollView {
         return dataList;
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (mOnContentChangeListener!=null){
+            List<EditData> data = buildEditData();
+            hasContent = data.size() > 1 || !data.get(0).inputStr.isEmpty();
+            mOnContentChangeListener.onContentChange(hasContent);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    public void setOnContentEmptyListener(OnContentChangeListener onContentChangeListener) {
+        mOnContentChangeListener = onContentChangeListener;
+    }
+
+    public boolean isHasContent() {
+        return hasContent;
+    }
+
     public class EditData {
-        public String inputStr="";
-        public String imagePath="";
+        public String inputStr = "";
+        public String imagePath = "";
+    }
+
+    public interface OnContentChangeListener {
+        void onContentChange(boolean hasContent);
     }
 }

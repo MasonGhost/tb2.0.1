@@ -43,14 +43,14 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage("图片错误");
+                        mRootView.showSnackErrorMessage("图片上传失败");
                         mRootView.uploadPicFailed();
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.showSnackErrorMessage("图片错误");
+                        mRootView.showSnackErrorMessage("图片解析错误");
                         mRootView.uploadPicFailed();
                     }
                 });

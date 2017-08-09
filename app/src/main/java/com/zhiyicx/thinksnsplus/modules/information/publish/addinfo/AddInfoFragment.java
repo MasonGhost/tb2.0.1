@@ -174,7 +174,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         RxTextView.afterTextChangeEvents(mEtInfoSummary.getEtContent())
                 .compose(this.bindToLifecycle())
                 .subscribe(charSeques -> {
-                    mInfoPublishBean.setSubject("> "+charSeques.editable().toString().trim());
+                    mInfoPublishBean.setSubject(charSeques.editable().toString().trim());
                 });
 
 
@@ -212,7 +212,5 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         } else {
             mToolbarRight.setEnabled(false);
         }
-
-
     }
 }

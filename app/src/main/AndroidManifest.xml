@@ -435,8 +435,9 @@
             android:screenOrientation="portrait"
             >
         </activity>
-
         <activity android:name=".modules.information.publish.uploadcover.UploadCoverActivity"/>
+        <activity android:name=".modules.information.infodetails.topinfo.InfoTopActivity"/>
+        <activity android:name=".modules.information.infodetails.topinfo_comment.InfoCommentTopActivity"/>
 
     </application>
 

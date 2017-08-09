@@ -22,7 +22,7 @@
             android:layout_marginRight="@dimen/spacing_normal_large"
             android:layout_marginTop="@dimen/spacing_large"
             app:hintContent="@string/info_title_hint"
-            app:limitSize="@integer/dynamic_title_max_size"
+            app:limitSize="@integer/dynamic_title_input_size"
             app:showLimitSize="@integer/dynamic_title_input_size"/>
 
         <include
