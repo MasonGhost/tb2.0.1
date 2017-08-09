@@ -62,7 +62,7 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
     @Override
     public boolean checkCertification() {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
-        if (userInfoBean != null && userInfoBean.getVerified()!= null && !TextUtils.isEmpty(userInfoBean.getVerified().getIcon())){
+        if (userInfoBean != null && userInfoBean.getVerified()!= null){
             return true;
         }
         return false;

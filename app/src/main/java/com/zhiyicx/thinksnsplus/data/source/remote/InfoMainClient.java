@@ -154,9 +154,38 @@ public interface InfoMainClient {
     Observable<BaseJson<Integer>> commentInfo(@Field("comment_content") String comment_content,
                                               @Field("reply_to_user_id") int reply_to_user_id);
 
+    /**
+     * 资讯投稿
+     *
+     * @param category
+     * @param body
+     * @return
+     */
     @Headers({"Content-type:application/json;charset=UTF-8"})
     @POST(ApiConfig.APP_PATH_PUBLISH_INFO)
     Observable<BaseJsonV2<Object>> publishInfo(@Path("category") long category, @Body RequestBody body);
+
+    /**
+     * 置顶资讯
+     *
+     * @param news_id 资讯的唯一 id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_INFO)
+    Observable<BaseJsonV2<Integer>> stickTopInfo(@Path("news_id") Long news_id, @Field("amount") int amount, @Field("day") int day);
+
+    /**
+     * 置顶资讯评论
+     * @param news_id
+     * @param comment_id
+     * @param amount
+     * @param day
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(ApiConfig.APP_PATH_TOP_INFO_COMMENT)
+    Observable<BaseJsonV2<Integer>> stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") int amount, @Field("day") int day);
 
     /*******************************************  打赏  *********************************************/
 

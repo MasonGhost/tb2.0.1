@@ -279,6 +279,10 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DETAILS = "/api/" + API_VERSION + "/news/{news_id}";
     public static final String APP_PATH_INFO_DETAILS_FORMAT = "/api/" + API_VERSION + "/news/%d";
 
+    //置顶资讯、评论
+    public static final String APP_PATH_TOP_INFO = "/api/" + API_VERSION_2 + "/news/{news_id}/pinneds";
+    public static final String APP_PATH_TOP_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds";
+
     // 咨询打赏
     public static final String APP_PATH_INFO_REWARDS = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards";
     // 打赏用户列表

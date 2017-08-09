@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -332,8 +333,12 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     public void onItemClicked() {
         if (mPresenter.checkCertification()){
             // 继续投稿
+            mPayAlertPopWindow.hide();
+            startActivity(new Intent(getActivity(), PublishInfoActivity.class));
         } else {
             // 去认证
+            mCertificationAlertPopWindow.hide();
+
         }
     }
 
