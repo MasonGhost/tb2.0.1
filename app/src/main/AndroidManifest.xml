@@ -128,6 +128,7 @@
         <activity
             android:name=".modules.edit_userinfo.UserInfoActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
@@ -20,6 +21,7 @@ import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
 
 import java.util.List;
@@ -171,6 +173,12 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
 
     }
 
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        if (prompt == Prompt.SUCCESS) {
+            startActivity(new Intent(getActivity(), InfoActivity.class));
+        }
+    }
 
     private void initPayInfoPopWindow() {
         if (mPayInfoPopWindow != null) {
@@ -195,7 +203,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mInfoPublishBean.getSubject();
-                    if (mInfoPublishBean.getImage() * mInfoPublishBean.getCover() <= 0) {
+                    if (mInfoPublishBean.getImage() <= 0 && mInfoPublishBean.getCover() <= 0) {
                         initWithdrawalsInstructionsPop();
                         return;
                     }
