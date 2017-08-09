@@ -4,7 +4,6 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -177,7 +176,7 @@ public class RichTextEditor extends ScrollView {
         EditData editData = dataList.get(disappearingImageIndex);
         //Log.i("", "editData: "+editData);
         if (editData.imagePath != null) {
-            SDCardUtil.deleteFile(editData.imagePath);
+            //SDCardUtil.deleteFile(editData.imagePath);
         }
         allLayout.removeView(view);
     }

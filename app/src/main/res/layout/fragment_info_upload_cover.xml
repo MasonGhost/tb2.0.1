@@ -9,21 +9,20 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/tv_info_cover_container"
+        android:id="@+id/fl_info_cover_container"
         android:layout_width="@dimen/upload_info_cover_width"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/upload_info_cover_height"
         android:layout_marginTop="@dimen/spacing_bigger_large"
         android:background="@drawable/shape_info_uoload_cover">
 
         <TextView
+            android:layout_gravity="center"
             android:id="@+id/tv_info_cover"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/spacing_small_3dp"
             android:drawableTop="@mipmap/ico_identi_camera"
             android:gravity="center"
-            android:paddingBottom="@dimen/margin_18"
-            android:paddingTop="@dimen/margin_18"
             android:text="@string/upload_info_cover"
             android:textColor="@color/general_for_hint"
             android:textSize="@dimen/size_note_assist"
@@ -53,7 +52,7 @@
         android:id="@+id/bt_sure"
         style="@style/style_login_button"
         android:layout_marginTop="@dimen/button_login_margin_top"
-        android:enabled="false"
+        android:enabled="true"
         android:text="@string/publish_info"
         tools:text="@string/publish_info"/>
 

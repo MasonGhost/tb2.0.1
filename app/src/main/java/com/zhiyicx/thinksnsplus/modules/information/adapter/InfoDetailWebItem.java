@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.tiagohm.markdownview.MarkdownView;
+import br.tiagohm.markdownview.css.InternalStyleSheet;
+import br.tiagohm.markdownview.css.styles.Github;
+
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 
@@ -246,19 +250,34 @@ public abstract class InfoDetailWebItem implements ItemViewDelegate<InfoCommentL
     @Override
     public void convert(ViewHolder holder, InfoCommentListBean infoCommentListBean,
                         InfoCommentListBean lastT, int position,int itemCounts) {
-        WebView web = holder.getView(R.id.info_detail_content);
-        initWebViewData(web);
-        String url = String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
-                infoCommentListBean.getId());
-        web.loadUrl(url);
-        LogUtils.d("convertUrl:::" + url);
+        MarkdownView web = holder.getView(R.id.info_detail_content);
+//        initWebViewData(web);
+        initMarkDownView(web);
+//        String url = String.format(APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
+//                infoCommentListBean.getId());
+//        web.loadUrl(url);
+//        LogUtils.d("convertUrl:::" + url);
+        dealInfoHeader(holder);
+        dealInfoDigList(holder);
         dealCommentCount(holder);
         dealRewards(holder);
+        dealInfoWebContent(web);
+    }
+
+    private void initMarkDownView(MarkdownView web) {
+        InternalStyleSheet css = new Github();
+        web.addStyleSheet(css);
     }
 
     protected abstract void dealRewards(ViewHolder holder);
 
     public abstract void dealCommentCount(ViewHolder holder);
+
+    public abstract void dealInfoHeader(ViewHolder holder);
+
+    public abstract void dealInfoDigList(ViewHolder holder);
+
+    public abstract void dealInfoWebContent(MarkdownView markdownView);
 
     private void initWebViewData(WebView mWebView) {
         WebSettings mWebSettings = mWebView.getSettings();

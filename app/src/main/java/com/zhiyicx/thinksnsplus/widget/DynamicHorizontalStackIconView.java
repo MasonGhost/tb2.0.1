@@ -18,6 +18,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.List;
@@ -92,6 +93,36 @@ public class DynamicHorizontalStackIconView extends FrameLayout {
                 // 需要显示的图片控件
                 if (i < dynamicDigListBeanList.size()) {
                     DynamicDigListBean userInfoBean = dynamicDigListBeanList.get(i);
+                    AppApplication.AppComponentHolder.getAppComponent().imageLoader()
+                            .loadImage(mContext, GlideImageConfig.builder()
+                                    .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))
+                                    .placeholder(R.mipmap.pic_default_portrait2)
+                                    .errorPic(R.mipmap.pic_default_portrait2)
+                                    .imagerView(mImageViews[i])
+                                    .url(ImageUtils.getUserAvatar(userInfoBean.getDiggUserInfo()))
+                                    .build()
+                            );
+                    mImageViews[i].setVisibility(VISIBLE);
+                    digCount.setVisibility(VISIBLE);
+                } else {// 没有显示的图片控件隐藏
+                    mImageViews[i].setVisibility(GONE);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 设置点赞的人的头像，最多五个
+     */
+    public void setDigUserHeadIconInfo(List<InfoDigListBean> infoDigListBeanList) {
+        if (infoDigListBeanList == null || infoDigListBeanList.size() == 0) {
+            showNoDig();
+        } else {
+            for (int i = 0; i < mImageViews.length; i++) {
+                // 需要显示的图片控件
+                if (i < infoDigListBeanList.size()) {
+                    InfoDigListBean userInfoBean = infoDigListBeanList.get(i);
                     AppApplication.AppComponentHolder.getAppComponent().imageLoader()
                             .loadImage(mContext, GlideImageConfig.builder()
                                     .transformation(new GlideCircleBorderTransform(mContext, mContext.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(mContext, R.color.white)))

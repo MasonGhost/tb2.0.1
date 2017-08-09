@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,18 +12,17 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover.UploadCoverActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -100,10 +98,11 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
 
     @Override
     protected void setRightClick() {
-//        Intent intent = new Intent(getActivity(), UploadCoverActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, mInfoPublishBean);
-//        startActivity(intent);
+        Intent intent = new Intent(getActivity(), UploadCoverActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_PUBLISH_BEAN, mInfoPublishBean);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -175,7 +174,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         RxTextView.afterTextChangeEvents(mEtInfoSummary.getEtContent())
                 .compose(this.bindToLifecycle())
                 .subscribe(charSeques -> {
-                    mInfoPublishBean.setSubject(charSeques.editable().toString().trim());
+                    mInfoPublishBean.setSubject("> "+charSeques.editable().toString().trim());
                 });
 
 
@@ -194,7 +193,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
                 mInfoPublishBean.setTags(mUserTagBeens);
 
             } else if (requestCode == REQUST_CODE_CATEGORY) {
-                InfoTypeMoreCatesBean category = data.getExtras().getParcelable(AddInfoCategoryFragment.BUNDLE_PUBLISH_CATEGORY);
+                InfoTypeCatesBean category = data.getExtras().getParcelable(AddInfoCategoryFragment.BUNDLE_PUBLISH_CATEGORY);
                 if (category == null) {
                     return;
                 }

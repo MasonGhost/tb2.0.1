@@ -8,6 +8,11 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -42,7 +47,9 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
@@ -81,46 +88,54 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     }
 
 
-
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        mRepository.getInfoCommentList(mRootView.getNewsId() + "", maxId, 0L)
-                .compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<List<InfoCommentListBean>>() {
-                    @Override
-                    protected void onSuccess(List<InfoCommentListBean> data) {
-                        mInfoCommentListBeanDao.saveMultiData(data);
+        if (mRootView.getDetailBean() == null){
+            getInfoDetail(String.valueOf(mRootView.getNewsId()));
+        } else {
+            mRepository.getInfoCommentListV2(mRootView.getNewsId() + "", maxId, 0L)
+                    .compose(mSchedulersTransformer)
+                    .subscribe(new BaseSubscribeForV2<InfoCommentBean>() {
+                        @Override
+                        protected void onSuccess(InfoCommentBean data) {
+                            List<InfoCommentListBean> newList = new ArrayList<InfoCommentListBean>();
+                            mInfoCommentListBeanDao.saveMultiData(data.getPinneds());
+                            mInfoCommentListBeanDao.saveMultiData(data.getComments());
 
-                        List<InfoCommentListBean> localComment = mInfoCommentListBeanDao
-                                .getMySendingComment(mRootView.getNewsId());
-
-                        if (!localComment.isEmpty()) {
-                            for (int i = 0; i < localComment.size(); i++) {
-                                localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-                                        .getSingleDataFromCache(localComment.get(i).getUser_id()));
-                                if (localComment.get(i).getReply_to_user_id() != 0) {
-                                    localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-                                            .getSingleDataFromCache(localComment.get(i)
-                                                    .getReply_to_user_id()));
+                            List<InfoCommentListBean> localComment = mInfoCommentListBeanDao
+                                    .getMySendingComment(mRootView.getNewsId());
+                            if (!localComment.isEmpty()) {
+                                for (int i = 0; i < localComment.size(); i++) {
+                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+                                            .getSingleDataFromCache(localComment.get(i).getUser_id()));
+                                    if (localComment.get(i).getReply_to_user_id() != 0) {
+                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+                                                .getSingleDataFromCache(localComment.get(i)
+                                                        .getReply_to_user_id()));
+                                    }
                                 }
+                                if (maxId == 0) {
+                                    newList.addAll(0, data.getPinneds());
+                                }
+                                newList.addAll(localComment);
+                                newList.addAll(data.getComments());
+                                newList.clear();
                             }
-                            localComment.addAll(data);
-                            data.clear();
-                            data.addAll(localComment);
+                            mRootView.onNetResponseSuccess(newList, isLoadMore);
                         }
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
-                    }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        handleInfoHasBeDeleted(code);
-                    }
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            handleInfoHasBeDeleted(code);
+                        }
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        mRootView.onResponseError(throwable, isLoadMore);
-                    }
-                });
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        }
+                    });
+        }
+
     }
 
     private void handleInfoHasBeDeleted(int code) {
@@ -138,21 +153,21 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle("ThinkSNS+\b\b资讯");
-        shareContent.setUrl(String.format(Locale.getDefault(),APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
+        shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getCurrentInfo().getId()));
         shareContent.setContent(mRootView.getCurrentInfo().getTitle());
 
         if (bitmap == null) {
-            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE,BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
         } else {
             shareContent.setBitmap(bitmap);
         }
 
         if (mRootView.getCurrentInfo().getImage() != null) {
             shareContent.setImage(ImageUtils.imagePathConvertV2(mRootView.getCurrentInfo()
-                    .getImage().getId()
-                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                            .getImage().getId()
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
+                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
                     , ImageZipConfig.IMAGE_70_ZIP));
         }
         mSharePolicy.setShareContent(shareContent);
@@ -205,16 +220,53 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     @Override
     public void reqReWardsData(int id) {
         Observable.zip(mRepository.getRewardCount(id), mRepository.rewardInfoList(id
-                , TSListFragment.DEFAULT_ONE_PAGE_SIZE,null,null,null)
+                , TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
                 , (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
 
-            mRootView.updateReWardsView(rewardsCountBean,rewardsListBeen);
-            return rewardsCountBean;
-        }).subscribeOn(AndroidSchedulers.mainThread())
+                    mRootView.updateReWardsView(rewardsCountBean, rewardsListBeen);
+                    return rewardsCountBean;
+                }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(o -> {
+                .subscribe(o -> {
 
-        }, throwable -> throwable.printStackTrace());
+                }, throwable -> throwable.printStackTrace());
+    }
+
+    @Override
+    public void getInfoDetail(String news_id) {
+        Subscription subscription = Observable.zip(mRepository.getInfoDetail(news_id),
+                mRepository.getInfoDigListV2(news_id, 0L),
+                mRepository.getRelateInfoList(news_id),
+                mRepository.getInfoCommentListV2(news_id, 0L, 0L),
+                (infoListDataBean, infoDigListBeen, infoRelateBean, infoCommentBean) -> {
+                    InfoDetailBean infoDetail = new InfoDetailBean();
+                    infoDetail.setInfoData(infoListDataBean);
+                    infoDetail.setInfoDigList(infoDigListBeen);
+                    infoDetail.setRelatedInfoList(infoRelateBean);
+                    List<InfoCommentListBean> all = new ArrayList<>();
+                    if (infoCommentBean.getPinneds() != null){
+                        all.addAll(infoCommentBean.getPinneds());
+                    }
+                    if (infoCommentBean.getComments() != null){
+                        all.addAll(infoCommentBean.getComments());
+                    }
+                    infoDetail.setInfoCommentList(all);
+                    return infoDetail;
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<InfoDetailBean>() {
+                    @Override
+                    protected void onSuccess(InfoDetailBean data) {
+                        mRootView.updateInfoHeader(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
+                });
+
+        addSubscrebe(subscription);
     }
 
     @Override
@@ -233,12 +285,10 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     /**
      * 处理发送动态数据
-     *
-     * @param infoCommentListBean
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST)
     public void handleSendComment(InfoCommentListBean infoCommentListBean) {
-        LogUtils.d(TAG,"dynamicCommentBean = " + infoCommentListBean.toString());
+        LogUtils.d(TAG, "dynamicCommentBean = " + infoCommentListBean.toString());
         Observable.just(infoCommentListBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

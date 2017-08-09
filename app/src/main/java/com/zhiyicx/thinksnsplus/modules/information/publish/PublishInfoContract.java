@@ -17,6 +17,8 @@ public interface PublishInfoContract {
     interface View extends IBaseView<Presenter> {
         void uploadPicSuccess(int id);
         void uploadPicFailed();
+        void publishInfoFailed();
+        void publishInfoSuccess();
     }
 
     interface Presenter extends IBasePresenter {

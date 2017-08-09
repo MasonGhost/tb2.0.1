@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -50,6 +51,8 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     ImageView mImSetting;
     @BindView(R.id.rl_publish_tool)
     RelativeLayout mRlPublishTool;
+    @BindView(R.id.pb_image_upload)
+    LinearLayout mPbImageUpload;
 
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
@@ -92,22 +95,26 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     protected void setRightClick() {
         super.setRightClick();
         InfoPublishBean infoPublishBean = new InfoPublishBean();
-        infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
+
         StringBuilder builder = new StringBuilder();
         List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
         for (RichTextEditor.EditData editData : datas) {
             builder.append(editData.inputStr);
             if (!editData.imagePath.isEmpty()) {
                 builder.append(String.format(Locale.getDefault(),
-                        MarkdownConfig.IMAGE_TAG, "iamge", mImageIdArray[mPicAddTag]));
+                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[0]));
                 mPicAddTag++;
             }
         }
-        String content=builder.toString();
+        String content = builder.toString();
         infoPublishBean.setContent(content);
+        infoPublishBean.setCover(mImageIdArray[0]);
+        infoPublishBean.setImage(mImageIdArray[0]);
+        infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISH_BEAN, infoPublishBean);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -144,6 +151,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         if (photoList.isEmpty()) {
             return;
         }
+        mPbImageUpload.setVisibility(View.VISIBLE);
         mImageIdArray[mPicTag] = mPicTag;
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
@@ -153,6 +161,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     public void uploadPicSuccess(int id) {
+        mPbImageUpload.setVisibility(View.GONE);
         mImageIdArray[mPicTag] = id;
         mPicTag++;
     }
@@ -160,10 +169,21 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void uploadPicFailed() {
         mPicTag--;
+        mPbImageUpload.setVisibility(View.GONE);
     }
 
     @Override
     public void getPhotoFailure(String errorMsg) {
+
+    }
+
+    @Override
+    public void publishInfoFailed() {
+
+    }
+
+    @Override
+    public void publishInfoSuccess() {
 
     }
 

@@ -2,8 +2,8 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.uploadcover;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +15,9 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoContract;
@@ -40,26 +42,36 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
 
     @BindView(R.id.bt_sure)
     TextView mBtSure;
+    @BindView(R.id.fl_info_cover_container)
+    FrameLayout mFlInfoCoverContainer;
     @BindView(R.id.iv_info_cover_iamge)
     ImageView mIvInfoCoverIamge;
+    @BindView(R.id.tv_info_cover)
+    TextView mTvInfoCover;
 
     private InfoPublishBean mInfoPublishBean;
     private PayPopWindow mPayInfoPopWindow;
     private PhotoSelectorImpl mPhotoSelector;
+    private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private ActionPopupWindow mCoverInstructionsPopupWindow;
 
     public static UploadCoverFragment newInstance(Bundle bundle) {
-
         UploadCoverFragment fragment = new UploadCoverFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
-        }
+    protected String setRightTitle() {
+        return "重置封面";
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mIvInfoCoverIamge.setVisibility(View.GONE);
+        mTvInfoCover.setVisibility(View.VISIBLE);
+        mInfoPublishBean.setImage(mInfoPublishBean.getCover());
     }
 
     @Override
@@ -75,11 +87,22 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         }
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
-        Glide.with(getContext())
+        mTvInfoCover.setVisibility(View.GONE);
+        mIvInfoCoverIamge.setVisibility(View.VISIBLE);
+        Glide.with(getActivity())
                 .load(path)
-                .crossFade()
                 .centerCrop()
                 .into(mIvInfoCoverIamge);
+    }
+
+    @Override
+    public void publishInfoFailed() {
+
+    }
+
+    @Override
+    public void publishInfoSuccess() {
+
     }
 
     @Override
@@ -129,10 +152,18 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
+        if (getArguments() != null) {
+            mInfoPublishBean = getArguments().getParcelable(BUNDLE_PUBLISH_BEAN);
+        }
     }
 
 
     private void initListener() {
+        RxView.clicks(mFlInfoCoverContainer)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> initPhotoPopupWindow());
+
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
@@ -163,6 +194,12 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
+                    mInfoPublishBean.getSubject();
+                    if (mInfoPublishBean.getImage() * mInfoPublishBean.getCover() <= 0) {
+                        initWithdrawalsInstructionsPop();
+                        return;
+                    }
+                    mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
                 .buildCenterPopWindowItem2ClickListener(() -> {
@@ -183,5 +220,53 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .build();
         mPayInfoPopWindow.show();
 
+    }
+
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initPhotoPopupWindow() {
+        if (mPhotoPopupWindow != null) {
+            mPhotoPopupWindow.show();
+            return;
+        }
+        mPhotoPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.choose_from_photo))
+                .item2Str(getString(R.string.choose_from_camera))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    // 选择相册，单张
+                    mPhotoSelector.getPhotoListFromSelector(1, null);
+                    mPhotoPopupWindow.hide();
+                })
+                .item2ClickListener(() -> {
+                    // 选择相机，拍照
+                    mPhotoSelector.getPhotoFromCamera(null);
+                    mPhotoPopupWindow.hide();
+                })
+                .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
+        mPhotoPopupWindow.show();
+    }
+
+    public void initWithdrawalsInstructionsPop() {
+        if (mCoverInstructionsPopupWindow != null) {
+            mCoverInstructionsPopupWindow.show();
+            return;
+        }
+        mCoverInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.instructions))
+                .desStr(getString(R.string.upload_info_cover_instructions))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mCoverInstructionsPopupWindow.hide())
+                .build();
+        mCoverInstructionsPopupWindow.show();
     }
 }

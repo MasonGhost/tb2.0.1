@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.InfoChannelRepository;
@@ -46,9 +48,9 @@ public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.
     public void doSubscribe(String follows) {
         mInfoChannelRepository.doSubscribe(follows).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Integer>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
-                    protected void onSuccess(Integer data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
 
                     }
 

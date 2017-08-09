@@ -7,5 +7,6 @@ package com.zhiyicx.baseproject.config;
  * @Description 自定义 markdown 标签
  */
 public class MarkdownConfig {
-    public static final String IMAGE_TAG="@![%s](%d)";//@![title](file id)
+    public static final String IMAGE_TAG = "@![%s](%d)";//@![title](file id)
+    public static final String IMAGE_TITLE = "image";
 }

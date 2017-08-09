@@ -44,5 +44,18 @@
     </LinearLayout>
 
     <include layout="@layout/view_publish"/>
+    <LinearLayout
+        android:id="@+id/pb_image_upload"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="#90ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <android.support.v4.widget.ContentLoadingProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 </FrameLayout>
