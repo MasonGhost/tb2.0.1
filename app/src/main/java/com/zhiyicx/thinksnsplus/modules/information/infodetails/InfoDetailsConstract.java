@@ -45,9 +45,7 @@ public interface InfoDetailsConstract {
 
         void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> rewadslist);
 
-        void updateInfoHeader(InfoDetailBean infoDetailBean);
-
-        InfoDetailBean getDetailBean();
+        void updateInfoHeader(InfoListDataBean infoDetailBean);
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean> {

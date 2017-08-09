@@ -227,15 +227,15 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                     // 后台处理
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST, params);
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     } else {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE, params);
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     }
                     backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                            .APP_PATH_INFO_COLLECT_FORMAT, news_id));
+                            .APP_PATH_INFO_COLLECTION_S, news_id));
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
@@ -252,15 +252,15 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                     // 后台处理
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST, params);
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     } else {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE, params);
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     }
                     backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                            .APP_PATH_INFO_DIG_FORMAT, news_id));
+                            .APP_PATH_INFO_DIG_V2_S, news_id));
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
@@ -277,7 +277,7 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.SEND_INFO_COMMENT, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_INFO_COMMENT_FORMAT,
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_INFO_COMMENT_V2_S,
                 new_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
@@ -291,9 +291,9 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
         params.put("comment_id", comment_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                (BackgroundTaskRequestMethodConfig.DELETE, params);
+                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                .APP_PATH_INFO_DELETE_COMMENT_FORMAT, news_id, comment_id));
+                .APP_PATH_INFO_DELETE_COMMENT_V2_S, news_id, comment_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }

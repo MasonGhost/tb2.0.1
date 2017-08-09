@@ -100,8 +100,7 @@ public class InfoDetailHeaderView {
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
     }
 
-    public void setDetail(InfoDetailBean infoDetailBean){
-        InfoListDataBean infoMain = infoDetailBean.getInfoData();
+    public void setDetail(InfoListDataBean infoMain){
         if (infoMain != null){
             mTitle.setText(infoMain.getTitle());
             mChannel.setVisibility(infoMain.getCategory() == null ? GONE : VISIBLE);
@@ -147,20 +146,19 @@ public class InfoDetailHeaderView {
         return markDownContent;
     }
 
-    public void updateDigList(InfoDetailBean infoDetailBean){
-        InfoListDataBean infoMain = infoDetailBean.getInfoData();
+    public void updateDigList(InfoListDataBean infoMain){
         if (infoMain == null){
             return;
         }
         // 点赞信息
-        if (infoDetailBean.getInfoDigList() != null
-                && infoDetailBean.getInfoDigList().size() > 0) {
+        if (infoMain.getDigList() != null
+                && infoMain.getDigList().size() > 0) {
             mDigListView.setVisibility(VISIBLE);
             mDigListView.setDigCount(infoMain.getDigg_count());
             mDigListView.setPublishTime(infoMain.getUpdated_at());
             mDigListView.setViewerCount(infoMain.getHits());
             // 设置点赞头像
-            mDigListView.setDigUserHeadIconInfo(infoDetailBean.getInfoDigList());
+            mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());
 
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
@@ -190,14 +188,14 @@ public class InfoDetailHeaderView {
         });
     }
 
-    public void setRelateInfo(InfoDetailBean infoDetailBean){
-        List<InfoListDataBean> infoListDataBeen = infoDetailBean.getRelatedInfoList();
+    public void setRelateInfo(InfoListDataBean infoMain){
+        List<InfoListDataBean> infoListDataBeen = infoMain.getRelateInfoList();
         if (infoListDataBeen != null && infoListDataBeen.size() > 0){
             mInfoRelateList.setVisibility(VISIBLE);
             mFtlRelate.setVisibility(VISIBLE);
             mRvRelateInfo.setVisibility(VISIBLE);
             // 标签
-            List<UserTagBean> tagBeanList = infoDetailBean.getInfoData().getTags();
+            List<UserTagBean> tagBeanList = infoMain.getTags();
             if (tagBeanList != null && tagBeanList.size() > 0){
                 UserInfoTagsAdapter mUserInfoTagsAdapter = new UserInfoTagsAdapter(tagBeanList, mContext);
                 mFtlRelate.setAdapter(mUserInfoTagsAdapter);
@@ -246,59 +244,6 @@ public class InfoDetailHeaderView {
             mInfoRelateList.setVisibility(GONE);
             mFtlRelate.setVisibility(GONE);
             mRvRelateInfo.setVisibility(GONE);
-        }
-    }
-
-    private class TagAdapter extends BaseAdapter implements OnInitSelectedPosition{
-
-        private Context mContext;
-        private List<UserTagBean> mDataList;
-
-        public TagAdapter(Context mContext) {
-            this.mContext = mContext;
-            mDataList = new ArrayList<>();
-        }
-
-        @Override
-        public int getCount() {
-            return mDataList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mDataList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_tag_relate, null);
-            TextView textView = (TextView) view.findViewById(R.id.tv_tag_name);
-            UserTagBean userTagBean = mDataList.get(position);
-            textView.setText(userTagBean.getTagName());
-            return view;
-        }
-
-        @Override
-        public boolean isSelectedPosition(int position) {
-            if (position % 2 == 0) {
-                return true;
-            }
-            return false;
-        }
-
-        public void onlyAddAll(List<UserTagBean> datas) {
-            mDataList.addAll(datas);
-            notifyDataSetChanged();
-        }
-
-        public void clearAndAddAll(List<UserTagBean> datas) {
-            mDataList.clear();
-            onlyAddAll(datas);
         }
     }
 }
