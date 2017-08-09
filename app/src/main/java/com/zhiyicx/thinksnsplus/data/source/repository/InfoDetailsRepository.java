@@ -75,7 +75,9 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
                             }
-
+                                if(user_ids.isEmpty()){
+                                    return Observable.just(listBaseJson);
+                                }
                             return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
                                 if (userinfobeans.isStatus()) { //
                                     // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
@@ -137,6 +139,9 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                                 user_ids.add(commentListBean.getReply_to_user_id());
                             }
                         }
+                        if(user_ids.isEmpty()){
+                            return Observable.just(infoCommentBean);
+                        }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userInfoBeanList -> {
                                     SparseArray<UserInfoBean> userInfoBeanSparseArray = new
@@ -165,6 +170,9 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                         for (InfoDigListBean digListBean : infoDigListBeen) {
                             user_ids.add(digListBean.getUser_id());
                             user_ids.add(digListBean.getTarget_user());
+                        }
+                        if(user_ids.isEmpty()){
+                            return Observable.just(infoDigListBeen);
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(listBaseJson -> {
