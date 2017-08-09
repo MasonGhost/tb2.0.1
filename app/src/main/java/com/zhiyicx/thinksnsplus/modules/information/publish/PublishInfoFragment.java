@@ -2,12 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.information.publish;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -17,6 +20,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
@@ -28,6 +32,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment.BUNDLE_PUBLISH_BEAN;
 
@@ -38,7 +43,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddIn
  * @Description
  */
 public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presenter>
-        implements PublishInfoContract.View, PhotoSelectorImpl.IPhotoBackListener {
+        implements PublishInfoContract.View, PhotoSelectorImpl.IPhotoBackListener, RichTextEditor.OnContentChangeListener {
 
     @BindView(R.id.et_info_title)
     UserInfoInroduceInputView mEtInfoTitle;
@@ -97,18 +102,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         super.setRightClick();
         InfoPublishBean infoPublishBean = new InfoPublishBean();
 
-        StringBuilder builder = new StringBuilder();
-        List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
-        for (RichTextEditor.EditData editData : datas) {
-            builder.append(editData.inputStr);
-            if (!editData.imagePath.isEmpty()) {
-                builder.append(String.format(Locale.getDefault(),
-                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[mPicAddTag]));
-                mPicAddTag++;
-            }
-        }
-        String content = builder.toString();
-        infoPublishBean.setContent(content);
+        infoPublishBean.setContent(getContentString());
         infoPublishBean.setAmout(10);
         infoPublishBean.setCover(mImageIdArray[0]);
         infoPublishBean.setImage(mImageIdArray[0]);
@@ -120,10 +114,25 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         startActivity(intent);
     }
 
+    @NonNull
+    private String getContentString() {
+        StringBuilder builder = new StringBuilder();
+        List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
+        for (RichTextEditor.EditData editData : datas) {
+            builder.append(editData.inputStr);
+            if (!editData.imagePath.isEmpty()) {
+                builder.append(String.format(Locale.getDefault(),
+                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[mPicAddTag]));
+                mPicAddTag++;
+            }
+        }
+        return builder.toString();
+    }
+
     @Override
     protected void initView(View rootView) {
+        mToolbarRight.setEnabled(false);
         mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
-        mToolbarRight.setTextColor(SkinUtils.getColor(R.color.themeColor));
         initLisenter();
     }
 
@@ -198,6 +207,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     }
 
+    @Override
+    public void onContentChange(boolean hasContent) {
+        mToolbarRight.setEnabled(hasContent);
+    }
+
     /**
      * 初始化图片选择弹框
      */
@@ -256,5 +270,10 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 }
             }
         });
+
+        mEtInfoTitle.setContentChangedListener(s ->
+                mToolbarRight.setEnabled(s.length()>0&&mRicheTest.isHasContent())
+        );
+        mRicheTest.setOnContentEmptyListener(this);
     }
 }

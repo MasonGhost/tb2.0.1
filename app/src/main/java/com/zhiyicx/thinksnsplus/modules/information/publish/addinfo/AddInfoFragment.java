@@ -212,7 +212,5 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         } else {
             mToolbarRight.setEnabled(false);
         }
-
-
     }
 }

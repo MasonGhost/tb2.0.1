@@ -185,7 +185,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_INFO_COMMENT)
-    Observable<BaseJsonV2<Integer>> stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") int amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>>  stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") int amount, @Field("day") int day);
 
     /*******************************************  打赏  *********************************************/
 
