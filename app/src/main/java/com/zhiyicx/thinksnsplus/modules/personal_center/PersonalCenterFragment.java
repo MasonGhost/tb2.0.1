@@ -61,6 +61,8 @@ import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDy
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterDynamicListItemForTwoImage;
 import com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalCenterHeaderViewItem;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
+import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicEmptyItem;
 import com.zhiyicx.thinksnsplus.widget.comment.DynamicListCommentView;
@@ -114,6 +116,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     TextView mTvFollow;
     @BindView(R.id.ll_follow_container)
     LinearLayout mLlFollowContainer;
+    @BindView(R.id.ll_reward_container)
+    LinearLayout mLLRewardContainer;
     @BindView(R.id.ll_chat_container)
     LinearLayout mLlChatContainer;
     @BindView(R.id.ll_bottom_container)
@@ -180,7 +184,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void initListener() {
-        // 添加关注点击事件
+        // 添加打赏点击事件
+        RxView.clicks(mLLRewardContainer)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    RewardFragment.startRewardActivity(getContext(), RewardType.USER, mUserInfoBean.getUser_id());
+                }); // 添加关注点击事件
         RxView.clicks(mLlFollowContainer)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
