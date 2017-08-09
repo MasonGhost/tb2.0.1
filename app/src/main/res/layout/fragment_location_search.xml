@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/spacing_normal"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/spacing_normal"
             android:src="@mipmap/topbar_back"/>
 
@@ -33,14 +34,16 @@
             android:layout_toRightOf="@+id/fragment_search_back"
             android:layout_toStartOf="@+id/fragment_search_cancle"
             android:background="@drawable/info_search_bg"
+            android:drawablePadding="@dimen/spacing_mid_small"
+            android:drawableLeft="@mipmap/search_icon_search"
             android:imeOptions="actionSearch"
             android:paddingEnd="@dimen/spacing_mid"
             android:paddingLeft="@dimen/spacing_mid"
             android:paddingRight="@dimen/spacing_mid"
             android:paddingStart="@dimen/spacing_mid"
-            android:textColor="@color/important_for_theme"
+            android:textColor="@color/normal_for_assist_text"
             android:textColorHint="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_sub_title"/>
+            android:textSize="@dimen/size_icon_assist"/>
 
         <TextView
             android:id="@+id/fragment_search_cancle"
