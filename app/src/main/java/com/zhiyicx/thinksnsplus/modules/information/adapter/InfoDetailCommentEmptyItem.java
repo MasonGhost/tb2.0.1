@@ -19,6 +19,6 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 public class InfoDetailCommentEmptyItem extends EmptyItem<InfoCommentListBean> {
     @Override
     public boolean isForViewType(InfoCommentListBean item, int position) {
-        return TextUtils.isEmpty(item.getComment_content()) && position != 0;
+        return TextUtils.isEmpty(item.getComment_content());
     }
 }

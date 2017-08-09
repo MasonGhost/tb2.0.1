@@ -71,4 +71,6 @@
     <color name="tag_bg_color">#def0f7</color>
     <!--money-->
     <color name="money">#f76c69</color>
+    <color name="money_gold">#ff9400</color>
+
 </resources>

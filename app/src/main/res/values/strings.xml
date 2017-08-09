@@ -142,6 +142,7 @@
     <string name="info_author_hint">不填写则默认为本站用户名</string>
     <string name="info_summary">摘要</string>
     <string name="info_summary_hint">不填写则默认为文章前200字</string>
+    <string name="info_relate">相关资讯</string>
 
 
     <!--动态列表-->
@@ -437,4 +438,10 @@
     <string name="qa_show_topic_followed_reward">%1$d 关注  ·  %2$d 回答  ·  ￥%3$.1f 悬赏</string>
     <string name="edit_quit">放弃编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
+
+    <!--签到-->
+    <string name="check_in">签到</string>
+    <string name="check_in_today">每日签到</string>
+    <string name="check_in_total_day_format">累计签到%d天</string>
+    <string name="check_in_today_get_gold_format">签到得金币+%d</string>
 </resources>

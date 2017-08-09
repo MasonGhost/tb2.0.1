@@ -5,6 +5,7 @@
 
     <!-- copyright_text_size-->
     <dimen name="copyright_text_size">9sp</dimen>
+    <dimen name="check_in_total_money">30sp</dimen>
 
     <!--登录按钮margintop-->
     <dimen name="button_login_margin_top">23dp</dimen>

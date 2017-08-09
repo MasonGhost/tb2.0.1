@@ -36,6 +36,10 @@ public interface HomeContract {
          */
         void checkBottomItem(int positon);
 
+        /**
+         * 签到
+         */
+        void showCheckInPop();
     }
 
     /**

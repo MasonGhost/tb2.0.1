@@ -46,11 +46,14 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
             return;
         }
         switch (rewardType) {
-            case INFO:
+            case INFO: // 咨询打赏
                 hanldeRewardResult(mRepository.rewardInfo(sourceId, rewardMoney));
                 break;
-            case DYNAMIC:
+            case DYNAMIC: // 动态打赏
                 hanldeRewardResult(mRepository.rewardDynamic(sourceId, rewardMoney));
+                break;
+            case USER: // 用户打赏
+                hanldeRewardResult(mRepository.rewardUser(sourceId, rewardMoney));
                 break;
 
             default:

@@ -15,7 +15,7 @@ public class InfoTypeCatesBeanTest extends AbstractDaoTestLongPk<InfoTypeCatesBe
     protected InfoTypeCatesBean createEntity(Long key) {
         InfoTypeCatesBean entity = new InfoTypeCatesBean();
         entity.set_id(key);
-        entity.setIsMyCate();
+        entity.setIsMyCate(true);
         return entity;
     }
 

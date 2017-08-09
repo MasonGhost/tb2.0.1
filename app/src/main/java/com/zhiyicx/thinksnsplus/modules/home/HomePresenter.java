@@ -210,4 +210,10 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
             return true;
         }
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_CHECK_IN_CLICK)
+    public void checkInClick(boolean isClick) {
+
+        mRootView.showCheckInPop();
+    }
 }

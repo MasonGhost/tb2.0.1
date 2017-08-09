@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
@@ -35,13 +37,16 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -95,6 +100,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
 
+    private InfoDetailHeaderView mInfoDetailHeader;
+    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
+
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDealInfoMationPopWindow;
 
@@ -138,73 +146,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
-        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailWebItem(getActivity(), new
-                ItemOnWebEventListener()) {
-            @Override
-            protected void dealRewards(ViewHolder holder) {
-                ((ReWardView) holder.getView(R.id.v_reward)).initData(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO);
-                ((ReWardView) holder.getView(R.id.v_reward)).setOnRewardsClickListener(() -> {
-                });
-            }
-
-            @Override
-            public void dealCommentCount(ViewHolder holder) {
-                if (mListDatas.get(mListDatas.size() - 1).getComment_content() != null) {
-                    holder.getView(R.id.info_detail_comment).setVisibility(View.VISIBLE);
-                    holder.setText(R.id.tv_comment_count,
-                            getActivity().getResources().getString(R.string.dynamic_comment_count, mListDatas.size() - 1 + ""));
-                } else {
-                    holder.getView(R.id.info_detail_comment).setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void dealInfoHeader(ViewHolder holder) {
-                holder.setText(R.id.tv_info_title, mInfoMation.getTitle());
-                holder.setVisible(R.id.tv_from_channel, mInfoMation.getCategory() == null ? GONE : VISIBLE);
-                holder.setText(R.id.tv_from_channel, mInfoMation.getCategory() == null ? "" : mInfoMation.getCategory().getName());
-                String from = mInfoMation.getFrom().equals(getString(R.string.info_publish_original)) ?
-                        mInfoMation.getAuthor() : mInfoMation.getFrom();
-                String infoData = String.format(getString(R.string.info_list_count)
-                        , from, mInfoMation.getHits(), TimeUtils.getTimeFriendlyNormal(mInfoMation
-                                .getUpdated_at()));
-                holder.setText(R.id.item_info_timeform, infoData);
-            }
-
-            @Override
-            public void dealInfoDigList(ViewHolder holder) {
-                if (mInfoDetailBean != null
-                        && mInfoDetailBean.getInfoDigList() != null
-                        && mInfoDetailBean.getInfoDigList().size() > 0) {
-                    holder.setVisible(R.id.detail_dig_view, VISIBLE);
-                    DynamicHorizontalStackIconView digListView = holder.getView(R.id.detail_dig_view);
-                    digListView.setDigCount(mInfoMation.getDigg_count());
-                    digListView.setPublishTime(mInfoMation.getUpdated_at());
-                    digListView.setViewerCount(mInfoMation.getHits());
-                    // 设置点赞头像
-                    digListView.setDigUserHeadIconInfo(mInfoDetailBean.getInfoDigList());
-
-                    // 设置跳转到点赞列表
-                    digListView.setDigContainerClickListener(digContainer -> {
-                        Bundle bundle = new Bundle();
-//                        bundle.putParcelable(DigListFragment.DIG_LIST_DATA, dynamicBean);
-//                        Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity
-//                                .class);
-//                        intent.putExtras(bundle);
-//                        mDynamicDetailHeader.getContext().startActivity(intent);
-                    });
-                } else {
-                    holder.setVisible(R.id.detail_dig_view, GONE);
-                }
-            }
-
-            @Override
-            public void dealInfoWebContent(MarkdownView markdownView) {
-                if (!TextUtils.isEmpty(mInfoMation.getContent())) {
-                    markdownView.loadMarkdown(dealPic(mInfoMation.getContent()));
-                }
-            }
-        });
         InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
                 ItemOnCommentListener());
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
@@ -212,30 +153,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         return multiItemTypeAdapter;
     }
 
-    public String dealPic(String markDownContent) {
-        // 替换图片id 为地址
-        String tag = "@![image](";
-        while (markDownContent.contains(tag)) {
-            int start = markDownContent.indexOf(tag) + tag.length();
-            int end = markDownContent.indexOf(")", start);
-            String id = "";
-            try {
-                id = markDownContent.substring(start, end);
-            } catch (Exception e) {
-                LogUtils.d("Cathy", e.toString());
-            }
-            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            markDownContent = markDownContent.replace("@![image](" + id + ")", "![image](" + imgPath + ")");
-        }
-        return markDownContent;
-    }
-
     @Override
     public void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> datas) {
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        refreshData();
+        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO);
     }
 
     @Override
@@ -244,8 +167,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mCoordinatorLayout.setEnabled(true);
         this.mInfoDetailBean = infoDetailBean;
         this.mInfoMation = infoDetailBean.getInfoData();
+        mInfoDetailHeader.setDetail(infoDetailBean);
+        mInfoDetailHeader.updateDigList(infoDetailBean);
+        mInfoDetailHeader.setRelateInfo(infoDetailBean);
         onNetResponseSuccess(infoDetailBean.getInfoCommentList(), false);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -266,7 +191,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mTvToolbarCenter.setText(getString(R.string.info_details));
-
+        initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
@@ -310,11 +235,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
-    protected Long getMaxId(@NotNull List<InfoCommentListBean> data) {
-        return (long) mListDatas.get(mListDatas.size() - 1).getId();
-    }
-
-    @Override
     protected boolean setUseCenterLoading() {
         return true;
     }
@@ -352,13 +272,10 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void onNetResponseSuccess(@NotNull List<InfoCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
-            InfoCommentListBean position_zero = new InfoCommentListBean();
-            position_zero.setId(mInfoMation.getId());
             if (data.isEmpty()) {
                 InfoCommentListBean emptyData = new InfoCommentListBean();
                 data.add(emptyData);
             }
-            data.add(0, position_zero);
         }
         super.onNetResponseSuccess(data, isLoadMore);
         if (!isLoadMore) {
@@ -377,6 +294,18 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mReplyUserId, text);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void initHeaderView(){
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mInfoDetailHeader = new InfoDetailHeaderView(getContext(), null/*mPresenter.getAdvert()*/);
+//        mDynamicDetailHeader.setOnImageClickLisenter(this);
+        mHeaderAndFooterWrapper.addHeaderView(mInfoDetailHeader.getInfoDetailHeader());
+        View mFooterView = new View(getContext());
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mHeaderAndFooterWrapper.addFootView(mFooterView);
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     private void initBottomToolStyle() {
@@ -564,23 +493,26 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                    .getUser_id()) {// 自己的评论
+            if (mListDatas.get(position) instanceof InfoCommentListBean){
+                InfoCommentListBean infoCommentListBean = (InfoCommentListBean) mListDatas.get(position);
+                if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
+                        .getUser_id()) {// 自己的评论
 //                if (mListDatas.get(position).getId() != -1) {
-                initDeleteCommentPopupWindow(mListDatas.get(position));
-                mDeletCommentPopWindow.show();
+                    initDeleteCommentPopupWindow(infoCommentListBean);
+                    mDeletCommentPopWindow.show();
 //                } else {
 //
 //                    return;
 //                }
-            } else {
-                mReplyUserId = (int) mListDatas.get(position).getUser_id();
-                showCommentView();
-                String contentHint = getString(R.string.default_input_hint);
-                if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
-                    contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
+                } else {
+                    mReplyUserId = (int) infoCommentListBean.getUser_id();
+                    showCommentView();
+                    String contentHint = getString(R.string.default_input_hint);
+                    if (infoCommentListBean.getReply_to_user_id() != mInfoMation.getId()) {
+                        contentHint = getString(R.string.reply, infoCommentListBean.getFromUserInfoBean().getName());
+                    }
+                    mIlvComment.setEtContentHint(contentHint);
                 }
-                mIlvComment.setEtContentHint(contentHint);
             }
         }
 
