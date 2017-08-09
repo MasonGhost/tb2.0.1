@@ -163,6 +163,10 @@ public class RichTextEditor extends ScrollView {
         }
     }
 
+    public void deleteImage() {
+        onBackspacePress(lastAddEdit);
+    }
+
     /**
      * 处理图片叉掉的点击事件
      *
@@ -350,7 +354,7 @@ public class RichTextEditor extends ScrollView {
     }
 
     public class EditData {
-        public String inputStr="";
-        public String imagePath="";
+        public String inputStr = "";
+        public String imagePath = "";
     }
 }

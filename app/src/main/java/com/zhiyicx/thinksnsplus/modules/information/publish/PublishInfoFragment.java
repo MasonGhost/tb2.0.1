@@ -102,7 +102,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
             builder.append(editData.inputStr);
             if (!editData.imagePath.isEmpty()) {
                 builder.append(String.format(Locale.getDefault(),
-                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[0]));
+                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[mPicAddTag]));
                 mPicAddTag++;
             }
         }
@@ -170,6 +170,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void uploadPicFailed() {
         mPicTag--;
+        mRicheTest.deleteImage();
         mPbImageUpload.setVisibility(View.GONE);
     }
 
