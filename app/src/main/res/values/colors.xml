@@ -6,7 +6,7 @@
     <!--频道详情，带透明度的白色-->
     <color name="channel_detail_white_alpha">#b3ffffff</color>
     <!--提现明细操作成功-->
-    <color name="withdrawals_item_enable">#ff9400</color>
+    <color name="withdrawals_item_enable">@color/money_gold</color>
     <!--动态置顶标识-->
     <color name="dyanmic_top_flag">#4bb893</color>
     <!--发布动态-->
@@ -18,4 +18,10 @@
     <color name="feed_back_question">#f4f5f5</color>
 
     <color name="expert_search_input_bg">#e7e7e7</color>
+    <!--签到 统计-->
+    <color name="check_in_total_text_color">#d46c28</color>
+    <color name="check_in_bg_start_color">#efb946</color>
+    <color name="check_in_bg_end_color">#ef8a46</color>
+
+
 </resources>

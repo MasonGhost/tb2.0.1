@@ -20,6 +20,8 @@ import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
+import org.simple.eventbus.EventBus;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +31,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_CHECK_IN_CLICK;
 
 /**
  * @Author Jliuer
@@ -106,7 +109,7 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         return R.layout.fragment_dynamic_type;
     }
 
-    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.im_close_dynamic})
+    @OnClick({R.id.send_words_dynamic, R.id.send_image_dynamic, R.id.check_in, R.id.im_close_dynamic})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.send_words_dynamic:
@@ -128,6 +131,13 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
 //                sendImageDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
 //                SendDynamicActivity.startToSendDynamicActivity(getContext(), sendImageDynamicDataBean);
                 break;
+            case R.id.check_in:
+
+                EventBus.getDefault().post(true,EVENT_CHECK_IN_CLICK);
+                getActivity().finish();
+
+                break;
+
             case R.id.im_close_dynamic:
                 getActivity().finish();
                 getActivity().overridePendingTransition(0, R.anim.zoom_out);
