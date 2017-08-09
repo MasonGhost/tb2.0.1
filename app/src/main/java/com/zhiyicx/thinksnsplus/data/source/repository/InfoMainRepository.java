@@ -16,7 +16,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @Author Jliuer
@@ -33,7 +35,9 @@ public class InfoMainRepository extends BaseInfoRepository implements InfoMainCo
 
     @Override
     public Observable<InfoTypeBean> getInfoType() {
-        return mInfoMainClient.getInfoType();
+        return mInfoMainClient.getInfoType()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
@@ -45,21 +49,18 @@ public class InfoMainRepository extends BaseInfoRepository implements InfoMainCo
         switch (cate_id) {
             case ApiConfig.INFO_TYPE_COLLECTIONS:
                 return mInfoMainClient.getInfoCollectList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page)
-                        .map(new Func1<BaseJson<List<InfoListDataBean>>, BaseJson<InfoListBean>>() {
-                            @Override
-                            public BaseJson<InfoListBean> call(BaseJson<List<InfoListDataBean>> listBaseJson) {
-                                // 重新封装网络数据
-                                List<InfoListDataBean> listBeanList = listBaseJson.getData();
-                                BaseJson<InfoListBean> infoListBeanBaseJson = new BaseJson<>();
-                                InfoListBean infoListBean = new InfoListBean();
-                                infoListBean.setList(listBeanList);
-                                infoListBean.setInfo_type(Long.parseLong(cate_id));
-                                infoListBeanBaseJson.setData(infoListBean);
-                                infoListBeanBaseJson.setMessage(listBaseJson.getMessage());
-                                infoListBeanBaseJson.setStatus(listBaseJson.isStatus());
-                                infoListBeanBaseJson.setCode(listBaseJson.getCode());
-                                return infoListBeanBaseJson;
-                            }
+                        .map(listBaseJson -> {
+                            // 重新封装网络数据
+                            List<InfoListDataBean> listBeanList = listBaseJson.getData();
+                            BaseJson<InfoListBean> infoListBeanBaseJson = new BaseJson<>();
+                            InfoListBean infoListBean = new InfoListBean();
+                            infoListBean.setList(listBeanList);
+                            infoListBean.setInfo_type(Long.parseLong(cate_id));
+                            infoListBeanBaseJson.setData(infoListBean);
+                            infoListBeanBaseJson.setMessage(listBaseJson.getMessage());
+                            infoListBeanBaseJson.setStatus(listBaseJson.isStatus());
+                            infoListBeanBaseJson.setCode(listBaseJson.getCode());
+                            return infoListBeanBaseJson;
                         });
             default:
                 return mInfoMainClient.getInfoList(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page);

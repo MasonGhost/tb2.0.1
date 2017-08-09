@@ -30,12 +30,7 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public long saveSingleData(InfoTypeBean singleData) {
-        clearTable();
-        for (InfoTypeCatesBean myCates:singleData.getMy_cates()){
-            myCates.setIsMyCate(true);
-        }
-        singleData.getMy_cates().addAll(singleData.getMore_cates());
-        mInfoTypeCatesBeanDao.insertOrReplaceInTx(singleData.getMy_cates());
+
         return 0;
     }
 
@@ -51,7 +46,7 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public InfoTypeBean getSingleDataFromCache(Long primaryKey) {
-        if (getMyCatesList() == null) {
+        if (getMyCatesList() == null || getMyCatesList().isEmpty()) {
             return null;
         }
         InfoTypeBean infoTypeBean = new InfoTypeBean();
@@ -83,10 +78,10 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
     @Override
     public void updateSingleData(InfoTypeBean newData) {
         clearTable();
-        for (InfoTypeCatesBean myCates:newData.getMy_cates()){
+        for (InfoTypeCatesBean myCates : newData.getMy_cates()) {
             myCates.setIsMyCate(true);
         }
-        List<InfoTypeCatesBean> saveDatas=new ArrayList<>();
+        List<InfoTypeCatesBean> saveDatas = new ArrayList<>();
         saveDatas.addAll(newData.getMy_cates());
         saveDatas.addAll(newData.getMore_cates());
         mInfoTypeCatesBeanDao.insertOrReplaceInTx(saveDatas);
@@ -94,12 +89,11 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public long insertOrReplace(InfoTypeBean newData) {
-        saveSingleData(newData);
         return 0;
     }
 
     public List<InfoTypeCatesBean> getMyCatesList() {
-        return  mInfoTypeCatesBeanDao
+        return mInfoTypeCatesBeanDao
                 .queryBuilder()
                 .where(InfoTypeCatesBeanDao.Properties.IsMyCate.eq(true))
                 .build().list();
@@ -108,14 +102,18 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
     public List<InfoTypeCatesBean> getMoreCatesList() {
         return mInfoTypeCatesBeanDao
                 .queryBuilder()
-                .where(InfoTypeCatesBeanDao.Properties.IsMyCate.notEq(true))
+                .where(InfoTypeCatesBeanDao.Properties.IsMyCate.eq(false))
                 .build().list();
     }
 
     public List<InfoTypeCatesBean> getAllCatesList() {
-        List<InfoTypeCatesBean> datas=getMyCatesList();
+        List<InfoTypeCatesBean> datas = getMyCatesList();
         datas.addAll(getMoreCatesList());
         return datas;
+    }
+
+    public List<InfoTypeCatesBean> getAllCatesLists() {
+        return mInfoTypeCatesBeanDao.loadAll();
     }
 
 }

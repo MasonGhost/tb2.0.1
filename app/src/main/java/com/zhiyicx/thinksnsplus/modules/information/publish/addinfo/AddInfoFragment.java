@@ -207,7 +207,7 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
     }
 
     private void checkNextButton() {
-        if (mInfoPublishBean.getCategoryId() != 0) {
+        if (mInfoPublishBean.getCategoryId() != 0 && !mUserTagBeens.isEmpty()) {
             mToolbarRight.setEnabled(true);
         } else {
             mToolbarRight.setEnabled(false);

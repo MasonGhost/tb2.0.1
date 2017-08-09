@@ -1,12 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.information.infomain.container;
 
-import android.text.TextUtils;
-
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -17,6 +16,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -42,27 +42,37 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
 
     @Override
     public void getInfoType() {
-        Observable.just(mInfoTypeBeanGreenDao)
-                .map(infoTypeBeanGreenDao -> infoTypeBeanGreenDao.getSingleDataFromCache(1L))
-                .filter(infoTypeBean -> infoTypeBean != null).subscribe(infoTypeBean -> mRootView.setInfoType(infoTypeBean));
-
-        Subscription subscription = mRepository.getInfoType()
+        Subscription subscription = Observable.just(mInfoTypeBeanGreenDao)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(infoTypeBeanGreenDao -> infoTypeBeanGreenDao.getSingleDataFromCache(1L))
+                .flatMap(new Func1<InfoTypeBean, Observable<InfoTypeBean>>() {
+                    @Override
+                    public Observable<InfoTypeBean> call(InfoTypeBean infoTypeBean) {
+                        if (infoTypeBean == null) {
+                            return mRepository.getInfoType();
+                        }
+                        return Observable.just(infoTypeBean);
+                    }
+                })
                 .subscribe(new BaseSubscribeForV2<InfoTypeBean>() {
                     @Override
-                    protected void onSuccess(InfoTypeBean infoTypeBean) {
-                        mInfoTypeBeanGreenDao.updateSingleData(infoTypeBean);
-                        mRootView.setInfoType(infoTypeBean);
+                    protected void onSuccess(InfoTypeBean data) {
+                        for (InfoTypeCatesBean myCates : data.getMy_cates()) {
+                            myCates.setIsMyCate(true);
+                        }
+                        mInfoTypeBeanGreenDao.updateSingleData(data);
+                        mRootView.setInfoType(data);
                     }
                 });
+
         addSubscrebe(subscription);
     }
 
     @Override
     public boolean checkCertification() {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
-        if (userInfoBean != null && userInfoBean.getVerified()!= null){
+        if (userInfoBean != null && userInfoBean.getVerified() != null) {
             return true;
         }
         return false;

@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -20,7 +18,6 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.SkinUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
@@ -29,11 +26,12 @@ import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment.BUNDLE_PUBLISH_BEAN;
 
 /**
@@ -271,8 +269,15 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
             }
         });
 
+        RxView.clicks(mImArrowc)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+
+
+                .subscribe(aVoid -> mRicheTest.hideKeyBoard());
+
         mEtInfoTitle.setContentChangedListener(s ->
-                mToolbarRight.setEnabled(s.length()>0&&mRicheTest.isHasContent())
+                mToolbarRight.setEnabled(s.length() > 0 && mRicheTest.isHasContent())
         );
         mRicheTest.setOnContentEmptyListener(this);
     }

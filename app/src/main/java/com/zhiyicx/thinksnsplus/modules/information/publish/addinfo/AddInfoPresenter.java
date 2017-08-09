@@ -28,7 +28,7 @@ public class AddInfoPresenter extends AppBasePresenter<AddInfoContract.Repositor
 
     @Override
     public List<InfoTypeCatesBean> getInfoTypeBean() {
-        return mInfoTypeBeanGreenDao.getAllCatesList();
+        return mInfoTypeBeanGreenDao.getAllCatesLists();
 
     }
 
