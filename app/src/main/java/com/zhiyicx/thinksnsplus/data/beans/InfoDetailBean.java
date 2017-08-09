@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ import java.util.List;
  * @contact email:648129313@qq.com
  */
 
-public class InfoDetailBean implements Parcelable{
+public class InfoDetailBean extends BaseListBean{
 
     private InfoListDataBean infoData;
     private List<InfoDigListBean> infoDigList;

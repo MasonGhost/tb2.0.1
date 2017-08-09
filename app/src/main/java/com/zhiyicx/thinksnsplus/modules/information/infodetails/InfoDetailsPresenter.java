@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -98,7 +99,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     .subscribe(new BaseSubscribeForV2<InfoCommentBean>() {
                         @Override
                         protected void onSuccess(InfoCommentBean data) {
-                            List<InfoCommentListBean> newList = new ArrayList<InfoCommentListBean>();
+                            List<InfoCommentListBean> newList = new ArrayList<>();
                             mInfoCommentListBeanDao.saveMultiData(data.getPinneds());
                             mInfoCommentListBeanDao.saveMultiData(data.getComments());
 

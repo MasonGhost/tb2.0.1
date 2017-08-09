@@ -132,6 +132,11 @@ public class InfoCommentListBean extends BaseListBean {
         this.reply_to_user_id = reply_to_user_id;
     }
 
+    @Override
+    public Long getMaxId() {
+        return (long)id;
+    }
+
     public InfoCommentListBean() {
     }
 
