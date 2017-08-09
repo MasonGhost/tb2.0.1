@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
@@ -9,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import java.util.List;
 
 import retrofit2.http.Field;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -34,6 +37,7 @@ public interface ISystemRepository {
      * ts 助手配置
      */
     String checkTShelper(long user_id);
+
     /**
      * 意见反馈
      *
@@ -53,8 +57,9 @@ public interface ISystemRepository {
 
     /**
      * 获取支付信息
+     *
      * @param channel 支付渠道
-     * @param amount 支付金额
+     * @param amount  支付金额
      * @return
      */
     Observable<PayStrBean> getPayStr(String channel, double amount);
@@ -74,8 +79,18 @@ public interface ISystemRepository {
 
     /**
      * 获取全部标签
+     *
      * @return
      */
     Observable<List<TagCategoryBean>> getAllTags();
+
+    /**
+     * 搜索位置
+     *
+     * @param name search content
+     * @return
+     */
+    Observable<List<LocationContainerBean>> searchLocation(String name);
+
 
 }

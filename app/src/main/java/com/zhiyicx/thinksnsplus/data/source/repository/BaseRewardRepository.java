@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IRewardRepository;
 
 import java.util.List;
@@ -26,11 +27,23 @@ public class BaseRewardRepository implements IRewardRepository {
 
     private InfoMainClient mInfoMainClient;
     private DynamicClient mDynamicClient;
+    private UserInfoClient mUserInfoClient;
 
     @Inject
     public BaseRewardRepository(ServiceManager serviceManager) {
         mInfoMainClient = serviceManager.getInfoMainClient();
         mDynamicClient = serviceManager.getDynamicClient();
+        mUserInfoClient = serviceManager.getUserInfoClient();
+    }
+
+    /*******************************************  用户打赏  *********************************************/
+
+
+    @Override
+    public Observable<Object> rewardUser(long user_id, double amount) {
+        return mUserInfoClient.rewardUser(user_id, (float) amount)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /*******************************************  咨询打赏  *********************************************/

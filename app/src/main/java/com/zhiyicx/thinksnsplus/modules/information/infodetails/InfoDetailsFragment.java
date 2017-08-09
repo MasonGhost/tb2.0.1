@@ -214,10 +214,17 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     public String dealPic(String markDownContent) {
         // 替换图片id 为地址
-        while (markDownContent.contains("@![image](")) {
-            int position = markDownContent.indexOf("@![image](");
-            String id = String.valueOf(markDownContent.charAt(position + 1));
-            String imgPath = APP_DOMAIN + API_VERSION_2 + "files/" + id + "?q=80";
+        String tag = "@![image](";
+        while (markDownContent.contains(tag)) {
+            int start = markDownContent.indexOf(tag) + tag.length();
+            int end = markDownContent.indexOf(")", start);
+            String id = "";
+            try {
+                id = markDownContent.substring(start, end);
+            } catch (Exception e) {
+                LogUtils.d("Cathy", e.toString());
+            }
+            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
             markDownContent = markDownContent.replace("@![image](" + id + ")", "![image](" + imgPath + ")");
         }
         return markDownContent;

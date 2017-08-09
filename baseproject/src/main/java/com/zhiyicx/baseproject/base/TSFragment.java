@@ -227,7 +227,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void goRecharge(Class<?> cls) {
-        startActivity(new Intent(getActivity(),cls));
+        startActivity(new Intent(getActivity(), cls));
     }
 
     @Override
@@ -235,6 +235,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     }
 
+    /**
+     * 音乐图标消失
+     */
     @Override
     public void onDismiss() {
         View view = getLeftViewOfMusicWindow();
@@ -352,14 +355,14 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showCenterLoading(String msg) {
-        if (mCenterLoadingDialog!=null)
-        mCenterLoadingDialog.showStateIng(msg);
+        if (mCenterLoadingDialog != null)
+            mCenterLoadingDialog.showStateIng(msg);
     }
 
     @Override
     public void hideCenterLoading() {
-        if (mCenterLoadingDialog!=null)
-        mCenterLoadingDialog.onDestroy();
+        if (mCenterLoadingDialog != null)
+            mCenterLoadingDialog.onDestroy();
     }
 
     /**
