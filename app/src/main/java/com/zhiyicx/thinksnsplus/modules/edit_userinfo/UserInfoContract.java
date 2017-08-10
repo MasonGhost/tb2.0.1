@@ -82,7 +82,7 @@ public interface UserInfoContract {
          * @param user_ids 用户 id 数组
          * @return
          */
-        Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids);
+        Observable<List<UserInfoBean>> getUserInfo(List<Object> user_ids);
 
 
         /**
@@ -128,7 +128,7 @@ public interface UserInfoContract {
          * @param user_id 用户 id
          * @return
          */
-        Observable<BaseJson<UserInfoBean>> getLocalUserInfoBeforeNet(long user_id);
+        Observable<UserInfoBean> getLocalUserInfoBeforeNet(long user_id);
 
         /**
          * 获取用户关注状态

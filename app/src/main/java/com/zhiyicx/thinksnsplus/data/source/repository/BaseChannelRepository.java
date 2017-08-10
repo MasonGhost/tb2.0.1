@@ -177,10 +177,10 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(listBaseJson -> {
                                     SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                    for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                    for (UserInfoBean userInfoBean : listBaseJson) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
-                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
+                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                     for (int i = 0; i < groupInfoBeen.size(); i++) {
                                         if (groupInfoBeen.get(i).getManagers() != null) {
                                             for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
@@ -275,7 +275,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                        for (UserInfoBean userInfoBean : listBaseJson) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         for (int i = 0; i < groupDynamicCommentListBeen.size(); i++) {
@@ -292,7 +292,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                                 groupDynamicCommentListBeen.get(i).setReplyUser(userInfoBean);
                                             }
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                         return groupDynamicCommentListBeen;
                                     });
                         } else {
@@ -322,9 +322,8 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             // 通过用户id列表请求用户信息和用户关注状态
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {
-                                        if (listBaseJson.isStatus()) {
                                             SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                            for (UserInfoBean userInfoBean : listBaseJson) {
                                                 userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                             }
                                             for (DynamicDigListBean dynamicDigListBean : groupDynamicLikeListBeen) {
@@ -335,8 +334,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                                     dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
                                                 }
                                             }
-                                            mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
-                                        }
+                                            mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                         return groupDynamicLikeListBeen;
                                     });
                         } else {
@@ -360,7 +358,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                        for (UserInfoBean userInfoBean : listBaseJson) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         groupDynamicListBean.setUserInfoBean(

@@ -260,10 +260,9 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        Subscription subscription = mRepository.getCurrentUserInfo(userId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<UserInfoBean>() {
+        Subscription subscription = mUserInfoRepository.getUserInfoByIds(String.valueOf(userId))
+                .map(userInfoBeen -> userInfoBeen.get(0))
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
                         mUserInfoBeanGreenDao.insertOrReplace(data);
@@ -499,9 +498,9 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
             balance = walletBean.getBalance();
         }
         double amount;
-        if (isImage){
+        if (isImage) {
             amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
-        }else{
+        } else {
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 

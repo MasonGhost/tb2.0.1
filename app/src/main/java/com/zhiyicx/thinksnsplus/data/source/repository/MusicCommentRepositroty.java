@@ -71,31 +71,28 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                             }
 
                             return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                if (userinfobeans.isStatus()) { //
-                                    // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                            SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                                .intValue(), userInfoBean);
-                                    }
-                                    for (MusicCommentListBean commentListBean : commentedBeens) {
-                                        commentListBean.setFromUserInfoBean(
-                                                (userInfoBeanSparseArray.get((int) commentListBean
-                                                        .getUser_id())));
-                                        if (commentListBean.getReply_user() == 0) { // 如果
-                                            // reply_user_id = 0 回复动态
-                                            UserInfoBean userInfoBean = new UserInfoBean();
-                                            userInfoBean.setUser_id(0L);
-                                            commentListBean.setToUserInfoBean(userInfoBean);
-                                        } else {
-                                            commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
-                                        }
-
-                                    }
-                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans
-                                            .getData());
+                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                        SparseArray<>();
+                                for (UserInfoBean userInfoBean : userinfobeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                            .intValue(), userInfoBean);
                                 }
+                                for (MusicCommentListBean commentListBean : commentedBeens) {
+                                    commentListBean.setFromUserInfoBean(
+                                            (userInfoBeanSparseArray.get((int) commentListBean
+                                                    .getUser_id())));
+                                    if (commentListBean.getReply_user() == 0) { // 如果
+                                        // reply_user_id = 0 回复动态
+                                        UserInfoBean userInfoBean = new UserInfoBean();
+                                        userInfoBean.setUser_id(0L);
+                                        commentListBean.setToUserInfoBean(userInfoBean);
+                                    } else {
+                                        commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
+                                    }
+
+                                }
+                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return commentedBeens;
                             });
                         }
@@ -124,31 +121,28 @@ public class MusicCommentRepositroty implements MusicCommentContract.Repository 
                             }
 
                             return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                if (userinfobeans.isStatus()) { //
-                                    // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                            SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                                .intValue(), userInfoBean);
-                                    }
-                                    for (MusicCommentListBean commentListBean : listBaseJson) {
-                                        commentListBean.setFromUserInfoBean(
-                                                (userInfoBeanSparseArray.get((int) commentListBean
-                                                        .getUser_id())));
-                                        if (commentListBean.getReply_user() == 0) { // 如果
-                                            // reply_user_id = 0 回复动态
-                                            UserInfoBean userInfoBean = new UserInfoBean();
-                                            userInfoBean.setUser_id(0L);
-                                            commentListBean.setToUserInfoBean(userInfoBean);
-                                        } else {
-                                            commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
-                                        }
-
-                                    }
-                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans
-                                            .getData());
+                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                        SparseArray<>();
+                                for (UserInfoBean userInfoBean : userinfobeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                            .intValue(), userInfoBean);
                                 }
+                                for (MusicCommentListBean commentListBean : listBaseJson) {
+                                    commentListBean.setFromUserInfoBean(
+                                            (userInfoBeanSparseArray.get((int) commentListBean
+                                                    .getUser_id())));
+                                    if (commentListBean.getReply_user() == 0) { // 如果
+                                        // reply_user_id = 0 回复动态
+                                        UserInfoBean userInfoBean = new UserInfoBean();
+                                        userInfoBean.setUser_id(0L);
+                                        commentListBean.setToUserInfoBean(userInfoBean);
+                                    } else {
+                                        commentListBean.setToUserInfoBean(userInfoBeanSparseArray.get((int) commentListBean.getReply_user()));
+                                    }
+
+                                }
+                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                 return listBaseJson;
                             });
                         }

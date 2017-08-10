@@ -63,14 +63,7 @@ public class BillRepository implements BillContract.Repository {
 
                 }
                 return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-//                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-//                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-//                        userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-//                    }
-//                    for (int i = 0; i < rechargeListBeen.size(); i++) {
-//                        rechargeListBeen.get(i).setUserInfoBean(userInfoBeanSparseArray.get(rechargeListBeen.get(i).getUser_id().intValue()));
-//                    }
-                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                     return rechargeListBeen;
                 });
             }
