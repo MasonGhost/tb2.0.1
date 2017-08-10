@@ -11,8 +11,7 @@ public class InfoCommentListBeanTest extends AbstractDaoTestLongPk<InfoCommentLi
     @Override
     protected InfoCommentListBean createEntity(Long key) {
         InfoCommentListBean entity = new InfoCommentListBean();
-        entity.set_id(key);
-        entity.setId(32);
+        entity.setId(32L);
         entity.setInfo_id(323);
         entity.setUser_id(11);
         entity.setReply_to_user_id(44);

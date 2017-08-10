@@ -51,14 +51,6 @@
                 tools:text="三小时前   来自火星"/>
     </LinearLayout>
 
-    <br.tiagohm.markdownview.MarkdownView
-            android:id="@+id/info_detail_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_mid"
-            android:visibility="gone"
-            tools:ignore="WebViewLayout"/>
-
     <TextView
             android:id="@+id/info_content_subject"
             android:layout_width="match_parent"
@@ -73,8 +65,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginBottom="@dimen/spacing_mid"
             android:layout_marginLeft="@dimen/spacing_mid_small"
-            android:layout_marginRight="@dimen/spacing_mid_small"/>
+            android:layout_marginRight="@dimen/spacing_mid_small"
+            android:visibility="gone"/>
+
+    <br.tiagohm.markdownview.MarkdownView
+            android:id="@+id/info_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginBottom="@dimen/spacing_mid"
+            android:layout_marginLeft="@dimen/spacing_mid_small"
+            android:layout_marginRight="@dimen/spacing_mid_small"
+            android:visibility="visible"
+            tools:ignore="WebViewLayout"/>
 
 
     <include

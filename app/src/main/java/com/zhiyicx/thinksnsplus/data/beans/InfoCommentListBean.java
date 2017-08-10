@@ -35,10 +35,8 @@ public class InfoCommentListBean extends BaseListBean {
      * user_id : 1
      * reply_to_user_id : 0
      */
-    @Id(autoincrement = true)
-    private Long _id;
-    @Unique
-    private int id = -1;
+    @Id
+    private Long id;
     @SerializedName("commentable_id")
     private int info_id = -1;// 自己创建的，用于记录隶属于哪一条资讯。
     private String created_at;
@@ -75,11 +73,11 @@ public class InfoCommentListBean extends BaseListBean {
         this.comment_mark = comment_mark;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -147,15 +145,6 @@ public class InfoCommentListBean extends BaseListBean {
     }
 
     public InfoCommentListBean() {
-    }
-
-
-    public Long get_id() {
-        return this._id;
-    }
-
-    public void set_id(Long _id) {
-        this._id = _id;
     }
 
     /**
@@ -267,23 +256,6 @@ public class InfoCommentListBean extends BaseListBean {
         }
     }
 
-    @Generated(hash = 672776514)
-    public InfoCommentListBean(Long _id, int id, int info_id, String created_at, String comment_content,
-            long user_id, long reply_to_user_id, long comment_mark, long target_user, String commentable_type,
-            int state) {
-        this._id = _id;
-        this.id = id;
-        this.info_id = info_id;
-        this.created_at = created_at;
-        this.comment_content = comment_content;
-        this.user_id = user_id;
-        this.reply_to_user_id = reply_to_user_id;
-        this.comment_mark = comment_mark;
-        this.target_user = target_user;
-        this.commentable_type = commentable_type;
-        this.state = state;
-    }
-
     /**
      * Used to resolve relations
      */
@@ -351,8 +323,7 @@ public class InfoCommentListBean extends BaseListBean {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeValue(this._id);
-        dest.writeInt(this.id);
+        dest.writeValue(this.id);
         dest.writeInt(this.info_id);
         dest.writeString(this.created_at);
         dest.writeString(this.comment_content);
@@ -376,8 +347,7 @@ public class InfoCommentListBean extends BaseListBean {
 
     protected InfoCommentListBean(Parcel in) {
         super(in);
-        this._id = (Long) in.readValue(Long.class.getClassLoader());
-        this.id = in.readInt();
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.info_id = in.readInt();
         this.created_at = in.readString();
         this.comment_content = in.readString();
@@ -390,6 +360,21 @@ public class InfoCommentListBean extends BaseListBean {
         this.publishUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.commentable_type = in.readString();
         this.state = in.readInt();
+    }
+
+    @Generated(hash = 654198418)
+    public InfoCommentListBean(Long id, int info_id, String created_at, String comment_content, long user_id,
+            long reply_to_user_id, long comment_mark, long target_user, String commentable_type, int state) {
+        this.id = id;
+        this.info_id = info_id;
+        this.created_at = created_at;
+        this.comment_content = comment_content;
+        this.user_id = user_id;
+        this.reply_to_user_id = reply_to_user_id;
+        this.comment_mark = comment_mark;
+        this.target_user = target_user;
+        this.commentable_type = commentable_type;
+        this.state = state;
     }
 
     public static final Creator<InfoCommentListBean> CREATOR = new Creator<InfoCommentListBean>() {

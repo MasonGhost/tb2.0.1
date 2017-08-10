@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +48,7 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.view.flowlayout.TagFlowLayout;
+import com.zzhoujay.markdown.MarkDown;
 import com.zzhoujay.richtext.ImageHolder;
 import com.zzhoujay.richtext.RichText;
 
@@ -132,12 +137,19 @@ public class InfoDetailHeaderView {
             mFrom.setText(infoData);
             // 资讯content
             if (!TextUtils.isEmpty(infoMain.getContent())) {
-//                InternalStyleSheet css = new Github();
-//                mContent.addStyleSheet(css);
-                String subject = infoMain.getSubject();
-//                mContent.loadMarkdown(subject + "  " + dealPic(infoMain.getContent()));
+                InternalStyleSheet css = new Github();
+                mContent.addStyleSheet(css);
+                mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 showMarkDownView(mContentSubject, dealPic(infoMain.getSubject()));
-                showMarkDownView(mContentText, dealPic(infoMain.getContent()));
+//                mContentText.post(() -> {
+//                    Spanned spanned = MarkDown.fromMarkdown(dealPic(dealPic(infoMain.getContent())), source -> {
+//                        LogUtils.d("Cathy", "source // " + source);
+//                        Drawable drawable = new ColorDrawable(Color.LTGRAY);
+//                        drawable.setBounds(0, 0, mContentText.getWidth() - mContentText.getPaddingLeft() - mContentText.getPaddingRight(), 400);
+//                        return drawable;
+//                    }, mContentText);
+//                    mContentText.setText(spanned);
+//                });
             }
 
             // 评论信息
@@ -306,24 +318,14 @@ public class InfoDetailHeaderView {
                     holder.setVisible(R.id.tv_top_flag, infoListDataBean.isTop() ? View.VISIBLE : View.GONE);
                     holder.itemView.setOnClickListener(v -> {
                         // 跳转到新的咨询页
+                        Intent intent = new Intent(mContext, InfoDetailsActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(BUNDLE_INFO, infoListDataBeen.get(position));
+                        intent.putExtra(BUNDLE_INFO, bundle);
+                        mContext.startActivity(intent);
                     });
                 }
             };
-            adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                    Intent intent = new Intent(mContext, InfoDetailsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(BUNDLE_INFO, infoListDataBeen.get(position));
-                    intent.putExtra(BUNDLE_INFO, bundle);
-                    mContext.startActivity(intent);
-                }
-
-                @Override
-                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                    return false;
-                }
-            });
             mRvRelateInfo.setAdapter(adapter);
         } else {
             mInfoRelateList.setVisibility(GONE);
