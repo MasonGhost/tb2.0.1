@@ -291,7 +291,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void refreshData() {
         super.refreshData();
-        mInfoDetailHeader.updateDigList(mInfoMation);
+        mInfoDetailHeader.updateCommentView(mInfoMation);
     }
 
     private void initHeaderView() {
