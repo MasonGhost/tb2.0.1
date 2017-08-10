@@ -148,7 +148,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
 
     @Override
     public void headClick(int position) {
-        
+
     }
 
     @Override

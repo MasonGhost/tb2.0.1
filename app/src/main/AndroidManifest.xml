@@ -437,8 +437,7 @@
             >
         </activity>
         <activity android:name=".modules.information.publish.uploadcover.UploadCoverActivity"/>
-        <activity android:name=".modules.information.infodetails.topinfo.InfoTopActivity"/>
-        <activity android:name=".modules.information.infodetails.topinfo_comment.InfoCommentTopActivity"/>
+        <activity android:name=".modules.wallet.sticktop.StickTopActivity"/>
 
     </application>
 

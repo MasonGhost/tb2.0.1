@@ -387,7 +387,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        dataPosition = dataPosition - 1;// 减去 header
+        dataPosition = mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
 
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
@@ -444,7 +444,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onReSendClick(int position) {
-        position = position - 1;// 去掉 header
+        position = position -mHeaderAndFooterWrapper.getHeadersCount();// 去掉 header
         initReSendDynamicPopupWindow(position);
         mReSendDynamicPopWindow.show();
     }
@@ -485,7 +485,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        position = position - 1;// 减去 header
+        position = position -mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = position;
         goDynamicDetail(position, false);
     }
