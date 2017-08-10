@@ -9,6 +9,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
@@ -211,10 +212,12 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         }
         if (isLiked){
             mRootView.getCurrentInfo().getDigList().add(digListBean);
+            mRootView.getCurrentInfo().setDigg_count(mRootView.getCurrentInfo().getDigg_count() + 1);
         } else {
             for (InfoDigListBean infoDigListBean : mRootView.getCurrentInfo().getDigList()){
                 if (infoDigListBean.getUser_id().equals(userInfoBean.getUser_id())){
                     mRootView.getCurrentInfo().getDigList().remove(infoDigListBean);
+                    mRootView.getCurrentInfo().setDigg_count(mRootView.getCurrentInfo().getDigg_count() - 1);
                     break;
                 }
             }
@@ -292,6 +295,28 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     }
 
     @Override
+    public void deleteInfo() {
+        mRootView.deleteInfo(true, false, "");
+        Subscription subscription = mRepository.deleteInfo(String.valueOf(mRootView.getCurrentInfo().getCategory().getId()),
+                String.valueOf(mRootView.getNewsId()))
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.deleteInfo(false, true, "");
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.deleteInfo(false, false, message);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
     public void deleteComment(InfoCommentListBean data) {
         mInfoCommentListBeanDao.deleteSingleCache(data);
         mRootView.getListDatas().remove(data);
@@ -362,19 +387,20 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
         if (reply_id == 0) {// 回复资讯
             UserInfoBean userInfoBean = new UserInfoBean();
-            userInfoBean.setUser_id((long) reply_id);
+            userInfoBean.setUser_id(0L);
             createComment.setToUserInfoBean(userInfoBean);
         } else {
             createComment.setToUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
                     (long) reply_id));
         }
-        createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache((long)
+        createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
         mInfoCommentListBeanDao.insertOrReplace(createComment);
-        if (mRootView.getListDatas().get(1).getComment_content() == null) {
-            mRootView.getListDatas().remove(1);// 去掉占位图
+        if (mRootView.getListDatas().get(0).getComment_content() == null) {
+            mRootView.getListDatas().remove(0);// 去掉占位图
         }
-        mRootView.getListDatas().add(1, createComment);
+        mRootView.getListDatas().add(0, createComment);
+        mRootView.getCurrentInfo().setComment_count(mRootView.getCurrentInfo().getComment_count() + 1);
         mRootView.refreshData();
         mRepository.sendComment(content, mRootView.getNewsId(), reply_id,
                 createComment.getComment_mark());

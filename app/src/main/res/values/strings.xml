@@ -143,7 +143,11 @@
     <string name="info_summary">摘要</string>
     <string name="info_summary_hint">不填写则默认为文章前200字</string>
     <string name="info_relate">相关资讯</string>
-
+    <string name="info_apply_for_top">申请文章置顶</string>
+    <string name="info_alert_reapply_for_top">已经置顶，不能重复申请</string>
+    <string name="info_alert_top_auditing">审核中，不能重复申请</string>
+    <string name="info_delete">删除</string>
+    <string name="info_deleting">删除中</string>
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
