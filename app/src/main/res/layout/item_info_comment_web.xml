@@ -3,7 +3,6 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/ll_advert"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:descendantFocusability="blocksDescendants"
@@ -84,6 +83,10 @@
 
     <include
             layout="@layout/include_reward"/>
+
+    <include
+            layout="@layout/advert_details"
+            />
 
     <!--相关资讯以及标签-->
 
