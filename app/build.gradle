@@ -199,6 +199,7 @@ dependencies {
     compile dataDependences.greendaoSqlcipher
     compile dataDependences.markdownView
     compile dataDependences.editor
+    compile dataDependences.richtext
     compile(name: 'lint-library-release', ext: 'aar')
 
     compile dataDependences.flowlayout

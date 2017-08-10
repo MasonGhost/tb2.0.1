@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -38,8 +41,11 @@ import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout;
 import com.zhiyicx.thinksnsplus.widget.flowtag.OnInitSelectedPosition;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.view.flowlayout.TagFlowLayout;
+import com.zzhoujay.richtext.ImageHolder;
+import com.zzhoujay.richtext.RichText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +58,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @author Catherine
@@ -63,6 +71,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 public class InfoDetailHeaderView {
 
     private MarkdownView mContent;
+    private TextView mContentSubject;
+    private TextView mContentText;
     private TextView mTitle;
     private TextView mChannel;
     private TextView mFrom;
@@ -95,6 +105,8 @@ public class InfoDetailHeaderView {
         mChannel = (TextView) mInfoDetailHeader.findViewById(R.id.tv_from_channel);
         mFrom = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_timeform);
         mContent = (MarkdownView) mInfoDetailHeader.findViewById(R.id.info_detail_content);
+        mContentSubject = (TextView) mInfoDetailHeader.findViewById(R.id.info_content_subject);
+        mContentText = (TextView) mInfoDetailHeader.findViewById(R.id.info_content);
         mDigListView = (DynamicHorizontalStackIconView) mInfoDetailHeader.findViewById(R.id.detail_dig_view);
         mReWardView = (ReWardView) mInfoDetailHeader.findViewById(R.id.v_reward);
         mCommentHintView = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_detail_comment);
@@ -120,14 +132,36 @@ public class InfoDetailHeaderView {
             mFrom.setText(infoData);
             // 资讯content
             if (!TextUtils.isEmpty(infoMain.getContent())) {
-                InternalStyleSheet css = new Github();
-                mContent.addStyleSheet(css);
+//                InternalStyleSheet css = new Github();
+//                mContent.addStyleSheet(css);
                 String subject = infoMain.getSubject();
-                mContent.loadMarkdown(subject + "  " + dealPic(infoMain.getContent()));
+//                mContent.loadMarkdown(subject + "  " + dealPic(infoMain.getContent()));
+                showMarkDownView(mContentSubject, dealPic(infoMain.getSubject()));
+                showMarkDownView(mContentText, dealPic(infoMain.getContent()));
             }
+
             // 评论信息
             updateCommentView(infoMain);
         }
+    }
+
+    private void showMarkDownView(TextView textView, String content){
+        textView.post(() -> {
+            RichText
+                    .fromMarkdown(content) // 数据源
+                    .autoFix(true) // 是否自动修复，默认true
+                    .autoPlay(true) // gif图片是否自动播放
+                    .showBorder(true) // 是否显示图片边框
+                    .borderColor(Color.BLUE) // 图片边框颜色
+                    .borderSize(10) // 边框尺寸
+                    .borderRadius(50) // 图片边框圆角弧度
+                    .scaleType(ImageHolder.ScaleType.FIT_CENTER) // 图片缩放方式
+                    .size(ImageHolder.MATCH_PARENT, ImageHolder.WRAP_CONTENT) // 图片占位区域的宽高
+                    .noImage(true) // 不显示并且不加载图片
+                    .resetSize(false) // 默认false，是否忽略img标签中的宽高尺寸（只在img标签中存在宽高时才有效），true：忽略标签中的尺寸并触发SIZE_READY回调，false：使用img标签中的宽高尺寸，不触发SIZE_READY回调
+                    .clickable(true) // 是否可点击，默认只有设置了点击监听才可点击
+                    .into(textView); // 设置目标TextView
+        });
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
@@ -160,8 +194,10 @@ public class InfoDetailHeaderView {
             } catch (Exception e) {
                 LogUtils.d("Cathy", e.toString());
             }
+            String imgTag = "<h3> </h3><img src=\"%s\"";
             String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
             markDownContent = markDownContent.replace(tag + id + ")", "![image](" + imgPath + ")");
+//            markDownContent = markDownContent.replace(tag + id + ")", String.format(imgTag, imgPath));
         }
         return markDownContent;
     }
@@ -237,8 +273,7 @@ public class InfoDetailHeaderView {
             LinearLayoutManager manager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             mRvRelateInfo.setLayoutManager(manager);
             mRvRelateInfo.setNestedScrollingEnabled(false);
-            mRvRelateInfo.setAdapter(new CommonAdapter<InfoListDataBean>(mContext, R.layout.item_info, infoListDataBeen) {
-
+            CommonAdapter adapter = new CommonAdapter<InfoListDataBean>(mContext, R.layout.item_info, infoListDataBeen) {
                 @Override
                 protected void convert(ViewHolder holder, InfoListDataBean infoListDataBean, int position) {
                     final TextView title = holder.getView(R.id.item_info_title);
@@ -273,7 +308,23 @@ public class InfoDetailHeaderView {
                         // 跳转到新的咨询页
                     });
                 }
+            };
+            adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    Intent intent = new Intent(mContext, InfoDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_INFO, infoListDataBeen.get(position));
+                    intent.putExtra(BUNDLE_INFO, bundle);
+                    mContext.startActivity(intent);
+                }
+
+                @Override
+                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    return false;
+                }
             });
+            mRvRelateInfo.setAdapter(adapter);
         } else {
             mInfoRelateList.setVisibility(GONE);
             mFtlRelate.setVisibility(GONE);
