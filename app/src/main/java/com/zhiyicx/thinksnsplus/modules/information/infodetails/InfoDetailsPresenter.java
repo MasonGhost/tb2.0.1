@@ -323,6 +323,9 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public List<RealAdvertListBean> getAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getInfoDetailAdvert() == null) {
+            return new ArrayList<>();
+        }
         return mAllAdvertListBeanGreenDao.getInfoDetailAdvert().getMRealAdvertListBeen();
     }
 

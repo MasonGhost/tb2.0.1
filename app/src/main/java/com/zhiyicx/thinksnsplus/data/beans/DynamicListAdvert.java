@@ -26,9 +26,18 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     private String avatar;
     private String name;
     private String content;
+    private String title;
     private String image;
     private String time;
     private String link;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getLink() {
         return link;
@@ -92,6 +101,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         dest.writeString(this.content);
         dest.writeString(this.image);
         dest.writeString(this.time);
+        dest.writeString(this.title);
     }
 
     public DynamicListAdvert() {
@@ -103,6 +113,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         this.link = in.readString();
         this.content = in.readString();
         this.image = in.readString();
+        this.title = in.readString();
         this.time = in.readString();
     }
 
@@ -146,7 +157,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         infoListDataBean.setCategory(category);
         infoListDataBean.setUser_id(-1L);// 广告位标识
         infoListDataBean.setMaxId(max_id);// max_id 转移
-        infoListDataBean.setTitle(advert.getContent());// 广告内容
+        infoListDataBean.setTitle(advert.getTitle());// 广告内容
         infoListDataBean.setUpdated_at(advert.getTime());// 广告时间
         infoListDataBean.setCreated_at(advert.getLink());// 广告外链
         infoListDataBean.setAuthor(advert.getImage());// 广告图片
