@@ -18,9 +18,11 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +59,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private ActionPopupWindow mInstructionsPopupWindow;
     private int[] mImageIdArray;// 图片id
     private int mPicTag;
     private int mPicAddTag;
@@ -99,6 +102,12 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        Intent intent = new Intent(getActivity(), QA_RewardActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
+        mQAPublishBean.setBody(getContentString());
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @NonNull
@@ -200,6 +209,10 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
      * 初始化图片选择弹框
      */
     private void initPhotoPopupWindow() {
+        if (mPicTag == 9) {
+            initInstructionsPop(getString(R.string.instructions), String.format(Locale.getDefault(), getString(R.string.choose_max_photos), 9));
+            return;
+        }
         if (mPhotoPopupWindow != null) {
             mPhotoPopupWindow.show();
             return;
@@ -248,5 +261,24 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .subscribe(aVoid -> mRicheTest.hideKeyBoard());
 
         mRicheTest.setOnContentEmptyListener(this);
+    }
+
+    public void initInstructionsPop(String title, String des) {
+        if (mInstructionsPopupWindow != null) {
+            mInstructionsPopupWindow.newBuilder().item1Str(title).desStr(des);
+            mInstructionsPopupWindow.show();
+            return;
+        }
+        mInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(title)
+                .desStr(des)
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                .build();
+        mInstructionsPopupWindow.show();
     }
 }

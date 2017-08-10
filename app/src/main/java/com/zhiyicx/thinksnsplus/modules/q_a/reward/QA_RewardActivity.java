@@ -12,11 +12,9 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 public class QA_RewardActivity extends TSActivity<QA$RewardPresenter, QA$RewardFragment>{
 
-    public static final String BUNDLE_REWARD = "bundle_reward";
-
     @Override
     protected QA$RewardFragment getFragment() {
-        return QA$RewardFragment.instance(getIntent().getBundleExtra(BUNDLE_REWARD));
+        return QA$RewardFragment.instance(getIntent().getExtras());
     }
 
     @Override

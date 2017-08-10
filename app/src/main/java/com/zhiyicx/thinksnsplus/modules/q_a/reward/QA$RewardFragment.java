@@ -25,6 +25,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 
 import org.simple.eventbus.Subscriber;
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 /**
  * @author Catherine
@@ -103,6 +105,8 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
 
     private CenterInfoPopWindow mRulePop; // 悬赏规则
 
+    private QAPublishBean mQAPublishBean;
+
     public static QA$RewardFragment instance(Bundle bundle) {
         QA$RewardFragment fragment = new QA$RewardFragment();
         fragment.setArguments(bundle);
@@ -126,6 +130,7 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
     protected void initData() {
         initDefaultMoney();
         initAlertPopupWindow();
+        mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
     }
 
     @Override
@@ -291,6 +296,7 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 发布
+
                 });
         RxView.clicks(mTvRewardRule)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

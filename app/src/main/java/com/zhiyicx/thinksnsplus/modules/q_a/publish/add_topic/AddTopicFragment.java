@@ -52,9 +52,8 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
     private QAPublishBean mQAPublishBean;
 
-    public static AddTopicFragment newInstance() {
+    public static AddTopicFragment newInstance(Bundle args) {
         AddTopicFragment fragment = new AddTopicFragment();
-        Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
