@@ -497,15 +497,16 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_TOP_LIST = "api/" + API_VERSION_2 + "/news/categories/pinneds";// 获取置顶资讯
     public static final String APP_PATH_INFO_DETAIL = "api/" + API_VERSION_2 + "/news/{news}";// 详情
     public static final String APP_PATH_INFO_DETAIL_RELATION = "api/" + API_VERSION_2 + "/news/{news}/correlations";// 相关资讯
-    public static final String APP_PATH_INFO_DIG_V2 = "api/" + API_VERSION_2 + "/news/{news}/like";// 点赞
-    public static final String APP_PATH_INFO_DIG_V2_S = "api/" + API_VERSION_2 + "/news/%s/like";// 点赞
+    public static final String APP_PATH_INFO_DIG_V2 = "api/" + API_VERSION_2 + "/news/{news}/likes";// 点赞
+    public static final String APP_PATH_INFO_DIG_V2_S = "api/" + API_VERSION_2 + "/news/%s/likes";// 点赞
     public static final String APP_PATH_INFO_DIG_LIST = "api/" + API_VERSION_2 + "/news/{news}/likes";// 点赞列表
-    public static final String APP_PATH_INFO_COLLECTION = "api/" + API_VERSION_2 + "/news/{news}/collection";// 收藏
-    public static final String APP_PATH_INFO_COLLECTION_S = "api/" + API_VERSION_2 + "/news/%s/collection";// 收藏
+    public static final String APP_PATH_INFO_COLLECTION = "api/" + API_VERSION_2 + "/news/{news}/collections";// 收藏
+    public static final String APP_PATH_INFO_COLLECTION_S = "api/" + API_VERSION_2 + "/news/%s/collections";// 收藏
     public static final String APP_PATH_INFO_COMMENT_V2 = "api/" + API_VERSION_2 + "/news/{news}/comments";// 评论
     public static final String APP_PATH_INFO_COMMENT_V2_S = "api/" + API_VERSION_2 + "/news/%s/comments";// 评论
     public static final String APP_PATH_INFO_GET_COMMENT = "api/" + API_VERSION_2 + "/news/{news}/comments";// 获取评论列表
     public static final String APP_PATH_INFO_DELETE_COMMENT_V2 = "api/" + API_VERSION_2 + " /news/{news}/comments/{comment}";// 删除评论
+    public static final String APP_PATH_INFO_DELETE_COMMENT_V2_S = "api/" + API_VERSION_2 + " /news/%s/comments/%s";// 删除评论
     public static final String APP_PATH_INFO_PINNED = "api/" + API_VERSION_2 + "/news/{news}/pinneds";// 置顶
     public static final String APP_PATH_INFO_PINNED_S = "api/" + API_VERSION_2 + "/news/%s/pinneds";// 置顶
 

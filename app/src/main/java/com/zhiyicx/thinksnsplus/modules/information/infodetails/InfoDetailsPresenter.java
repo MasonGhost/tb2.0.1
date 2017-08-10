@@ -91,7 +91,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        if (mRootView.getDetailBean() == null){
+        if (mRootView.getCurrentInfo().getRelateInfoList() == null
+                || mRootView.getCurrentInfo().getRelateInfoList().size() == 0){
             getInfoDetail(String.valueOf(mRootView.getNewsId()));
         } else {
             mRepository.getInfoCommentListV2(mRootView.getNewsId() + "", maxId, 0L)
@@ -118,9 +119,11 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                                 if (maxId == 0) {
                                     newList.addAll(0, data.getPinneds());
                                 }
-                                newList.addAll(localComment);
-                                newList.addAll(data.getComments());
-                                newList.clear();
+                            }
+                            newList.addAll(localComment);
+                            newList.addAll(data.getComments());
+                            for (InfoCommentListBean infoCommentListBean : newList){
+                                infoCommentListBean.setInfo_id(mRootView.getNewsId().intValue());
                             }
                             mRootView.onNetResponseSuccess(newList, isLoadMore);
                         }
@@ -181,13 +184,13 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
             return;
         }
         mRootView.setCollect(isUnCollected);
-        int is_collection_news = isUnCollected ? 1 : 0;
-        mRootView.getCurrentInfo().setIs_collection_news(is_collection_news);
+        mRootView.getCurrentInfo().setHas_collect(isUnCollected);
 
         if (mRootView.getInfoType() == -100) {
             //return;// 搜索出来的资讯，收藏状态有待优化  已处理
         }
-        mInfoListBeanGreenDao.saveCollect(mRootView.getCurrentInfo(), is_collection_news);
+        mRootView.setCollect(isUnCollected);
+        mInfoListBeanGreenDao.updateInfo(mRootView.getCurrentInfo());
         EventBus.getDefault().post(mRootView.getCurrentInfo(), EVENT_SEND_INFO_LIST_COLLECT);
         mRepository.handleCollect(isUnCollected, news_id);
     }
@@ -197,14 +200,31 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
+        UserInfoBean userInfoBean = mUserInfoBeanGreenDao
+                .getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
+        InfoDigListBean digListBean = new InfoDigListBean();
+        digListBean.setUser_id(userInfoBean.getUser_id());
+        digListBean.setId(System.currentTimeMillis());
+        digListBean.setDiggUserInfo(userInfoBean);
+        if (mRootView.getCurrentInfo().getDigList() == null){
+            mRootView.getCurrentInfo().setDigList(new ArrayList<>());
+        }
+        if (isLiked){
+            mRootView.getCurrentInfo().getDigList().add(digListBean);
+        } else {
+            for (InfoDigListBean infoDigListBean : mRootView.getCurrentInfo().getDigList()){
+                if (infoDigListBean.getUser_id().equals(userInfoBean.getUser_id())){
+                    mRootView.getCurrentInfo().getDigList().remove(infoDigListBean);
+                    break;
+                }
+            }
+        }
+        mRootView.getCurrentInfo().setHas_like(isLiked);
         mRootView.setDigg(isLiked);
-        int is_dig_news = isLiked ? 1 : 0;
-        mRootView.getCurrentInfo().setIs_digg_news(is_dig_news);
-
         if (mRootView.getInfoType() == -100) {
             //return;// 搜索出来的资讯，收藏状态有待优化  已处理
         }
-        mInfoListBeanGreenDao.saveDig(mRootView.getCurrentInfo(), is_dig_news);
+        mInfoListBeanGreenDao.updateInfo(mRootView.getCurrentInfo());
         mRepository.handleLike(isLiked, news_id);
     }
 
@@ -240,10 +260,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 mRepository.getRelateInfoList(news_id),
                 mRepository.getInfoCommentListV2(news_id, 0L, 0L),
                 (infoListDataBean, infoDigListBeen, infoRelateBean, infoCommentBean) -> {
-                    InfoDetailBean infoDetail = new InfoDetailBean();
-                    infoDetail.setInfoData(infoListDataBean);
-                    infoDetail.setInfoDigList(infoDigListBeen);
-                    infoDetail.setRelatedInfoList(infoRelateBean);
+                    infoListDataBean.setDigList(infoDigListBeen);
+                    infoListDataBean.setRelateInfoList(infoRelateBean);
                     List<InfoCommentListBean> all = new ArrayList<>();
                     if (infoCommentBean.getPinneds() != null){
                         all.addAll(infoCommentBean.getPinneds());
@@ -251,13 +269,16 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     if (infoCommentBean.getComments() != null){
                         all.addAll(infoCommentBean.getComments());
                     }
-                    infoDetail.setInfoCommentList(all);
-                    return infoDetail;
+                    for (InfoCommentListBean infoCommentListBean : all){
+                        infoCommentListBean.setInfo_id(mRootView.getNewsId().intValue());
+                    }
+                    infoListDataBean.setCommentList(all);
+                    return infoListDataBean;
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribeForV2<InfoDetailBean>() {
+                .subscribe(new BaseSubscribeForV2<InfoListDataBean>() {
                     @Override
-                    protected void onSuccess(InfoDetailBean data) {
+                    protected void onSuccess(InfoListDataBean data) {
                         mRootView.updateInfoHeader(data);
                     }
 

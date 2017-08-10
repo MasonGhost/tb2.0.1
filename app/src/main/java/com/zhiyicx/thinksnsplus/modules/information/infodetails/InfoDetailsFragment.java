@@ -111,7 +111,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private InfoListDataBean mInfoMation;
     private boolean isFirstIn = true;
-    private InfoDetailBean mInfoDetailBean;
 
     private int mReplyUserId;// 被评论者的 id ,评论动态 id = 0
 
@@ -162,20 +161,14 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
-    public void updateInfoHeader(InfoDetailBean infoDetailBean) {
+    public void updateInfoHeader(InfoListDataBean infoDetailBean) {
         closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
-        this.mInfoDetailBean = infoDetailBean;
-        this.mInfoMation = infoDetailBean.getInfoData();
+        this.mInfoMation = infoDetailBean;
         mInfoDetailHeader.setDetail(infoDetailBean);
         mInfoDetailHeader.updateDigList(infoDetailBean);
         mInfoDetailHeader.setRelateInfo(infoDetailBean);
-        onNetResponseSuccess(infoDetailBean.getInfoCommentList(), false);
-    }
-
-    @Override
-    public InfoDetailBean getDetailBean() {
-        return mInfoDetailBean;
+        onNetResponseSuccess(infoDetailBean.getCommentList(), false);
     }
 
     @Override
@@ -198,14 +191,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mInfoMation.setIs_collection_news(mPresenter.isCollected() ? 1 : 0);
         mInfoMation.setIs_digg_news(mPresenter.isDiged() ? 1 : 0);
         setDigg(mPresenter.isDiged());
-    }
-
-    @Override
-    protected void initData() {
-        super.initData();
-        if (mInfoMation != null) {
-            mPresenter.getInfoDetail(String.valueOf(mInfoMation.getId()));
-        }
     }
 
     @Override
@@ -261,12 +246,15 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void setCollect(boolean isCollected) {
-//        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
+        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
     }
 
     @Override
     public void setDigg(boolean isDigged) {
         mDdDynamicTool.setItemIsChecked(isDigged, ITEM_POSITION_0);
+        if (mInfoMation.getDigList() != null){
+            mInfoDetailHeader.updateDigList(mInfoMation);
+        }
     }
 
     @Override
@@ -322,31 +310,28 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     private void initBottomToolListener() {
-        mDdDynamicTool.setItemOnClick(new DynamicDetailMenuView.OnItemClickListener() {
-            @Override
-            public void onItemClick(ViewGroup parent, View v, int postion) {
-                mDdDynamicTool.getTag(R.id.view_data);
-                switch (postion) {
-                    case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
-                        mPresenter.handleLike(mInfoMation.getIs_digg_news() == 0,
-                                mInfoMation.getId() + "");
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
-                        showCommentView();
-                        mReplyUserId = 0;
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
-                        Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
+        mDdDynamicTool.setItemOnClick((parent, v, position) -> {
+            mDdDynamicTool.getTag(R.id.view_data);
+            switch (position) {
+                case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
+                    mPresenter.handleLike(!mInfoMation.getHas_like(),
+                            mInfoMation.getId() + "");
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
+                    showCommentView();
+                    mReplyUserId = 0;
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
+                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
 
-                        mPresenter.shareInfo(bitmap);
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
-                        initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getIs_collection_news() == 1);
-                        mDealInfoMationPopWindow.show();
-                        break;
-                    default:
-                        break;
-                }
+                    mPresenter.shareInfo(bitmap);
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
+                    initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getIs_collection_news() == 1);
+                    mDealInfoMationPopWindow.show();
+                    break;
+                default:
+                    break;
             }
         });
     }

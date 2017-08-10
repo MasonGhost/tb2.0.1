@@ -8,6 +8,9 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Transient;
+
+import java.io.Serializable;
 
 /**
  * @author Catherine
@@ -16,7 +19,10 @@ import org.greenrobot.greendao.annotation.Generated;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class UserTagBean extends BaseListBean {
+public class UserTagBean extends BaseListBean implements Serializable{
+
+    @Transient
+    private static final long serialVersionUID = -7587963206423470086L;
 
     /**
      * {

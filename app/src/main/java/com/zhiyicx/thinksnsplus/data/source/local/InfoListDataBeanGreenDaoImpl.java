@@ -79,7 +79,7 @@ public class InfoListDataBeanGreenDaoImpl extends CommonCacheImpl<InfoListDataBe
 
     public boolean isDiged(int news_id) {
         try {
-            return mInfoListDataBeanDao.queryBuilder().where(InfoListDataBeanDao.Properties.Id.eq(news_id)).build().list().get(0).getIs_digg_news() == 1;
+            return mInfoListDataBeanDao.queryBuilder().where(InfoListDataBeanDao.Properties.Id.eq(news_id)).build().list().get(0).getHas_like();
         } catch (Exception e) {
             return false;
         }
@@ -89,7 +89,7 @@ public class InfoListDataBeanGreenDaoImpl extends CommonCacheImpl<InfoListDataBe
     public boolean isCollected(int news_id) {
         try {
             return mInfoListDataBeanDao.queryBuilder().where(InfoListDataBeanDao.Properties.Id.eq(news_id)).build().list()
-                    .get(0).getIs_collection_news() == 1;
+                    .get(0).getHas_collect();
         } catch (Exception e) {
             return false;
         }

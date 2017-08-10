@@ -112,8 +112,22 @@ public class InfoListBeanGreenDaoImpl extends CommonCacheImpl<InfoListBean> {
         mInfoListDataBeanGreenDao.updateSingleData(data);
     }
 
+    public void saveCollect(InfoListDataBean data, boolean isCollected) {
+        data.setHas_collect(isCollected);
+        mInfoListDataBeanGreenDao.updateSingleData(data);
+    }
+
     public void saveDig(InfoListDataBean data, int is_dig_news) {
         data.setIs_digg_news(is_dig_news);
+        mInfoListDataBeanGreenDao.updateSingleData(data);
+    }
+
+    public void saveDig(InfoListDataBean data, boolean isDig) {
+        data.setHas_like(isDig);
+        mInfoListDataBeanGreenDao.updateSingleData(data);
+    }
+
+    public void updateInfo(InfoListDataBean data){
         mInfoListDataBeanGreenDao.updateSingleData(data);
     }
 
