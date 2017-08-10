@@ -83,7 +83,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     protected void initData() {
         type = getArguments().getString(TYPE, "");
         parent_id = getArguments().getLong(PARENT_ID, -1L);
-        parent_id = getArguments().getLong(CHILD_ID, -1L);
+        child_id = getArguments().getLong(CHILD_ID, -1L);
         mBlance = mPresenter.getBalance();
         mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f,mBlance));
     }

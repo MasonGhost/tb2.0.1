@@ -143,15 +143,6 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
 
     @Override
     public double getBalance() {
-        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
-        if (authBean != null) {
-            WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
-            if (walletBean == null) {
-                return 0;
-            }
-            int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
-            return PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
-        }
 
         Subscription userInfoSub = mUserInfoRepository.getCurrentLoginUserInfo()
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
@@ -177,7 +168,15 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
                 });
         addSubscrebe(userInfoSub);
 
-
+        AuthBean authBean = AppApplication.getmCurrentLoginAuth();
+        if (authBean != null) {
+            WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(authBean.getUser_id());
+            if (walletBean == null) {
+                return 0;
+            }
+            int ratio = mSystemRepository.getBootstrappersInfoFromLocal().getWallet_ratio();
+            return PayConfig.realCurrencyFen2Yuan(walletBean.getBalance());
+        }
         return 0;
     }
 }

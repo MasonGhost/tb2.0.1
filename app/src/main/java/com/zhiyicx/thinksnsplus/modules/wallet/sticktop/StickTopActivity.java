@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
-import android.os.Bundle;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -15,8 +13,8 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  * bundle.putString(StickTopFragment.TYPE,StickTopFragment.TYPE_DYNAMIC);// 资源类型
  * bundle.putLong(StickTopFragment.PARENT_ID,1L);// 资源id
  * bundle.putLong(StickTopFragment.CHILD_ID,1L);// 该资源的评论id,非评论置顶不传这个
- * intent.putExtras(bundle);
  * Intent intent=new Intent(context,StickTopActivity.class);
+ * intent.putExtras(bundle);
  * startActivity(intent);
  */
 public class StickTopActivity extends TSActivity<StickTopPresenter, StickTopFragment> {
