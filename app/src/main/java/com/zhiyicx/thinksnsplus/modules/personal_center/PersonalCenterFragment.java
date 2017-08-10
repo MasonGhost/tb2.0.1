@@ -38,7 +38,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -100,9 +99,9 @@ import static com.zhiyicx.thinksnsplus.modules.personal_center.adapter.PersonalC
 public class PersonalCenterFragment extends TSListFragment<PersonalCenterContract.Presenter, DynamicDetailBeanV2> implements PersonalCenterContract.View,
         DynamicListBaseItem.OnReSendClickListener, DynamicNoPullRecycleView.OnCommentStateClickListener<DynamicCommentBean>,
         DynamicListCommentView.OnCommentClickListener, DynamicListBaseItem.OnMenuItemClickLisitener,
-        DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener,  DynamicListCommentView.OnMoreCommentClickListener,
+        DynamicListBaseItem.OnImageClickListener, OnUserInfoClickListener, DynamicListCommentView.OnMoreCommentClickListener,
         InputLimitView.OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener,
-        PhotoSelectorImpl.IPhotoBackListener,TextViewUtils.OnSpanTextClickListener {
+        PhotoSelectorImpl.IPhotoBackListener, TextViewUtils.OnSpanTextClickListener {
 
     public static final String PERSONAL_CENTER_DATA = "personal_center_data";
 
@@ -194,7 +193,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     // 表示第一次进入界面加载正确的关注状态，后续才能进行关注操作
-                        mPresenter.handleFollow(mUserInfoBean);
+                    mPresenter.handleFollow(mUserInfoBean);
                 });
         // 添加聊天点击事件
         RxView.clicks(mLlChatContainer)
@@ -521,7 +520,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             // 封面图片上传成功
             // 通知服务器，更改用户信息
             // 修改成功后，关闭页面
-             setChangeUserCoverState(true);
+            setChangeUserCoverState(true);
         } else {
             TSnackbar.make(mSnackRootView, R.string.cover_uploadFailure, TSnackbar.LENGTH_SHORT)
                     .setPromptThemBackground(Prompt.ERROR)
@@ -545,7 +544,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         ImageBean imageBean = photoList.get(0);
         imagePath = imageBean.getImgUrl();
         // 上传本地图片
-        mPresenter.uploadUserCover(imagePath,mUserInfoBean);
+        mPresenter.uploadUserCover(imagePath, mUserInfoBean);
         mUserInfoBean.setCover(imagePath);
         ImageUtils.updateCurrentLoginUserCoverSignature(getContext());
         // 加载本地图片
@@ -602,15 +601,15 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 设置底部 view 的关注状态
      */
     private void setBottomFollowState(UserInfoBean userInfoBean1) {
-        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+        if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
             mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
             mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
             mTvFollow.setText(R.string.followed_eachother);
-        }else if(userInfoBean1.isFollower()){
+        } else if (userInfoBean1.isFollower()) {
             mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed), null, null, null);
             mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
             mTvFollow.setText(R.string.followed);
-        }else {
+        } else {
             mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_follow), null, null, null);
             mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
             mTvFollow.setText(R.string.follow);
@@ -622,7 +621,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 跳转到当前的个人中心页面
      */
     public static void startToPersonalCenter(Context context, UserInfoBean userInfoBean) {
-        if (userInfoBean == null||userInfoBean.getUser_id()==null) {
+        if (userInfoBean == null || userInfoBean.getUser_id() == null) {
             return;
         }
         String tsHelperUrl = checkHelperUrl(context, userInfoBean.getUser_id());
@@ -744,12 +743,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private void initDeletDynamicPopupWindow(final DynamicDetailBeanV2 dynamicBean, final int position, final Bitmap shareBitmap) {
         boolean isCollected = dynamicBean.isHas_collect();
         Long feed_id = dynamicBean.getId();
-        feed_id=feed_id==null?0:feed_id;
+        feed_id = feed_id == null ? 0 : feed_id;
         boolean feedIdIsNull = feed_id == 0;
-        boolean feedIsMy = feed_id.intValue()==AppApplication.getmCurrentLoginAuth().getUser_id();
+        boolean feedIsMy = dynamicBean.getUser_id().intValue() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
-                .item2Str(getString(feedIsMy?R.string.empty :R.string.dynamic_list_delete_dynamic))
+                .item2Str(getString(feedIsMy ?R.string.dynamic_list_delete_dynamic  : R.string.empty))
                 .item3Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -879,7 +878,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.buy_pay_in))
                 .buildItem2Str(getString(R.string.buy_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money),PayConfig.realCurrencyFen2Yuan(amout)))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
                 .buildCenterPopWindowItem1ClickListener(() -> {
                     mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
                     mPayImagePopWindow.hide();
