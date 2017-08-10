@@ -178,7 +178,7 @@ public class TextViewUtils {
             mEndPos = temp.length();
         }
         try {
-            spanableInfo.setSpan(new SpanTextClickable(), mStartPos + getLetterLenght(temp) / 2,
+            spanableInfo.setSpan(new SpanTextClickable(), mStartPos,
                     mEndPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         } catch (Exception e) {
             spanableInfo.setSpan(new SpanTextClickable(), 0, temp.length(), Spanned

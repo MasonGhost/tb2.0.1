@@ -66,19 +66,14 @@ public class InfoPublishBean implements Parcelable {
     }
 
     public String getSubject() {
-        if (TextUtils.isEmpty(subject) && !TextUtils.isEmpty(content)) {
-            if (content.length() > 200) {
-                this.subject = "> " + "**" + "[摘要]" + "** " + content.substring(0, 200) + "<br/>";
-            } else {
-                this.subject = "> " + "**" + "[摘要]" + "** " + content + "<br/>";
-            }
-
-        }
-        return "> " + "**" + "[摘要]" + "** " + this.subject + "<br/>";
+        return this.subject;
     }
 
     public void setSubject(String subject) {
-        this.subject = subject;
+        if (subject.isEmpty()) {
+            return;
+        }
+        this.subject = "> " + "**" + "[摘要]" + "** " + subject + "<br/>";
     }
 
     public String getContent() {
@@ -87,6 +82,13 @@ public class InfoPublishBean implements Parcelable {
 
     public void setContent(String content) {
         this.content = content;
+        if (TextUtils.isEmpty(subject) && !TextUtils.isEmpty(content)) {
+            if (content.length() > 200) {
+                setSubject(content.substring(0, 200));
+            } else {
+                setSubject(content);
+            }
+        }
     }
 
     public long getCategoryId() {

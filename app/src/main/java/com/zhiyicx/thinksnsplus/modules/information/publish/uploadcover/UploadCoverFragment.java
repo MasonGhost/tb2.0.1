@@ -176,7 +176,9 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         if (prompt == Prompt.SUCCESS) {
+            getActivity().finish();
             startActivity(new Intent(getActivity(), InfoActivity.class));
+
         }
     }
 
@@ -202,7 +204,6 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
                 .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    mInfoPublishBean.getSubject();
                     if (mInfoPublishBean.getImage() <= 0 && mInfoPublishBean.getCover() <= 0) {
                         initWithdrawalsInstructionsPop();
                         return;

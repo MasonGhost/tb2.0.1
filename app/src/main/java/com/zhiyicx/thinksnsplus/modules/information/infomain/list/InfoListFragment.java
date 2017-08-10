@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.FileUtils;
@@ -15,6 +16,9 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerHeader;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
@@ -24,6 +28,7 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,10 +42,15 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.In
  * @Description
  */
 public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPresenter,
-        BaseListBean> implements InfoMainContract.InfoListView {
+        BaseListBean> implements InfoMainContract.InfoListView,InfoBannerHeader.InfoBannerHeadlerClickEvent {
     public static final String BUNDLE_INFO_TYPE = "info_type";
     public static final String BUNDLE_INFO = "info";
     private String mInfoType = RECOMMEND_INFO;
+
+    private List<RealAdvertListBean> mListAdvert;
+    private List<RealAdvertListBean> mHeaderAdvert;
+
+    private InfoBannerHeader mInfoBannerHeader;
 
     public static InfoListFragment newInstance(String params) {
         InfoListFragment fragment = new InfoListFragment();
@@ -95,7 +105,50 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
                 .build()
                 .inject(this);
         mInfoType = getArguments().getString(BUNDLE_INFO_TYPE, RECOMMEND_INFO);
+        initAdvert();
         super.initData();
+    }
+
+    private void initAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+            return;
+        }
+        if (!mInfoType.equals("-1")) {
+            return;
+        }
+        List<String> advertTitle = new ArrayList<>();
+        List<String> advertUrls = new ArrayList<>();
+        List<String> advertLinks = new ArrayList<>();
+        List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
+        mListAdvert = mPresenter.getListAdvert();
+        mHeaderAdvert = mPresenter.getBannerAdvert();
+        for (RealAdvertListBean advert : advertList) {
+            advertTitle.add(advert.getTitle());
+            advertUrls.add(advert.getAdvertFormat().getImage().getImage());
+            advertLinks.add(advert.getAdvertFormat().getImage().getLink());
+            if (advert.getType().equals("html")) {
+                showStickyHtmlMessage((String) advert.getData());
+            }
+        }
+
+        mInfoBannerHeader = new InfoBannerHeader(getActivity());
+        mInfoBannerHeader.setHeadlerClickEvent(this);
+        InfoBannerHeader.InfoBannerHeaderInfo headerInfo = mInfoBannerHeader.new
+                InfoBannerHeaderInfo();
+        headerInfo.setTitles(advertTitle);
+        headerInfo.setLinks(advertLinks);
+        headerInfo.setUrls(advertUrls);
+        headerInfo.setDelay(4000);
+        headerInfo.setOnBannerListener(position -> {
+
+        });
+        mInfoBannerHeader.setHeadInfo(headerInfo);
+        mHeaderAndFooterWrapper.addHeaderView(mInfoBannerHeader.getInfoBannerHeader());
+    }
+
+    @Override
+    public void headClick(int position) {
+        
     }
 
     @Override

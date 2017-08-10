@@ -453,6 +453,10 @@ public class ApiConfig {
     public static final String APP_DYNAMIC_BANNER_ADVERT = "feed:list:top";
     public static final String APP_DYNAMIC_LIST_ADVERT = "feed:list:analog";
     public static final String APP_DYNAMIC_DETAILS_ADVERT = "feed:single";
+
+    public static final String APP_INFO_BANNER_ADVERT = "news:list:top";
+    public static final String APP_INFO_LIST_ADVERT = "news:list:analog";
+    public static final String APP_INFO_DETAILS_ADVERT = "news:single";
     public static final String APP_BOOT_ADVERT = "boot";
 
 

@@ -105,6 +105,24 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
         return null;
     }
 
+    public AllAdverListBean getInfoBannerAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_INFO_BANNER_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
+
+    public AllAdverListBean getInfoListAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_INFO_LIST_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
+
     public AllAdverListBean getDynamicDetailAdvert() {
 
         List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_DYNAMIC_DETAILS_ADVERT)).build().list();
