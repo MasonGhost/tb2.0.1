@@ -45,7 +45,7 @@
     <string name="chanel">频道</string>
     <string name="active">活动</string>
     <string name="buy_goods">购物</string>
-    <string name="find_person">找人</string>
+    <string name="find_person">@string/find_someone</string>
     <string name="near_person">附近的人</string>
     <string name="group">圈子</string>
     <string name="quiz">问答</string>
@@ -448,4 +448,9 @@
     <string name="check_in_today">每日签到</string>
     <string name="check_in_total_day_format">累计签到%d天</string>
     <string name="check_in_today_get_gold_format">签到得金币+%d</string>
+
+    <!--找人-->
+    <string name="find_someone">找人</string>
+    <string name="neary_by">附近</string>
+
 </resources>

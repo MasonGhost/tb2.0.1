@@ -21,6 +21,9 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
@@ -185,6 +188,13 @@ public class FindFragment extends TSFragment {
                 }
                 break;
             case R.id.find_person:
+                long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
+                Bundle bundleFollow = new Bundle();
+                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+                bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, followUserId);
+                Intent itFollow = new Intent(getActivity(), FindSomeOneContainerActivity.class);
+                itFollow.putExtras(bundleFollow);
+                startActivity(itFollow);
                 break;
             case R.id.find_nearby:
                 break;
