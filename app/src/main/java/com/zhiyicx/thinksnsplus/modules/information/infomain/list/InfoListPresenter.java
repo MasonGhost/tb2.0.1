@@ -8,6 +8,8 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoRecommendBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoRecommendBeanGreenDaoImpl;
@@ -47,11 +49,23 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
     InfoRecommendBeanGreenDaoImpl mInfoRecommendBeanGreenDao;
 
     @Inject
+    AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
+
+    @Inject
     public InfoListPresenter(InfoMainContract.Repository repository,
                              InfoMainContract.InfoListView rootInfoListView) {
         super(repository, rootInfoListView);
     }
 
+    @Override
+    public List<RealAdvertListBean> getBannerAdvert() {
+        return mAllAdvertListBeanGreenDao.getInfoBannerAdvert().getMRealAdvertListBeen();
+    }
+
+    @Override
+    public List<RealAdvertListBean> getListAdvert() {
+        return mAllAdvertListBeanGreenDao.getInfoBannerAdvert().getMRealAdvertListBeen();
+    }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {

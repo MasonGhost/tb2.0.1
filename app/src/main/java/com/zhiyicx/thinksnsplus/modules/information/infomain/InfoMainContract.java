@@ -9,6 +9,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBaseInfoRepository;
 
 import java.util.List;
@@ -46,6 +47,8 @@ public interface InfoMainContract {
     interface InfoListPresenter extends ITSListPresenter<BaseListBean> {
         void getInfoList(String cate_id, long max_id,
                          long limit, long page);
+        List<RealAdvertListBean> getBannerAdvert();
+        List<RealAdvertListBean> getListAdvert();
     }
 
 
