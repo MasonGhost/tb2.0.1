@@ -17,4 +17,9 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
     public PublishContentPresenter(PublishContentConstact.Repository repository, PublishContentConstact.View rootView) {
         super(repository, rootView);
     }
+
+    @Override
+    public void uploadPic(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight) {
+
+    }
 }

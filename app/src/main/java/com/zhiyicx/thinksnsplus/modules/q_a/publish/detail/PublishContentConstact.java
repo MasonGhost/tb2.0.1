@@ -10,7 +10,12 @@ import com.zhiyicx.common.mvp.i.IBaseView;
  * @Description
  */
 public interface PublishContentConstact {
-    interface View extends IBaseView<Presenter>{}
-    interface Presenter extends IBaseTouristPresenter{}
+    interface View extends IBaseView<Presenter>{
+        void uploadPicSuccess(int id);
+        void uploadPicFailed();
+    }
+    interface Presenter extends IBaseTouristPresenter{
+        void uploadPic(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
+    }
     interface Repository{}
 }

@@ -41,7 +41,8 @@ import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddIn
  * @Description
  */
 public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presenter>
-        implements PublishInfoContract.View, PhotoSelectorImpl.IPhotoBackListener, RichTextEditor.OnContentChangeListener {
+        implements PublishInfoContract.View, PhotoSelectorImpl.IPhotoBackListener,
+        RichTextEditor.OnContentChangeListener {
 
     @BindView(R.id.et_info_title)
     UserInfoInroduceInputView mEtInfoTitle;

@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish;
 
+import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
@@ -21,7 +22,7 @@ public interface PublishInfoContract {
         void publishInfoSuccess();
     }
 
-    interface Presenter extends IBasePresenter {
+    interface Presenter extends IBaseTouristPresenter {
         void uploadPic(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
         void publishInfo(InfoPublishBean infoPublishBean);
     }

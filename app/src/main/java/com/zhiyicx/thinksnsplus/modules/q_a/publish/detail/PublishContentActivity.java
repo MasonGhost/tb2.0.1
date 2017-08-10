@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
-import android.os.Bundle;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -9,7 +7,7 @@ public class PublishContentActivity extends TSActivity<PublishContentPresenter, 
 
     @Override
     protected PublishContentFragment getFragment() {
-        return PublishContentFragment.newInstance(new Bundle());
+        return PublishContentFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

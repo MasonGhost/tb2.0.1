@@ -16,6 +16,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 
@@ -31,7 +32,10 @@ import rx.Subscriber;
  */
 
 
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean> implements PublishQuestionContract.View {
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean>
+        implements PublishQuestionContract.View {
+
+    public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
 
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
@@ -43,7 +47,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
 
     public static PublishQuestionFragment newInstance() {
-
         Bundle args = new Bundle();
         PublishQuestionFragment fragment = new PublishQuestionFragment();
         fragment.setArguments(args);
@@ -116,6 +119,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     private void addTopic() {
         Intent intent = new Intent(getActivity(), AddTopicActivity.class);
         Bundle bundle = new Bundle();
+        QAPublishBean qaPublishBean = new QAPublishBean();
+        qaPublishBean.setSubject(mQuestionStr);
+        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, qaPublishBean);
         intent.putExtras(bundle);
         startActivity(intent);
     }
