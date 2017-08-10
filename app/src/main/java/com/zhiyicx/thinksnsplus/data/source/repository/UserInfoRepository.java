@@ -115,9 +115,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     @Override
     public Observable<List<UserInfoBean>> getUserInfo(List<Object> user_ids) {
         ConvertUtils.removeDuplicate(user_ids); // 去重
-        if (user_ids.contains(0)) { // 去掉 0
-            user_ids.remove((Object) 0);
-        }
         if (user_ids.size() > DEFAULT_MAX_USER_GET_NUM_ONCE) {
             return Observable.zip(getUserBaseJsonObservable(user_ids.subList(0, DEFAULT_MAX_USER_GET_NUM_ONCE)), getUserBaseJsonObservable(user_ids.subList(DEFAULT_MAX_USER_GET_NUM_ONCE, user_ids.size())), (listBaseJson, listBaseJson2) -> {
                 listBaseJson.addAll(listBaseJson2);
@@ -298,7 +295,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                             }
                             return getUserInfo(userIds)
                                     .map(userinfobeans -> {
-                                        if ( !userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                             SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                             for (UserInfoBean userInfoBean : userinfobeans) {
                                                 userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
