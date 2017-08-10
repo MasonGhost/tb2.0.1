@@ -15,8 +15,10 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -82,6 +84,9 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
     @Inject
     InfoListBeanGreenDaoImpl mInfoListBeanGreenDao;
+
+    @Inject
+    AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
     @Inject
     public InfoDetailsPresenter(InfoDetailsConstract.Repository repository, InfoDetailsConstract
@@ -314,6 +319,14 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public List<RealAdvertListBean> getAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getInfoDetailAdvert() == null) {
+            return new ArrayList<>();
+        }
+        return mAllAdvertListBeanGreenDao.getInfoDetailAdvert().getMRealAdvertListBeen();
     }
 
     @Override

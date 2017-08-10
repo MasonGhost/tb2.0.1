@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.SkinUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
@@ -41,7 +42,8 @@ import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddIn
  * @Description
  */
 public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presenter>
-        implements PublishInfoContract.View, PhotoSelectorImpl.IPhotoBackListener, RichTextEditor.OnContentChangeListener {
+        implements PublishInfoContract.View, PhotoSelectorImpl.IPhotoBackListener,
+        RichTextEditor.OnContentChangeListener {
 
     @BindView(R.id.et_info_title)
     UserInfoInroduceInputView mEtInfoTitle;
@@ -63,6 +65,8 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     private int[] mImageIdArray;// 图片id
     private int mPicTag;
     private int mPicAddTag;
+
+    private ActionPopupWindow mInstructionsPopupWindow;
 
     public static PublishInfoFragment getInstance(Bundle bundle) {
         PublishInfoFragment publishInfoFragment = new PublishInfoFragment();
@@ -101,7 +105,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         InfoPublishBean infoPublishBean = new InfoPublishBean();
 
         infoPublishBean.setContent(getContentString());
-        infoPublishBean.setAmout(10);
+        infoPublishBean.setAmout(100);
         infoPublishBean.setCover(mImageIdArray[0]);
         infoPublishBean.setImage(mImageIdArray[0]);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
@@ -214,6 +218,10 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
      * 初始化图片选择弹框
      */
     private void initPhotoPopupWindow() {
+        if (mPicTag == 9) {
+            initInstructionsPop(getString(R.string.instructions), String.format(Locale.getDefault(), getString(R.string.choose_max_photos), 9));
+            return;
+        }
         if (mPhotoPopupWindow != null) {
             mPhotoPopupWindow.show();
             return;
@@ -280,5 +288,24 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 mToolbarRight.setEnabled(s.length() > 0 && mRicheTest.isHasContent())
         );
         mRicheTest.setOnContentEmptyListener(this);
+    }
+
+    public void initInstructionsPop(String title, String des) {
+        if (mInstructionsPopupWindow != null) {
+            mInstructionsPopupWindow.newBuilder().item1Str(title).desStr(des);
+            mInstructionsPopupWindow.show();
+            return;
+        }
+        mInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(title)
+                .desStr(des)
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                .build();
+        mInstructionsPopupWindow.show();
     }
 }

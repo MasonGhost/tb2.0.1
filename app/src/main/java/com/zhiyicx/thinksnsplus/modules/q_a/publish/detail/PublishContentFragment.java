@@ -1,37 +1,38 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
-import android.view.LayoutInflater;
+import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
-import com.zhiyicx.common.utils.SkinUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
-import rx.Observable;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 /**
  * @Author Jliuer
@@ -40,28 +41,40 @@ import rx.Observable;
  * @Description
  */
 public class PublishContentFragment extends TSFragment<PublishContentConstact.Presenter> implements
-        PublishContentConstact.View, PhotoSelectorImpl.IPhotoBackListener {
+        PublishContentConstact.View, PhotoSelectorImpl.IPhotoBackListener, RichTextEditor.OnContentChangeListener {
 
 
     @BindView(R.id.riche_test)
     RichTextEditor mRicheTest;
-    @BindView(R.id.v_horizontal_line)
-    View mVHorizontalLine;
     @BindView(R.id.im_arrowc)
     ImageView mImArrowc;
     @BindView(R.id.im_pic)
     ImageView mImPic;
     @BindView(R.id.im_setting)
     ImageView mImSetting;
-    Unbinder unbinder;
+    @BindView(R.id.pb_image_upload)
+    LinearLayout mPbImageUpload;
+    @BindView(R.id.rl_publish_tool)
+    RelativeLayout mRlPublishTool;
+
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
-    private SpannableStringBuilder mSpannableStringBuilder;
+    private ActionPopupWindow mInstructionsPopupWindow;
+    private int[] mImageIdArray;// 图片id
+    private int mPicTag;
+    private int mPicAddTag;
+
+    private QAPublishBean mQAPublishBean;
 
     public static PublishContentFragment newInstance(Bundle bundle) {
         PublishContentFragment publishContentFragment = new PublishContentFragment();
         publishContentFragment.setArguments(bundle);
         return publishContentFragment;
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
     }
 
     @Override
@@ -82,7 +95,45 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void initView(View rootView) {
         AndroidBug5497Workaround.assistActivity(getActivity());
-        mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
+        mToolbarRight.setEnabled(false);
+        initLisenter();
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        Intent intent = new Intent(getActivity(), QA_RewardActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
+        mQAPublishBean.setBody(getContentString());
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @NonNull
+    private String getContentString() {
+        StringBuilder builder = new StringBuilder();
+        List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
+        for (RichTextEditor.EditData editData : datas) {
+            builder.append(editData.inputStr);
+            if (!editData.imagePath.isEmpty()) {
+                builder.append(String.format(Locale.getDefault(),
+                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[mPicAddTag]));
+                mPicAddTag++;
+            }
+        }
+        return builder.toString();
+    }
+
+    @Override
+    protected void initData() {
+        mImageIdArray = new int[100];
+        mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
     }
 
     @Override
@@ -92,37 +143,43 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Override
-    protected boolean usePermisson() {
-        return true;
-    }
-
-    @Override
-    protected void initData() {
-        mPhotoSelector = DaggerPhotoSelectorImplComponent
-                .builder()
-                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
-                        .NO_CRAFT))
-                .build().photoSelectorImpl();
-    }
-
-    @Override
     public void getPhotoSuccess(List<ImageBean> photoList) {
         if (photoList.isEmpty()) {
             return;
         }
+        mPbImageUpload.setVisibility(View.VISIBLE);
+        mImageIdArray[mPicTag] = mPicTag;
         String path = photoList.get(0).getImgUrl();
-        mRicheTest.insertImage(path,mRicheTest.getWidth());
+        mPresenter.uploadPic(path, "", true, 0, 0);
+        mRicheTest.insertImage(path, mRicheTest.getWidth());
+
     }
 
-    private void test() {
-        Observable
-                .interval(2, TimeUnit.SECONDS)
-                .subscribe(aLong -> {
-                    View rootview = getActivity().getWindow().getDecorView();
-                    View aaa = rootview.findFocus();
+    @Override
+    public void uploadPicSuccess(int id) {
+        mPbImageUpload.setVisibility(View.GONE);
+        mImageIdArray[mPicTag] = id;
+        mPicTag++;
+    }
 
-                    LogUtils.i(aaa.getClass().getSimpleName());
-                });
+    @Override
+    public void uploadPicFailed() {
+        mPbImageUpload.setVisibility(View.GONE);
+        if (mPicTag > 0) {
+            mPicTag--;
+        }
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        if (prompt == Prompt.ERROR) {
+            mRicheTest.deleteImage();
+        }
+    }
+
+    @Override
+    public void onContentChange(boolean hasContent) {
+        mToolbarRight.setEnabled(hasContent);
     }
 
     @Override
@@ -135,15 +192,31 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         return R.layout.fragment_publish_content_test;
     }
 
+    @OnClick({R.id.im_arrowc, R.id.im_pic, R.id.im_setting})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.im_arrowc:
+                break;
+            case R.id.im_pic:
+                initPhotoPopupWindow();
+                break;
+            case R.id.im_setting:
+                break;
+        }
+    }
+
     /**
      * 初始化图片选择弹框
      */
     private void initPhotoPopupWindow() {
+        if (mPicTag == 9) {
+            initInstructionsPop(getString(R.string.instructions), String.format(Locale.getDefault(), getString(R.string.choose_max_photos), 9));
+            return;
+        }
         if (mPhotoPopupWindow != null) {
             mPhotoPopupWindow.show();
             return;
         }
-        mSpannableStringBuilder = new SpannableStringBuilder();
         mPhotoPopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.choose_from_photo))
                 .item2Str(getString(R.string.choose_from_camera))
@@ -166,23 +239,46 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         mPhotoPopupWindow.show();
     }
 
+    private void initLisenter() {
+        RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
+            int[] viewLacotion = new int[2];
+            mRlPublishTool.getLocationOnScreen(viewLacotion);
+            if (viewLacotion[1] > mRlPublishTool.getHeight()) {
+                View rootview = getActivity().getWindow().getDecorView();
+                View currentEdit = rootview.findFocus();
+                if (currentEdit != null) {
+                    int[] currentEditLacotion = new int[2];
+                    currentEdit.getLocationOnScreen(currentEditLacotion);
+                    int dy = currentEditLacotion[1] - viewLacotion[1] + currentEdit.getHeight();
+                    mRicheTest.smoothScrollBy(0, dy);
+                }
+            }
+        });
 
-    @OnClick(R.id.im_pic)
-    public void onViewClicked() {
-        initPhotoPopupWindow();
+        RxView.clicks(mImArrowc)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> mRicheTest.hideKeyBoard());
+
+        mRicheTest.setOnContentEmptyListener(this);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this, rootView);
-        return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    public void initInstructionsPop(String title, String des) {
+        if (mInstructionsPopupWindow != null) {
+            mInstructionsPopupWindow.newBuilder().item1Str(title).desStr(des);
+            mInstructionsPopupWindow.show();
+            return;
+        }
+        mInstructionsPopupWindow = ActionPopupWindow.builder()
+                .item1Str(title)
+                .desStr(des)
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .with(getActivity())
+                .bottomClickListener(() -> mInstructionsPopupWindow.hide())
+                .build();
+        mInstructionsPopupWindow.show();
     }
 }

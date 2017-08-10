@@ -14,7 +14,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 public class AddTopicActivity extends TSActivity<AddTopicPresenter, AddTopicFragment> {
     @Override
     protected AddTopicFragment getFragment() {
-        return AddTopicFragment.newInstance();
+        return AddTopicFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

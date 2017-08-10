@@ -32,9 +32,9 @@ public class ApiConfig {
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
 //    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
 
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
 
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
     public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION + "/system/about";// 关于我们网站
@@ -446,19 +446,6 @@ public class ApiConfig {
     public static final String APP_LIKE_FEED = "feeds";
     public static final String APP_LIKE_MUSIC = "musics";
     public static final String APP_LIKE_NEWS = "news";
-
-    public static final String APP_IMAGE_TYPE_ADVERT = "image";
-    public static final String APP_DYNAMIC_TYPE_ADVERT = "analog";
-
-    public static final String APP_DYNAMIC_BANNER_ADVERT = "feed:list:top";
-    public static final String APP_DYNAMIC_LIST_ADVERT = "feed:list:analog";
-    public static final String APP_DYNAMIC_DETAILS_ADVERT = "feed:single";
-
-    public static final String APP_INFO_BANNER_ADVERT = "news:list:top";
-    public static final String APP_INFO_LIST_ADVERT = "news:list:analog";
-    public static final String APP_INFO_DETAILS_ADVERT = "news:single";
-    public static final String APP_BOOT_ADVERT = "boot";
-
 
     /*******************************************  API V2  *********************************************/
 
