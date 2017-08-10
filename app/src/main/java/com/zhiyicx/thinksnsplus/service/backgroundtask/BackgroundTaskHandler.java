@@ -335,7 +335,7 @@ public class BackgroundTaskHandler {
                 sendComment(backgroundRequestTaskBean);
                 break;
             case SEND_INFO_COMMENT:
-                sendInfoComment(backgroundRequestTaskBean);
+                sendInfoCommentV2(backgroundRequestTaskBean);
                 break;
             case SEND_CERTIFICATION:
                 sendCertification(backgroundRequestTaskBean);
@@ -1145,6 +1145,50 @@ public class BackgroundTaskHandler {
                 .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribe<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        infoCommentListBean.setId(((Double) data).intValue());
+                        infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+                });
+
+    }
+
+    /**
+     * 处理资讯评论发送的后台任务
+     */
+    private void sendInfoCommentV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long commentMark = (Long) params.get("comment_mark");
+        final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
+                (commentMark);
+        if (infoCommentListBean == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
