@@ -9,6 +9,9 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Transient;
+
+import java.io.Serializable;
 
 /**
  * @author Catherine
@@ -17,7 +20,10 @@ import org.greenrobot.greendao.DaoException;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class InfoDigListBean extends BaseListBean{
+public class InfoDigListBean extends BaseListBean implements Serializable{
+
+    @Transient
+    private static final long serialVersionUID = 5985608387262498425L;
 
     /*{
         "id": 5,

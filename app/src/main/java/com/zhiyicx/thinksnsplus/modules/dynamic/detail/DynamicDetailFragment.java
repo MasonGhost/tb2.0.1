@@ -174,7 +174,7 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        //initToolbar();
+        initToolbar();
         //initToolbarTopBlankHeight();
         initBottomToolUI();
         initBottomToolListener();
@@ -184,7 +184,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     }
 
     private void initToolbar() {
-        mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
+        mTvToolbarCenter.setFocusableInTouchMode(true);
+        mTvToolbarCenter.requestFocus();// 抢占焦点
+        //mToolbar.setPadding(0, DeviceUtils.getStatuBarHeight(getContext()), 0, 0);
     }
 
     /**
