@@ -38,7 +38,7 @@ public class InfoBannerHeader {
         mBanner = (Banner) mInfoBannerHeader.findViewById(R.id.item_banner);
         mBanner.setOnBannerListener(position -> {
             if (mHeadlerClickEvent != null && mHeaderInfo != null) {
-                mHeadlerClickEvent.headClick(position);
+                mHeadlerClickEvent.headClick(mHeaderInfo.getLinks().get(position),mHeaderInfo.getTitles().get(position));
             }
         });
     }
@@ -49,7 +49,7 @@ public class InfoBannerHeader {
         mBanner = (Banner) mInfoBannerHeader.findViewById(R.id.item_banner);
         mBanner.setOnBannerListener(position -> {
             if (mHeadlerClickEvent != null) {
-                mHeadlerClickEvent.headClick(position);
+                mHeadlerClickEvent.headClick(mHeaderInfo.getLinks().get(position),mHeaderInfo.getTitles().get(position));
             }
         });
         setHeadInfo(headInfo);
@@ -69,7 +69,7 @@ public class InfoBannerHeader {
         mBanner.start();
         mBanner.setOnBannerListener(position -> {
             if (mHeadlerClickEvent != null && mHeaderInfo != null) {
-                mHeadlerClickEvent.headClick(position);
+                mHeadlerClickEvent.headClick(mHeaderInfo.getLinks().get(position),mHeaderInfo.getTitles().get(position));
             }
         });
     }
@@ -142,6 +142,6 @@ public class InfoBannerHeader {
     }
 
     public interface InfoBannerHeadlerClickEvent {
-        void headClick(int position);
+        void headClick(String link,String title);
     }
 }

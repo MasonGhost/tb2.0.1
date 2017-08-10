@@ -24,6 +24,7 @@ import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -100,7 +101,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         adapter.addItemViewDelegate(new InfoListItem() {
             @Override
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
-
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     if (!AppApplication.sOverRead.contains(position + "")) {
                         AppApplication.sOverRead.add(position + "");
@@ -172,8 +172,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    public void headClick(int position) {
-
+    public void headClick(String link,String title) {
+        CustomWEBActivity.startToWEBActivity(getActivity(), link, title);
     }
 
     @Override
