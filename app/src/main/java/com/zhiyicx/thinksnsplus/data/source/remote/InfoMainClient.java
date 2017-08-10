@@ -32,6 +32,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DELETE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAIL;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAIL_RELATION;
@@ -107,6 +108,9 @@ public interface InfoMainClient {
      */
     @GET(APP_PATH_INFO_DETAIL_RELATION)
     Observable<List<InfoListDataBean>> getRelateInfoList(@Path("news") String news_id);
+
+    @DELETE(APP_PATH_INFO_DELETE)
+    Observable<BaseJsonV2<Object>> deleteInfo(@Path("category") String category, @Path("news") String news_id);
 
     // 获取收藏的资讯列表
     @GET(APP_PATH_INFO_COLLECT_LIST)

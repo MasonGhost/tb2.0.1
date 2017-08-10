@@ -510,7 +510,8 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_COMMENT_V2_S = "api/" + API_VERSION_2 + "/news/%s/comments";// 评论
     public static final String APP_PATH_INFO_GET_COMMENT = "api/" + API_VERSION_2 + "/news/{news}/comments";// 获取评论列表
     public static final String APP_PATH_INFO_DELETE_COMMENT_V2 = "api/" + API_VERSION_2 + " /news/{news}/comments/{comment}";// 删除评论
-    public static final String APP_PATH_INFO_DELETE_COMMENT_V2_S = "api/" + API_VERSION_2 + " /news/%s/comments/%s";// 删除评论
+    public static final String APP_PATH_INFO_DELETE_COMMENT_V2_S = "api/" + API_VERSION_2 + "/news/%s/comments/%s";// 删除评论
+    public static final String APP_PATH_INFO_DELETE = "api/" + API_VERSION_2 + "/news/categories/{category}/news/{news}";// 删除资讯
     public static final String APP_PATH_INFO_PINNED = "api/" + API_VERSION_2 + "/news/{news}/pinneds";// 置顶
     public static final String APP_PATH_INFO_PINNED_S = "api/" + API_VERSION_2 + "/news/%s/pinneds";// 置顶
 

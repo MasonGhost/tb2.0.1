@@ -35,6 +35,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     private Long _id;
     @Unique
     private int id;
+    private long user_id; // 发布者Id
     private Long info_type;
     private int is_collection_news;
     private int is_digg_news;
@@ -46,6 +47,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     @Convert(converter = InfoStorageBeanConverter.class, columnType = String.class)
     private StorageBean image;
     // v2 新增的
+    private int audit_status; // 审核状态 0-正常 1-待审核 2-草稿 3-驳回 4-删除 5-退款中
+    private boolean is_pinned;// 是否置顶 详情中才有
     private String subject;
     private boolean has_collect;
     private boolean has_like;
@@ -71,6 +74,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     public String toString() {
         return "InfoListDataBean{" +
                 "id=" + id +
+                "user_id=" + user_id +
                 ", info_type=" + info_type +
                 ", is_collection_news=" + is_collection_news +
                 ", is_digg_news=" + is_digg_news +
@@ -79,6 +83,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
                 ", from='" + from + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
+                ", audit_status=" + audit_status +
+                ", is_pinned=" + is_pinned +
                 ", image=" + image +
                 ", subject='" + subject + '\'' +
                 ", has_collect=" + has_collect +
@@ -122,6 +128,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.id = id;
     }
 
+    public long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(long user_id) {
+        this.user_id = user_id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -144,6 +158,22 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
 
     public void setImage(StorageBean image) {
         this.image = image;
+    }
+
+    public int getAudit_status() {
+        return audit_status;
+    }
+
+    public void setAudit_status(int audit_status) {
+        this.audit_status = audit_status;
+    }
+
+    public boolean is_pinned() {
+        return is_pinned;
+    }
+
+    public void setIs_pinned(boolean is_pinned) {
+        this.is_pinned = is_pinned;
     }
 
     public String getSubject() {
@@ -424,15 +454,16 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
 
 
 
-    @Generated(hash = 1205459270)
-    public InfoListDataBean(Long _id, int id, Long info_type, int is_collection_news, int is_digg_news,
-            String title, String content, String from, String created_at, String updated_at,
-            StorageBean image, String subject, boolean has_collect, boolean has_like,
-            InfoCategory category, boolean isTop, String author, int hits, List<UserTagBean> tags,
-            int digg_count, int comment_count, int is_recommend, int audit_count,
-            List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
+    @Generated(hash = 1756309224)
+    public InfoListDataBean(Long _id, int id, long user_id, Long info_type, int is_collection_news,
+            int is_digg_news, String title, String content, String from, String created_at,
+            String updated_at, StorageBean image, int audit_status, boolean is_pinned, String subject,
+            boolean has_collect, boolean has_like, InfoCategory category, boolean isTop, String author,
+            int hits, List<UserTagBean> tags, int digg_count, int comment_count, int is_recommend,
+            int audit_count, List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
         this._id = _id;
         this.id = id;
+        this.user_id = user_id;
         this.info_type = info_type;
         this.is_collection_news = is_collection_news;
         this.is_digg_news = is_digg_news;
@@ -442,6 +473,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.image = image;
+        this.audit_status = audit_status;
+        this.is_pinned = is_pinned;
         this.subject = subject;
         this.has_collect = has_collect;
         this.has_like = has_like;
@@ -549,6 +582,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         super.writeToParcel(dest, flags);
         dest.writeValue(this._id);
         dest.writeInt(this.id);
+        dest.writeLong(this.user_id);
         dest.writeValue(this.info_type);
         dest.writeInt(this.is_collection_news);
         dest.writeInt(this.is_digg_news);
@@ -558,6 +592,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         dest.writeString(this.created_at);
         dest.writeString(this.updated_at);
         dest.writeParcelable(this.image, flags);
+        dest.writeInt(this.audit_status);
+        dest.writeByte(this.is_pinned ? (byte) 1 : (byte) 0);
         dest.writeString(this.subject);
         dest.writeByte(this.has_collect ? (byte) 1 : (byte) 0);
         dest.writeByte(this.has_like ? (byte) 1 : (byte) 0);
@@ -575,6 +611,10 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         dest.writeTypedList(this.relateInfoList);
     }
 
+    public boolean getIs_pinned() {
+        return this.is_pinned;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 338806337)
     public void __setDaoSession(DaoSession daoSession) {
@@ -586,6 +626,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         super(in);
         this._id = (Long) in.readValue(Long.class.getClassLoader());
         this.id = in.readInt();
+        this.user_id = in.readLong();
         this.info_type = (Long) in.readValue(Long.class.getClassLoader());
         this.is_collection_news = in.readInt();
         this.is_digg_news = in.readInt();
@@ -595,6 +636,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.created_at = in.readString();
         this.updated_at = in.readString();
         this.image = in.readParcelable(StorageBean.class.getClassLoader());
+        this.audit_status = in.readInt();
+        this.is_pinned = in.readByte() != 0;
         this.subject = in.readString();
         this.has_collect = in.readByte() != 0;
         this.has_like = in.readByte() != 0;
