@@ -491,6 +491,15 @@ public class ApiConfig {
     public static final String APP_PATH_GET_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users/{user_id}";
     // 批量获取指定用户
     public static final String APP_PATH_GET_BATCH_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users";
+    // 热门用户
+    public static final String APP_PATH_GET_HOT_USER_INFO = "api/" + API_VERSION_2 + "/user/populars";
+    // 最新用户
+    public static final String APP_PATH_GET_NEW_USER_INFO = "api/" + API_VERSION_2 + "/user/latests";
+    // 通过 tag 推荐
+    public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
+    // 通过 phone 推荐
+    public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";
+
 
     /**
      * 资讯

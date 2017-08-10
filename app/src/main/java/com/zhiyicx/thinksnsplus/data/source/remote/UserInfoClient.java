@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,7 +38,10 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BATCH_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CURRENT_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
@@ -61,13 +65,6 @@ public interface UserInfoClient {
     @PATCH(APP_PATH_CHANGE_USER_INFO)
     Observable<Object> changeUserInfo(@FieldMap HashMap<String, Object> userFieldMap);
 
-    /**
-     * 获取用户信息  v1 版本
-     *
-     * @return
-     */
-    @POST(APP_PATH_GET_USER_INFO)
-    Observable<BaseJson<List<UserInfoBean>>> getUserInfo(@Body RequestBody requestBody);
 
     /**
      * 获取当前登录用户信息
@@ -293,5 +290,46 @@ public interface UserInfoClient {
     @POST(APP_PATH_REWARD_USER)
     Observable<Object> rewardUser(@Path("user_id") long user_id, @Field("amount") float amount);
 
+    /*******************************************  找人  *********************************************/
 
+    /**
+     * 热门用户
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @GET(APP_PATH_GET_HOT_USER_INFO)
+    Observable<List<UserInfoBean>> getHotUsers(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * 最新用户
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @GET(APP_PATH_GET_NEW_USER_INFO)
+    Observable<List<UserInfoBean>> getNewUsers(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * tag 推荐用户
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @GET(APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO)
+    Observable<List<UserInfoBean>> getUsersRecommentByTag(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * phone 推荐用户
+     * <p>
+     * { "phones": [ 18877778888, 18999998888, 17700001111 ] }
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO)
+    Observable<List<UserInfoBean>> getUsersByPhone(@Field("phones") ArrayList<Integer> phones);
 }
