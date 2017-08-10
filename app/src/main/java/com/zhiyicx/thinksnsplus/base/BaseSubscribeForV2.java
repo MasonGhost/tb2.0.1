@@ -35,8 +35,8 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
         if (e instanceof HttpException) {
             Response response = ((HttpException) e).response();
             try {
-                if (response.code() == DATA_HAS_BE_DELETED) {
-                    onFailure("has be deleted !", response.code());
+                if (((HttpException) e).code() == DATA_HAS_BE_DELETED) {
+                    onFailure("data has be deleted !", response.code());
                     return;
                 }
                 if (response != null && response.errorBody() != null) {

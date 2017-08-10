@@ -630,9 +630,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         return this.is_pinned;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 338806337)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
