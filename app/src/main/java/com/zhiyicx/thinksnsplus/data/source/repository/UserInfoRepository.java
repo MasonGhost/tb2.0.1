@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,6 +45,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -54,6 +56,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class UserInfoRepository implements UserInfoContract.Repository {
+    public static final int DEFAULT_MAX_USER_GET_NUM_ONCE = 50;
+
     private UserInfoClient mUserInfoClient;
 
     @Inject
@@ -110,15 +114,24 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids) {
-        //V1
-//        HashMap<String, Object> datas = new HashMap<>();
-//        datas.put("user_ids", user_ids);
-//        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-//        return mUserInfoClient.getUserInfo(body)
-//                .subscribeOn(Schedulers.io()).
-//                        observeOn(AndroidSchedulers.mainThread());
+        ConvertUtils.removeDuplicate(user_ids); // 去重
+        if (user_ids.contains(0)) { // 去掉 0
+            user_ids.remove((Object) 0);
+        }
+        if (user_ids.size() > DEFAULT_MAX_USER_GET_NUM_ONCE) {
+            return Observable.zip(getUserBaseJsonObservable(user_ids.subList(0, DEFAULT_MAX_USER_GET_NUM_ONCE)), getUserBaseJsonObservable(user_ids.subList(DEFAULT_MAX_USER_GET_NUM_ONCE, user_ids.size())), (listBaseJson, listBaseJson2) -> {
+                listBaseJson.getData().addAll(listBaseJson2.getData());
 
-        // V2
+                return listBaseJson;
+            });
+
+        } else {
+            return getUserBaseJsonObservable(user_ids);
+        }
+
+    }
+
+    private Observable<BaseJson<List<UserInfoBean>>> getUserBaseJsonObservable(List<Object> user_ids) {
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
@@ -131,8 +144,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     return baseJson;
                 })
                 .observeOn(AndroidSchedulers.mainThread());
-
     }
+
 
     /**
      * 获取当前登录用户信息 V2

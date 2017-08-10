@@ -34,7 +34,11 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -177,6 +181,34 @@ public class ConvertUtils {
         }
 
         return str;
+    }
+
+    /**
+     * list 去重
+     *
+     * @param list
+     */
+    public static void removeDuplicate(List list) {
+        HashSet h = new HashSet(list);
+        list.clear();
+        list.addAll(h);
+    }
+
+    /**
+     * 删除重复元素并保持顺序
+     *
+     * @param list
+     */
+    public static void removeDuplicateWithOrder(List list) {
+        Set set = new HashSet();
+        List newList = new ArrayList();
+        for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+            Object element = iter.next();
+            if (set.add(element))
+                newList.add(element);
+        }
+        list.clear();
+        list.addAll(newList);
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -36,7 +38,7 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.DEFAULT_LO
  * @Date 2017/3/17
  * @Contact master.jungle68@gmail.com
  */
-
+@SuppressLint("LogNotUsed")
 public class JavaTest {
     private static final String TAG = "JavaTest";
 
@@ -149,6 +151,7 @@ public class JavaTest {
         }
     }
 
+    @SuppressLint("LogNotUsed")
     @Test
     public void jsonObject2map() {
 //        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
@@ -222,6 +225,7 @@ public class JavaTest {
                 })
         ;
     }
+
 
     @Test
     public void rxEmptyTest() {
@@ -316,4 +320,26 @@ public class JavaTest {
 
     }
 
+
+    @Test
+    public void listRemoveDuplicateTest(){
+
+        List<Integer>  data=new ArrayList<>();
+        data.add(1);
+        data.add(2);
+        data.add(3);
+        data.add(1);
+        data.add(4);
+        data.add(2);
+        data.add(5);
+        data.add(6);
+        data.add(1);
+        data.add(6);
+
+        ConvertUtils.removeDuplicate(data);
+        Assert.assertTrue(data.size()==6);
+        System.out.println("data = " + data.subList(0, data.size()));
+
+
+    }
 }
