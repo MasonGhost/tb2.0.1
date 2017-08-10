@@ -327,7 +327,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     mPresenter.shareInfo(bitmap);
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
-                    initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getIs_collection_news() == 1);
+                    initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getHas_collect());
                     mDealInfoMationPopWindow.show();
                     break;
                 default:
@@ -422,28 +422,17 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 收藏
-                        mPresenter.handleCollect(infoMation.getIs_collection_news() == 0,
-                                mInfoMation.getId() + "");
-                        mDealInfoMationPopWindow.hide();
-                    }
+                .item1ClickListener(() -> {// 收藏
+                    mPresenter.handleCollect(!infoMation.getHas_collect(),
+                            mInfoMation.getId() + "");
+                    mDealInfoMationPopWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 点赞
-                        mPresenter.handleLike(infoMation.getIs_digg_news() == 0,
-                                mInfoMation.getId() + "");
-                        mDealInfoMationPopWindow.hide();
-                    }
+                .item2ClickListener(() -> {// 点赞
+                    mPresenter.handleLike(infoMation.getHas_like(),
+                            mInfoMation.getId() + "");
+                    mDealInfoMationPopWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDealInfoMationPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();
     }
 
