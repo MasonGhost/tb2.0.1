@@ -101,7 +101,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         InfoPublishBean infoPublishBean = new InfoPublishBean();
 
         infoPublishBean.setContent(getContentString());
-        infoPublishBean.setAmout(10);
+        infoPublishBean.setAmout(100);
         infoPublishBean.setCover(mImageIdArray[0]);
         infoPublishBean.setImage(mImageIdArray[0]);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());

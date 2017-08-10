@@ -138,4 +138,18 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         dynamicDetailBeanV2.setImages(Arrays.asList(imageBean));
         return dynamicDetailBeanV2;
     }
+
+    public static InfoListDataBean advert2Info(DynamicListAdvert advert, long max_id) {
+        InfoListDataBean infoListDataBean = new InfoListDataBean();
+        InfoListDataBean.InfoCategory category=new InfoListDataBean.InfoCategory();
+        category.setName("广告");
+        infoListDataBean.setCategory(category);
+        infoListDataBean.setUser_id(-1L);// 广告位标识
+        infoListDataBean.setMaxId(max_id);// max_id 转移
+        infoListDataBean.setTitle(advert.getContent());// 广告内容
+        infoListDataBean.setUpdated_at(advert.getTime());// 广告时间
+        infoListDataBean.setCreated_at(advert.getLink());// 广告外链
+        infoListDataBean.setAuthor(advert.getImage());// 广告图片
+        return infoListDataBean;
+    }
 }

@@ -20,6 +20,7 @@
             <!--问答-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/find_qa"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 app:dividerLeftMargin="@dimen/spacing_normal"

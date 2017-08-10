@@ -596,7 +596,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public List<RealAdvertListBean> getAdvert() {
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||mAllAdvertListBeanGreenDao.getDynamicDetailAdvert()==null) {
             return new ArrayList<>();
         }
         return mAllAdvertListBeanGreenDao.getDynamicDetailAdvert().getMRealAdvertListBeen();

@@ -31,7 +31,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
@@ -454,11 +453,17 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public List<RealAdvertListBean> getBannerAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicBannerAdvert() == null) {
+            return new ArrayList<>();
+        }
         return mAllAdvertListBeanGreenDao.getDynamicBannerAdvert().getMRealAdvertListBeen();
     }
 
     @Override
     public List<RealAdvertListBean> getListAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getDynamicListAdvert() == null) {
+            return new ArrayList<>();
+        }
         return mAllAdvertListBeanGreenDao.getDynamicListAdvert().getMRealAdvertListBeen();
     }
 
@@ -475,7 +480,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
 
     @Override
     public void payNote(final int dynamicPosition, final int imagePosition, int note, final boolean isImage) {
-        if (handleTouristControl()){
+        if (handleTouristControl()) {
             return;
         }
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());

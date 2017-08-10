@@ -59,11 +59,17 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
 
     @Override
     public List<RealAdvertListBean> getBannerAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getInfoBannerAdvert() == null) {
+            return new ArrayList<>();
+        }
         return mAllAdvertListBeanGreenDao.getInfoBannerAdvert().getMRealAdvertListBeen();
     }
 
     @Override
     public List<RealAdvertListBean> getListAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getInfoListAdvert() == null) {
+            return new ArrayList<>();
+        }
         return mAllAdvertListBeanGreenDao.getInfoListAdvert().getMRealAdvertListBeen();
     }
 

@@ -227,10 +227,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         List<String> advertTitle = new ArrayList<>();
         List<String> advertUrls = new ArrayList<>();
         List<String> advertLinks = new ArrayList<>();
-        List<RealAdvertListBean> advertList = mPresenter.getBannerAdvert();
         mListAdvert = mPresenter.getListAdvert();
         mHeaderAdvert = mPresenter.getBannerAdvert();
-        for (RealAdvertListBean advert : advertList) {
+        for (RealAdvertListBean advert : mHeaderAdvert) {
             advertTitle.add(advert.getTitle());
             advertUrls.add(advert.getAdvertFormat().getImage().getImage());
             advertLinks.add(advert.getAdvertFormat().getImage().getLink());
