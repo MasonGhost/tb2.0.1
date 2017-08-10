@@ -296,7 +296,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mInfoDetailHeader = new InfoDetailHeaderView(getContext(), null/*mPresenter.getAdvert()*/);
+        mInfoDetailHeader = new InfoDetailHeaderView(getContext(), mPresenter.getAdvert());
 //        mDynamicDetailHeader.setOnImageClickLisenter(this);
         mHeaderAndFooterWrapper.addHeaderView(mInfoDetailHeader.getInfoDetailHeader());
         View mFooterView = new View(getContext());

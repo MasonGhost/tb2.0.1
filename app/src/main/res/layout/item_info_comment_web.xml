@@ -57,7 +57,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_mid"
+            android:visibility="gone"
             tools:ignore="WebViewLayout"/>
+
+    <TextView
+            android:id="@+id/info_content_subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginLeft="@dimen/spacing_mid_small"
+            android:layout_marginRight="@dimen/spacing_mid_small"
+            android:background="@color/general_for_bg_light"/>
+
+    <TextView
+            android:id="@+id/info_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginLeft="@dimen/spacing_mid_small"
+            android:layout_marginRight="@dimen/spacing_mid_small"/>
 
 
     <include
