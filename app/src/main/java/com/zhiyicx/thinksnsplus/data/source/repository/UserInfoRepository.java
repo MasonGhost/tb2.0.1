@@ -211,38 +211,10 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         }
         List<Object> user_ids = new ArrayList<>();
         user_ids.add(user_id);
-
-        //V1
-//        HashMap<String, Object> datas = new HashMap<>();
-//        datas.put("user_ids", user_ids);
-//        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-//        return mUserInfoClient.getUserInfo(body)
-//                .subscribeOn(Schedulers.io()).
-//                        observeOn(AndroidSchedulers.mainThread())
-//                .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<UserInfoBean>>() {
-//                    @Override
-//                    public BaseJson<UserInfoBean> call(BaseJson<List<UserInfoBean>> listBaseJson) {
-//                        beanBaseJson.setCode(listBaseJson.getCode());
-//                        beanBaseJson.setMessage(listBaseJson.getMessage());
-//                        beanBaseJson.setStatus(listBaseJson.isStatus());
-//                        if (listBaseJson.isStatus()) {
-//                            beanBaseJson.setData(listBaseJson.getData().get(0));
-//                        }
-//                        return beanBaseJson;
-//                    }
-//                });
-
-        // V2
-        String userids = user_ids.toString();
-        userids = userids.replace("[", "");
-        userids = userids.replace("]", "");
-
-        return getUserInfoByIds(userids)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        return getUserInfo(user_ids)
                 .map(listBaseJson -> {
                     beanBaseJson.setStatus(true);
-                    beanBaseJson.setData(listBaseJson.get(0));
+                    beanBaseJson.setData(listBaseJson.getData().get(0));
                     return beanBaseJson;
                 });
 
