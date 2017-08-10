@@ -695,7 +695,7 @@ public class BackgroundTaskHandler {
             channel_id = sendDynamicDataBean.getDynamicChannlId();
 
         } else {
-            dynamicBelong = SendDynamicDataBean.MORMAL_DYNAMIC;
+            dynamicBelong = SendDynamicDataBean.NORMAL_DYNAMIC;
             channel_id = 0;
         }
         final DynamicBean dynamicBean;
@@ -869,20 +869,20 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         // 发送动态到动态列表：状态为发送成功
-                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, true, backgroundRequestTaskBean, data);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, true, backgroundRequestTaskBean, data);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         // 发送动态到动态列表：状态为发送失败
-                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
                         // 发送动态到动态列表：状态为发送失败
-                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }
                 });
 
@@ -990,7 +990,7 @@ public class BackgroundTaskHandler {
     private void sendDynamicByEventBus(int dynamicBelong, DynamicDetailBeanV2 dynamicBean, boolean sendSuccess
             , BackgroundRequestTaskBean backgroundRequestTaskBean, Object data) {
         switch (dynamicBelong) {
-            case SendDynamicDataBean.MORMAL_DYNAMIC:
+            case SendDynamicDataBean.NORMAL_DYNAMIC:
                 if (sendSuccess) {
                     // 动态发送成功
                     dynamicBean.setState(DynamicBean.SEND_SUCCESS);

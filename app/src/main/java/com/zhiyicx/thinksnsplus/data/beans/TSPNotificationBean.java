@@ -107,7 +107,6 @@ public class TSPNotificationBean implements Parcelable {
                         JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
                         user_id = (long) jsonObject.getDouble("user_id");
                     } catch (JSONException e) {
-                        e.printStackTrace();
                     }
 
                     break;
@@ -116,7 +115,6 @@ public class TSPNotificationBean implements Parcelable {
                         JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
                         user_id = (long) jsonObject.getDouble("user_id");
                     } catch (JSONException e) {
-                        e.printStackTrace();
                     }
 
                     break;
@@ -125,7 +123,6 @@ public class TSPNotificationBean implements Parcelable {
                         JSONObject jsonObject=new JSONObject(gson.toJson(data.getExtra()));
                         user_id = (long) jsonObject.getDouble("user_id");
                     } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                     break;
                 default:
