@@ -48,6 +48,9 @@ public class EventBusTagConfig {
     // 资讯收藏
     public static final String EVENT_SEND_INFO_LIST_COLLECT = "event_send__info_list_collect";
 
+    // 删除资讯
+    public static final String EVENT_UPDATE_LIST_DELETE = "event_update_list_delete";
+
     // 资讯详情界面删除内容通知
     public static final String EVENT_SEND_INFO_LIST_DELETE_UPDATE = "event_send_info_list_delete_update";
 

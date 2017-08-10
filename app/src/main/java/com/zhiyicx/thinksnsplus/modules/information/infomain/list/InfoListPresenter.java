@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.InfoRecommendBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIST_DELETE;
 
 /**
  * @Author Jliuer
@@ -142,5 +145,21 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
     @Override
     public void getInfoList(String cate_id, long max_id, long limit, final long page) {
 
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EVENT_UPDATE_LIST_DELETE)
+    public void updateDeleteInfo(InfoListDataBean infoListDataBean){
+        for (BaseListBean listBean : mRootView.getListDatas()){
+            if (listBean instanceof InfoListDataBean && ((InfoListDataBean) listBean).getId() == infoListDataBean.getId()){
+                mRootView.getListDatas().remove(listBean);
+                mRootView.refreshData();
+                break;
+            }
+        }
     }
 }

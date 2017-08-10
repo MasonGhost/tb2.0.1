@@ -7,66 +7,51 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.TimeUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
-import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
-import com.zhiyicx.thinksnsplus.widget.ReWardView;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import br.tiagohm.markdownview.MarkdownView;
 import butterknife.BindView;
 import rx.Observable;
 import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIST_DELETE;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
@@ -173,15 +158,21 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void deleteInfo(boolean deleting, boolean success, String message) {
-        if (deleting){
+        if (deleting) {
             showSnackLoadingMessage(getString(R.string.info_deleting));
         } else {
-            if (success){
+            if (success) {
+                EventBus.getDefault().post(mInfoMation, EVENT_UPDATE_LIST_DELETE);
                 getActivity().finish();
             } else {
                 showSnackErrorMessage(message);
             }
         }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -265,7 +256,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void setDigg(boolean isDigged) {
         mDdDynamicTool.setItemIsChecked(isDigged, ITEM_POSITION_0);
-        if (mInfoMation.getDigList() != null){
+        if (mInfoMation.getDigList() != null) {
             mInfoDetailHeader.updateDigList(mInfoMation);
         }
     }
@@ -303,7 +294,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mInfoDetailHeader.updateDigList(mInfoMation);
     }
 
-    private void initHeaderView(){
+    private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mInfoDetailHeader = new InfoDetailHeaderView(getContext(), null/*mPresenter.getAdvert()*/);
 //        mDynamicDetailHeader.setOnImageClickLisenter(this);
@@ -433,7 +424,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private void initDealInfoMationPopupWindow(final InfoListDataBean infoMation, boolean isCollected) {
         boolean isMine = infoMation.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
-        boolean canApplyForTop = infoMation.getAudit_status() == 0 && !infoMation.is_pinned();
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
                 .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
@@ -444,20 +434,27 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .with(getActivity())
                 .item2ClickListener(() -> {// 收藏
                     // 如果是自己发布的，则不能收藏只能删除
-                    if (isMine){
+                    if (isMine) {
                         mPresenter.deleteInfo();
                     } else {
                         mPresenter.handleCollect(!infoMation.getHas_collect(),
                                 mInfoMation.getId() + "");
-                        mDealInfoMationPopWindow.hide();
                     }
+                    mDealInfoMationPopWindow.hide();
                 })
                 .item1ClickListener(() -> {// 申请置顶
-                    if (infoMation.is_pinned()){
+                    if (infoMation.is_pinned()) {
                         showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
-                    } else{
+                    } else {
                         // 跳转置顶页面
+                        Bundle bundle = new Bundle();
+                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
+                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());// 资源id
+                        Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     }
+                    mDealInfoMationPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();
@@ -494,7 +491,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            if (mListDatas.get(position) instanceof InfoCommentListBean){
+            if (mListDatas.get(position) instanceof InfoCommentListBean) {
                 InfoCommentListBean infoCommentListBean = (InfoCommentListBean) mListDatas.get(position);
                 if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
                         .getUser_id()) {// 自己的评论

@@ -19,6 +19,7 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.greenrobot.greendao.DaoException;
 
 @Entity
@@ -303,6 +304,11 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.commentList = commentList;
     }
 
+    @Override
+    public Long getMaxId() {
+        return Long.parseLong(id + "");
+    }
+
     public List<InfoListDataBean> getRelateInfoList() {
         return relateInfoList;
     }
@@ -330,9 +336,11 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         }
     }
 
-    public static class InfoDigListConvert extends BaseConvert<List<InfoDigListBean>>{}
+    public static class InfoDigListConvert extends BaseConvert<List<InfoDigListBean>> {
+    }
 
-    public static class InfoRelateListConvert extends BaseConvert<List<InfoListDataBean>>{}
+    public static class InfoRelateListConvert extends BaseConvert<List<InfoListDataBean>> {
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -369,7 +377,7 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         return this.has_like;
     }
 
-    public static class InfoCategory implements Serializable, Parcelable{
+    public static class InfoCategory implements Serializable, Parcelable {
         private static final long serialVersionUID = -5033116664345775676L;
         private Long id;
         private String name;
@@ -442,7 +450,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         };
     }
 
-    public static class InfoCategoryConvert extends BaseConvert<InfoCategory>{}
+    public static class InfoCategoryConvert extends BaseConvert<InfoCategory> {
+    }
 
     public boolean getIsTop() {
         return this.isTop;
@@ -453,14 +462,13 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
     }
 
 
-
     @Generated(hash = 1756309224)
     public InfoListDataBean(Long _id, int id, long user_id, Long info_type, int is_collection_news,
-            int is_digg_news, String title, String content, String from, String created_at,
-            String updated_at, StorageBean image, int audit_status, boolean is_pinned, String subject,
-            boolean has_collect, boolean has_like, InfoCategory category, boolean isTop, String author,
-            int hits, List<UserTagBean> tags, int digg_count, int comment_count, int is_recommend,
-            int audit_count, List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
+                            int is_digg_news, String title, String content, String from, String created_at,
+                            String updated_at, StorageBean image, int audit_status, boolean is_pinned, String subject,
+                            boolean has_collect, boolean has_like, InfoCategory category, boolean isTop, String author,
+                            int hits, List<UserTagBean> tags, int digg_count, int comment_count, int is_recommend,
+                            int audit_count, List<InfoDigListBean> digList, List<InfoListDataBean> relateInfoList) {
         this._id = _id;
         this.id = id;
         this.user_id = user_id;
@@ -491,7 +499,8 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         this.relateInfoList = relateInfoList;
     }
 
-    public static class TagConvert extends BaseConvert<List<UserTagBean>>{}
+    public static class TagConvert extends BaseConvert<List<UserTagBean>> {
+    }
 
     public List<UserTagBean> getTags() {
         return this.tags;
@@ -523,7 +532,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         return commentList;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1195658147)
     public synchronized void resetCommentList() {
         commentList = null;
@@ -565,10 +576,14 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         myDao.update(this);
     }
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 438734104)
     private transient InfoListDataBeanDao myDao;
 
@@ -615,7 +630,9 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
         return this.is_pinned;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 338806337)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
