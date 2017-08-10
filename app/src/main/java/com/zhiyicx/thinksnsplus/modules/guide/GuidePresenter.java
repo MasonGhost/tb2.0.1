@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.guide;
 
 import com.bumptech.glide.Glide;
+import com.zhiyicx.baseproject.config.AdvertConfig;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.DeviceUtils;
@@ -86,7 +87,7 @@ public class GuidePresenter extends BasePresenter<GuideContract.Repository, Guid
                             @Override
                             public Observable<List<AllAdverListBean>> call(List<RealAdvertListBean> realAdvertListBeen) {
                                 for (RealAdvertListBean boot : realAdvertListBeen) {
-                                    if (boot.getType().equals(ApiConfig.APP_IMAGE_TYPE_ADVERT)) {
+                                    if (boot.getType().equals(AdvertConfig.APP_IMAGE_TYPE_ADVERT)) {
                                         Glide.with(mContext).load(boot.getAdvertFormat().getImage().getImage()).downloadOnly(DeviceUtils.getScreenWidth(mContext),
                                                 DeviceUtils.getScreenHeight(mContext));
                                     }

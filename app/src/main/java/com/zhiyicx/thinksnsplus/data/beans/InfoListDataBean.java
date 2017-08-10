@@ -105,11 +105,6 @@ public class InfoListDataBean extends BaseListBean implements Serializable {
                 '}';
     }
 
-    @Override
-    public Long getMaxId() {
-        return (long)id;
-    }
-
     public int getIs_collection_news() {
         return is_collection_news;
     }
