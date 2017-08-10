@@ -103,7 +103,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
     public Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean, int dynamicBelong, long channel_id) {
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(dynamicDetailBean));
         switch (dynamicBelong) {
-            case SendDynamicDataBean.MORMAL_DYNAMIC:
+            case SendDynamicDataBean.NORMAL_DYNAMIC:
                 return mDynamicClient.sendDynamic(body);
             case SendDynamicDataBean.GROUP_DYNAMIC:
                 return mDynamicClient.sendDynamicToChannel(channel_id, body);

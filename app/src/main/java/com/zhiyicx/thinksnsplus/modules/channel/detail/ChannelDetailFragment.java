@@ -29,6 +29,7 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
@@ -79,6 +80,7 @@ import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragm
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.GROUP_ID;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.SEND_OPTION;
+import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.TYPE;
 
 /**
  * @author LiuChao
@@ -728,6 +730,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         Intent intent = new Intent(getActivity(), SelectDynamicTypeActivity.class);
         Bundle bundle = new Bundle();
         bundle.putLong(GROUP_ID, mGroupInfoBean.getId());
+        bundle.putInt(TYPE, SendDynamicDataBean.GROUP_DYNAMIC);
         intent.putExtra(SEND_OPTION, bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.zoom_in, 0);

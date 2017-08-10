@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
@@ -46,6 +47,8 @@ public interface InfoDetailsConstract {
         void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> rewadslist);
 
         void updateInfoHeader(InfoListDataBean infoDetailBean);
+
+        void deleteInfo(boolean deleting, boolean success, String message);
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean> {
@@ -67,6 +70,8 @@ public interface InfoDetailsConstract {
         void reqReWardsData(int id);
 
         void getInfoDetail(String news_id);
+
+        void deleteInfo();
 
     }
 
@@ -96,6 +101,7 @@ public interface InfoDetailsConstract {
 
         void deleteComment(int news_id, int comment_id);
 
+        Observable<BaseJsonV2<Object>> deleteInfo(String category, String news_id);
 
     }
 }

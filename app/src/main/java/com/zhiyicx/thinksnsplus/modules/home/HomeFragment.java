@@ -21,7 +21,6 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -48,7 +47,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
@@ -270,7 +268,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
         sendDynamicDataBean.setDynamicPrePhotos(photoList);
         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
@@ -410,7 +408,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 return true;
             }
             SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
             sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
             SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
             return true;

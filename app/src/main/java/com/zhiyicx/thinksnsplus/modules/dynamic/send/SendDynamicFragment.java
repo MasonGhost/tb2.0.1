@@ -59,7 +59,6 @@ import butterknife.BindView;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.GROUP_ID;
 
 
 /**

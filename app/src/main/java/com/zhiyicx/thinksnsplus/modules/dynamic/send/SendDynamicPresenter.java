@@ -125,7 +125,7 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
         params.put("sendDynamicDataBean", sendDynamicDataBeanV2);
 
         switch (dynamicBelong) {
-            case SendDynamicDataBean.MORMAL_DYNAMIC:
+            case SendDynamicDataBean.NORMAL_DYNAMIC:
                 // 将动态信息存入数据库
                 mDynamicDetailBeanV2GreenDao.insertOrReplace(dynamicBean);
                 EventBus.getDefault().post(dynamicBean, EVENT_SEND_DYNAMIC_TO_LIST);

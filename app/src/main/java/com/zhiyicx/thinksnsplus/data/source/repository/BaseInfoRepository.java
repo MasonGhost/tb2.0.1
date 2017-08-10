@@ -34,7 +34,8 @@ public class BaseInfoRepository implements IBaseInfoRepository{
     public Observable<List<InfoListDataBean>> getInfoListV2(String cate_id, String key, long max_id, long page, int isRecommend) {
         if (!TextUtils.isEmpty(key)){
             return mInfoMainClient.getInfoListV2(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, key, 0);
-        } else {
+        } else if (max_id == 0){
+            // 只有下拉才获取置顶
             return mInfoMainClient.getInfoTopList(cate_id)
                     .flatMap(new Func1<List<InfoListDataBean>, Observable<List<InfoListDataBean>>>() {
                         @Override
@@ -53,6 +54,8 @@ public class BaseInfoRepository implements IBaseInfoRepository{
                                     });
                         }
                     });
+        } else {
+            return mInfoMainClient.getInfoListV2(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, "", isRecommend);
         }
     }
 }

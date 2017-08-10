@@ -172,6 +172,19 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     @Override
+    public void deleteInfo(boolean deleting, boolean success, String message) {
+        if (deleting){
+            showSnackLoadingMessage(getString(R.string.info_deleting));
+        } else {
+            if (success){
+                getActivity().finish();
+            } else {
+                showSnackErrorMessage(message);
+            }
+        }
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
@@ -282,6 +295,12 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mVShadow.setVisibility(View.GONE);
         mPresenter.sendComment(mReplyUserId, text);
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void refreshData() {
+        super.refreshData();
+        mInfoDetailHeader.updateDigList(mInfoMation);
     }
 
     private void initHeaderView(){
@@ -413,24 +432,32 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * @param infoMation curent infoMation
      */
     private void initDealInfoMationPopupWindow(final InfoListDataBean infoMation, boolean isCollected) {
-        boolean isLiked = infoMation.getIs_digg_news() == 1;
+        boolean isMine = infoMation.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+        boolean canApplyForTop = infoMation.getAudit_status() == 0 && !infoMation.is_pinned();
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-//                .item2Str(getString(isLiked ? R.string.info_dig_cancel : R.string.info_dig))
+                .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
+                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 收藏
-                    mPresenter.handleCollect(!infoMation.getHas_collect(),
-                            mInfoMation.getId() + "");
-                    mDealInfoMationPopWindow.hide();
+                .item2ClickListener(() -> {// 收藏
+                    // 如果是自己发布的，则不能收藏只能删除
+                    if (isMine){
+                        mPresenter.deleteInfo();
+                    } else {
+                        mPresenter.handleCollect(!infoMation.getHas_collect(),
+                                mInfoMation.getId() + "");
+                        mDealInfoMationPopWindow.hide();
+                    }
                 })
-                .item2ClickListener(() -> {// 点赞
-                    mPresenter.handleLike(infoMation.getHas_like(),
-                            mInfoMation.getId() + "");
-                    mDealInfoMationPopWindow.hide();
+                .item1ClickListener(() -> {// 申请置顶
+                    if (infoMation.is_pinned()){
+                        showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
+                    } else{
+                        // 跳转置顶页面
+                    }
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();

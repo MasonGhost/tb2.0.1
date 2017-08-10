@@ -27,7 +27,7 @@ public class SendDynamicDataBean implements Serializable, Parcelable {
     /**
      * 动态归属
      */
-    public static final int MORMAL_DYNAMIC = 0;// 普通的动态类型，显示在首页而已
+    public static final int NORMAL_DYNAMIC = 0;// 普通的动态类型，显示在首页而已
     public static final int GROUP_DYNAMIC = 1;// 属于频道的动态类型，会显示在频道和首页
 
     private int dynamicType;// 动态类型

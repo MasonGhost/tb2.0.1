@@ -15,6 +15,7 @@ import java.io.Serializable;
 
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.NotNull;
 
 /**
  * @Author Jliuer
@@ -38,10 +39,13 @@ public class InfoCommentListBean extends BaseListBean {
     private Long _id;
     @Unique
     private int id = -1;
+    @SerializedName("commentable_id")
     private int info_id = -1;// 自己创建的，用于记录隶属于哪一条资讯。
     private String created_at;
+    @SerializedName("body")
     private String comment_content;
     private long user_id;
+    @SerializedName("reply_user")
     private long reply_to_user_id;
     @Unique
     private long comment_mark;
@@ -49,12 +53,11 @@ public class InfoCommentListBean extends BaseListBean {
     private UserInfoBean fromUserInfoBean;
     @ToOne(joinProperty = "reply_to_user_id")
     private UserInfoBean toUserInfoBean;
+    private long target_user;
+    @ToOne(joinProperty = "target_user")
+    private UserInfoBean publishUserInfoBean;
+    private String commentable_type;
     private int state = SEND_SUCCESS;
-
-    @Override
-    public String toString() {
-        return ""+id+"\n"+comment_content;
-    }
 
     public int getState() {
         return state;
@@ -62,26 +65,6 @@ public class InfoCommentListBean extends BaseListBean {
 
     public void setState(int state) {
         this.state = state;
-    }
-
-    @Keep
-    public UserInfoBean getToUserInfoBean() {
-        return toUserInfoBean;
-    }
-
-    @Keep
-    public void setToUserInfoBean(UserInfoBean toUserInfoBean) {
-        this.toUserInfoBean = toUserInfoBean;
-    }
-
-    @Keep
-    public UserInfoBean getFromUserInfoBean() {
-        return fromUserInfoBean;
-    }
-
-    @Keep
-    public void setFromUserInfoBean(UserInfoBean fromUserInfoBean) {
-        this.fromUserInfoBean = fromUserInfoBean;
     }
 
     public long getComment_mark() {
@@ -132,34 +115,40 @@ public class InfoCommentListBean extends BaseListBean {
         this.reply_to_user_id = reply_to_user_id;
     }
 
+    public String getCommentable_type() {
+        return commentable_type;
+    }
+
+    public void setCommentable_type(String commentable_type) {
+        this.commentable_type = commentable_type;
+    }
+
     @Override
     public Long getMaxId() {
         return (long)id;
     }
 
+    @Override
+    public String toString() {
+        return "InfoCommentListBean{" +
+                "id=" + id +
+                ", info_id=" + info_id +
+                ", created_at='" + created_at + '\'' +
+                ", comment_content='" + comment_content + '\'' +
+                ", user_id=" + user_id +
+                ", reply_to_user_id=" + reply_to_user_id +
+                ", comment_mark=" + comment_mark +
+                ", fromUserInfoBean=" + fromUserInfoBean +
+                ", toUserInfoBean=" + toUserInfoBean +
+                ", target_user=" + target_user +
+                ", publishUserInfoBean=" + publishUserInfoBean +
+                ", commentable_type='" + commentable_type + '\'' +
+                '}';
+    }
+
     public InfoCommentListBean() {
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this._id);
-        dest.writeInt(this.id);
-        dest.writeString(this.created_at);
-        dest.writeString(this.comment_content);
-        dest.writeValue(this.user_id);
-        dest.writeValue(this.reply_to_user_id);
-        dest.writeLong(this.comment_mark);
-        dest.writeParcelable(this.fromUserInfoBean, flags);
-        dest.writeParcelable(this.toUserInfoBean, flags);
-        dest.writeInt(this.state);
-    }
 
     public Long get_id() {
         return this._id;
@@ -212,30 +201,76 @@ public class InfoCommentListBean extends BaseListBean {
     public void setInfo_id(int info_id) {
         this.info_id = info_id;
     }
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 662071464)
+    public UserInfoBean getFromUserInfoBean() {
+        long __key = this.user_id;
+        if (fromUserInfoBean__resolvedKey == null || !fromUserInfoBean__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean fromUserInfoBeanNew = targetDao.load(__key);
+            synchronized (this) {
+                fromUserInfoBean = fromUserInfoBeanNew;
+                fromUserInfoBean__resolvedKey = __key;
+            }
+        }
+        return fromUserInfoBean;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 841333318)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getInfoCommentListBeanDao() : null;
+    @Generated(hash = 1773681647)
+    public void setFromUserInfoBean(@NotNull UserInfoBean fromUserInfoBean) {
+        if (fromUserInfoBean == null) {
+            throw new DaoException(
+                    "To-one property 'user_id' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.fromUserInfoBean = fromUserInfoBean;
+            user_id = fromUserInfoBean.getUser_id();
+            fromUserInfoBean__resolvedKey = user_id;
+        }
     }
 
-    protected InfoCommentListBean(Parcel in) {
-        super(in);
-        this._id = (Long) in.readValue(Long.class.getClassLoader());
-        this.id = in.readInt();
-        this.created_at = in.readString();
-        this.comment_content = in.readString();
-        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.reply_to_user_id = (Long) in.readValue(Long.class.getClassLoader());
-        this.comment_mark = in.readLong();
-        this.fromUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.toUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
-        this.state = in.readInt();
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 2139866802)
+    public UserInfoBean getToUserInfoBean() {
+        long __key = this.reply_to_user_id;
+        if (toUserInfoBean__resolvedKey == null || !toUserInfoBean__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean toUserInfoBeanNew = targetDao.load(__key);
+            synchronized (this) {
+                toUserInfoBean = toUserInfoBeanNew;
+                toUserInfoBean__resolvedKey = __key;
+            }
+        }
+        return toUserInfoBean;
     }
 
-    @Generated(hash = 884472755)
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1445632445)
+    public void setToUserInfoBean(@NotNull UserInfoBean toUserInfoBean) {
+        if (toUserInfoBean == null) {
+            throw new DaoException(
+                    "To-one property 'reply_to_user_id' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.toUserInfoBean = toUserInfoBean;
+            reply_to_user_id = toUserInfoBean.getUser_id();
+            toUserInfoBean__resolvedKey = reply_to_user_id;
+        }
+    }
+
+    @Generated(hash = 672776514)
     public InfoCommentListBean(Long _id, int id, int info_id, String created_at, String comment_content,
-            long user_id, long reply_to_user_id, long comment_mark, int state) {
+            long user_id, long reply_to_user_id, long comment_mark, long target_user, String commentable_type,
+            int state) {
         this._id = _id;
         this.id = id;
         this.info_id = info_id;
@@ -244,20 +279,11 @@ public class InfoCommentListBean extends BaseListBean {
         this.user_id = user_id;
         this.reply_to_user_id = reply_to_user_id;
         this.comment_mark = comment_mark;
+        this.target_user = target_user;
+        this.commentable_type = commentable_type;
         this.state = state;
     }
 
-    public static final Creator<InfoCommentListBean> CREATOR = new Creator<InfoCommentListBean>() {
-        @Override
-        public InfoCommentListBean createFromParcel(Parcel source) {
-            return new InfoCommentListBean(source);
-        }
-
-        @Override
-        public InfoCommentListBean[] newArray(int size) {
-            return new InfoCommentListBean[size];
-        }
-    };
     /**
      * Used to resolve relations
      */
@@ -272,4 +298,109 @@ public class InfoCommentListBean extends BaseListBean {
     private transient Long fromUserInfoBean__resolvedKey;
     @Generated(hash = 89682145)
     private transient Long toUserInfoBean__resolvedKey;
+
+    public long getTarget_user() {
+        return this.target_user;
+    }
+
+    public void setTarget_user(long target_user) {
+        this.target_user = target_user;
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1683320735)
+    public UserInfoBean getPublishUserInfoBean() {
+        long __key = this.target_user;
+        if (publishUserInfoBean__resolvedKey == null || !publishUserInfoBean__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
+            UserInfoBean publishUserInfoBeanNew = targetDao.load(__key);
+            synchronized (this) {
+                publishUserInfoBean = publishUserInfoBeanNew;
+                publishUserInfoBean__resolvedKey = __key;
+            }
+        }
+        return publishUserInfoBean;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 781188919)
+    public void setPublishUserInfoBean(@NotNull UserInfoBean publishUserInfoBean) {
+        if (publishUserInfoBean == null) {
+            throw new DaoException(
+                    "To-one property 'target_user' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.publishUserInfoBean = publishUserInfoBean;
+            target_user = publishUserInfoBean.getUser_id();
+            publishUserInfoBean__resolvedKey = target_user;
+        }
+    }
+
+    @Generated(hash = 783792331)
+    private transient Long publishUserInfoBean__resolvedKey;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this._id);
+        dest.writeInt(this.id);
+        dest.writeInt(this.info_id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.comment_content);
+        dest.writeLong(this.user_id);
+        dest.writeLong(this.reply_to_user_id);
+        dest.writeLong(this.comment_mark);
+        dest.writeParcelable(this.fromUserInfoBean, flags);
+        dest.writeParcelable(this.toUserInfoBean, flags);
+        dest.writeLong(this.target_user);
+        dest.writeParcelable(this.publishUserInfoBean, flags);
+        dest.writeString(this.commentable_type);
+        dest.writeInt(this.state);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 841333318)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getInfoCommentListBeanDao() : null;
+    }
+
+    protected InfoCommentListBean(Parcel in) {
+        super(in);
+        this._id = (Long) in.readValue(Long.class.getClassLoader());
+        this.id = in.readInt();
+        this.info_id = in.readInt();
+        this.created_at = in.readString();
+        this.comment_content = in.readString();
+        this.user_id = in.readLong();
+        this.reply_to_user_id = in.readLong();
+        this.comment_mark = in.readLong();
+        this.fromUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.toUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.target_user = in.readLong();
+        this.publishUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.commentable_type = in.readString();
+        this.state = in.readInt();
+    }
+
+    public static final Creator<InfoCommentListBean> CREATOR = new Creator<InfoCommentListBean>() {
+        @Override
+        public InfoCommentListBean createFromParcel(Parcel source) {
+            return new InfoCommentListBean(source);
+        }
+
+        @Override
+        public InfoCommentListBean[] newArray(int size) {
+            return new InfoCommentListBean[size];
+        }
+    };
 }

@@ -116,15 +116,10 @@ public class InfoDetailHeaderView {
                 InternalStyleSheet css = new Github();
                 mContent.addStyleSheet(css);
                 String subject = infoMain.getSubject();
-                mContent.loadMarkdown(subject + dealPic(infoMain.getContent()));
+                mContent.loadMarkdown(subject + "  " + dealPic(infoMain.getContent()));
             }
             // 评论信息
-            if (infoMain.getComment_count() != 0) {
-                mCommentHintView.setVisibility(View.VISIBLE);
-                mCommentCountView.setText(mContext.getString(R.string.dynamic_comment_count, infoMain.getComment_count() + ""));
-            } else {
-                mCommentHintView.setVisibility(View.GONE);
-            }
+            updateCommentView(infoMain);
         }
     }
 
@@ -171,6 +166,20 @@ public class InfoDetailHeaderView {
             });
         } else {
             mDigListView.setVisibility(GONE);
+        }
+    }
+
+    /**
+     * 更新评论页面
+     * @param infoMain
+     */
+    public void updateCommentView(InfoListDataBean infoMain){
+        // 评论信息
+        if (infoMain.getComment_count() != 0) {
+            mCommentHintView.setVisibility(View.VISIBLE);
+            mCommentCountView.setText(mContext.getString(R.string.dynamic_comment_count, infoMain.getComment_count() + ""));
+        } else {
+            mCommentHintView.setVisibility(View.GONE);
         }
     }
 

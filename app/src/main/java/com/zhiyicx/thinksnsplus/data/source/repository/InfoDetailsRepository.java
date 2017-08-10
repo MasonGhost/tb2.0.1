@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
@@ -125,12 +126,14 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                             for (InfoCommentListBean commentListBean : infoCommentBean.getPinneds()) {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
+                                user_ids.add(commentListBean.getTarget_user());
                             }
                         }
                         if (infoCommentBean.getComments() != null) {
                             for (InfoCommentListBean commentListBean : infoCommentBean.getComments()) {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
+                                user_ids.add(commentListBean.getTarget_user());
                             }
                         }
                         if (user_ids.isEmpty()) {
@@ -211,6 +214,17 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                                     (int) commentListBean
                                             .getReply_to_user_id()));
                 }
+                if (commentListBean.getTarget_user() == 0) { // 如果
+                    // reply_user_id = 0 回复动态
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUser_id(0L);
+                    commentListBean.setPublishUserInfoBean(userInfoBean);
+                } else {
+                    commentListBean.setPublishUserInfoBean
+                            (userInfoBeanSparseArray.get(
+                                    (int) commentListBean
+                                            .getTarget_user()));
+                }
             }
         }
     }
@@ -270,8 +284,8 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                             Long comment_mark) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_content", comment_content);
-        params.put("reply_to_user_id", reply_to_user_id);
+        params.put("body", comment_content);
+        params.put("reply_user", reply_to_user_id);
         params.put("comment_mark", comment_mark);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
@@ -295,6 +309,11 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                 .APP_PATH_INFO_DELETE_COMMENT_V2_S, news_id, comment_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> deleteInfo(String category, String news_id) {
+        return mInfoMainClient.deleteInfo(category, news_id);
     }
 
     @Override
