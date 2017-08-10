@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.information.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -39,6 +41,7 @@ import com.zhiyicx.thinksnsplus.widget.ReWardView;
 import com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout;
 import com.zhiyicx.thinksnsplus.widget.flowtag.OnInitSelectedPosition;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.view.flowlayout.TagFlowLayout;
 import com.zzhoujay.richtext.ImageHolder;
@@ -55,6 +58,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @author Catherine
@@ -268,8 +273,7 @@ public class InfoDetailHeaderView {
             LinearLayoutManager manager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             mRvRelateInfo.setLayoutManager(manager);
             mRvRelateInfo.setNestedScrollingEnabled(false);
-            mRvRelateInfo.setAdapter(new CommonAdapter<InfoListDataBean>(mContext, R.layout.item_info, infoListDataBeen) {
-
+            CommonAdapter adapter = new CommonAdapter<InfoListDataBean>(mContext, R.layout.item_info, infoListDataBeen) {
                 @Override
                 protected void convert(ViewHolder holder, InfoListDataBean infoListDataBean, int position) {
                     final TextView title = holder.getView(R.id.item_info_title);
@@ -304,7 +308,23 @@ public class InfoDetailHeaderView {
                         // 跳转到新的咨询页
                     });
                 }
+            };
+            adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    Intent intent = new Intent(mContext, InfoDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_INFO, infoListDataBeen.get(position));
+                    intent.putExtra(BUNDLE_INFO, bundle);
+                    mContext.startActivity(intent);
+                }
+
+                @Override
+                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    return false;
+                }
             });
+            mRvRelateInfo.setAdapter(adapter);
         } else {
             mInfoRelateList.setVisibility(GONE);
             mFtlRelate.setVisibility(GONE);
