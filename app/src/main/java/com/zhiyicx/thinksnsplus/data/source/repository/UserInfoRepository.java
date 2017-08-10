@@ -178,7 +178,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids) {
-        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, null, null, null, null)
+        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, null, null, null, DEFAULT_MAX_USER_GET_NUM_ONCE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
