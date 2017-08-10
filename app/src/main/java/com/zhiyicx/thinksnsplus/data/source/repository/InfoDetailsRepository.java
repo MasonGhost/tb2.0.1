@@ -75,41 +75,37 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
                             }
-
+                            if (user_ids.isEmpty()) {
+                                return Observable.just(listBaseJson);
+                            }
                             return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                if (userinfobeans.isStatus()) { //
-                                    // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                    SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                            SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
-                                        userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                                .intValue(), userInfoBean);
-                                    }
-                                    for (InfoCommentListBean commentListBean : listBaseJson
-                                            .getData()) {
-                                        commentListBean.setFromUserInfoBean
-                                                (userInfoBeanSparseArray.get((int) commentListBean
-                                                        .getUser_id()));
-                                        if (commentListBean.getReply_to_user_id() == 0) { // 如果
-                                            // reply_user_id = 0 回复动态
-                                            UserInfoBean userInfoBean = new UserInfoBean();
-                                            userInfoBean.setUser_id(0L);
-                                            commentListBean.setToUserInfoBean(userInfoBean);
-                                        } else {
-                                            commentListBean.setToUserInfoBean
-                                                    (userInfoBeanSparseArray.get(
-                                                            (int) commentListBean
-                                                                    .getReply_to_user_id()));
-                                        }
-
-                                    }
-                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans
-                                            .getData());
-                                } else {
-                                    listBaseJson.setStatus(userinfobeans.isStatus());
-                                    listBaseJson.setCode(userinfobeans.getCode());
-                                    listBaseJson.setMessage(userinfobeans.getMessage());
+                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                        SparseArray<>();
+                                for (UserInfoBean userInfoBean : userinfobeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                            .intValue(), userInfoBean);
                                 }
+                                for (InfoCommentListBean commentListBean : listBaseJson
+                                        .getData()) {
+                                    commentListBean.setFromUserInfoBean
+                                            (userInfoBeanSparseArray.get((int) commentListBean
+                                                    .getUser_id()));
+                                    if (commentListBean.getReply_to_user_id() == 0) { // 如果
+                                        // reply_user_id = 0 回复动态
+                                        UserInfoBean userInfoBean = new UserInfoBean();
+                                        userInfoBean.setUser_id(0L);
+                                        commentListBean.setToUserInfoBean(userInfoBean);
+                                    } else {
+                                        commentListBean.setToUserInfoBean
+                                                (userInfoBeanSparseArray.get(
+                                                        (int) commentListBean
+                                                                .getReply_to_user_id()));
+                                    }
+
+                                }
+                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+
 
                                 return listBaseJson;
                             });
@@ -137,18 +133,20 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                                 user_ids.add(commentListBean.getReply_to_user_id());
                             }
                         }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(infoCommentBean);
+                        }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userInfoBeanList -> {
                                     SparseArray<UserInfoBean> userInfoBeanSparseArray = new
                                             SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userInfoBeanList.getData()) {
+                                    for (UserInfoBean userInfoBean : userInfoBeanList) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id()
                                                 .intValue(), userInfoBean);
                                     }
                                     dealCommentData(infoCommentBean.getPinneds(), userInfoBeanSparseArray);
                                     dealCommentData(infoCommentBean.getComments(), userInfoBeanSparseArray);
-                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList
-                                            .getData());
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList);
                                     return infoCommentBean;
                                 });
                     }
@@ -166,19 +164,20 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                             user_ids.add(digListBean.getUser_id());
                             user_ids.add(digListBean.getTarget_user());
                         }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(infoDigListBeen);
+                        }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(listBaseJson -> {
-                                    if (listBaseJson.isStatus()) {
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                        for (UserInfoBean userInfoBean : listBaseJson) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                         for (InfoDigListBean digListBean : infoDigListBeen) {
                                             digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
                                             digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
                                         }
-                                    }
                                     return infoDigListBeen;
                                 });
                     }

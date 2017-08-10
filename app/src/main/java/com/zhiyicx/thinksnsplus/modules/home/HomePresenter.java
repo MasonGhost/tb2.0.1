@@ -14,6 +14,7 @@ import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
@@ -80,7 +81,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
         if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
             mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
-                    .subscribe(new BaseSubscribe<UserInfoBean>() {
+                    .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                         @Override
                         protected void onSuccess(UserInfoBean data) {
                             JpushMessageBean jpushMessageBean = new JpushMessageBean();

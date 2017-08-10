@@ -308,22 +308,17 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             }
                             // 通过用户id列表请求用户信息和用户关注状态
                             return mUserInfoRepository.getUserInfo(userids)
-                                    .map(new Func1<BaseJson<List<UserInfoBean>>, List<DynamicDigListBean>>() {
-                                        @Override
-                                        public List<DynamicDigListBean> call(BaseJson<List<UserInfoBean>> listBaseJson) {
-                                            if (listBaseJson.isStatus()) {
+                                    .map(listBaseJson -> {
                                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                                for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                                for (UserInfoBean userInfoBean : listBaseJson) {
                                                     userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                                 }
                                                 for (DynamicDigListBean dynamicDigListBean : dynamicDigListBeanList) {
                                                     dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id().intValue()));
                                                     dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
                                                 }
-                                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
-                                            }
+                                                mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                             return dynamicDigListBeanList;
-                                        }
                                     });
                         } else {
                             // 返回期待以外的数据，比如状态为false，或者数据为空，发射空数据
@@ -370,7 +365,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
                                     SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                    for (UserInfoBean userInfoBean : userinfobeans) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
                                     for (int i = 0; i < listBaseJson.getPinneds().size(); i++) {
@@ -383,7 +378,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                             listBaseJson.getPinneds().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getPinneds().get(i).getReply_to_user_id()));
                                         }
                                     }
-                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
 
                                     return listBaseJson.getPinneds();
                                 });
@@ -416,9 +411,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                             }
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(userinfobeans -> {
-                                        if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                             SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                            for (UserInfoBean userInfoBean : userinfobeans) {
                                                 userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                             }
                                             for (int i = 0; i < listBaseJson.getData().size(); i++) {
@@ -431,12 +425,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                     listBaseJson.getData().get(i).setReplyUser(userInfoBeanSparseArray.get((int) listBaseJson.getData().get(i).getReply_to_user_id()));
                                                 }
                                             }
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                        } else {
-                                            listBaseJson.setStatus(userinfobeans.isStatus());
-                                            listBaseJson.setCode(userinfobeans.getCode());
-                                            listBaseJson.setMessage(userinfobeans.getMessage());
-                                        }
+                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+
                                         return listBaseJson;
                                     });
                         } else {
@@ -512,9 +502,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
-                                    if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         for (GroupDynamicListBean dynamicBean : groupDynamicList) {
@@ -539,8 +528,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                             }
 
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                    }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                     return groupDynamicList;
                                 });
                     }
@@ -568,9 +556,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                         }
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
-                                    if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         for (CollectGroupDyanmciListBean dynamicBean : groupDynamicList) {
@@ -596,8 +583,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                             }
 
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                    }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                     return result;
                                 });
                     }
@@ -636,9 +622,8 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                         }
                                         return mUserInfoRepository.getUserInfo(user_ids)
                                                 .map(userinfobeans -> {
-                                                    if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                                        for (UserInfoBean userInfoBean : userinfobeans) {
                                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                                         }
                                                         dynamicBean.setUserInfoBean(userInfoBeanSparseArray.get(dynamicBean.getUser_id().intValue()));
@@ -652,8 +637,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                                                 dynamicBean.getComments().get(i).setReplyUser(userInfoBeanSparseArray.get((int) dynamicBean.getComments().get(i).getReply_to_user_id()));
                                                             }
                                                         }
-                                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                                    }
+                                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                                     return dynamicBean;
                                                 });
                                     }
@@ -711,10 +695,9 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(userinfobeans -> {
-                                    if (userinfobeans.isStatus()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
                                         List<DynamicDetailBeanV2> topData = new ArrayList<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         for (DynamicDetailBeanV2 dynamicBean : listBaseJson) {
@@ -741,8 +724,7 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
                                             topDynamicBean.setTopDynamics(topData);
                                             mTopDynamicBeanGreenDao.insertOrReplace(topDynamicBean);
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                    }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                     return listBaseJson;
                                 });
                     }

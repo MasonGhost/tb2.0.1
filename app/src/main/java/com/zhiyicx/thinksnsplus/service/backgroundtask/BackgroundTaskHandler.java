@@ -627,7 +627,7 @@ public class BackgroundTaskHandler {
             integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id") + ""));
         }
         mUserInfoRepository.getUserInfo(integers)
-                .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
