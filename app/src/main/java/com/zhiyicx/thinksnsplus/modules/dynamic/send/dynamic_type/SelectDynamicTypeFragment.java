@@ -91,15 +91,15 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         Observable.timer(300, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendImageDynamic));
-
-        if(mType==SendDynamicDataBean.NORMAL_DYNAMIC){
-            mCheckIn.setVisibility(View.INVISIBLE);
-            Observable.timer(600, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aLong -> initAnimation(mCheckIn));
-        }else {
-            mCheckIn.setVisibility(View.GONE);
-        }
+// // TODO: 2017/8/10  等待服务器接口 
+//        if(mType==SendDynamicDataBean.NORMAL_DYNAMIC){
+//            mCheckIn.setVisibility(View.INVISIBLE);
+//            Observable.timer(600, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(aLong -> initAnimation(mCheckIn));
+//        }else {
+        mCheckIn.setVisibility(View.GONE);
+//        }
 
 
     }
