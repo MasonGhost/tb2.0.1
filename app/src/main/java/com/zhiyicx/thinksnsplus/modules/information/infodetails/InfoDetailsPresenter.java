@@ -144,7 +144,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     }
 
     private void handleInfoHasBeDeleted(int code) {
-        if (code == ErrorCodeConfig.INFO_HAS_BE_DELETED) {
+        if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
             mInfoListBeanGreenDao.deleteInfo(mRootView.getCurrentInfo());
             EventBus.getDefault().post(mRootView.getCurrentInfo(), EVENT_SEND_INFO_LIST_DELETE_UPDATE);
             mRootView.infoMationHasBeDeleted();

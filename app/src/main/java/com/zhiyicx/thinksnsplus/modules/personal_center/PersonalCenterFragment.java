@@ -380,7 +380,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + 1).findViewById(R.id.siv_0);
             shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon_256);
         } catch (Exception e) {
-            e.printStackTrace();
         }
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
             case 0: // 喜欢

@@ -259,7 +259,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
      * 处理动态被删除了
      */
     private void handleDynamicHasBeDeleted(int code, Long dynamic_id) {
-        if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
+        if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
             mGroupDynamicListBeanGreenDaoimpl.deleteSingleCache(dynamic_id);
             mRootView.dynamicHasBeDeleted();
         } else {

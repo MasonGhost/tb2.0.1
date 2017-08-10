@@ -28,7 +28,9 @@ import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
@@ -77,6 +79,8 @@ public class InfoDetailHeaderView {
     private int picWidth;
     private Bitmap sharBitmap;
 
+    private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
+
     public View getInfoDetailHeader(){
         return mInfoDetailHeader;
     }
@@ -98,6 +102,9 @@ public class InfoDetailHeaderView {
         mInfoRelateList = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_relate_list);
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
+        if (adverts != null){
+            initAdvert(context, adverts);
+        }
     }
 
     public void setDetail(InfoListDataBean infoMain){
@@ -121,6 +128,24 @@ public class InfoDetailHeaderView {
             // 评论信息
             updateCommentView(infoMain);
         }
+    }
+
+    private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
+        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mInfoDetailHeader
+                .findViewById(R.id.ll_advert));
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||adverts.isEmpty()) {
+            mDynamicDetailAdvertHeader.hideAdvert();
+            return;
+        }
+        mDynamicDetailAdvertHeader.setTitle("广告");
+        mDynamicDetailAdvertHeader.setAdverts(adverts);
+        mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
+                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(),adverts.get(position1).getTitle())
+        );
+    }
+
+    private void toAdvert(String link, String title) {
+        CustomWEBActivity.startToWEBActivity(mContext, link, title);
     }
 
     private String dealPic(String markDownContent) {
