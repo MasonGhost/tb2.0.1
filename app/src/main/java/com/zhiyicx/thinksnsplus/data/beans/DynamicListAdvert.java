@@ -79,7 +79,6 @@ public class DynamicListAdvert implements Serializable, Parcelable {
     }
 
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -141,9 +140,9 @@ public class DynamicListAdvert implements Serializable, Parcelable {
 
     public static InfoListDataBean advert2Info(DynamicListAdvert advert, long max_id) {
         InfoListDataBean infoListDataBean = new InfoListDataBean();
-        InfoListDataBean.InfoCategory category=new InfoListDataBean.InfoCategory();
+        InfoListDataBean.InfoCategory category = new InfoListDataBean.InfoCategory();
         category.setName("广告");
-        infoListDataBean.setFrom("");
+        infoListDataBean.setFrom("广告");
         infoListDataBean.setCategory(category);
         infoListDataBean.setUser_id(-1L);// 广告位标识
         infoListDataBean.setMaxId(max_id);// max_id 转移
