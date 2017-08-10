@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information.infodetails.topinfo;
+package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
@@ -12,7 +12,7 @@ import rx.Observable;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public interface InfoTopContract {
+public interface StickTopContract {
 
     interface View extends IBaseView<Presenter> {
         boolean insufficientBalance();
@@ -26,15 +26,21 @@ public interface InfoTopContract {
         double getInputMoney();
 
         void topSuccess();
+
+        String getType();
+
+        void updateBalance(double balance);
     }
 
     interface Presenter extends IBasePresenter {
         double getBalance();
 
-        void stickTop(long news_id);
+        void stickTop(long parent_id);
+        void stickTop(long parent_id,long child_id);
     }
 
     interface Repository {
-        Observable<BaseJsonV2<Integer>> stickTop(long news_id, double amount, int day);
+        Observable<BaseJsonV2<Integer>> stickTop(String type,long parent_id, double amount, int day);
+        Observable<BaseJsonV2<Integer>> stickTop(String type,long parent_id,long child_id, double amount, int day);
     }
 }

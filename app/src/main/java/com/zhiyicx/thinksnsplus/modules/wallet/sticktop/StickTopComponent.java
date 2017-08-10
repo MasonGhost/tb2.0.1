@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information.infodetails.topinfo;
+package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
@@ -13,6 +13,6 @@ import dagger.Component;
  * @Description
  */
 @FragmentScoped
-@Component(modules = InfoTopPresenterModule.class, dependencies = AppComponent.class)
-public interface InfoTopComponent extends InjectComponent<InfoTopActivity> {
+@Component(modules = StickTopPresenterModule.class, dependencies = AppComponent.class)
+public interface StickTopComponent extends InjectComponent<StickTopActivity> {
 }

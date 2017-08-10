@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.information.infodetails.topinfo;
+package com.zhiyicx.thinksnsplus.modules.wallet.sticktop;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,9 +32,14 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoTopFragment extends TSFragment<InfoTopContract.Presenter> implements InfoTopContract.View {
+public class StickTopFragment extends TSFragment<StickTopContract.Presenter> implements StickTopContract.View {
 
-    public static final String NEWSID = "news_id";
+    public static final String PARENT_ID = "parent_id";
+    public static final String CHILD_ID = "child_id";
+
+    public static final String TYPE_DYNAMIC = "dynamic";
+    public static final String TYPE_INFO = "info";
+    public static final String TYPE = "type";
 
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
@@ -56,19 +61,31 @@ public class InfoTopFragment extends TSFragment<InfoTopContract.Presenter> imple
     private List<Integer> mSelectDays;
     private int mCurrentDays;
     private float mInputMoney;
+    private double mBlance;
     private ActionPopupWindow mStickTopInstructionsPopupWindow;
 
-    public static InfoTopFragment newInstance(long news_id) {
-        InfoTopFragment dynamicTopFragment = new InfoTopFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong(NEWSID, news_id);
-        dynamicTopFragment.setArguments(bundle);
-        return dynamicTopFragment;
+    private long parent_id, child_id;
+    private String type;
+
+    public static StickTopFragment newInstance(Bundle bundle) {
+        StickTopFragment stickTopFragment = new StickTopFragment();
+        stickTopFragment.setArguments(bundle);
+        return stickTopFragment;
+    }
+
+
+    @Override
+    public String getType() {
+        return type;
     }
 
     @Override
     protected void initData() {
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mPresenter.getBalance()));
+        type = getArguments().getString(TYPE, "");
+        parent_id = getArguments().getLong(PARENT_ID, -1L);
+        parent_id = getArguments().getLong(CHILD_ID, -1L);
+        mBlance = mPresenter.getBalance();
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f,mBlance));
     }
 
     @Override
@@ -93,7 +110,7 @@ public class InfoTopFragment extends TSFragment<InfoTopContract.Presenter> imple
 
     @Override
     public boolean insufficientBalance() {
-        return mPresenter.getBalance() < mCurrentDays * mInputMoney;
+        return mBlance < mCurrentDays * mInputMoney;
     }
 
     @Override
@@ -129,6 +146,12 @@ public class InfoTopFragment extends TSFragment<InfoTopContract.Presenter> imple
         }
     }
 
+    @Override
+    public void updateBalance(double balance) {
+        mBlance = balance;
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, balance));
+    }
+
     private void initListener() {
         mRbDaysGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
@@ -158,13 +181,19 @@ public class InfoTopFragment extends TSFragment<InfoTopContract.Presenter> imple
 
         RxTextView.textChanges(mEtTopTotal)
                 .compose(this.bindToLifecycle())
-                .subscribe(charSequence -> mBtTop.setText(getString(mPresenter.getBalance() < mCurrentDays * mInputMoney
+                .subscribe(charSequence -> mBtTop.setText(getString(mBlance < mCurrentDays * mInputMoney
                         ? R.string.to_recharge : R.string.sure)));
 
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> mPresenter.stickTop(getArguments().getLong(NEWSID)));
+                .subscribe(aVoid -> {
+                    if (child_id > 0) {
+                        mPresenter.stickTop(parent_id, child_id);
+                    } else {
+                        mPresenter.stickTop(parent_id);
+                    }
+                });
     }
 
     private void initSelectDays(List<Integer> mSelectDays) {
