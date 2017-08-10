@@ -64,7 +64,7 @@ public class InfoListPresenter extends AppBasePresenter<InfoMainContract.Reposit
 
     @Override
     public List<RealAdvertListBean> getListAdvert() {
-        return mAllAdvertListBeanGreenDao.getInfoBannerAdvert().getMRealAdvertListBeen();
+        return mAllAdvertListBeanGreenDao.getInfoListAdvert().getMRealAdvertListBeen();
     }
 
     @Override
