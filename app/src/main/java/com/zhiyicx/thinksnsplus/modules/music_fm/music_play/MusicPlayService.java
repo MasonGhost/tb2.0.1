@@ -182,7 +182,7 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
             mQueueManager.setMusicProvider(mMusicProvider);
             mLocalPlayback.setMusicProvider(mMusicProvider);
             if (!tym.equals(MUSIC_ID)) {// 加入播放队列
-                mQueueManager.setQueueFromMusic(tym);
+                //mQueueManager.setQueueFromMusic(tym);
             }
         }
 

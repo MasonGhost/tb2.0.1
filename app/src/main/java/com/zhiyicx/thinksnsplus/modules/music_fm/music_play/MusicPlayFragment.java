@@ -285,10 +285,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 }
             };
 
-    private MusicAlbumDetailsBean mAlbumDetailsBean;
-
-
-
     public static MusicPlayFragment newInstance(Bundle args) {
         MusicPlayFragment fragment = new MusicPlayFragment();
         fragment.setArguments(args);
@@ -401,17 +397,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     public void refreshData(int position) {
         popAdapter.notifyItemChanged(position);
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
-        String id = MediaIDHelper.createMediaID("" + getListDatas().get(position).getId(),
-                MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-        bundle.putString(MUSIC_ID, id);
-
-        MediaControllerCompat controller = getActivity()
-                .getSupportMediaController();
-        controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
-
     }
 
     @Override
@@ -909,7 +894,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
                 if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
                     initMusicCenterPopWindow(position, item.getStorage().getAmount(),
-                            item.getStorage().getPaid_node(), R.string.buy_pay_music_ablum_desc);
+                            item.getStorage().getPaid_node(), R.string.buy_pay_single_music_desc);
                     return;
                 }
 

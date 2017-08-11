@@ -69,7 +69,9 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_TOLL;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT;
@@ -140,8 +142,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private MusicAlbumListBean mMusicAlbumListBean;
     private MusicAlbumDetailsBean mAlbumDetailsBean;
     private PayPopWindow mPayMusicPopWindow;
-
-    private boolean toll = false;
 
     /**
      * 音乐切换回掉
@@ -401,7 +401,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     public void onConnected() {
-        if (isDetached() || toll) {
+        if (isDetached()) {
             return;
         }
         mMediaId = getMediaId();
@@ -683,8 +683,33 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         musicsBean.setComment_count(e_albumListBean.getComment_count());
                         musicsBean.setStorage(e_albumListBean.getStorage());
                     });
+
         }
         LogUtils.d("EVENT_MUSIC_LIKE");
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_TOLL, mode = ThreadMode.MAIN)
+    public void onTollUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
+        if (mAlbumDetailsBean != null) {
+            Observable.from(mAlbumDetailsBean.getMusics())
+                    .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                    .subscribe(musicsBean -> {
+                        musicsBean.setHas_like(e_albumListBean.isHas_like());
+                        musicsBean.setComment_count(e_albumListBean.getComment_count());
+                        musicsBean.setStorage(e_albumListBean.getStorage());
+                    });
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+            String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
+                    MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+            bundle.putString(MUSIC_ID, id);
+
+            MediaControllerCompat controller = getActivity()
+                    .getSupportMediaController();
+            controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+        }
+        LogUtils.d("EVENT_MUSIC_TOLL");
     }
 
     @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)

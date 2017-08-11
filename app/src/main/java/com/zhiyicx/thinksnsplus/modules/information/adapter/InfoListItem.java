@@ -59,7 +59,8 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                         .override(w, h)
                         .into(imageView);
                 holder.itemView.setOnClickListener(v ->
-                        CustomWEBActivity.startToWEBActivity(imageView.getContext(), realData.getCreated_at(), realData.getTitle())
+                        CustomWEBActivity.startToWEBActivity(imageView.getContext(), realData.getUpdated_at()
+                                , realData.getTitle())
                 );
             }
         } else {
@@ -80,7 +81,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                 realData.getAuthor() : realData.getFrom();
         String infoData = String.format(title.getContext().getString(R.string.info_list_count)
                 , from, realData.getHits(), TimeUtils.getTimeFriendlyNormal(realData
-                        .getUpdated_at()));
+                        .getCreated_at()));
         holder.setText(R.id.item_info_timeform, infoData);
         // 是否置顶
         holder.setVisible(R.id.tv_top_flag, realData.isTop() ? View.VISIBLE : View.GONE);
