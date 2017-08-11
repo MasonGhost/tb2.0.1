@@ -251,6 +251,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                     .with(getActivity())
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
                     .item2ClickListener(() -> {// 个人认证
+                        mCertificationAlertPopWindow.hide();
                         Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putInt(BUNDLE_TYPE, 0);
