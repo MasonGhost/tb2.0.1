@@ -15,25 +15,26 @@
 
         <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
             android:id="@+id/tv_toolbar_center"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/tv_toolbar_left"
+            android:layout_toLeftOf="@id/tv_toolbar_right_two"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="@dimen/toolbar_center_margin"
-            android:layout_marginRight="@dimen/toolbar_center_margin"
-            android:drawableLeft="@mipmap/pic_default_portrait1"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:drawableLeft="@mipmap/search_icon_search"
             android:drawablePadding="@dimen/spacing_small"
-            android:ellipsize="end"
-            android:gravity="center"
+            android:gravity="start|center"
             android:maxLines="1"
             android:paddingBottom="@dimen/divider_line"
             android:paddingLeft="@dimen/toolbar_padding_left"
+            android:background="@drawable/info_search_bg"
             android:paddingRight="@dimen/toolbar_padding_right"
-            android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_sub_title"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_icon_assist"
             app:compoundDrawableHeight="@dimen/headpic_for_assist"
             app:compoundDrawableWidth="@dimen/headpic_for_assist"
-            tools:text="中间"
+            android:text="@string/info_search"
             />
 
         <TextView
@@ -48,9 +49,20 @@
             android:paddingRight="@dimen/toolbar_padding_right"
             android:textColor="@color/toolbar_text_corlor_normal"
             android:textSize="@dimen/toolbar_left_text_size"
-            tools:text="左边"
             />
-
+        <ImageView
+            android:id="@+id/tv_toolbar_right_two"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/tv_toolbar_right"
+            android:drawablePadding="@dimen/spacing_small"
+            android:gravity="center"
+            android:paddingBottom="@dimen/divider_line"
+            android:paddingLeft="@dimen/toolbar_padding_left"
+            android:paddingRight="@dimen/toolbar_padding_right"
+            android:textSize="@dimen/toolbar_right_text_size"
+            android:src="@mipmap/find_ico_contacts"
+            />
         <TextView
             android:id="@+id/tv_toolbar_right"
             android:layout_width="wrap_content"
@@ -60,12 +72,11 @@
             android:drawablePadding="@dimen/spacing_small"
             android:gravity="center"
             android:paddingBottom="@dimen/divider_line"
-            android:paddingLeft="@dimen/toolbar_padding_left"
             android:paddingRight="@dimen/toolbar_padding_right"
-            android:textColor="@color/selector_theme_color_toolbar_text_color"
-            android:textSize="@dimen/toolbar_right_text_size"
-            android:visibility="invisible"
-            tools:text="右边"
+            android:textColor="@color/important_for_content"
+            android:drawableLeft="@mipmap/find_ico_location"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="选择城市"
             />
 
         <View

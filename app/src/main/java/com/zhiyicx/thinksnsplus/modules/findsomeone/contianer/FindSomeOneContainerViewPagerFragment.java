@@ -30,6 +30,11 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected int setLeftImg() {
+        return 0;
+    }
+
+    @Override
     protected void initData() {
     }
 
