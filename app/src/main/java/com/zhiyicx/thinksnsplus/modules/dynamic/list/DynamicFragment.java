@@ -773,9 +773,9 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
 
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string
+                .item2Str(getString(feedIdIsNull ? R.string.empty : R.string
                         .dynamic_list_share_dynamic))
-                .item2Str(getString(feedIdIsNull ? R.string.empty :
+                .item1Str(getString(feedIdIsNull ? R.string.empty :
                         (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string
                                 .dynamic_list_collect_dynamic)))
                 // 付费评论功能 移除
@@ -788,13 +788,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 分享
+                .item2ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(dynamicBean, shareBitMap);
                     mMyDynamicPopWindow.hide();
 
 
                 })
-                .item2ClickListener(() -> {// 收藏
+                .item1ClickListener(() -> {// 收藏
                     mPresenter.handleCollect(dynamicBean);
                     mMyDynamicPopWindow.hide();
                     showBottomView(true);
