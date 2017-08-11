@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.contianer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.search.name.SearchSomeOneActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,6 +73,8 @@ public class FindSomeOneContainerFragment extends TSFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_center:
+                startActivity(new Intent(getActivity(),SearchSomeOneActivity.class));
+
                 break;
             case R.id.tv_toolbar_right_two:
                 break;

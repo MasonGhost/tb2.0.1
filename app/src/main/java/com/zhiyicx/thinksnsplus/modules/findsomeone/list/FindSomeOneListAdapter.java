@@ -33,12 +33,10 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class FindSomeOneListAdapter extends CommonAdapter<UserInfoBean> {
-    private int pageType;
     private FindSomeOneListContract.Presenter mPresenter;
 
-    public FindSomeOneListAdapter(Context context, int layoutId, List<UserInfoBean> datas, int pageType, FindSomeOneListContract.Presenter presenter) {
+    public FindSomeOneListAdapter(Context context, int layoutId, List<UserInfoBean> datas, FindSomeOneListContract.Presenter presenter) {
         super(context, layoutId, datas);
-        this.pageType = pageType;
         this.mPresenter = presenter;
     }
 

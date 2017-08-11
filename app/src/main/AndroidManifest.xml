@@ -444,6 +444,9 @@
         <activity
             android:name=".modules.findsomeone.contianer.FindSomeOneContainerActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.findsomeone.search.name.SearchSomeOneActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 
