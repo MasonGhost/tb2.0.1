@@ -43,9 +43,9 @@ public class CollectInformationListFragment extends InfoListFragment {
 
     @Override
     public void handleCollectInfo(InfoListDataBean info) {
-        int isCollect = info.getIs_collection_news();
+        boolean isCollect = info.getHas_collect();
         // 存在这样的动态
-        if (isCollect == 0) {// 取消收藏
+        if (isCollect) {// 取消收藏
             mListDatas.remove(info);
         } else {
             mListDatas.add(info);

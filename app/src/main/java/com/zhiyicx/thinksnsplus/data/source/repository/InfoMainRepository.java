@@ -66,4 +66,14 @@ public class InfoMainRepository extends BaseInfoRepository implements InfoMainCo
                 return mInfoMainClient.getInfoList(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page);
         }
     }
+
+    @Override
+    public Observable<List<InfoListDataBean>> getInfoListV2(String cate_id, String key, long max_id, long page, int isRecommend) {
+        switch (cate_id) {
+            case ApiConfig.INFO_TYPE_COLLECTIONS:
+                return getCollectionListV2(max_id);
+            default:
+                return super.getInfoListV2(cate_id, key, max_id, page, isRecommend);
+        }
+    }
 }

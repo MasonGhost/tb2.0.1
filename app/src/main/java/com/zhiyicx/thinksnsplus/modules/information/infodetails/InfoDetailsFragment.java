@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -250,7 +251,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void setCollect(boolean isCollected) {
-        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
+//        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
     }
 
     @Override
@@ -291,6 +292,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void refreshData() {
         super.refreshData();
+        mAdapter.notifyDataSetChanged();
         mInfoDetailHeader.updateCommentView(mInfoMation);
     }
 
@@ -491,8 +493,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            if (mListDatas.get(position) instanceof InfoCommentListBean) {
-                InfoCommentListBean infoCommentListBean = (InfoCommentListBean) mListDatas.get(position);
+            position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+            InfoCommentListBean infoCommentListBean = mListDatas.get(position);
+            if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getComment_content())) {
                 if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
                         .getUser_id()) {// 自己的评论
 //                if (mListDatas.get(position).getId() != -1) {
