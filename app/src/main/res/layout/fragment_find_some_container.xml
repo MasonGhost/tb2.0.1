@@ -2,40 +2,16 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_height="@dimen/toolbar_height">
-
-        <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
-            android:id="@+id/tv_toolbar_center"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/tv_toolbar_left"
-            android:layout_toLeftOf="@id/tv_toolbar_right_two"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginBottom="@dimen/spacing_small"
-            android:drawableLeft="@mipmap/search_icon_search"
-            android:drawablePadding="@dimen/spacing_small"
-            android:gravity="start|center"
-            android:maxLines="1"
-            android:paddingBottom="@dimen/divider_line"
-            android:paddingLeft="@dimen/toolbar_padding_left"
-            android:background="@drawable/info_search_bg"
-            android:paddingRight="@dimen/toolbar_padding_right"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_icon_assist"
-            app:compoundDrawableHeight="@dimen/headpic_for_assist"
-            app:compoundDrawableWidth="@dimen/headpic_for_assist"
-            android:text="@string/info_search"
-            />
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/tv_toolbar_left"
@@ -50,6 +26,7 @@
             android:textColor="@color/toolbar_text_corlor_normal"
             android:textSize="@dimen/toolbar_left_text_size"
             />
+
         <ImageView
             android:id="@+id/tv_toolbar_right_two"
             android:layout_width="wrap_content"
@@ -60,24 +37,50 @@
             android:paddingBottom="@dimen/divider_line"
             android:paddingLeft="@dimen/toolbar_padding_left"
             android:paddingRight="@dimen/toolbar_padding_right"
-            android:textSize="@dimen/toolbar_right_text_size"
             android:src="@mipmap/find_ico_contacts"
+            android:textSize="@dimen/toolbar_right_text_size"
             />
+
         <TextView
             android:id="@+id/tv_toolbar_right"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_gravity="right"
+            android:drawableLeft="@mipmap/find_ico_location"
             android:drawablePadding="@dimen/spacing_small"
             android:gravity="center"
             android:paddingBottom="@dimen/divider_line"
             android:paddingRight="@dimen/toolbar_padding_right"
             android:textColor="@color/important_for_content"
-            android:drawableLeft="@mipmap/find_ico_location"
             android:textSize="@dimen/size_icon_assist"
-            tools:text="选择城市"
+            android:text="@string/choose_city"
             />
+
+        <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
+            android:id="@+id/tv_toolbar_center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
+            android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+            android:layout_toLeftOf="@id/tv_toolbar_right_two"
+            android:layout_toRightOf="@id/tv_toolbar_left"
+            android:background="@drawable/info_search_bg"
+            android:drawableLeft="@mipmap/search_icon_search"
+            android:drawablePadding="@dimen/spacing_small"
+            android:gravity="start|center"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/divider_line"
+            android:paddingLeft="@dimen/toolbar_padding_left"
+            android:paddingRight="@dimen/toolbar_padding_right"
+            android:text="@string/info_search"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_icon_assist"
+            app:compoundDrawableHeight="@dimen/headpic_for_assist"
+            app:compoundDrawableWidth="@dimen/headpic_for_assist"
+            />
+
 
         <View
             android:id="@+id/v_horizontal_line"

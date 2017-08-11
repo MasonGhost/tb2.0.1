@@ -1,11 +1,19 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.contianer;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * @Describe
@@ -15,6 +23,9 @@ import com.zhiyicx.thinksnsplus.R;
  */
 public class FindSomeOneContainerFragment extends TSFragment {
 
+
+    @BindView(R.id.tv_toolbar_right)
+    TextView mTvToolbarRight;
 
     public static FindSomeOneContainerFragment newInstance(Bundle bundle) {
         FindSomeOneContainerFragment findSomeOneContainerFragment = new FindSomeOneContainerFragment();
@@ -53,14 +64,18 @@ public class FindSomeOneContainerFragment extends TSFragment {
     }
 
     private void initListener() {
-        // 退出登录
-//        RxView.clicks(mBtLoginOut)
-//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                .compose(this.bindToLifecycle())
-//                .subscribe(aVoid -> {
-//                    initLoginOutPopupWindow();
-//                    mLoginoutPopupWindow.show();
-//                });
     }
 
+
+    @OnClick({R.id.tv_toolbar_center, R.id.tv_toolbar_right_two, R.id.tv_toolbar_right})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_toolbar_center:
+                break;
+            case R.id.tv_toolbar_right_two:
+                break;
+            case R.id.tv_toolbar_right:
+                break;
+        }
+    }
 }

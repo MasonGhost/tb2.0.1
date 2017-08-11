@@ -452,5 +452,6 @@
     <!--找人-->
     <string name="find_someone">找人</string>
     <string name="neary_by">附近</string>
+    <string name="choose_city">选择城市</string>
 
 </resources>
