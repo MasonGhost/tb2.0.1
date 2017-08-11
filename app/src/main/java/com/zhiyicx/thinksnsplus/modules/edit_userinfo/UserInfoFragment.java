@@ -586,16 +586,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         }
         if (cityChanged) {
             fieldMap.put(USER_LOCATION, mCurrentShowLocation);
-//            fieldMap.put(USER_PROVINCE, options1Items.get(mCityOption1).getPickerViewText());// 省
-//            String city = options2Items.get(mCityOption1).get(mCityOption2).getPickerViewText();
-//            if (locationLevel == LOCATION_2LEVEL) {
-//                fieldMap.put(USER_CITY, city);// 市
-//            } else if (locationLevel == LOCATION_3LEVEL) {
-//                fieldMap.put(USER_CITY, city);// 市
-//                String area = options3Items.get(mCityOption1).get(mCityOption2).get(mCityOption3)
-//                        .getPickerViewText();
-//                fieldMap.put(USER_AREA, area);// 区
-//            }
         }
         if (introduceChanged) {
             fieldMap.put(USER_INTRO, mEtUserIntroduce.getInputContent());
