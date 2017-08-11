@@ -14,6 +14,7 @@ android {
         manifestPlaceholders = [
                 TECENT_APPID: 1105978541,
                 UMENG_APPKEY: "58d0998e9f06fd05680011f6",
+                AMAP_APPKEY: "e954e82021efe2f4d334879cff3880cf",
         ]
 
     }
@@ -81,6 +82,7 @@ dependencies {
 
     }
     compile dataDependences.umeng
+    compile dataDependences.amapLocation
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     annotationProcessor dataDependences.daggerCompiler

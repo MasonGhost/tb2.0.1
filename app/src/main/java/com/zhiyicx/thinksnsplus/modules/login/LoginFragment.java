@@ -109,6 +109,12 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         if (mIsToourist || !mPresenter.istourist()) {
             setLeftTextColor(R.color.themeColor);
         }
+        mRxPermissions.setLogging(true); //是否需要日志
+        mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                .subscribe(aBoolean -> {
+                    System.out.println("aBoolean = " + aBoolean);
+                });
+
     }
 
     private void initListener() {

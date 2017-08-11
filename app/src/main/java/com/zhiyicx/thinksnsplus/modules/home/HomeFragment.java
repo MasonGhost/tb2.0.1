@@ -12,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -21,6 +25,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -108,6 +113,12 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private CheckInPopWindow mCheckInPopWindow; // 签到弹窗
 
 
+    //声明AMapLocationClientOption对象
+    public AMapLocationClientOption mLocationOption = null;
+    //声明定位回调监听器
+    private AMapLocationClient mLocationClient;
+
+
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
@@ -166,6 +177,51 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         setCurrentPage();
         // 支持魅族手机首页状太栏文字白色问题
         supportFlymeSutsusbar();
+        //初始化定位
+
+        //初始化AMapLocationClientOption对象
+        mLocationOption = new AMapLocationClientOption();
+
+//设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+
+
+//获取一次定位结果：
+//该方法默认为false。
+        mLocationOption.setOnceLocation(true);
+
+//获取最近3s内精度最高的一次定位结果：
+//设置setOnceLocationLatest(boolean b)接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果。如果设置其为true，setOnceLocation(boolean b)接口也会被设置为true，反之不会，默认为false。
+        mLocationOption.setOnceLocationLatest(true);
+//设置是否返回地址信息（默认返回地址信息）
+        mLocationOption.setNeedAddress(true);
+        mLocationClient = new AMapLocationClient(getContext());
+        //给定位客户端对象设置定位参数
+        mLocationClient.setLocationOption(mLocationOption);
+//启动定位
+        mLocationClient.startLocation();
+        //可以通过类implement方式实现AMapLocationListener接口，也可以通过创造接口类对象的方法实现
+//以下为后者的举例：
+
+        AMapLocationListener mAMapLocationListener = new AMapLocationListener() {
+            @Override
+            public void onLocationChanged(AMapLocation aMapLocation) {
+                if (aMapLocation != null) {
+                    if (aMapLocation.getErrorCode() == 0) {
+//可在其中解析amapLocation获取相应内容。
+                        System.out.println("1 = " + aMapLocation.getAddress());
+                        System.out.println("2 = " + aMapLocation.getCity());
+                    } else {
+                        //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                        System.out.println("AmapError"+"location Error, ErrCode:"
+                                + aMapLocation.getErrorCode() + ", errInfo:"
+                                + aMapLocation.getErrorInfo());
+                    }
+                }
+
+            }
+        };
+        mLocationClient.setLocationListener(mAMapLocationListener);
     }
 
     private void supportFlymeSutsusbar() {
