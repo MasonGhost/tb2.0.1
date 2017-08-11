@@ -15,7 +15,6 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepos
 public interface QA$RewardContract {
 
     interface View extends IBaseView<Presenter>{
-        void setSelectResult(ExpertBean expertBean);
     }
 
     interface Presenter extends IBasePresenter{

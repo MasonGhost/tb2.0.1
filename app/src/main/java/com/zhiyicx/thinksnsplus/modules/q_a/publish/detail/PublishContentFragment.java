@@ -78,11 +78,6 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Override
-    protected String setLeftTitle() {
-        return getString(R.string.cancel);
-    }
-
-    @Override
     protected String setRightTitle() {
         return getString(R.string.qa_publish_next);
     }
@@ -93,8 +88,12 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
-        AndroidBug5497Workaround.assistActivity(getActivity());
         mToolbarRight.setEnabled(false);
         initLisenter();
     }

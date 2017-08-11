@@ -4,10 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -21,25 +18,23 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
-
-import org.simple.eventbus.Subscriber;
+import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.usertag.TagFrom.QA_PUBLISH;
 
 /**
  * @author Catherine
@@ -144,9 +139,24 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected void setRightClick() {
         // 重置
         resetValue();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TagFrom.QA_PUBLISH.id) {// 选择专家
+            ExpertBean expertBean = data.getExtras().getParcelable(BUNDLE_RESULT);
+            mBtQaSelectExpert.setRightText(expertBean.getName());
+            mQAPublishBean.setInvitations(expertBean.getId() + "");
+        }
     }
 
     private void initDefaultMoney() {
@@ -170,7 +180,7 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
 
     }
 
-    private void initAlertPopupWindow(){
+    private void initAlertPopupWindow() {
         if (mRulePop != null) {
             return;
         }
@@ -198,6 +208,9 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
         RxRadioGroup.checkedChanges(mRbDaysGroup)
                 .compose(this.bindToLifecycle())
                 .subscribe(checkedId -> {
+                    if (checkedId != -1) {
+                        resetRewardInput();
+                    }
                     switch (checkedId) {
                         case R.id.rb_one:
                             mRewardMoney = mRewardLabels.get(0);
@@ -210,7 +223,6 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
                             break;
                     }
                     if (checkedId != -1) {
-                        resetRewardInput();
                         configSureButton();
                     }
                 });
@@ -218,6 +230,9 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
         RxRadioGroup.checkedChanges(mRbOnlookersDaysGroup)
                 .compose(this.bindToLifecycle())
                 .subscribe(checkedId -> {
+                    if (checkedId != -1) {
+                        resetOnlookerInput();
+                    }
                     switch (checkedId) {
                         case R.id.rb_onlookers_one:
                             mOnLookerMoney = mOnLookerLabels.get(0);
@@ -230,7 +245,6 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
                             break;
                     }
                     if (checkedId != -1) {
-                        resetOnlookerInput();
                         configSureButton();
                     }
                 });
@@ -270,13 +284,14 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
         // 邀请开关
         mWcInvite.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mBtQaSelectExpert.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            mRlOnlooker.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             resetExpert();
             configSureButton();
         });
         // 围观开关
         mWcOnlooker.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mLlOnlookerSetCustomMoney.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            mLlQaSetOnlookersMoney.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+//            mLlOnlookerSetCustomMoney.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+//            mLlQaSetOnlookersMoney.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             // 关闭之后 重置围观的数据
             if (!isChecked) {
                 resetOnLookerMoney();
@@ -289,13 +304,20 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
                 .subscribe(aVoid -> {
                     // 跳转搜索选择专家列表
                     Intent intent = new Intent(getActivity(), ExpertSearchActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, QA_PUBLISH.id);
                 });
         RxView.clicks(mBtPublish)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 发布
+                    try {
+                        mQAPublishBean.setAmount(mRewardMoney);
+                        mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
+                        mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                 });
         RxView.clicks(mTvRewardRule)
@@ -342,14 +364,14 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
     /**
      * 重置悬赏金额输入框，在选择默认三个时调用
      */
-    private void resetRewardInput(){
+    private void resetRewardInput() {
         mEtInput.setText("");
     }
 
     /**
      * 重置围观金额，选择了默认三个时调用
      */
-    private void resetOnlookerInput(){
+    private void resetOnlookerInput() {
         mEtOnlookerInput.setText("");
     }
 
@@ -365,9 +387,9 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
         if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
             isEnable = false;
         }
-        // 围观都要收钱
+        // 围观都要收钱,但是收多少已经不是我能管的了QwQ.
         if (mWcOnlooker.isChecked() && mOnLookerMoney <= 0) {
-            isEnable = false;
+            //isEnable = false;
         }
         mBtPublish.setEnabled(isEnable);
     }
@@ -386,10 +408,4 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
         return true;
     }
 
-    @Override
-    public void setSelectResult(ExpertBean expertBean) {
-        if (expertBean != null){
-            mBtQaSelectExpert.setRightText(expertBean.getName());
-        }
-    }
 }

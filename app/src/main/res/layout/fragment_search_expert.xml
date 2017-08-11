@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -30,10 +31,7 @@
                 android:layout_marginLeft="@dimen/spacing_normal"
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:layout_marginTop="@dimen/spacing_small"
-                android:layout_toEndOf="@+id/fragment_search_back"
-                android:layout_toLeftOf="@+id/fragment_search_cancle"
-                android:layout_toRightOf="@+id/fragment_search_back"
-                android:layout_toStartOf="@+id/fragment_search_cancle"
+                android:layout_toLeftOf="@+id/fragment_info_search_cancle"
                 android:background="@drawable/expert_search_bg"
                 android:imeOptions="actionSearch"
                 android:paddingEnd="@dimen/spacing_mid"
@@ -48,19 +46,19 @@
                 android:hint="@string/info_search"/>
 
         <TextView
-                android:id="@+id/fragment_info_search_cancle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:clickable="false"
-                android:gravity="center"
-                android:paddingEnd="@dimen/spacing_normal"
-                android:paddingRight="@dimen/spacing_normal"
-                android:text="@string/info_cancle"
-                android:textColor="@color/important_for_theme"
-                android:textSize="@dimen/size_sub_title"
-                android:visibility="visible"/>
+            android:id="@+id/fragment_info_search_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:clickable="false"
+            android:gravity="center"
+            android:paddingEnd="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
+            android:text="@string/info_cancle"
+            android:textColor="@color/important_for_theme"
+            android:textSize="@dimen/size_sub_title"
+            android:visibility="visible"/>
 
         <View
                 android:layout_alignParentBottom="true"
