@@ -177,13 +177,23 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
         String tym = extras.getString(MUSIC_ID, MUSIC_ID);
         if (musicAblum != null) {
             MusicProvider newMusicProvider = new MusicProvider(new MusicDataConvert(musicAblum));
-            newMusicProvider.retrieveMediaAsync(null);
-            mMusicProvider = newMusicProvider;
-            mQueueManager.setMusicProvider(mMusicProvider);
-            mLocalPlayback.setMusicProvider(mMusicProvider);
-            if (!tym.equals(MUSIC_ID)) {// 加入播放队列
-                //mQueueManager.setQueueFromMusic(tym);
+            newMusicProvider.retrieveMediaAsync(success -> {
+                mMusicProvider = newMusicProvider;
+                mQueueManager.setMusicProvider(mMusicProvider);
+                mLocalPlayback.setMusicProvider(mMusicProvider);
+                if (!tym.equals(MUSIC_ID)) {// 加入播放队列
+                    mQueueManager.setQueueFromMusic(tym);
+                }
+            });
+            if (newMusicProvider.isInitialized()){
+                mMusicProvider = newMusicProvider;
+                mQueueManager.setMusicProvider(mMusicProvider);
+                mLocalPlayback.setMusicProvider(mMusicProvider);
+                if (!tym.equals(MUSIC_ID)) {// 加入播放队列
+                    mQueueManager.setQueueFromMusic(tym);
+                }
             }
+
         }
 
     }

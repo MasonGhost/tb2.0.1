@@ -131,6 +131,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private Bitmap mBgBitmap;
 
     private String mMediaId;
+    private String mMediaId_test;
     private Palette mPalette;
 
     public static final int STATE_NONE = 0;
@@ -283,6 +284,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         closeLoadingView();
         mAlbumDetailsBean = musicAblum;
+        // 模拟测试数据，这个音乐播放我也不知道要怎么，一会儿好一会儿坏
+//        MusicAlbumDetailsBean.MusicsBean.MusicsBeanIdStorage storage=new
+//                MusicAlbumDetailsBean.MusicsBean.MusicsBeanIdStorage();
+//        storage.setAmount(10);
+//        storage.setId(112);
+//        storage.setPaid(false);
+//        musicAblum.getMusics().get(0).setStorage(storage);
         mAdapter.dataChange(musicAblum.getMusics());
         WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();
         ablumHeadInfo.setCommentCount(musicAblum.getComment_count());
@@ -475,7 +483,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
                     if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
                         initMusicCenterPopWindow(position, item.getStorage().getAmount(),
-                                item.getStorage().getPaid_node(), R.string.buy_pay_music_ablum_desc);
+                                item.getStorage().getPaid_node(), R.string.buy_pay_single_music_desc);
                         return;
                     }
 
@@ -502,6 +510,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                             .getSupportMediaController();
                     String id = MediaIDHelper.createMediaID("" + item.getId(),
                             MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+                    mMediaId_test=id;
                     controllerCompat.getTransportControls()
                             .playFromMediaId(id, null);
 
@@ -703,7 +712,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
             String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
                     MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-            bundle.putString(MUSIC_ID, id);
+            bundle.putString(MUSIC_ID, mMediaId_test);
 
             MediaControllerCompat controller = getActivity()
                     .getSupportMediaController();
