@@ -9,10 +9,10 @@ import java.util.List;
 import rx.Observable;
 
 /**
- * @author LiuChao
- * @describe
- * @date 2017/2/13
- * @contact email:450127106@qq.com
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/8/11
+ * @Contact master.jungle68@gmail.com
  */
 
 public interface FindSomeOneListContract {
@@ -38,12 +38,9 @@ public interface FindSomeOneListContract {
          *
          * @param maxId
          * @param isLoadMore
-         * @param userId     用户id
          * @param pageType   详见FollowFansListFragment.class定义的页面类型
          */
-        void requestNetData(Long maxId, boolean isLoadMore, long userId, int pageType);
-
-        List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType);
+        void requestNetData(Long maxId, boolean isLoadMore,int pageType);
 
         /**
          * 关注用户
@@ -55,21 +52,10 @@ public interface FindSomeOneListContract {
 
         void cancleFollowUser(int index, UserInfoBean followFansBean);
 
-        /**
-         * 清除新 fans 数量
-         */
-        void cleanNewFans();
     }
 
     interface Repository {
 
-        Observable<List<UserInfoBean>> getFollowListFromNet(long userId, int maxId);
-
-        Observable<List<UserInfoBean>> getFansListFromNet(long userId, int maxId);
-
-        Observable<Object> followUser(long followedId);
-
-        Observable<Object> cancleFollowUser(long followedId);
 
     }
 

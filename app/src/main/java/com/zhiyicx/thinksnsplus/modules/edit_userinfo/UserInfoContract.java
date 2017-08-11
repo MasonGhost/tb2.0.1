@@ -18,10 +18,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
 
 /**
  * @author LiuChao
@@ -208,6 +216,45 @@ public interface UserInfoContract {
          * @return
          */
         Observable<Object> deleteTag(long tag_id);
+
+        /*******************************************  找人  *********************************************/
+
+
+        /**
+         * 热门用户
+         *
+         * @param limit  每页数量
+         * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+         * @return
+         */
+        Observable<List<UserInfoBean>> getHotUsers( Integer limit,Integer offset);
+
+        /**
+         * 最新用户
+         *
+         * @param limit  每页数量
+         * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+         * @return
+         */
+        Observable<List<UserInfoBean>> getNewUsers(Integer limit,Integer offset);
+
+        /**
+         * tag 推荐用户
+         *
+         * @param limit  每页数量
+         * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+         * @return
+         */
+        Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit,  Integer offset);
+
+        /**
+         * phone 推荐用户
+         * <p>
+         * { "phones": [ 18877778888, 18999998888, 17700001111 ] }
+         *
+         * @return
+         */
+        Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<Integer> phones);
     }
 
     interface Presenter extends IBasePresenter {

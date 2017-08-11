@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.list;
 
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -26,6 +27,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 
+import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_HOT;
+import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_NEARBY;
+import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_NEW;
+import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_RECOMMENT;
+
 /**
  * @author LiuChao
  * @describe
@@ -47,8 +53,6 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
     @Inject
     FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
-    private int mPageType;
-    private long mUserId;
 
     @Inject
     public FindSomeOneListPresenter(FindSomeOneListContract.Repository repository,
@@ -77,15 +81,25 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
     }
 
     @Override
-    public void requestNetData(final Long maxId, final boolean isLoadMore, final long userId, final int pageType) {
-        this.mUserId = userId;
-        this.mPageType = pageType;
+    public void requestNetData(final Long maxId, final boolean isLoadMore, final int pageType) {
         Observable<List<UserInfoBean>> observable = null;
-        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            observable = mRepository.getFollowListFromNet(userId, maxId.intValue());
-        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            observable = mRepository.getFansListFromNet(userId, maxId.intValue());
+
+        switch (pageType){
+            case TYPE_HOT:
+                observable=mUserInfoRepository.getHotUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
+                break;
+
+            case TYPE_NEW:
+                observable=mUserInfoRepository.getNewUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
+                break;
+            case TYPE_RECOMMENT:
+                observable=mUserInfoRepository.getUsersRecommentByTag(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
+                break;
+            case TYPE_NEARBY:
+                observable=mUserInfoRepository.getHotUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
+                break;
         }
+
         Subscription subscription = observable
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
@@ -109,20 +123,6 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
     }
 
     @Override
-    public List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore, long userId, int pageType) {
-        List<UserInfoBean> followFansBeanList = null;
-        if(userId!= AppApplication.getmCurrentLoginAuth().getUser_id()){
-            return null;
-        }
-        if (pageType == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE) {
-            followFansBeanList = mUserInfoBeanGreenDao.getFollowingUserInfo(maxId.intValue());
-        } else if (pageType == FollowFansListFragment.FANS_FRAGMENT_PAGE) {
-            followFansBeanList = mUserInfoBeanGreenDao.getFollowerUserInfo( maxId.intValue());
-        }
-        return followFansBeanList;
-    }
-
-    @Override
     public void followUser(int index, UserInfoBean followFansBean) {
         mUserInfoRepository.handleFollow(followFansBean);
         mRootView.upDateFollowFansState(index);
@@ -135,34 +135,5 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
         mRootView.upDateFollowFansState(index);
     }
 
-    @Override
-    public void cleanNewFans() {
-        mFlushMessageBeanGreenDao.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FOLLOWS);
-    }
-
-    @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)
-    public void upDateFollowState(UserInfoBean followFansBean) {
-        // 注意当前操作是在另一个页面订阅：如果我在粉丝页面点击关注按钮，当前订阅是在关注页面：
-        List<UserInfoBean> followFansBeanList = mRootView.getListDatas();
-        Iterator<UserInfoBean> iterator = followFansBeanList.iterator();
-        int position = 0;
-        while (iterator.hasNext()) {
-            UserInfoBean userInfoBean = iterator.next();
-            // 如果粉丝（关注）列表中存在同样的用户，更新它
-            if (userInfoBean.getUser_id() == followFansBean.getUser_id()) {
-                // 更新内存数据
-                userInfoBean.setFollower(followFansBean.isFollower());
-                userInfoBean.setFollowing(followFansBean.isFollowing());
-                mRootView.upDateFollowFansState(position);
-                break;
-            }
-            // 遍历到最后一条数据，仍然不存在该用户，并且，当前订阅页面是关注页面，需要添加item
-            else if (position == followFansBeanList.size() - 1 && mRootView.getPageType() == FollowFansListFragment.FOLLOW_FRAGMENT_PAGE&&followFansBean.isFollower()) {
-                followFansBeanList.add(0, followFansBean);
-                mRootView.upDateFollowFansState();
-            }
-            position++;
-        }
-    }
 
 }

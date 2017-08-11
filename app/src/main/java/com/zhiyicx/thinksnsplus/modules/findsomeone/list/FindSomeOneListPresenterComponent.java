@@ -3,8 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.findsomeone.list;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListPresenterModule;
 
 import dagger.Component;
 

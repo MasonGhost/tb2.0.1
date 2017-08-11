@@ -1,18 +1,17 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.list;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.DaggerFollowFansListPresenterComponent;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListAdapter;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListPresenter;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListPresenterModule;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -37,12 +36,8 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     public static final String PAGE_TYPE = "page_type";
 
     @Inject
-    FollowFansListPresenter mFollowFansListPresenter;
+    FindSomeOneListPresenter mFollowFansListPresenter;
     private int pageType;// 页面类型，由上一个页面决定
-    private long userId;// 上一个页面传过来的用户id
-    //private AuthBean mAuthBean;
-
-    private boolean mIsVisibleToUser;//页面显示给用户
 
     @Override
     protected CommonAdapter<UserInfoBean> getAdapter() {
@@ -55,13 +50,21 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            pageType = getArguments().getInt(PAGE_TYPE, TYPE_HOT);
+        }
+    }
+
+    @Override
     protected void initView(View rootView) {
         DaggerFindSomeOneListPresenterComponent
                 .builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .findSomeOneListPresenterModule(new FindSomeOneListPresenterModule(FindSomeOneListFragment.this))
                 .build().inject(this);
-        pageType = getArguments().getInt(PAGE_TYPE, TYPE_HOT);
+
         //mAuthBean = AppApplication.getmCurrentLoginAuth();
         super.initView(rootView);
     }
@@ -69,7 +72,6 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        this.mIsVisibleToUser = isVisibleToUser;
 
     }
 
@@ -101,12 +103,7 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        mPresenter.requestNetData(maxId, isLoadMore, userId, pageType);
-    }
-
-    @Override
-    protected List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
-        return mPresenter.requestCacheData(maxId, isLoadMore, userId, pageType);
+        mPresenter.requestNetData(maxId, isLoadMore, pageType);
     }
 
     public static FindSomeOneListFragment initFragment(Bundle bundle) {
@@ -117,7 +114,7 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
 
     @Override
     public void upDateFollowFansState(int index) {
-            refreshData(index);
+        refreshData(index);
     }
 
     @Override
@@ -130,4 +127,14 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
         return pageType;
     }
 
+    /**
+     * 此时需要的是之前数据的总和 {@see offset https://github.com/slimkit/thinksns-plus/blob/master/docs/zh-CN/api2/find-users.md}
+     *
+     * @param data
+     * @return
+     */
+    @Override
+    protected Long getMaxId(@NotNull List<UserInfoBean> data) {
+        return Long.valueOf(data.size());
+    }
 }

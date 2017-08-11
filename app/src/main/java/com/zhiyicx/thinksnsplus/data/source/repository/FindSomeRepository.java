@@ -37,41 +37,4 @@ public class FindSomeRepository implements FindSomeOneListContract.Repository {
         mFollowFansClient = serviceManager.getFollowFansClient();
     }
 
-    @Override
-    public Observable<List<UserInfoBean>> getFollowListFromNet(final long userId, int maxId) {
-        // 将网络请求获取的数据，通过map转换
-        return mFollowFansClient.getUserFollowsList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
-                .map(userInfoBeen -> {
-                    // 保存用户信息
-                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
-                    return userInfoBeen;
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    @Override
-    public Observable<List<UserInfoBean>> getFansListFromNet(final long userId, int maxId) {
-        // 将网络请求获取的数据，通过map转换
-        return mFollowFansClient.getUserFansList(userId, maxId, TSListFragment.DEFAULT_PAGE_SIZE)
-                .map(userInfoBeen -> {
-                    // 保存用户信息
-                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeen);
-                    return userInfoBeen;
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-    }
-
-    @Override
-    public Observable<Object> followUser(long userId) {
-        return mFollowFansClient.followUser(userId);
-    }
-
-    @Override
-    public Observable<Object> cancleFollowUser(long userId) {
-        return mFollowFansClient.cancelFollowUser(userId);
-    }
-
 }

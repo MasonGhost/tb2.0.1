@@ -467,4 +467,56 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /*******************************************  找人  *********************************************/
+    /**
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getHotUsers(Integer limit, Integer offset) {
+        return mUserInfoClient.getHotUsers(limit,offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getNewUsers(Integer limit, Integer offset) {
+        return mUserInfoClient.getNewUsers(limit,offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset) {
+        return mUserInfoClient.getUsersRecommentByTag(limit,offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     *
+     * @param phones
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<Integer> phones) {
+        return mUserInfoClient.getUsersByPhone(phones)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 }
