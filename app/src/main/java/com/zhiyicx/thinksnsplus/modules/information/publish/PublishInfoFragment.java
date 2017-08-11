@@ -95,6 +95,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
     protected int setLeftImg() {
         return 0;
     }
