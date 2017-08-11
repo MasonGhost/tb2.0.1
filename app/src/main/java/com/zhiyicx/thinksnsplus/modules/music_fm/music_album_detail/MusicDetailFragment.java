@@ -143,6 +143,8 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private MusicAlbumDetailsBean mAlbumDetailsBean;
     private PayPopWindow mPayMusicPopWindow;
 
+    private boolean toll = false;
+
     /**
      * 音乐切换回掉
      */
@@ -402,15 +404,14 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     public void onConnected() {
-        if (isDetached()) {
+        if (isDetached() || toll) {
             return;
         }
         mMediaId = getMediaId();
         if (mMediaId == null) {
             mMediaId = mCompatProvider.getMediaBrowser().getRoot();
         }
-//        mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
-//        mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+
         MediaControllerCompat controller = getActivity()
                 .getSupportMediaController();
 
@@ -420,7 +421,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
                 controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
-                LogUtils.d("sendCustomAction:::+onConnected");
+                LogUtils.d("sendCustomAction:::onConnected");
 
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
@@ -691,26 +692,26 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Subscriber(tag = EVENT_MUSIC_TOLL, mode = ThreadMode.MAIN)
     public void onTollUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
-
-        Observable.from(mAlbumDetailsBean.getMusics())
-                .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
-                .subscribe(musicsBean -> {
-                    musicsBean.setHas_like(e_albumListBean.isHas_like());
-                    musicsBean.setComment_count(e_albumListBean.getComment_count());
-                    musicsBean.setStorage(e_albumListBean.getStorage());
-                });
         if (mAlbumDetailsBean != null) {
+            toll = true;
+            Observable.from(mAlbumDetailsBean.getMusics())
+                    .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                    .subscribe(musicsBean -> {
+                        musicsBean.setHas_like(e_albumListBean.isHas_like());
+                        musicsBean.setComment_count(e_albumListBean.getComment_count());
+                        musicsBean.setStorage(e_albumListBean.getStorage());
+                    });
+
             Bundle bundle = new Bundle();
             bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
             String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
                     MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-            bundle.putString(MUSIC_ID,id);
+            bundle.putString(MUSIC_ID, id);
+
             MediaControllerCompat controller = getActivity()
                     .getSupportMediaController();
             controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
 
-            mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
-            mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         }
         LogUtils.d("EVENT_MUSIC_TOLL");
     }

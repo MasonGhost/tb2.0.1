@@ -24,7 +24,11 @@ import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
+import org.simple.eventbus.EventBus;
+
 import javax.inject.Inject;
+
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_TOLL;
 
 /**
  * @Author Jliuer
@@ -61,6 +65,11 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
     public SharePolicy mSharePolicy;
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     public void payNote(int position, int note) {
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
@@ -82,6 +91,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
                         mRootView.getListDatas().get(position).getStorage().setPaid(true);
                         mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
                         mRootView.refreshData(position);
+                        EventBus.getDefault().post(mRootView.getListDatas().get(position), EVENT_MUSIC_TOLL);
                         mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
                     }
