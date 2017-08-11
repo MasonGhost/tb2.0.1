@@ -19,6 +19,7 @@ public class VerifiedBean extends CacheBean implements Parcelable, Serializable 
     /**
      * "type" : "user"    user 个人, org 企业
      * "icon" : "http:hahhdgh.jpg"
+     * "status" :0 - 待审核, 1 - 通过, 2 - 拒绝。
      */
 
     private String type;

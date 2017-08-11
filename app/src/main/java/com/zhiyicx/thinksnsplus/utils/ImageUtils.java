@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.utils;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -114,7 +115,7 @@ public class ImageUtils {
      */
     public static void loadUserHead(UserInfoBean userInfoBean, UserAvatarView imageView, boolean withBorder) {
         loadUserAvatar(userInfoBean, imageView.getIvAvatar(), withBorder);
-        if (userInfoBean != null && userInfoBean.getVerified() != null) {
+        if (userInfoBean != null && userInfoBean.getVerified() != null&&!TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
             if (TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
                 userInfoBean.getVerified().setIcon("");
             }
@@ -127,6 +128,9 @@ public class ImageUtils {
                             new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
                             : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
                     .into(imageView.getIvVerify());
+            imageView.getIvVerify().setVisibility(View.VISIBLE);
+        }else{
+            imageView.getIvVerify().setVisibility(View.INVISIBLE);
         }
     }
 
