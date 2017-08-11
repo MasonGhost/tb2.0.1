@@ -29,6 +29,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECTION_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECT_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COMMENT_LIST;
@@ -117,6 +118,9 @@ public interface InfoMainClient {
     Observable<BaseJson<List<InfoListDataBean>>> getInfoCollectList(@Query("max_id") Long max_id,
                                                                     @Query("limit") Long limit,
                                                                     @Query("page") Long page);
+    @GET(APP_PATH_INFO_COLLECTION_LIST)
+    Observable<List<InfoListDataBean>> getInfoCollectListV2(@Query("after") Long max_id,
+                                                            @Query("limit") Long limit);
 
     // 订阅某类资讯
     @FormUrlEncoded

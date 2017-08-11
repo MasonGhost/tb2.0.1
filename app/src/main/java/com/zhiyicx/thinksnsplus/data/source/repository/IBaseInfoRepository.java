@@ -18,4 +18,6 @@ public interface IBaseInfoRepository {
     // 搜索也用这个接口
     Observable<List<InfoListDataBean>> getInfoListV2(String cate_id, String key, long max_id,
                                                      long page, int isRecommend);
+
+    Observable<List<InfoListDataBean>> getCollectionListV2(long max_id);
 }

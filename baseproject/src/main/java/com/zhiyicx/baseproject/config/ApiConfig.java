@@ -493,6 +493,7 @@ public class ApiConfig {
     public static final String APP_PATH_INFO_DIG_LIST = "api/" + API_VERSION_2 + "/news/{news}/likes";// 点赞列表
     public static final String APP_PATH_INFO_COLLECTION = "api/" + API_VERSION_2 + "/news/{news}/collections";// 收藏
     public static final String APP_PATH_INFO_COLLECTION_S = "api/" + API_VERSION_2 + "/news/%s/collections";// 收藏
+    public static final String APP_PATH_INFO_COLLECTION_LIST = "api/" + API_VERSION_2 + "/news/collections";// 获取收藏列表
     public static final String APP_PATH_INFO_COMMENT_V2 = "api/" + API_VERSION_2 + "/news/{news}/comments";// 评论
     public static final String APP_PATH_INFO_COMMENT_V2_S = "api/" + API_VERSION_2 + "/news/%s/comments";// 评论
     public static final String APP_PATH_INFO_GET_COMMENT = "api/" + API_VERSION_2 + "/news/{news}/comments";// 获取评论列表
