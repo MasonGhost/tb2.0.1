@@ -66,7 +66,7 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
 
                                 mUserTagBeanGreenDao.saveMultiData(category.getTags());
 
-                                if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {
+                                if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {// 资讯投稿的标签
                                     for (UserTagBean tag : category.getTags()) {
                                         if (mRootView.getChoosedTags().contains(tag)) {
                                             tag.setMine_has(true);
@@ -85,8 +85,7 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
 
                     }
                     mRootView.updateMineTagsFromNet(userTags);
-                    if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {
-
+                    if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {// 资讯投稿的标签
                         return categorys;
                     }
                     return mTagCategoryBeanGreenDao.getMultiDataFromCache();
