@@ -69,7 +69,6 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_TOLL;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
