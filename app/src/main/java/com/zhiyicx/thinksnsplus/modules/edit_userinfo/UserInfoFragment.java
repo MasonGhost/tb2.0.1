@@ -82,9 +82,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public static final String USER_INTRO = "bio";
     public static final String USER_SEX = "sex";
     public static final String USER_LOCATION = "location";
-    public static final String USER_PROVINCE = "province";
-    public static final String USER_CITY = "city";
-    public static final String USER_AREA = "area";
+    //    public static final String USER_PROVINCE = "province";
+//    public static final String USER_CITY = "city";
+//    public static final String USER_AREA = "area";
     public static final String USER_STORAGE_TASK_ID = "storage_task_id";
     public static final String USER_LOCAL_IMG_PATH = "localImgPath";
 
@@ -140,6 +140,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     private UserInfoTagsAdapter mUserInfoTagsAdapter;
     private List<UserTagBean> mUserTagBeens = new ArrayList<>();
 
+    private String mCurrentShowLocation;
+
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_user_info;
@@ -163,7 +166,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                         .SHAPE_SQUARE))
                 .build().photoSelectorImpl();
 
-        initCityPickerView();
+//        initCityPickerView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AndroidBug5497Workaround.assistActivity(getActivity());
         }
@@ -247,7 +250,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                     if (TextUtils.isEmpty(oldLocation)) {
                         cityChanged = !TextUtils.isEmpty(charSequence);
                     } else {
-                        cityChanged = !oldLocation.equals(charSequence.toString());
+                        cityChanged = !oldLocation.equals(mCurrentShowLocation);
                     }
                     canChangerUserInfo();
                 });
@@ -292,11 +295,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 mGenderPopupWindow.show();
                 break;
             case R.id.ll_city_container:
-//                initCityPickerFirstTime();
-//                mAreaPickerView.setSelectOptions(mCityOption1, mCityOption2, mCityOption3);
-//                // 尝试隐藏键盘
-//                DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
-//                mAreaPickerView.show();
                 // 尝试隐藏键盘
                 DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
 
@@ -423,8 +421,10 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         // 设置性别
         mTvSex.setText(mUserInfoBean.getSexString());
         mTvSex.setTag(R.id.view_data, mUserInfoBean.getSex());// 设置性别编号
+
+
         // 设置地址
-        mTvCity.setText(mUserInfoBean.getLocation());
+        setCity(mUserInfoBean.getLocation());
         // 设置简介
         String intro = getIntro(mUserInfoBean);
         mEtUserIntroduce.setText(intro);// 设置简介
@@ -449,7 +449,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // 处理pickerView和返回键的逻辑
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mAreaPickerView.isShowing()) {
+            if (mAreaPickerView != null && mAreaPickerView.isShowing()) {
                 mAreaPickerView.dismiss();
                 return true;
             }
@@ -467,10 +467,9 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         super.onActivityResult(requestCode, resultCode, data);
         mPhotoSelector.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUST_CODE_AREA&&data!=null&&data.getExtras()!=null) {
+        if (requestCode == REQUST_CODE_AREA && data != null && data.getExtras() != null) {
             LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
             if (locationBean != null) {
-//                mUserInfoBean.setLocation();
                 setCity(LocationBean.getlocation(locationBean));
             }
 
@@ -607,6 +606,21 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
      * 设置城市
      */
     private void setCity(String city) {
+        mCurrentShowLocation = city;
+        try {
+            String[] data = city.split("，");
+            city = "";
+            if (data.length > 2) {
+                city = data[1] + " " + data[2];
+            } else {
+                for (int i = 0; i < data.length; i++) {
+                    city += data[i] + " ";
+                }
+            }
+        } catch (Exception e) {
+
+        }
+
         mTvCity.setText(city);//更新位置
     }
 
@@ -642,17 +656,17 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
             fieldMap.put(USER_SEX, mTvSex.getTag(R.id.view_data));
         }
         if (cityChanged) {
-            fieldMap.put(USER_LOCATION, mTvCity.getText().toString());
-            fieldMap.put(USER_PROVINCE, options1Items.get(mCityOption1).getPickerViewText());// 省
-            String city = options2Items.get(mCityOption1).get(mCityOption2).getPickerViewText();
-            if (locationLevel == LOCATION_2LEVEL) {
-                fieldMap.put(USER_CITY, city);// 市
-            } else if (locationLevel == LOCATION_3LEVEL) {
-                fieldMap.put(USER_CITY, city);// 市
-                String area = options3Items.get(mCityOption1).get(mCityOption2).get(mCityOption3)
-                        .getPickerViewText();
-                fieldMap.put(USER_AREA, area);// 区
-            }
+            fieldMap.put(USER_LOCATION, mCurrentShowLocation);
+//            fieldMap.put(USER_PROVINCE, options1Items.get(mCityOption1).getPickerViewText());// 省
+//            String city = options2Items.get(mCityOption1).get(mCityOption2).getPickerViewText();
+//            if (locationLevel == LOCATION_2LEVEL) {
+//                fieldMap.put(USER_CITY, city);// 市
+//            } else if (locationLevel == LOCATION_3LEVEL) {
+//                fieldMap.put(USER_CITY, city);// 市
+//                String area = options3Items.get(mCityOption1).get(mCityOption2).get(mCityOption3)
+//                        .getPickerViewText();
+//                fieldMap.put(USER_AREA, area);// 区
+//            }
         }
         if (introduceChanged) {
             fieldMap.put(USER_INTRO, mEtUserIntroduce.getInputContent());
@@ -687,53 +701,6 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
         return intro;
     }
 
-    /**
-     * 第一次点开城市选择器，需要判断我的地址在滑轮的哪儿
-     */
-    private void initCityPickerFirstTime() {
-        if (!isFirstOpenCityPicker) {
-            return;
-        }
-        isFirstOpenCityPicker = false;
-        // 这样的情况基本不会发生
-        if (mUserInfoBean == null || options1Items == null || options1Items.isEmpty()) {
-            return;
-        }
-        // 初始化地区选择器
-        String province = mUserInfoBean.getProvince();
-        AreaBean provinceBean = new AreaBean();
-        provinceBean.setAreaName(province);
-        // 设置province初始位置
-        mCityOption1 = options1Items.indexOf(provinceBean);
-        // 如果没有找到位置，那就为0
-        mCityOption1 = mCityOption1 == -1 ? 0 : mCityOption1;
-
-        // 设置city初始位置
-        String city = mUserInfoBean.getCity();
-        if (TextUtils.isEmpty(city)) {
-            city = getString(R.string.all);
-        }
-        AreaBean cityBean = new AreaBean();
-        cityBean.setAreaName(city);
-        mCityOption2 = options2Items.get(mCityOption1).indexOf(cityBean);
-        // 如果没有找到位置，那就为0
-        mCityOption2 = mCityOption2 == -1 ? 0 : mCityOption2;
-
-        if (locationLevel == LOCATION_2LEVEL) {
-
-        } else if (locationLevel == LOCATION_3LEVEL) {
-            // 设置area初始位置
-            String area = mUserInfoBean.getArea();
-            if (TextUtils.isEmpty(area)) {
-                area = getString(R.string.all);
-            }
-            AreaBean areaBean = new AreaBean();
-            areaBean.setAreaName(area);
-            mCityOption3 = options3Items.get(mCityOption1).get(mCityOption2).indexOf(areaBean);
-            // 如果没有找到位置，那就为0
-            mCityOption3 = mCityOption3 == -1 ? 0 : mCityOption3;
-        }
-    }
 
     @Override
     public void onResume() {

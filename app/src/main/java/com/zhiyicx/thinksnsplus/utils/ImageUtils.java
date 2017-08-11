@@ -114,7 +114,10 @@ public class ImageUtils {
      */
     public static void loadUserHead(UserInfoBean userInfoBean, UserAvatarView imageView, boolean withBorder) {
         loadUserAvatar(userInfoBean, imageView.getIvAvatar(), withBorder);
-        if (userInfoBean != null && userInfoBean.getVerified() != null&& !TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
+        if (userInfoBean != null && userInfoBean.getVerified() != null) {
+            if (TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
+                userInfoBean.getVerified().setIcon("");
+            }
             Glide.with(imageView.getContext())
                     .load(userInfoBean.getVerified().getIcon())
                     .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
