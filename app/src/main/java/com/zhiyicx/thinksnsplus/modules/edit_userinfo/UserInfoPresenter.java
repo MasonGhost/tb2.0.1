@@ -67,34 +67,6 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         return true;
     }
 
-    @Override
-    public void getAreaData() {
-        Subscription subscription = mRepository.getAreaList()
-                .subscribe(areaBean -> {
-                    ArrayList<ArrayList<AreaBean>> areaBeenChildList = new
-                            ArrayList<>();
-                    ArrayList<ArrayList<ArrayList<AreaBean>>> areaBeenChildList1 = new
-                            ArrayList<>();
-                    // 处理第二级联动
-                    for (AreaBean areaBean1 : areaBean) {
-                        ArrayList<AreaBean> areaBean1List = areaBean1.getChild();
-                        areaBeenChildList.add(areaBean1List);
-                        // 处理第三级连动
-                        if (areaBean1List != null) {
-                            ArrayList<ArrayList<AreaBean>> arrayListArrayList = new
-                                    ArrayList<>();
-                            for (AreaBean areaBean2 : areaBean1List) {
-                                ArrayList<AreaBean> areaBean2List = areaBean2.getChild();
-                                arrayListArrayList.add(areaBean2List);
-                            }
-                            areaBeenChildList1.add(arrayListArrayList);
-                        }
-                    }
-                    mRootView.setAreaData(areaBean, areaBeenChildList, areaBeenChildList1);
-                }, throwable -> LogUtils.e(throwable, mContext.getString(R
-                        .string.data_load_error)));
-        addSubscrebe(subscription);
-    }
 
     @Override
     public void changeUserHeadIcon(String filePath) {
