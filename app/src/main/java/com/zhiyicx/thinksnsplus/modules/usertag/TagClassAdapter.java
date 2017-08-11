@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridAdapter;
@@ -74,11 +73,11 @@ public class TagClassAdapter extends StickyHeaderGridAdapter {
     @Override
     public void onBindItemViewHolder(ItemViewHolder viewHolder, final int categoryPosition, final int tagPosition) {
         final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
-        UserTagBean userTagBean=mDatas.get(categoryPosition).getTags().get(tagPosition);
+        UserTagBean userTagBean = mDatas.get(categoryPosition).getTags().get(tagPosition);
         holder.labelView.setText(userTagBean.getTagName());
 
-        holder.labelView.setTextColor(SkinUtils.getColor(userTagBean.isMine_has()? R.color.important_for_theme:R.color.normal_for_dynamic_list_content));
-        holder.labelView.setBackgroundResource(userTagBean.isMine_has()? R.drawable.item_react_bg_blue:R.drawable.item_react_bg_gray);
+        holder.labelView.setTextColor(SkinUtils.getColor(userTagBean.isMine_has() ? R.color.important_for_theme : R.color.normal_for_dynamic_list_content));
+        holder.labelView.setBackgroundResource(userTagBean.isMine_has() ? R.drawable.item_react_bg_blue : R.drawable.item_react_bg_gray);
         // 跳过
         RxView.clicks(holder.labelView)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -92,7 +91,6 @@ public class TagClassAdapter extends StickyHeaderGridAdapter {
                         mOnItemClickListener.onItemClick(categoryPosition, tagPosition);
                     }
                 });
-
 
 
     }

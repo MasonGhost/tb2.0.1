@@ -64,6 +64,11 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
     protected String setRightTitle() {
         return "重置封面";
     }

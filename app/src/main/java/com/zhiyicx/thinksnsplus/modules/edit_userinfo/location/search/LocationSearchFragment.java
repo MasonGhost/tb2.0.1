@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -18,10 +20,14 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 地区搜索界面
@@ -94,6 +100,14 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
                     return false;
                 });
         mRvList.setBackgroundResource(R.color.white);
+        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(textViewAfterTextChangeEvent -> {
+                    if (textViewAfterTextChangeEvent.editable() != null && !TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
+                        mPresenter.searchLocation(textViewAfterTextChangeEvent.editable().toString());
+                    }
+
+                });
     }
 
     @Override

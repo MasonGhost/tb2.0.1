@@ -24,6 +24,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
+import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
@@ -50,6 +51,8 @@ import butterknife.OnClick;
 import rx.Observable;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
@@ -59,7 +62,7 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @Description 资讯的分类
  */
 public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoContainerPresenter>
-        implements InfoMainContract.InfoContainerView, ActionPopupWindow.ActionPopupWindowItem6ClickListener {
+        implements InfoMainContract.InfoContainerView {
 
     @BindView(R.id.fragment_infocontainer_indoctor)
     MagicIndicator mFragmentInfocontainerIndoctor;
@@ -238,7 +241,8 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         if (mCertificationAlertPopWindow == null){
             mCertificationAlertPopWindow = ActionPopupWindow.builder()
                     .item1Str(getString(R.string.info_publish_hint))
-                    .item6Str(getString(R.string.info_publish_go_to_certification))
+                    .item2Str(getString(R.string.certification_personage))
+                    .item3Str(getString(R.string.certification_company))
                     .desStr(getString(R.string.info_publish_hint_certification))
                     .bottomStr(getString(R.string.cancel))
                     .isOutsideTouch(true)
@@ -246,7 +250,22 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
-                    .item6ClickListener(this)
+                    .item2ClickListener(() -> {// 个人认证
+                        mCertificationAlertPopWindow.hide();
+                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_TYPE, 0);
+                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                        startActivity(intent);
+                    })
+                    .item3ClickListener(() -> {// 企业认证
+                        mCertificationAlertPopWindow.hide();
+                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_TYPE, 1);
+                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                        startActivity(intent);
+                    })
                     .build();
         }
         if (mPayAlertPopWindow == null){
@@ -260,7 +279,10 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .with(getActivity())
                     .bottomClickListener(() -> mPayAlertPopWindow.hide())
-                    .item6ClickListener(this)
+                    .item6ClickListener(() -> {
+                        mPayAlertPopWindow.hide();
+                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                    })
                     .build();
         }
     }
@@ -327,19 +349,6 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         mFragmentInfocontainerIndoctor.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mFragmentInfocontainerIndoctor, mFragmentInfocontainerContent);
 
-    }
-
-    @Override
-    public void onItemClicked() {
-        if (mPresenter.checkCertification()){
-            // 继续投稿
-            mPayAlertPopWindow.hide();
-            startActivity(new Intent(getActivity(), PublishInfoActivity.class));
-        } else {
-            // 去认证
-            mCertificationAlertPopWindow.hide();
-
-        }
     }
 
     class MyAdapter extends FragmentStatePagerAdapter {

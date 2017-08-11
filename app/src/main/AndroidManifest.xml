@@ -187,6 +187,9 @@
             android:name=".modules.information.infodetails.InfoDetailsActivity"
             android:screenOrientation="portrait"/>
         <activity
+                android:name=".modules.information.dig.InfoDigListActivity"
+                android:screenOrientation="portrait"/>
+        <activity
             android:name=".modules.information.infochannel.ChannelActivity"
             android:screenOrientation="portrait"
             android:theme="@style/activity_topin_bottomout"/>

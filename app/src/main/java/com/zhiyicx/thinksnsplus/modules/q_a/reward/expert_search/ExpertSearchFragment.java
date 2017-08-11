@@ -1,6 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -38,7 +40,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     ImageView mFragmentInfoSearchBack;
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
-    @BindView(R.id.fragment_search_cancle)
+    @BindView(R.id.fragment_info_search_cancle)
     TextView mFragmentInfoSearchCancel;
     @BindView(R.id.tv_recommend_hint)
     TextView mTvRecommendHint;
@@ -86,7 +88,9 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
                 if (expertBean != null) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(BUNDLE_RESULT, expertBean);
-                    EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_CHANGE_EXPERT);
+                    Intent intent=new Intent();
+                    intent.putExtras(bundle);
+                    getActivity().setResult(Activity.RESULT_OK,intent);
                     getActivity().finish();
                 }
             }

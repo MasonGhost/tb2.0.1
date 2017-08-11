@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -250,7 +252,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void setCollect(boolean isCollected) {
-        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
+//        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
     }
 
     @Override
@@ -264,7 +266,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void onNetResponseSuccess(@NotNull List<InfoCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
-            if (data.isEmpty()) {
+            if (data.isEmpty()) { // 空白展位图
                 InfoCommentListBean emptyData = new InfoCommentListBean();
                 data.add(emptyData);
             }
@@ -291,6 +293,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void refreshData() {
         super.refreshData();
+        mAdapter.notifyDataSetChanged();
         mInfoDetailHeader.updateCommentView(mInfoMation);
     }
 
@@ -394,26 +397,30 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPresenter.deleteComment(data);
-                        mDeletCommentPopWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    // 跳转置顶页面
+                    Bundle bundle = new Bundle();
+                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
+                    bundle.putLong(StickTopFragment.PARENT_ID, mInfoMation.getId());// 资源id
+                    bundle.putLong(StickTopFragment.CHILD_ID,data.getId());
+                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    mPresenter.deleteComment(data);
+                    mDeletCommentPopWindow.hide();
+
                 })
+                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
     }
 
@@ -491,8 +498,9 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            if (mListDatas.get(position) instanceof InfoCommentListBean) {
-                InfoCommentListBean infoCommentListBean = (InfoCommentListBean) mListDatas.get(position);
+            position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+            InfoCommentListBean infoCommentListBean = mListDatas.get(position);
+            if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getComment_content())) {
                 if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
                         .getUser_id()) {// 自己的评论
 //                if (mListDatas.get(position).getId() != -1) {

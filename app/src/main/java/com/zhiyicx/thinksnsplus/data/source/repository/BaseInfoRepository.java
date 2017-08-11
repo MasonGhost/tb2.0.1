@@ -58,4 +58,9 @@ public class BaseInfoRepository implements IBaseInfoRepository{
             return mInfoMainClient.getInfoListV2(cate_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE), page, "", isRecommend);
         }
     }
+
+    @Override
+    public Observable<List<InfoListDataBean>> getCollectionListV2(long max_id) {
+        return mInfoMainClient.getInfoCollectListV2(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
+    }
 }

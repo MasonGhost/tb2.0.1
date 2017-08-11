@@ -119,9 +119,9 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     private void initRechargeLables() {
 
         mRechargeLables = new ArrayList<>();
+        mRechargeLables.add(100f);
+        mRechargeLables.add(500f);
         mRechargeLables.add(1000f);
-        mRechargeLables.add(5000f);
-        mRechargeLables.add(10000f);
 
         if (mRechargeLables == null) {
             return;

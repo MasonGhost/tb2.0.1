@@ -127,6 +127,25 @@ public class UserTagBean extends BaseListBean implements Serializable{
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserTagBean that = (UserTagBean) o;
+
+        if (tag_category_id != that.tag_category_id) return false;
+        return tagName.equals(that.tagName);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tagName.hashCode();
+        result = 31 * result + (int) (tag_category_id ^ (tag_category_id >>> 32));
+        return result;
+    }
+
     public boolean getMine_has() {
         return this.mine_has;
     }

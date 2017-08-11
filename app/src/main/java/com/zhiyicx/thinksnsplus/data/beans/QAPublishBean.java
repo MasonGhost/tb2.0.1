@@ -18,7 +18,7 @@ public class QAPublishBean implements Parcelable {
     private int anonymity;// 是否匿名 1 匿名 ，0 不匿名
     private int automaticity;// 邀请悬赏自动入账，只邀请一个人的情况下，允许悬赏金额自动入账到被邀请回答者钱包中。1 自动入账 ，0 不自动入账
     private int look;// 是否开启围观，当问题有采纳或者邀请人已回答，则对外部观众自动开启围观。设置围观必须设置悬赏金额。1 开启围观 ，0 不开启围观
-    private double amount;//
+    private double amount;// 问题价值，悬赏金额
 
     public String getSubject() {
         return subject;

@@ -123,7 +123,10 @@ public class InfoCommentListBean extends BaseListBean {
 
     @Override
     public Long getMaxId() {
-        return (long)id;
+        if(id==null){
+            return 0L;
+        }
+        return id;
     }
 
     @Override

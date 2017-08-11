@@ -2,7 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.information.publish.addinfo;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
 
 import java.util.List;
 
@@ -29,7 +31,6 @@ public class AddInfoPresenter extends AppBasePresenter<AddInfoContract.Repositor
     @Override
     public List<InfoTypeCatesBean> getInfoTypeBean() {
         return mInfoTypeBeanGreenDao.getAllCatesLists();
-
     }
 
 }

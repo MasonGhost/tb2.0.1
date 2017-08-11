@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @Contact master.jungle68@gmail.com
  */
 
-public class VerifiedBean extends CacheBean implements Parcelable ,Serializable{
+public class VerifiedBean extends CacheBean implements Parcelable, Serializable {
     private static final long serialVersionUID = 8258245331800324562L;
     /**
      * "type" : "user"    user 个人, org 企业
@@ -26,7 +26,7 @@ public class VerifiedBean extends CacheBean implements Parcelable ,Serializable{
     private int status;
 
     public String getType() {
-        return type;
+        return type == null ? "" : type;
     }
 
     public void setType(String type) {
