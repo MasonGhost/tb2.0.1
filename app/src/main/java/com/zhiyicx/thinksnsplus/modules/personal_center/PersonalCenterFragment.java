@@ -746,25 +746,25 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         boolean feedIdIsNull = feed_id == 0;
         boolean feedIsMy = dynamicBean.getUser_id().intValue() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
-                .item2Str(getString(feedIsMy ?R.string.dynamic_list_delete_dynamic  : R.string.empty))
-                .item3Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
+                .item3Str(getString(feedIsMy ?R.string.dynamic_list_delete_dynamic  : R.string.empty))
+                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {
+                .item2ClickListener(() -> {
                     mPresenter.handleCollect(dynamicBean);
                     mDeletDynamicPopWindow.hide();
                 })
-                .item2ClickListener(() -> {
+                .item3ClickListener(() -> {
                     mDeletDynamicPopWindow.hide();
                     updateDynamicCounts(-1);
                     mPresenter.deleteDynamic(dynamicBean, position);
                     mDeletDynamicPopWindow.hide();
                 })
-                .item3ClickListener(() -> {
+                .item1ClickListener(() -> {
                     mPresenter.shareDynamic(dynamicBean, shareBitmap);
                     mDeletDynamicPopWindow.hide();
                 })

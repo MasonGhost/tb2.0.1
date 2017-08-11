@@ -96,12 +96,15 @@
                 />
             <!--修改简介-->
             <LinearLayout
+                android:focusableInTouchMode="true"
                 android:descendantFocusability="beforeDescendants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:minHeight="@dimen/full_button_height"
                 android:orientation="horizontal">
+
+                <requestFocus/>
 
                 <TextView
                     android:layout_width="@dimen/uerinfo_sub_title_hint_with"

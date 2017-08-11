@@ -731,15 +731,15 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             position,
                                              boolean isCollected, final Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
+                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
                         .string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+                .item1Str(getString(R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {// 收藏
                     if (!TouristConfig.DYNAMIC_CAN_COLLECT && mPresenter.handleTouristControl
                             ()) {
                         return;
@@ -748,7 +748,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
                 })
-                .item2ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(dynamicBean, shareBitmap);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
