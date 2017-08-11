@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
@@ -96,7 +98,7 @@ public class InfoDetailHeaderView {
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
 
-    public View getInfoDetailHeader(){
+    public View getInfoDetailHeader() {
         return mInfoDetailHeader;
     }
 
@@ -119,13 +121,13 @@ public class InfoDetailHeaderView {
         mInfoRelateList = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_relate_list);
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
-        if (adverts != null){
+        if (adverts != null) {
             initAdvert(context, adverts);
         }
     }
 
-    public void setDetail(InfoListDataBean infoMain){
-        if (infoMain != null){
+    public void setDetail(InfoListDataBean infoMain) {
+        if (infoMain != null) {
             mTitle.setText(infoMain.getTitle());
             mChannel.setVisibility(infoMain.getCategory() == null ? GONE : VISIBLE);
             mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
@@ -138,6 +140,7 @@ public class InfoDetailHeaderView {
             // 资讯content
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
+                css.addRule("body", "line-height: 1.6", "padding: 10px");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 showMarkDownView(mContentSubject, dealPic(infoMain.getSubject()));
@@ -157,7 +160,7 @@ public class InfoDetailHeaderView {
         }
     }
 
-    private void showMarkDownView(TextView textView, String content){
+    private void showMarkDownView(TextView textView, String content) {
         textView.post(() -> {
             RichText
                     .fromMarkdown(content) // 数据源
@@ -179,14 +182,14 @@ public class InfoDetailHeaderView {
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
         mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mInfoDetailHeader
                 .findViewById(R.id.ll_advert));
-        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||adverts.isEmpty()) {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
             return;
         }
         mDynamicDetailAdvertHeader.setTitle("广告");
         mDynamicDetailAdvertHeader.setAdverts(adverts);
         mDynamicDetailAdvertHeader.setOnItemClickListener((v, position1, url) ->
-                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(),adverts.get(position1).getTitle())
+                toAdvert(adverts.get(position1).getAdvertFormat().getImage().getLink(), adverts.get(position1).getTitle())
         );
     }
 
@@ -214,8 +217,8 @@ public class InfoDetailHeaderView {
         return markDownContent;
     }
 
-    public void updateDigList(InfoListDataBean infoMain){
-        if (infoMain == null){
+    public void updateDigList(InfoListDataBean infoMain) {
+        if (infoMain == null) {
             return;
         }
         // 点赞信息
@@ -230,12 +233,11 @@ public class InfoDetailHeaderView {
 
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
+                Intent intent = new Intent(mContext, InfoDigListActivity.class);
                 Bundle bundle = new Bundle();
-//                        bundle.putParcelable(DigListFragment.DIG_LIST_DATA, dynamicBean);
-//                        Intent intent = new Intent(mDynamicDetailHeader.getContext(), DigListActivity
-//                                .class);
-//                        intent.putExtras(bundle);
-//                        mDynamicDetailHeader.getContext().startActivity(intent);
+                bundle.putSerializable(InfoDigListActivity.BUNDLE_INFO_DIG, infoMain);
+                intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
+                mContext.startActivity(intent);
             });
         } else {
             mDigListView.setVisibility(GONE);
@@ -244,9 +246,8 @@ public class InfoDetailHeaderView {
 
     /**
      * 更新评论页面
-     * @param infoMain
      */
-    public void updateCommentView(InfoListDataBean infoMain){
+    public void updateCommentView(InfoListDataBean infoMain) {
         // 评论信息
         if (infoMain.getComment_count() != 0) {
             mCommentHintView.setVisibility(View.VISIBLE);
@@ -270,15 +271,15 @@ public class InfoDetailHeaderView {
         });
     }
 
-    public void setRelateInfo(InfoListDataBean infoMain){
+    public void setRelateInfo(InfoListDataBean infoMain) {
         List<InfoListDataBean> infoListDataBeen = infoMain.getRelateInfoList();
-        if (infoListDataBeen != null && infoListDataBeen.size() > 0){
+        if (infoListDataBeen != null && infoListDataBeen.size() > 0) {
             mInfoRelateList.setVisibility(VISIBLE);
             mFtlRelate.setVisibility(VISIBLE);
             mRvRelateInfo.setVisibility(VISIBLE);
             // 标签
             List<UserTagBean> tagBeanList = infoMain.getTags();
-            if (tagBeanList != null && tagBeanList.size() > 0){
+            if (tagBeanList != null && tagBeanList.size() > 0) {
                 UserInfoTagsAdapter mUserInfoTagsAdapter = new UserInfoTagsAdapter(tagBeanList, mContext);
                 mFtlRelate.setAdapter(mUserInfoTagsAdapter);
             }
