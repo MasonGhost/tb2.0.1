@@ -124,6 +124,7 @@ ext {
             // markdown editor
             markdownView                     : 'com.github.tiagohm.MarkdownView:library:0.17.0',
             editor                       : 'jp.wasabeef:richeditor-android:1.2.2',
+            richtext                     :'com.zzhoujay.richtext:richtext:2.5.4',
 
             flowlayout                   : 'com.zhy:flowlayout-lib:1.0.3'
     ]

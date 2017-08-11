@@ -9,10 +9,10 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.Subscriber;
+
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 
 /**
@@ -49,9 +50,9 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     private TopicsAdapter mTopicsAdapter;
     private int mMaxTagNums;
 
-    public static AddTopicFragment newInstance() {
+    private QAPublishBean mQAPublishBean;
 
-        Bundle args = new Bundle();
+    public static AddTopicFragment newInstance(Bundle args) {
         AddTopicFragment fragment = new AddTopicFragment();
         fragment.setArguments(args);
         return fragment;
@@ -90,7 +91,17 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        startActivity(new Intent(getActivity(), PublishContentActivity.class));
+        StringBuilder tagBuilder = new StringBuilder();
+        for (QATopicBean qaTopicBean : mQATopicBeanList) {
+            tagBuilder.append(qaTopicBean.getId());
+            tagBuilder.append(",");
+        }
+        mQAPublishBean.setTopics(tagBuilder.toString());
+        Intent intent = new Intent(getActivity(), PublishContentActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -104,32 +115,15 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initView(View rootView) {
         super.initView(rootView);
         initTopicsView();
-        RxTextView.afterTextChangeEvents(mEtQustion)
-                .compose(this.bindToLifecycle())
-                .subscribe(new Subscriber<TextViewAfterTextChangeEvent>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        mToolbarRight.setEnabled(false);
-                    }
-
-                    @Override
-                    public void onNext(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
-                        mQuestionStr = textViewAfterTextChangeEvent.editable().toString().trim();
-                        if (!TextUtils.isEmpty(mQuestionStr)) {
-                            mToolbarRight.setEnabled(true);
-                            // TODO: 20177/25  搜索相同的問題
-                        } else {
-                            mToolbarRight.setEnabled(false);
-                        }
-
-                    }
-                });
+        RxTextView.textChanges(mEtQustion).subscribe(charSequence -> {
+            mQuestionStr = charSequence.toString().trim();
+            if (!TextUtils.isEmpty(mQuestionStr)) {
+                mToolbarRight.setEnabled(true);
+                // TODO: 20177/25  搜索相同的問題
+            } else {
+                mToolbarRight.setEnabled(false);
+            }
+        });
     }
 
     private void initTopicsView() {
@@ -141,6 +135,8 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void initData() {
         super.initData();
+        mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+        mEtQustion.setText(mQAPublishBean.getSubject());
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
         for (int i = 0; i < 10; i++) {
             QATopicBean qa_lIstInfoBean = new QATopicBean();
@@ -182,4 +178,5 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         mTopicsAdapter.notifyDataChanged();
         return true;
     }
+
 }

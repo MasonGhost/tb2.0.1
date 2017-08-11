@@ -10,4 +10,13 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  */
 public class QAListInfoBean extends BaseListBean {
 
+    private String content="你好";
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

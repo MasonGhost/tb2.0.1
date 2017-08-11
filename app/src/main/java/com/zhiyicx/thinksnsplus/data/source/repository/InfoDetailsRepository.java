@@ -300,8 +300,6 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     public void deleteComment(int news_id, int comment_id) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("news_id", news_id);
-        params.put("comment_id", comment_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.DELETE_V2, params);

@@ -13,6 +13,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -42,8 +43,25 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         }
 
         title.setText(realData.getTitle());
+
+        int w = title.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_image_width);
+        int h = title.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_height);
+
+        holder.itemView.setOnClickListener(v -> itemClick(position, imageView, title, realData));
         if (realData.getImage() == null) {
             imageView.setVisibility(View.GONE);
+            if (realData.getUser_id() < 0) {// 广告
+                imageView.setVisibility(View.VISIBLE);
+                Glide.with(BaseApplication.getContext())
+                        .load(realData.getAuthor())
+                        .placeholder(R.drawable.shape_default_image)
+                        .error(R.drawable.shape_default_image)
+                        .override(w, h)
+                        .into(imageView);
+                holder.itemView.setOnClickListener(v ->
+                        CustomWEBActivity.startToWEBActivity(imageView.getContext(), realData.getCreated_at(), realData.getTitle())
+                );
+            }
         } else {
             imageView.setVisibility(View.VISIBLE);
             Glide.with(BaseApplication.getContext())
@@ -51,8 +69,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                             ImageZipConfig.IMAGE_80_ZIP))
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
-                    .override(imageView.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_image_width)
-                            , imageView.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_height))
+                    .override(w, h)
                     .into(imageView);
         }
         // 来自单独分开
@@ -67,7 +84,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         holder.setText(R.id.item_info_timeform, infoData);
         // 是否置顶
         holder.setVisible(R.id.tv_top_flag, realData.isTop() ? View.VISIBLE : View.GONE);
-        holder.itemView.setOnClickListener(v -> itemClick(position, imageView, title, realData));
+
     }
 
     public abstract void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData);

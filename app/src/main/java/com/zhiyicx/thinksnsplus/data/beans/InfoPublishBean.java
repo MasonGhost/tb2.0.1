@@ -73,7 +73,7 @@ public class InfoPublishBean implements Parcelable {
         if (subject.isEmpty()) {
             return;
         }
-        this.subject = "> " + "**" + "[摘要]" + "** " + subject + "<br/>";
+        this.subject = "> " + "**" + "[摘要]" + "** " + subject + " ";
     }
 
     public String getContent() {

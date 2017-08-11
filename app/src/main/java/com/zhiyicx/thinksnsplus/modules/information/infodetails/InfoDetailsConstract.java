@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IRewardRepository;
@@ -73,6 +74,7 @@ public interface InfoDetailsConstract {
 
         void deleteInfo();
 
+        List<RealAdvertListBean> getAdvert();
     }
 
     interface Repository extends IRewardRepository {

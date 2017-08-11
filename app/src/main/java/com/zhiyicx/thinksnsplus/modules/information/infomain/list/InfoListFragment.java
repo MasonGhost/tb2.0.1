@@ -15,6 +15,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicListAdvert;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicBannerHeader;
@@ -23,6 +24,7 @@ import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoBannerItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
+import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -69,13 +71,36 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
+    public void onNetResponseSuccess(@NotNull List<BaseListBean> data, boolean isLoadMore) {
+        try {// 添加广告
+            RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
+            DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
+            long max_id = data.get(data.size() - 1).getMaxId();
+            data.add(DynamicListAdvert.advert2Info(advert, max_id));
+        } catch (Exception e) {
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
+    public void onCacheResponseSuccess(List<BaseListBean> data, boolean isLoadMore) {
+        try {// 添加广告
+            RealAdvertListBean realAdvertListBean = mListAdvert.get(getPage() - 1);
+            DynamicListAdvert advert = realAdvertListBean.getAdvertFormat().getAnalog();
+            long max_id = data.get(data.size() - 1).getMaxId();
+            data.add(DynamicListAdvert.advert2Info(advert, max_id));
+        } catch (Exception e) {
+        }
+        super.onCacheResponseSuccess(data, isLoadMore);
+    }
+
+    @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mListDatas);
         adapter.addItemViewDelegate(new InfoBannerItem());
         adapter.addItemViewDelegate(new InfoListItem() {
             @Override
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
-
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
                     if (!AppApplication.sOverRead.contains(position + "")) {
                         AppApplication.sOverRead.add(position + "");
@@ -147,8 +172,8 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    public void headClick(int position) {
-
+    public void headClick(String link,String title) {
+        CustomWEBActivity.startToWEBActivity(getActivity(), link, title);
     }
 
     @Override
@@ -200,12 +225,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     @Override
     protected boolean showToolBarDivider() {
         return false;
-    }
-
-    @Override
-    protected Long getMaxId(@NotNull List<BaseListBean> data) {
-        InfoListDataBean needData = (InfoListDataBean) data.get(data.size() - 1);
-        return (long) needData.getId();
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_INFO_LIST_COLLECT)

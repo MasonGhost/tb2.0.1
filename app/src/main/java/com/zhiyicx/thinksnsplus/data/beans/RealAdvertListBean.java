@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.baseproject.config.AdvertConfig;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.AdvertFormatConvert;
@@ -64,10 +65,10 @@ public class RealAdvertListBean extends BaseListBean {
             advertFormat = new AdvertFormat();
             Gson gson = new Gson();
             switch (type) {
-                case ApiConfig.APP_IMAGE_TYPE_ADVERT:
+                case AdvertConfig.APP_IMAGE_TYPE_ADVERT:
                     advertFormat.setImage(gson.fromJson(gson.toJson(data), ImageAdvert.class));
                     break;
-                case ApiConfig.APP_DYNAMIC_TYPE_ADVERT:
+                case AdvertConfig.APP_DYNAMIC_TYPE_ADVERT:
                     advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
                             .class));
                     break;
@@ -84,10 +85,10 @@ public class RealAdvertListBean extends BaseListBean {
             advertFormat = new AdvertFormat();
             Gson gson = new Gson();
             switch (type) {
-                case ApiConfig.APP_IMAGE_TYPE_ADVERT:
+                case AdvertConfig.APP_IMAGE_TYPE_ADVERT:
                     advertFormat.setImage(gson.fromJson(gson.toJson(data), ImageAdvert.class));
                     break;
-                case ApiConfig.APP_DYNAMIC_TYPE_ADVERT:
+                case AdvertConfig.APP_DYNAMIC_TYPE_ADVERT:
                     advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
                             .class));
                     break;
