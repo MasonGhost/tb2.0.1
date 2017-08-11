@@ -23,12 +23,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
@@ -37,6 +40,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
@@ -95,8 +99,11 @@ public class InfoDetailHeaderView {
     private int screenWidth;
     private int picWidth;
     private Bitmap sharBitmap;
+    private List<ImageBean> mImgList;
+    private ImageView mIvDetail;
 
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
+    private ArrayList<AnimationRectBean> animationRectBeanArrayList;
 
     public View getInfoDetailHeader() {
         return mInfoDetailHeader;
@@ -104,6 +111,8 @@ public class InfoDetailHeaderView {
 
     public InfoDetailHeaderView(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
+        mImgList = new ArrayList<>();
+        animationRectBeanArrayList = new ArrayList<>();
         mInfoDetailHeader = LayoutInflater.from(context).inflate(R.layout
                 .item_info_comment_web, null);
         mInfoDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
@@ -121,6 +130,7 @@ public class InfoDetailHeaderView {
         mInfoRelateList = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_relate_list);
         mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
         mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
+        mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
         if (adverts != null) {
             initAdvert(context, adverts);
         }
@@ -143,6 +153,50 @@ public class InfoDetailHeaderView {
                 css.addRule("body", "line-height: 1.6", "padding: 10px");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
+                mContent.setOnElementListener(new MarkdownView.OnElementListener() {
+                    @Override
+                    public void onButtonTap(String s) {
+
+                    }
+
+                    @Override
+                    public void onCodeTap(String s, String s1) {
+
+                    }
+
+                    @Override
+                    public void onHeadingTap(int i, String s) {
+
+                    }
+
+                    @Override
+                    public void onImageTap(String s, int width, int height) {
+                        //  杨大佬说先暂时不做，如果后期要做的话 要做画廊 多张
+                        LogUtils.d("Cathy", "onImageTap // " + s);
+                        int position = 0;
+                        for (int i = 0; i < mImgList.size(); i++) {
+                            if (mImgList.get(i).getImgUrl().equals(s)) {
+                                position = i;
+                            }
+                        }
+                        GalleryActivity.startToGallery(mContext, position, mImgList, animationRectBeanArrayList);
+                    }
+
+                    @Override
+                    public void onLinkTap(String s, String s1) {
+
+                    }
+
+                    @Override
+                    public void onKeystrokeTap(String s) {
+
+                    }
+
+                    @Override
+                    public void onMarkTap(String s) {
+
+                    }
+                });
                 showMarkDownView(mContentSubject, dealPic(infoMain.getSubject()));
 //                mContentText.post(() -> {
 //                    Spanned spanned = MarkDown.fromMarkdown(dealPic(dealPic(infoMain.getContent())), source -> {
@@ -203,18 +257,42 @@ public class InfoDetailHeaderView {
         while (markDownContent.contains(tag)) {
             int start = markDownContent.indexOf(tag) + tag.length();
             int end = markDownContent.indexOf(")", start);
-            String id = "";
+            String id = "0";
             try {
                 id = markDownContent.substring(start, end);
             } catch (Exception e) {
                 LogUtils.d("Cathy", e.toString());
             }
-            String imgTag = "<h3> </h3><img src=\"%s\"";
             String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
             markDownContent = markDownContent.replace(tag + id + ")", "![image](" + imgPath + ")");
-//            markDownContent = markDownContent.replace(tag + id + ")", String.format(imgTag, imgPath));
+            dealImageList(imgPath, id);
         }
         return markDownContent;
+    }
+
+    private void dealImageList(String imgPath, String id) {
+        for (ImageBean item : mImgList){
+            if (item.getImgUrl().equals(imgPath)){
+                return;
+            }
+        }
+        ImageBean imageBean = new ImageBean();
+        imageBean.setImgUrl(imgPath);// 本地地址，也许有
+        Toll toll = new Toll(); // 收费信息
+        toll.setPaid(true);// 是否已經付費
+        toll.setToll_money(0f);// 付费金额
+        toll.setToll_type_string("");// 付费类型
+        toll.setPaid_node(0);// 付费节点
+        imageBean.setToll(toll);
+        imageBean.setStorage_id(Integer.parseInt(id));// 图片附件id
+        mImgList.add(imageBean);
+        try {
+            AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvDetail);// 动画矩形
+            animationRectBeanArrayList.add(rect);
+        } catch (Exception e){
+            LogUtils.d("Cathy", e.toString());
+        }
+
     }
 
     public void updateDigList(InfoListDataBean infoMain) {

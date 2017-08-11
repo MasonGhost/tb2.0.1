@@ -56,6 +56,7 @@ public class InfoCommentListBean extends BaseListBean {
     private UserInfoBean publishUserInfoBean;
     private String commentable_type;
     private int state = SEND_SUCCESS;
+    private boolean pinned ;// 是否是被固定（置顶）的评论 1 置顶 0 不置顶
 
     public int getState() {
         return state;
@@ -121,6 +122,14 @@ public class InfoCommentListBean extends BaseListBean {
         this.commentable_type = commentable_type;
     }
 
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
+    }
+
     @Override
     public Long getMaxId() {
         if(id==null){
@@ -144,6 +153,7 @@ public class InfoCommentListBean extends BaseListBean {
                 ", target_user=" + target_user +
                 ", publishUserInfoBean=" + publishUserInfoBean +
                 ", commentable_type='" + commentable_type + '\'' +
+                ", pinned='" + pinned + '\'' +
                 '}';
     }
 
@@ -318,6 +328,23 @@ public class InfoCommentListBean extends BaseListBean {
     @Generated(hash = 783792331)
     private transient Long publishUserInfoBean__resolvedKey;
 
+    @Generated(hash = 1478166591)
+    public InfoCommentListBean(Long id, int info_id, String created_at, String comment_content, long user_id,
+            long reply_to_user_id, long comment_mark, long target_user, String commentable_type, int state,
+            boolean pinned) {
+        this.id = id;
+        this.info_id = info_id;
+        this.created_at = created_at;
+        this.comment_content = comment_content;
+        this.user_id = user_id;
+        this.reply_to_user_id = reply_to_user_id;
+        this.comment_mark = comment_mark;
+        this.target_user = target_user;
+        this.commentable_type = commentable_type;
+        this.state = state;
+        this.pinned = pinned;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -339,6 +366,11 @@ public class InfoCommentListBean extends BaseListBean {
         dest.writeParcelable(this.publishUserInfoBean, flags);
         dest.writeString(this.commentable_type);
         dest.writeInt(this.state);
+        dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
+    }
+
+    public boolean getPinned() {
+        return this.pinned;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -363,21 +395,7 @@ public class InfoCommentListBean extends BaseListBean {
         this.publishUserInfoBean = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.commentable_type = in.readString();
         this.state = in.readInt();
-    }
-
-    @Generated(hash = 654198418)
-    public InfoCommentListBean(Long id, int info_id, String created_at, String comment_content, long user_id,
-            long reply_to_user_id, long comment_mark, long target_user, String commentable_type, int state) {
-        this.id = id;
-        this.info_id = info_id;
-        this.created_at = created_at;
-        this.comment_content = comment_content;
-        this.user_id = user_id;
-        this.reply_to_user_id = reply_to_user_id;
-        this.comment_mark = comment_mark;
-        this.target_user = target_user;
-        this.commentable_type = commentable_type;
-        this.state = state;
+        this.pinned = in.readByte() != 0;
     }
 
     public static final Creator<InfoCommentListBean> CREATOR = new Creator<InfoCommentListBean>() {

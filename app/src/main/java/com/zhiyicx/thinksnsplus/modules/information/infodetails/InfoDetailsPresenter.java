@@ -106,31 +106,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                     .subscribe(new BaseSubscribeForV2<InfoCommentBean>() {
                         @Override
                         protected void onSuccess(InfoCommentBean data) {
-                            List<InfoCommentListBean> newList = new ArrayList<>();
-                            mInfoCommentListBeanDao.saveMultiData(data.getPinneds());
-                            mInfoCommentListBeanDao.saveMultiData(data.getComments());
-
-                            List<InfoCommentListBean> localComment = mInfoCommentListBeanDao
-                                    .getMySendingComment(mRootView.getNewsId());
-                            if (!localComment.isEmpty()) {
-                                for (int i = 0; i < localComment.size(); i++) {
-                                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
-                                            .getSingleDataFromCache(localComment.get(i).getUser_id()));
-                                    if (localComment.get(i).getReply_to_user_id() != 0) {
-                                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
-                                                .getSingleDataFromCache(localComment.get(i)
-                                                        .getReply_to_user_id()));
-                                    }
-                                }
-                                if (maxId == 0) {
-                                    newList.addAll(0, data.getPinneds());
-                                }
-                            }
-                            newList.addAll(localComment);
-                            newList.addAll(data.getComments());
-                            for (InfoCommentListBean infoCommentListBean : newList){
-                                infoCommentListBean.setInfo_id(mRootView.getNewsId().intValue());
-                            }
+                            List<InfoCommentListBean> newList = dealComment(data, maxId);
                             mRootView.onNetResponseSuccess(newList, isLoadMore);
                         }
 
@@ -270,17 +246,7 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 (infoListDataBean, infoDigListBeen, infoRelateBean, infoCommentBean) -> {
                     infoListDataBean.setDigList(infoDigListBeen);
                     infoListDataBean.setRelateInfoList(infoRelateBean);
-                    List<InfoCommentListBean> all = new ArrayList<>();
-                    if (infoCommentBean.getPinneds() != null){
-                        all.addAll(infoCommentBean.getPinneds());
-                    }
-                    if (infoCommentBean.getComments() != null){
-                        all.addAll(infoCommentBean.getComments());
-                    }
-                    for (InfoCommentListBean infoCommentListBean : all){
-                        infoCommentListBean.setInfo_id(mRootView.getNewsId().intValue());
-                    }
-                    infoListDataBean.setCommentList(all);
+                    infoListDataBean.setCommentList(dealComment(infoCommentBean, 0));
                     return infoListDataBean;
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -297,6 +263,38 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
                 });
 
         addSubscrebe(subscription);
+    }
+
+    private List<InfoCommentListBean> dealComment(InfoCommentBean infoCommentBean, long max_id){
+        List<InfoCommentListBean> all = new ArrayList<>();
+        if (max_id == 0){
+            if (infoCommentBean.getPinneds() != null){
+                for (InfoCommentListBean commentListBean : infoCommentBean.getPinneds()){
+                    commentListBean.setPinned(true);
+                }
+                mInfoCommentListBeanDao.saveMultiData(infoCommentBean.getPinneds());
+                all.addAll(infoCommentBean.getPinneds());
+            }
+            List<InfoCommentListBean> localComment = mInfoCommentListBeanDao
+                    .getMySendingComment(mRootView.getNewsId());
+            if (!localComment.isEmpty()) {
+                for (int i = 0; i < localComment.size(); i++) {
+                    localComment.get(i).setFromUserInfoBean(mUserInfoBeanGreenDao
+                            .getSingleDataFromCache(localComment.get(i).getUser_id()));
+                    if (localComment.get(i).getReply_to_user_id() != 0) {
+                        localComment.get(i).setToUserInfoBean(mUserInfoBeanGreenDao
+                                .getSingleDataFromCache(localComment.get(i)
+                                        .getReply_to_user_id()));
+                    }
+                }
+                all.addAll(localComment);
+            }
+        }
+        if (infoCommentBean.getComments() != null){
+            mInfoCommentListBeanDao.saveMultiData(infoCommentBean.getComments());
+            all.addAll(infoCommentBean.getComments());
+        }
+        return all;
     }
 
     @Override

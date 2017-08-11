@@ -70,16 +70,29 @@
             android:layout_marginRight="@dimen/spacing_mid_small"
             android:visibility="gone"/>
 
-    <br.tiagohm.markdownview.MarkdownView
-            android:id="@+id/info_detail_content"
+    <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_mid"
-            android:layout_marginBottom="@dimen/spacing_mid"
-            android:layout_marginLeft="@dimen/spacing_mid_small"
-            android:layout_marginRight="@dimen/spacing_mid_small"
-            android:visibility="visible"
-            tools:ignore="WebViewLayout"/>
+            android:layout_height="wrap_content">
+        <br.tiagohm.markdownview.MarkdownView
+                android:id="@+id/info_detail_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_mid"
+                android:layout_marginBottom="@dimen/spacing_mid"
+                android:layout_marginLeft="@dimen/spacing_mid_small"
+                android:layout_marginRight="@dimen/spacing_mid_small"
+                android:visibility="visible"
+                tools:ignore="WebViewLayout"/>
+
+        <!--用来占位的-->
+        <ImageView
+                android:id="@+id/iv_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/default_pic_personal"
+                android:visibility="gone"/>
+    </FrameLayout>
+
 
 
     <include
