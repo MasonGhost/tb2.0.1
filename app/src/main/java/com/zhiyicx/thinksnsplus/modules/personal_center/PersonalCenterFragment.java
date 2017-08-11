@@ -193,6 +193,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     // 表示第一次进入界面加载正确的关注状态，后续才能进行关注操作
+                    mLlFollowContainer.setEnabled(false);
                     mPresenter.handleFollow(mUserInfoBean);
                 });
         // 添加聊天点击事件
@@ -600,6 +601,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
      * 设置底部 view 的关注状态
      */
     private void setBottomFollowState(UserInfoBean userInfoBean1) {
+
         if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
             mTvFollow.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_me_followed_eachother), null, null, null);
             mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
@@ -613,7 +615,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             mTvFollow.setTextColor(ContextCompat.getColor(getContext(), R.color.important_for_content));
             mTvFollow.setText(R.string.follow);
         }
-
+        mLlFollowContainer.setEnabled(true);
     }
 
     /**
