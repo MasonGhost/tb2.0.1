@@ -211,8 +211,6 @@ public interface UserInfoContract {
     }
 
     interface Presenter extends IBasePresenter {
-        void getAreaData();
-
         /**
          * 上传用户头像
          *
