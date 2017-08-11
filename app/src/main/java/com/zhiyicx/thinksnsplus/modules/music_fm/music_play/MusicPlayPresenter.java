@@ -97,12 +97,6 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
                         super.onException(throwable);
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
                     }
-
-                    @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.hideCenterLoading();
-                    }
                 });
     }
 

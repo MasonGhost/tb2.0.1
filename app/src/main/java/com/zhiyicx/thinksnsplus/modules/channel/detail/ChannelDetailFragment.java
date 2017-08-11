@@ -387,7 +387,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        dataPosition = mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        dataPosition = dataPosition - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
 
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
@@ -427,8 +427,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                int user_id=mListDatas.get(dataPosition).getUser_id().intValue();
-                int current_id=AppApplication.getmCurrentLoginAuth().getUser().getUser_id().intValue();
+                int user_id = mListDatas.get(dataPosition).getUser_id().intValue();
+                int current_id = AppApplication.getmCurrentLoginAuth().getUser().getUser_id().intValue();
                 if (user_id == current_id) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getHas_collection(), shareBitMap);
@@ -446,7 +446,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onReSendClick(int position) {
-        position = position -mHeaderAndFooterWrapper.getHeadersCount();// 去掉 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 去掉 header
         initReSendDynamicPopupWindow(position);
         mReSendDynamicPopWindow.show();
     }
@@ -487,7 +487,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        position = position -mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = position;
         goDynamicDetail(position, false);
     }
@@ -521,7 +521,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         // 先更新界面，再后台处理
         mPresenter.handleCollect(mListDatas.get(dataPosition));
         boolean is_collection = mListDatas.get(dataPosition).getHas_collection();// 旧状态
-        mListDatas.get(dataPosition).setHas_collection(!is_collection );
+        mListDatas.get(dataPosition).setHas_collection(!is_collection);
         refreshData(dataPosition);
     }
 
