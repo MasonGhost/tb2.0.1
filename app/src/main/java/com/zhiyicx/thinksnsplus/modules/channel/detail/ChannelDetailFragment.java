@@ -427,7 +427,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser().getUser_id()) {
+                int user_id=mListDatas.get(dataPosition).getUser_id().intValue();
+                int current_id=AppApplication.getmCurrentLoginAuth().getUser().getUser_id().intValue();
+                if (user_id == current_id) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getHas_collection(), shareBitMap);
                     mMyDynamicPopWindow.show();

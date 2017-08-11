@@ -69,6 +69,7 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_TOLL;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
@@ -684,6 +685,20 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     musicsBean.setComment_count(e_albumListBean.getComment_count());
                     musicsBean.setStorage(e_albumListBean.getStorage());
                 });
+
+        LogUtils.d("EVENT_MUSIC_LIKE");
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_TOLL, mode = ThreadMode.MAIN)
+    public void onTollUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
+
+        Observable.from(mAlbumDetailsBean.getMusics())
+                .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                .subscribe(musicsBean -> {
+                    musicsBean.setHas_like(e_albumListBean.isHas_like());
+                    musicsBean.setComment_count(e_albumListBean.getComment_count());
+                    musicsBean.setStorage(e_albumListBean.getStorage());
+                });
         if (mAlbumDetailsBean != null) {
             Bundle bundle = new Bundle();
             bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
@@ -697,7 +712,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
             mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         }
-        LogUtils.d("EVENT_MUSIC_LIKE");
+        LogUtils.d("EVENT_MUSIC_TOLL");
     }
 
     @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)
