@@ -250,7 +250,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
     @Override
     public void setCollect(boolean isCollected) {
-        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
+//        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
     }
 
     @Override
@@ -291,6 +291,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void refreshData() {
         super.refreshData();
+        mAdapter.notifyDataSetChanged();
         mInfoDetailHeader.updateCommentView(mInfoMation);
     }
 
