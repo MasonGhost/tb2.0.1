@@ -18,6 +18,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
@@ -27,8 +28,6 @@ import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
-
-import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_TOLL;
 
 /**
  * @Author Jliuer
@@ -91,7 +90,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
                         mRootView.getListDatas().get(position).getStorage().setPaid(true);
                         mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
                         mRootView.refreshData(position);
-                        EventBus.getDefault().post(mRootView.getListDatas().get(position), EVENT_MUSIC_TOLL);
+                        EventBus.getDefault().post(mRootView.getListDatas().get(position), EventBusTagConfig.EVENT_MUSIC_LIKE);
                         mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
                     }

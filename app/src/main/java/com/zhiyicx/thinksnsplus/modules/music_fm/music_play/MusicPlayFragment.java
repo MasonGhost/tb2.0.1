@@ -86,6 +86,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
@@ -283,6 +285,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 }
             };
 
+    private MusicAlbumDetailsBean mAlbumDetailsBean;
+
+
+
     public static MusicPlayFragment newInstance(Bundle args) {
         MusicPlayFragment fragment = new MusicPlayFragment();
         fragment.setArguments(args);
@@ -395,6 +401,17 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     public void refreshData(int position) {
         popAdapter.notifyItemChanged(position);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+        String id = MediaIDHelper.createMediaID("" + getListDatas().get(position).getId(),
+                MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+        bundle.putString(MUSIC_ID, id);
+
+        MediaControllerCompat controller = getActivity()
+                .getSupportMediaController();
+        controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
+
     }
 
     @Override
