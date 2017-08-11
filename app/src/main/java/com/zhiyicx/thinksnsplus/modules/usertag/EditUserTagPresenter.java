@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.usertag;
 import android.database.sqlite.SQLiteException;
 
 import com.zhiyicx.common.mvp.BasePresenter;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
@@ -20,7 +19,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @Describe
@@ -52,32 +50,47 @@ public class EditUserTagPresenter extends BasePresenter<EditUserTagContract.Repo
     @Override
     public void getAllTags() {
 
-        Subscription subscription = Observable.zip(mSystemRepository.getAllTags(), mUserInfoRepository.getCurrentUserTags(), (categorys, userTags) -> {
-            try {
-                mTagCategoryBeanGreenDao.clearTable();
-                mUserTagBeanGreenDao.clearTable();
-            } catch (SQLiteException e) {
-            }
-
-            if (!categorys.isEmpty()) {
-                mTagCategoryBeanGreenDao.saveMultiData(categorys);
-
-                for (TagCategoryBean category : categorys) {
-                    if (category.getTags() != null) {
-                        mUserTagBeanGreenDao.saveMultiData(category.getTags());
+        Subscription subscription = Observable.zip(mSystemRepository.getAllTags(),
+                mUserInfoRepository.getCurrentUserTags(), (categorys, userTags) -> {
+                    try {
+                        mTagCategoryBeanGreenDao.clearTable();
+                        mUserTagBeanGreenDao.clearTable();
+                    } catch (SQLiteException e) {
                     }
-                }
 
-                for (UserTagBean userTag : userTags) {
-                    userTag.setMine_has(true);
-                }
-                mUserTagBeanGreenDao.saveMultiData(userTags);
+                    if (!categorys.isEmpty()) {
+                        mTagCategoryBeanGreenDao.saveMultiData(categorys);
+
+                        for (TagCategoryBean category : categorys) {
+                            if (category.getTags() != null) {
+
+                                mUserTagBeanGreenDao.saveMultiData(category.getTags());
+
+                                if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {
+                                    for (UserTagBean tag : category.getTags()) {
+                                        if (mRootView.getChoosedTags().contains(tag)) {
+                                            tag.setMine_has(true);
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+
+                        for (UserTagBean userTag : userTags) {
+                            userTag.setMine_has(true);
+                        }
+                        mUserTagBeanGreenDao.saveMultiData(userTags);
 
 
-            }
-            mRootView.updateMineTagsFromNet(userTags);
-            return mTagCategoryBeanGreenDao.getMultiDataFromCache();
-        }).subscribeOn(AndroidSchedulers.mainThread())
+                    }
+                    mRootView.updateMineTagsFromNet(userTags);
+                    if (mRootView.getCurrentFrom() == TagFrom.INFO_PUBLISH) {
+
+                        return categorys;
+                    }
+                    return mTagCategoryBeanGreenDao.getMultiDataFromCache();
+                }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<List<TagCategoryBean>>() {
                     @Override

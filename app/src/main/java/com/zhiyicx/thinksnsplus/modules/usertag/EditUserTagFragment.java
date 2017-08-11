@@ -136,6 +136,11 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     }
 
     @Override
+    public TagFrom getCurrentFrom() {
+        return mFrom;
+    }
+
+    @Override
     protected void setLeftClick() {
         setresult();
     }
@@ -183,9 +188,12 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
     }
 
     @Override
+    public ArrayList<UserTagBean> getChoosedTags() {
+        return mChoosedTags;
+    }
+
+    @Override
     protected void initData() {
-
-
         mPresenter.getAllTags();
     }
 

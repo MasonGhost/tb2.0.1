@@ -5,6 +5,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +27,10 @@ public interface EditUserTagContract {
         void addTagSuccess(int categoryPosition, int tagPosition);
 
         void deleteTagSuccess(int position);
+
+        TagFrom getCurrentFrom();
+
+        ArrayList<UserTagBean> getChoosedTags();
     }
 
     /**
