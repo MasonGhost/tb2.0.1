@@ -266,7 +266,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void onNetResponseSuccess(@NotNull List<InfoCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
-            if (data.isEmpty()) {
+            if (data.isEmpty()) { // 空白展位图
                 InfoCommentListBean emptyData = new InfoCommentListBean();
                 data.add(emptyData);
             }
