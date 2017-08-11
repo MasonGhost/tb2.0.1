@@ -727,7 +727,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    mPresenter.deleteComment(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
+                    mPresenter.deleteCommentV2(dynamicBean, dynamicPositon, dynamicBean.getComments().get(commentPosition).getComment_id(), commentPosition);
                 })
                 .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
