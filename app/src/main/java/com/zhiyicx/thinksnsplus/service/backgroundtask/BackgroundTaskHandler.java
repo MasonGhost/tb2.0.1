@@ -1148,7 +1148,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        infoCommentListBean.setId(((Double) data).intValue());
+//                        infoCommentListBean.setId(((Double) data).intValue());
                         infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                         EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
@@ -1186,20 +1186,26 @@ public class BackgroundTaskHandler {
             return;
         }
         mServiceManager.getCommonClient()
-                .handleBackGroundTaskPost(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        infoCommentListBean.setId(((Double) data).intValue());
-                        infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
-                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
-                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            infoCommentListBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
+                            mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                            EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         infoCommentListBean.setState(DynamicBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
@@ -1208,6 +1214,7 @@ public class BackgroundTaskHandler {
 
                     @Override
                     protected void onException(Throwable throwable) {
+                        super.onException(throwable);
                         infoCommentListBean.setState(DynamicBean.SEND_ERROR);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                         EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);

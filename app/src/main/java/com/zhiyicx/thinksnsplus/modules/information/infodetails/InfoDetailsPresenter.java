@@ -333,14 +333,13 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
     public void deleteComment(InfoCommentListBean data) {
         mInfoCommentListBeanDao.deleteSingleCache(data);
         mRootView.getListDatas().remove(data);
+        mRootView.getCurrentInfo().setComment_count(mRootView.getCurrentInfo().getComment_count() - 1);
         if (mRootView.getListDatas().size() == 1) {// 占位
-            InfoCommentListBean position_zero = new InfoCommentListBean();
-            position_zero.setId(mRootView.getNewsId().intValue());
             InfoCommentListBean emptyData = new InfoCommentListBean();
             mRootView.getListDatas().add(emptyData);
         }
         mRootView.refreshData();
-        mRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId());
+        mRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
     }
 
     /**
