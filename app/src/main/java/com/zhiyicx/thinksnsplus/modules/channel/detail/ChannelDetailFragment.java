@@ -427,7 +427,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser().getUser_id()) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getHas_collection(), shareBitMap);
                     mMyDynamicPopWindow.show();
@@ -775,20 +775,20 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initOtherDynamicPopupWindow(final GroupDynamicListBean dynamicBean, int position, boolean isCollected, final
     Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {// 收藏
                     handleCollect(position);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
                 })
-                .item2ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(dynamicBean, shareBitmap);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
@@ -811,25 +811,25 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         Long feed_id = dynamicBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item3Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item3Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {// 收藏
                     mMyDynamicPopWindow.hide();
                     handleCollect(position);
                     showBottomView(true);
                 })
-                .item2ClickListener(() -> {// 删除
+                .item3ClickListener(() -> {// 删除
                     mMyDynamicPopWindow.hide();
                     mPresenter.deleteDynamic(dynamicBean, position);
                     showBottomView(true);
                 })
-                .item3ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(dynamicBean, shareBitMap);
                     mMyDynamicPopWindow.hide();
                 })

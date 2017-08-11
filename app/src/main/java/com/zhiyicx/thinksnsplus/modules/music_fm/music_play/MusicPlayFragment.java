@@ -395,7 +395,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     public void refreshData(int position) {
         popAdapter.notifyItemChanged(position);
-        EventBus.getDefault().post(getListDatas().get(position), EVENT_MUSIC_LIKE);
+        //EventBus.getDefault().post(getListDatas().get(position), EVENT_MUSIC_LIKE);
     }
 
     @Override

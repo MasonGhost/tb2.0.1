@@ -319,12 +319,12 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_ABLUM_COMMENT_LIST = "api/" + API_VERSION_2 + "/music/specials/{special_id}/comments";
 
     // 收藏专辑
-    public static final String APP_PATH_MUSIC_ABLUM_COLLECT = "api/" + API_VERSION + "/music/special/{special_id}/collection";
-    public static final String APP_PATH_MUSIC_ABLUM_COLLECT_FORMAT = "api/" + API_VERSION + "/music/special/%s/collection";
+    public static final String APP_PATH_MUSIC_ABLUM_COLLECT = "api/" + API_VERSION_2 + "/music/specials/{special_id}/collection";
+    public static final String APP_PATH_MUSIC_ABLUM_COLLECT_FORMAT = "api/" + API_VERSION_2 + "/music/specials/%s/collection";
 
     // 音乐点赞
-    public static final String APP_PATH_MUSIC_DIGG = "api/" + API_VERSION + "/music/{music_id}/digg";
-    public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/" + API_VERSION + "/music/%s/digg";
+    public static final String APP_PATH_MUSIC_DIGG = "api/" + API_VERSION_2 + "/music/{music_id}/like";
+    public static final String APP_PATH_MUSIC_DIGG_FORMAT = "api/" + API_VERSION_2 + "/music/%s/like";
 
     // 专辑详情
     public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/" + API_VERSION_2 + "/music/specials/{special_id}";

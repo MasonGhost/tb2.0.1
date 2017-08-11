@@ -62,10 +62,10 @@ public class MusicDetailRepository implements MusicDetailContract.Repository {
                     // 后台处理
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST, params);
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
                     } else {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE, params);
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                     }
                     backgroundRequestTaskBean.setPath(String.format(ApiConfig
                             .APP_PATH_MUSIC_ABLUM_COLLECT_FORMAT, special_id));
