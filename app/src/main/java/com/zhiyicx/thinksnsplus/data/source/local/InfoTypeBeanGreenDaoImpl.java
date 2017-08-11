@@ -95,7 +95,8 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
     public List<InfoTypeCatesBean> getMyCatesList() {
         return mInfoTypeCatesBeanDao
                 .queryBuilder()
-                .where(InfoTypeCatesBeanDao.Properties.IsMyCate.eq(true))
+                .where(InfoTypeCatesBeanDao.Properties.IsMyCate.eq(true),InfoTypeCatesBeanDao
+                        .Properties.Id.notEq(-1))
                 .build().list();
     }
 

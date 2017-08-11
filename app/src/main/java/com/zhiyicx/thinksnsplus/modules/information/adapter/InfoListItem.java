@@ -38,7 +38,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         final ImageView imageView = holder.getView(R.id.item_info_imag);
 
         // 记录点击过后颜色
-        if (AppApplication.sOverRead.contains(position + "")) {
+        if (AppApplication.sOverRead.contains(realData.getId())) {
             title.setTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
         }
 

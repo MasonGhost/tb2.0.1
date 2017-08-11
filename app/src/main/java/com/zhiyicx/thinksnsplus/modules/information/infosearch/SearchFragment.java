@@ -105,8 +105,8 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
 
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
-                    if (!AppApplication.sOverRead.contains(position + "")) {
-                        AppApplication.sOverRead.add(position + "");
+                    if (!AppApplication.sOverRead.contains(realData.getId())) {
+                        AppApplication.sOverRead.add(realData.getId());
                     }
                     FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
                             , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
