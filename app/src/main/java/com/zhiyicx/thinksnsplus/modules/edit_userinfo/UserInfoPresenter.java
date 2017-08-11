@@ -232,11 +232,11 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_LOCATION)) {
             mUserInfoBean.setLocation((String) changeUserInfo.get(UserInfoFragment.USER_LOCATION));
-            mUserInfoBean.setProvince((String) changeUserInfo.get(UserInfoFragment.USER_PROVINCE));
-            mUserInfoBean.setCity((String) changeUserInfo.get(UserInfoFragment.USER_CITY));
-            if (changeUserInfo.containsKey(UserInfoFragment.USER_AREA)) {
-                mUserInfoBean.setArea((String) changeUserInfo.get(UserInfoFragment.USER_AREA));
-            }
+//            mUserInfoBean.setProvince((String) changeUserInfo.get(UserInfoFragment.USER_PROVINCE));
+//            mUserInfoBean.setCity((String) changeUserInfo.get(UserInfoFragment.USER_CITY));
+//            if (changeUserInfo.containsKey(UserInfoFragment.USER_AREA)) {
+//                mUserInfoBean.setArea((String) changeUserInfo.get(UserInfoFragment.USER_AREA));
+//            }
         }
         if (changeUserInfo.containsKey(UserInfoFragment.USER_INTRO)) {
             mUserInfoBean.setIntro((String) changeUserInfo.get(UserInfoFragment.USER_INTRO));
