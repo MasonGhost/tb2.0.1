@@ -64,22 +64,19 @@ public class FindSomeOneListAdapter extends CommonAdapter<UserInfoBean> {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        // 添加关注，或者取消关注
-                        // 关注列表的逻辑操作：关注，互相关注 ---》未关注
-                        // 粉丝列表的逻辑操作：互相关注 ---》未关注
+                .subscribe(aVoid -> {
+                    // 添加关注，或者取消关注
+                    // 关注列表的逻辑操作：关注，互相关注 ---》未关注
+                    // 粉丝列表的逻辑操作：互相关注 ---》未关注
 
-                        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
-                            mPresenter.cancleFollowUser(position, userInfoBean1);
-                        }else if(userInfoBean1.isFollower()){
-                            mPresenter.cancleFollowUser(position, userInfoBean1);
-                        }else {
-                            mPresenter.followUser(position, userInfoBean1);
-                        }
-
+                    if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+                        mPresenter.cancleFollowUser(position, userInfoBean1);
+                    }else if(userInfoBean1.isFollower()){
+                        mPresenter.cancleFollowUser(position, userInfoBean1);
+                    }else {
+                        mPresenter.followUser(position, userInfoBean1);
                     }
+
                 });
 
 
