@@ -44,10 +44,21 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
 
         title.setText(realData.getTitle());
 
-        int w = title.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_image_width);
-        int h = title.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_height);
+        int w = title.getContext().getResources().getDimensionPixelOffset(R.dimen
+                .info_channel_list_image_width);
+        int h = title.getContext().getResources().getDimensionPixelOffset(R.dimen
+                .info_channel_list_height);
 
         holder.itemView.setOnClickListener(v -> itemClick(position, imageView, title, realData));
+        // 投稿来源，浏览数，时间
+        String from = realData.getFrom().equals(title.getContext().getString(R.string
+                .info_publish_original)) ?
+                realData.getAuthor() : realData.getFrom();
+        String infoData = String.format(title.getContext().getString(R.string.info_list_count)
+                , from, realData.getHits(), TimeUtils.getTimeFriendlyNormal(realData
+                        .getCreated_at()));
+        holder.setText(R.id.item_info_timeform, infoData);
+
         if (realData.getImage() == null) {
             imageView.setVisibility(View.GONE);
             if (realData.getUser_id() < 0) {// 广告
@@ -58,15 +69,19 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                         .error(R.drawable.shape_default_image)
                         .override(w, h)
                         .into(imageView);
+                holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
+                        .getCreated_at()));
                 holder.itemView.setOnClickListener(v ->
-                        CustomWEBActivity.startToWEBActivity(imageView.getContext(), realData.getUpdated_at()
+                        CustomWEBActivity.startToWEBActivity(imageView.getContext(), realData
+                                        .getUpdated_at()
                                 , realData.getTitle())
                 );
             }
         } else {
             imageView.setVisibility(View.VISIBLE);
             Glide.with(BaseApplication.getContext())
-                    .load(ImageUtils.imagePathConvertV2(realData.getImage().getId(), imageView.getWidth(), imageView.getHeight(),
+                    .load(ImageUtils.imagePathConvertV2(realData.getImage().getId(), imageView
+                                    .getWidth(), imageView.getHeight(),
                             ImageZipConfig.IMAGE_80_ZIP))
                     .placeholder(R.drawable.shape_default_image)
                     .error(R.drawable.shape_default_image)
@@ -75,19 +90,14 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
         }
         // 来自单独分开
         String category = realData.getCategory() == null ? "" : realData.getCategory().getName();
+        holder.setVisible(R.id.tv_from_channel, category.isEmpty() ? View.GONE : View.VISIBLE);
         holder.setText(R.id.tv_from_channel, category);
-        // 投稿来源，浏览数，时间
-        String from = realData.getFrom().equals(title.getContext().getString(R.string.info_publish_original)) ?
-                realData.getAuthor() : realData.getFrom();
-        String infoData = String.format(title.getContext().getString(R.string.info_list_count)
-                , from, realData.getHits(), TimeUtils.getTimeFriendlyNormal(realData
-                        .getCreated_at()));
-        holder.setText(R.id.item_info_timeform, infoData);
         // 是否置顶
         holder.setVisible(R.id.tv_top_flag, realData.isTop() ? View.VISIBLE : View.GONE);
 
     }
 
-    public abstract void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData);
+    public abstract void itemClick(int position, ImageView imageView, TextView title,
+                                   InfoListDataBean realData);
 
 }
