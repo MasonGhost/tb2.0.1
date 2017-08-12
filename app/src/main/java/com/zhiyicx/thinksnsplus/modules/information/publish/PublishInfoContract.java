@@ -20,6 +20,7 @@ public interface PublishInfoContract {
         void uploadPicFailed();
         void publishInfoFailed();
         void publishInfoSuccess();
+        boolean showUplaoding();
     }
 
     interface Presenter extends IBaseTouristPresenter {

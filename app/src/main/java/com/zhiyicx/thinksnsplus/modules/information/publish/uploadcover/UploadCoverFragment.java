@@ -31,7 +31,8 @@ import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment.BUNDLE_PUBLISH_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment
+        .BUNDLE_PUBLISH_BEAN;
 
 /**
  * @Describe
@@ -92,6 +93,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         if (photoList.isEmpty()) {
             return;
         }
+        mBtSure.setEnabled(false);
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
         mTvInfoCover.setVisibility(View.GONE);
@@ -120,11 +122,12 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     public void uploadPicSuccess(int id) {
         mInfoPublishBean.setImage(id);
+        mBtSure.setEnabled(true);
     }
 
     @Override
     public void uploadPicFailed() {
-
+        mBtSure.setEnabled(true);
     }
 
     @Override
@@ -164,6 +167,10 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         }
     }
 
+    @Override
+    public boolean showUplaoding() {
+        return true;
+    }
 
     private void initListener() {
         RxView.clicks(mFlInfoCoverContainer)
@@ -174,7 +181,13 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         RxView.clicks(mBtSure)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> initPayInfoPopWindow());
+                .subscribe(aVoid -> {
+                    if (mInfoPublishBean.getImage() <= 0 && mInfoPublishBean.getCover() <= 0) {
+                        initWithdrawalsInstructionsPop();
+                        return;
+                    }
+                    initPayInfoPopWindow();
+                });
 
     }
 
@@ -202,17 +215,15 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .contentView(R.layout.ppw_for_center)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .buildDescrStr(String.format(getString(R.string.publish_pay_info) + getString(R
-                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
+                        .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean
+                        .getAmout())))
                 .buildLinksStr(getString(R.string.buy_pay_member))
                 .buildTitleStr(getString(R.string.buy_pay))
                 .buildItem1Str(getString(R.string.publish_info_pay_in))
                 .buildItem2Str(getString(R.string.publish_info_pay_out))
-                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
+                .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig
+                        .realCurrencyFen2Yuan(mInfoPublishBean.getAmout())))
                 .buildCenterPopWindowItem1ClickListener(() -> {
-                    if (mInfoPublishBean.getImage() <= 0 && mInfoPublishBean.getCover() <= 0) {
-                        initWithdrawalsInstructionsPop();
-                        return;
-                    }
                     mPresenter.publishInfo(mInfoPublishBean);
                     mPayInfoPopWindow.hide();
                 })
