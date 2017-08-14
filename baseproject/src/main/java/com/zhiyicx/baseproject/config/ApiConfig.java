@@ -346,8 +346,11 @@ public class ApiConfig {
     public static final String APP_PATH_GET_TOPIC_EXPERTS = "api/" + API_VERSION_2 + "/question-topics/{topic_id}/experts";
     // 话题详情
     public static final String APP_PATH_GET_TOPIC_DETAIL = "api/" + API_VERSION_2 + "/question-topics/{topic}";
+    // 话题下的问答列表
+    public static final String APP_PATH_GET_QUESTION_LIST_BY_TOPIC = "api/" + API_VERSION_2 + "/question-topics/{topic}/questions";
     // 关注或者取消一个话题
     public static final String APP_PATH_HANDLE_TOPIC_FOLLOW = "api/" + API_VERSION_2 + "/user/question-topics/{topic}";
+    public static final String APP_PATH_HANDLE_TOPIC_FOLLOW_S = "api/" + API_VERSION_2 + "/user/question-topics/%s";
 
     /**
      * 通用 CommonClient

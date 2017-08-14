@@ -25,6 +25,7 @@
     <!--频道列表-->
     <!--频道订阅按钮宽度-->
     <dimen name="channel_subscrib_btn_width">63dp</dimen>
+    <dimen name="topic_follow_btn_width_70">70dp</dimen>
     <dimen name="channel_subscrib_btn_height">25dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <!--频道详情，顶部图片距离顶部的距离-->

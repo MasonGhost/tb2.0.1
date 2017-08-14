@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/fl_dig_head_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:gravity="center_vertical">
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fl_dig_head_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topic_cover_height"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:gravity="center_vertical"
+        android:background="@color/white">
 
     <TextView
             android:id="@+id/tv_expert_count"
@@ -27,7 +29,7 @@
             android:visibility="invisible"/>
 
     <ImageView
-            android:id="@+id/iv_dig_head5"
+            android:id="@+id/iv_dig_head1"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
             android:layout_marginRight="@dimen/spacing_normal"
@@ -36,7 +38,7 @@
             android:layout_centerVertical="true"/>
 
     <ImageView
-            android:id="@+id/iv_dig_head4"
+            android:id="@+id/iv_dig_head2"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
             android:layout_marginRight="@dimen/head4_right_margin"
@@ -54,7 +56,7 @@
             android:layout_centerVertical="true"/>
 
     <ImageView
-            android:id="@+id/iv_dig_head2"
+            android:id="@+id/iv_dig_head4"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
             android:layout_marginRight="@dimen/head2_right_margin"
@@ -63,7 +65,7 @@
             android:layout_centerVertical="true"/>
 
     <ImageView
-            android:id="@+id/iv_dig_head1"
+            android:id="@+id/iv_dig_head5"
             android:layout_width="@dimen/headpic_for_assist"
             android:layout_height="@dimen/headpic_for_assist"
             android:layout_marginRight="@dimen/head1_right_margin"

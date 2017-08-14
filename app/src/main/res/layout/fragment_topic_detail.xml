@@ -60,7 +60,7 @@
 
                     <CheckBox
                             android:id="@+id/tv_topic_change_follow"
-                            android:layout_width="@dimen/channel_subscrib_btn_width"
+                            android:layout_width="@dimen/topic_follow_btn_width_70"
                             android:layout_height="@dimen/channel_subscrib_btn_height"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
@@ -125,7 +125,7 @@
     <include
             layout="@layout/fragment_tslist"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

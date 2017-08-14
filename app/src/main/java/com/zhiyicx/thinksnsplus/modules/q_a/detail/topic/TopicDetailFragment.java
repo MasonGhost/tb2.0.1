@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -19,21 +20,26 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
+import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.widget.HorizontalStackIconView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import net.lucode.hackware.magicindicator.FragmentContainerHelper;
 import net.lucode.hackware.magicindicator.MagicIndicator;
-import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
@@ -45,10 +51,13 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 
 /**
  * @author Catherine
@@ -59,6 +68,12 @@ import butterknife.Unbinder;
 
 public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Presenter, QAListInfoBean>
         implements TopicDetailContract.View {
+
+    private static final String TYPE_ALL = "all";
+    private static final String TYPE_NEW = "new";
+    private static final String TYPE_HOT = "hot";
+    private static final String TYPE_REWARD = "reward";
+    private static final String TYPE_EXCELLENT = "excellent";
 
     @BindView(R.id.iv_topic_cover)
     ImageView mIvTopicCover;
@@ -74,11 +89,13 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
     HorizontalStackIconView mExpertList;
     @BindView(R.id.mg_indicator)
     MagicIndicator mMgIndicator;
-    @BindView(R.id.tv_top_tip_text)
-    TextView mTvTopTipText;
 
     private CommonNavigator mCommonNavigator;
+    private QATopicBean mQaTopicBean;
 
+    private String mCurrentType = TYPE_NEW;
+    private List<String> mTypeList;
+    private FragmentContainerHelper mFragmentContainerHelper = new FragmentContainerHelper();
 
     public TopicDetailFragment instance(Bundle bundle) {
         TopicDetailFragment fragment = new TopicDetailFragment();
@@ -90,6 +107,20 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
     protected void initView(View rootView) {
         super.initView(rootView);
         initMagicIndicator();
+        initListener();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        mTypeList = new ArrayList<>();
+        mTypeList.add(TYPE_NEW);
+        mTypeList.add(TYPE_EXCELLENT);
+        mTypeList.add(TYPE_REWARD);
+        mTypeList.add(TYPE_HOT);
+        mTypeList.add(TYPE_ALL);
+        mFragmentContainerHelper.handlePageSelected(0, false);
+//        mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
     }
 
     @Override
@@ -138,6 +169,11 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         return R.layout.fragment_topic_detail;
     }
 
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.topbar_share_white;
+    }
+
     private List<Link> setLinks(QAListInfoBean listInfoBean) {
         List<Link> links = new ArrayList<>();
         Link followCountLink = new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
@@ -163,6 +199,13 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(rewardMoneyLink);
+        Link numberCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
+                .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .normal_for_assist_text))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(numberCountLink);
         return links;
     }
 
@@ -193,9 +236,10 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
 
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources
                         ().getInteger(R.integer.tab_text_size_15));
-
                 simplePagerTitleView.setOnClickListener(v -> {
-
+                    mFragmentContainerHelper.handlePageSelected(index, false);
+                    mCurrentType = mTypeList.get(index);
+                    requestNetData(0L, false);
                 });
                 return simplePagerTitleView;
             }
@@ -210,5 +254,62 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
             }
         });
         mMgIndicator.setNavigator(mCommonNavigator);
+        mFragmentContainerHelper.attachMagicIndicator(mMgIndicator);
     }
+
+    @Override
+    public void setTopicDetail(QATopicBean qaTopicBean) {
+        this.mQaTopicBean = qaTopicBean;
+        setTopicDetailData();
+    }
+
+    @Override
+    public Long getTopicId() {
+        return mQaTopicBean == null ? 0L : mQaTopicBean.getId();
+    }
+
+    @Override
+    public String getCurrentType() {
+        return mCurrentType;
+    }
+
+    @Override
+    public QATopicBean getCurrentTopicBean() {
+        return mQaTopicBean;
+    }
+
+    @Override
+    public void updateFollowState() {
+        mTvTopicChangeFollow.setChecked(mQaTopicBean.getHas_follow());
+        mTvTopicChangeFollow.setText(mQaTopicBean.getHas_follow() ?
+                getContext().getString(R.string.followed) : getContext().getString(R.string.follow));
+    }
+
+    private void setTopicDetailData(){
+        setCenterText(mQaTopicBean.getName());
+        mTvTopicName.setText(mQaTopicBean.getName());
+        updateFollowState();
+        mTvTopicDescription.setText(mQaTopicBean.getDescription());
+        mExpertList.setExpertCount(mQaTopicBean.getExperts_count());
+        mExpertList.setDigUserHeadIcon(mQaTopicBean.getExperts());
+        mTvTopicFeedCount.setText(String.format(Locale.getDefault(),
+                getString(R.string.qa_show_topic_detail_feed), mQaTopicBean.getFollows_count(), mQaTopicBean.getQuestions_count()));
+        ConvertUtils.stringLinkConvert(mTvTopicFeedCount, setLinks(null));
+        Glide.with(BaseApplication.getContext())
+                .load(TextUtils.isEmpty(mQaTopicBean.getAvatar()) ? "" : mQaTopicBean.getAvatar())
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(mIvTopicCover);
+    }
+
+    private void initListener(){
+        RxView.clicks(mTvTopicChangeFollow)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    // 修改关注状态
+                    mPresenter.handleTopicFollowState(String.valueOf(mQaTopicBean.getId()), !mQaTopicBean.getHas_follow());
+                });
+    }
+
 }
