@@ -13,6 +13,6 @@ import dagger.Component;
  * @contact email:648129313@qq.com
  */
 @FragmentScoped
-@Component(dependencies = AppComponent.class, modules = QA$RewardPresenterModule.class)
-public interface QA$RewardComponent extends InjectComponent<QA_RewardActivity>{
+@Component(dependencies = AppComponent.class, modules = QARewardPresenterModule.class)
+public interface QARewardComponent extends InjectComponent<QARewardActivity>{
 }

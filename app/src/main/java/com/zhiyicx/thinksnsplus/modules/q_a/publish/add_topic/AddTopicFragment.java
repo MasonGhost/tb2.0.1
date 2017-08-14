@@ -64,11 +64,6 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     }
 
     @Override
-    protected int setEmptView() {
-        return 0;
-    }
-
-    @Override
     protected String setRightTitle() {
         return getString(R.string.qa_publish_next);
     }
@@ -79,24 +74,15 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     }
 
     @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
-    protected boolean isLoadingMoreEnable() {
-        return false;
-    }
-
-    @Override
     protected void setRightClick() {
         super.setRightClick();
-        StringBuilder tagBuilder = new StringBuilder();
+        List<QAPublishBean.Topic> topicList = new ArrayList<>();
         for (QATopicBean qaTopicBean : mQATopicBeanList) {
-            tagBuilder.append(qaTopicBean.getId());
-            tagBuilder.append(",");
+            QAPublishBean.Topic topic = new QAPublishBean.Topic();
+            topic.setId(qaTopicBean.getId());
+            topicList.add(topic);
         }
-        mQAPublishBean.setTopics(tagBuilder.toString());
+        mQAPublishBean.setTopics(topicList);
         Intent intent = new Intent(getActivity(), PublishContentActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
@@ -109,6 +95,15 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
                 .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
                 .shape_recyclerview_grey_divider));
+    }
+
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+        requestNetData(null, maxId, null, isLoadMore);
+    }
+
+    private void requestNetData(String name, Long maxId, Long follow, boolean isLoadMore) {
+        mPresenter.requestNetData(name, maxId, follow, isLoadMore);
     }
 
     @Override
@@ -138,16 +133,6 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
         mEtQustion.setText(mQAPublishBean.getSubject());
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
-        for (int i = 0; i < 10; i++) {
-            QATopicBean qa_lIstInfoBean = new QATopicBean();
-            mListDatas.add(qa_lIstInfoBean);
-        }
-        refreshData();
-        if (mListDatas.isEmpty()) {
-            mLine.setVisibility(View.INVISIBLE);
-        } else {
-            mLine.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override

@@ -28,6 +28,7 @@ public class ServiceManager {
     private ChannelClient mChannelClient;
     private CommonCommentClient mCommonCommentClient;
     private WalletClient mWalletClient;
+    private QAClient mQAClient;
 
     /**
      * 如果需要添加 service 只需在构造方法中添加对应的 service,在提供 get 方法返回出去,只要在 ServiceModule 提供了该 service
@@ -48,9 +49,11 @@ public class ServiceManager {
             , DynamicClient mDynamicClient
             , ChannelClient mChannelClient
             , WalletClient walletClient
+            , QAClient qAClient
             , CommonCommentClient commonCommentClient) {
         this.mCommonClient = commonClient;
         this.mLoginClient = loginClient;
+        this.mQAClient = qAClient;
         this.mRegisterClient = registerClient;
         this.mUserInfoClient = userInfoClient;
         this.mChatInfoClient = chatInfoClient;
@@ -114,6 +117,10 @@ public class ServiceManager {
 
     public WalletClient getWalletClient() {
         return mWalletClient;
+    }
+
+    public QAClient getQAClient() {
+        return mQAClient;
     }
 
 }

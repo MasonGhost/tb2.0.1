@@ -19,7 +19,7 @@ public interface AddTopicContract {
     }
 
     interface Presenter extends ITSListPresenter<QATopicBean> {
-
+       void requestNetData(String name, Long maxId, Long follow,boolean isLoadMore);
     }
 
     interface Repository extends IBasePublishQuestionRepository {

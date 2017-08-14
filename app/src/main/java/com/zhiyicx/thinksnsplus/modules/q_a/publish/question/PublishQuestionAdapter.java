@@ -40,7 +40,7 @@ public class PublishQuestionAdapter extends CommonAdapter<QAListInfoBean> {
 
 
         // 设置用户名，用户简介
-        holder.setText(R.id.tv_content, qa_listInfoBean.getContent());
+        holder.setText(R.id.tv_content, qa_listInfoBean.getBody());
 
         // 添加点击事件
         RxView.clicks(holder.getConvertView())
@@ -49,7 +49,7 @@ public class PublishQuestionAdapter extends CommonAdapter<QAListInfoBean> {
                     Intent intent = new Intent(mContext, AddTopicActivity.class);
                     Bundle bundle = new Bundle();
                     QAPublishBean qaPublishBean = new QAPublishBean();
-                    qaPublishBean.setSubject(qa_listInfoBean.getContent());
+                    qaPublishBean.setSubject(qa_listInfoBean.getBody());
                     bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, qaPublishBean);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);

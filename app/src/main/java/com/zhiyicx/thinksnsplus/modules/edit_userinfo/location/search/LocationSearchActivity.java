@@ -5,10 +5,6 @@ import android.content.Intent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoCategoryFragment;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoPresenter;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoPresenterModule;
-import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.DaggerAddInfoComponent;
 
 /**
  * @Describe  地区搜索
