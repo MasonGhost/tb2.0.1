@@ -39,6 +39,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BATCH_SPECIFIED_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BY_PHONE_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RANKS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CURRENT_USER_INFO;
@@ -334,8 +335,8 @@ public interface UserInfoClient {
      * @return
      */
     @FormUrlEncoded
-    @POST(APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO)
-    Observable<List<UserInfoBean>> getUsersByPhone(@Field("phones") ArrayList<Integer> phones);
+    @POST(APP_PATH_GET_BY_PHONE_USER_INFO)
+    Observable<List<UserInfoBean>> getUsersByPhone(@Field("phones") ArrayList<String> phones);
 
     /*******************************************  签到  *********************************************/
 

@@ -11,6 +11,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.github.tamir7.contacts.Contact;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -20,6 +21,7 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecomment
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentFragment;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.contacts.ContactsFragment;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.search.name.SearchSomeOneActivity;
 
 import butterknife.BindView;
@@ -151,6 +153,17 @@ public class FindSomeOneContainerFragment extends TSFragment {
 
                 break;
             case R.id.tv_toolbar_right_two:
+                mRxPermissions.request(android.Manifest.permission.READ_CONTACTS)
+                        .subscribe(aBoolean -> {
+                            if(aBoolean){
+                                ContactsFragment.startToEditTagActivity(getActivity());
+                            }else {
+                              showSnackErrorMessage(getString(R.string.contacts_permission_tip));
+                            }
+
+                        });
+
+
                 break;
             case R.id.tv_toolbar_right:
                 Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);

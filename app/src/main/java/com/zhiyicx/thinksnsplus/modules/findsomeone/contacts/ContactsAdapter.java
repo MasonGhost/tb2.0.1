@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.usertag;
+package com.zhiyicx.thinksnsplus.modules.findsomeone.contacts;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,8 @@ import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeader
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
+import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
@@ -18,22 +20,22 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-
 /**
  * @Describe
  * @Author Jungle68
  * @Date 2017/8/14
  * @Contact master.jungle68@gmail.com
  */
-public class TagClassAdapter extends StickyHeaderGridAdapter {
-    private List<TagCategoryBean> mDatas;
+
+public class ContactsAdapter extends StickyHeaderGridAdapter {
+    private List<ContactsContainerBean> mDatas;
     private OnItemClickListener mOnItemClickListener;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
     }
 
-    TagClassAdapter(List<TagCategoryBean> categoryBeanList) {
+    ContactsAdapter(List<ContactsContainerBean> categoryBeanList) {
 
         if (categoryBeanList == null) {
             mDatas = new ArrayList<>();
@@ -50,7 +52,7 @@ public class TagClassAdapter extends StickyHeaderGridAdapter {
 
     @Override
     public int getSectionItemCount(int section) {
-        return mDatas.get(section).getTags().size();
+        return mDatas.get(section).getContacts().size();
     }
 
     @Override
@@ -68,30 +70,30 @@ public class TagClassAdapter extends StickyHeaderGridAdapter {
     @Override
     public void onBindHeaderViewHolder(HeaderViewHolder viewHolder, int categoryPosition) {
         final MyHeaderViewHolder holder = (MyHeaderViewHolder) viewHolder;
-        holder.labelView.setText(mDatas.get(categoryPosition).getName());
+        holder.labelView.setText(mDatas.get(categoryPosition).getTitle());
     }
 
     @Override
     public void onBindItemViewHolder(ItemViewHolder viewHolder, final int categoryPosition, final int tagPosition) {
         final MyItemViewHolder holder = (MyItemViewHolder) viewHolder;
-        UserTagBean userTagBean = mDatas.get(categoryPosition).getTags().get(tagPosition);
-        holder.labelView.setText(userTagBean.getTagName());
+        ContactsBean userTagBean = mDatas.get(categoryPosition).getContacts().get(tagPosition);
+        holder.labelView.setText(userTagBean.getContact().getDisplayName());
 
-        holder.labelView.setTextColor(SkinUtils.getColor(userTagBean.isMine_has() ? R.color.important_for_theme : R.color.normal_for_dynamic_list_content));
-        holder.labelView.setBackgroundResource(userTagBean.isMine_has() ? R.drawable.item_react_bg_blue : R.drawable.item_react_bg_gray);
-        // 跳过
-        RxView.clicks(holder.labelView)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> {
-                    final int section1 = getAdapterPositionSection(holder.getAdapterPosition());
-                    final int offset = getItemSectionOffset(section1, holder.getAdapterPosition());
-//            mDatas.get(section1).remove(offset);
-//            notifySectionItemRemoved(section1, offset);
-                    LogUtils.d("TagClassAdapter", "categoryPosition : " + categoryPosition + "-----" + "tagPosition : " + tagPosition + "-----" + "section1 : " + section1 + "offset : " + offset);
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(categoryPosition, tagPosition);
-                    }
-                });
+//        holder.labelView.setTextColor(SkinUtils.getColor(userTagBean.isMine_has() ? R.color.important_for_theme : R.color.normal_for_dynamic_list_content));
+//        holder.labelView.setBackgroundResource(userTagBean.isMine_has() ? R.drawable.item_react_bg_blue : R.drawable.item_react_bg_gray);
+//        // 跳过
+//        RxView.clicks(holder.labelView)
+//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+//                .subscribe(aVoid -> {
+//                    final int section1 = getAdapterPositionSection(holder.getAdapterPosition());
+//                    final int offset = getItemSectionOffset(section1, holder.getAdapterPosition());
+////            mDatas.get(section1).remove(offset);
+////            notifySectionItemRemoved(section1, offset);
+//                    LogUtils.d("TagClassAdapter", "categoryPosition : " + categoryPosition + "-----" + "tagPosition : " + tagPosition + "-----" + "section1 : " + section1 + "offset : " + offset);
+//                    if (mOnItemClickListener != null) {
+//                        mOnItemClickListener.onItemClick(categoryPosition, tagPosition);
+//                    }
+//                });
 
 
     }

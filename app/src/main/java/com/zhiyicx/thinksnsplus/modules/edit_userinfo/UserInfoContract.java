@@ -258,7 +258,7 @@ public interface UserInfoContract {
          *
          * @return
          */
-        Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<Integer> phones);
+        Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones);
 
 
         /*******************************************  签到  *********************************************/

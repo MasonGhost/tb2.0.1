@@ -203,5 +203,6 @@ dependencies {
     compile(name: 'lint-library-release', ext: 'aar')
 
     compile dataDependences.flowlayout
+    compile dataDependences.contacts
 }
 

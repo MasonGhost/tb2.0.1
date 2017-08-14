@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.zhiyicx.thinksnsplus">
-
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -453,6 +453,9 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.findsomeone.search.name.SearchSomeOneActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.findsomeone.contacts.ContactsActivity"
             android:screenOrientation="portrait"/>
 
     </application>

@@ -72,6 +72,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @SerializedName("id")
     private Long user_id;
     private String name;
+    @SerializedName("mobi")
     private String phone;
     private String email;
     @SerializedName("bio")

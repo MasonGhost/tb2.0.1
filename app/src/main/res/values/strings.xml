@@ -450,6 +450,8 @@
     <string name="check_in_today_get_gold_format">签到得金币+%d</string>
 
     <!--找人-->
+    <string name="contacts">通讯录</string>
+    <string name="contacts_permission_tip">请打开通讯录权限，否则你将不能使用此功能！</string>
     <string name="find_someone">找人</string>
     <string name="neary_by">附近</string>
     <string name="choose_city">选择城市</string>

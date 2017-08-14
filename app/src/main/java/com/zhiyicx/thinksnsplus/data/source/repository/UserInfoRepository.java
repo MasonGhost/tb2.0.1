@@ -514,7 +514,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<Integer> phones) {
+    public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones) {
         return mUserInfoClient.getUsersByPhone(phones)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
