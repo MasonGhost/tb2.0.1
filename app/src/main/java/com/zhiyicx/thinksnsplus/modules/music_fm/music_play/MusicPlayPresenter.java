@@ -18,11 +18,14 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+
+import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -61,6 +64,11 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
     public SharePolicy mSharePolicy;
 
     @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Override
     public void payNote(int position, int note) {
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
         double balance = 0;
@@ -74,36 +82,40 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
             mRootView.goRecharge(WalletActivity.class);
             return;
         }
-        mCommentRepository.paykNote(note)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
-                    @Override
-                    protected void onSuccess(BaseJsonV2<String> data) {
-                        mRootView.getListDatas().get(position).getStorage().setPaid(true);
-                        mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
-                        mRootView.refreshData(position);
-                        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
-                    }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage(message);
-                    }
+        mRootView.getListDatas().get(position).getStorage().setPaid(true);
+        mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
+        mRootView.refreshData(position);
+        EventBus.getDefault().post(mRootView.getListDatas().get(position), EventBusTagConfig
+                .EVENT_MUSIC_TOLL);
+        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        mRootView.hideCenterLoading();
-                    }
-                });
+//        mCommentRepository.paykNote(note)
+//                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+//                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
+//                    @Override
+//                    protected void onSuccess(BaseJsonV2<String> data) {
+//                        mRootView.getListDatas().get(position).getStorage().setPaid(true);
+//                        mRootView.getCurrentAblum().getMusics().get(position).getStorage().setPaid(true);
+//                        mRootView.refreshData(position);
+//                        EventBus.getDefault().post(mRootView.getListDatas().get(position), EventBusTagConfig.EVENT_MUSIC_LIKE);
+//                        mMusicAlbumDetailsBeanGreenDao.insertOrReplace(mRootView.getCurrentAblum());
+//                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.transaction_success));
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(String message, int code) {
+//                        super.onFailure(message, code);
+//                        mRootView.showSnackErrorMessage(message);
+//                    }
+//
+//                    @Override
+//                    protected void onException(Throwable throwable) {
+//                        super.onException(throwable);
+//                        mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+//                    }
+//                });
     }
 
     @Override

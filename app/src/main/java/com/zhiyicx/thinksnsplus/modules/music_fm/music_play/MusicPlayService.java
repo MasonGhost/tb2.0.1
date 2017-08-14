@@ -35,8 +35,7 @@ import java.util.List;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
-import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper
-        .MEDIA_ID_EMPTY_ROOT;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
 
 /**
@@ -175,16 +174,26 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     public void onCustomAction(String action, Bundle extras) {
         LogUtils.d("onCustomAction");
         MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable(MUSIC_ACTION);
-        String tym = extras.getString(MUSIC_ID,MUSIC_ID);
-        if (musicAblum!=null){
+        String tym = extras.getString(MUSIC_ID, MUSIC_ID);
+        if (musicAblum != null) {
             MusicProvider newMusicProvider = new MusicProvider(new MusicDataConvert(musicAblum));
-            newMusicProvider.retrieveMediaAsync(null);// 很重要
-            mMusicProvider = newMusicProvider;
-            mQueueManager.setMusicProvider(mMusicProvider);
-            mLocalPlayback.setMusicProvider(mMusicProvider);
-            if (!tym.equals(MUSIC_ID)){// 加入播放队列
-                mQueueManager.setQueueFromMusic(tym);
+            newMusicProvider.retrieveMediaAsync(success -> {
+                mMusicProvider = newMusicProvider;
+                mQueueManager.setMusicProvider(mMusicProvider);
+                mLocalPlayback.setMusicProvider(mMusicProvider);
+                if (!tym.equals(MUSIC_ID)) {// 加入播放队列
+                    mQueueManager.setQueueFromMusic(tym);
+                }
+            });
+            if (newMusicProvider.isInitialized()){
+                mMusicProvider = newMusicProvider;
+                mQueueManager.setMusicProvider(mMusicProvider);
+                mLocalPlayback.setMusicProvider(mMusicProvider);
+                if (!tym.equals(MUSIC_ID)) {// 加入播放队列
+                    mQueueManager.setQueueFromMusic(tym);
+                }
             }
+
         }
 
     }

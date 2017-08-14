@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -34,16 +35,22 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
         mUpLoadRepository.upLoadSingleFileV2(filePath, mimeType, true, photoWidth, photoHeight)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> {
+                    if (mRootView.showUplaoding()){
+                        mRootView.showSnackLoadingMessage("图片上传中...");
+                    }
+                })
                 .subscribe(new BaseSubscribe<Integer>() {
                     @Override
                     protected void onSuccess(Integer data) {
                         mRootView.uploadPicSuccess(data);
+                        mRootView.showSnackErrorMessage("图片上传成功");
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage("图片上传失败");
+                        mRootView.showSnackErrorMessage(message);
                         mRootView.uploadPicFailed();
                     }
 

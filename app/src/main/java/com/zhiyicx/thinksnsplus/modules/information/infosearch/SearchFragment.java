@@ -105,8 +105,8 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
             public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
 
                 if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
-                    if (!AppApplication.sOverRead.contains(position + "")) {
-                        AppApplication.sOverRead.add(position + "");
+                    if (!AppApplication.sOverRead.contains(realData.getId())) {
+                        AppApplication.sOverRead.add(realData.getId());
                     }
                     FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
                             , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
@@ -121,51 +121,6 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
             }
         });
         return adapter;
-//        return new CommonAdapter<InfoListDataBean>(getActivity(),
-//                R.layout.item_info, mListDatas) {
-//            @Override
-//            protected void convert(ViewHolder holder, final InfoListDataBean realData,
-//                                   final int position) {
-//                final TextView title = holder.getView(R.id.item_info_title);
-//                ImageView imageView = holder.getView(R.id.item_info_imag);
-//                if (AppApplication.sOverRead.contains(position + "")) {
-//                    title.setTextColor(getResources()
-//                            .getColor(R.color.normal_for_assist_text));
-//                }
-//                title.setText(realData.getTitle());
-//
-//                if (realData.getImage() == null) {
-//                    imageView.setVisibility(View.GONE);
-//                } else {
-//                    imageView.setVisibility(View.VISIBLE);
-//                    AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
-//                            .url(ImageUtils.imagePathConvertV2(realData.getImage().getId()
-//                                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-//                                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-//                                    , ImageZipConfig.IMAGE_50_ZIP))
-//                            .placeholder(R.drawable.shape_default_image)
-//                            .errorPic(R.drawable.shape_default_image)
-//                            .imagerView(imageView)
-//                            .build());
-//                }
-//
-//                holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
-//                        .getUpdated_at()));
-//
-//                holder.itemView.setOnClickListener(v -> {
-//                    if (!AppApplication.sOverRead.contains(position + "")) {
-//                        AppApplication.sOverRead.add(position + "");
-//                    }
-//                    title.setTextColor(getResources()
-//                            .getColor(R.color.normal_for_assist_text));
-//                    Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable(BUNDLE_INFO, realData);
-//                    intent.putExtra(BUNDLE_INFO, bundle);
-//                    startActivity(intent);
-//                });
-//            }
-//        };
     }
 
     @Override

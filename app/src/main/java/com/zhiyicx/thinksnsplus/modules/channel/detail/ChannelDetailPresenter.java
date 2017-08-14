@@ -93,13 +93,14 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
             return;
         }
         long group_id = mRootView.getGroupId();
-        if (group_id<0){
+        if (group_id < 0) {
             Subscription subscription = mRepository.getMyCollectGroupDynamicList(group_id, maxId)
                     .map(listBaseJson -> {
                         if (!isLoadMore) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                             List<GroupDynamicListBean> data = getGroupDynamicBeenFromDB();
                             data.addAll(listBaseJson);
                         }
+
                         for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
                             List<GroupDynamicCommentListBean> dynamicCommentBeen = mGroupDynamicCommentBeanGreenDaoImpl.getMySendingComment(listBaseJson.get(i).getMaxId().intValue());
                             if (!dynamicCommentBeen.isEmpty()) {
@@ -115,6 +116,9 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     .subscribe(new BaseSubscribeForV2<List<GroupDynamicListBean>>() {
                         @Override
                         protected void onSuccess(List<GroupDynamicListBean> data) {
+                            for (GroupDynamicListBean groupDynamicListBean : data) {
+                                groupDynamicListBean.setHas_collection(true);
+                            }
                             mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
 
@@ -129,7 +133,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                         }
                     });
             addSubscrebe(subscription);
-        }else if (!isLoadMore) {
+        } else if (!isLoadMore) {
             Subscription subscription = Observable.zip(mRepository.getGroupDetail(group_id), mRepository.getDynamicListFromGroup(group_id, maxId)
                     , GroupZipBean::new)
                     .map(groupZipBean -> {
@@ -315,7 +319,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
 
     @Override
     public void deleteDynamic(GroupDynamicListBean dynamicBean, int position) {
-        if (position==-1){
+        if (position == -1) {
             return;
         }
         mGroupDynamicListBeanGreenDaoimpl.deleteSingleCache(dynamicBean);
@@ -440,7 +444,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
                     for (int i = 0; i < size; i++) {
-                        if (mRootView.getListDatas().get(i).getId().intValue()==dynamicCommentBean1.getFeed_id()) {
+                        if (mRootView.getListDatas().get(i).getId().intValue() == dynamicCommentBean1.getFeed_id()) {
                             dynamicPosition = i;
                             break;
                         }
@@ -497,7 +501,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                     // 传过来的带了一个占位的评论，先暂时这样去掉这条评论
                     if (dynamicBean.getCommentslist() != null
                             && dynamicBean.getCommentslist().size() == 1
-                            && TextUtils.isEmpty(dynamicBean.getCommentslist().get(0).getContent())){
+                            && TextUtils.isEmpty(dynamicBean.getCommentslist().get(0).getContent())) {
                         dynamicBean.getCommentslist().clear();
                     }
                     if (dynamicPosition != -1) {// 如果列表有当前评论

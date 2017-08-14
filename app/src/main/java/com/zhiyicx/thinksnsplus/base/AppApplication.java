@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -81,7 +82,8 @@ public class AppApplication extends TSApplication {
     private static QueueManager sQueueManager;
     private static PlaybackManager sPlaybackManager;
     private static String TOKEN = "none";
-    public static List<String> sOverRead = new ArrayList<>();
+    public static List<Integer> sOverRead = new ArrayList<>();
+
     public int mActivityCount = 0;
 
     @Override

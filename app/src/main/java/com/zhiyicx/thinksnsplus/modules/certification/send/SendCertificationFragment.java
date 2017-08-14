@@ -67,6 +67,11 @@ public class SendCertificationFragment extends TSFragment<SendCertificationContr
     }
 
     @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         initPhotoSelector();
         int width = UIUtil.getScreenWidth(getContext()) - getResources().getDimensionPixelSize(R.dimen.spacing_mid) * 2;

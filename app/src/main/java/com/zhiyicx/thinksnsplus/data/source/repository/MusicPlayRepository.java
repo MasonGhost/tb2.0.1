@@ -47,10 +47,10 @@ public class MusicPlayRepository implements MusicPlayContract.Repository {
                     // 后台处理
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST, params);
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
                     } else {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE, params);
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                     }
                     backgroundRequestTaskBean.setPath(String.format(ApiConfig
                             .APP_PATH_MUSIC_DIGG_FORMAT, music_id));

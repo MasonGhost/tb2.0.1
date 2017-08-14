@@ -77,6 +77,16 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
     @Override
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
+    }
+
+    @Override
+    protected boolean isNeedRefreshAnimation() {
+        return false;
+    }
+
+    @Override
     public void onNetResponseSuccess(@NotNull List<MusicAlbumListBean> data, boolean isLoadMore) {
         super.onNetResponseSuccess(data, isLoadMore);
         if (mListDatas.isEmpty()) {

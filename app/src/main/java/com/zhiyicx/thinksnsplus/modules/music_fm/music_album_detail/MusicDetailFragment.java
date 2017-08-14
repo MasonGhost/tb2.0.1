@@ -69,6 +69,7 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_CHANGE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMMENT_COUNT;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_TOLL;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
@@ -130,6 +131,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     private Bitmap mBgBitmap;
 
     private String mMediaId;
+    private String mMediaId_test;
     private Palette mPalette;
 
     public static final int STATE_NONE = 0;
@@ -183,7 +185,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     }
                     fragmentMusicDetailMusicCount.setText(String.format("(共%d首)", children.size()));
                     LogUtils.d("onChildrenLoaded:::" + children.size());
-                    // mAdapter.dataChange(children);
                     mAdapter.notifyDataSetChanged();
                 }
 
@@ -283,6 +284,13 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     public void setMusicAblum(MusicAlbumDetailsBean musicAblum) {
         closeLoadingView();
         mAlbumDetailsBean = musicAblum;
+        // 模拟测试数据，这个音乐播放我也不知道要怎么，一会儿好一会儿坏
+//        MusicAlbumDetailsBean.MusicsBean.MusicsBeanIdStorage storage=new
+//                MusicAlbumDetailsBean.MusicsBean.MusicsBeanIdStorage();
+//        storage.setAmount(10);
+//        storage.setId(112);
+//        storage.setPaid(false);
+//        musicAblum.getMusics().get(0).setStorage(storage);
         mAdapter.dataChange(musicAblum.getMusics());
         WindowUtils.AblumHeadInfo ablumHeadInfo = new WindowUtils.AblumHeadInfo();
         ablumHeadInfo.setCommentCount(musicAblum.getComment_count());
@@ -408,8 +416,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
         if (mMediaId == null) {
             mMediaId = mCompatProvider.getMediaBrowser().getRoot();
         }
-//        mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
-//        mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
+
         MediaControllerCompat controller = getActivity()
                 .getSupportMediaController();
 
@@ -419,7 +426,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
                 controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
-                LogUtils.d("sendCustomAction:::+onConnected");
+                LogUtils.d("sendCustomAction:::onConnected");
 
                 mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
                 mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
@@ -476,7 +483,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
                     if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
                         initMusicCenterPopWindow(position, item.getStorage().getAmount(),
-                                item.getStorage().getPaid_node(), R.string.buy_pay_music_ablum_desc);
+                                item.getStorage().getPaid_node(), R.string.buy_pay_single_music_desc);
                         return;
                     }
 
@@ -503,6 +510,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                             .getSupportMediaController();
                     String id = MediaIDHelper.createMediaID("" + item.getId(),
                             MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
+                    mMediaId_test=id;
                     controllerCompat.getTransportControls()
                             .playFromMediaId(id, null);
 
@@ -676,28 +684,41 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
 
     @Subscriber(tag = EVENT_MUSIC_LIKE, mode = ThreadMode.MAIN)
     public void onLikeCountUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
-
-        Observable.from(mAlbumDetailsBean.getMusics())
-                .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
-                .subscribe(musicsBean -> {
-                    musicsBean.setHas_like(e_albumListBean.isHas_like());
-                    musicsBean.setComment_count(e_albumListBean.getComment_count());
-                    musicsBean.setStorage(e_albumListBean.getStorage());
-                });
         if (mAlbumDetailsBean != null) {
+            Observable.from(mAlbumDetailsBean.getMusics())
+                    .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                    .subscribe(musicsBean -> {
+                        musicsBean.setHas_like(e_albumListBean.isHas_like());
+                        musicsBean.setComment_count(e_albumListBean.getComment_count());
+                        musicsBean.setStorage(e_albumListBean.getStorage());
+                    });
+
+        }
+        LogUtils.d("EVENT_MUSIC_LIKE");
+    }
+
+    @Subscriber(tag = EVENT_MUSIC_TOLL, mode = ThreadMode.MAIN)
+    public void onTollUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
+        if (mAlbumDetailsBean != null) {
+            Observable.from(mAlbumDetailsBean.getMusics())
+                    .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
+                    .subscribe(musicsBean -> {
+                        musicsBean.setHas_like(e_albumListBean.isHas_like());
+                        musicsBean.setComment_count(e_albumListBean.getComment_count());
+                        musicsBean.setStorage(e_albumListBean.getStorage());
+                    });
+
             Bundle bundle = new Bundle();
             bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
             String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
                     MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-            bundle.putString(MUSIC_ID,id);
+            bundle.putString(MUSIC_ID, mMediaId_test);
+
             MediaControllerCompat controller = getActivity()
                     .getSupportMediaController();
             controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
-
-            mCompatProvider.getMediaBrowser().unsubscribe(mMediaId);
-            mCompatProvider.getMediaBrowser().subscribe(mMediaId, mSubscriptionCallback);
         }
-        LogUtils.d("EVENT_MUSIC_LIKE");
+        LogUtils.d("EVENT_MUSIC_TOLL");
     }
 
     @Subscriber(tag = EVENT_MUSIC_COMMENT_COUNT, mode = ThreadMode.MAIN)

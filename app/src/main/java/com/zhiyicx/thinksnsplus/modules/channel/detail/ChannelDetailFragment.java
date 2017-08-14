@@ -387,7 +387,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        dataPosition = mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        dataPosition = dataPosition - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
 
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
@@ -427,7 +427,9 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (mListDatas.get(dataPosition).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
+                int user_id = mListDatas.get(dataPosition).getUser_id().intValue();
+                int current_id = AppApplication.getmCurrentLoginAuth().getUser().getUser_id().intValue();
+                if (user_id == current_id) {
                     initMyDynamicPopupWindow(mListDatas.get(dataPosition), dataPosition, mListDatas.get(dataPosition)
                             .getHas_collection(), shareBitMap);
                     mMyDynamicPopWindow.show();
@@ -444,7 +446,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onReSendClick(int position) {
-        position = position -mHeaderAndFooterWrapper.getHeadersCount();// 去掉 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 去掉 header
         initReSendDynamicPopupWindow(position);
         mReSendDynamicPopWindow.show();
     }
@@ -485,7 +487,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        position = position -mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = position;
         goDynamicDetail(position, false);
     }
@@ -519,7 +521,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         // 先更新界面，再后台处理
         mPresenter.handleCollect(mListDatas.get(dataPosition));
         boolean is_collection = mListDatas.get(dataPosition).getHas_collection();// 旧状态
-        mListDatas.get(dataPosition).setHas_collection(!is_collection );
+        mListDatas.get(dataPosition).setHas_collection(!is_collection);
         refreshData(dataPosition);
     }
 
@@ -775,20 +777,20 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     private void initOtherDynamicPopupWindow(final GroupDynamicListBean dynamicBean, int position, boolean isCollected, final
     Bitmap shareBitmap) {
         mOtherDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item1Str(getString(R.string.dynamic_list_share_dynamic))
 //                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {// 收藏
                     handleCollect(position);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
                 })
-                .item2ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(dynamicBean, shareBitmap);
                     mOtherDynamicPopWindow.hide();
                     showBottomView(true);
@@ -811,25 +813,25 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         Long feed_id = dynamicBean.getId();
         boolean feedIdIsNull = feed_id == null || feed_id == 0;
         mMyDynamicPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-                .item2Str(getString(R.string.dynamic_list_delete_dynamic))
-                .item3Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
+                .item2Str(getString(feedIdIsNull ? R.string.empty : isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item3Str(getString(R.string.dynamic_list_delete_dynamic))
+                .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(() -> {// 收藏
+                .item2ClickListener(() -> {// 收藏
                     mMyDynamicPopWindow.hide();
                     handleCollect(position);
                     showBottomView(true);
                 })
-                .item2ClickListener(() -> {// 删除
+                .item3ClickListener(() -> {// 删除
                     mMyDynamicPopWindow.hide();
                     mPresenter.deleteDynamic(dynamicBean, position);
                     showBottomView(true);
                 })
-                .item3ClickListener(() -> {// 分享
+                .item1ClickListener(() -> {// 分享
                     mPresenter.shareDynamic(dynamicBean, shareBitMap);
                     mMyDynamicPopWindow.hide();
                 })
