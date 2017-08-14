@@ -76,6 +76,8 @@
 
     <!--问答-发布问题-->
     <dimen name="iamge_close_height">50dp</dimen>
+    <dimen name="topic_category_height">30dp</dimen>
+    <dimen name="topic_cover_height">40dp</dimen>
 
     <!--启动广告-->
     <dimen name="iamge_logo_height">114dp</dimen>
