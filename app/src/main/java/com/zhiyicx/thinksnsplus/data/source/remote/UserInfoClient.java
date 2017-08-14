@@ -332,4 +332,8 @@ public interface UserInfoClient {
     @FormUrlEncoded
     @POST(APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO)
     Observable<List<UserInfoBean>> getUsersByPhone(@Field("phones") ArrayList<Integer> phones);
+
+    /*******************************************  签到  *********************************************/
+
+
 }
