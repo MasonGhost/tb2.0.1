@@ -158,6 +158,13 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+
+
+    @Override
     public void onStart() {
         super.onStart();
         if (mDynamicBannerHeader != null)

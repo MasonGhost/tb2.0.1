@@ -25,6 +25,8 @@ public class CenterImageSpan extends ImageSpan {
 
     String text = "匿";
     boolean isText;
+    private static final float DEFAULT_RATIO = 3.5f;
+    private static int OFFSET = 20;
 
     public CenterImageSpan(Context context, Bitmap b) {
         super(context, b);
@@ -61,29 +63,40 @@ public class CenterImageSpan extends ImageSpan {
             fm.bottom = top;
             fm.descent = top;
         }
-        return rect.right + 20;// x 偏移，不贴紧文字
+        return rect.right + OFFSET;// x 偏移，不贴紧文字
     }
 
     @Override
     public void draw(Canvas canvas, CharSequence text, int start, int end,
                      float x, int top, int y, int bottom, Paint paint) {
         Drawable b = getDrawable();
+        Paint textP = new TextPaint(paint);
+        Paint textB = new TextPaint(paint);
         if (isText) {
-            Paint textP = new TextPaint(paint);
-            Paint textB = new TextPaint(paint);
+
             textB.setColor(SkinUtils.getColor(R.color.qa_niming));
             textP.setColor(Color.WHITE);
-            canvas.drawCircle(b.getBounds().centerX(), b.getBounds().centerY(), b.getBounds().right - b.getBounds().centerX(), textB);
-            textP.setTextSize(ConvertUtils.sp2px(BaseApplication.getContext(),12));
-            canvas.drawText("匿", b.getBounds().centerX() - textP.measureText("匿") / 2, b.getBounds().centerY() - (textP.descent() + textP.ascent()) / 2, textP);
+            canvas.drawCircle(b.getBounds().centerX(), b.getBounds().centerY(), b.getBounds()
+                    .right - b.getBounds().centerX(), textB);
+            textP.setTextSize(ConvertUtils.sp2px(BaseApplication.getContext(), 12));
+            canvas.drawText("匿", b.getBounds().centerX() - textP.measureText("匿") / 2, b
+                    .getBounds().centerY() - (textP.descent() + textP.ascent()) / 2, textP);
         } else {
             canvas.save();
-            int transY = ((bottom - top) - b.getBounds().bottom) / 2 + top;// y 轴居中对齐
+            int transY = ((bottom - top) -b.getBounds().height()) / 2 + top - OFFSET
+                    / 2;
+            // y 轴居中对齐
             canvas.translate(x, transY);
             b.draw(canvas);
+//
+            canvas.drawCircle(b.getBounds().centerX(), b.getBounds().centerY(), b.getBounds()
+                            .height()/DEFAULT_RATIO,textB);
             canvas.restore();
         }
+    }
 
-
+    @Override
+    public Drawable getDrawable() {
+        return super.getDrawable();
     }
 }

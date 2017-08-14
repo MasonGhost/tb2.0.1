@@ -91,7 +91,7 @@ public class JavaTest {
     @Test
     public void matchTest() {
         String reg="(@!\\[image]\\((\\d+)\\))";
-        String test="@![image](123)";
+        String test="xxx@![image](123)ssss@![image](123)";
         Matcher matcher = Pattern.compile(reg).matcher(test);
         if (matcher.find()) {
            System.out.println("result::"+matcher.group(0));

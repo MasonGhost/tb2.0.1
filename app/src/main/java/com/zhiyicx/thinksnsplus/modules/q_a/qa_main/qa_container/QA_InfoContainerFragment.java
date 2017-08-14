@@ -65,6 +65,16 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
     private List<Fragment> mFragments;
     private CommonNavigator mCommonNavigator;
 
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
     public static QA_InfoContainerFragment getInstance() {
         return new QA_InfoContainerFragment();
     }

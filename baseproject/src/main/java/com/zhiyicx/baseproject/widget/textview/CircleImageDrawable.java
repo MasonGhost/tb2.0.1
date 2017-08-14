@@ -20,6 +20,7 @@ public class CircleImageDrawable extends Drawable {
     private Paint mPaint;
     private int mWidth;
     private Bitmap mBitmap;
+    private Bitmap mTest;
 
     public CircleImageDrawable(Bitmap bitmap) {
         mBitmap = bitmap;
@@ -40,10 +41,6 @@ public class CircleImageDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
         canvas.drawCircle(mWidth / 2, mWidth / 2, mWidth / 2, mPaint);
-    }
-
-    public void draw(Canvas canvas, int cy) {
-        canvas.drawCircle(mWidth / 2, cy, mWidth / 2, mPaint);
     }
 
     @Override

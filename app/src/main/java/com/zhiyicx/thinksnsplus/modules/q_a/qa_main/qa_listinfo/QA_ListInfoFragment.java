@@ -89,6 +89,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }
@@ -137,21 +142,8 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                         , infoBean.getWatchers_count(), infoBean.getAnswers_count(), infoBean.getAmount()));
                 ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean));
                 TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
-                String content = "火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
-                        "快回地球去吧火星很危险，" +
-                        "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
-                        "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧";
-                content = infoBean.getBody();
-                int id = RegexUtils.getImageId(MarkdownConfig.IMAGE_FORMAT, content);
-                Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.ico_potoablum),
-                        contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
-                CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
-                headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
-                ImageSpan imgSpan = new CenterImageSpan(headImage, infoBean.getAnonymity() == 1);
-                SpannableString spannableString = SpannableString.valueOf("T" + content);
-                spannableString.setSpan(imgSpan, 0, 1, Spannable
-                        .SPAN_EXCLUSIVE_EXCLUSIVE);
-                contentTextView.setText(spannableString);
+                String content = infoBean.getBody();
+                int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
 
                 if (id > 0) {
                     int w = DeviceUtils.getScreenWidth(mContext);
@@ -163,10 +155,28 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                             .into(new SimpleTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    //headImage.updateImage(resource);
                                     imageView.setImageBitmap(resource);
+                                    Bitmap newBmp = Bitmap.createScaledBitmap(resource,
+                                            contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
+                                    CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
+                                    headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
+                                    ImageSpan imgSpan = new CenterImageSpan(headImage, infoBean.getAnonymity() == 1);
+                                    SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                                    spannableString.setSpan(imgSpan, 0, 1, Spannable
+                                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    contentTextView.setText(spannableString);
                                 }
                             });
+                }else{
+                    Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.ico_potoablum),
+                            contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
+                    CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
+                    headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
+                    ImageSpan imgSpan = new CenterImageSpan(headImage, infoBean.getAnonymity() == 1);
+                    SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                    spannableString.setSpan(imgSpan, 0, 1, Spannable
+                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+                    contentTextView.setText(spannableString);
                 }
             }
         };
