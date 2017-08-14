@@ -58,7 +58,6 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:maxLength="4"
-            android:text="@string/choose_city"
             />
 
         <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
