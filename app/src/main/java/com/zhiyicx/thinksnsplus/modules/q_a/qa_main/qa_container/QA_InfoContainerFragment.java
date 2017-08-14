@@ -32,7 +32,6 @@ import java.util.List;
  */
 public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
-
     protected static final int DEFAULT_OFFSET_PAGE = 3;
 
     // 定义默认样式值
@@ -60,7 +59,7 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
     private static final int DEFAULT_TAB_LINE_HEGIHT = com.zhiyicx.baseproject.R.integer
             .no_line_height;
 
-    public static final String QA_TYPE = "-1";
+    public String[] QA_TYPES;
 
     private List<String> mTitle;
     private List<Fragment> mFragments;
@@ -72,17 +71,17 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     @Override
     protected List<String> initTitles() {
-        return Arrays.asList("走起", "不下班", "车", "旅游");
+        return Arrays.asList(getResources().getStringArray(R.array.qa_type));
     }
 
     @Override
     protected List<Fragment> initFragments() {
         if (mFragments == null) {
+            QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
             mFragments = new ArrayList<>();
-            mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
-            mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
-            mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
-            mFragments.add(QA_ListInfoFragment.newInstance(QA_TYPE));
+            for (String type : QA_TYPES) {
+                mFragments.add(QA_ListInfoFragment.newInstance(type));
+            }
         }
         return mFragments;
     }

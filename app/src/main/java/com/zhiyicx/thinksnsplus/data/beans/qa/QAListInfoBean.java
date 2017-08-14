@@ -56,6 +56,11 @@ public class QAListInfoBean extends BaseListBean {
     private String created_at;
     private String updated_at;
 
+    @Override
+    public Long getMaxId() {
+        return (long) id;
+    }
+
     private UserBean user;
 
     public int getId() {
@@ -202,7 +207,7 @@ public class QAListInfoBean extends BaseListBean {
         this.user = user;
     }
 
-    public static class UserBean implements Parcelable,Serializable{
+    public static class UserBean implements Parcelable, Serializable {
         private static final long serialVersionUID = -5707219526469433886L;
         /**
          * id : 1
@@ -364,7 +369,7 @@ public class QAListInfoBean extends BaseListBean {
             this.extra = extra;
         }
 
-        public static class ExtraBean implements Parcelable,Serializable{
+        public static class ExtraBean implements Parcelable, Serializable {
             private static final long serialVersionUID = -4248334771597200990L;
             /**
              * user_id : 1

@@ -122,7 +122,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        requestNetData(null, 0L, "all", isLoadMore);
+        requestNetData(null, maxId, "all", isLoadMore);
     }
 
     private void requestNetData(String subject, Long maxId, String type, boolean isLoadMore) {

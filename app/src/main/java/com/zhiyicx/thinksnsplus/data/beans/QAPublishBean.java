@@ -32,10 +32,14 @@ public class QAPublishBean implements Parcelable {
     }
 
     public void setSubject(String subject) {
-        if (subject.isEmpty()){
+        if (subject.isEmpty()) {
             return;
         }
-        this.subject = subject+"?";
+        if (subject.endsWith("?") || subject.endsWith("？")) {
+            this.subject = subject;
+            return;
+        }
+        this.subject = subject + "?";
     }
 
     public List<Topic> getTopics() {
@@ -94,7 +98,7 @@ public class QAPublishBean implements Parcelable {
         this.amount = amount;
     }
 
-    public static class Topic implements Parcelable,Serializable{
+    public static class Topic implements Parcelable, Serializable {
         private static final long serialVersionUID = -8734687577864836617L;
         private int id;
 

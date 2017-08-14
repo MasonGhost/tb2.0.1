@@ -40,7 +40,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         implements QA_ListInfoConstact.View {
 
     public static final String BUNDLE_QA_TYPE = "qa_type";
-    public static final String BUNDLE_QA = "qa";
+
     private String mQAInfoType;
 
     @Inject
@@ -52,6 +52,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         args.putString(BUNDLE_QA_TYPE, params);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public String getQAInfoType() {
+        return mQAInfoType;
     }
 
     @Override
@@ -90,25 +95,20 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .qA_listInfoFragmentPresenterModule(new QA_listInfoFragmentPresenterModule(this))
                 .build().inject(this);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-//        super.initData();
 
-    }
+        mQAInfoType = getArguments().getString(BUNDLE_QA_TYPE);
 
-    @Override
-    protected List requestCacheData(Long maxId, boolean isLoadMore) {
-        return mListDatas;
+        super.initData();
+
     }
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-//        super.requestNetData(maxId, isLoadMore);
+        requestNetData(null, maxId, mQAInfoType, isLoadMore);
+    }
+
+    private void requestNetData(String subject, Long maxId, String type, boolean isLoadMore) {
+        mPresenter.requestNetData(subject, maxId, type, isLoadMore);
     }
 
     @Override

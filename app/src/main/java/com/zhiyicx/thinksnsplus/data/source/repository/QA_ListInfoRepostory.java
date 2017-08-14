@@ -11,7 +11,7 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class QA_ListInfoRepostory extends BaseDynamicRepository implements QA_ListInfoConstact.Repository {
+public class QA_ListInfoRepostory extends BasePublishQuestionRepository implements QA_ListInfoConstact.Repository {
 
     @Inject
     public QA_ListInfoRepostory(ServiceManager serviceManager) {
