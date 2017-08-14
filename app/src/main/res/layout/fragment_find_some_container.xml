@@ -54,6 +54,10 @@
             android:paddingRight="@dimen/toolbar_padding_right"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxLength="4"
             android:text="@string/choose_city"
             />
 

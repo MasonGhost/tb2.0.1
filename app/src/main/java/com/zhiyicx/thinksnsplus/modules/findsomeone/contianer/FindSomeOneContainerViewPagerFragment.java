@@ -27,7 +27,7 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
     protected void initView(View rootView) {
         super.initView(rootView);
         mTsvToolbar.setLeftImg(0);
-        setCurrentItem();
+//        setCurrentItem();
     }
 
     @Override
