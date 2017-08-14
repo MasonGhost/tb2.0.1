@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -10,7 +12,9 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
@@ -73,7 +77,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return new CommonAdapter<QATopicBean>(getContext(), R.layout.item_qatopic_list, mListDatas) {
+        CommonAdapter adapter = new CommonAdapter<QATopicBean>(getContext(), R.layout.item_qatopic_list, mListDatas) {
             @Override
             protected void convert(ViewHolder holder, QATopicBean o, int position) {
                 holder.setText(R.id.tv_topic_feed_count,
@@ -83,6 +87,19 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
                 holder.setText(R.id.tv_topic_subscrib, getString(R.string.qa_topic_follow));
             }
         };
+        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                Intent intent = new Intent(getActivity(), TopicDetailActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
+        return adapter;
     }
 
     @Override

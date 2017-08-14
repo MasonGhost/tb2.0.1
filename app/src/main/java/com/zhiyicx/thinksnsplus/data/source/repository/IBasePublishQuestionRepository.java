@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
@@ -17,6 +18,8 @@ import rx.Observable;
 
 public interface IBasePublishQuestionRepository {
     Observable<List<QATopicBean>> getAllTopic(String name, Long after, Long follow);
-    Observable<List<QAListInfoBean>> getQAQustion(String subject, Long maxId,String type);
+    Observable<List<QAListInfoBean>> getQAQuestion(String subject, Long maxId,String type);
+    Observable<List<QAListInfoBean>> getQAQuestionByTopic(String topicId, String subject, Long maxId,String type);
     Observable<List<ExpertBean>> getTopicExperts(Long maxId, int topic_id);
+    void handleTopicFollowState(String topic_id, boolean isFollow);
 }

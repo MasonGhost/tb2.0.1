@@ -79,7 +79,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         List<QAPublishBean.Topic> topicList = new ArrayList<>();
         for (QATopicBean qaTopicBean : mQATopicBeanList) {
             QAPublishBean.Topic topic = new QAPublishBean.Topic();
-            topic.setId(qaTopicBean.getId());
+            topic.setId(qaTopicBean.getId().intValue());
             topicList.add(topic);
         }
         mQAPublishBean.setTopics(topicList);

@@ -1,12 +1,20 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Application;
+
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,6 +35,9 @@ public class BasePublishQuestionRepository implements IBasePublishQuestionReposi
     protected QAClient mQAClient;
 
     @Inject
+    Application mContext;
+
+    @Inject
     public BasePublishQuestionRepository(ServiceManager manager) {
         mQAClient = manager.getQAClient();
     }
@@ -39,8 +50,15 @@ public class BasePublishQuestionRepository implements IBasePublishQuestionReposi
     }
 
     @Override
-    public Observable<List<QAListInfoBean>> getQAQustion(String subject, Long maxId, String type) {
+    public Observable<List<QAListInfoBean>> getQAQuestion(String subject, Long maxId, String type) {
         return mQAClient.getQAQustion(subject, maxId, type, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<QAListInfoBean>> getQAQuestionByTopic(String topicId, String subject, Long maxId, String type) {
+        return mQAClient.getQAQustionByTopic(topicId, subject, maxId, type, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -50,5 +68,29 @@ public class BasePublishQuestionRepository implements IBasePublishQuestionReposi
         return mQAClient.getTopicExperts(topic_id, maxId, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void handleTopicFollowState(String topic_id, boolean isFollow) {
+        Observable.just(isFollow)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.PUT, params);
+                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                    }
+                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                            .APP_PATH_HANDLE_TOPIC_FOLLOW_S, topic_id));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
+                });
     }
 }
