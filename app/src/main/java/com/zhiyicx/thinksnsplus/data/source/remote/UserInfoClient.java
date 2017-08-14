@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
@@ -35,8 +36,11 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BATCH_SPECIFIED_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RANKS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CURRENT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
@@ -335,5 +339,29 @@ public interface UserInfoClient {
 
     /*******************************************  签到  *********************************************/
 
+    /**
+     * 获取签到信息
+     *
+     * @return
+     */
+    @GET(APP_PATH_GET_CHECK_IN_INFO)
+    Observable<CheckInBean> getCheckInInfo();
+
+    /**
+     * 签到
+     *
+     * @return
+     */
+    @PUT(APP_PATH_CHECK_IN)
+    Observable<CheckInBean> checkIn();
+
+    /**
+     * 连续签到排行榜
+     *
+     * @param offset 数据偏移数，默认为 0。
+     * @return
+     */
+    @GET(APP_PATH_GET_CHECK_IN_RANKS)
+    Observable<List<UserInfoBean>> getCheckInRanks(@Query("offset") Integer offset);
 
 }

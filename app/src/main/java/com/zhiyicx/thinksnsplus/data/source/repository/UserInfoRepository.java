@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
@@ -515,6 +516,43 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     @Override
     public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<Integer> phones) {
         return mUserInfoClient.getUsersByPhone(phones)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*******************************************  签到  *********************************************/
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Observable<CheckInBean> getCheckInInfo() {
+        return mUserInfoClient.getCheckInInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Observable<CheckInBean> checkIn() {
+        return mUserInfoClient.checkIn()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     *
+     * @param offset 数据偏移数，默认为 0。
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getCheckInRanks(Integer offset) {
+        return mUserInfoClient.getCheckInRanks(offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

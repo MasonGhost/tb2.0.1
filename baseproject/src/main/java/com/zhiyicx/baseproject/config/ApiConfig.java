@@ -486,7 +486,13 @@ public class ApiConfig {
     public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
     // 通过 phone 推荐
     public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";
-
+    // 签到
+    // 获取签到信息
+    public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/user/checkin";
+    // 签到
+    public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin";
+    // 连续签到排行榜
+    public static final String APP_PATH_GET_CHECK_IN_RANKS = "api/" + API_VERSION_2 + "/checkin-ranks";
 
     /**
      * 资讯

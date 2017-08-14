@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
@@ -27,6 +28,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RANKS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
@@ -255,6 +259,31 @@ public interface UserInfoContract {
          * @return
          */
         Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<Integer> phones);
+
+
+        /*******************************************  签到  *********************************************/
+
+        /**
+         * 获取签到信息
+         *
+         * @return
+         */
+        Observable<CheckInBean> getCheckInInfo();
+
+        /**
+         * 签到
+         *
+         * @return
+         */
+        Observable<CheckInBean> checkIn();
+
+        /**
+         * 连续签到排行榜
+         *
+         * @param offset 数据偏移数，默认为 0。
+         * @return
+         */
+        Observable<List<UserInfoBean>> getCheckInRanks( Integer offset);
     }
 
     interface Presenter extends IBasePresenter {
