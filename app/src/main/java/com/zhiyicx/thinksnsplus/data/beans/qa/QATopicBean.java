@@ -1,6 +1,19 @@
 package com.zhiyicx.thinksnsplus.data.beans.qa;
 
+import android.os.Parcel;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
+
+import java.io.Serializable;
+import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * @Describe this bean just for topic in qa
@@ -8,10 +21,47 @@ import com.zhiyicx.baseproject.base.BaseListBean;
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
  */
+@Entity
+public class QATopicBean extends BaseListBean implements Serializable{
+    @Transient
+    private static final long serialVersionUID = -2380980242688116330L;
 
-public class QATopicBean extends BaseListBean{
+    /*{
+        "id": 1,
+            "name": "PHP",
+            "description": "我是PHP",
+            "questions_count": 5,
+            "experts_count": 1,
+            "follows_count": 0,
+            "has_follow": false,
+            "avatar": null,
+            "experts": [
+        {
+            "id": 2,
+                "name": "test1",
+                "bio": "0",
+                "sex": 0,
+                "location": "0",
+                "created_at": "2017-06-12 07:38:55",
+                "updated_at": "2017-06-12 07:38:55",
+                "avatar": null,
+                "bg": null,
+                "verified": null,
+                "extra": null
+        }
+    ]
+    }*/
+    @Id
     private int id;
     private String name;
+    private String description;
+    private int questions_count;
+    private int experts_count;
+    private int follows_count;
+    private boolean has_follow;
+    private String avatar;
+    @Convert(converter = UserInfoCovert.class, columnType = String.class)
+    private List<UserInfoBean> experts;
 
     public int getId() {
         return id;
@@ -20,4 +70,133 @@ public class QATopicBean extends BaseListBean{
     public void setId(int id) {
         this.id = id;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.description);
+        dest.writeInt(this.questions_count);
+        dest.writeInt(this.experts_count);
+        dest.writeInt(this.follows_count);
+        dest.writeByte(this.has_follow ? (byte) 1 : (byte) 0);
+        dest.writeString(this.avatar);
+        dest.writeTypedList(this.experts);
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getQuestions_count() {
+        return this.questions_count;
+    }
+
+    public void setQuestions_count(int questions_count) {
+        this.questions_count = questions_count;
+    }
+
+    public int getExperts_count() {
+        return this.experts_count;
+    }
+
+    public void setExperts_count(int experts_count) {
+        this.experts_count = experts_count;
+    }
+
+    public int getFollows_count() {
+        return this.follows_count;
+    }
+
+    public void setFollows_count(int follows_count) {
+        this.follows_count = follows_count;
+    }
+
+    public boolean getHas_follow() {
+        return this.has_follow;
+    }
+
+    public void setHas_follow(boolean has_follow) {
+        this.has_follow = has_follow;
+    }
+
+    public String getAvatar() {
+        return this.avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public List<UserInfoBean> getExperts() {
+        return this.experts;
+    }
+
+    public void setExperts(List<UserInfoBean> experts) {
+        this.experts = experts;
+    }
+
+    public QATopicBean() {
+    }
+
+    protected QATopicBean(Parcel in) {
+        super(in);
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.description = in.readString();
+        this.questions_count = in.readInt();
+        this.experts_count = in.readInt();
+        this.follows_count = in.readInt();
+        this.has_follow = in.readByte() != 0;
+        this.avatar = in.readString();
+        this.experts = in.createTypedArrayList(UserInfoBean.CREATOR);
+    }
+
+    @Generated(hash = 1849329768)
+    public QATopicBean(int id, String name, String description, int questions_count,
+            int experts_count, int follows_count, boolean has_follow, String avatar,
+            List<UserInfoBean> experts) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.questions_count = questions_count;
+        this.experts_count = experts_count;
+        this.follows_count = follows_count;
+        this.has_follow = has_follow;
+        this.avatar = avatar;
+        this.experts = experts;
+    }
+
+    public static final Creator<QATopicBean> CREATOR = new Creator<QATopicBean>() {
+        @Override
+        public QATopicBean createFromParcel(Parcel source) {
+            return new QATopicBean(source);
+        }
+
+        @Override
+        public QATopicBean[] newArray(int size) {
+            return new QATopicBean[size];
+        }
+    };
+
+    public static class UserInfoCovert extends BaseConvert<List<UserInfoBean>>{}
 }
