@@ -13,18 +13,15 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-
-import org.simple.eventbus.EventBus;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QA$RewardFragment.BUNDLE_RESULT;
+import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment.BUNDLE_RESULT;
 
 /**
  * @author Catherine
@@ -54,15 +51,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     @Override
     protected void initData() {
         super.initData();
-        hideLoading();
         initListener();
-        for (int i = 0; i < 8; i++) {
-            ExpertBean expertBean = new ExpertBean();
-            expertBean.setAnswer_count(i);
-            expertBean.setDig_count(i + 5);
-            expertBean.setName("小仙女");
-            mListDatas.add(expertBean);
-        }
     }
 
     private void initListener() {
@@ -70,6 +59,15 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> getActivity().finish());
+    }
+
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+        requestNetData(maxId, 3, isLoadMore);
+    }
+
+    private void requestNetData(Long maxId, int topic_id, boolean isLoadMore) {
+        mPresenter.requestNetData(maxId, topic_id, isLoadMore);
     }
 
     @Override
@@ -88,9 +86,9 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
                 if (expertBean != null) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(BUNDLE_RESULT, expertBean);
-                    Intent intent=new Intent();
+                    Intent intent = new Intent();
                     intent.putExtras(bundle);
-                    getActivity().setResult(Activity.RESULT_OK,intent);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
                 }
             }
@@ -106,10 +104,5 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     @Override
     protected boolean showToolbar() {
         return false;
-    }
-
-    @Override
-    protected boolean useEventBus() {
-        return true;
     }
 }

@@ -18,7 +18,6 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
@@ -32,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.usertag.TagFrom.QA_PUBLISH;
@@ -43,7 +43,7 @@ import static com.zhiyicx.thinksnsplus.modules.usertag.TagFrom.QA_PUBLISH;
  * @contact email:648129313@qq.com
  */
 
-public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> implements QA$RewardContract.View,
+public class QARewardFragment extends TSFragment<QARewardContract.Presenter> implements QARewardContract.View,
         CenterInfoPopWindow.CenterPopWindowItem1ClickListener {
 
     public static final String BUNDLE_RESULT = "bundle_result";
@@ -102,8 +102,8 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
 
     private QAPublishBean mQAPublishBean;
 
-    public static QA$RewardFragment instance(Bundle bundle) {
-        QA$RewardFragment fragment = new QA$RewardFragment();
+    public static QARewardFragment instance(Bundle bundle) {
+        QARewardFragment fragment = new QARewardFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -152,7 +152,7 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TagFrom.QA_PUBLISH.id) {// 选择专家
+        if (requestCode == TagFrom.QA_PUBLISH.id&&resultCode==RESULT_OK) {// 选择专家
             ExpertBean expertBean = data.getExtras().getParcelable(BUNDLE_RESULT);
             mBtQaSelectExpert.setRightText(expertBean.getName());
             mQAPublishBean.setInvitations(expertBean.getId() + "");
@@ -315,6 +315,7 @@ public class QA$RewardFragment extends TSFragment<QA$RewardContract.Presenter> i
                         mQAPublishBean.setAmount(mRewardMoney);
                         mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
                         mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
+                        mPresenter.publishQuestion(mQAPublishBean);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

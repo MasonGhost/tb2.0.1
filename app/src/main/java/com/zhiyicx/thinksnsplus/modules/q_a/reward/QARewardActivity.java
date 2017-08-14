@@ -10,18 +10,18 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
  * @contact email:648129313@qq.com
  */
 
-public class QA_RewardActivity extends TSActivity<QA$RewardPresenter, QA$RewardFragment>{
+public class QARewardActivity extends TSActivity<QARewardPresenter, QARewardFragment>{
 
     @Override
-    protected QA$RewardFragment getFragment() {
-        return QA$RewardFragment.instance(getIntent().getExtras());
+    protected QARewardFragment getFragment() {
+        return QARewardFragment.instance(getIntent().getExtras());
     }
 
     @Override
     protected void componentInject() {
-        DaggerQA$RewardComponent.builder()
+        DaggerQARewardComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .qA$RewardPresenterModule(new QA$RewardPresenterModule(mContanierFragment))
+                .qARewardPresenterModule(new QARewardPresenterModule(mContanierFragment))
                 .build()
                 .inject(this);
     }

@@ -32,9 +32,9 @@ public class ApiConfig {
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
 //    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
 
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
 
-    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
     public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION + "/system/about";// 关于我们网站
@@ -335,6 +335,15 @@ public class ApiConfig {
     // 分享专辑
     public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION + "/music/special/%s/share";
 
+    /**
+     * 问答相关
+     */
+    // 发布问题
+    public static final String APP_PATH_PUBLISH_QUESTIONS = "api/" + API_VERSION_2 + "/questions";
+    // 获取全部话题
+    public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
+    // 获取话题下专家列表
+    public static final String APP_PATH_GET_TOPIC_EXPERTS = "api/" + API_VERSION_2 + "/question-topics/{topic_id}/experts";
 
     /**
      * 通用 CommonClient

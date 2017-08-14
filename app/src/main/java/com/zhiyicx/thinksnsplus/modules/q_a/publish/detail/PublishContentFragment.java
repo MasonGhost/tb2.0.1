@@ -17,12 +17,11 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -101,7 +100,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        Intent intent = new Intent(getActivity(), QA_RewardActivity.class);
+        Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
         mQAPublishBean.setBody(getContentString());

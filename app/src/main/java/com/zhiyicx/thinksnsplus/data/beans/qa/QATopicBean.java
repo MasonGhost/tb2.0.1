@@ -51,17 +51,17 @@ public class QATopicBean extends BaseListBean implements Serializable{
         }
     ]
     }*/
-    @Id
+
     private int id;
     private String name;
     private String description;
     private int questions_count;
     private int experts_count;
+    @Convert(converter = UserInfoCovert.class, columnType = String.class)
+    private List<UserInfoBean> experts;
     private int follows_count;
     private boolean has_follow;
     private String avatar;
-    @Convert(converter = UserInfoCovert.class, columnType = String.class)
-    private List<UserInfoBean> experts;
 
     public int getId() {
         return id;
@@ -70,7 +70,6 @@ public class QATopicBean extends BaseListBean implements Serializable{
     public void setId(int id) {
         this.id = id;
     }
-
 
     @Override
     public int describeContents() {
@@ -171,19 +170,19 @@ public class QATopicBean extends BaseListBean implements Serializable{
         this.experts = in.createTypedArrayList(UserInfoBean.CREATOR);
     }
 
-    @Generated(hash = 1849329768)
+    @Generated(hash = 1608117216)
     public QATopicBean(int id, String name, String description, int questions_count,
-            int experts_count, int follows_count, boolean has_follow, String avatar,
-            List<UserInfoBean> experts) {
+            int experts_count, List<UserInfoBean> experts, int follows_count,
+            boolean has_follow, String avatar) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.questions_count = questions_count;
         this.experts_count = experts_count;
+        this.experts = experts;
         this.follows_count = follows_count;
         this.has_follow = has_follow;
         this.avatar = avatar;
-        this.experts = experts;
     }
 
     public static final Creator<QATopicBean> CREATOR = new Creator<QATopicBean>() {
@@ -199,4 +198,5 @@ public class QATopicBean extends BaseListBean implements Serializable{
     };
 
     public static class UserInfoCovert extends BaseConvert<List<UserInfoBean>>{}
+
 }
