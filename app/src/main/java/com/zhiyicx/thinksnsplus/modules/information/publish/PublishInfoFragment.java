@@ -266,6 +266,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         }
     }
 
+    @Override
+    public boolean showUplaoding() {
+        return false;
+    }
+
     private void initLisenter() {
         RxView.globalLayouts(mRlPublishTool).subscribe(aVoid -> {
             int[] viewLacotion = new int[2];
