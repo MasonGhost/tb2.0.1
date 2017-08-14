@@ -23,6 +23,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import rx.Observable;
@@ -84,6 +86,20 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void matchTest() {
+        String reg="(@!\\[image]\\((\\d+)\\))";
+        String test="@![image](123)";
+        Matcher matcher = Pattern.compile(reg).matcher(test);
+        if (matcher.find()) {
+           System.out.println("result::"+matcher.group(0));
+           System.out.println("result::"+matcher.group(1));
+           System.out.println("result::"+matcher.group(2));
+           System.out.println("result::"+matcher.groupCount());
+
+        }
     }
 
     /**

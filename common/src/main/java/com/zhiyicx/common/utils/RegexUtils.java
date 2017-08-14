@@ -267,4 +267,17 @@ public class RegexUtils {
         if (input == null) return null;
         return Pattern.compile(regex).matcher(input).replaceAll(replacement);
     }
+
+    public static int getImageId(String regex, String input) {
+        if (regex == null || input == null) return -1;
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+        if (matcher.find()) {
+            try {
+                return Integer.parseInt(matcher.group(2));
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+        return -1;
+    }
 }

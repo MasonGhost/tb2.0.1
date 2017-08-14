@@ -2,23 +2,32 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -120,34 +129,52 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
     protected RecyclerView.Adapter getAdapter() {
         return new CommonAdapter<QAListInfoBean>(getActivity(), R.layout.item_qa_content, mListDatas) {
             @Override
-            protected void convert(ViewHolder holder, QAListInfoBean o, int position) {
-                holder.setText(R.id.item_info_title, "火星很危险，快回地球去吧");
-                holder.setText(R.id.item_info_time, "一周前");
+            protected void convert(ViewHolder holder, QAListInfoBean infoBean, int position) {
+                ImageView imageView = holder.getImageViwe(R.id.item_info_imag);
+                holder.setText(R.id.item_info_title, infoBean.getSubject());
+                holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyForDetail(infoBean.getCreated_at()));
                 holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed_reward)
-                        , 200, 40, 18f));
-                ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(null));
+                        , infoBean.getWatchers_count(), infoBean.getAnswers_count(), infoBean.getAmount()));
+                ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean));
                 TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
                 String content = "火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
                         "快回地球去吧火星很危险，" +
                         "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
                         "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧";
+                content = infoBean.getBody();
+                int id = RegexUtils.getImageId(MarkdownConfig.IMAGE_FORMAT, content);
                 Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.ico_potoablum),
                         contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
-                Drawable headImage = new CircleImageDrawable(newBmp);
+                CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
                 headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
-                ImageSpan imgSpan = new CenterImageSpan(headImage, true);
+                ImageSpan imgSpan = new CenterImageSpan(headImage, infoBean.getAnonymity() == 1);
                 SpannableString spannableString = SpannableString.valueOf("T" + content);
                 spannableString.setSpan(imgSpan, 0, 1, Spannable
                         .SPAN_EXCLUSIVE_EXCLUSIVE);
                 contentTextView.setText(spannableString);
 
+                if (id > 0) {
+                    int w = DeviceUtils.getScreenWidth(mContext);
+                    int h = getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
+                    String url = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
+                    Glide.with(mContext).load(url)
+                            .asBitmap()
+                            .override(w, h)
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                    //headImage.updateImage(resource);
+                                    imageView.setImageBitmap(resource);
+                                }
+                            });
+                }
             }
         };
     }
 
-    private List<Link> setLinks(QAListInfoBean listInfoBean) {
+    private List<Link> setLinks(QAListInfoBean infoBean) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link followCountLink = new Link(infoBean.getWatchers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -155,7 +182,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .setUnderlined(false);
         links.add(followCountLink);
 
-        Link answerCountLink = new Link("40").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link answerCountLink = new Link(infoBean.getAnswers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -163,7 +190,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .setUnderlined(false);
         links.add(answerCountLink);
 
-        Link rewardMoneyLink = new Link("￥18.0").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link rewardMoneyLink = new Link("￥" + infoBean.getAmount()).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .withdrawals_item_enable))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))

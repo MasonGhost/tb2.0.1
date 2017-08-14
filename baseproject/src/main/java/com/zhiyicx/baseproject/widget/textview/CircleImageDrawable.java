@@ -31,12 +31,18 @@ public class CircleImageDrawable extends Drawable {
         mWidth = Math.min(mBitmap.getWidth(), mBitmap.getHeight());
     }
 
+    public void updateImage(Bitmap bitmap) {
+        mBitmap = bitmap;
+        mWidth = Math.min(mBitmap.getWidth(), mBitmap.getHeight());
+        invalidateSelf();
+    }
+
     @Override
     public void draw(Canvas canvas) {
         canvas.drawCircle(mWidth / 2, mWidth / 2, mWidth / 2, mPaint);
     }
 
-    public void draw(Canvas canvas,int cy) {
+    public void draw(Canvas canvas, int cy) {
         canvas.drawCircle(mWidth / 2, cy, mWidth / 2, mPaint);
     }
 

@@ -43,7 +43,7 @@ public class QAListInfoBean extends BaseListBean {
     private String subject;
     private String body;
     private int anonymity;
-    private int amount;
+    private double amount;
     private int automaticity;
     private int look;
     private int excellent;
@@ -103,11 +103,11 @@ public class QAListInfoBean extends BaseListBean {
         this.anonymity = anonymity;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -527,7 +527,7 @@ public class QAListInfoBean extends BaseListBean {
         dest.writeString(this.subject);
         dest.writeString(this.body);
         dest.writeInt(this.anonymity);
-        dest.writeInt(this.amount);
+        dest.writeDouble(this.amount);
         dest.writeInt(this.automaticity);
         dest.writeInt(this.look);
         dest.writeInt(this.excellent);
@@ -552,7 +552,7 @@ public class QAListInfoBean extends BaseListBean {
         this.subject = in.readString();
         this.body = in.readString();
         this.anonymity = in.readInt();
-        this.amount = in.readInt();
+        this.amount = in.readDouble();
         this.automaticity = in.readInt();
         this.look = in.readInt();
         this.excellent = in.readInt();
