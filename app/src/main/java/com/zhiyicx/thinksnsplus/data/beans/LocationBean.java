@@ -147,7 +147,7 @@ public class LocationBean extends BaseListBean {
     }
 
     /**
-     * 获取当前地址，最多四级
+     * 获取当前地址
      *
      * @param locationBean
      * @return

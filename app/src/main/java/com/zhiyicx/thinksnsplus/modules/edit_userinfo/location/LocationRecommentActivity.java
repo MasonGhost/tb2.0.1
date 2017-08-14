@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo.location;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
@@ -30,5 +31,11 @@ public class LocationRecommentActivity extends TSActivity<LocationRecommentPrese
     @Override
     protected LocationRecommentFragment getFragment() {
         return LocationRecommentFragment.newInstance(getIntent().getExtras());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode,resultCode,data);
     }
 }

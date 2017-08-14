@@ -15,6 +15,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserTagBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -44,16 +45,13 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
         UserInfoContract.View> implements UserInfoContract.Presenter {
 
     @Inject
-    IUploadRepository mIUploadRepository;
+    UpLoadRepository mIUploadRepository;
     @Inject
     AuthRepository mIAuthRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     UserTagBeanGreenDaoImpl mUserTagBeanGreenDao;
-
-    @Inject
-    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public UserInfoPresenter(UserInfoContract.Repository repository, UserInfoContract.View
@@ -157,7 +155,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.Repository
     }
 
     private void getCurrentUserTagsFromNet() {
-        Subscription sub=  mUserInfoRepository.getCurrentUserTags()
+        Subscription sub=  mRepository.getCurrentUserTags()
                   .map(userTagBeens -> {
                       for (UserTagBean userTagBean : userTagBeens) {
                           userTagBean.setMine_has(true);

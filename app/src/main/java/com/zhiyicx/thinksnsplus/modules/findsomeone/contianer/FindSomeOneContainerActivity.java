@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.contianer;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
@@ -21,5 +22,11 @@ public class FindSomeOneContainerActivity extends TSActivity<FindSomeOneListPres
     @Override
     protected FindSomeOneContainerFragment getFragment() {
         return FindSomeOneContainerFragment.newInstance(getIntent().getExtras());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode,resultCode,data);
     }
 }

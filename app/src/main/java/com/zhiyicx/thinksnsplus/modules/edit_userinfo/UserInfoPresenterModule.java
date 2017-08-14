@@ -11,11 +11,12 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * @author LiuChao
- * @describe
- * @date 2017/1/9
- * @contact email:450127106@qq.com
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/8/14
+ * @Contact master.jungle68@gmail.com
  */
+
 @Module
 public class UserInfoPresenterModule {
     private UserInfoContract.View mView;
@@ -30,13 +31,8 @@ public class UserInfoPresenterModule {
     }
 
     @Provides
-    UserInfoContract.Repository provideUserInfoContractRepository(ServiceManager serviceManager, Application application) {
-        return new UserInfoRepository(serviceManager,application);
-    }
-
-    @Provides
-    IUploadRepository provideIUploadRepository(ServiceManager serviceManager, Application application) {
-        return new UpLoadRepository(serviceManager, application);
+    UserInfoContract.Repository provideUserInfoContractRepository(UserInfoRepository repository) {
+        return repository;
     }
 
 }

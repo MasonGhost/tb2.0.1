@@ -1,13 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo.location;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.data.source.repository.i.IUploadRepository;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoContract;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -19,25 +11,20 @@ import dagger.Provides;
  */
 @Module
 public class LocationRecommentPresenterModule {
-    private UserInfoContract.View mView;
+    private LocationRecommentContract.View mView;
 
-    public LocationRecommentPresenterModule(UserInfoContract.View view) {
+    public LocationRecommentPresenterModule(LocationRecommentContract.View view) {
         mView = view;
     }
 
     @Provides
-    UserInfoContract.View provideUserInfoContractView() {
+    LocationRecommentContract.View provideView() {
         return mView;
     }
 
     @Provides
-    UserInfoContract.Repository provideUserInfoContractRepository(ServiceManager serviceManager, Application application) {
-        return new UserInfoRepository(serviceManager,application);
+    LocationRecommentContract.Repository provideRepository() {
+        return new LocationRecommentContract.Repository() {
+        };
     }
-
-    @Provides
-    IUploadRepository provideIUploadRepository(ServiceManager serviceManager, Application application) {
-        return new UpLoadRepository(serviceManager, application);
-    }
-
 }

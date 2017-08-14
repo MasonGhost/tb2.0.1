@@ -17,16 +17,16 @@
         <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView
             android:id="@+id/tv_toolbar_center"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
+            android:layout_marginLeft="@dimen/spacing_mid"
             android:layout_marginTop="@dimen/spacing_mid_small_8dp"
             android:layout_toLeftOf="@id/tv_toolbar_right_two"
             android:layout_toRightOf="@id/tv_toolbar_left"
+            android:layout_weight="1"
             android:background="@drawable/info_search_bg"
             android:drawableLeft="@mipmap/search_icon_search"
             android:drawablePadding="@dimen/spacing_small"
-            android:layout_marginLeft="@dimen/spacing_mid"
             android:gravity="start|center"
             android:maxLines="1"
             android:paddingLeft="@dimen/toolbar_padding_left"
@@ -62,57 +62,82 @@
         android:id="@+id/ll_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_marginTop="@dimen/spacing_normal"
+        android:background="@color/white"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:paddingTop="@dimen/spacing_mid"
             android:paddingBottom="@dimen/spacing_mid"
             android:paddingLeft="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_mid"
+            android:paddingTop="@dimen/spacing_mid"
             android:text="@string/current_location"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_content_assist"
             />
+
         <TextView
+            android:id="@+id/tv_current_location"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:hint="@string/current_location"
-            android:textColor="@color/important_for_content"
-            android:singleLine="true"
+            android:layout_weight="1"
             android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:hint="@string/unlocation"
             android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/important_for_content"
             android:textColorHint="@color/normal_for_disable_button_text"
             android:textSize="@dimen/size_content_assist"
             />
-        <ImageView
-            android:id="@+id/iv_location"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingLeft="@dimen/spacing_mid"
-            android:paddingRight="@dimen/spacing_mid"
-            android:src="@mipmap/find_ico_location2"
-            />
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_location"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="invisible"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
+                android:src="@mipmap/find_ico_location2"
+                />
+
+            <ImageView
+                android:id="@+id/iv_animation"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
+                android:src="@drawable/frame_loading_grey"
+                />
+
+        </FrameLayout>
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:padding="@dimen/spacing_normal"
-        android:textColor="@color/normal_for_assist_text"
-        android:textSize="@dimen/size_content_comment"
         android:text="@string/hot_location"
-        android:layout_height="wrap_content"/>
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content_comment"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_hot_city"
-        android:background="@color/white"
+        android:paddingLeft="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_mid"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@color/white"/>
 
 </LinearLayout>

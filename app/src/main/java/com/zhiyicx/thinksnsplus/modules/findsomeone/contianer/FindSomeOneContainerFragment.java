@@ -15,12 +15,19 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentActivity;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentFragment;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.search.name.SearchSomeOneActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * @Describe
@@ -29,7 +36,7 @@ import butterknife.Unbinder;
  * @Contact master.jungle68@gmail.com
  */
 public class FindSomeOneContainerFragment extends TSFragment {
-
+    private static final int REQUST_CODE_LOCATION = 8200;
 
     @BindView(R.id.tv_toolbar_right)
     TextView mTvToolbarRight;
@@ -74,8 +81,8 @@ public class FindSomeOneContainerFragment extends TSFragment {
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
-                        initLocation();
-                    }else {
+//                        initLocation();
+                    } else {
                         mTvToolbarRight.setText(getString(R.string.emptyStr));
                     }
                 });
@@ -146,7 +153,26 @@ public class FindSomeOneContainerFragment extends TSFragment {
             case R.id.tv_toolbar_right_two:
                 break;
             case R.id.tv_toolbar_right:
+                Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);
+                startActivityForResult(intent, REQUST_CODE_LOCATION);
                 break;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data.getExtras() != null) {
+            LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
+            try {
+                String locationStr = LocationBean.getlocation(locationBean);
+                String[] result = locationStr.split("，");
+                mTvToolbarRight.setText(result[result.length - 1]);
+            }catch (Exception e){
+                mTvToolbarRight.setText(locationBean.getName());
+            }
+
+        }
+
     }
 }
