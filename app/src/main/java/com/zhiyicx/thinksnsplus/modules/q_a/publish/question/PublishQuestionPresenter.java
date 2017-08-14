@@ -33,7 +33,7 @@ public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionCo
 
     @Override
     public void requestNetData(String subject, Long maxId, String type, boolean isLoadMore) {
-        mRepository.getQAQustion(subject,maxId,type)
+        mRepository.getQAQuestion(subject,maxId,type)
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
             @Override
             protected void onSuccess(List<QAListInfoBean> data) {

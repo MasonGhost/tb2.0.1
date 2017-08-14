@@ -52,7 +52,8 @@ public class QATopicBean extends BaseListBean implements Serializable{
     ]
     }*/
 
-    private int id;
+    @Id
+    private Long id;
     private String name;
     private String description;
     private int questions_count;
@@ -63,31 +64,12 @@ public class QATopicBean extends BaseListBean implements Serializable{
     private boolean has_follow;
     private String avatar;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(this.id);
-        dest.writeString(this.name);
-        dest.writeString(this.description);
-        dest.writeInt(this.questions_count);
-        dest.writeInt(this.experts_count);
-        dest.writeInt(this.follows_count);
-        dest.writeByte(this.has_follow ? (byte) 1 : (byte) 0);
-        dest.writeString(this.avatar);
-        dest.writeTypedList(this.experts);
     }
 
     public String getName() {
@@ -154,26 +136,53 @@ public class QATopicBean extends BaseListBean implements Serializable{
         this.experts = experts;
     }
 
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
+
     public QATopicBean() {
+    }
+    
+
+    public static class UserInfoCovert extends BaseConvert<List<UserInfoBean>>{}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.description);
+        dest.writeInt(this.questions_count);
+        dest.writeInt(this.experts_count);
+        dest.writeTypedList(this.experts);
+        dest.writeInt(this.follows_count);
+        dest.writeByte(this.has_follow ? (byte) 1 : (byte) 0);
+        dest.writeString(this.avatar);
     }
 
     protected QATopicBean(Parcel in) {
         super(in);
-        this.id = in.readInt();
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.description = in.readString();
         this.questions_count = in.readInt();
         this.experts_count = in.readInt();
+        this.experts = in.createTypedArrayList(UserInfoBean.CREATOR);
         this.follows_count = in.readInt();
         this.has_follow = in.readByte() != 0;
         this.avatar = in.readString();
-        this.experts = in.createTypedArrayList(UserInfoBean.CREATOR);
     }
 
-    @Generated(hash = 1608117216)
-    public QATopicBean(int id, String name, String description, int questions_count,
-            int experts_count, List<UserInfoBean> experts, int follows_count,
-            boolean has_follow, String avatar) {
+    @Generated(hash = 1732529303)
+    public QATopicBean(Long id, String name, String description,
+            int questions_count, int experts_count, List<UserInfoBean> experts,
+            int follows_count, boolean has_follow, String avatar) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -196,7 +205,4 @@ public class QATopicBean extends BaseListBean implements Serializable{
             return new QATopicBean[size];
         }
     };
-
-    public static class UserInfoCovert extends BaseConvert<List<UserInfoBean>>{}
-
 }
