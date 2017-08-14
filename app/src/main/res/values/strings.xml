@@ -453,5 +453,8 @@
     <string name="find_someone">找人</string>
     <string name="neary_by">附近</string>
     <string name="choose_city">选择城市</string>
+    <string name="current_location">当前定位</string>
+    <string name="unlocation">未定位</string>
+    <string name="hot_location">热门城市</string>
 
 </resources>
