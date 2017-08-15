@@ -44,7 +44,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                     @Override
                     protected void onSuccess(Integer data) {
                         mRootView.uploadPicSuccess(data);
-                        mRootView.showSnackErrorMessage("图片上传成功");
+                        mRootView.showSnackSuccessMessage("图片上传成功");
                     }
 
                     @Override

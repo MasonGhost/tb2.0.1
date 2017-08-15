@@ -135,76 +135,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return new CommonAdapter<QAListInfoBean>(getActivity(), R.layout.item_qa_content, mListDatas) {
-            @Override
-            protected void convert(ViewHolder holder, QAListInfoBean infoBean, int position) {
-                ImageView imageView = holder.getImageViwe(R.id.item_info_imag);
-                holder.setText(R.id.item_info_title, infoBean.getSubject());
-                holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyForDetail(infoBean.getCreated_at()));
-                holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed_reward)
-                        , infoBean.getWatchers_count(), infoBean.getAnswers_count(), infoBean.getAmount()));
-                ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean));
-                TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
-                String content = infoBean.getBody();
-                int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
-
-                if (id > 0) {
-                    int w = DeviceUtils.getScreenWidth(mContext);
-                    int h = getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
-                    String url = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
-                    Glide.with(mContext).load(url)
-                            .asBitmap()
-                            .override(w, h)
-                            .into(new SimpleTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    imageView.setImageBitmap(resource);
-//                                    Bitmap newBmp = Bitmap.createScaledBitmap(resource,
-//                                            contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
-//                                    CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
-//                                    headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
-//                                    ImageSpan imgSpan = new CenterImageSpan(headImage, infoBean.getAnonymity() == 1);
-//                                    SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
-//                                    spannableString.setSpan(imgSpan, 0, 1, Spannable
-//                                            .SPAN_EXCLUSIVE_EXCLUSIVE);
-//                                    contentTextView.setText(spannableString);
-                                }
-                            });
-                } else {
-
-                }
-
-                ImageUtils.loadQAUserHead(infoBean.getUser(),contentTextView, content,infoBean.getAnonymity() == 1 ,false);
-
-            }
-        };
+        return new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas);
     }
 
-    private List<Link> setLinks(QAListInfoBean infoBean) {
-        List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(infoBean.getWatchers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(followCountLink);
-
-        Link answerCountLink = new Link(infoBean.getAnswers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(answerCountLink);
-
-        Link rewardMoneyLink = new Link("￥" + infoBean.getAmount()).setTextColor(ContextCompat.getColor(getContext(), R.color
-                .withdrawals_item_enable))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(rewardMoneyLink);
-        return links;
-    }
 }

@@ -10,6 +10,8 @@ import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
@@ -83,6 +85,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             topicList.add(topic);
         }
         mQAPublishBean.setTopics(topicList);
+        mQAPublishBean.setSubject(mEtQustion.getText().toString());
         Intent intent = new Intent(getActivity(), PublishContentActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
@@ -131,7 +134,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initData() {
         super.initData();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
-        mEtQustion.setText(mQAPublishBean.getSubject());
+        mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean.getSubject()));
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
     }
 

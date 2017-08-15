@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
@@ -22,6 +23,8 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
@@ -179,6 +182,14 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         setRbValue(mRbOnlookersTwo, mRewardLabels.get(1));
         setRbValue(mRbOnlookersThree, mRewardLabels.get(2));
 
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        if (prompt == Prompt.SUCCESS) {
+            getActivity().finish();
+            startActivity(new Intent(getActivity(), QA_Activity.class));
+        }
     }
 
     private void initAlertPopupWindow() {

@@ -196,7 +196,6 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         if (prompt == Prompt.SUCCESS) {
             getActivity().finish();
             startActivity(new Intent(getActivity(), InfoActivity.class));
-
         }
     }
 

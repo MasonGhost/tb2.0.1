@@ -183,6 +183,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.information.infomain.InfoActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.information.infodetails.InfoDetailsActivity"
@@ -420,7 +421,8 @@
         </activity>
         <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
         </activity>
-        <activity android:name=".modules.q_a.QA_Activity">
+        <activity android:name=".modules.q_a.QA_Activity"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name=".modules.q_a.publish.detail.PublishContentActivity"
