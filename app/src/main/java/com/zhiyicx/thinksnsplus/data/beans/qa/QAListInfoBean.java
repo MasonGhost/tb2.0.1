@@ -338,7 +338,7 @@ public class QAListInfoBean extends BaseListBean {
         }
 
         public String getAvatar() {
-            return avatar;
+            return avatar==null?"":avatar;
         }
 
         public void setAvatar(String avatar) {

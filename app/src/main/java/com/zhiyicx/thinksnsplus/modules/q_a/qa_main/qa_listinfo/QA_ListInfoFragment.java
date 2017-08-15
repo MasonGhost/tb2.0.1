@@ -2,8 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.klinker.android.link_builder.Link;
@@ -156,28 +159,23 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                                 @Override
                                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                     imageView.setImageBitmap(resource);
-                                    Bitmap newBmp = Bitmap.createScaledBitmap(resource,
-                                            contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
-                                    CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
-                                    headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
-                                    ImageSpan imgSpan = new CenterImageSpan(headImage, infoBean.getAnonymity() == 1);
-                                    SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
-                                    spannableString.setSpan(imgSpan, 0, 1, Spannable
-                                            .SPAN_EXCLUSIVE_EXCLUSIVE);
-                                    contentTextView.setText(spannableString);
+//                                    Bitmap newBmp = Bitmap.createScaledBitmap(resource,
+//                                            contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
+//                                    CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
+//                                    headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
+//                                    ImageSpan imgSpan = new CenterImageSpan(headImage, infoBean.getAnonymity() == 1);
+//                                    SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+//                                    spannableString.setSpan(imgSpan, 0, 1, Spannable
+//                                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+//                                    contentTextView.setText(spannableString);
                                 }
                             });
-                }else{
-                    Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.ico_potoablum),
-                            contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
-                    CircleImageDrawable headImage = new CircleImageDrawable(newBmp);
-                    headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
-                    ImageSpan imgSpan = new CenterImageSpan(headImage, infoBean.getAnonymity() == 1);
-                    SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
-                    spannableString.setSpan(imgSpan, 0, 1, Spannable
-                            .SPAN_EXCLUSIVE_EXCLUSIVE);
-                    contentTextView.setText(spannableString);
+                } else {
+
                 }
+
+                ImageUtils.loadQAUserHead(infoBean.getUser(),contentTextView, content,infoBean.getAnonymity() == 1 ,false);
+
             }
         };
     }

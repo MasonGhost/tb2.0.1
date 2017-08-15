@@ -28,6 +28,8 @@ public class CenterImageSpan extends ImageSpan {
     private static final float DEFAULT_RATIO = 3.5f;
     private static int OFFSET = 20;
 
+    private Drawable verified;
+
     public CenterImageSpan(Context context, Bitmap b) {
         super(context, b);
     }
@@ -42,6 +44,12 @@ public class CenterImageSpan extends ImageSpan {
 
     public CenterImageSpan(Drawable d, boolean isText) {
         super(d);
+        this.isText = isText;
+    }
+
+    public CenterImageSpan(Drawable d, Drawable v, boolean isText) {
+        super(d);
+        this.verified = v;
         this.isText = isText;
     }
 
@@ -83,17 +91,17 @@ public class CenterImageSpan extends ImageSpan {
                     .getBounds().centerY() - (textP.descent() + textP.ascent()) / 2, textP);
         } else {
             canvas.save();
-            int transY = ((bottom - top) - b.getBounds().height()) / 2 + top - OFFSET
-                    / 2;
+            int transY = ((bottom - top) - b.getBounds().height()) / 2 + top;
             // y 轴居中对齐
             canvas.translate(x, transY);
             b.draw(canvas);
 
-            float radio = b.getBounds().height() / DEFAULT_RATIO;
-            float cx = (float) (radio / Math.sqrt(2));
-
-            canvas.drawCircle(b.getBounds().centerX() + cx, b.getBounds().centerY() + cx, b.getBounds()
-                    .height() / (2 * DEFAULT_RATIO), textB);
+            if (verified != null) {
+                float radio = b.getBounds().height() / DEFAULT_RATIO;
+                float cx = (float) (radio / Math.sqrt(2));
+                canvas.translate(b.getBounds().height() / 2 + cx, b.getBounds().height() / 2 + cx);
+                verified.draw(canvas);
+            }
             canvas.restore();
         }
     }

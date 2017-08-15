@@ -712,7 +712,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
             String id = MediaIDHelper.createMediaID("" + e_albumListBean.getId(),
                     MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-            bundle.putString(MUSIC_ID, mMediaId_test);
+            bundle.putString(MUSIC_ID, id);// mMediaId_test
 
             MediaControllerCompat controller = getActivity()
                     .getSupportMediaController();

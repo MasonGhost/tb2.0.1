@@ -20,7 +20,6 @@ public class CircleImageDrawable extends Drawable {
     private Paint mPaint;
     private int mWidth;
     private Bitmap mBitmap;
-    private Bitmap mTest;
 
     public CircleImageDrawable(Bitmap bitmap) {
         mBitmap = bitmap;
@@ -30,12 +29,6 @@ public class CircleImageDrawable extends Drawable {
         mPaint.setAntiAlias(true);
         mPaint.setShader(bitmapShader);
         mWidth = Math.min(mBitmap.getWidth(), mBitmap.getHeight());
-    }
-
-    public void updateImage(Bitmap bitmap) {
-        mBitmap = bitmap;
-        mWidth = Math.min(mBitmap.getWidth(), mBitmap.getHeight());
-        invalidateSelf();
     }
 
     @Override
