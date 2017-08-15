@@ -35,8 +35,8 @@ public interface QAClient {
     Observable<BaseJsonV2<QAPublishBean>> publishQuestion(@Body RequestBody body);
 
     @FormUrlEncoded
-    @POST(ApiConfig.APP_PATH_PUBLISH_QUESTIONS)
-    Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Field("body") String body, @Field("anonymity") int anonymity);
+    @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
+    Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id,@Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
      * @param name   用于搜索话题，传递话题名称关键词。

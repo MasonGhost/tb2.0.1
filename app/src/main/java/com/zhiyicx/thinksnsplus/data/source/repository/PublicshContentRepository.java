@@ -19,17 +19,16 @@ import rx.schedulers.Schedulers;
  */
 public class PublicshContentRepository extends BasePublishQuestionRepository implements PublishContentConstact.Repository {
 
-
-
     @Inject
     public PublicshContentRepository(ServiceManager serviceManager) {
         super(serviceManager);
     }
 
     @Override
-    public Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(String body, int anonymity) {
-        return mQAClient.publishAnswer(body,anonymity)
+    public Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(Long question_id,String body, int anonymity) {
+        return mQAClient.publishAnswer(question_id,body,anonymity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
 }

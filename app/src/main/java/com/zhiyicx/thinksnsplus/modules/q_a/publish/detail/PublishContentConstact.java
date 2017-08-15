@@ -26,10 +26,10 @@ public interface PublishContentConstact {
     interface Presenter extends IBaseTouristPresenter {
         void uploadPic(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
 
-        void publishAnswer(String body, int anonymity);
+        void publishAnswer(Long question_id,String body, int anonymity);
     }
 
     interface Repository extends IBasePublishQuestionRepository {
-        Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(String body, int anonymity);
+        Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(Long question_id,String body, int anonymity);
     }
 }

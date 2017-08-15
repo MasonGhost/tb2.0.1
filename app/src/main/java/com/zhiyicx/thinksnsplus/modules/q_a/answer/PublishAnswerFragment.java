@@ -24,7 +24,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void setRightClick() {
-        mPresenter.publishAnswer(getContentString(), mAnonymity);
+        mPresenter.publishAnswer(1L,getContentString(), mAnonymity);
     }
 
     @Override
