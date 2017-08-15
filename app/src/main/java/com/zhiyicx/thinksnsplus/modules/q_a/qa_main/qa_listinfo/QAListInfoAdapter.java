@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -63,6 +64,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                             imageView.setImageBitmap(resource);
                         }
                     });
+            imageView.setVisibility(View.VISIBLE);
+        }else{
+            imageView.setVisibility(View.GONE);
         }
 
         ImageUtils.loadQAUserHead(infoBean.getUser(),contentTextView, content,infoBean.getAnonymity() == 1 ,false);

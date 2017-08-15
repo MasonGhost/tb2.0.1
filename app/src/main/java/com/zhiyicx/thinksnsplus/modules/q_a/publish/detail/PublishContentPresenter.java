@@ -1,7 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import javax.inject.Inject;
@@ -51,5 +54,25 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         mRootView.uploadPicFailed();
                     }
                 });
+    }
+
+    @Override
+    public void publishAnswer(String body, int anonymity) {
+        mRepository.publishAnswer(body,anonymity).subscribe(new BaseSubscribeForV2<BaseJsonV2<QAAnswerBean>>() {
+            @Override
+            protected void onSuccess(BaseJsonV2<QAAnswerBean> data) {
+
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+            }
+        });
     }
 }

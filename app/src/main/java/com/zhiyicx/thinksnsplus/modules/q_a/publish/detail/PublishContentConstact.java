@@ -1,7 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
+
+import rx.Observable;
 
 /**
  * @Author Jliuer
@@ -10,12 +15,21 @@ import com.zhiyicx.common.mvp.i.IBaseView;
  * @Description
  */
 public interface PublishContentConstact {
-    interface View extends IBaseView<Presenter>{
+    interface View extends IBaseView<Presenter> {
         void uploadPicSuccess(int id);
+
+        void publishSuccess(QAAnswerBean answerBean);
+
         void uploadPicFailed();
     }
-    interface Presenter extends IBaseTouristPresenter{
+
+    interface Presenter extends IBaseTouristPresenter {
         void uploadPic(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
+
+        void publishAnswer(String body, int anonymity);
     }
-    interface Repository{}
+
+    interface Repository extends IBasePublishQuestionRepository {
+        Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(String body, int anonymity);
+    }
 }
