@@ -296,8 +296,9 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         mExpertList.setExpertCount(mQaTopicBean.getExperts_count());
         mExpertList.setDigUserHeadIcon(mQaTopicBean.getExperts());
         mTvTopicFeedCount.setText(String.format(Locale.getDefault(),
-                getString(R.string.qa_show_topic_detail_feed), mQaTopicBean.getFollows_count(), mQaTopicBean.getQuestions_count()));
-        ConvertUtils.stringLinkConvert(mTvTopicFeedCount, dealTopicDetail(null));
+                getString(R.string.qa_show_topic_detail_feed), String.valueOf(mQaTopicBean.getFollows_count()),
+                String.valueOf(mQaTopicBean.getQuestions_count())));
+        ConvertUtils.stringLinkConvert(mTvTopicFeedCount, dealTopicDetail(mQaTopicBean));
         Glide.with(BaseApplication.getContext())
                 .load(TextUtils.isEmpty(mQaTopicBean.getAvatar()) ? "" : mQaTopicBean.getAvatar())
                 .placeholder(R.drawable.shape_default_image)
