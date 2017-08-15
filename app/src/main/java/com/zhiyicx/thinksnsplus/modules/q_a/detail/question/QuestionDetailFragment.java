@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 
 /**
  * @author Catherine
@@ -13,7 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
  * @contact email:648129313@qq.com
  */
 
-public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter, QAListInfoBean>
+public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter, AnswerInfoBean>
         implements QuestionDetailContract.View{
 
     public QuestionDetailFragment instance(Bundle bundle){
