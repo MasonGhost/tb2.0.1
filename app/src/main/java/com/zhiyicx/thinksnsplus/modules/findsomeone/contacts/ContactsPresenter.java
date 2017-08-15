@@ -5,6 +5,7 @@ import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.PhoneNumber;
 import com.github.tamir7.contacts.Query;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
@@ -19,6 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -47,7 +49,7 @@ public class ContactsPresenter extends BasePresenter<ContactsContract.Repository
     @Override
     public void getContacts() {
         mRootView.showLoading();
-        Observable.create((Observable.OnSubscribe<List<ContactsBean>>) subscriber -> {
+        Subscription subscription = Observable.create((Observable.OnSubscribe<List<ContactsBean>>) subscriber -> {
             if (!subscriber.isUnsubscribed()) {
                 try {
                     // 获取有电话号码的联系人
@@ -101,10 +103,9 @@ public class ContactsPresenter extends BasePresenter<ContactsContract.Repository
                                     contactsContainerBeens.add(notAdd);
 
                                     for (ContactsBean contact : contacts) {
-                                        System.out.println("contact = " + mUserInfoBeanGreenDao.getSingleDataFromCache(8L).toString());
-                                        UserInfoBean tmp = mUserInfoBeanGreenDao.getUserInfoByPhone(contact.getPhone());
-                                        if (tmp != null) {
-                                            contact.setUser(tmp);
+                                        List<UserInfoBean> tmp = mUserInfoBeanGreenDao.getUserInfoByPhone(contact.getPhone());
+                                        if (!tmp.isEmpty()) {
+                                            contact.setUser(tmp.get(0));
                                             hadAdd.getContacts().add(contact);
                                         } else {
                                             notAdd.getContacts().add(contact);
@@ -120,8 +121,37 @@ public class ContactsPresenter extends BasePresenter<ContactsContract.Repository
                     @Override
                     protected void onSuccess(List<ContactsContainerBean> data) {
                         mRootView.hideLoading();
-                        mRootView.updateContacts(data);
+                        mRootView.updateContacts((ArrayList<ContactsContainerBean>) data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        LogUtils.e("contact load fail : " + message);
+                        mRootView.hideLoading();
+                        mRootView.updateContacts(new ArrayList<>());
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        LogUtils.e("contact load error : ");
+                        mRootView.hideLoading();
+                        mRootView.updateContacts(new ArrayList<>());
                     }
                 });
+        addSubscrebe(subscription);
+    }
+
+
+    @Override
+    public void followUser(int index, UserInfoBean followFansBean) {
+        mUserInfoRepository.handleFollow(followFansBean);
+
+    }
+
+    @Override
+    public void cancleFollowUser(int index, UserInfoBean followFansBean) {
+        mUserInfoRepository.handleFollow(followFansBean);
     }
 }

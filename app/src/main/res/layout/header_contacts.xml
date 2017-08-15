@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:id="@+id/ll_container"
+    android:background="@color/bgColor"
     >
 
     <TextView
@@ -12,7 +14,6 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:gravity="center_vertical"
         android:padding="@dimen/spacing_normal"
         android:textColor="@color/normal_for_assist_text"
@@ -24,9 +25,10 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:text=""
+        android:gravity="center_vertical|right"
+        android:drawablePadding="@dimen/spacing_small"
+        android:text="@string/more"
+        android:drawableRight="@mipmap/ic_arrow_smallgrey"
         android:padding="@dimen/spacing_normal"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_comment"/>

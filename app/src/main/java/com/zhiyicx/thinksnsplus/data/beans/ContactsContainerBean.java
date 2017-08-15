@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,10 +10,11 @@ import java.util.List;
  * @Date 2017/8/14
  * @Contact master.jungle68@gmail.com
  */
-public class ContactsContainerBean {
+public class ContactsContainerBean implements Serializable {
 
+    private static final long serialVersionUID = 2735557939775887100L;
     private String  title;
-    private List<ContactsBean> contacts;
+    private ArrayList<ContactsBean> contacts;
 
     public String getTitle() {
         return title;
@@ -25,7 +28,8 @@ public class ContactsContainerBean {
         return contacts;
     }
 
-    public void setContacts(List<ContactsBean> contacts) {
+    public void setContacts(ArrayList<ContactsBean> contacts) {
         this.contacts = contacts;
     }
+
 }

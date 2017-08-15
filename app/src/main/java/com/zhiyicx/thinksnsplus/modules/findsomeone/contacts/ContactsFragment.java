@@ -7,17 +7,27 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridLayoutManager;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.ContactsBean;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
 
+import org.w3c.dom.Text;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+
+import static com.zhiyicx.baseproject.base.TSListFragment.DEFAULT_LIST_ITEM_SPACING;
+import static com.zhiyicx.thinksnsplus.modules.findsomeone.contacts.ContactsAdapter.DEFAULT_MAX_ADD_SHOW_NUMS;
 
 /**
  * @Describe 通讯录
@@ -25,7 +35,9 @@ import butterknife.BindView;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class ContactsFragment extends TSFragment<ContactsContract.Presenter> implements ContactsContract.View, ContactsAdapter.OnItemClickListener {
+public class ContactsFragment extends TSFragment<ContactsContract.Presenter> implements ContactsContract.View, ContactsAdapter.OnMoreClickLitener {
+    private static final String BUNDLE_DATA = "data";
+    private static final String BUNDLE_TITLE = "title";
 
     private static final int SPAN_SIZE = 1;
 
@@ -34,18 +46,24 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
 
     private StickyHeaderGridLayoutManager mTagClassLayoutManager;
 
-    private List<ContactsContainerBean> mListData = new ArrayList<>();
+    private ArrayList<ContactsContainerBean> mListData = new ArrayList<>();
 
     private ContactsAdapter mTagClassAdapter;
+
+    private ArrayList<ContactsContainerBean> mBundleData = new ArrayList<>();
+
+    private String mTitle;
 
 
     /**
      * 通讯录
      */
-    public static void startToEditTagActivity(Context context) {
+    public static void startToEditTagActivity(Context context, String title, ArrayList<ContactsContainerBean> listData) {
 
         Intent intent = new Intent(context, ContactsActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putString(BUNDLE_TITLE, title);
+        bundle.putSerializable(BUNDLE_DATA, listData);
         intent.putExtras(bundle);
         if (context instanceof Activity) {
             ((Activity) context).startActivityForResult(intent, 100);
@@ -67,11 +85,6 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
     }
 
     @Override
-    protected String setCenterTitle() {
-        return getString(R.string.contacts);
-    }
-
-    @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
     }
@@ -90,12 +103,18 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            mBundleData = (ArrayList<ContactsContainerBean>) getArguments().getSerializable(BUNDLE_DATA);
+            mTitle = getArguments().getString(BUNDLE_TITLE);
+        }
+        if (TextUtils.isEmpty(mTitle)) {
+            mTitle = getString(R.string.contacts);
         }
     }
 
     @Override
     protected void initView(View rootView) {
+        mToolbarCenter.setVisibility(View.VISIBLE);
+        mToolbarCenter.setText(mTitle);
         updateChooseTip();
         initRvTagClass();
         initListener();
@@ -119,13 +138,19 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
 
     @Override
     protected void initData() {
-        mPresenter.getContacts();
+        if (mBundleData == null) {
+            mPresenter.getContacts();
+        }else {
+            mListData.addAll(mBundleData);
+            mTagClassAdapter.notifyAllSectionsDataSetChanged();
+            hideLoading();
+        }
     }
 
 
     private void initRvTagClass() {
         mTagClassLayoutManager = new StickyHeaderGridLayoutManager(SPAN_SIZE);
-        mTagClassLayoutManager.setHeaderBottomOverlapMargin(getResources().getDimensionPixelSize(R.dimen.spacing_small));
+//        mTagClassLayoutManager.setHeaderBottomOverlapMargin(getResources().getDimensionPixelSize(R.dimen.spacing_small));
         mTagClassLayoutManager.setSpanSizeLookup(new StickyHeaderGridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int section, int position) {
@@ -144,8 +169,9 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
             }
         });
         mRvTagClass.setLayoutManager(mTagClassLayoutManager);
-        mTagClassAdapter = new ContactsAdapter(mListData);
-        mTagClassAdapter.setOnItemClickListener(this);
+        mRvTagClass.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), DEFAULT_LIST_ITEM_SPACING), 0, 0));
+        mTagClassAdapter = new ContactsAdapter(mListData, mPresenter);
+        mTagClassAdapter.setOnMoreClickLitener(this);
         mRvTagClass.setAdapter(mTagClassAdapter);
 
     }
@@ -157,14 +183,23 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
 
 
     @Override
-    public void onItemClick(int categoryPosition, int tagPosition) {
-
+    public void onMoreClick(int categoryPosition) {
+        ArrayList<ContactsContainerBean> data = new ArrayList<>();
+        ContactsContainerBean contactsContainerBean = mListData.get(categoryPosition);
+        data.add(contactsContainerBean);
+        startToEditTagActivity(getActivity(), mListData.get(categoryPosition).getTitle(), data);
     }
 
     @Override
-    public void updateContacts(List<ContactsContainerBean> data) {
+    public void updateContacts(ArrayList<ContactsContainerBean> data) {
+        mBundleData = data;
         mListData.clear();
         mListData.addAll(data);
+        for (int i = 0; i < mListData.size(); i++) {
+            if (mListData.get(i).getContacts().size() > DEFAULT_MAX_ADD_SHOW_NUMS) {
+                mListData.get(i).setContacts(new ArrayList<>(mListData.get(i).getContacts().subList(0, ContactsAdapter.DEFAULT_MAX_ADD_SHOW_NUMS)));
+            }
+        }
         mTagClassAdapter.notifyAllSectionsDataSetChanged();
     }
 }

@@ -3,19 +3,16 @@
 <!--<ScrollView--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:background="@color/bgColor">-->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_contacts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:padding="@dimen/spacing_small" />
+        />
 
 
 </LinearLayout><!--</ScrollView>--><!--</com.wcy.overscroll.OverScrollLayout>-->

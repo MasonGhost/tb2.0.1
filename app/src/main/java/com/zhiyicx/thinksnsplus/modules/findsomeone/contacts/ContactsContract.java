@@ -4,6 +4,7 @@ import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
 
@@ -23,7 +24,7 @@ public interface ContactsContract {
      */
     interface View extends IBaseView<Presenter> {
 
-        void updateContacts(List<ContactsContainerBean> data);
+        void updateContacts(ArrayList<ContactsContainerBean> data);
 
     }
 
@@ -37,6 +38,16 @@ public interface ContactsContract {
     interface Presenter extends IBasePresenter {
 
         void  getContacts();
+        /**
+         * 关注用户
+         *
+         * @param index          item所在的列表位置
+         * @param followFansBean 被关注的用户id
+         */
+        void followUser(int index, UserInfoBean followFansBean);
+
+        void cancleFollowUser(int index, UserInfoBean followFansBean);
+
     }
 
 }

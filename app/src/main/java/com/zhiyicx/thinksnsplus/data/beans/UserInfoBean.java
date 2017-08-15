@@ -16,6 +16,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
@@ -72,6 +73,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @SerializedName("id")
     private Long user_id;
     private String name;
+    @Unique
     @SerializedName("mobi")
     private String phone;
     private String email;

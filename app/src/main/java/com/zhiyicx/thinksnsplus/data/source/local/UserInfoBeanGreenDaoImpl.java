@@ -110,11 +110,11 @@ public class UserInfoBeanGreenDaoImpl extends CommonCacheImpl<UserInfoBean> {
                 .list();
     }
 
-    public UserInfoBean getUserInfoByPhone(String phone) {
+    public List<UserInfoBean> getUserInfoByPhone(String phone) {
         UserInfoBeanDao userInfoBeanDao = getRDaoSession().getUserInfoBeanDao();
         return userInfoBeanDao.queryBuilder()
                 .where(UserInfoBeanDao.Properties.Phone.eq(phone))
-                .unique();
+                .list();
 
     }
 

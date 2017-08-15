@@ -156,7 +156,7 @@ public class FindSomeOneContainerFragment extends TSFragment {
                 mRxPermissions.request(android.Manifest.permission.READ_CONTACTS)
                         .subscribe(aBoolean -> {
                             if(aBoolean){
-                                ContactsFragment.startToEditTagActivity(getActivity());
+                                ContactsFragment.startToEditTagActivity(getActivity(),null,null);
                             }else {
                               showSnackErrorMessage(getString(R.string.contacts_permission_tip));
                             }

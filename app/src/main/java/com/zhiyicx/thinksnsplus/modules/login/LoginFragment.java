@@ -19,10 +19,6 @@ import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.Tencent;
-import com.tencent.tauth.UiError;
-import com.umeng.qq.handler.UmengQQHandler;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -31,7 +27,6 @@ import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
@@ -208,7 +203,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             System.out.println("platform = " + data);
 
-mTvErrorTip.setText(data.toString());
+            mTvErrorTip.setText(data.toString());
             mTvErrorTip.setVisibility(View.VISIBLE);
         }
 

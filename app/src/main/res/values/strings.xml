@@ -451,6 +451,7 @@
 
     <!--找人-->
     <string name="contacts">通讯录</string>
+    <string name="invite">邀请</string>
     <string name="contacts_permission_tip">请打开通讯录权限，否则你将不能使用此功能！</string>
     <string name="find_someone">找人</string>
     <string name="neary_by">附近</string>
