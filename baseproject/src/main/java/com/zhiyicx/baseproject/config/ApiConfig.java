@@ -353,7 +353,25 @@ public class ApiConfig {
     // 关注或者取消一个话题
     public static final String APP_PATH_HANDLE_TOPIC_FOLLOW = "api/" + API_VERSION_2 + "/user/question-topics/{topic}";
     public static final String APP_PATH_HANDLE_TOPIC_FOLLOW_S = "api/" + API_VERSION_2 + "/user/question-topics/%s";
-
+    // 获取问题详情
+    public static final String APP_PATH_GET_QUESTION_DETAIL = "api/" + API_VERSION_2 + "/questions/{question}";
+    // 删除问题用
+    public static final String APP_PATH_GET_DELETE_QUESTION_S = "api/" + API_VERSION_2 + "/questions/%s";
+    // 获取一个问题的回答列表
+    public static final String APP_PATH_GET_QUESTION_ANSWER_LIST = "api/" + API_VERSION_2 + "/questions/{question}/answers";
+    // 获取一个回答的详情
+    public static final String APP_PATH_GET_ANSWER_DETAIL = "api/" + API_VERSION_2 + "/question-answers/{answer}";
+    public static final String APP_PATH_GET_ANSWER_DETAIL_S = "api/" + API_VERSION_2 + "/question-answers/%s";
+    // 发布回答
+    public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/answers";
+    // 更新回答 PATCH
+    public static final String APP_PATH_UPDATE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
+    // 采纳答案 PUT
+    public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/adoptions/{answer}";
+    public static final String APP_PATH_ADOPT_ANSWER_S = "api/" + API_VERSION_2 + "/questions/%s/adoptions/%s";
+    // 删除答案 DELETE
+    public static final String APP_PATH_DELETE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
+    public static final String APP_PATH_DELETE_ANSWER_S = "api/" + API_VERSION_2 + "/question-answers/%s";
     /**
      * 通用 CommonClient
      */
