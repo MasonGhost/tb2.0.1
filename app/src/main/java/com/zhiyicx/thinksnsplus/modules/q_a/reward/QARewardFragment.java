@@ -152,10 +152,11 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TagFrom.QA_PUBLISH.id&&resultCode==RESULT_OK) {// 选择专家
+        if (requestCode == TagFrom.QA_PUBLISH.id && resultCode == RESULT_OK) {// 选择专家
             ExpertBean expertBean = data.getExtras().getParcelable(BUNDLE_RESULT);
             mBtQaSelectExpert.setRightText(expertBean.getName());
             mQAPublishBean.setInvitations(expertBean.getId() + "");
+            configSureButton();
         }
     }
 

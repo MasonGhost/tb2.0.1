@@ -145,6 +145,10 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         if (mQATopicBeanList.size() < mMaxTagNums) {
+            if (mQATopicBeanList.contains(mListDatas.get(position))) {
+                showSnackErrorMessage(getString(R.string.qa_publish_select_topic_repeat));
+                return;
+            }
             mQATopicBeanList.add(mListDatas.get(position));
             mTopicsAdapter.notifyDataChanged();
         } else {

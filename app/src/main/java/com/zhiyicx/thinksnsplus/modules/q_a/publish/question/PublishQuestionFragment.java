@@ -171,12 +171,12 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .subscribe(charSequence -> {
                     mQuestionStr = charSequence.toString().trim();
                     if (!TextUtils.isEmpty(mQuestionStr)) {
-                        requestNetData(mQuestionStr, 0L, "all", false);
                         mToolbarRight.setEnabled(true);
                         // TODO: 20177/25  搜索相同的問題
                     } else {
                         mToolbarRight.setEnabled(false);
                     }
+                    requestNetData(mQuestionStr, 0L, "all", false);
                 }, throwable -> mToolbarRight.setEnabled(false));
 
         mEtQustion.setOnEditorActionListener(

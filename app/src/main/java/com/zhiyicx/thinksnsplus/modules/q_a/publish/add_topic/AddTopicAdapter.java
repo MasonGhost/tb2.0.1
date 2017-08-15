@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 
 import android.content.Context;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -11,7 +13,7 @@ import java.util.List;
 
 
 /**
- * @Describe  list adapter for recommenc question topic
+ * @Describe list adapter for recommenc question topic
  * @Author Jungle68
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
@@ -28,17 +30,18 @@ public class AddTopicAdapter extends CommonAdapter<QATopicBean> {
         setItemData(holder, qaTopicBean, position);
     }
 
-    private void setItemData(final ViewHolder holder, final QATopicBean qaTopicBean, final int position) {
+    private void setItemData(final ViewHolder holder, final QATopicBean topicBean, final int position) {
 
 
         // 设置用户名，用户简介
-        holder.setText(R.id.tv_title, "你好");
-        holder.setText(R.id.tv_content, "大量时间噶劳动竞赛高考了近分开了三个加快立法的世界观");
-
-        // 添加点击事件
-//        RxView.clicks(holder.getConvertView())
-//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-//                .subscribe(aVoid -> ToastUtils.showLongToast(getContext(), "点击"));
+        holder.setText(R.id.tv_title, topicBean.getName());
+        holder.setText(R.id.tv_content, topicBean.getDescription());
+        ImageView headImage = holder.getImageViwe(R.id.iv_cover);
+        Glide.with(mContext)
+                .load(topicBean.getAvatar())
+                .placeholder(R.drawable.shape_default_image)
+                .error(R.drawable.shape_default_image)
+                .into(headImage);
 
     }
 

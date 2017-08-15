@@ -419,6 +419,7 @@
     <string name="qa_publish_enable_anonymous">启用匿名</string>
     <string name="qa_topic">话题</string>
     <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
+    <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>

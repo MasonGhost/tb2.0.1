@@ -39,7 +39,7 @@ public class TopicsAdapter extends TagAdapter<QATopicBean> {
         } else {
             tv.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(parent.getContext(), R.mipmap.topic_icon_delete), null);
         }
-        tv.setText("话题" + position);
+        tv.setText(qaTopicBean.getName());
         return tv;
     }
 }
