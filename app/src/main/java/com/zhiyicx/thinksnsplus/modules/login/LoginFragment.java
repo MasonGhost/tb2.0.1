@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.login;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -16,26 +15,34 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
+import com.umeng.qq.handler.UmengQQHandler;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.common.utils.ActivityHandler;
-import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.common.utils.UIUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
-import com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity;
-import com.zhiyicx.thinksnsplus.widget.AccountPopWindow;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -84,6 +91,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     private ArrayAdapter mArrayAdapter;
     private AccountAdapter mAccountAdapter;
 
+    UmengSharePolicyImpl mUmengSharePolicy;
+
     public static LoginFragment newInstance(boolean isTourist) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
@@ -114,6 +123,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .subscribe(aBoolean -> {
                     System.out.println("aBoolean = " + aBoolean);
                 });
+        mUmengSharePolicy =new UmengSharePolicyImpl(getContext());
 
     }
 
@@ -165,9 +175,72 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
-                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
+//                    startActivity(intent);
+                    login();
+
                 });
+    }
+
+    public void login() {
+        UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
+        mShareAPI.getPlatformInfo(getActivity(), SHARE_MEDIA.QQ, authListener);
+
+    }
+
+    UMAuthListener authListener = new UMAuthListener() {
+        /**
+         * @desc 授权开始的回调
+         * @param platform 平台名称
+         */
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+
+        }
+
+        /**
+         * @desc 授权成功的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param data 用户资料返回
+         */
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            System.out.println("platform = " + data);
+
+mTvErrorTip.setText(data.toString());
+            mTvErrorTip.setVisibility(View.VISIBLE);
+        }
+
+        /**
+         * @desc 授权失败的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param t 错误原因
+         */
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+
+            Toast.makeText(getActivity(), "失败：" + t.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * @desc 授权取消的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         */
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            Toast.makeText(getActivity(), "取消了", Toast.LENGTH_LONG).show();
+        }
+    };
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
