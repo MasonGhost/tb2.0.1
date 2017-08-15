@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
+import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 import com.zhiyicx.thinksnsplus.widget.HorizontalStackIconView;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -84,7 +85,7 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
     @BindView(R.id.tv_topic_change_follow)
     CheckBox mTvTopicChangeFollow;
     @BindView(R.id.tv_topic_description)
-    TextView mTvTopicDescription;
+    ExpandableTextView mTvTopicDescription;
     @BindView(R.id.expert_list)
     HorizontalStackIconView mExpertList;
     @BindView(R.id.mg_indicator)
@@ -176,7 +177,8 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
 
     private List<Link> setLinks(QAListInfoBean listInfoBean) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link followCountLink = new Link(String.valueOf(listInfoBean.getWatchers_count()))
+                .setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -184,7 +186,8 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 .setUnderlined(false);
         links.add(followCountLink);
 
-        Link answerCountLink = new Link("40").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link answerCountLink = new Link(String.valueOf(listInfoBean.getAnswers_count()))
+                .setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -294,12 +297,41 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         mExpertList.setDigUserHeadIcon(mQaTopicBean.getExperts());
         mTvTopicFeedCount.setText(String.format(Locale.getDefault(),
                 getString(R.string.qa_show_topic_detail_feed), mQaTopicBean.getFollows_count(), mQaTopicBean.getQuestions_count()));
-        ConvertUtils.stringLinkConvert(mTvTopicFeedCount, setLinks(null));
+        ConvertUtils.stringLinkConvert(mTvTopicFeedCount, dealTopicDetail(null));
         Glide.with(BaseApplication.getContext())
                 .load(TextUtils.isEmpty(mQaTopicBean.getAvatar()) ? "" : mQaTopicBean.getAvatar())
                 .placeholder(R.drawable.shape_default_image)
                 .error(R.drawable.shape_default_image)
                 .into(mIvTopicCover);
+    }
+
+    private List<Link> dealTopicDetail(QATopicBean topicBean){
+        List<Link> links = new ArrayList<>();
+        Link numberCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
+                .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .normal_for_assist_text))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(numberCountLink);
+        Link followCountLink = new Link(String.valueOf(topicBean.getFollows_count()))
+                .setTextColor(ContextCompat.getColor(getContext(), R.color
+                        .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(followCountLink);
+
+        Link answerCountLink = new Link(String.valueOf(topicBean.getQuestions_count()))
+                .setTextColor(ContextCompat.getColor(getContext(), R.color
+                        .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(answerCountLink);
+        return links;
     }
 
     private void initListener(){

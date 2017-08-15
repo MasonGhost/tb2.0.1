@@ -81,13 +81,15 @@
                             android:layout_marginTop="@dimen/spacing_normal"/>
                 </RelativeLayout>
 
-                <TextView
+                <com.zhiyicx.thinksnsplus.widget.ExpandableTextView
                         android:id="@+id/tv_topic_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/spacing_normal"
                         android:textSize="@dimen/size_content_assist"
                         android:textColor="@color/normal_for_dynamic_list_content"
+                        app:etv_ToExpandHintColor="@color/themeColor"
+                        app:etv_ToShrinkHintColor="@color/themeColor"
                         tools:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
 
                 <View
