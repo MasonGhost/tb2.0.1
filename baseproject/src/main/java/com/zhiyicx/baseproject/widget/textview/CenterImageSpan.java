@@ -83,14 +83,17 @@ public class CenterImageSpan extends ImageSpan {
                     .getBounds().centerY() - (textP.descent() + textP.ascent()) / 2, textP);
         } else {
             canvas.save();
-            int transY = ((bottom - top) -b.getBounds().height()) / 2 + top - OFFSET
+            int transY = ((bottom - top) - b.getBounds().height()) / 2 + top - OFFSET
                     / 2;
             // y 轴居中对齐
             canvas.translate(x, transY);
             b.draw(canvas);
-//
-            canvas.drawCircle(b.getBounds().centerX(), b.getBounds().centerY(), b.getBounds()
-                            .height()/DEFAULT_RATIO,textB);
+
+            float radio = b.getBounds().height() / DEFAULT_RATIO;
+            float cx = (float) (radio / Math.sqrt(2));
+
+            canvas.drawCircle(b.getBounds().centerX() + cx, b.getBounds().centerY() + cx, b.getBounds()
+                    .height() / (2 * DEFAULT_RATIO), textB);
             canvas.restore();
         }
     }

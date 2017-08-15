@@ -69,6 +69,9 @@ public class EventBusTagConfig {
     // 频道进行订阅或者取消订阅
     public static final String EVENT_CHANNEL_SUBSCRIB = "event_channel_subscrib";
 
+    // 问答-话题
+    public static final String EVENT_QA_SUBSCRIB = "event_qatopic_subscrib";
+
     // 加入/退出圈子
     public static final String EVENT_GROUP_JOIN = "event_group_join";
 

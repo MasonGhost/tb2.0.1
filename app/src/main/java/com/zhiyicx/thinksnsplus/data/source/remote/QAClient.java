@@ -42,6 +42,17 @@ public interface QAClient {
             ("after") Long after, @Query("follow") Long follow, @Query("limit") Long limit);
 
     /**
+     *
+     * @param type 默认值为 follow 代表用户关注的话题列表，如果值为 expert 则获取该用户的专家话题（哪些话题下是专家）。
+     * @param after
+     * @param limit
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_FOLLOEW_TOPIC)
+    Observable<List<QATopicBean>> getQAFollowTopic(@Query("type") String type, @Query
+            ("after") Long after, @Query("limit") Long limit);
+
+    /**
      * @param subject 用于搜索问题，传递话题名称关键词。
      * @param after   获取 id 之后的数据，要获取某条问题之后的数据，传递该问题 ID。
      * @param type    默认值 new, all - 全部、new - 最新、hot - 热门、reward - 悬赏、excellent - 精选 。

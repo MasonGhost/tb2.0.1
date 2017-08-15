@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -68,6 +69,26 @@ public class BasePublishQuestionRepository implements IBasePublishQuestionReposi
         return mQAClient.getTopicExperts(topic_id, maxId, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<QATopicBean>> getFollowTopic(String type, Long after) {
+        return dealMyFollowTopics(mQAClient.getQAFollowTopic(type, after, (long) TSListFragment.DEFAULT_PAGE_SIZE));
+    }
+
+    Observable<List<QATopicBean>> dealMyFollowTopics(Observable<List<QATopicBean>> observable) {
+        return observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<QATopicBean>, Observable<List<QATopicBean>>>() {
+                    @Override
+                    public Observable<List<QATopicBean>> call(List<QATopicBean> topicBeanList) {
+                        for (QATopicBean topicBean : topicBeanList) {
+                            topicBean.setHas_follow(true);
+                        }
+                        return Observable.just(topicBeanList);
+                    }
+                });
     }
 
     @Override
