@@ -16,11 +16,12 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepos
 public interface QuestionDetailContract {
 
     interface View extends ITSListView<AnswerInfoBean, Presenter>{
-
+        void setQuestionDetail(QAListInfoBean questionDetail);
+        QAListInfoBean getCurrentQuestion();
     }
 
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{
-
+        void getQuestionDetail(String questionId);
     }
 
     interface Repository extends IBasePublishQuestionRepository{

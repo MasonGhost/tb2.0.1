@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 /**
  * @author Catherine
@@ -16,6 +17,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter, AnswerInfoBean>
         implements QuestionDetailContract.View{
 
+    private QAListInfoBean mQaListInfoBean;
+
     public QuestionDetailFragment instance(Bundle bundle){
         QuestionDetailFragment fragment = new QuestionDetailFragment();
         fragment.setArguments(bundle);
@@ -25,5 +28,15 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     protected RecyclerView.Adapter getAdapter() {
         return null;
+    }
+
+    @Override
+    public void setQuestionDetail(QAListInfoBean questionDetail) {
+
+    }
+
+    @Override
+    public QAListInfoBean getCurrentQuestion() {
+        return mQaListInfoBean;
     }
 }
