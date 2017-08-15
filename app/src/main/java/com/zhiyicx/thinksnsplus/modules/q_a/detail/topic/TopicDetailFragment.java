@@ -317,6 +317,10 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         mTvTopicChangeFollow.setChecked(mQaTopicBean.getHas_follow());
         mTvTopicChangeFollow.setText(mQaTopicBean.getHas_follow() ?
                 getContext().getString(R.string.followed) : getContext().getString(R.string.follow));
+        mTvTopicFeedCount.setText(String.format(Locale.getDefault(),
+                getString(R.string.qa_show_topic_detail_feed), String.valueOf(mQaTopicBean.getFollows_count()),
+                String.valueOf(mQaTopicBean.getQuestions_count())));
+        ConvertUtils.stringLinkConvert(mTvTopicFeedCount, dealTopicDetail(mQaTopicBean));
     }
 
     private void setTopicDetailData(){
@@ -326,10 +330,6 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         mTvTopicDescription.setText(mQaTopicBean.getDescription());
         mExpertList.setExpertCount(mQaTopicBean.getExperts_count());
         mExpertList.setDigUserHeadIcon(mQaTopicBean.getExperts());
-        mTvTopicFeedCount.setText(String.format(Locale.getDefault(),
-                getString(R.string.qa_show_topic_detail_feed), String.valueOf(mQaTopicBean.getFollows_count()),
-                String.valueOf(mQaTopicBean.getQuestions_count())));
-        ConvertUtils.stringLinkConvert(mTvTopicFeedCount, dealTopicDetail(mQaTopicBean));
         Glide.with(BaseApplication.getContext())
                 .load(TextUtils.isEmpty(mQaTopicBean.getAvatar()) ? "" : mQaTopicBean.getAvatar())
                 .placeholder(R.drawable.shape_default_image)

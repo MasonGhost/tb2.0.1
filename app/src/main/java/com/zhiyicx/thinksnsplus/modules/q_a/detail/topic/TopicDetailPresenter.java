@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.data.source.local.QATopicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailContract;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,13 +28,18 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
         implements TopicDetailContract.Presenter{
 
     @Inject
+    QATopicBeanGreenDaoImpl mQaTopicBeanGreenDao;
+
+    @Inject
     public TopicDetailPresenter(TopicDetailContract.Repository repository, TopicDetailContract.View rootView) {
         super(repository, rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        getTopicDetail("1");
+        if (mRootView.getCurrentTopicBean() == null){
+            getTopicDetail("1");
+        }
         Subscription subscription = mRepository.getQAQuestionByTopic("1", "", maxId, mRootView.getCurrentType())
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
@@ -65,6 +71,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
                     @Override
                     protected void onSuccess(QATopicBean data) {
                         mRootView.setTopicDetail(data);
+                        mQaTopicBeanGreenDao.insertOrReplace(data);
                     }
                 });
         addSubscrebe(subscription);
@@ -73,7 +80,13 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
     @Override
     public void handleTopicFollowState(String topic_id, boolean isFollow) {
         mRootView.getCurrentTopicBean().setHas_follow(isFollow);
+        if (isFollow){
+            mRootView.getCurrentTopicBean().setFollows_count(mRootView.getCurrentTopicBean().getFollows_count() + 1);
+        } else {
+            mRootView.getCurrentTopicBean().setFollows_count(mRootView.getCurrentTopicBean().getFollows_count() - 1);
+        }
         mRootView.updateFollowState();
+        mQaTopicBeanGreenDao.updateSingleData(mRootView.getCurrentTopicBean());
         mRepository.handleTopicFollowState(topic_id, isFollow);
     }
 }
