@@ -61,7 +61,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
         mRepository.publishAnswer(question_id, body, anonymity).subscribe(new BaseSubscribeForV2<BaseJsonV2<QAAnswerBean>>() {
             @Override
             protected void onSuccess(BaseJsonV2<QAAnswerBean> data) {
-
+                mRootView.publishSuccess(data.getData());
             }
 
             @Override

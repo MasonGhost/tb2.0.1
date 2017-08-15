@@ -109,6 +109,15 @@ public class CustomPopupWindow extends PopupWindow {
         }
     }
 
+    public void showParentViewTop(){
+        if (mParentView != null) {
+            int[] location = new int[2];
+            mParentView.getLocationOnScreen(location);
+            showAtLocation(mParentView, Gravity.NO_GRAVITY,
+                    mParentView.getWidth()-mContentView.getWidth(), location[1] - mParentView.getHeight());
+        }
+    }
+
     private void setWindowAlpha(float alpha) {
         WindowManager.LayoutParams params = mActivity.getWindow().getAttributes();
         params.alpha = alpha;

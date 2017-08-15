@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,12 +32,12 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
-    public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
+    public List<AnswerInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<AnswerInfoBean> data, boolean isLoadMore) {
         return false;
     }
 }

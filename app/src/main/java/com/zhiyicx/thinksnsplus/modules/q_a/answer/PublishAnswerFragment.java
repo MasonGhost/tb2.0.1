@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.answer;
 
+import android.os.Bundle;
+
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentFragment;
@@ -11,6 +13,12 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentFragmen
  * @Description
  */
 public class PublishAnswerFragment extends PublishContentFragment {
+
+    public static PublishAnswerFragment newInstance(Bundle bundle) {
+        PublishAnswerFragment publishContentFragment = new PublishAnswerFragment();
+        publishContentFragment.setArguments(bundle);
+        return publishContentFragment;
+    }
 
     @Override
     protected String setCenterTitle() {
@@ -25,6 +33,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     @Override
     protected void setRightClick() {
         mPresenter.publishAnswer(1L,getContentString(), mAnonymity);
+
     }
 
     @Override

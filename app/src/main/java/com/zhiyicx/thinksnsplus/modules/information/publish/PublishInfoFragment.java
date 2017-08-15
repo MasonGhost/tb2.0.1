@@ -139,7 +139,6 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     @Override
     protected void initView(View rootView) {
         mToolbarRight.setEnabled(false);
-        mImSetting.setVisibility(View.GONE);
         mToolbarLeft.setTextColor(SkinUtils.getColor(R.color.themeColor));
         initLisenter();
     }
