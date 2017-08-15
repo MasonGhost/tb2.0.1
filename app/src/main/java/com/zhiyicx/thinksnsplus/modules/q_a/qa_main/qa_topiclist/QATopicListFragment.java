@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_FOLLOW;
 
 /**
@@ -129,6 +130,9 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent = new Intent(getActivity(), TopicDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(BUNDLE_TOPIC_BEAN, mListDatas.get(position));
+                intent.putExtra(BUNDLE_TOPIC_BEAN, bundle);
                 startActivity(intent);
             }
 

@@ -59,10 +59,8 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (mRootView.getCurrentTopicBean() == null){
-            getTopicDetail("1");
-        }
-        Subscription subscription = mRepository.getQAQuestionByTopic("1", "", maxId, mRootView.getCurrentType())
+        Subscription subscription = mRepository.getQAQuestionByTopic(String.valueOf(mRootView.getTopicId()),
+                "", maxId, mRootView.getCurrentType())
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
 

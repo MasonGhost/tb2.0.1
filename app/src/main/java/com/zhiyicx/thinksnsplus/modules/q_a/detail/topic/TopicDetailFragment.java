@@ -130,7 +130,8 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         mTypeList.add(TYPE_HOT);
         mTypeList.add(TYPE_ALL);
         mFragmentContainerHelper.handlePageSelected(0, false);
-//        mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
+        mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
+        mPresenter.getTopicDetail(String.valueOf(mQaTopicBean.getId()));
     }
 
     @Override
