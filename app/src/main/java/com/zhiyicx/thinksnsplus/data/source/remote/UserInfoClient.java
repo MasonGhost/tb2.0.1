@@ -18,6 +18,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -28,6 +29,7 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -334,9 +336,8 @@ public interface UserInfoClient {
      *
      * @return
      */
-    @FormUrlEncoded
     @POST(APP_PATH_GET_BY_PHONE_USER_INFO)
-    Observable<List<UserInfoBean>> getUsersByPhone(@Field("phones") ArrayList<String> phones);
+    Observable<List<UserInfoBean>> getUsersByPhone(@Body RequestBody phones);
 
     /*******************************************  签到  *********************************************/
 

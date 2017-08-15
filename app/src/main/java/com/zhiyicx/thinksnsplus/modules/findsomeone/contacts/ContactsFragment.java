@@ -6,38 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.baseproject.widget.recycleview.stickygridheaders.StickyHeaderGridLayoutManager;
-import com.zhiyicx.common.utils.SkinUtils;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ContactsContainerBean;
-import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
-import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagContract;
-import com.zhiyicx.thinksnsplus.modules.usertag.TagClassAdapter;
-import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe 通讯录
@@ -54,7 +34,7 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
 
     private StickyHeaderGridLayoutManager mTagClassLayoutManager;
 
-    private List<ContactsContainerBean> mCategoryTags = new ArrayList<>();
+    private List<ContactsContainerBean> mListData = new ArrayList<>();
 
     private ContactsAdapter mTagClassAdapter;
 
@@ -101,15 +81,9 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
         return true;
     }
 
-
     @Override
-    protected void setRightClick() {
-
-    }
-
-    @Override
-    protected void setLeftClick() {
-
+    protected boolean setUseCenterLoading() {
+        return true;
     }
 
     @Override
@@ -127,6 +101,16 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
         initListener();
 
 
+    }
+
+    @Override
+    public void showLoading() {
+        showLoadingView();
+    }
+
+    @Override
+    public void hideLoading() {
+        closeLoadingView();
     }
 
     private void updateChooseTip() {
@@ -160,7 +144,7 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
             }
         });
         mRvTagClass.setLayoutManager(mTagClassLayoutManager);
-        mTagClassAdapter = new ContactsAdapter(mCategoryTags);
+        mTagClassAdapter = new ContactsAdapter(mListData);
         mTagClassAdapter.setOnItemClickListener(this);
         mRvTagClass.setAdapter(mTagClassAdapter);
 
@@ -177,4 +161,10 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
 
     }
 
+    @Override
+    public void updateContacts(List<ContactsContainerBean> data) {
+        mListData.clear();
+        mListData.addAll(data);
+        mTagClassAdapter.notifyAllSectionsDataSetChanged();
+    }
 }

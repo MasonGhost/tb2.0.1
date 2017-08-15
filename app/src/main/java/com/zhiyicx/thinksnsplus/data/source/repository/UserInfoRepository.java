@@ -40,9 +40,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -515,7 +517,11 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones) {
-        return mUserInfoClient.getUsersByPhone(phones)
+        Map<String, ArrayList<String>> phonesMap=new HashMap<>();
+        phonesMap.put("phones",phones);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(phonesMap));
+
+        return mUserInfoClient.getUsersByPhone(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -458,5 +458,7 @@
     <string name="current_location">当前定位</string>
     <string name="unlocation">未定位</string>
     <string name="hot_location">热门城市</string>
+    <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
+    <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
 
 </resources>
