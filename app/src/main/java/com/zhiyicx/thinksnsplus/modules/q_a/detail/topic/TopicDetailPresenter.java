@@ -1,21 +1,40 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.topic;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+
+import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
+import com.zhiyicx.common.thridmanager.share.Share;
+import com.zhiyicx.common.thridmanager.share.ShareContent;
+import com.zhiyicx.common.thridmanager.share.SharePolicy;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QATopicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailContract;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
 
 /**
  * @author Catherine
@@ -25,10 +44,13 @@ import rx.Subscription;
  */
 @FragmentScoped
 public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.Repository, TopicDetailContract.View>
-        implements TopicDetailContract.Presenter{
+        implements TopicDetailContract.Presenter, OnShareCallbackListener {
 
     @Inject
     QATopicBeanGreenDaoImpl mQaTopicBeanGreenDao;
+
+    @Inject
+    public SharePolicy mSharePolicy;
 
     @Inject
     public TopicDetailPresenter(TopicDetailContract.Repository repository, TopicDetailContract.View rootView) {
@@ -88,5 +110,48 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
         mRootView.updateFollowState();
         mQaTopicBeanGreenDao.updateSingleData(mRootView.getCurrentTopicBean());
         mRepository.handleTopicFollowState(topic_id, isFollow);
+    }
+
+    @Override
+    public void shareTopic(Bitmap bitmap) {
+        ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
+        ShareContent shareContent = new ShareContent();
+        shareContent.setTitle(mRootView.getCurrentTopicBean().getName());
+//        shareContent.setUrl(String.format(Locale.getDefault(), APP_PATH_SHARE_DEFAULT,
+//                mRootView.getCurrentTopicBean().getId()));
+        shareContent.setUrl(APP_PATH_SHARE_DEFAULT);
+        shareContent.setContent(mRootView.getCurrentTopicBean().getDescription());
+
+        if (bitmap == null) {
+            shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.icon_256)));
+        } else {
+            shareContent.setBitmap(bitmap);
+        }
+
+        if (mRootView.getCurrentTopicBean().getAvatar() != null) {
+            shareContent.setImage(mRootView.getCurrentTopicBean().getAvatar());
+        }
+        mSharePolicy.setShareContent(shareContent);
+        mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
+    }
+
+    @Override
+    public void onStart(Share share) {
+
+    }
+
+    @Override
+    public void onSuccess(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));
+    }
+
+    @Override
+    public void onError(Share share, Throwable throwable) {
+        mRootView.showSnackErrorMessage(mContext.getString(R.string.share_fail));
+    }
+
+    @Override
+    public void onCancel(Share share) {
+        mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
     }
 }

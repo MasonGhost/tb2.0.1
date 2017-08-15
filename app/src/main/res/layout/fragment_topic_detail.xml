@@ -16,7 +16,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 android:background="@color/white">
 
             <LinearLayout
@@ -90,7 +90,7 @@
                         android:textColor="@color/normal_for_dynamic_list_content"
                         app:etv_ToExpandHintColor="@color/themeColor"
                         app:etv_ToShrinkHintColor="@color/themeColor"
-                        tools:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
+                        tools:text=""/>
 
                 <View
                         style="@style/style_divider_horizontal"/>
@@ -113,7 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                app:layout_scrollFlags="scroll|enterAlways|snap">
+                app:layout_scrollFlags="scroll">
 
             <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/mg_indicator"

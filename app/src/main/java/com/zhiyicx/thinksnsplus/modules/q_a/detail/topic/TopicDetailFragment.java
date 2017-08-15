@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +34,7 @@ import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -202,14 +204,21 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
     }
 
     @Override
-    protected int setRightImg() {
-        return R.mipmap.topbar_share_white;
+    protected void setRightClick() {
+        // 点击弹起分享框
+        Bitmap shareBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), mIvTopicCover
+                .getDrawable(), R.mipmap.icon_256);
+        mPresenter.shareTopic(shareBitmap);
     }
 
-    private List<Link> setLinks(QAListInfoBean listInfoBean) {
+    @Override
+    protected int setRightImg() {
+        return R.mipmap.icon_share;
+    }
+
+    private List<Link> setLinks(QAListInfoBean infoBean) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(String.valueOf(listInfoBean.getWatchers_count()))
-                .setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link followCountLink = new Link(infoBean.getWatchers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -217,8 +226,7 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 .setUnderlined(false);
         links.add(followCountLink);
 
-        Link answerCountLink = new Link(String.valueOf(listInfoBean.getAnswers_count()))
-                .setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link answerCountLink = new Link(infoBean.getAnswers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
@@ -226,20 +234,13 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 .setUnderlined(false);
         links.add(answerCountLink);
 
-        Link rewardMoneyLink = new Link("￥18.0").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link rewardMoneyLink = new Link("￥" + infoBean.getAmount()).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .withdrawals_item_enable))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(rewardMoneyLink);
-        Link numberCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .normal_for_assist_text))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(numberCountLink);
         return links;
     }
 
