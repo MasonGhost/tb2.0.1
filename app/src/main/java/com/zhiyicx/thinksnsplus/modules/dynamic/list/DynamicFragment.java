@@ -163,7 +163,6 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     }
 
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -552,7 +551,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 Bitmap shareBitMap = null;
                 try {
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
-                            (dataPosition).findViewById(R.id.siv_0);
+                            (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
                             .getDrawable(), R.mipmap.icon_256);
                 } catch (Exception e) {
@@ -697,14 +696,14 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mDeletCommentPopWindow.hide();
-                    Bundle bundle=new Bundle();
-                      bundle.putString(StickTopFragment.TYPE,StickTopFragment.TYPE_DYNAMIC);// 资源类型
-                      bundle.putLong(StickTopFragment.PARENT_ID,dynamicBean.getId());// 资源id
-                      bundle.putLong(StickTopFragment.CHILD_ID,dynamicBean
-                              .getComments().get(commentPosition).getComment_id());// 该资源的评论id,非评论置顶不传这个
-                      Intent intent=new Intent(getActivity(),StickTopActivity.class);
-                                        intent.putExtras(bundle);
-                      startActivity(intent);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_DYNAMIC);// 资源类型
+                    bundle.putLong(StickTopFragment.PARENT_ID, dynamicBean.getId());// 资源id
+                    bundle.putLong(StickTopFragment.CHILD_ID, dynamicBean
+                            .getComments().get(commentPosition).getComment_id());// 该资源的评论id,非评论置顶不传这个
+                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
 
 //                    Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
 //                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, dynamicBean
