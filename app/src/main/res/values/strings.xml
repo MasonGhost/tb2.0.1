@@ -456,6 +456,8 @@
     <string name="qa_topic_open_all">展开全部</string>
     <string name="qa_topic_close_all">收起</string>
     <string name="qa_question_answer_adopt">已采纳</string>
+    <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
+    <string name="qa_question_answer_anonymity">匿</string>
 
     <!--签到-->
     <string name="check_in">签到</string>
