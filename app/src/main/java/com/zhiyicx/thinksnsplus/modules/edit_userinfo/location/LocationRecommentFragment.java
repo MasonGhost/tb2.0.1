@@ -21,6 +21,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -62,7 +63,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     private AMapLocationClient mLocationClient;
     protected AnimationDrawable mAnimationDrawable;
 
-    private List<LocationBean> mHotCitys=new ArrayList<>();
+    private List<LocationBean> mHotCitys = new ArrayList<>();
     private CommonAdapter mUnSubscribeAdapter;
 
     public static LocationRecommentFragment newInstance(Bundle bundle) {
@@ -95,7 +96,6 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     @Override
     protected void initView(View rootView) {
         mAnimationDrawable = (AnimationDrawable) mIvAnimation.getDrawable();
-
 
 
         mRvHotCity.setLayoutManager(new GridLayoutManager(getActivity(),
@@ -156,12 +156,12 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
 
     @Override
     protected void initData() {
-        for (int i = 0; i < 10; i++) {
-            LocationBean l=new LocationBean();
-            l.setName("航弹"+i);
-            mHotCitys.add(l);
+        mPresenter.getHotCity();
+    }
 
-        }
+    @Override
+    public void updateHotCity(List<LocationBean> data) {
+        mHotCitys.addAll(data);
         mRvHotCity.setAdapter(initUnsubscribeAdapter());
     }
 

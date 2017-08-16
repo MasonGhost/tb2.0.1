@@ -396,6 +396,17 @@ public class SystemRepository implements ISystemRepository {
     }
 
     /**
+     * 热门城市
+     * @return
+     */
+    @Override
+    public Observable<List<LocationContainerBean>> getHoCity() {
+        return mCommonClient.getHoCity()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
      * 处理 TS 助手和用户信息
      *
      * @param list 对话信息

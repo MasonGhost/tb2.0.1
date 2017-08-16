@@ -2,6 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.edit_userinfo.location;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
+
+import java.util.List;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -12,6 +17,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 public interface LocationRecommentContract {
     interface View extends IBaseView<Presenter> {
 
+        void updateHotCity(List<LocationBean> data);
     }
 
     interface Repository {
@@ -20,5 +26,6 @@ public interface LocationRecommentContract {
 
     interface Presenter extends IBasePresenter {
 
+        void getHotCity();
     }
 }
