@@ -143,6 +143,10 @@ public class ExpandableTextView extends AppCompatTextView {
         a.recycle();
     }
 
+    public void setMaxLinesOnShrink(int maxLine){
+        this.mMaxLinesOnShrink = maxLine;
+    }
+
     private void init() {
         mTouchableSpan = new TouchableSpan();
         setMovementMethod(new LinkTouchMovementMethod());
