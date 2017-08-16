@@ -13,6 +13,7 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -238,8 +239,17 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
         .subscribe(new BaseSubscribeForV2<Object>() {
             @Override
             protected void onSuccess(Object data) {
-                mRootView.showSnackSuccessMessage("签到成功");
                 getCheckInInfo();
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                mRootView.showSnackErrorMessage(message);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                mRootView.showSnackErrorMessage(mContext.getString(R.string.check_in_fail));
             }
         });
         addSubscrebe(subscription);

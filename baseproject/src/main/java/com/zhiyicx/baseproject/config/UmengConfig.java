@@ -17,5 +17,5 @@ public class UmengConfig {
     // 新浪
     public static String SINA_APPID = "732480598";
     public static String SINA_SECRETKEY = "51c1d72c618224a469531d39fa313ec7";
-    public static String SINA_RESULT_RUL="http://www.baidu.com";
+    public static String SINA_RESULT_RUL="https://sns.whalecloud.com/sina2/callback";
 }

@@ -445,9 +445,12 @@
 
     <!--签到-->
     <string name="check_in">签到</string>
+    <string name="checked">已签到</string>
     <string name="check_in_today">每日签到</string>
     <string name="check_in_total_day_format">累计签到%d天</string>
     <string name="check_in_today_get_gold">每日签到得金币</string>
+    <string name="check_in_fail">签到失败</string>
+
 
     <!--找人-->
     <string name="contacts">通讯录</string>

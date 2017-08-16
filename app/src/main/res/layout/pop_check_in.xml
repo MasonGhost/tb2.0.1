@@ -73,7 +73,8 @@
             android:layout_marginTop="@dimen/spacing_small"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_icon_assist"
-            android:text="@string/check_in_today_get_gold"/>
+            android:text="@string/check_in_today_get_gold"
+            />
 
 
         <TextView

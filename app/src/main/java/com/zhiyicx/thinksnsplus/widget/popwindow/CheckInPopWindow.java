@@ -138,8 +138,11 @@ public class CheckInPopWindow extends PopupWindow {
         mCommonAdapter.notifyDataSetChanged();
         if(checkInBean.isChecked_in()){
             mTvCheckIn.setEnabled(false);
+            mTvCheckIn.setText(mTvCheckIn.getResources().getString(R.string.checked));
         }else {
             mTvCheckIn.setEnabled(true);
+            mTvCheckIn.setText(mTvCheckIn.getResources().getString(R.string.check_in));
+
         }
     }
 

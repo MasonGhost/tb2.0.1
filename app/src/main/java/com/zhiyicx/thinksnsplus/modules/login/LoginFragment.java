@@ -74,6 +74,10 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     AppCompatAutoCompleteTextView mEtCompleteInput;
     @BindView(R.id.tv_login_by_qq)
     TextView mTvLoginByQq;
+    @BindView(R.id.tv_login_by_weibo)
+    TextView mTvLoginByWeibo;
+    @BindView(R.id.tv_login_by_wechat)
+    TextView mTvLoginByWechat;
 
     private boolean mIsPhoneEdited;
     private boolean mIsPasswordEdited;
@@ -118,7 +122,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .subscribe(aBoolean -> {
                     System.out.println("aBoolean = " + aBoolean);
                 });
-        mUmengSharePolicy =new UmengSharePolicyImpl(getContext());
+        mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
 
     }
 
@@ -172,14 +176,32 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .subscribe(aVoid -> {
 //                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
 //                    startActivity(intent);
-                    login();
+                    login(SHARE_MEDIA.QQ);
+
+                });
+        RxView.clicks(mTvLoginByWeibo)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(aVoid -> {
+//                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
+//                    startActivity(intent);
+                    login(SHARE_MEDIA.SINA);
+
+                });
+        RxView.clicks(mTvLoginByWechat)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(aVoid -> {
+//                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
+//                    startActivity(intent);
+                    login(SHARE_MEDIA.WEIXIN);
 
                 });
     }
 
-    public void login() {
+    public void login(SHARE_MEDIA type) {
         UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
-        mShareAPI.getPlatformInfo(getActivity(), SHARE_MEDIA.QQ, authListener);
+        mShareAPI.getPlatformInfo(getActivity(), type, authListener);
 
     }
 
@@ -229,7 +251,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             Toast.makeText(getActivity(), "取消了", Toast.LENGTH_LONG).show();
         }
     };
-
 
 
     @Override
