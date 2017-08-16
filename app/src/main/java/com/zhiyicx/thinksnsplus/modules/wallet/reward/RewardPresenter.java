@@ -54,6 +54,8 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
                 break;
             case USER: // 用户打赏
                 hanldeRewardResult(mRepository.rewardUser(sourceId, rewardMoney));
+            case QA_ANSWER: // 问答回答打赏
+                hanldeRewardResult(mRepository.rewardQA(sourceId, rewardMoney));
                 break;
 
             default:

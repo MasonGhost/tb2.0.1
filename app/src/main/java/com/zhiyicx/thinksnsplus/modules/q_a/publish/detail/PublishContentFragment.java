@@ -298,20 +298,22 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     private void initAnonymityPopWindow(int strRes) {
         if (mAnonymityPopWindow != null) {
-            mAnonymityPopWindow.show();
+            mAnonymityPopWindow.showParentViewTop();
             return;
         }
-        AnonymityPopWindow.builder()
+        mAnonymityPopWindow = AnonymityPopWindow.builder()
                 .with(getActivity())
                 .isWrap(true)
                 .isFocus(true)
                 .isOutsideTouch(true)
+                .parentView(mRlPublishTool)
+                .buildDescrStr(getString(strRes))
+                .contentView(R.layout.pop_for_anonymity)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildAnonymityPopWindowSwitchClickListener(isChecked -> {
-                    mAnonymity = isChecked ? 1 : 0;
-                })
+                .buildAnonymityPopWindowSwitchClickListener(isChecked ->
+                        mAnonymity = isChecked ? 1 : 0)
                 .build();
-        mAnonymityPopWindow.show();
+        mAnonymityPopWindow.showParentViewTop();
 
     }
 
