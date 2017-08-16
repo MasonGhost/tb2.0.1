@@ -29,7 +29,6 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
-import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
@@ -52,9 +51,6 @@ import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer
@@ -65,6 +61,9 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
         .OnSendClickListener {
+
+    public static final String BUNDLE_SOURCE_ID = "source_id";
+    public static final String BUNDLE_ANSWER = "answer";
 
     @BindView(R.id.behavior_demo_coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
@@ -127,6 +126,16 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
@@ -152,7 +161,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         this.mAnswerInfoBean = answerInfoBean;
         mAnswerDetailHeaderView.setDetail(answerInfoBean);
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
-//        onNetResponseSuccess(infoDetailBean.getCommentList(), false);
+        onNetResponseSuccess(answerInfoBean.getCommentList(), false);
     }
 
     @Override
@@ -178,11 +187,12 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     protected void initView(View rootView) {
         super.initView(rootView);
         mIlvComment.setEtContentHint(getString(R.string.default_input_hint));
-        mAnswerInfoBean = (AnswerInfoBean) getArguments().getSerializable(BUNDLE_INFO);
+        mAnswerInfoBean = (AnswerInfoBean) getArguments().getSerializable(BUNDLE_ANSWER);
         if (mAnswerInfoBean == null) {
             mAnswerInfoBean = new AnswerInfoBean();
             Long ids = getArguments().getLong(BUNDLE_SOURCE_ID);
             mAnswerInfoBean.setId(ids);
+            mAnswerInfoBean.setQuestion_id(1L);
         }
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
@@ -211,19 +221,11 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
-    protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_info_detail;
     }
 
-    @Override
-    protected boolean setUseCenterLoading() {
-        return true;
-    }
+
 
     @Override
     public void setPresenter(AnswerDetailsConstract.Presenter presenter) {
@@ -237,7 +239,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public int getInfoType() {
-        return Integer.valueOf(getArguments().getString(BUNDLE_INFO_TYPE, "-100"));
+        return 1;
     }
 
     @Override

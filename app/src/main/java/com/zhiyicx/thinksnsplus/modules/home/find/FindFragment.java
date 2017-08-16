@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActiv
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
@@ -37,6 +38,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 /**
@@ -136,7 +138,12 @@ public class FindFragment extends TSFragment {
         switch (view.getId()) {
             case R.id.find_info:
                 if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    startActivity(new Intent(getActivity(), InfoActivity.class));
+//                    startActivity(new Intent(getActivity(), InfoActivity.class));
+                    Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong(BUNDLE_SOURCE_ID,2L);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 } else {
                     showLoginPop();
                 }

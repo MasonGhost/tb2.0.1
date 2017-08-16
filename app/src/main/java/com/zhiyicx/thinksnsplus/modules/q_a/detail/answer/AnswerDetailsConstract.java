@@ -71,7 +71,7 @@ public interface AnswerDetailsConstract {
 
         void reqReWardsData(int id);
 
-        void getInfoDetail(String news_id);
+        void getAnswerDetail(long answer_id);
 
         void deleteInfo();
 
@@ -80,8 +80,9 @@ public interface AnswerDetailsConstract {
 
     interface Repository extends IBasePublishQuestionRepository {
         Observable<List<AnswerCommentListBean>> getAnswerCommentList(long answer_id,
-                                                                     long max_id,
-                                                                     long limit);
+                                                                     long max_id);
+
+        Observable<AnswerInfoBean> getAnswerDetail(long answer_id);
 
 
     }

@@ -175,12 +175,15 @@ public class AnswerDetailHeaderView {
                     }
                 });
             }
-            ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false);
+
             mName.setText(answerInfoBean.getUser().getName());
             mDescription.setText(answerInfoBean.getUser().getExtra().describeContents());
             mUserFollow.setChecked(answerInfoBean.getUser().isFollower());
             // 评论信息
             updateCommentView(answerInfoBean);
+
+            ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false);
+
         }
     }
 

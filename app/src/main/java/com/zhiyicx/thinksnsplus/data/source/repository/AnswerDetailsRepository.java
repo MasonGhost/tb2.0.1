@@ -4,6 +4,7 @@ import android.util.SparseArray;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -38,7 +39,7 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
     }
 
     @Override
-    public Observable<List<AnswerCommentListBean>> getAnswerCommentList(long answer_id, long max_id, long limit) {
+    public Observable<List<AnswerCommentListBean>> getAnswerCommentList(long answer_id, long max_id) {
         return mQAClient.getAnswerCommentList(answer_id, max_id, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -86,5 +87,12 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
                         }
                     }
                 });
+    }
+
+    @Override
+    public Observable<AnswerInfoBean> getAnswerDetail(long answer_id) {
+        return mQAClient.getAnswerDetail(answer_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

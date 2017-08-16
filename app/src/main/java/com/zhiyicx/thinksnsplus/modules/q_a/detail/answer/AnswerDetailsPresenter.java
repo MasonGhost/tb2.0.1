@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -22,9 +23,12 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
@@ -42,7 +46,9 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
@@ -82,26 +88,29 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        mRepository.getAnswerCommentList(mRootView.getAnswerId(), maxId, 0L)
-                .subscribe(new BaseSubscribeForV2<List<AnswerCommentListBean>>() {
-                    @Override
-                    protected void onSuccess(List<AnswerCommentListBean> data) {
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
-                    }
+        if (mRootView.getAnswerInfo().getCommentList()==null){
+            getAnswerDetail(mRootView.getAnswerInfo().getId());
+        }else{
+            mRepository.getAnswerCommentList(mRootView.getAnswerId(), maxId)
+                    .subscribe(new BaseSubscribeForV2<List<AnswerCommentListBean>>() {
+                        @Override
+                        protected void onSuccess(List<AnswerCommentListBean> data) {
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                        }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        super.onFailure(message, code);
-                        handleInfoHasBeDeleted(code);
-                    }
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                            handleInfoHasBeDeleted(code);
+                        }
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        super.onException(throwable);
-                        mRootView.onResponseError(throwable, isLoadMore);
-                    }
-                });
-
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.onResponseError(throwable, isLoadMore);
+                        }
+                    });
+        }
     }
 
     private void handleInfoHasBeDeleted(int code) {
@@ -152,9 +161,9 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
             //return;// 搜索出来的资讯，收藏状态有待优化  已处理
         }
         mRootView.setCollect(isUnCollected);
-        //mInfoListBeanGreenDao.updateInfo(mRootView.getAnswerInfo());
+//        mInfoListBeanGreenDao.updateInfo(mRootView.getAnswerInfo());
         EventBus.getDefault().post(mRootView.getAnswerInfo(), EVENT_SEND_INFO_LIST_COLLECT);
-        //mRepository.handleCollect(isUnCollected, news_id);
+//        mRepository.handleCollect(isUnCollected, news_id);
     }
 
     @Override
@@ -208,7 +217,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     public void reqReWardsData(int id) {
 //        Observable.zip(mRepository.getRewardCount(id), mRepository.rewardInfoList(id
 //                , TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
-//                , (Func2<RewardsCountBean, List<RewardsListBean>, Object>) (rewardsCountBean, rewardsListBeen) -> {
+//                , (rewardsCountBean, rewardsListBeen) -> {
 //
 //                    mRootView.updateReWardsView(rewardsCountBean, rewardsListBeen);
 //                    return rewardsCountBean;
@@ -220,31 +229,21 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
-    public void getInfoDetail(String news_id) {
-//        Subscription subscription = Observable.zip(mRepository.getInfoDetail(news_id),
-//                mRepository.getInfoDigListV2(news_id, 0L),
-//                mRepository.getRelateInfoList(news_id),
-//                mRepository.getInfoCommentListV2(news_id, 0L, 0L),
-//                (infoListDataBean, infoDigListBeen, infoRelateBean, infoCommentBean) -> {
-//                    infoListDataBean.setDigList(infoDigListBeen);
-//                    infoListDataBean.setRelateInfoList(infoRelateBean);
-//                    infoListDataBean.setCommentList(dealComment(infoCommentBean, 0));
-//                    return infoListDataBean;
-//                }).subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new BaseSubscribeForV2<InfoListDataBean>() {
-//                    @Override
-//                    protected void onSuccess(InfoListDataBean data) {
-//                        mRootView.updateAnswerHeader(data);
-//                    }
-//
-//                    @Override
-//                    protected void onFailure(String message, int code) {
-//                        super.onFailure(message, code);
-//                    }
-//                });
-//
-//        addSubscrebe(subscription);
+    public void getAnswerDetail(long answer_id) {
+        Subscription subscription = Observable.zip(mRepository.getAnswerDetail(answer_id),
+                mRepository.getAnswerCommentList(answer_id, 0L), (answerInfoBean, answerCommentListBeen) -> {
+                    answerInfoBean.setCommentList(answerCommentListBeen);
+                    return answerInfoBean;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<AnswerInfoBean>() {
+                    @Override
+                    protected void onSuccess(AnswerInfoBean data) {
+                        mRootView.updateAnswerHeader(data);
+                    }
+                });
+        addSubscrebe(subscription);
     }
 
     @Override

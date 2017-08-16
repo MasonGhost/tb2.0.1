@@ -20,12 +20,16 @@ public class AnswerDetailsActivity extends TSActivity<AnswerDetailsPresenter, An
 
     @Override
     protected AnswerDetailsFragment getFragment() {
-        return AnswerDetailsFragment.newInstance(getIntent().getBundleExtra(BUNDLE_INFO));
+        return AnswerDetailsFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
     protected void componentInject() {
-
+        DaggerAnswerDetailsComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .shareModule(new ShareModule(this))
+                .answerDetailsPresenterMudule(new AnswerDetailsPresenterMudule(mContanierFragment))
+                .build().inject(this);
     }
 
     @Override

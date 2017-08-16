@@ -10,6 +10,9 @@ import com.zhiyicx.thinksnsplus.data.source.local.data_convert.RewardsListBeanCo
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
 
@@ -49,6 +52,8 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     private UserInfoBean user;
     private boolean liked;
     private boolean collected;
+    @Transient
+    private  List<AnswerCommentListBean> commentList;
     private boolean rewarded;
     @Convert(converter = AnswerDigListBeanConvert.class,columnType = String.class)
     private List<AnswerDigListBean> likes;
@@ -378,13 +383,6 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 705869050)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getAnswerInfoBeanDao() : null;
-    }
-
     public static class AnswerDigListBeanConvert extends BaseConvert<List<AnswerDigListBean>>{}
 
     @Override
@@ -416,6 +414,27 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         dest.writeTypedList(this.likes);
         dest.writeTypedList(this.rewarders);
         dest.writeParcelable(this.question, flags);
+    }
+
+    @Keep
+    public void setCommentList(List<AnswerCommentListBean> commentList) {
+        this.commentList = commentList;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Keep
+    public List<AnswerCommentListBean> getCommentList() {
+        return commentList;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 705869050)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getAnswerInfoBeanDao() : null;
     }
 
     protected AnswerInfoBean(Parcel in) {
