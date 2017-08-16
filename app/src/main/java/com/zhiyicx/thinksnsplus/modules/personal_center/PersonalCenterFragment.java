@@ -374,11 +374,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        dataPosition = dataPosition - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
         Bitmap shareBitMap = null;
         try {
-            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + 1).findViewById(R.id.siv_0);
+            ImageView imageView = (ImageView) layoutManager.findViewByPosition(dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
             shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView.getDrawable(), R.mipmap.icon_256);
         } catch (Exception e) {
         }
@@ -749,7 +749,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         boolean feedIsMy = dynamicBean.getUser_id().intValue() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDeletDynamicPopWindow = ActionPopupWindow.builder()
                 .item2Str(getString(feedIdIsNull ? R.string.empty : (isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic)))
-                .item3Str(getString(feedIsMy ?R.string.dynamic_list_delete_dynamic  : R.string.empty))
+                .item3Str(getString(feedIsMy ? R.string.dynamic_list_delete_dynamic : R.string.empty))
                 .item1Str(getString(feedIdIsNull ? R.string.empty : R.string.dynamic_list_share_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)

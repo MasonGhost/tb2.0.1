@@ -29,6 +29,8 @@ import rx.Subscription;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
+import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.TYPE_DYNAMIC;
+import static com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment.TYPE_INFO;
 
 /**
  * @Author Jliuer
@@ -61,6 +63,11 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         super(repository, rootView);
     }
 
+    /**
+     * 内容置顶
+     *
+     * @param parent_id
+     */
     @Override
     public void stickTop(long parent_id) {
         if (mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
@@ -74,14 +81,25 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         if (parent_id < 0) {
             return;
         }
-        Subscription subscription = mRepository.stickTop(mRootView.getType(),parent_id, PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney()*mRootView.getTopDyas()), mRootView.getTopDyas())
+        Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas()), mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
                 )
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));
+                        switch (mRootView.getType()) {
+                            case TYPE_DYNAMIC:
+                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));
+                                break;
+                            case TYPE_INFO:
+                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_info_success));
+                                break;
+                            default:
+                                mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_success));
+
+                        }
+
                         mRootView.topSuccess();
                     }
 
@@ -101,6 +119,12 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         addSubscrebe(subscription);
     }
 
+    /**
+     * 内容所属的评论置顶
+     *
+     * @param parent_id
+     * @param child_id
+     */
     @Override
     public void stickTop(long parent_id, long child_id) {
         if (mRootView.getInputMoney() != (int) mRootView.getInputMoney()) {
@@ -114,14 +138,14 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         if (parent_id < 0) {
             return;
         }
-        Subscription subscription = mRepository.stickTop(mRootView.getType(),parent_id,child_id, PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney()*mRootView.getTopDyas()), mRootView.getTopDyas())
+        Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, child_id, PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas()), mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
                 )
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
-                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_top_success));
                         mRootView.topSuccess();
                     }
 

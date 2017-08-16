@@ -12,14 +12,30 @@
             android:orientation="horizontal"
             android:layout_margin="@dimen/spacing_normal">
 
-        <ImageView
-                android:id="@+id/iv_portrait"
-                android:layout_width="@dimen/qa_user_tag_height"
-                android:layout_height="@dimen/qa_user_tag_height"
-                android:scaleType="centerCrop"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:src="@mipmap/pic_default_portrait2"
-                android:layout_marginTop="@dimen/spacing_tiny"/>
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_normal">
+            <TextView
+                    android:id="@+id/iv_anonymity_flag"
+                    android:layout_width="@dimen/answer_list_portrait_width"
+                    android:layout_height="@dimen/answer_list_portrait_width"
+                    android:text="@string/qa_question_answer_anonymity"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_content_assist"
+                    android:background="@drawable/shape_answer_anonymity_bg"
+                    android:visibility="gone"/>
+            <ImageView
+                    android:id="@+id/iv_portrait"
+                    android:layout_width="@dimen/answer_list_portrait_width"
+                    android:layout_height="@dimen/answer_list_portrait_width"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/pic_default_portrait2"
+                    android:layout_marginTop="@dimen/spacing_tiny"/>
+        </FrameLayout>
+
+
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -112,6 +128,7 @@
                 android:layout_alignParentRight="true"
                 android:textSize="@dimen/size_icon_assist"
                 android:textColor="@color/normal_for_disable_button_text"
+                android:visibility="gone"
                 tools:text="xxxxxxx"/>
     </RelativeLayout>
 </LinearLayout>

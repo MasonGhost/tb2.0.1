@@ -8,6 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 
@@ -24,6 +25,11 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REWARD;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REWARD_USER_LIST;
+
 /**
  * @Author Jliuer
  * @Date 2017/08/14/10:03
@@ -38,7 +44,7 @@ public interface QAClient {
 
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
-    Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id,@Field("body") String body, @Field("anonymity") int anonymity);
+    Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
      * @param name   用于搜索话题，传递话题名称关键词。
@@ -52,29 +58,23 @@ public interface QAClient {
 
     /**
      * 获取回答的详细信息
+     *
      * @param answer_id 回答 id
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_ANSWER_DETAIL)
     Observable<AnswerInfoBean> getAnswerDetail(@Path("answer_id") long answer_id);
 
     /**
      * 获取回答评论列表
+     *
      * @param answer_id 回答 id
-     * @param after
-     * @param limit
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_ANSWER_COMMENTS)
     Observable<List<AnswerCommentListBean>> getAnswerCommentList(@Path("answer_id") long answer_id, @Query
             ("after") Long after, @Query("limit") Long limit);
 
     /**
-     *
      * @param type 默认值为 follow 代表用户关注的话题列表，如果值为 expert 则获取该用户的专家话题（哪些话题下是专家）。
-     * @param after
-     * @param limit
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_FOLLOEW_TOPIC)
     Observable<List<QATopicBean>> getQAFollowTopic(@Query("type") String type, @Query
@@ -103,4 +103,51 @@ public interface QAClient {
      */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_DETAIL)
     Observable<QATopicBean> getTopicDetail(@Path("topic") String topic_id);
+
+    /**
+     * 获取问题详情
+     *
+     * @param question_id 问题id
+     */
+    @GET(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
+    Observable<QAListInfoBean> getQuestionDetail(@Path("question") String question_id);
+
+    /**
+     * 获取一个问题的回答列表
+     *
+     * @param question_id 问题id
+     * @param order_type default/time
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)
+    Observable<List<AnswerInfoBean>> getAnswerList(@Path("question") String question_id,
+                                                   @Query("limit") Long limit,
+                                                   @Query("order_type") String order_type,
+                                                   @Query("offset") int size);
+
+    /*******************************************  打赏  *********************************************/
+
+
+    /**
+     * 对一条问答回答打赏
+     *
+     * @param answer_id 动态 id
+     * @param amount    打赏金额
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_QA_ANSWER_REWARD)
+    Observable<Object> rewardQA(@Path("answer_id") long answer_id, @Field("amount") float amount);
+
+
+    /**
+     * 问答回答打赏列表
+     *
+     * @param answer_id  动态 id
+     * @param limit      默认 20 ，获取列表条数，修正值 1 - 30
+     * @param offset     默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param order_type 默认值 time, time - 按照打赏时间倒序，amount - 按照金额倒序
+     */
+    @GET(APP_PATH_QA_ANSWER_REWARD_USER_LIST)
+    Observable<List<RewardsListBean>> rewardQAList(@Path("answer_id") long answer_id, @Query("limit") Integer limit
+            , @Query("offset") Integer offset, @Query("type") String order_type);
 }

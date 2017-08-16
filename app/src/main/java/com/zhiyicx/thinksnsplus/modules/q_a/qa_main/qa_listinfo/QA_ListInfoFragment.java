@@ -1,16 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import javax.inject.Inject;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
 /**
  * @Author Jliuer
@@ -105,7 +110,23 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas);
+        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas);
+        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(BUNDLE_QUESTION_BEAN, mListDatas.get(position));
+                intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
+        return adapter;
     }
 
 }

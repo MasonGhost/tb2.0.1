@@ -2,14 +2,21 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Catherine
@@ -19,7 +26,7 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailContract.Repository, QuestionDetailContract.View>
-        implements QuestionDetailContract.Presenter{
+        implements QuestionDetailContract.Presenter {
 
     @Inject
     public QuestionDetailPresenter(QuestionDetailContract.Repository repository, QuestionDetailContract.View rootView) {
@@ -28,11 +35,21 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        if (mRootView.getCurrentQuestion().getTopics() == null || mRootView.getCurrentQuestion().getTopics().size() == 0){
+            getQuestionDetail(mRootView.getCurrentQuestion().getId() + "");
+        } else {
+            Subscription subscription = mRepository.getAnswerList(mRootView.getCurrentQuestion().getId() + "",
+                    mRootView.getCurrentOrderType(), mRootView.getRealSize())
+                    .compose(mSchedulersTransformer)
+                    .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
 
-    }
-
-    @Override
-    public void getQuestionDetail(String questionId) {
+                        @Override
+                        protected void onSuccess(List<AnswerInfoBean> data) {
+                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                        }
+                    });
+            addSubscrebe(subscription);
+        }
 
     }
 
@@ -44,5 +61,36 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public boolean insertOrUpdateData(@NotNull List<AnswerInfoBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public void getQuestionDetail(String questionId) {
+        Subscription subscription = Observable.zip(mRepository.getQuestionDetail(questionId),
+                mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), 0),
+                (qaListInfoBean, answerInfoBeanList) -> {
+                    List<AnswerInfoBean> totalList = new ArrayList<>();
+                    if (qaListInfoBean.getInvitation_answers() != null){
+                        totalList.addAll(qaListInfoBean.getInvitation_answers());
+                    }
+                    if (qaListInfoBean.getAdoption_answers() != null){
+                        totalList.addAll(qaListInfoBean.getAdoption_answers());
+                    }
+                    totalList.addAll(answerInfoBeanList);
+                    qaListInfoBean.setAnswerInfoBeenList(totalList);
+                    return qaListInfoBean;
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseSubscribeForV2<QAListInfoBean>() {
+                    @Override
+                    protected void onSuccess(QAListInfoBean data) {
+                        mRootView.setQuestionDetail(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
+                });
+        addSubscrebe(subscription);
     }
 }

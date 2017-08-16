@@ -379,6 +379,13 @@ public class ApiConfig {
     public static final String APP_PATH_LIKE_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/likes";
     // 收藏回答
     public static final String APP_PATH_COLLECT_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/user/question-answer/collections/%d";
+
+    // 问答回答打赏
+    public static final String APP_PATH_QA_ANSWER_REWARD = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
+    // 获取回答打赏列表
+    public static final String APP_PATH_QA_ANSWER_REWARD_USER_LIST = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
+
+
     /**
      * 通用 CommonClient
      */
