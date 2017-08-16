@@ -58,28 +58,23 @@ public interface QAClient {
 
     /**
      * 获取回答的详细信息
+     *
      * @param answer_id 回答 id
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_ANSWER_DETAIL)
     Observable<AnswerInfoBean> getAnswerDetail(@Path("answer_id") long answer_id);
 
     /**
      * 获取回答评论列表
+     *
      * @param answer_id 回答 id
-     * @param after
-     * @param limit
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_ANSWER_COMMENTS)
     Observable<List<AnswerCommentListBean>> getAnswerCommentList(@Path("answer_id") long answer_id, @Query
             ("after") Long after, @Query("limit") Long limit);
 
     /**
-     * @param type  默认值为 follow 代表用户关注的话题列表，如果值为 expert 则获取该用户的专家话题（哪些话题下是专家）。
-     * @param after
-     * @param limit
-     * @return
+     * @param type 默认值为 follow 代表用户关注的话题列表，如果值为 expert 则获取该用户的专家话题（哪些话题下是专家）。
      */
     @GET(ApiConfig.APP_PATH_GET_FOLLOEW_TOPIC)
     Observable<List<QATopicBean>> getQAFollowTopic(@Query("type") String type, @Query
@@ -111,11 +106,25 @@ public interface QAClient {
 
     /**
      * 获取问题详情
+     *
      * @param question_id 问题id
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
     Observable<QAListInfoBean> getQuestionDetail(@Path("question") String question_id);
+
+    /**
+     * 获取一个问题的回答列表
+     *
+     * @param question_id 问题id
+     * @param order_type default/time
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)
+    Observable<List<AnswerInfoBean>> getAnswerList(@Path("question") String question_id,
+                                                   @Query("limit") Long limit,
+                                                   @Query("order_type") String order_type,
+                                                   @Query("offset") int size);
+
     /*******************************************  打赏  *********************************************/
 
 
@@ -123,8 +132,7 @@ public interface QAClient {
      * 对一条问答回答打赏
      *
      * @param answer_id 动态 id
-     * @param amount  打赏金额
-     * @return
+     * @param amount    打赏金额
      */
     @FormUrlEncoded
     @POST(APP_PATH_QA_ANSWER_REWARD)
@@ -134,11 +142,10 @@ public interface QAClient {
     /**
      * 问答回答打赏列表
      *
-     * @param answer_id    动态 id
+     * @param answer_id  动态 id
      * @param limit      默认 20 ，获取列表条数，修正值 1 - 30
      * @param offset     默认 0 ，数据偏移量，传递之前通过接口获取的总数。
      * @param order_type 默认值 time, time - 按照打赏时间倒序，amount - 按照金额倒序
-     * @return
      */
     @GET(APP_PATH_QA_ANSWER_REWARD_USER_LIST)
     Observable<List<RewardsListBean>> rewardQAList(@Path("answer_id") long answer_id, @Query("limit") Integer limit

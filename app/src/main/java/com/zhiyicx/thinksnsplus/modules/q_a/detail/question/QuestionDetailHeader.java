@@ -32,8 +32,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class QuestionDetailHeader {
 
-    private static final int ORDER_DEFAULT = 0;
-    private static final int ORDER_BY_TIME = 1;
+    public static final String ORDER_DEFAULT = "default";
+    public static final String ORDER_BY_TIME = "time";
 
     private Context mContext;
 
@@ -54,7 +54,7 @@ public class QuestionDetailHeader {
 
     private QAListInfoBean mQaListInfoBean;
     private OnActionClickListener mListener;
-    private int mCurrentOrderType = ORDER_DEFAULT;
+    private String mCurrentOrderType = ORDER_DEFAULT;
 
     public View getQuestionHeaderView() {
         return mQuestionHeaderView;
@@ -160,6 +160,10 @@ public class QuestionDetailHeader {
                 });
     }
 
+    public String getCurrentOrderType(){
+        return mCurrentOrderType;
+    }
+
     public void setOnActionClickListener(OnActionClickListener listener){
         this.mListener = listener;
     }
@@ -168,6 +172,6 @@ public class QuestionDetailHeader {
         void onFollowClick();
         void onRewardTypeClick(List<QAListInfoBean.UserBean> invitations, int rewardType);
         void onAddAnswerClick();
-        void onChangeListOrderClick(int orderType);
+        void onChangeListOrderClick(String orderType);
     }
 }
