@@ -25,14 +25,12 @@ import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContain
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
-import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;
@@ -41,6 +39,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 /**
  * @Describe 发现页面
@@ -199,10 +199,13 @@ public class FindFragment extends TSFragment {
             case R.id.find_nearby:
                 break;
             case R.id.find_qa:
-                startActivity(new Intent(getActivity(), QA_Activity.class));
+                Intent intent = new Intent(getActivity(), PublishAnswerActivity.class);
+                Bundle bundle = new Bundle();
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.find_quiz:
-                startActivity(new Intent(getActivity(), QA_RewardActivity.class));
+                startActivity(new Intent(getActivity(), QARewardActivity.class));
                 break;
             default:
                 break;

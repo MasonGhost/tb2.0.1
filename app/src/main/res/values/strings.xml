@@ -410,6 +410,7 @@
 
     <!--问答相关-->
     <string name="qa_publish">发布问题</string>
+    <string name="qa_publish_answer">添加回答</string>
     <string name="qa_detail">问题详情</string>
     <string name="qa_publish_next">下一步</string>
     <string name="qa_publish_title_hint">请输入问题并以问号结尾</string>
@@ -419,6 +420,7 @@
     <string name="qa_publish_enable_anonymous">启用匿名</string>
     <string name="qa_topic">话题</string>
     <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
+    <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
@@ -442,6 +444,18 @@
     <string name="qa_show_topic_followed_reward">%1$d 关注  ·  %2$d 回答  ·  ￥%3$.1f 悬赏</string>
     <string name="edit_quit">放弃编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
+    <string-array name="topic_detail_category">
+        <item>最新</item>
+        <item>精选</item>
+        <item>悬赏</item>
+        <item>热门</item>
+        <item>全部</item>
+    </string-array>
+    <string name="qa_topic_expert_count">%d位相关专家</string>
+    <string name="qa_show_topic_detail_feed">%1$s 关注  ·  %2$s 问题</string>
+    <string name="qa_topic_open_all">展开全部</string>
+    <string name="qa_topic_close_all">收起</string>
+    <string name="qa_question_answer_adopt">已采纳</string>
 
     <!--签到-->
     <string name="check_in">签到</string>

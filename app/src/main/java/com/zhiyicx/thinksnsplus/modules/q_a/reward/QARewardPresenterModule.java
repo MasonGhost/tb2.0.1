@@ -12,21 +12,21 @@ import dagger.Provides;
  * @contact email:648129313@qq.com
  */
 @Module
-public class QA$RewardPresenterModule {
+public class QARewardPresenterModule {
 
-    private QA$RewardContract.View mView;
+    private QARewardContract.View mView;
 
-    public QA$RewardPresenterModule(QA$RewardContract.View mView) {
+    public QARewardPresenterModule(QARewardContract.View mView) {
         this.mView = mView;
     }
 
     @Provides
-    public QA$RewardContract.View provideQA$RewardContractView(){
+    public QARewardContract.View provideQA$RewardContractView(){
         return mView;
     }
 
     @Provides
-    public QA$RewardContract.RepositoryPublish provideQA$RewardContractRepository(QA$RewardRepositoryPublish rewardRepository){
+    public QARewardContract.RepositoryPublish provideQA$RewardContractRepository(QA$RewardRepositoryPublish rewardRepository){
         return rewardRepository;
     }
 }

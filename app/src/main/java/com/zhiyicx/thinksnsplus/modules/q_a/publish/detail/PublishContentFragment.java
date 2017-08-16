@@ -17,12 +17,12 @@ import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.AndroidBug5497Workaround;
-import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.AnonymityPopWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -32,6 +32,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.common.widget.popwindow.CustomPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 /**
@@ -63,6 +64,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     private int[] mImageIdArray;// 图片id
     private int mPicTag;
     private int mPicAddTag;
+    protected int mAnonymity;
+
+    private AnonymityPopWindow mAnonymityPopWindow;
 
     private QAPublishBean mQAPublishBean;
 
@@ -70,6 +74,11 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         PublishContentFragment publishContentFragment = new PublishContentFragment();
         publishContentFragment.setArguments(bundle);
         return publishContentFragment;
+    }
+
+    @Override
+    public void publishSuccess(QAAnswerBean answerBean) {
+
     }
 
     @Override
@@ -101,16 +110,17 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        Intent intent = new Intent(getActivity(), QA_RewardActivity.class);
+        Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
         mQAPublishBean.setBody(getContentString());
+        mQAPublishBean.setAnonymity(mAnonymity);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @NonNull
-    private String getContentString() {
+    protected String getContentString() {
         StringBuilder builder = new StringBuilder();
         List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
         for (RichTextEditor.EditData editData : datas) {
@@ -259,6 +269,11 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mRicheTest.hideKeyBoard());
 
+        RxView.clicks(mImSetting)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> initAnonymityPopWindow(R.string.qa_publish_enable_anonymous));
+
         mRicheTest.setOnContentEmptyListener(this);
     }
 
@@ -274,10 +289,32 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
-                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .bottomClickListener(() -> mInstructionsPopupWindow.hide())
                 .build();
         mInstructionsPopupWindow.show();
     }
+
+    private void initAnonymityPopWindow(int strRes) {
+        if (mAnonymityPopWindow != null) {
+            mAnonymityPopWindow.showParentViewTop();
+            return;
+        }
+        mAnonymityPopWindow = AnonymityPopWindow.builder()
+                .with(getActivity())
+                .isWrap(true)
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .parentView(mRlPublishTool)
+                .buildDescrStr(getString(strRes))
+                .contentView(R.layout.pop_for_anonymity)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .buildAnonymityPopWindowSwitchClickListener(isChecked ->
+                        mAnonymity = isChecked ? 1 : 0)
+                .build();
+        mAnonymityPopWindow.showParentViewTop();
+
+    }
+
 }

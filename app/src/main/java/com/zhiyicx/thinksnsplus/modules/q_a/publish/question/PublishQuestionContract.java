@@ -5,6 +5,8 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
+import retrofit2.http.Query;
+
 /**
  * @author Catherine
  * @describe
@@ -18,7 +20,7 @@ public interface PublishQuestionContract {
     }
 
     interface Presenter extends ITSListPresenter<QAListInfoBean> {
-
+        void requestNetData(String subject, Long maxId,String type,boolean isLoadMore);
     }
 
     interface Repository extends IBasePublishQuestionRepository {

@@ -19,7 +19,7 @@ public interface ExpertSearchContract {
     }
 
     interface Presenter extends ITSListPresenter<ExpertBean>{
-
+        void requestNetData(Long maxId,int topic_id,boolean isLoadMore);
     }
 
     interface Repository extends IBasePublishQuestionRepository{

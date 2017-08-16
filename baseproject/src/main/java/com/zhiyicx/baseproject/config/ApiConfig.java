@@ -33,7 +33,7 @@ public class ApiConfig {
 //    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
 
     public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
-//
+
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
@@ -335,7 +335,43 @@ public class ApiConfig {
     // 分享专辑
     public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION + "/music/special/%s/share";
 
-
+    /**
+     * 问答相关
+     */
+    // 发布问题
+    public static final String APP_PATH_PUBLISH_QUESTIONS = "api/" + API_VERSION_2 + "/questions";
+    // 获取全部话题
+    public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
+    // 获取认证用户关注的话题或者专家话题
+    public static final String APP_PATH_GET_FOLLOEW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
+    // 获取话题下专家列表
+    public static final String APP_PATH_GET_TOPIC_EXPERTS = "api/" + API_VERSION_2 + "/question-topics/{topic_id}/experts";
+    // 话题详情
+    public static final String APP_PATH_GET_TOPIC_DETAIL = "api/" + API_VERSION_2 + "/question-topics/{topic}";
+    // 话题下的问答列表
+    public static final String APP_PATH_GET_QUESTION_LIST_BY_TOPIC = "api/" + API_VERSION_2 + "/question-topics/{topic}/questions";
+    // 关注或者取消一个话题
+    public static final String APP_PATH_HANDLE_TOPIC_FOLLOW = "api/" + API_VERSION_2 + "/user/question-topics/{topic}";
+    public static final String APP_PATH_HANDLE_TOPIC_FOLLOW_S = "api/" + API_VERSION_2 + "/user/question-topics/%s";
+    // 获取问题详情
+    public static final String APP_PATH_GET_QUESTION_DETAIL = "api/" + API_VERSION_2 + "/questions/{question}";
+    // 删除问题用
+    public static final String APP_PATH_GET_DELETE_QUESTION_S = "api/" + API_VERSION_2 + "/questions/%s";
+    // 获取一个问题的回答列表
+    public static final String APP_PATH_GET_QUESTION_ANSWER_LIST = "api/" + API_VERSION_2 + "/questions/{question}/answers";
+    // 获取一个回答的详情
+    public static final String APP_PATH_GET_ANSWER_DETAIL = "api/" + API_VERSION_2 + "/question-answers/{answer}";
+    public static final String APP_PATH_GET_ANSWER_DETAIL_S = "api/" + API_VERSION_2 + "/question-answers/%s";
+    // 发布回答
+    public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/answers";
+    // 更新回答 PATCH
+    public static final String APP_PATH_UPDATE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
+    // 采纳答案 PUT
+    public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/adoptions/{answer}";
+    public static final String APP_PATH_ADOPT_ANSWER_S = "api/" + API_VERSION_2 + "/questions/%s/adoptions/%s";
+    // 删除答案 DELETE
+    public static final String APP_PATH_DELETE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
+    public static final String APP_PATH_DELETE_ANSWER_S = "api/" + API_VERSION_2 + "/question-answers/%s";
     /**
      * 通用 CommonClient
      */

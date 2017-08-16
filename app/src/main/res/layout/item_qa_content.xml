@@ -28,6 +28,7 @@
         android:id="@+id/item_info_imag"
         android:layout_width="match_parent"
         android:layout_height="@dimen/qa_info_iamge_height"
+        android:layout_marginBottom="@dimen/spacing_normal"
         android:scaleType="centerCrop"
         android:src="@mipmap/npc"/>
 
@@ -40,7 +41,6 @@
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_normal"
         android:textSize="@dimen/size_content"
         android:textColor="@color/normal_for_dynamic_list_content"
         tools:text="三小时前   来自火星"/>

@@ -164,7 +164,8 @@ public class RegexUtils {
         int currentChineseByteLenght = chineseCount * charLength;
         int length = input.toString().getBytes().length;
         if (currentChineseByteLenght > 0) {// 有中文
-            return length >= (currentChineseByteLenght + (minLength - chineseCount)) && (length <= currentChineseByteLenght + (maxLength - chineseCount));
+            return length >= (currentChineseByteLenght + (minLength - chineseCount)) && (length
+                    <= currentChineseByteLenght + (maxLength - chineseCount));
         } else {
             return length >= 4 && length <= maxLength;
         }
@@ -266,5 +267,27 @@ public class RegexUtils {
     public static String getReplaceAll(String input, String regex, String replacement) {
         if (input == null) return null;
         return Pattern.compile(regex).matcher(input).replaceAll(replacement);
+    }
+
+    public static int getImageIdFromMarkDown(String regex, String input) {
+        if (regex == null || input == null) return -1;
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+        if (matcher.find()) {
+            try {
+                return Integer.parseInt(matcher.group(2));
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+        return -1;
+    }
+
+    public static String replaceImageId(String regex, String input) {
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+        try {
+            return matcher.replaceAll("");
+        } catch (Exception e) {
+            return input;
+        }
     }
 }

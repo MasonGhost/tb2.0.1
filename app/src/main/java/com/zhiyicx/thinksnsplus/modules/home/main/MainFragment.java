@@ -70,6 +70,11 @@ public class MainFragment extends TSViewPagerFragment implements DynamicFragment
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         AppApplication.AppComponentHolder.getAppComponent().inject(this);// 需要在 initview 之前，应为在 initview 中使用了 dagger 注入的数据
         super.initView(rootView);

@@ -36,10 +36,6 @@ public class CircleImageDrawable extends Drawable {
         canvas.drawCircle(mWidth / 2, mWidth / 2, mWidth / 2, mPaint);
     }
 
-    public void draw(Canvas canvas,int cy) {
-        canvas.drawCircle(mWidth / 2, cy, mWidth / 2, mPaint);
-    }
-
     @Override
     public int getIntrinsicWidth() {
         return mWidth;

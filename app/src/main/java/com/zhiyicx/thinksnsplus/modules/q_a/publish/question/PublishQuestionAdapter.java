@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -40,7 +42,7 @@ public class PublishQuestionAdapter extends CommonAdapter<QAListInfoBean> {
 
 
         // 设置用户名，用户简介
-        holder.setText(R.id.tv_content, qa_listInfoBean.getContent());
+        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,qa_listInfoBean.getBody()));
 
         // 添加点击事件
         RxView.clicks(holder.getConvertView())
@@ -49,7 +51,7 @@ public class PublishQuestionAdapter extends CommonAdapter<QAListInfoBean> {
                     Intent intent = new Intent(mContext, AddTopicActivity.class);
                     Bundle bundle = new Bundle();
                     QAPublishBean qaPublishBean = new QAPublishBean();
-                    qaPublishBean.setSubject(qa_listInfoBean.getContent());
+                    qaPublishBean.setSubject(qa_listInfoBean.getBody());
                     bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, qaPublishBean);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);

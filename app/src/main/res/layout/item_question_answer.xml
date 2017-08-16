@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/spacing_normal">
+
+        <ImageView
+                android:id="@+id/iv_portrait"
+                android:layout_width="@dimen/qa_user_tag_height"
+                android:layout_height="@dimen/qa_user_tag_height"
+                android:scaleType="centerCrop"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:src="@mipmap/pic_default_portrait2"
+                android:layout_marginTop="@dimen/spacing_tiny"/>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <!--回答者名字-->
+            <com.zhiyicx.thinksnsplus.widget.NoDefaultPadingTextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content_comment"
+                    tools:text="xxxxxx"/>
+
+            <TextView
+                    android:id="@+id/tv_adopt_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mid_small"
+                    android:layout_toRightOf="@+id/tv_name"
+                    android:text="@string/qa_question_answer_adopt"
+                    android:textColor="@color/themeColor"
+                    android:textSize="@dimen/size_note_assist"
+                    android:background="@drawable/shape_answer_adopt_bg"
+                    android:layout_alignBaseline="@+id/tv_name"
+                    android:padding="@dimen/spacing_tiny"/>
+            <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_icon_assist"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignBaseline="@+id/tv_name"
+                    android:textColor="@color/general_for_hint"
+                    tools:text="xxxxxx"/>
+            <!--回答的内容-->
+            <TextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_time"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_dynamic_list_content"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    tools:text="xxxxxx"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+            style="@style/style_divider_horizontal"/>
+
+    <!--工具栏-->
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_bigger_large"
+            android:paddingTop="@dimen/spacing_normal"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal">
+
+        <TextView
+            android:id="@+id/tv_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_icon_assist"
+            android:textColor="@color/general_for_loading_more"
+            android:drawableLeft="@mipmap/home_ico_good_normal"
+            android:drawablePadding="@dimen/spacing_small_3dp"
+            android:gravity="center"
+            tools:text="123"/>
+
+        <TextView
+                android:id="@+id/tv_comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_icon_assist"
+                android:textColor="@color/general_for_loading_more"
+                android:layout_toRightOf="@+id/tv_like_count"
+                android:drawableLeft="@mipmap/home_ico_comment_normal"
+                android:drawablePadding="@dimen/spacing_small_3dp"
+                android:layout_marginLeft="@dimen/spacing_large"
+                android:gravity="center"
+                tools:text="123"/>
+
+        <TextView
+                android:id="@+id/tv_watcher_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="@dimen/size_icon_assist"
+                android:textColor="@color/normal_for_disable_button_text"
+                tools:text="xxxxxxx"/>
+    </RelativeLayout>
+</LinearLayout>

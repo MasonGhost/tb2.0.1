@@ -2,10 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.wallet.reward.list;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.wallet.reward.DaggerRewardComponent;
-import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardFragment;
-import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardPresenter;
-import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardPresenterModule;
 
 /**
  * @Describe 打赏用户列表页
