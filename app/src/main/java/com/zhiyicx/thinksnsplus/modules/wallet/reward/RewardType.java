@@ -10,7 +10,8 @@ package com.zhiyicx.thinksnsplus.modules.wallet.reward;
 public enum RewardType {
     INFO(10001), // 咨询 // requst code must lower 16 bit ,so id must be < 65000
     DYNAMIC(10002),// 动态
-    USER(10003); // 用户
+    USER(10003), // 用户
+    QA_ANSWER(10004); // 问答回答
 
     public final int id;
 
