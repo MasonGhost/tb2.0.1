@@ -24,6 +24,7 @@ import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
@@ -178,6 +179,8 @@ public class AnswerDetailHeaderView {
 
             mName.setText(answerInfoBean.getUser().getName());
             mDescription.setText(answerInfoBean.getUser().getIntro());
+            boolean isSelf = answerInfoBean.getUser().getExtra().getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+            mUserFollow.setVisibility(isSelf ? GONE : VISIBLE);
             mUserFollow.setChecked(answerInfoBean.getUser().isFollower());
             // 评论信息
             updateCommentView(answerInfoBean);

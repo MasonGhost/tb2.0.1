@@ -27,9 +27,9 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
-import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEmptyItem;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
@@ -200,7 +200,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
-        setDigg(mPresenter.isDiged());
     }
 
     @Override
@@ -323,7 +322,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
             switch (position) {
                 case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
                     mPresenter.handleLike(!mAnswerInfoBean.getLiked(),
-                            mAnswerInfoBean.getId() + "");
+                            mAnswerInfoBean.getId());
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
                     showCommentView();
@@ -429,7 +428,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                         mPresenter.deleteInfo();
                     } else {
                         mPresenter.handleCollect(!answerInfoBean.getCollected(),
-                                answerInfoBean.getId() + "");
+                                answerInfoBean.getId());
                     }
                     mDealInfoMationPopWindow.hide();
                 })

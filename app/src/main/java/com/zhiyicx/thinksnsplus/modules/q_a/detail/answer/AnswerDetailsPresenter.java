@@ -6,7 +6,6 @@ import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
@@ -23,17 +22,16 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -48,7 +46,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
@@ -77,6 +74,9 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     AnswerCommentListBeanGreenDaoImpl mAnswerCommentListBeanGreenDao;
 
     @Inject
+    AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
+
+    @Inject
     AllAdvertListBeanGreenDaoImpl mAllAdvertListBeanGreenDao;
 
     @Inject
@@ -88,9 +88,9 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        if (mRootView.getAnswerInfo().getCommentList()==null){
+        if (mRootView.getAnswerInfo().getCommentList() == null) {
             getAnswerDetail(mRootView.getAnswerInfo().getId());
-        }else{
+        } else {
             mRepository.getAnswerCommentList(mRootView.getAnswerId(), maxId)
                     .subscribe(new BaseSubscribeForV2<List<AnswerCommentListBean>>() {
                         @Override
@@ -115,7 +115,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     private void handleInfoHasBeDeleted(int code) {
         if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
-            //mAnswerCommentListBeanGreenDao.deleteSingleCache(mRootView.getAnswerInfo());
+            mAnswerInfoListBeanGreenDao.deleteSingleCache(mRootView.getAnswerInfo());
             EventBus.getDefault().post(mRootView.getAnswerInfo(), EVENT_SEND_INFO_LIST_DELETE_UPDATE);
             mRootView.infoMationHasBeDeleted();
         } else {
@@ -150,82 +150,54 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
-    public void handleCollect(boolean isUnCollected, String news_id) {
+    public void handleCollect(boolean isUnCollected, long answer_id) {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
         mRootView.setCollect(isUnCollected);
         mRootView.getAnswerInfo().setCollected(isUnCollected);
 
-        if (mRootView.getInfoType() == -100) {
-            //return;// 搜索出来的资讯，收藏状态有待优化  已处理
-        }
-        mRootView.setCollect(isUnCollected);
-//        mInfoListBeanGreenDao.updateInfo(mRootView.getAnswerInfo());
+        mAnswerInfoListBeanGreenDao.insertOrReplace(mRootView.getAnswerInfo());
         EventBus.getDefault().post(mRootView.getAnswerInfo(), EVENT_SEND_INFO_LIST_COLLECT);
-//        mRepository.handleCollect(isUnCollected, news_id);
+        mRepository.handleCollect(isUnCollected, answer_id);
     }
 
     @Override
-    public void handleLike(boolean isLiked, String news_id) {
+    public void handleLike(boolean isLiked, long news_id) {
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao
                 .getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
-        InfoDigListBean digListBean = new InfoDigListBean();
+        AnswerDigListBean digListBean = new AnswerDigListBean();
         digListBean.setUser_id(userInfoBean.getUser_id());
         digListBean.setId(System.currentTimeMillis());
         digListBean.setDiggUserInfo(userInfoBean);
-//        if (mRootView.getAnswerInfo().getDigList() == null) {
-//            mRootView.getAnswerInfo().setDigList(new ArrayList<>());
-//        }
-//        if (isLiked) {
-//            mRootView.getAnswerInfo().getDigList().add(digListBean);
-//            mRootView.getAnswerInfo().setDigg_count(mRootView.getAnswerInfo().getDigg_count() + 1);
-//        } else {
-//            for (InfoDigListBean infoDigListBean : mRootView.getAnswerInfo().getDigList()) {
-//                if (infoDigListBean.getUser_id().equals(userInfoBean.getUser_id())) {
-//                    mRootView.getAnswerInfo().getDigList().remove(infoDigListBean);
-//                    mRootView.getAnswerInfo().setDigg_count(mRootView.getAnswerInfo().getDigg_count() - 1);
-//                    break;
-//                }
-//            }
-//        }
-//        mRootView.getAnswerInfo().setHas_like(isLiked);
-//        mRootView.setDigg(isLiked);
-//        if (mRootView.getInfoType() == -100) {
-//            //return;// 搜索出来的资讯，收藏状态有待优化  已处理
-//        }
-//        mInfoListBeanGreenDao.updateInfo(mRootView.getAnswerInfo());
-        //mRepository.handleLike(isLiked, news_id);
-    }
+        if (mRootView.getAnswerInfo().getLikes() == null) {
+            mRootView.getAnswerInfo().setLikes(new ArrayList<>());
+        }
+        if (isLiked) {
+            mRootView.getAnswerInfo().getLikes().add(digListBean);
+            mRootView.getAnswerInfo().setLikes_count(mRootView.getAnswerInfo().getLikes_count() + 1);
+        } else {
+            for (AnswerDigListBean answerDigListBean : mRootView.getAnswerInfo().getLikes()) {
+                if (answerDigListBean.getUser_id().equals(userInfoBean.getUser_id())) {
+                    mRootView.getAnswerInfo().getLikes().remove(answerDigListBean);
+                    mRootView.getAnswerInfo().setLikes_count(mRootView.getAnswerInfo().getLikes_count() - 1);
+                    break;
+                }
+            }
+        }
+        mRootView.getAnswerInfo().setLiked(isLiked);
+        mRootView.setDigg(isLiked);
 
-    @Override
-    public boolean isCollected() {
-//        return mInfoListBeanGreenDao.isCollected(mRootView.getNewsId().intValue());
-        return false;
-    }
-
-    @Override
-    public boolean isDiged() {
-        return false;
-//        return mInfoListBeanGreenDao.isDiged(mRootView.getNewsId().intValue());
+        mAnswerInfoListBeanGreenDao.insertOrReplace(mRootView.getAnswerInfo());
+        mRepository.handleLike(isLiked, news_id);
     }
 
     @Override
     public void reqReWardsData(int id) {
-//        Observable.zip(mRepository.getRewardCount(id), mRepository.rewardInfoList(id
-//                , TSListFragment.DEFAULT_ONE_PAGE_SIZE, null, null, null)
-//                , (rewardsCountBean, rewardsListBeen) -> {
-//
-//                    mRootView.updateReWardsView(rewardsCountBean, rewardsListBeen);
-//                    return rewardsCountBean;
-//                }).subscribeOn(AndroidSchedulers.mainThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(o -> {
-//
-//                }, throwable -> throwable.printStackTrace());
+
     }
 
     @Override
@@ -240,6 +212,8 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                 .subscribe(new BaseSubscribeForV2<AnswerInfoBean>() {
                     @Override
                     protected void onSuccess(AnswerInfoBean data) {
+                        mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + data.getRewards_amount()),
+                                data.getRewarders());
                         mRootView.updateAnswerHeader(data);
                     }
                 });
@@ -269,6 +243,19 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
+    public void deleteComment(AnswerCommentListBean data) {
+        mAnswerCommentListBeanGreenDao.deleteSingleCache(data);
+        mRootView.getListDatas().remove(data);
+        mRootView.getAnswerInfo().setComments_count(mRootView.getAnswerInfo().getComments_count() - 1);
+        if (mRootView.getListDatas().size() == 1) {// 占位
+            AnswerCommentListBean emptyData = new AnswerCommentListBean();
+            mRootView.getListDatas().add(emptyData);
+        }
+        mRootView.refreshData();
+       // mRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
+    }
+
+    @Override
     public List<RealAdvertListBean> getAdvert() {
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || mAllAdvertListBeanGreenDao.getInfoDetailAdvert() == null) {
             return new ArrayList<>();
@@ -276,18 +263,6 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         return mAllAdvertListBeanGreenDao.getInfoDetailAdvert().getMRealAdvertListBeen();
     }
 
-//    @Override
-//    public void deleteComment(InfoCommentListBean data) {
-//        mInfoCommentListBeanDao.deleteSingleCache(data);
-//        mRootView.getListDatas().remove(data);
-//        mRootView.getAnswerInfo().setComment_count(mRootView.getAnswerInfo().getComment_count() - 1);
-//        if (mRootView.getListDatas().size() == 1) {// 占位
-//            InfoCommentListBean emptyData = new InfoCommentListBean();
-//            mRootView.getListDatas().add(emptyData);
-//        }
-//        mRootView.refreshData();
-//        mRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
-//    }
 
     /**
      * 处理发送动态数据
@@ -394,8 +369,5 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         return false;
     }
 
-    @Override
-    public void deleteComment(AnswerCommentListBean data) {
 
-    }
 }

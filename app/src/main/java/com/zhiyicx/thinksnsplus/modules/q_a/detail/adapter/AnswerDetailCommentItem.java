@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.q_a.detail.answer;
+package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;

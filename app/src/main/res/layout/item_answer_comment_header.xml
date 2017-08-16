@@ -30,12 +30,14 @@
             android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_head_icon"
             android:layout_toRightOf="@+id/iv_head_icon"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"
             tools:text="xxxxx"/>
 
         <TextView
+            android:layout_alignBottom="@+id/iv_head_icon"
             android:id="@+id/tv_user_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

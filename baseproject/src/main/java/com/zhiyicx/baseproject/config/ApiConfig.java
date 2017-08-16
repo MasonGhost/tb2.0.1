@@ -374,6 +374,11 @@ public class ApiConfig {
     public static final String APP_PATH_DELETE_ANSWER_S = "api/" + API_VERSION_2 + "/question-answers/%s";
     // 获取回答评论列表
     public static final String APP_PATH_GET_ANSWER_COMMENTS = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/comments";
+    // 点赞回答
+    public static final String APP_PATH_LIKE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/likes";
+    public static final String APP_PATH_LIKE_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/likes";
+    // 收藏回答
+    public static final String APP_PATH_COLLECT_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/user/question-answer/collections/%d";
     /**
      * 通用 CommonClient
      */

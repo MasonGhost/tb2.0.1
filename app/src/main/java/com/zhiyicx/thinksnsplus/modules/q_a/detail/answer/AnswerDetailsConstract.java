@@ -59,15 +59,11 @@ public interface AnswerDetailsConstract {
 
         void shareInfo(Bitmap bitmap);
 
-        void handleCollect(boolean isCollected, final String news_id);
+        void handleCollect(boolean isCollected, final long answer_id);
 
         void deleteComment(AnswerCommentListBean data);
 
-        void handleLike(boolean isLiked, final String news_id);
-
-        boolean isCollected();
-
-        boolean isDiged();
+        void handleLike(boolean isLiked, final long answer_id);
 
         void reqReWardsData(int id);
 
@@ -84,6 +80,15 @@ public interface AnswerDetailsConstract {
 
         Observable<AnswerInfoBean> getAnswerDetail(long answer_id);
 
+        void handleCollect(boolean isCollected, long answer_id);
 
+        void handleLike(boolean isLiked, final long answer_id);
+
+        void sendComment(String comment_content, long answer_id,
+                         long reply_to_user_id, long comment_mark);
+
+        void deleteComment(long answer_id, long comment_id);
+
+        Observable<BaseJsonV2<Object>> deleteAnswer(long answer_id);
     }
 }
