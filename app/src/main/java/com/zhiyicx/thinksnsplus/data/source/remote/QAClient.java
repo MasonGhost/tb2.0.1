@@ -109,6 +109,13 @@ public interface QAClient {
     @GET(ApiConfig.APP_PATH_GET_TOPIC_DETAIL)
     Observable<QATopicBean> getTopicDetail(@Path("topic") String topic_id);
 
+    /**
+     * 获取问题详情
+     * @param question_id 问题id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
+    Observable<QAListInfoBean> getQuestionDetail(@Path("question") String question_id);
     /*******************************************  打赏  *********************************************/
 
 
@@ -136,6 +143,4 @@ public interface QAClient {
     @GET(APP_PATH_QA_ANSWER_REWARD_USER_LIST)
     Observable<List<RewardsListBean>> rewardQAList(@Path("answer_id") long answer_id, @Query("limit") Integer limit
             , @Query("offset") Integer offset, @Query("type") String order_type);
-
-
 }

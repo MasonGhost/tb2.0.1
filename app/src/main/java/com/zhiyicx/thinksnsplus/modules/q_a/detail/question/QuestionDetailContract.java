@@ -6,6 +6,8 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
+import rx.Observable;
+
 /**
  * @author Catherine
  * @describe
@@ -25,6 +27,6 @@ public interface QuestionDetailContract {
     }
 
     interface Repository extends IBasePublishQuestionRepository{
-
+        Observable<QAListInfoBean> getQuestionDetail(String questionId);
     }
 }

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
@@ -10,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
 
 /**
  * @author Catherine
@@ -32,11 +35,6 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
-    public void getQuestionDetail(String questionId) {
-
-    }
-
-    @Override
     public List<AnswerInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }
@@ -45,5 +43,17 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     public boolean insertOrUpdateData(@NotNull List<AnswerInfoBean> data, boolean isLoadMore) {
         return false;
     }
+    @Override
+    public void getQuestionDetail(String questionId) {
+        Subscription subscription = mRepository.getQuestionDetail(questionId)
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<QAListInfoBean>() {
 
+                    @Override
+                    protected void onSuccess(QAListInfoBean data) {
+                        mRootView.setQuestionDetail(data);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
 }
