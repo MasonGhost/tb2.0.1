@@ -82,4 +82,12 @@ public interface QAClient {
      */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_DETAIL)
     Observable<QATopicBean> getTopicDetail(@Path("topic") String topic_id);
+
+    /**
+     * 获取问题详情
+     * @param question_id 问题id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
+    Observable<QAListInfoBean> getQuestionDetail(@Path("question") String question_id);
 }
