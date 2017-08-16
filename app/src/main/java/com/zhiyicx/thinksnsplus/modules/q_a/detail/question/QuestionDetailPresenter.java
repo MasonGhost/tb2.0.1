@@ -46,8 +46,4 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         return false;
     }
 
-    @Override
-    public void getQuestionDetail(String questionId) {
-
-    }
 }
