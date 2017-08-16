@@ -100,7 +100,7 @@ public interface ISystemRepository {
      *
      * @return
      */
-    Observable<List<LocationContainerBean>> getHoCity();
+    Observable<List<String>> getHoCity();
 
 
 }

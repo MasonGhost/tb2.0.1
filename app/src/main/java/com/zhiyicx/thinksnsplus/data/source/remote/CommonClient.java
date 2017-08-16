@@ -292,7 +292,7 @@ public interface CommonClient {
      * @return
      */
     @GET(APP_PATH_SGET_HOT_CITY)
-    Observable<List<LocationContainerBean>> getHoCity();
+    Observable<List<String>> getHoCity();
 
     /*******************************************  后台任务处理  *********************************************/
 

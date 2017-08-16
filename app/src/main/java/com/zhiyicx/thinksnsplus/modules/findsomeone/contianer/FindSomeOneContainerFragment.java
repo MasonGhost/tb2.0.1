@@ -11,6 +11,10 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.services.geocoder.GeocodeAddress;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.github.tamir7.contacts.Contact;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ActivityUtils;
@@ -23,6 +27,7 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSe
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contacts.ContactsFragment;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.search.name.SearchSomeOneActivity;
+import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class FindSomeOneContainerFragment extends TSFragment {
+public class FindSomeOneContainerFragment extends TSFragment implements GeocodeSearch.OnGeocodeSearchListener {
     private static final int REQUST_CODE_LOCATION = 8200;
 
     @BindView(R.id.tv_toolbar_right)
@@ -155,10 +160,10 @@ public class FindSomeOneContainerFragment extends TSFragment {
             case R.id.tv_toolbar_right_two:
                 mRxPermissions.request(android.Manifest.permission.READ_CONTACTS)
                         .subscribe(aBoolean -> {
-                            if(aBoolean){
-                                ContactsFragment.startToEditTagActivity(getActivity(),null,null);
-                            }else {
-                              showSnackErrorMessage(getString(R.string.contacts_permission_tip));
+                            if (aBoolean) {
+                                ContactsFragment.startToEditTagActivity(getActivity(), null, null);
+                            } else {
+                                showSnackErrorMessage(getString(R.string.contacts_permission_tip));
                             }
 
                         });
@@ -177,15 +182,50 @@ public class FindSomeOneContainerFragment extends TSFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && data.getExtras() != null) {
             LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
+            String locationStr;
             try {
-                String locationStr = LocationBean.getlocation(locationBean);
+                locationStr = LocationBean.getlocation(locationBean);
                 String[] result = locationStr.split("，");
-                mTvToolbarRight.setText(result[result.length - 1]);
-            }catch (Exception e){
-                mTvToolbarRight.setText(locationBean.getName());
+                if (result.length > 3) {
+                    mTvToolbarRight.setText(result[result.length - 1]);
+                } else {
+                    mTvToolbarRight.setText(result[result.length - 2]);
+                }
+                LocationUtils.getLatlon(locationStr, getContext(), this);
+            } catch (Exception e) {
+                locationStr = locationBean.getName();
+                mTvToolbarRight.setText(locationStr);
             }
+            LocationUtils.getLatlon(locationBean.getName(), getContext(), this);
 
         }
+
+    }
+
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
+
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+        if (i == 1000) {
+            if (geocodeResult != null && geocodeResult.getGeocodeAddressList() != null &&
+                    geocodeResult.getGeocodeAddressList().size() > 0) {
+                GeocodeAddress geocodeAddress = geocodeResult.getGeocodeAddressList().get(0);
+                double latitude = geocodeAddress.getLatLonPoint().getLatitude();//纬度
+                double longititude = geocodeAddress.getLatLonPoint().getLongitude();//经度
+                // TODO: 2017/8/16 附近的人
+
+            } else {
+                LogUtils.e("地址名出错");
+            }
+        }
+
+    }
+
+    @Override
+    public void setPresenter(Object presenter) {
 
     }
 }

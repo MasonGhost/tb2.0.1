@@ -37,6 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;

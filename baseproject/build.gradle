@@ -83,6 +83,7 @@ dependencies {
     }
     compile dataDependences.umeng
     compile dataDependences.amapLocation
+    compile dataDependences.amapSearch
     provided dataDependences.javaxAnnotation
     provided dataDependences.daggerCompiler
     annotationProcessor dataDependences.daggerCompiler
@@ -93,6 +94,5 @@ dependencies {
     compile project(':ucrop')
     compile project(':pickerview')
     compile project(':PhotoPicker')
-    compile 'com.android.support:support-v4:25.0.1'
     compile project(':overscrolllib')
 }

@@ -400,7 +400,7 @@ public class SystemRepository implements ISystemRepository {
      * @return
      */
     @Override
-    public Observable<List<LocationContainerBean>> getHoCity() {
+    public Observable<List<String>> getHoCity() {
         return mCommonClient.getHoCity()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

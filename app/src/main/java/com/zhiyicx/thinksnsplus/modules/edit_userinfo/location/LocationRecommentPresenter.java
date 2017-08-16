@@ -48,6 +48,7 @@ public class LocationRecommentPresenter extends BasePresenter<LocationRecommentC
 
     @Inject
     SystemRepository mSystemRepository;
+
     @Inject
     public LocationRecommentPresenter(LocationRecommentContract.Repository repository, LocationRecommentContract.View
             rootView) {
@@ -58,18 +59,13 @@ public class LocationRecommentPresenter extends BasePresenter<LocationRecommentC
     @Override
     public void getHotCity() {
         Subscription subscribe = mSystemRepository.getHoCity()
-                .map(locationContainerBeen -> {
+                .map(hotCitys -> {
                     List<LocationBean> result = new ArrayList<>();
 
-                    for (LocationContainerBean locationContainerBean : locationContainerBeen) {
-                        if (locationContainerBean.getItems() == null || locationContainerBean.getItems().isEmpty()) {
-                            result.add(locationContainerBean.getTree());
-                        } else {
-                            for (LocationBean locationBean : locationContainerBean.getItems()) {
-                                locationBean.setParent(locationContainerBean.getTree());
-                                result.add(locationBean);
-                            }
-                        }
+                    for (String hotCity : hotCitys) {
+                        LocationBean locationBean = new LocationBean();
+                        locationBean.setName(hotCity);
+                        result.add(locationBean);
                     }
                     return result;
                 })
