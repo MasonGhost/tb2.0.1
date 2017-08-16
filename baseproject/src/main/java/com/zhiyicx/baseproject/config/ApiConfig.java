@@ -372,6 +372,8 @@ public class ApiConfig {
     // 删除答案 DELETE
     public static final String APP_PATH_DELETE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
     public static final String APP_PATH_DELETE_ANSWER_S = "api/" + API_VERSION_2 + "/question-answers/%s";
+    // 获取回答评论列表
+    public static final String APP_PATH_GET_ANSWER_COMMENTS = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/comments";
     /**
      * 通用 CommonClient
      */

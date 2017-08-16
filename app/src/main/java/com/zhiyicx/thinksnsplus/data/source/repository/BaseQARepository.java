@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 
-public class BasePublishQuestionRepository implements IBasePublishQuestionRepository {
+public class BaseQARepository implements IBasePublishQuestionRepository {
 
     protected QAClient mQAClient;
 
@@ -39,7 +39,7 @@ public class BasePublishQuestionRepository implements IBasePublishQuestionReposi
     Application mContext;
 
     @Inject
-    public BasePublishQuestionRepository(ServiceManager manager) {
+    public BaseQARepository(ServiceManager manager) {
         mQAClient = manager.getQAClient();
     }
 
