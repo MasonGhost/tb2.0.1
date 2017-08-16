@@ -275,7 +275,7 @@ public interface UserInfoContract {
          *
          * @return
          */
-        Observable<CheckInBean> checkIn();
+        Observable<Object> checkIn();
 
         /**
          * 连续签到排行榜

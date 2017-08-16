@@ -18,6 +18,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -56,9 +57,13 @@ public class CheckInPopWindow extends PopupWindow {
     private RecyclerView.LayoutManager mLayoutManager;
     private CommonAdapter mCommonAdapter;
     private List<UserInfoBean> mListData = new ArrayList<>();
+    private OnCheckInClickListener mOnCheckInClickListener;
+    private CheckInBean mCheckInBean;
 
-    public CheckInPopWindow(View parentView) {
+    public CheckInPopWindow(View parentView, CheckInBean checkInBean, OnCheckInClickListener l) {
         this.mParentView = parentView;
+        this.mOnCheckInClickListener = l;
+        this.mCheckInBean = checkInBean;
         initLayout();
         initData();
     }
@@ -69,12 +74,7 @@ public class CheckInPopWindow extends PopupWindow {
 
     protected void initLayout() {
         mContentView = LayoutInflater.from(mParentView.getContext()).inflate(R.layout.pop_check_in, null);
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                setWindowAlpha(1.0f);
-            }
-        });
+        setOnDismissListener(() -> setWindowAlpha(1.0f));
         setWidth(isWrap ? LinearLayout.LayoutParams.WRAP_CONTENT : LinearLayout.LayoutParams.MATCH_PARENT);
         setHeight(isWrap ? LinearLayout.LayoutParams.WRAP_CONTENT : LinearLayout.LayoutParams.MATCH_PARENT);
         setOutsideTouchable(true);
@@ -86,15 +86,19 @@ public class CheckInPopWindow extends PopupWindow {
 
         mContentView.findViewById(R.id.iv_cancle).setOnClickListener(view -> dismiss());
         mTvTotalCheckIn = (TextView) mContentView.findViewById(R.id.tv_total_check_in);
-        mTvTotalCheckIn.setText(mParentView.getContext().getString(R.string.check_in_total_day_format, 6));
 
         mTvTotoalGold = (TextView) mContentView.findViewById(R.id.tv_totoal_gold);
-        mTvTotoalGold.setText("300");
 
         mTvCheckInGetGold = (TextView) mContentView.findViewById(R.id.tv_check_in_get_gold);
-        mTvCheckInGetGold.setText(mParentView.getContext().getString(R.string.check_in_today_get_gold_format, 6));
 
         mTvCheckIn = (TextView) mContentView.findViewById(R.id.tv_check_in);
+        RxView.clicks(mTvCheckIn)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    if (mOnCheckInClickListener != null) {
+                        mOnCheckInClickListener.onCheckInClick();
+                    }
+                });
 
 
         mRvUserCheckInList = (RecyclerView) mContentView.findViewById(R.id.rv_user_check_in_list);
@@ -104,24 +108,39 @@ public class CheckInPopWindow extends PopupWindow {
         mRvUserCheckInList.setHasFixedSize(true);
         mRvUserCheckInList.addItemDecoration(new LinearDecoration(0, 0, mParentView.getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small), 0));
 
-        UserInfoBean e = new UserInfoBean();
-        e.setUser_id(3l);
-        mListData.add(e);
 
         mCommonAdapter = new CommonAdapter<UserInfoBean>(mParentView.getContext(), R.layout.item_check_in_user, mListData) {
             @Override
             protected void convert(ViewHolder holder, UserInfoBean userInfoBean, int position) {
 
-                ImageUtils.loadUserHead(userInfoBean, (ImageView) holder.getView(com.zhiyicx.thinksnsplus.R.id.iv_head), false);
-                holder.setText(R.id.tv_rank, String.valueOf(position+1));
-                RxView.clicks(holder.getView(com.zhiyicx.thinksnsplus.R.id.iv_head))
+                ImageUtils.loadUserHead(userInfoBean, (ImageView) holder.getView(R.id.iv_head), false);
+                holder.setText(R.id.tv_rank, String.valueOf(position + 1));
+                RxView.clicks(holder.getView(R.id.iv_head))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean));
 
             }
         };
         mRvUserCheckInList.setAdapter(mCommonAdapter);
+        setData(mCheckInBean);
+    }
 
+    /**
+     * 更新数据
+     *
+     * @param checkInBean
+     */
+    public void setData(CheckInBean checkInBean) {
+        mTvTotalCheckIn.setText(mParentView.getContext().getString(R.string.check_in_total_day_format, checkInBean.getLast_checkin_count()));
+        mTvTotoalGold.setText("+" + checkInBean.getAttach_balance());
+        mListData.clear();
+        mListData.addAll(checkInBean.getRank_users());
+        mCommonAdapter.notifyDataSetChanged();
+        if(checkInBean.isChecked_in()){
+            mTvCheckIn.setEnabled(false);
+        }else {
+            mTvCheckIn.setEnabled(true);
+        }
     }
 
 
@@ -137,6 +156,8 @@ public class CheckInPopWindow extends PopupWindow {
         }
     }
 
+
+
     private void setWindowAlpha(float alpha) {
         try {
             WindowManager.LayoutParams params = ((Activity) mParentView.getContext()).getWindow().getAttributes();
@@ -147,5 +168,8 @@ public class CheckInPopWindow extends PopupWindow {
         }
     }
 
+    public interface OnCheckInClickListener {
+        void onCheckInClick();
+    }
 
 }

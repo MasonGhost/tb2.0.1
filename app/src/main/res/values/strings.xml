@@ -447,7 +447,7 @@
     <string name="check_in">签到</string>
     <string name="check_in_today">每日签到</string>
     <string name="check_in_total_day_format">累计签到%d天</string>
-    <string name="check_in_today_get_gold_format">签到得金币+%d</string>
+    <string name="check_in_today_get_gold">每日签到得金币</string>
 
     <!--找人-->
     <string name="contacts">通讯录</string>

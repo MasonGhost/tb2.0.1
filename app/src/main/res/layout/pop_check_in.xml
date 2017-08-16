@@ -73,7 +73,7 @@
             android:layout_marginTop="@dimen/spacing_small"
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_icon_assist"
-            tools:text="签到得金币+5"/>
+            android:text="@string/check_in_today_get_gold"/>
 
 
         <TextView

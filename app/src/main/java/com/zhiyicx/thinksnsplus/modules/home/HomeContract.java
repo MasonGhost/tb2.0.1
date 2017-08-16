@@ -2,6 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.home;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+
+import java.util.List;
 
 /**
  * @Describe
@@ -38,8 +42,17 @@ public interface HomeContract {
 
         /**
          * 签到
+         *
+         * @param data
          */
-        void showCheckInPop();
+        void showCheckInPop(CheckInBean data);
+
+        /**
+         * 获取本地签到信息
+         *
+         * @return
+         */
+        CheckInBean getCheckInData();
     }
 
     /**
@@ -63,5 +76,15 @@ public interface HomeContract {
          * 处理游客模式点击处理
          */
         boolean handleTouristControl();
+
+        /**
+         * 签到
+         */
+        void checkIn();
+
+        /**
+         * 获取签到信息
+         */
+        void getCheckInInfo();
     }
 }

@@ -355,7 +355,7 @@ public interface UserInfoClient {
      * @return
      */
     @PUT(APP_PATH_CHECK_IN)
-    Observable<CheckInBean> checkIn();
+    Observable<Object> checkIn();
 
     /**
      * 连续签到排行榜

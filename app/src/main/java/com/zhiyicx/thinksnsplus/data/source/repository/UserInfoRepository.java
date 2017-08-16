@@ -545,7 +545,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<CheckInBean> checkIn() {
+    public Observable<Object> checkIn() {
         return mUserInfoClient.checkIn()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

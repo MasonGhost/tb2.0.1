@@ -16,8 +16,11 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
 import com.zhiyicx.thinksnsplus.widget.IconTextView;
 
@@ -91,15 +94,16 @@ public class SelectDynamicTypeFragment extends TSFragment implements PhotoSelect
         Observable.timer(300, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> initAnimation(mSendImageDynamic));
-// // TODO: 2017/8/10  等待服务器接口 
-//        if(mType==SendDynamicDataBean.NORMAL_DYNAMIC){
-//            mCheckIn.setVisibility(View.INVISIBLE);
-//            Observable.timer(600, TimeUnit.MILLISECONDS)
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(aLong -> initAnimation(mCheckIn));
-//        }else {
-        mCheckIn.setVisibility(View.GONE);
-//        }
+        SystemConfigBean systemConfigBean = SharePreferenceUtils.getObject(getContext(), SharePreferenceTagConfig.SHAREPREFERENCE_TAG_SYSTEM_BOOTSTRAPPERS);
+
+        if (systemConfigBean != null && systemConfigBean.isCheckin() && mType == SendDynamicDataBean.NORMAL_DYNAMIC) {
+            mCheckIn.setVisibility(View.INVISIBLE);
+            Observable.timer(600, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(aLong -> initAnimation(mCheckIn));
+        } else {
+            mCheckIn.setVisibility(View.GONE);
+        }
 
 
     }

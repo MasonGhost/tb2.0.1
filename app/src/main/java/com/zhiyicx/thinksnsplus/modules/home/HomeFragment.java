@@ -12,10 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.config.TouristConfig;
@@ -25,13 +21,14 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -111,6 +108,8 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
     private CheckInPopWindow mCheckInPopWindow; // 签到弹窗
+
+    private CheckInBean mCheckInBean; // 签到信息
 
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
@@ -465,9 +464,25 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
-    public void showCheckInPop() {
-        mCheckInPopWindow = new CheckInPopWindow(getContentView());
-        mCheckInPopWindow.show();
+    public CheckInBean getCheckInData() {
+        return mCheckInBean;
+    }
+
+    @Override
+    public void showCheckInPop(CheckInBean data) {
+
+        this.mCheckInBean = data;
+        if (mCheckInPopWindow != null) {
+            if (mCheckInPopWindow.isShowing()) {
+                mCheckInPopWindow.setData(mCheckInBean);
+            } else {
+                mCheckInPopWindow.setData(mCheckInBean);
+                mCheckInPopWindow.show();
+            }
+        } else {
+            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, () -> mPresenter.checkIn());
+            mCheckInPopWindow.show();
+        }
     }
 
 }
