@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @Describe 我的排行榜
+ * @Describe 打赏排行榜
  * @Author Jungle68
  * @Date 2017/1/
  * @Contact master.jungle68@gmail.com
