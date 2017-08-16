@@ -70,9 +70,10 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
                 boolean status_success = recharge.getStatus() == 1;
                 int action = recharge.getAction();
                 desc.setEnabled(status_success);
-                String moneyStr=String.format(Locale.getDefault(),getString(R.string.dynamic_send_toll_select_money_),
+                String moneyStr = String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
                         PayConfig.realCurrencyFen2Yuan(recharge.getAmount()));
-                desc.setText(status_success ? (action == 0 ? "- " +  moneyStr: "+ " +moneyStr) : getString(R.string.bill_doing));
+                desc.setText(status_success ? (action == 0 ? "- " + moneyStr : "+ " + moneyStr) :
+                        getString(recharge.getStatus() == 0 ? R.string.bill_doing : R.string.transaction_fail));
                 account.setText(getDes(recharge));
                 time.setText(TimeUtils.string2_ToDya_Yesterday_Week(recharge.getCreated_at()));
             }
@@ -135,7 +136,7 @@ public class BillListFragment extends TSListFragment<BillContract.Presenter, Rec
 
     @Override
     protected String setCenterTitle() {
-        mToolbarCenter.getLayoutParams().width= ViewGroup.LayoutParams.WRAP_CONTENT;
+        mToolbarCenter.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
         mToolbarCenter.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ico_detail_arrowdown, 0);
         return getString(R.string.detail);
     }

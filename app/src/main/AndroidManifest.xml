@@ -456,7 +456,11 @@
         <activity
             android:name=".modules.q_a.answer.PublishAnswerActivity"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
-
+        <activity
+            android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
     </application>
 
 </manifest>

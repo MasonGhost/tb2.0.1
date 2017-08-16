@@ -32,6 +32,11 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
+    public void getQuestionDetail(String questionId) {
+
+    }
+
+    @Override
     public List<AnswerInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
         return null;
     }

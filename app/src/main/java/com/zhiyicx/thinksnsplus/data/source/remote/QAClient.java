@@ -2,6 +2,8 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
@@ -53,6 +55,25 @@ public interface QAClient {
     @GET(ApiConfig.APP_PATH_GET_ALL_TOPIC)
     Observable<List<QATopicBean>> getQATopic(@Query("name") String name, @Query
             ("after") Long after, @Query("follow") Long follow, @Query("limit") Long limit);
+
+    /**
+     * 获取回答的详细信息
+     * @param answer_id 回答 id
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_ANSWER_DETAIL)
+    Observable<AnswerInfoBean> getAnswerDetail(@Path("answer_id") long answer_id);
+
+    /**
+     * 获取回答评论列表
+     * @param answer_id 回答 id
+     * @param after
+     * @param limit
+     * @return
+     */
+    @GET(ApiConfig.APP_PATH_GET_ANSWER_COMMENTS)
+    Observable<List<AnswerCommentListBean>> getAnswerCommentList(@Path("answer_id") long answer_id, @Query
+            ("after") Long after, @Query("limit") Long limit);
 
     /**
      * @param type  默认值为 follow 代表用户关注的话题列表，如果值为 expert 则获取该用户的专家话题（哪些话题下是专家）。
