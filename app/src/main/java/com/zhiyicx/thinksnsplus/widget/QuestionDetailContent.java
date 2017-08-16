@@ -106,6 +106,7 @@ public class QuestionDetailContent extends FrameLayout {
             dealContent(content, list);
             // 如果有图片 那么显示封面
             mItemInfoImage.setVisibility(VISIBLE);
+            mMdvQuestionContent.setVisibility(GONE);
             int w = DeviceUtils.getScreenWidth(mContext);
             int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
             String url = ImageUtils.imagePathConvertV2(list.get(0).getStorage_id(), w, h, ImageZipConfig.IMAGE_80_ZIP);
@@ -125,7 +126,7 @@ public class QuestionDetailContent extends FrameLayout {
                 public void onExpand(ExpandableTextView view) {
                     // 展开后 隐藏内容，显示图文混排内容
                     mLlContentPreview.setVisibility(GONE);
-                    mMdvQuestionContent.setVisibility(GONE);
+                    mMdvQuestionContent.setVisibility(VISIBLE);
                 }
 
                 @Override
@@ -134,6 +135,7 @@ public class QuestionDetailContent extends FrameLayout {
                 }
             });
         } else {
+            mMdvQuestionContent.setVisibility(VISIBLE);
             mItemInfoImage.setVisibility(GONE);
             mTvQuestionContent.setText(content);
         }

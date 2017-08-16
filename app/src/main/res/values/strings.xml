@@ -470,6 +470,7 @@
     <string name="qa_answer_list_order_default">默认排序</string>
     <string name="qa_answer_list_order_by_time">按时间排序</string>
     <string name="qa_answer_count">%d 个回答</string>
+    <string name="qa_title_question_detail">问题详情</string>
 
     <!--签到-->
     <string name="check_in">签到</string>

@@ -2,16 +2,20 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -29,6 +33,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     private QAListInfoBean mQaListInfoBean;
     private QuestionDetailHeader mQuestionDetailHeader;
+    private String mCurrentOrderType;
 
     public QuestionDetailFragment instance(Bundle bundle){
         QuestionDetailFragment fragment = new QuestionDetailFragment();
@@ -40,6 +45,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         initHeaderView();
+        mCurrentOrderType = mQuestionDetailHeader.getCurrentOrderType();
     }
 
     @Override
@@ -62,14 +68,50 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void setQuestionDetail(QAListInfoBean questionDetail) {
-        mQuestionDetailHeader.setDetail(questionDetail);
+    protected String setCenterTitle() {
+        return getString(R.string.qa_title_question_detail);
+    }
 
+    @Override
+    public void setQuestionDetail(QAListInfoBean questionDetail) {
+        this.mQaListInfoBean = questionDetail;
+        mQuestionDetailHeader.setDetail(questionDetail);
+        onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeenList(), false);
     }
 
     @Override
     public QAListInfoBean getCurrentQuestion() {
         return mQaListInfoBean;
+    }
+
+    @Override
+    public String getCurrentOrderType() {
+        return mCurrentOrderType;
+    }
+
+    @Override
+    public int getRealSize() {
+        int size = mListDatas.size();
+        if (mQaListInfoBean != null){
+            if (mQaListInfoBean.getInvitation_answers() != null){
+                size = size - mQaListInfoBean.getInvitation_answers().size();
+            }
+            if (mQaListInfoBean.getAdoption_answers() != null){
+                size = size - mQaListInfoBean.getAdoption_answers().size();
+            }
+        }
+        return size;
+    }
+
+    @Override
+    public void onNetResponseSuccess(@NotNull List<AnswerInfoBean> data, boolean isLoadMore) {
+        if (!isLoadMore) {
+            if (data.isEmpty()) { // 空白展位图
+                AnswerInfoBean emptyData = new AnswerInfoBean();
+                data.add(emptyData);
+            }
+        }
+        super.onNetResponseSuccess(data, isLoadMore);
     }
 
     @Override
@@ -88,8 +130,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void onChangeListOrderClick(int orderType) {
-
+    public void onChangeListOrderClick(String orderType) {
+        mCurrentOrderType = orderType;
     }
 
     private void initHeaderView() {
