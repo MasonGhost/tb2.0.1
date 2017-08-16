@@ -33,13 +33,15 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Description
  */
 public class StickTopFragment extends TSFragment<StickTopContract.Presenter> implements StickTopContract.View {
-
+    /**
+     * 如果只有 parent_id ，就是动态或者资讯的操作，如果有 child_id 则表示 评论
+     */
     public static final String PARENT_ID = "parent_id";
     public static final String CHILD_ID = "child_id";
 
-    public static final String TYPE_DYNAMIC = "dynamic";
-    public static final String TYPE_INFO = "info";
-    public static final String TYPE = "type";
+    public static final String TYPE_DYNAMIC = "dynamic"; // value 动态置顶
+    public static final String TYPE_INFO = "info";  // value 资讯置顶
+    public static final String TYPE = "type";    // 置顶的 key
 
     @BindView(R.id.rb_one)
     RadioButton mRbOne;
