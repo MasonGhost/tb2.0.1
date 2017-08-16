@@ -4,11 +4,11 @@ import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
@@ -20,20 +20,10 @@ import java.io.Serializable;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class InfoDigListBean extends BaseListBean implements Serializable{
+public class AnswerDigListBean extends BaseListBean implements Serializable {
 
     @Transient
     private static final long serialVersionUID = 5985608387262498425L;
-
-    /*{
-        "id": 5,
-            "user_id": 1,
-            "target_user": 1,
-            "likeable_id": 4,
-            "likeable_type": "news",
-            "created_at": "2017-08-08 02:25:34",
-            "updated_at": "2017-08-08 02:25:34"
-    }*/
 
     @Id
     private Long id;
@@ -48,8 +38,37 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
     private String created_at;
     private String updated_at;
 
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 1064328054)
+    private transient AnswerDigListBeanDao myDao;
+
+    @Generated(hash = 1486280086)
+    public AnswerDigListBean(Long id, Long user_id, Long target_user,
+                             Long likeable_id, String likeable_type, String created_at,
+                             String updated_at) {
+        this.id = id;
+        this.user_id = user_id;
+        this.target_user = target_user;
+        this.likeable_id = likeable_id;
+        this.likeable_type = likeable_type;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
+
+    @Generated(hash = 1766442027)
+    public AnswerDigListBean() {
+    }
+
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -57,7 +76,7 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
     }
 
     public Long getUser_id() {
-        return user_id;
+        return this.user_id;
     }
 
     public void setUser_id(Long user_id) {
@@ -65,7 +84,7 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
     }
 
     public Long getTarget_user() {
-        return target_user;
+        return this.target_user;
     }
 
     public void setTarget_user(Long target_user) {
@@ -73,7 +92,7 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
     }
 
     public Long getLikeable_id() {
-        return likeable_id;
+        return this.likeable_id;
     }
 
     public void setLikeable_id(Long likeable_id) {
@@ -81,7 +100,7 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
     }
 
     public String getLikeable_type() {
-        return likeable_type;
+        return this.likeable_type;
     }
 
     public void setLikeable_type(String likeable_type) {
@@ -89,7 +108,7 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
     }
 
     public String getCreated_at() {
-        return created_at;
+        return this.created_at;
     }
 
     public void setCreated_at(String created_at) {
@@ -97,37 +116,24 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
     }
 
     public String getUpdated_at() {
-        return updated_at;
+        return this.updated_at;
     }
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+    @Generated(hash = 1533677598)
+    private transient Long diggUserInfo__resolvedKey;
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeValue(this.user_id);
-        dest.writeParcelable(this.diggUserInfo, flags);
-        dest.writeValue(this.target_user);
-        dest.writeParcelable(this.targetUserInfo, flags);
-        dest.writeValue(this.likeable_id);
-        dest.writeString(this.likeable_type);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-    }
-
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1218409191)
     public UserInfoBean getDiggUserInfo() {
         Long __key = this.user_id;
-        if (diggUserInfo__resolvedKey == null || !diggUserInfo__resolvedKey.equals(__key)) {
+        if (diggUserInfo__resolvedKey == null
+                || !diggUserInfo__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -142,7 +148,9 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
         return diggUserInfo;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 165058629)
     public void setDiggUserInfo(UserInfoBean diggUserInfo) {
         synchronized (this) {
@@ -152,7 +160,12 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 437417732)
+    private transient Long targetUserInfo__resolvedKey;
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 368057598)
     public UserInfoBean getTargetUserInfo() {
         Long __key = this.target_user;
@@ -172,12 +185,15 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
         return targetUserInfo;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 875470237)
     public void setTargetUserInfo(UserInfoBean targetUserInfo) {
         synchronized (this) {
             this.targetUserInfo = targetUserInfo;
-            target_user = targetUserInfo == null ? null : targetUserInfo.getUser_id();
+            target_user = targetUserInfo == null ? null
+                    : targetUserInfo.getUser_id();
             targetUserInfo__resolvedKey = target_user;
         }
     }
@@ -218,17 +234,33 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
         myDao.update(this);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.user_id);
+        dest.writeParcelable(this.diggUserInfo, flags);
+        dest.writeValue(this.target_user);
+        dest.writeParcelable(this.targetUserInfo, flags);
+        dest.writeValue(this.likeable_id);
+        dest.writeString(this.likeable_type);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+    }
+
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1346392406)
+    @Generated(hash = 1264428331)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getInfoDigListBeanDao() : null;
+        myDao = daoSession != null ? daoSession.getAnswerDigListBeanDao() : null;
     }
 
-    public InfoDigListBean() {
-    }
-
-    protected InfoDigListBean(Parcel in) {
+    protected AnswerDigListBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.user_id = (Long) in.readValue(Long.class.getClassLoader());
@@ -241,37 +273,15 @@ public class InfoDigListBean extends BaseListBean implements Serializable{
         this.updated_at = in.readString();
     }
 
-    @Generated(hash = 1708798229)
-    public InfoDigListBean(Long id, Long user_id, Long target_user, Long likeable_id,
-            String likeable_type, String created_at, String updated_at) {
-        this.id = id;
-        this.user_id = user_id;
-        this.target_user = target_user;
-        this.likeable_id = likeable_id;
-        this.likeable_type = likeable_type;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-    }
-
-    public static final Creator<InfoDigListBean> CREATOR = new Creator<InfoDigListBean>() {
+    public static final Creator<AnswerDigListBean> CREATOR = new Creator<AnswerDigListBean>() {
         @Override
-        public InfoDigListBean createFromParcel(Parcel source) {
-            return new InfoDigListBean(source);
+        public AnswerDigListBean createFromParcel(Parcel source) {
+            return new AnswerDigListBean(source);
         }
 
         @Override
-        public InfoDigListBean[] newArray(int size) {
-            return new InfoDigListBean[size];
+        public AnswerDigListBean[] newArray(int size) {
+            return new AnswerDigListBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 759446959)
-    private transient InfoDigListBeanDao myDao;
-    @Generated(hash = 1533677598)
-    private transient Long diggUserInfo__resolvedKey;
-    @Generated(hash = 437417732)
-    private transient Long targetUserInfo__resolvedKey;
 }

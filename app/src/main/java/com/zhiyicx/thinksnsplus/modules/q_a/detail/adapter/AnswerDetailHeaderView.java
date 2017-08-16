@@ -1,22 +1,16 @@
-package com.zhiyicx.thinksnsplus.modules.information.adapter;
+package com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,14 +19,13 @@ import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.base.BaseApplication;
-import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
@@ -48,13 +41,9 @@ import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
-import com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout;
-import com.zhiyicx.thinksnsplus.widget.flowtag.OnInitSelectedPosition;
 import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.view.flowlayout.TagFlowLayout;
-import com.zzhoujay.markdown.MarkDown;
 import com.zzhoujay.richtext.ImageHolder;
 import com.zzhoujay.richtext.RichText;
 
@@ -70,7 +59,6 @@ import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @author Catherine
@@ -79,22 +67,20 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
  * @contact email:648129313@qq.com
  */
 
-public class InfoDetailHeaderView {
+public class AnswerDetailHeaderView {
 
+    private UserAvatarView mUserAvatarView;
+    private TextView mName;
+    private TextView mDescription;
+    private CheckBox mUserFollow;
     private MarkdownView mContent;
-    private TextView mContentSubject;
-    private TextView mContentText;
-    private TextView mTitle;
-    private TextView mChannel;
-    private TextView mFrom;
+
     private DynamicHorizontalStackIconView mDigListView;
     private ReWardView mReWardView;
     private FrameLayout mCommentHintView;
     private TextView mCommentCountView;
-    private FrameLayout mInfoRelateList;
-    private TagFlowLayout mFtlRelate;
-    private RecyclerView mRvRelateInfo;
-    private View mInfoDetailHeader;
+
+    private View mAnswerDetailHeader;
     private Context mContext;
     private int screenWidth;
     private int picWidth;
@@ -105,54 +91,45 @@ public class InfoDetailHeaderView {
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
 
-    public View getInfoDetailHeader() {
-        return mInfoDetailHeader;
+    public View getAnswerDetailHeader() {
+        return mAnswerDetailHeader;
     }
 
-    public InfoDetailHeaderView(Context context, List<RealAdvertListBean> adverts) {
+    public AnswerDetailHeaderView(Context context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mImgList = new ArrayList<>();
         animationRectBeanArrayList = new ArrayList<>();
-        mInfoDetailHeader = LayoutInflater.from(context).inflate(R.layout
-                .item_info_comment_web, null);
-        mInfoDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
+
+        mAnswerDetailHeader = LayoutInflater.from(context).inflate(R.layout
+                .item_answer_comment_header, null);
+
+        mAnswerDetailHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-        mTitle = (TextView) mInfoDetailHeader.findViewById(R.id.tv_info_title);
-        mChannel = (TextView) mInfoDetailHeader.findViewById(R.id.tv_from_channel);
-        mFrom = (TextView) mInfoDetailHeader.findViewById(R.id.item_info_timeform);
-        mContent = (MarkdownView) mInfoDetailHeader.findViewById(R.id.info_detail_content);
-        mContentSubject = (TextView) mInfoDetailHeader.findViewById(R.id.info_content_subject);
-        mContentText = (TextView) mInfoDetailHeader.findViewById(R.id.info_content);
-        mDigListView = (DynamicHorizontalStackIconView) mInfoDetailHeader.findViewById(R.id.detail_dig_view);
-        mReWardView = (ReWardView) mInfoDetailHeader.findViewById(R.id.v_reward);
-        mCommentHintView = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_detail_comment);
-        mCommentCountView = (TextView) mInfoDetailHeader.findViewById(R.id.tv_comment_count);
-        mInfoRelateList = (FrameLayout) mInfoDetailHeader.findViewById(R.id.info_relate_list);
-        mFtlRelate = (TagFlowLayout) mInfoDetailHeader.findViewById(R.id.fl_tags);
-        mRvRelateInfo = (RecyclerView) mInfoDetailHeader.findViewById(R.id.rv_relate_info);
-        mIvDetail = (ImageView) mInfoDetailHeader.findViewById(R.id.iv_detail);
+
+        mUserAvatarView = (UserAvatarView) mAnswerDetailHeader.findViewById(R.id.iv_head_icon);
+        mName = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_user_name);
+        mDescription = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_user_desc);
+        mUserFollow = (CheckBox) mAnswerDetailHeader.findViewById(R.id.tv_user_follow);
+        mContent = (MarkdownView) mAnswerDetailHeader.findViewById(R.id.answer_detail_content);
+        mDigListView = (DynamicHorizontalStackIconView) mAnswerDetailHeader.findViewById(R.id.detail_dig_view);
+        mReWardView = (ReWardView) mAnswerDetailHeader.findViewById(R.id.v_reward);
+        mCommentHintView = (FrameLayout) mAnswerDetailHeader.findViewById(R.id.answer_detail_comment);
+        mCommentCountView = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_comment_count);
+        mIvDetail = (ImageView) mAnswerDetailHeader.findViewById(R.id.iv_detail);
+
         if (adverts != null) {
             initAdvert(context, adverts);
         }
     }
 
-    public void setDetail(InfoListDataBean infoMain) {
-        if (infoMain != null) {
-            mTitle.setText(infoMain.getTitle());
-            mChannel.setVisibility(infoMain.getCategory() == null ? GONE : VISIBLE);
-            mChannel.setText(infoMain.getCategory() == null ? "" : infoMain.getCategory().getName());
-            String from = infoMain.getFrom().equals(mContext.getString(R.string.info_publish_original)) ?
-                    infoMain.getAuthor() : infoMain.getFrom();
-            String infoData = String.format(mContext.getString(R.string.info_list_count)
-                    , from, infoMain.getHits(), TimeUtils.getTimeFriendlyNormal(infoMain
-                            .getUpdated_at()));
-            mFrom.setText(infoData);
+    public void setDetail(AnswerInfoBean answerInfoBean) {
+        if (answerInfoBean != null) {
             // 资讯content
-            if (!TextUtils.isEmpty(infoMain.getContent())) {
+            if (!TextUtils.isEmpty(answerInfoBean.getBody())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 10px");
                 mContent.addStyleSheet(css);
-                mContent.loadMarkdown(dealPic(infoMain.getContent()));
+                mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
                     @Override
                     public void onButtonTap(String s) {
@@ -197,20 +174,13 @@ public class InfoDetailHeaderView {
 
                     }
                 });
-                showMarkDownView(mContentSubject, dealPic(infoMain.getSubject()));
-//                mContentText.post(() -> {
-//                    Spanned spanned = MarkDown.fromMarkdown(dealPic(dealPic(infoMain.getContent())), source -> {
-//                        LogUtils.d("Cathy", "source // " + source);
-//                        Drawable drawable = new ColorDrawable(Color.LTGRAY);
-//                        drawable.setBounds(0, 0, mContentText.getWidth() - mContentText.getPaddingLeft() - mContentText.getPaddingRight(), 400);
-//                        return drawable;
-//                    }, mContentText);
-//                    mContentText.setText(spanned);
-//                });
             }
-
+            ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false);
+            mName.setText(answerInfoBean.getUser().getName());
+            mDescription.setText(answerInfoBean.getUser().getExtra().describeContents());
+            mUserFollow.setChecked(answerInfoBean.getUser().isFollower());
             // 评论信息
-            updateCommentView(infoMain);
+            updateCommentView(answerInfoBean);
         }
     }
 
@@ -234,7 +204,7 @@ public class InfoDetailHeaderView {
     }
 
     private void initAdvert(Context context, List<RealAdvertListBean> adverts) {
-        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mInfoDetailHeader
+        mDynamicDetailAdvertHeader = new DynamicDetailAdvertHeader(context, mAnswerDetailHeader
                 .findViewById(R.id.ll_advert));
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT || adverts.isEmpty()) {
             mDynamicDetailAdvertHeader.hideAdvert();
@@ -271,8 +241,8 @@ public class InfoDetailHeaderView {
     }
 
     private void dealImageList(String imgPath, String id) {
-        for (ImageBean item : mImgList){
-            if (item.getImgUrl().equals(imgPath)){
+        for (ImageBean item : mImgList) {
+            if (item.getImgUrl().equals(imgPath)) {
                 return;
             }
         }
@@ -289,31 +259,31 @@ public class InfoDetailHeaderView {
         try {
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvDetail);// 动画矩形
             animationRectBeanArrayList.add(rect);
-        } catch (Exception e){
+        } catch (Exception e) {
             LogUtils.d("Cathy", e.toString());
         }
 
     }
 
-    public void updateDigList(InfoListDataBean infoMain) {
-        if (infoMain == null) {
+    public void updateDigList(AnswerInfoBean answerInfoBean) {
+        if (answerInfoBean == null) {
             return;
         }
         // 点赞信息
-        if (infoMain.getDigList() != null
-                && infoMain.getDigList().size() > 0) {
+        if (answerInfoBean.getLikes() != null
+                && answerInfoBean.getLikes().size() > 0) {
             mDigListView.setVisibility(VISIBLE);
-            mDigListView.setDigCount(infoMain.getDigg_count());
-            mDigListView.setPublishTime(infoMain.getUpdated_at());
-            mDigListView.setViewerCount(infoMain.getHits());
+            mDigListView.setDigCount(answerInfoBean.getLikes_count());
+            mDigListView.setPublishTime(answerInfoBean.getUpdated_at());
+            mDigListView.setViewerCount(answerInfoBean.getViews_count());
             // 设置点赞头像
-            mDigListView.setDigUserHeadIconInfo(infoMain.getDigList());
+            mDigListView.setDigUserHeadIconAnswer(answerInfoBean.getLikes());
 
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
                 Intent intent = new Intent(mContext, InfoDigListActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(InfoDigListActivity.BUNDLE_INFO_DIG, infoMain);
+                bundle.putSerializable(InfoDigListActivity.BUNDLE_INFO_DIG, answerInfoBean);
                 intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
                 mContext.startActivity(intent);
             });
@@ -325,11 +295,11 @@ public class InfoDetailHeaderView {
     /**
      * 更新评论页面
      */
-    public void updateCommentView(InfoListDataBean infoMain) {
+    public void updateCommentView(AnswerInfoBean answerInfoBean) {
         // 评论信息
-        if (infoMain.getComment_count() != 0) {
+        if (answerInfoBean.getComments_count() != 0) {
             mCommentHintView.setVisibility(View.VISIBLE);
-            mCommentCountView.setText(mContext.getString(R.string.dynamic_comment_count, infoMain.getComment_count() + ""));
+            mCommentCountView.setText(mContext.getString(R.string.dynamic_comment_count, answerInfoBean.getComments_count() + ""));
         } else {
             mCommentHintView.setVisibility(View.GONE);
         }
@@ -349,67 +319,5 @@ public class InfoDetailHeaderView {
         });
     }
 
-    public void setRelateInfo(InfoListDataBean infoMain) {
-        List<InfoListDataBean> infoListDataBeen = infoMain.getRelateInfoList();
-        if (infoListDataBeen != null && infoListDataBeen.size() > 0) {
-            mInfoRelateList.setVisibility(VISIBLE);
-            mFtlRelate.setVisibility(VISIBLE);
-            mRvRelateInfo.setVisibility(VISIBLE);
-            // 标签
-            List<UserTagBean> tagBeanList = infoMain.getTags();
-            if (tagBeanList != null && tagBeanList.size() > 0) {
-                UserInfoTagsAdapter mUserInfoTagsAdapter = new UserInfoTagsAdapter(tagBeanList, mContext);
-                mFtlRelate.setAdapter(mUserInfoTagsAdapter);
-            }
-            LinearLayoutManager manager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-            mRvRelateInfo.setLayoutManager(manager);
-            mRvRelateInfo.setNestedScrollingEnabled(false);
-            CommonAdapter adapter = new CommonAdapter<InfoListDataBean>(mContext, R.layout.item_info, infoListDataBeen) {
-                @Override
-                protected void convert(ViewHolder holder, InfoListDataBean infoListDataBean, int position) {
-                    final TextView title = holder.getView(R.id.item_info_title);
-                    final ImageView imageView = holder.getView(R.id.item_info_imag);
-                    title.setText(infoListDataBean.getTitle());
-                    if (infoListDataBean.getImage() == null) {
-                        imageView.setVisibility(View.GONE);
-                    } else {
-                        imageView.setVisibility(View.VISIBLE);
-                        Glide.with(BaseApplication.getContext())
-                                .load(ImageUtils.imagePathConvertV2(infoListDataBean.getImage().getId(), imageView.getWidth(), imageView.getHeight(),
-                                        ImageZipConfig.IMAGE_80_ZIP))
-                                .placeholder(R.drawable.shape_default_image)
-                                .error(R.drawable.shape_default_image)
-                                .override(imageView.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_image_width)
-                                        , imageView.getContext().getResources().getDimensionPixelOffset(R.dimen.info_channel_list_height))
-                                .into(imageView);
-                    }
-                    // 来自单独分开
-                    String category = infoListDataBean.getCategory() == null ? "" : infoListDataBean.getCategory().getName();
-                    holder.setText(R.id.tv_from_channel, category);
-                    // 投稿来源，浏览数，时间
-                    String from = infoListDataBean.getFrom().equals(title.getContext().getString(R.string.info_publish_original)) ?
-                            infoListDataBean.getAuthor() : infoListDataBean.getFrom();
-                    String infoData = String.format(title.getContext().getString(R.string.info_list_count)
-                            , from, infoListDataBean.getHits(), TimeUtils.getTimeFriendlyNormal(infoListDataBean
-                                    .getUpdated_at()));
-                    holder.setText(R.id.item_info_timeform, infoData);
-                    // 是否置顶
-                    holder.setVisible(R.id.tv_top_flag, infoListDataBean.isTop() ? View.VISIBLE : View.GONE);
-                    holder.itemView.setOnClickListener(v -> {
-                        // 跳转到新的咨询页
-                        Intent intent = new Intent(mContext, InfoDetailsActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(BUNDLE_INFO, infoListDataBeen.get(position));
-                        intent.putExtra(BUNDLE_INFO, bundle);
-                        mContext.startActivity(intent);
-                    });
-                }
-            };
-            mRvRelateInfo.setAdapter(adapter);
-        } else {
-            mInfoRelateList.setVisibility(GONE);
-            mFtlRelate.setVisibility(GONE);
-            mRvRelateInfo.setVisibility(GONE);
-        }
-    }
+
 }

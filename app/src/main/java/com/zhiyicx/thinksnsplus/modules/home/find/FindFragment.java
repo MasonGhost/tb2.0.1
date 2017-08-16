@@ -143,7 +143,13 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
+
+                    Intent intent = new Intent(getActivity(), PublishAnswerActivity.class);
+                    Bundle bundle = new Bundle();
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+
+//                    startActivity(new Intent(getActivity(), ChannelListActivity.class));
                 } else {
                     showLoginPop();
                 }
@@ -189,7 +195,7 @@ public class FindFragment extends TSFragment {
             case R.id.find_nearby:
                 break;
             case R.id.find_qa:
-                Intent intent = new Intent(getActivity(), PublishAnswerActivity.class);
+                Intent intent = new Intent(getActivity(), QA_Activity.class);
                 Bundle bundle = new Bundle();
                 intent.putExtras(bundle);
                 startActivity(intent);

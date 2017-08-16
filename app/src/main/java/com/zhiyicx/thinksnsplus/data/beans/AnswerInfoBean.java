@@ -4,13 +4,18 @@ import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.RewardsListBeanConvert;
 
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
+import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
@@ -24,91 +29,6 @@ import org.greenrobot.greendao.DaoException;
 public class AnswerInfoBean extends BaseListBean implements Serializable{
     @Transient
     private static final long serialVersionUID = -6138662175756334333L;
-    /*{
-        "id":1,
-            "question_id":1,
-            "user_id":1,
-            "body":"笑嘻嘻，我是回答。",
-            "anonymity":0,
-            "adoption":0,
-            "invited":0,
-            "comments_count":0,
-            "rewards_amount":0,
-            "rewarder_count":0,
-            "likes_count":0,
-            "created_at":"2017-08-01 03:40:54",
-            "updated_at":"2017-08-01 03:40:54",
-            "liked":false,
-            "collected":false,
-            "rewarded":false,
-            "likes": [],
-        "rewarders": [],
-        "question":{
-        "id":1,
-                "user_id":1,
-                "subject":"第一个提问?",
-                "body":null,
-                "anonymity":0,
-                "amount":0,
-                "automaticity":1,
-                "look":1,
-                "excellent":0,
-                "status":0,
-                "comments_count":0,
-                "answers_count":3,
-                "watchers_count":0,
-                "likes_count":0,
-                "view_count":0,
-                "created_at":"2017-07-28 08:38:54",
-                "updated_at":"2017-08-01 06:03:21",
-                "user":{
-            "id":1,
-                    "name":"Seven",
-                    "bio":"Seven 的个人传记",
-                    "sex":2,
-                    "location":"成都 中国",
-                    "created_at":"2017-06-02 08:43:54",
-                    "updated_at":"2017-07-25 03:59:39",
-                    "avatar":"http://plus.io/api/v2/users/1/avatar",
-                    "bg":"http://plus.io/storage/user-bg/000/000/000/01.png",
-                    "verified":null,
-                    "extra":{
-                "user_id":1,
-                        "likes_count":0,
-                        "comments_count":8,
-                        "followers_count":0,
-                        "followings_count":1,
-                        "updated_at":"2017-08-01 06:06:37",
-                        "feeds_count":0,
-                        "questions_count":5,
-                        "answers_count":3
-            }
-        }
-    },
-        "user":{
-        "id":1,
-                "name":"Seven",
-                "bio":"Seven 的个人传记",
-                "sex":2,
-                "location":"成都 中国",
-                "created_at":"2017-06-02 08:43:54",
-                "updated_at":"2017-07-25 03:59:39",
-                "avatar":"http://plus.io/api/v2/users/1/avatar",
-                "bg":"http://plus.io/storage/user-bg/000/000/000/01.png",
-                "verified":null,
-                "extra":{
-            "user_id":1,
-                    "likes_count":0,
-                    "comments_count":8,
-                    "followers_count":0,
-                    "followings_count":1,
-                    "updated_at":"2017-08-01 06:06:37",
-                    "feeds_count":0,
-                    "questions_count":5,
-                    "answers_count":3
-        }
-    }
-    }*/
 
     @Id
     private Long id;
@@ -130,8 +50,57 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     private boolean liked;
     private boolean collected;
     private boolean rewarded;
+    @Convert(converter = AnswerDigListBeanConvert.class,columnType = String.class)
+    private List<AnswerDigListBean> likes;
+    @Convert(converter = RewardsListBeanConvert.class,columnType = String.class)
+    private List<RewardsListBean> rewarders;
     @ToOne(joinProperty = "question_id")
     private QAListInfoBean question;
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 1250738736)
+    private transient AnswerInfoBeanDao myDao;
+
+    @Generated(hash = 689412195)
+    public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
+            int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
+            int likes_count, int views_count, String created_at, String updated_at, boolean liked,
+            boolean collected, boolean rewarded, List<AnswerDigListBean> likes,
+            List<RewardsListBean> rewarders) {
+        this.id = id;
+        this.question_id = question_id;
+        this.user_id = user_id;
+        this.body = body;
+        this.anonymity = anonymity;
+        this.adoption = adoption;
+        this.invited = invited;
+        this.comments_count = comments_count;
+        this.rewards_amount = rewards_amount;
+        this.rewarder_count = rewarder_count;
+        this.likes_count = likes_count;
+        this.views_count = views_count;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.liked = liked;
+        this.collected = collected;
+        this.rewarded = rewarded;
+        this.likes = likes;
+        this.rewarders = rewarders;
+    }
+
+    @Generated(hash = 1616850933)
+    public AnswerInfoBean() {
+    }
+
+    @Generated(hash = 251390918)
+    private transient Long user__resolvedKey;
+
+    @Generated(hash = 527827701)
+    private transient Long question__resolvedKey;
 
     @Override
     public Long getMaxId() {
@@ -161,35 +130,6 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
                 ", rewarded=" + rewarded +
                 ", question=" + question +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeValue(this.question_id);
-        dest.writeValue(this.user_id);
-        dest.writeString(this.body);
-        dest.writeInt(this.anonymity);
-        dest.writeInt(this.adoption);
-        dest.writeInt(this.invited);
-        dest.writeInt(this.comments_count);
-        dest.writeDouble(this.rewards_amount);
-        dest.writeInt(this.rewarder_count);
-        dest.writeInt(this.likes_count);
-        dest.writeInt(this.views_count);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeParcelable(this.user, flags);
-        dest.writeByte(this.liked ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.collected ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.rewarded ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.question, flags);
     }
 
     public Long getId() {
@@ -328,6 +268,22 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.rewarded = rewarded;
     }
 
+    public List<AnswerDigListBean> getLikes() {
+        return this.likes;
+    }
+
+    public void setLikes(List<AnswerDigListBean> likes) {
+        this.likes = likes;
+    }
+
+    public List<RewardsListBean> getRewarders() {
+        return this.rewarders;
+    }
+
+    public void setRewarders(List<RewardsListBean> rewarders) {
+        this.rewarders = rewarders;
+    }
+
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1502532136)
     public UserInfoBean getUser() {
@@ -429,7 +385,37 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         myDao = daoSession != null ? daoSession.getAnswerInfoBeanDao() : null;
     }
 
-    public AnswerInfoBean() {
+    public static class AnswerDigListBeanConvert extends BaseConvert<List<AnswerDigListBean>>{}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.question_id);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.body);
+        dest.writeInt(this.anonymity);
+        dest.writeInt(this.adoption);
+        dest.writeInt(this.invited);
+        dest.writeInt(this.comments_count);
+        dest.writeDouble(this.rewards_amount);
+        dest.writeInt(this.rewarder_count);
+        dest.writeInt(this.likes_count);
+        dest.writeInt(this.views_count);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeParcelable(this.user, flags);
+        dest.writeByte(this.liked ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.collected ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.rewarded ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.likes);
+        dest.writeTypedList(this.rewarders);
+        dest.writeParcelable(this.question, flags);
     }
 
     protected AnswerInfoBean(Parcel in) {
@@ -452,31 +438,9 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.liked = in.readByte() != 0;
         this.collected = in.readByte() != 0;
         this.rewarded = in.readByte() != 0;
+        this.likes = in.createTypedArrayList(AnswerDigListBean.CREATOR);
+        this.rewarders = in.createTypedArrayList(RewardsListBean.CREATOR);
         this.question = in.readParcelable(QAListInfoBean.class.getClassLoader());
-    }
-
-    @Generated(hash = 398869185)
-    public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
-            int adoption, int invited, int comments_count, double rewards_amount,
-            int rewarder_count, int likes_count, int views_count, String created_at,
-            String updated_at, boolean liked, boolean collected, boolean rewarded) {
-        this.id = id;
-        this.question_id = question_id;
-        this.user_id = user_id;
-        this.body = body;
-        this.anonymity = anonymity;
-        this.adoption = adoption;
-        this.invited = invited;
-        this.comments_count = comments_count;
-        this.rewards_amount = rewards_amount;
-        this.rewarder_count = rewarder_count;
-        this.likes_count = likes_count;
-        this.views_count = views_count;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.liked = liked;
-        this.collected = collected;
-        this.rewarded = rewarded;
     }
 
     public static final Creator<AnswerInfoBean> CREATOR = new Creator<AnswerInfoBean>() {
@@ -490,18 +454,4 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
             return new AnswerInfoBean[size];
         }
     };
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 1250738736)
-    private transient AnswerInfoBeanDao myDao;
-
-    @Generated(hash = 251390918)
-    private transient Long user__resolvedKey;
-
-    @Generated(hash = 527827701)
-    private transient Long question__resolvedKey;
 }
