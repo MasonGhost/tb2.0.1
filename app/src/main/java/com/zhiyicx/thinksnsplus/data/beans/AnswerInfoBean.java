@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.RewardsListBeanConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -48,7 +49,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     private int views_count; // 回答浏览量统计
     private String created_at;
     private String updated_at;
-    @ToOne(joinProperty = "user_id")
+    @Convert(converter = UserInfoBeanConvert.class,columnType = String.class)
     private UserInfoBean user;
     private boolean liked;
     private boolean collected;
@@ -70,11 +71,11 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     @Generated(hash = 1250738736)
     private transient AnswerInfoBeanDao myDao;
 
-    @Generated(hash = 689412195)
+    @Generated(hash = 1083683949)
     public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
             int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
-            int likes_count, int views_count, String created_at, String updated_at, boolean liked,
-            boolean collected, boolean rewarded, List<AnswerDigListBean> likes,
+            int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
+            boolean liked, boolean collected, boolean rewarded, List<AnswerDigListBean> likes,
             List<RewardsListBean> rewarders) {
         this.id = id;
         this.question_id = question_id;
@@ -90,6 +91,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.views_count = views_count;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.user = user;
         this.liked = liked;
         this.collected = collected;
         this.rewarded = rewarded;
@@ -101,15 +103,24 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     public AnswerInfoBean() {
     }
 
-    @Generated(hash = 251390918)
-    private transient Long user__resolvedKey;
-
     @Generated(hash = 527827701)
     private transient Long question__resolvedKey;
+
+    public static class AnswerDigListBeanConvert extends BaseConvert<List<AnswerDigListBean>>{}
 
     @Override
     public Long getMaxId() {
         return id;
+    }
+
+    @Keep
+    public List<AnswerCommentListBean> getCommentList() {
+        return commentList;
+    }
+
+    @Keep
+    public void setCommentList(List<AnswerCommentListBean> commentList) {
+        this.commentList = commentList;
     }
 
     @Override
@@ -289,33 +300,12 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.rewarders = rewarders;
     }
 
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1502532136)
     public UserInfoBean getUser() {
-        Long __key = this.user_id;
-        if (user__resolvedKey == null || !user__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean userNew = targetDao.load(__key);
-            synchronized (this) {
-                user = userNew;
-                user__resolvedKey = __key;
-            }
-        }
-        return user;
+        return this.user;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1074717042)
     public void setUser(UserInfoBean user) {
-        synchronized (this) {
-            this.user = user;
-            user_id = user == null ? null : user.getUser_id();
-            user__resolvedKey = user_id;
-        }
+        this.user = user;
     }
 
     /** To-one relationship, resolved on first access. */
@@ -383,8 +373,6 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         myDao.update(this);
     }
 
-    public static class AnswerDigListBeanConvert extends BaseConvert<List<AnswerDigListBean>>{}
-
     @Override
     public int describeContents() {
         return 0;
@@ -410,24 +398,11 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         dest.writeParcelable(this.user, flags);
         dest.writeByte(this.liked ? (byte) 1 : (byte) 0);
         dest.writeByte(this.collected ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.commentList);
         dest.writeByte(this.rewarded ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.likes);
         dest.writeTypedList(this.rewarders);
         dest.writeParcelable(this.question, flags);
-    }
-
-    @Keep
-    public void setCommentList(List<AnswerCommentListBean> commentList) {
-        this.commentList = commentList;
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Keep
-    public List<AnswerCommentListBean> getCommentList() {
-        return commentList;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -456,6 +431,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.liked = in.readByte() != 0;
         this.collected = in.readByte() != 0;
+        this.commentList = in.createTypedArrayList(AnswerCommentListBean.CREATOR);
         this.rewarded = in.readByte() != 0;
         this.likes = in.createTypedArrayList(AnswerDigListBean.CREATOR);
         this.rewarders = in.createTypedArrayList(RewardsListBean.CREATOR);

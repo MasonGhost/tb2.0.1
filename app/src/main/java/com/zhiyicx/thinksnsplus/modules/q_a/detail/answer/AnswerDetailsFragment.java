@@ -139,10 +139,9 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
-        InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
-                ItemOnCommentListener());
-        multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
-        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailCommentEmptyItem());
+        AnswerDetailCommentItem answerDetailCommentItem = new AnswerDetailCommentItem(new ItemOnCommentListener());
+        multiItemTypeAdapter.addItemViewDelegate(answerDetailCommentItem);
+        multiItemTypeAdapter.addItemViewDelegate(new AnswerDetailCommentEmptyItem());
         return multiItemTypeAdapter;
     }
 
@@ -156,9 +155,9 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public void updateAnswerHeader(AnswerInfoBean answerInfoBean) {
+        mAnswerInfoBean = answerInfoBean;
         closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
-        this.mAnswerInfoBean = answerInfoBean;
         mAnswerDetailHeaderView.setDetail(answerInfoBean);
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
         onNetResponseSuccess(answerInfoBean.getCommentList(), false);
@@ -452,7 +451,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                 .build();
     }
 
-    class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
+    class ItemOnCommentListener implements AnswerDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
             position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header

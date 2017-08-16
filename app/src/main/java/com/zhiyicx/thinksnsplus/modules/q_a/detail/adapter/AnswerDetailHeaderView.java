@@ -177,7 +177,7 @@ public class AnswerDetailHeaderView {
             }
 
             mName.setText(answerInfoBean.getUser().getName());
-            mDescription.setText(answerInfoBean.getUser().getExtra().describeContents());
+            mDescription.setText(answerInfoBean.getUser().getIntro());
             mUserFollow.setChecked(answerInfoBean.getUser().isFollower());
             // 评论信息
             updateCommentView(answerInfoBean);
