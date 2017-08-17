@@ -227,6 +227,10 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
         this.created_at = created_at;
     }
 
+    public void setInvitation_answers(List<AnswerInfoBean> invitation_answers) {
+        this.invitation_answers = invitation_answers;
+    }
+
     public String getUpdated_at() {
         return this.updated_at;
     }

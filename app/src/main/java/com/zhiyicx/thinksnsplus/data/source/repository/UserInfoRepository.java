@@ -125,7 +125,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         } else {
             return getUserBaseJsonObservable(user_ids);
         }
-
     }
 
     private Observable<List<UserInfoBean>> getUserBaseJsonObservable(List<Object> user_ids) {

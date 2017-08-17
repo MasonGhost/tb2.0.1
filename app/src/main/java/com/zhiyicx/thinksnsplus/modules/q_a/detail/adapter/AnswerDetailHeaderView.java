@@ -5,46 +5,36 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
-import com.zhiyicx.common.base.BaseApplication;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
-import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
-import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.DynamicHorizontalStackIconView;
 import com.zhiyicx.thinksnsplus.widget.ReWardView;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
-import com.zhy.view.flowlayout.TagFlowLayout;
 import com.zzhoujay.richtext.ImageHolder;
 import com.zzhoujay.richtext.RichText;
 
@@ -59,7 +49,6 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
 
 /**
  * @author Catherine
@@ -92,6 +81,8 @@ public class AnswerDetailHeaderView {
     private DynamicDetailAdvertHeader mDynamicDetailAdvertHeader;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
 
+    private AnswerHeaderEventListener mAnswerHeaderEventListener;
+
     public View getAnswerDetailHeader() {
         return mAnswerDetailHeader;
     }
@@ -117,7 +108,16 @@ public class AnswerDetailHeaderView {
         mCommentHintView = (FrameLayout) mAnswerDetailHeader.findViewById(R.id.answer_detail_comment);
         mCommentCountView = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_comment_count);
         mIvDetail = (ImageView) mAnswerDetailHeader.findViewById(R.id.iv_detail);
-
+        mContent.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (mAnswerHeaderEventListener != null) {
+                    mAnswerHeaderEventListener.loadFinish();
+                }
+            }
+        });
+        mUserFollow.setOnCheckedChangeListener((buttonView, isChecked) -> mAnswerHeaderEventListener.userFollowClick(isChecked));
         if (adverts != null) {
             initAdvert(context, adverts);
         }
@@ -271,6 +271,11 @@ public class AnswerDetailHeaderView {
 
     }
 
+    public void updateUserFollow(boolean isFollowed) {
+        mUserFollow.setChecked(isFollowed);
+        mUserFollow.setText(isFollowed ? mUserFollow.getContext().getString(R.string.qa_topic_followed) : mUserFollow.getContext().getString(R.string.qa_topic_follow));
+    }
+
     public void updateDigList(AnswerInfoBean answerInfoBean) {
         if (answerInfoBean == null) {
             return;
@@ -322,8 +327,16 @@ public class AnswerDetailHeaderView {
     public void updateReward(long sourceId, List<RewardsListBean> data, RewardsCountBean rewardsCountBean, RewardType rewardType) {
         mReWardView.initData(sourceId, data, rewardsCountBean, rewardType);
         mReWardView.setOnRewardsClickListener(() -> {
+
         });
     }
 
+    public void setAnswerHeaderEventListener(AnswerHeaderEventListener answerHeaderEventListener) {
+        mAnswerHeaderEventListener = answerHeaderEventListener;
+    }
 
+    public interface AnswerHeaderEventListener {
+        void loadFinish();
+        void userFollowClick(boolean isChecked);
+    }
 }

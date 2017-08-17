@@ -138,12 +138,8 @@ public class FindFragment extends TSFragment {
         switch (view.getId()) {
             case R.id.find_info:
                 if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
-//                    startActivity(new Intent(getActivity(), InfoActivity.class));
-                    Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong(BUNDLE_SOURCE_ID,2L);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    startActivity(new Intent(getActivity(), InfoActivity.class));
+
                 } else {
                     showLoginPop();
                 }
@@ -192,7 +188,12 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_buy:
                 if (TouristConfig.JIPU_SHOP_CAN_LOOK || !mAuthRepository.isTourist()) {
-                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
+//                    CustomWEBActivity.startToWEBActivity(getContext(), ApiConfig.URL_JIPU_SHOP);
+                    Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong(BUNDLE_SOURCE_ID,2L);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 } else {
                     showLoginPop();
                 }

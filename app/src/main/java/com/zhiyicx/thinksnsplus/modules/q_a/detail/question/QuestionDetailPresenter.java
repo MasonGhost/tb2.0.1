@@ -76,7 +76,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                         totalList.addAll(qaListInfoBean.getAdoption_answers());
                     }
                     totalList.addAll(answerInfoBeanList);
-                    qaListInfoBean.setAnswerInfoBeenList(totalList);
+                    qaListInfoBean.setInvitation_answers(totalList);
                     return qaListInfoBean;
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

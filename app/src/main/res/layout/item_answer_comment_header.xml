@@ -11,20 +11,19 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_normal">
+        android:layout_height="@dimen/headpic_for_user_center">
 
         <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_head_icon"
-            android:layout_width="@dimen/headpic_for_user_center"
-            android:layout_height="@dimen/headpic_for_user_center"
+            android:layout_width="@dimen/headpic_for_answer"
+            android:layout_height="@dimen/headpic_for_answer"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/spacing_normal_large"
+            android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
             android:layout_marginLeft="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_normal"
             android:src="@mipmap/pic_default_portrait1"
-            app:ts_avatare_size="@dimen/headpic_for_user_center"/>
+            app:ts_avatare_size="@dimen/headpic_for_answer"/>
 
         <TextView
             android:id="@+id/tv_user_name"
@@ -33,18 +32,17 @@
             android:layout_alignTop="@+id/iv_head_icon"
             android:layout_toRightOf="@+id/iv_head_icon"
             android:textColor="@color/important_for_content"
-            android:textSize="@dimen/size_sub_title"
+            android:textSize="@dimen/size_content_assist"
             tools:text="xxxxx"/>
 
         <TextView
-            android:layout_alignBottom="@+id/iv_head_icon"
             android:id="@+id/tv_user_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_user_name"
+            android:layout_alignBottom="@+id/iv_head_icon"
             android:layout_toRightOf="@+id/iv_head_icon"
             android:textColor="@color/normal_for_dynamic_list_content"
-            android:textSize="@dimen/size_content_assist"
+            android:textSize="@dimen/size_icon_assist"
             tools:text="xxxxx"/>
 
         <CheckBox
@@ -66,8 +64,7 @@
 
         <View
             style="@style/style_divider_horizontal"
-            android:layout_below="@+id/iv_head_icon"
-            android:layout_marginTop="@dimen/spacing_normal"/>
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 
     <FrameLayout

@@ -51,6 +51,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_DELETE;
 
 /**
  * @Author Jliuer
@@ -60,7 +61,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
-        .OnSendClickListener {
+        .OnSendClickListener, AnswerDetailHeaderView.AnswerHeaderEventListener {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_ANSWER = "answer";
@@ -85,7 +86,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     ViewGroup mLLBottomMenuContainer;
 
     private AnswerDetailHeaderView mAnswerDetailHeaderView;
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDealInfoMationPopWindow;
@@ -150,13 +150,12 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        mAnswerDetailHeaderView.updateReward(mAnswerInfoBean.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO);
+        mAnswerDetailHeaderView.updateReward(mAnswerInfoBean.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.QA_ANSWER);
     }
 
     @Override
     public void updateAnswerHeader(AnswerInfoBean answerInfoBean) {
         mAnswerInfoBean = answerInfoBean;
-        closeLoadingView();
         mCoordinatorLayout.setEnabled(true);
         mAnswerDetailHeaderView.setDetail(answerInfoBean);
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
@@ -164,17 +163,9 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
-    public void deleteInfo(boolean deleting, boolean success, String message) {
-        if (deleting) {
-            showSnackLoadingMessage(getString(R.string.info_deleting));
-        } else {
-            if (success) {
-                EventBus.getDefault().post(mAnswerInfoBean, "");
-                getActivity().finish();
-            } else {
-                showSnackErrorMessage(message);
-            }
-        }
+    public void deleteAnswer() {
+        EventBus.getDefault().post(mAnswerInfoBean, EVENT_UPDATE_ANSWER_LIST_DELETE);
+        getActivity().finish();
     }
 
     @Override
@@ -224,7 +215,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
 
-
     @Override
     public void setPresenter(AnswerDetailsConstract.Presenter presenter) {
         mPresenter = presenter;
@@ -247,7 +237,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
 
     @Override
     public void setCollect(boolean isCollected) {
-        mDdDynamicTool.setItemIsChecked(isCollected, ITEM_POSITION_0);
+
     }
 
     @Override
@@ -288,19 +278,34 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     @Override
     public void refreshData() {
         super.refreshData();
-        mAdapter.notifyDataSetChanged();
         mAnswerDetailHeaderView.updateCommentView(mAnswerInfoBean);
     }
 
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
         mAnswerDetailHeaderView = new AnswerDetailHeaderView(getContext(), mPresenter.getAdvert());
+        mAnswerDetailHeaderView.setAnswerHeaderEventListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mAnswerDetailHeaderView.getAnswerDetailHeader());
         View mFooterView = new View(getContext());
         mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    @Override
+    public void loadFinish() {
+        closeLoadingView();
+    }
+
+    @Override
+    public void userFollowClick(boolean isChecked) {
+        mPresenter.handleFollowUser(mAnswerInfoBean.getUser());
+    }
+
+    @Override
+    public void upDateFollowFansState(boolean isFollowed) {
+        mAnswerDetailHeaderView.updateUserFollow(isFollowed);
     }
 
     private void initBottomToolStyle() {
@@ -380,7 +385,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
      */
     private void initDeleteCommentPopupWindow(final AnswerCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.empty) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
@@ -393,7 +398,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     Bundle bundle = new Bundle();
                     bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
                     bundle.putLong(StickTopFragment.PARENT_ID, data.getId());// 资源id
-                    bundle.putLong(StickTopFragment.CHILD_ID,data.getId());
+                    bundle.putLong(StickTopFragment.CHILD_ID, data.getId());
                     Intent intent = new Intent(getActivity(), StickTopActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -413,37 +418,37 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
      * @param answerInfoBean curent answerInfoBean
      */
     private void initDealAnswerPopupWindow(final AnswerInfoBean answerInfoBean, boolean isCollected) {
-        boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+//        boolean isMine = answerInfoBean.getQuestion().getUser().getExtra().getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+        boolean isMine = true;
+        boolean isAdopted = answerInfoBean.getAdoption() == 1;
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
-                .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
-                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item1Str(isMine ? getString(R.string.info_delete) : "")
+                .item2Str(getString(isAdopted ? R.string.qa_question_answer_adopt : (isMine ? R.string.qa_question_answer_adopting : R.string.empty)))
+                .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item4Str(getString(isMine ? R.string.edit : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item2ClickListener(() -> {// 收藏
-                    // 如果是自己发布的，则不能收藏只能删除
-                    if (isMine) {
-                        mPresenter.deleteInfo();
-                    } else {
-                        mPresenter.handleCollect(!answerInfoBean.getCollected(),
-                                answerInfoBean.getId());
-                    }
+                .item1ClickListener(() -> {// 删除
+                    mPresenter.deleteAnswer();
                     mDealInfoMationPopWindow.hide();
                 })
-                .item1ClickListener(() -> {// 申请置顶
-//                    if (infoMation.is_pinned()) {
-//                        showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
-//                    } else {
-//                        // 跳转置顶页面
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
-//                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());// 资源id
-//                        Intent intent = new Intent(getActivity(), StickTopActivity.class);
-//                        intent.putExtras(bundle);
-//                        startActivity(intent);
-//                    }
+                .item2ClickListener(() -> {// 采纳
+                    mDealInfoMationPopWindow.hide();
+                    if (isAdopted) {
+                        return;
+                    }
+                    mPresenter.adoptionAnswer(answerInfoBean.getQuestion_id(), answerInfoBean.getId());
+
+                })
+                .item3ClickListener(() -> {// 申请置顶
+                    mPresenter.handleCollect(!answerInfoBean.getCollected(), answerInfoBean.getId());
+                    mDealInfoMationPopWindow.hide();
+                })
+                .item4ClickListener(() -> {// 编辑
+
                     mDealInfoMationPopWindow.hide();
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())

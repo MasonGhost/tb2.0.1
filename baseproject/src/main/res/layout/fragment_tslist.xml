@@ -27,7 +27,7 @@
                 <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
                     android:id="@id/swipe_refresh_header"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView>
+                    android:layout_height="wrap_content"/>
 
 
                 <android.support.v7.widget.RecyclerView
@@ -41,7 +41,7 @@
                 <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
                     android:id="@id/swipe_load_more_footer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></com.zhiyicx.baseproject.widget.refresh.RefreshFooterView>
+                    android:layout_height="wrap_content"/>
             </com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout>
         </com.wcy.overscroll.OverScrollLayout>
     </LinearLayout>
@@ -51,5 +51,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"></com.zhiyicx.baseproject.widget.EmptyView>
+        android:visibility="gone"/>
 </FrameLayout>

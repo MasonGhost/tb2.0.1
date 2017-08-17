@@ -33,7 +33,7 @@ public class AnswerCommentListBeanGreenDaoImpl extends CommonCacheImpl<AnswerCom
 
     @Override
     public void saveMultiData(List<AnswerCommentListBean> multiData) {
-
+        mAnswerCommentListBeanDao.insertOrReplaceInTx();
     }
 
     @Override
@@ -48,22 +48,22 @@ public class AnswerCommentListBeanGreenDaoImpl extends CommonCacheImpl<AnswerCom
 
     @Override
     public List<AnswerCommentListBean> getMultiDataFromCache() {
-        return null;
+        return mAnswerCommentListBeanDao.loadAll();
     }
 
     @Override
     public void clearTable() {
-
+        mAnswerCommentListBeanDao.deleteAll();
     }
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        mAnswerCommentListBeanDao.deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(AnswerCommentListBean dta) {
-
+        mAnswerCommentListBeanDao.delete(dta);
     }
 
     @Override
@@ -73,6 +73,16 @@ public class AnswerCommentListBeanGreenDaoImpl extends CommonCacheImpl<AnswerCom
 
     @Override
     public long insertOrReplace(AnswerCommentListBean newData) {
-        return 0;
+        return mAnswerCommentListBeanDao.insertOrReplace(newData);
+    }
+
+    public AnswerCommentListBean getCommentByCommentMark(long comment_mark) {
+        List<AnswerCommentListBean> result = mAnswerCommentListBeanDao.queryBuilder()
+                .where(AnswerCommentListBeanDao.Properties.Comment_mark.eq(comment_mark))
+                .list();
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
     }
 }

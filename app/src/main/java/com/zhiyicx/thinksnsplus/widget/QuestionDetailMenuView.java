@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.zhiyicx.baseproject.R;
+import com.zhiyicx.thinksnsplus.R;
 
 import java.util.concurrent.TimeUnit;
 

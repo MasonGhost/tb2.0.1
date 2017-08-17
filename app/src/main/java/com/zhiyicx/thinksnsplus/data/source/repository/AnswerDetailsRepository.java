@@ -8,6 +8,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -101,7 +102,52 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
     public Observable<AnswerInfoBean> getAnswerDetail(long answer_id) {
         return mQAClient.getAnswerDetail(answer_id)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<AnswerInfoBean, Observable<AnswerInfoBean>>() {
+                    @Override
+                    public Observable<AnswerInfoBean> call(AnswerInfoBean answerInfoBean) {
+                        if (answerInfoBean.getLikes() == null) {
+                            return Observable.just(answerInfoBean);
+                        } else {
+                            final List<Object> user_ids = new ArrayList<>();
+                            for (AnswerDigListBean answerDigListBean : answerInfoBean.getLikes()) {
+                                user_ids.add(answerDigListBean.getUser_id());
+                                user_ids.add(answerDigListBean.getTarget_user());
+                            }
+                            if (user_ids.isEmpty()) {
+                                return Observable.just(answerInfoBean);
+                            }
+                            return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
+                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
+                                        SparseArray<>();
+                                for (UserInfoBean userInfoBean : userinfobeans) {
+                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
+                                            .intValue(), userInfoBean);
+                                }
+                                for (AnswerDigListBean answerDigListBean : answerInfoBean.getLikes()) {
+                                    answerDigListBean.setDiggUserInfo(
+                                            (userInfoBeanSparseArray.get(answerDigListBean
+                                                    .getUser_id().intValue())));
+                                    answerDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(answerDigListBean
+                                            .getTarget_user().intValue()));
+
+                                }
+                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                return answerInfoBean;
+                            });
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void adoptionAnswer(long question_id, long answer_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.PUT, null);
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_ADOPT_ANSWER_S, question_id, answer_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override
@@ -120,7 +166,7 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
                                 (BackgroundTaskRequestMethodConfig.DELETE_V2, null);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     }
-                    backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(),ApiConfig
+                    backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig
                             .APP_PATH_COLLECT_ANSWER_FORMAT, answer_id));
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
@@ -143,7 +189,7 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
                                 (BackgroundTaskRequestMethodConfig.DELETE_V2, null);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     }
-                    backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(),ApiConfig
+                    backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig
                             .APP_PATH_LIKE_ANSWER_FORMAT, answer_id));
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
@@ -152,16 +198,35 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
 
     @Override
     public void sendComment(String comment_content, long answer_id, long reply_to_user_id, long comment_mark) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("body", comment_content);
+        params.put("comment_mark", comment_mark);
+        if (reply_to_user_id > 0) {
+            params.put("reply_user", reply_to_user_id);
+        }
 
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_ANSWER_COMMENT, params);
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_COMMENT_QA_ANSWER_FORMAT, answer_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override
     public void deleteComment(long answer_id, long comment_id) {
-
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, null);
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_DELETE_QA_ANSWER_COMMENT_FORMAT, answer_id, comment_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 
     @Override
-    public Observable<BaseJsonV2<Object>> deleteAnswer(long answer_id) {
-        return null;
+    public void deleteAnswer(long answer_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.DELETE_V2, null);
+        backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig.APP_PATH_DELETE_ANSWER_S, answer_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
     }
 }
