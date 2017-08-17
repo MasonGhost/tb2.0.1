@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.beans.qa;
 
+import android.os.Parcel;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -261,6 +263,8 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.updated_at = updated_at;
     }
 
+
+
     public boolean getWatched() {
         return this.watched;
     }
@@ -420,5 +424,81 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         myDao = daoSession != null ? daoSession.getQAListInfoBeanDao() : null;
     }
 
-    
+    public void setAnswerInfoBeanList(List<AnswerInfoBean> answerInfoBeanList) {
+        this.answerInfoBeanList = answerInfoBeanList;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.subject);
+        dest.writeString(this.body);
+        dest.writeInt(this.anonymity);
+        dest.writeDouble(this.amount);
+        dest.writeInt(this.automaticity);
+        dest.writeInt(this.look);
+        dest.writeInt(this.excellent);
+        dest.writeInt(this.status);
+        dest.writeInt(this.comments_count);
+        dest.writeInt(this.answers_count);
+        dest.writeInt(this.watchers_count);
+        dest.writeInt(this.likes_count);
+        dest.writeInt(this.views_count);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeByte(this.watched ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.invitation_answers);
+        dest.writeTypedList(this.adoption_answers);
+        dest.writeTypedList(this.topics);
+        dest.writeTypedList(this.invitations);
+        dest.writeParcelable(this.user, flags);
+        dest.writeTypedList(this.answerInfoBeanList);
+    }
+
+    protected QAListInfoBean(Parcel in) {
+        super(in);
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+        this.subject = in.readString();
+        this.body = in.readString();
+        this.anonymity = in.readInt();
+        this.amount = in.readDouble();
+        this.automaticity = in.readInt();
+        this.look = in.readInt();
+        this.excellent = in.readInt();
+        this.status = in.readInt();
+        this.comments_count = in.readInt();
+        this.answers_count = in.readInt();
+        this.watchers_count = in.readInt();
+        this.likes_count = in.readInt();
+        this.views_count = in.readInt();
+        this.created_at = in.readString();
+        this.updated_at = in.readString();
+        this.watched = in.readByte() != 0;
+        this.invitation_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
+        this.adoption_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
+        this.topics = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.invitations = in.createTypedArrayList(UserInfoBean.CREATOR);
+        this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.answerInfoBeanList = in.createTypedArrayList(AnswerInfoBean.CREATOR);
+    }
+
+    public static final Creator<QAListInfoBean> CREATOR = new Creator<QAListInfoBean>() {
+        @Override
+        public QAListInfoBean createFromParcel(Parcel source) {
+            return new QAListInfoBean(source);
+        }
+
+        @Override
+        public QAListInfoBean[] newArray(int size) {
+            return new QAListInfoBean[size];
+        }
+    };
 }
