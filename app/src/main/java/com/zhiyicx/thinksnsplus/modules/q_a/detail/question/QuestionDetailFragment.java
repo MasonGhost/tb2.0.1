@@ -45,7 +45,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
 
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter, AnswerInfoBean>
         implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
-        QuestionSelectListTypePopWindow.OnOrderTypeSelectListener, MultiItemTypeAdapter.OnItemClickListener {
+        QuestionSelectListTypePopWindow.OnOrderTypeSelectListener,MultiItemTypeAdapter.OnItemClickListener {
 
     @BindView(R.id.tv_toolbar_left)
     TextView mTvToolbarLeft;
@@ -94,6 +94,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         AnswerListItem answerListItem = new AnswerListItem();
         multiItemTypeAdapter.addItemViewDelegate(answerListItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerEmptyItem());
+        multiItemTypeAdapter.setOnItemClickListener(this);
         return multiItemTypeAdapter;
     }
 
@@ -101,7 +102,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_SOURCE_ID, mListDatas.get(position).getId());
+        bundle.putLong(BUNDLE_SOURCE_ID,mListDatas.get(position).getId());
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -181,11 +182,11 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
-        if (mQaListInfoBean.getAmount() == 0) {
+        if (mQaListInfoBean.getAmount() == 0){
             // 跳转设置悬赏
-        } else if (invitations != null) {
+        } else if (invitations != null){
             // 弹出邀请的人
-            if (mInvitePop != null) {
+            if (mInvitePop != null){
                 mInvitePop.show();
             }
         }
@@ -195,6 +196,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onAddAnswerClick() {
         // 跳转发布回答
         Intent intent = new Intent(getContext(), PublishAnswerActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putLong(BUNDLE_SOURCE_ID,1L);// 这个 question_id 加上
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -265,14 +269,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 .subscribe(aVoid -> getActivity().finish());
     }
 
-    private void initPopWindow() {
+    private void initPopWindow(){
         mOrderTypeSelectPop = QuestionSelectListTypePopWindow.Builder()
                 .with(getActivity())
                 .parentView(mQuestionDetailHeader.getQuestionHeaderView())
                 .alpha(1f)
                 .setListener(this)
                 .build();
-        if (mQaListInfoBean.getInvitations() != null && mQaListInfoBean.getInvitations().size() > 0) {
+        if (mQaListInfoBean.getInvitations() != null && mQaListInfoBean.getInvitations().size() > 0){
             mInvitePop = QuestionInviteUserPopWindow.Builder()
                     .with(getActivity())
                     .parentView(mQuestionDetailHeader.getQuestionHeaderView())

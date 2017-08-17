@@ -1,15 +1,13 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -44,32 +42,31 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         ImageView imageView = holder.getImageViwe(R.id.item_info_imag);
         holder.setText(R.id.item_info_title, infoBean.getSubject());
         holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyForDetail(infoBean.getCreated_at()));
-        holder.setText(R.id.item_info_count, String.format(Locale.getDefault(),mContext.getString(R.string.qa_show_topic_followed_reward)
+        holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
                 , infoBean.getWatchers_count(), infoBean.getAnswers_count(), infoBean.getAmount()));
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean));
         TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
         String content = infoBean.getBody();
+        imageView.getLayoutParams();
         int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
 
         if (id > 0) {
+            imageView.setVisibility(View.VISIBLE);
             int w = DeviceUtils.getScreenWidth(mContext);
             int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
+            imageView.setLayoutParams(new LinearLayout.LayoutParams(w, h));
             String url = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
             Glide.with(mContext).load(url)
-                    .asBitmap()
                     .override(w, h)
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            imageView.setImageBitmap(resource);
-                        }
-                    });
-            imageView.setVisibility(View.VISIBLE);
-        }else{
+                    .placeholder(R.drawable.shape_default_image)
+                    .error(R.drawable.shape_default_image)
+                    .into(imageView);
+
+        } else {
             imageView.setVisibility(View.GONE);
         }
 
-        ImageUtils.loadQAUserHead(infoBean.getUser(),contentTextView, content,infoBean.getAnonymity() == 1 ,false);
+        ImageUtils.loadQAUserHead(infoBean.getUser(), contentTextView, content, infoBean.getAnonymity() == 1, false);
     }
 
     private List<Link> setLinks(QAListInfoBean infoBean) {

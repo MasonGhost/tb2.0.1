@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
@@ -448,8 +449,12 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     mDealInfoMationPopWindow.hide();
                 })
                 .item4ClickListener(() -> {// 编辑
-
                     mDealInfoMationPopWindow.hide();
+                    Intent intent = new Intent(getContext(), PublishAnswerActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putLong(BUNDLE_SOURCE_ID,mAnswerInfoBean.getQuestion_id());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();
