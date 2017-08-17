@@ -82,8 +82,8 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
     private List<AnswerInfoBean> invitation_answers; // 问题邀请用户回答的答案列表，具体数据结构参考「回答」文档。
     @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "question_id")})
     private List<AnswerInfoBean> adoption_answers; // 问题采纳的答案列表，具体数据结构参考「回答」文档。
-    @Convert(converter = UserTagListBeanConvert.class, columnType = String.class)
-    private List<UserTagBean> topics; // 问题话题列表，参考「话题」文档。
+    @Convert(converter = TopcConvert.class, columnType = String.class)
+    private List<QATopicBean> topics; // 问题话题列表，参考「话题」文档。
     @Convert(converter = UserInfoListBeanConvert.class, columnType = String.class)
     private List<UserInfoBean> invitations; // 问题邀请回答的用户列表，参考「用户」文档。
     @Convert(converter = UserInfoBeanConvert.class, columnType = String.class)
@@ -245,11 +245,11 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
         this.watched = watched;
     }
 
-    public List<UserTagBean> getTopics() {
+    public List<QATopicBean> getTopics() {
         return this.topics;
     }
 
-    public void setTopics(List<UserTagBean> topics) {
+    public void setTopics(List<QATopicBean> topics) {
         this.topics = topics;
     }
 
@@ -279,39 +279,6 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
 
     public void setAnswerInfoBeanList(List<AnswerInfoBean> answerInfoBeanList) {
         this.answerInfoBeanList = answerInfoBeanList;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeValue(this.id);
-        dest.writeValue(this.user_id);
-        dest.writeString(this.subject);
-        dest.writeString(this.body);
-        dest.writeInt(this.anonymity);
-        dest.writeDouble(this.amount);
-        dest.writeInt(this.automaticity);
-        dest.writeInt(this.look);
-        dest.writeInt(this.excellent);
-        dest.writeInt(this.status);
-        dest.writeInt(this.comments_count);
-        dest.writeInt(this.answers_count);
-        dest.writeInt(this.watchers_count);
-        dest.writeInt(this.likes_count);
-        dest.writeInt(this.views_count);
-        dest.writeString(this.created_at);
-        dest.writeString(this.updated_at);
-        dest.writeByte(this.watched ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.invitation_answers);
-        dest.writeTypedList(this.adoption_answers);
-        dest.writeTypedList(this.topics);
-        dest.writeTypedList(this.invitations);
-        dest.writeParcelable(this.user, flags);
     }
 
 
@@ -451,6 +418,53 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
         answerInfoBeanList = null;
     }
 
+
+
+    @Generated(hash = 1163254106)
+    public QAListInfoBean() {
+    }
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1951279767)
+    private transient QAListInfoBeanDao myDao;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeValue(this.id);
+        dest.writeValue(this.user_id);
+        dest.writeString(this.subject);
+        dest.writeString(this.body);
+        dest.writeInt(this.anonymity);
+        dest.writeDouble(this.amount);
+        dest.writeInt(this.automaticity);
+        dest.writeInt(this.look);
+        dest.writeInt(this.excellent);
+        dest.writeInt(this.status);
+        dest.writeInt(this.comments_count);
+        dest.writeInt(this.answers_count);
+        dest.writeInt(this.watchers_count);
+        dest.writeInt(this.likes_count);
+        dest.writeInt(this.views_count);
+        dest.writeString(this.created_at);
+        dest.writeString(this.updated_at);
+        dest.writeByte(this.watched ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.invitation_answers);
+        dest.writeTypedList(this.adoption_answers);
+        dest.writeTypedList(this.topics);
+        dest.writeTypedList(this.invitations);
+        dest.writeParcelable(this.user, flags);
+        dest.writeTypedList(this.answerInfoBeanList);
+    }
+
     protected QAListInfoBean(Parcel in) {
         super(in);
         this.id = (Long) in.readValue(Long.class.getClassLoader());
@@ -473,14 +487,15 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
         this.watched = in.readByte() != 0;
         this.invitation_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
         this.adoption_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
-        this.topics = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.topics = in.createTypedArrayList(QATopicBean.CREATOR);
         this.invitations = in.createTypedArrayList(UserInfoBean.CREATOR);
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
+        this.answerInfoBeanList = in.createTypedArrayList(AnswerInfoBean.CREATOR);
     }
 
 
-    @Generated(hash = 144172305)
-    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, List<UserTagBean> topics, List<UserInfoBean> invitations, UserInfoBean user) {
+    @Generated(hash = 1721279130)
+    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, List<QATopicBean> topics, List<UserInfoBean> invitations, UserInfoBean user) {
         this.id = id;
         this.user_id = user_id;
         this.subject = subject;
@@ -504,11 +519,6 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
         this.user = user;
     }
 
-
-    @Generated(hash = 1163254106)
-    public QAListInfoBean() {
-    }
-
     public static final Creator<QAListInfoBean> CREATOR = new Creator<QAListInfoBean>() {
         @Override
         public QAListInfoBean createFromParcel(Parcel source) {
@@ -520,10 +530,6 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
             return new QAListInfoBean[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1951279767)
-    private transient QAListInfoBeanDao myDao;
+
+    public static class TopcConvert extends BaseConvert<List<QATopicBean>>{}
 }

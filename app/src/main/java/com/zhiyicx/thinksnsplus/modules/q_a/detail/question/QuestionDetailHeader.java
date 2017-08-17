@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -10,13 +11,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.QuestionTopicsAdapter;
 import com.zhiyicx.thinksnsplus.widget.QuestionDetailContent;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
@@ -89,13 +94,13 @@ public class QuestionDetailHeader {
         }
         mQaListInfoBean = qaListInfoBean;
         // 标签信息
-        List<UserTagBean> tagBeanList = qaListInfoBean.getTopics();
+        List<QATopicBean> tagBeanList = qaListInfoBean.getTopics();
         if (tagBeanList != null && tagBeanList.size() > 0) {
-            UserInfoTagsAdapter mUserInfoTagsAdapter = new UserInfoTagsAdapter(tagBeanList, mContext);
+            QuestionTopicsAdapter mUserInfoTagsAdapter = new QuestionTopicsAdapter(tagBeanList, mContext);
             mTflQuestion.setAdapter(mUserInfoTagsAdapter);
         }
         // 标题信息
-        mTvQuestionTitle.setText(qaListInfoBean.getSubject());
+        mTvQuestionTitle.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, qaListInfoBean.getSubject()));
         // 悬赏金额
         if (qaListInfoBean.getAmount() != 0) {
             mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_reward_amount), qaListInfoBean.getAmount()));
@@ -155,6 +160,10 @@ public class QuestionDetailHeader {
     public void updateAnswerView(QAListInfoBean qaListInfoBean) {
         mTvAnswerCount.setText(String.format(mContext.getString(R.string.qa_answer_count), qaListInfoBean.getAnswers_count()));
         mLlAnswerInfo.setVisibility(qaListInfoBean.getComments_count() == 0 ? View.GONE : View.VISIBLE);
+    }
+
+    public Bitmap getShareBitmap(){
+        return mQdContent.getShareBitmap();
     }
 
     private void initListener() {
