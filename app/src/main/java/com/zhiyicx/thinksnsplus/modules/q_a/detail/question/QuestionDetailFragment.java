@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +15,12 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
 import com.zhiyicx.baseproject.widget.QuestionDetailMenuView;
+import com.zhiyicx.thinksnsplus.widget.QuestionInviteUserPopWindow;
+import com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -38,7 +42,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter, AnswerInfoBean>
-        implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener {
+        implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener, QuestionSelectListTypePopWindow.OnOrderTypeSelectListener {
 
     @BindView(R.id.tv_toolbar_left)
     TextView mTvToolbarLeft;
@@ -51,6 +55,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     private QuestionDetailHeader mQuestionDetailHeader;
     private String mCurrentOrderType;
 
+    private QuestionSelectListTypePopWindow mOrderTypeSelectPop; // 选择排序的弹框
+    private QuestionInviteUserPopWindow mInvitePop; // 邀请回答的弹框
+
     public QuestionDetailFragment instance(Bundle bundle) {
         QuestionDetailFragment fragment = new QuestionDetailFragment();
         fragment.setArguments(bundle);
@@ -60,17 +67,18 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+        mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
         initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
+        initPopWindow();
         mCurrentOrderType = mQuestionDetailHeader.getCurrentOrderType();
     }
 
     @Override
     protected void initData() {
         super.initData();
-        mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
         if (mQaListInfoBean != null) {
             mPresenter.getQuestionDetail(String.valueOf(mQaListInfoBean.getId()));
         }
@@ -105,7 +113,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void setQuestionDetail(QAListInfoBean questionDetail) {
         this.mQaListInfoBean = questionDetail;
         mQuestionDetailHeader.setDetail(questionDetail);
-        onNetResponseSuccess(mQaListInfoBean.getInvitation_answers(), false);
+        onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), false);
     }
 
     @Override
@@ -160,19 +168,23 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             // 跳转设置悬赏
         } else if (invitations != null){
             // 弹出邀请的人
+            if (mInvitePop != null){
+                mInvitePop.show();
+            }
         }
     }
 
     @Override
     public void onAddAnswerClick() {
         // 跳转发布回答
-
+        Intent intent = new Intent(getContext(), PublishAnswerActivity.class);
+        startActivity(intent);
     }
 
     @Override
     public void onChangeListOrderClick(String orderType) {
         // 弹出排序选择框
-        mCurrentOrderType = orderType;
+        mOrderTypeSelectPop.show();
     }
 
     private void initHeaderView() {
@@ -234,5 +246,29 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> getActivity().finish());
+    }
+
+    private void initPopWindow(){
+        mOrderTypeSelectPop = QuestionSelectListTypePopWindow.Builder()
+                .with(getActivity())
+                .parentView(mQuestionDetailHeader.getQuestionHeaderView())
+                .alpha(1f)
+                .setListener(this)
+                .build();
+        if (mQaListInfoBean.getInvitations() != null && mQaListInfoBean.getInvitations().size() > 0){
+            mInvitePop = QuestionInviteUserPopWindow.Builder()
+                    .with(getActivity())
+                    .parentView(mQuestionDetailHeader.getQuestionHeaderView())
+                    .setData(mQaListInfoBean.getInvitations().get(0))
+                    .alpha(1f)
+                    .build();
+        }
+    }
+
+    @Override
+    public void onOrderTypeSelected(int type) {
+        mQuestionDetailHeader.setCurrentOrderType(type);
+        mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader.ORDER_BY_TIME;
+        requestNetData(0L, false);
     }
 }

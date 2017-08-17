@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -54,6 +55,7 @@ public class QuestionDetailHeader {
     private TextView mTvAddAnswer;
     private TextView mTvAnswerCount;
     private TextView mTvChangeOrder;
+    private LinearLayout mLlAnswerInfo;
 
     private QAListInfoBean mQaListInfoBean;
     private OnActionClickListener mListener;
@@ -78,6 +80,7 @@ public class QuestionDetailHeader {
         mTvAddAnswer = (TextView) mQuestionHeaderView.findViewById(R.id.tv_add_answer);
         mTvAnswerCount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_answer_count);
         mTvChangeOrder = (TextView) mQuestionHeaderView.findViewById(R.id.tv_change_order);
+        mLlAnswerInfo = (LinearLayout) mQuestionHeaderView.findViewById(R.id.ll_answer_info);
     }
 
     public void setDetail(QAListInfoBean qaListInfoBean) {
@@ -114,7 +117,7 @@ public class QuestionDetailHeader {
         // 是否关注了这个话题
         updateFollowState(qaListInfoBean);
         // 答案条数
-        mTvAnswerCount.setText(String.format(mContext.getString(R.string.qa_answer_count), qaListInfoBean.getAnswers_count()));
+        updateAnswerView(qaListInfoBean);
         initListener();
     }
 
@@ -144,6 +147,14 @@ public class QuestionDetailHeader {
     public void updateFollowState(QAListInfoBean qaListInfoBean) {
         mTvTopicChangeFollow.setChecked(qaListInfoBean.getWatched());
         mTvTopicChangeFollow.setText(qaListInfoBean.getWatched() ? mContext.getString(R.string.followed) : mContext.getString(R.string.follow));
+    }
+
+    /**
+     * 更新回答条数
+     */
+    public void updateAnswerView(QAListInfoBean qaListInfoBean) {
+        mTvAnswerCount.setText(String.format(mContext.getString(R.string.qa_answer_count), qaListInfoBean.getAnswers_count()));
+        mLlAnswerInfo.setVisibility(qaListInfoBean.getComments_count() == 0 ? View.GONE : View.VISIBLE);
     }
 
     private void initListener() {
@@ -180,6 +191,12 @@ public class QuestionDetailHeader {
 
     public String getCurrentOrderType() {
         return mCurrentOrderType;
+    }
+
+    public void setCurrentOrderType(int type) {
+        mCurrentOrderType = type == 0 ? ORDER_DEFAULT : ORDER_BY_TIME;
+        mTvChangeOrder.setText(type == 0 ? mContext.getString(R.string.qa_answer_list_order_default) :
+                mContext.getString(R.string.qa_answer_list_order_by_time));
     }
 
     public void setOnActionClickListener(OnActionClickListener listener) {

@@ -151,6 +151,7 @@
 
     <!--答案信息-->
     <LinearLayout
+            android:id="@+id/ll_answer_info"
             android:layout_width="match_parent"
             android:layout_height="@dimen/question_detail_answer_info_height"
             android:gravity="center_vertical"
