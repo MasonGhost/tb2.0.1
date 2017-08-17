@@ -565,7 +565,44 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public Observable<List<NearbyBean>> getNearbyData(double longitude, double latitude, Integer radius, Integer limit, Integer page) {
         return mUserInfoClient.getNearbyData(longitude, latitude, radius, limit, page)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<NearbyBean>, Observable<List<NearbyBean>>>() {
+                    @Override
+                    public Observable<List<NearbyBean>> call(List<NearbyBean> nearbyBeen) {
+                        List<Object> userIds = new ArrayList();
+                        for (NearbyBean nearbyBean : nearbyBeen) {
+                            userIds.add(nearbyBean.getUser_id());
+                        }
+                        return getUserInfo(userIds)
+                                .map(userinfobeans -> {
+                                    if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (NearbyBean nearbyBean : nearbyBeen) {
+                                            try {
+                                                if (userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())) != null) {
+                                                    nearbyBean.setUser(userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())));
+                                                }
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                    }
+                                    return nearbyBeen;
+                                });
+                    }
+                }).map(nearbyBeen -> {
+                    List<NearbyBean> result = new ArrayList<>();
+                    for (NearbyBean nearbyBean : nearbyBeen) {
+                        if (nearbyBean.getUser() != null) {
+                            result.add(nearbyBean);
+                        }
+
+                    }
+                    return result;
+                });
     }
 
     /*******************************************  签到  *********************************************/

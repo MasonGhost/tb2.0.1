@@ -49,15 +49,16 @@
             android:layout_gravity="right"
             android:drawableLeft="@mipmap/find_ico_location"
             android:drawablePadding="@dimen/spacing_small"
+            android:ellipsize="end"
             android:gravity="center"
+            android:maxLength="4"
+            android:maxLines="1"
             android:paddingBottom="@dimen/divider_line"
             android:paddingRight="@dimen/toolbar_padding_right"
+            android:singleLine="true"
+            android:text="@string/choose_city"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_icon_assist"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:maxLength="4"
             />
 
         <com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView

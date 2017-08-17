@@ -10,6 +10,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListContract;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -31,29 +32,30 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class FindSomeOneNearbyListAdapter extends CommonAdapter<UserInfoBean> {
+public class FindSomeOneNearbyListAdapter extends CommonAdapter<NearbyBean> {
     private FindSomeOneNearbyListContract.Presenter mPresenter;
 
-    public FindSomeOneNearbyListAdapter(Context context, int layoutId, List<UserInfoBean> datas, FindSomeOneNearbyListContract.Presenter presenter) {
+    public FindSomeOneNearbyListAdapter(Context context, int layoutId, List<NearbyBean> datas, FindSomeOneNearbyListContract.Presenter presenter) {
         super(context, layoutId, datas);
         this.mPresenter = presenter;
     }
 
     @Override
-    protected void convert(ViewHolder holder, UserInfoBean userInfoBean, int position) {
+    protected void convert(ViewHolder holder, NearbyBean userInfoBean, int position) {
         setItemData(holder, userInfoBean, position);
     }
 
-    private void setItemData(final ViewHolder holder, final UserInfoBean userInfoBean1, final int position) {
+    private void setItemData(final ViewHolder holder, final NearbyBean nearbyBean, final int position) {
+        UserInfoBean userInfoBean1 = nearbyBean.getUser();
         if (userInfoBean1 == null) {
             // 这种情况一般不会发生，为了防止崩溃，做处理
             return;
         }
-        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+        if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
             holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed_eachother);
-        }else if(userInfoBean1.isFollower()){
+        } else if (userInfoBean1.isFollower()) {
             holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed);
-        }else {
+        } else {
             holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_follow);
         }
 
@@ -66,11 +68,11 @@ public class FindSomeOneNearbyListAdapter extends CommonAdapter<UserInfoBean> {
                     // 关注列表的逻辑操作：关注，互相关注 ---》未关注
                     // 粉丝列表的逻辑操作：互相关注 ---》未关注
 
-                    if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+                    if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
                         mPresenter.cancleFollowUser(position, userInfoBean1);
-                    }else if(userInfoBean1.isFollower()){
+                    } else if (userInfoBean1.isFollower()) {
                         mPresenter.cancleFollowUser(position, userInfoBean1);
-                    }else {
+                    } else {
                         mPresenter.followUser(position, userInfoBean1);
                     }
 
@@ -85,9 +87,9 @@ public class FindSomeOneNearbyListAdapter extends CommonAdapter<UserInfoBean> {
         // 设置用户名，用户简介
         holder.setText(R.id.tv_name, userInfoBean1.getName());
 
-        holder.setText(R.id.tv_user_signature, TextUtils.isEmpty(userInfoBean1.getIntro())?getContext().getString(R.string.intro_default):userInfoBean1.getIntro());
+        holder.setText(R.id.tv_user_signature, TextUtils.isEmpty(userInfoBean1.getIntro()) ? getContext().getString(R.string.intro_default) : userInfoBean1.getIntro());
         // 修改点赞数量颜色
-        String digCountString = userInfoBean1.getExtra().getLikes_count()+"";
+        String digCountString = userInfoBean1.getExtra().getLikes_count() + "";
         // 当前没有获取到点赞数量，设置为0，否则ColorPhrase会抛出异常
         if (TextUtils.isEmpty(digCountString)) {
             digCountString = 0 + "";

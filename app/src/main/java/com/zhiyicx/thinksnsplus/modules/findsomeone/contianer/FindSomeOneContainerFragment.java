@@ -2,12 +2,10 @@ package com.zhiyicx.thinksnsplus.modules.findsomeone.contianer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
@@ -16,24 +14,22 @@ import com.amap.api.services.geocoder.GeocodeAddress;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
-import com.github.tamir7.contacts.Contact;
+import com.vladsch.flexmark.ast.Text;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentActivity;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentFragment;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contacts.ContactsFragment;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.search.name.SearchSomeOneActivity;
-import com.zhiyicx.thinksnsplus.utils.LocationUtils;
+
+import org.simple.eventbus.EventBus;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerViewPagerFragment.PAGE_POSITION_NEARBY;
@@ -44,7 +40,7 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOne
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class FindSomeOneContainerFragment extends TSFragment implements GeocodeSearch.OnGeocodeSearchListener {
+public class FindSomeOneContainerFragment extends TSFragment {
     private static final int REQUST_CODE_LOCATION = 8200;
 
     @BindView(R.id.tv_toolbar_right)
@@ -87,11 +83,17 @@ public class FindSomeOneContainerFragment extends TSFragment implements GeocodeS
 
     @Override
     protected void initView(View rootView) {
+        mFindSomeOneContainerViewPagerFragment = FindSomeOneContainerViewPagerFragment.initFragment(getActivity().getIntent().getExtras());
+
+        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager()
+                , mFindSomeOneContainerViewPagerFragment
+                , R.id.fragment_container);
+
         initListener();
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
-//                        initLocation();
+                        initLocation();
                     } else {
                         mTvToolbarRight.setText(getString(R.string.emptyStr));
                     }
@@ -127,6 +129,9 @@ public class FindSomeOneContainerFragment extends TSFragment implements GeocodeS
                     //可在其中解析amapLocation获取相应内容。
                     LogUtils.d("1 = " + aMapLocation.getAddress());
                     LogUtils.d("2 = " + aMapLocation.getCity());
+                    LatLonPoint latLonPoint = new LatLonPoint(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                    mTvToolbarRight.setText(aMapLocation.getCity());
+                    EventBus.getDefault().post(latLonPoint, EventBusTagConfig.EVENT_NEARBY_LOCATION);
                 } else {
                     //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
                     LogUtils.d("AmapError" + "location Error, ErrCode:"
@@ -142,11 +147,6 @@ public class FindSomeOneContainerFragment extends TSFragment implements GeocodeS
 
     @Override
     protected void initData() {
-        mFindSomeOneContainerViewPagerFragment = FindSomeOneContainerViewPagerFragment.initFragment(getActivity().getIntent().getExtras());
-
-        ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager()
-                , mFindSomeOneContainerViewPagerFragment
-                , R.id.fragment_container);
 
 
     }
@@ -178,6 +178,7 @@ public class FindSomeOneContainerFragment extends TSFragment implements GeocodeS
             case R.id.tv_toolbar_right:
                 Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);
                 startActivityForResult(intent, REQUST_CODE_LOCATION);
+                mFindSomeOneContainerViewPagerFragment.setCurrentItem(PAGE_POSITION_NEARBY);
                 break;
         }
     }
@@ -185,51 +186,33 @@ public class FindSomeOneContainerFragment extends TSFragment implements GeocodeS
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && data.getExtras() != null) {
-            LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
-            String locationStr;
-            try {
-                locationStr = LocationBean.getlocation(locationBean);
-                String[] result = locationStr.split("，");
-                if (result.length > 3) {
-                    mTvToolbarRight.setText(result[result.length - 1]);
-                } else {
-                    mTvToolbarRight.setText(result[result.length - 2]);
+        if (resultCode == RESULT_OK) {
+            String locationStr = "";
+            if (data.getExtras() != null) {
+                LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
+
+                try {
+                    locationStr = LocationBean.getlocation(locationBean);
+                    String[] result = locationStr.split("，");
+                    if (result.length > 3) {
+                        mTvToolbarRight.setText(result[result.length - 1]);
+                    } else {
+                        mTvToolbarRight.setText(result[result.length - 2]);
+                    }
+                } catch (Exception e) {
+                    locationStr = locationBean.getName();
+                    String[] result = locationStr.split(" ");
+                    if (result.length > 3) {
+                        mTvToolbarRight.setText(result[result.length - 1]);
+                    } else {
+                        mTvToolbarRight.setText(result[result.length - 2]);
+                    }
                 }
-                LocationUtils.getLatlon(locationStr, getContext(), this);
-            } catch (Exception e) {
-                locationStr = locationBean.getName();
-                mTvToolbarRight.setText(locationStr);
             }
-            LocationUtils.getLatlon(locationBean.getName(), getContext(), this);
-
-        }
-
-    }
-
-    @Override
-    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
-
-    }
-
-    @Override
-    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
-        if (i == 1000) {
-            LatLonPoint latLonPoint;
-            if (geocodeResult != null && geocodeResult.getGeocodeAddressList() != null &&
-                    geocodeResult.getGeocodeAddressList().size() > 0) {
-                GeocodeAddress geocodeAddress = geocodeResult.getGeocodeAddressList().get(0);
-                double latitude = geocodeAddress.getLatLonPoint().getLatitude();//纬度
-                double longititude = geocodeAddress.getLatLonPoint().getLongitude();//经度
-                latLonPoint = geocodeAddress.getLatLonPoint();
-                // TODO: 2017/8/16 附近的人
-
-            } else {
-                LogUtils.e("地址名出错");
-                latLonPoint = new LatLonPoint(0, 0);
+            if (TextUtils.isEmpty(locationStr)) {
+                mTvToolbarRight.setText(getString(R.string.choose_city));
             }
-            // TODO: 2017/8/17 切换到附近的人
-            mFindSomeOneContainerViewPagerFragment.setCurrentItem(PAGE_POSITION_NEARBY,latLonPoint);
+            EventBus.getDefault().post(locationStr, EventBusTagConfig.EVENT_NEARBY_LOCATION_UPDATE);
         }
 
     }

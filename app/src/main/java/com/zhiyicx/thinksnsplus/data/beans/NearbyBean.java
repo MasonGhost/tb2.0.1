@@ -11,7 +11,6 @@ import org.greenrobot.greendao.annotation.Id;
  * @Date 2017/8/17
  * @Contact master.jungle68@gmail.com
  */
-@Entity
 public class NearbyBean extends BaseListBean {
 
 
@@ -28,13 +27,13 @@ public class NearbyBean extends BaseListBean {
      * _district : 武侯区
      * _distance : 0
      */
-    @Id
     private Long id; // 主键，没有具体意义
     private String _id;
     private String _location;
     private String _name;
     private String _address;
     private String user_id;
+    private UserInfoBean user;
     private String _createtime;
     private String _updatetime;
     private String _province;
@@ -138,4 +137,11 @@ public class NearbyBean extends BaseListBean {
         this._distance = _distance;
     }
 
+    public UserInfoBean getUser() {
+        return user;
+    }
+
+    public void setUser(UserInfoBean user) {
+        this.user = user;
+    }
 }

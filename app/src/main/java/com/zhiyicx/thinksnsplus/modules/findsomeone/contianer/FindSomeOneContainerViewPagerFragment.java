@@ -77,15 +77,11 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
      * 当前显示页切换
      *
      * @param position
-     * @param latLonPoint
      */
-    public void setCurrentItem(int position, LatLonPoint latLonPoint) {
+    public void setCurrentItem(int position) {
 
         mVpFragment.setCurrentItem(position);// 设置进入页面时，切换到关注还是粉丝列表
 
-        if (position == PAGE_POSITION_NEARBY) {
-            EventBus.getDefault().post(latLonPoint, EventBusTagConfig.EVENT_NEARBY_LAT);
-        }
     }
 
     public static FindSomeOneContainerViewPagerFragment initFragment(Bundle bundle) {

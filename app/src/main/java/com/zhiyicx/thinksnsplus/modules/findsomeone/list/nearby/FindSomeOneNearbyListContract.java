@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.findsomeone.list.nearby;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 /**
@@ -12,7 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
  */
 
 public interface FindSomeOneNearbyListContract {
-    interface View extends ITSListView<UserInfoBean, Presenter> {
+    interface View extends ITSListView<NearbyBean, Presenter> {
         /**
          * 更新列表的关注状态
          *
@@ -22,13 +23,9 @@ public interface FindSomeOneNearbyListContract {
 
         void upDateFollowFansState();
 
-        /**
-         * 获取页面类型
-         */
-        int getPageType();
     }
 
-    interface Presenter extends ITSListPresenter<UserInfoBean> {
+    interface Presenter extends ITSListPresenter<NearbyBean> {
         /**
          * 重写获取网络数据的方法，添加方法参数
          *

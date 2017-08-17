@@ -1,19 +1,32 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.list.nearby;
 
+import android.text.TextUtils;
+
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeAddress;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListContract;
+import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,8 +47,9 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListF
  */
 @FragmentScoped
 public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOneNearbyListContract.Repository,
-        FindSomeOneNearbyListContract.View> implements FindSomeOneNearbyListContract.Presenter {
+        FindSomeOneNearbyListContract.View> implements FindSomeOneNearbyListContract.Presenter, GeocodeSearch.OnGeocodeSearchListener {
 
+    public static final int DEFAULT_NEARBY_RADIUS = 3000; // 搜索范围，单位 M
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
@@ -44,9 +58,10 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-    @Inject
-    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
+    LatLonPoint mLatLonPoint;
+
+    private boolean mIsConverLocation;
 
     @Inject
     public FindSomeOneNearbyListPresenter(FindSomeOneNearbyListContract.Repository repository,
@@ -60,61 +75,35 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
     }
 
     @Override
-    public void requestNetData(Long page, boolean isLoadMore) {
+    public void requestNetData(Long max_Id, boolean isLoadMore) {
+        if (mIsConverLocation) { // 正在转换经纬度就不请求
+            return;
+        }
 
+        if (mLatLonPoint == null) {
+            mRootView.onNetResponseSuccess(new ArrayList<>(), false);
+
+        } else {
+            mUserInfoRepository.getNearbyData(mLatLonPoint.getLongitude(), mLatLonPoint.getLatitude()
+                    , DEFAULT_NEARBY_RADIUS, TSListFragment.DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment.DEFAULT_PAGE)
+                    .subscribe(new BaseSubscribeForV2<List<NearbyBean>>() {
+                        @Override
+                        protected void onSuccess(List<NearbyBean> data) {
+                            mRootView.onNetResponseSuccess(data, false);
+                        }
+                    });
+        }
     }
 
     @Override
-    public List<UserInfoBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    public List<NearbyBean> requestCacheData(Long maxId, boolean isLoadMore) {
         return null;
     }
 
     @Override
-    public boolean insertOrUpdateData(@NotNull List<UserInfoBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(@NotNull List<NearbyBean> data, boolean isLoadMore) {
         return true;
     }
-
-//    @Override
-//    public void requestNetData(final Long maxId, final boolean isLoadMore, final int pageType) {
-//        Observable<List<UserInfoBean>> observable = null;
-//
-//        switch (pageType){
-//            case TYPE_HOT:
-//                observable=mUserInfoRepository.getHotUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
-//                break;
-//
-//            case TYPE_NEW:
-//                observable=mUserInfoRepository.getNewUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
-//                break;
-//            case TYPE_RECOMMENT:
-//                observable=mUserInfoRepository.getUsersRecommentByTag(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
-//                break;
-//            case TYPE_NEARBY:
-//                observable=mUserInfoRepository.getHotUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
-//                break;
-//        }
-//
-//        Subscription subscription = observable
-//                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
-//                    @Override
-//                    protected void onSuccess(List<UserInfoBean> data) {
-//                        mRootView.onNetResponseSuccess(data, isLoadMore);
-//                    }
-//
-//                    @Override
-//                    protected void onFailure(String message, int code) {
-//                        Throwable throwable = new Throwable(message);
-//                        mRootView.onResponseError(throwable, isLoadMore);
-//                    }
-//
-//                    @Override
-//                    protected void onException(Throwable throwable) {
-//                        LogUtils.e(throwable, throwable.getMessage());
-//                        mRootView.onResponseError(throwable, isLoadMore);
-//                    }
-//                });
-//        addSubscrebe(subscription);
-//    }
 
     @Override
     public void followUser(int index, UserInfoBean followFansBean) {
@@ -129,5 +118,63 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
         mRootView.upDateFollowFansState(index);
     }
 
+    /**
+     * 地区选择更新
+     *
+     * @param location
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_NEARBY_LOCATION_UPDATE)
+    public void updateNearByData(String location) {
+        if (TextUtils.isEmpty(location) || location.equals(mContext.getString(R.string.choose_city))) {
+            mRootView.onNetResponseSuccess(new ArrayList<>(), false);
+            return;
+        }
+        mIsConverLocation = true;
+        mRootView.showLoading();
+        LocationUtils.getLatlon(location, mContext, this);
 
+    }
+
+    /**
+     * 地区定位
+     *
+     * @param latLonPoint
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_NEARBY_LOCATION)
+    public void location(LatLonPoint latLonPoint) {
+        mRootView.showLoading();
+        mLatLonPoint = latLonPoint;
+        requestNetData(0L, false);
+
+    }
+
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
+
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+        mIsConverLocation = false;
+        if (i == 1000) {
+            LatLonPoint latLonPoint;
+            if (geocodeResult != null && geocodeResult.getGeocodeAddressList() != null &&
+                    geocodeResult.getGeocodeAddressList().size() > 0) {
+                GeocodeAddress geocodeAddress = geocodeResult.getGeocodeAddressList().get(0);
+                latLonPoint = geocodeAddress.getLatLonPoint();
+                if (mLatLonPoint == null || !mLatLonPoint.equals(latLonPoint)) {
+                    mLatLonPoint = latLonPoint;
+
+                    requestNetData(0L, false);
+                }else {
+                    mRootView.hideLoading();
+                }
+            }
+        } else {
+            LogUtils.e("地址名出错");
+            mRootView.onNetResponseSuccess(new ArrayList<>(), false);
+        }
+
+
+    }
 }

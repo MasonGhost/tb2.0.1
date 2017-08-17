@@ -142,6 +142,7 @@ public class EventBusTagConfig {
     /**
      * 附近的人
      */
-    public static final String EVENT_NEARBY_LAT = "nearby_lat";
+    public static final String EVENT_NEARBY_LOCATION = "nearby_location";
+    public static final String EVENT_NEARBY_LOCATION_UPDATE = "nearby_location_update";
 
 }

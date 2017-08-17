@@ -38,4 +38,9 @@ public class LocationRecommentActivity extends TSActivity<LocationRecommentPrese
         super.onActivityResult(requestCode, resultCode, data);
         mContanierFragment.onActivityResult(requestCode,resultCode,data);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }

@@ -66,6 +66,8 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     private List<LocationBean> mHotCitys = new ArrayList<>();
     private CommonAdapter mUnSubscribeAdapter;
 
+    private String mCurrentLocation = "";
+
     public static LocationRecommentFragment newInstance(Bundle bundle) {
         LocationRecommentFragment findSomeOneContainerFragment = new LocationRecommentFragment();
         findSomeOneContainerFragment.setArguments(bundle);
@@ -142,11 +144,15 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                     //可在其中解析amapLocation获取相应内容。
                     LogUtils.d("1 = " + aMapLocation.getAddress());
                     LogUtils.d("2 = " + aMapLocation.getCity());
+                    mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() + " " + aMapLocation.getCity();
+                    mTvCurrentLocation.setText(aMapLocation.getCity());
                 } else {
                     //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
                     LogUtils.d("AmapError" + "location Error, ErrCode:"
                             + aMapLocation.getErrorCode() + ", errInfo:"
                             + aMapLocation.getErrorInfo());
+                    mTvCurrentLocation.setText(getString(R.string.wu));
+
                 }
             }
             handleAnimation(false);
@@ -173,7 +179,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
         }
     }
 
-    @OnClick({R.id.tv_toolbar_center, R.id.tv_cancel, R.id.iv_location})
+    @OnClick({R.id.tv_toolbar_center, R.id.tv_cancel, R.id.iv_location, R.id.tv_current_location})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_center:
@@ -184,12 +190,23 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                 startActivityForResult(intent, REQUST_CODE_AREA);
                 break;
             case R.id.tv_cancel:
+                getActivity().setResult(RESULT_OK, getActivity().getIntent());
                 getActivity().finish();
                 break;
             case R.id.iv_location:
-                LogUtils.d("test");
                 startLocation();
                 break;
+            case R.id.tv_current_location:
+                LocationBean bean = new LocationBean();
+                bean.setName(mCurrentLocation);
+                Intent intenttmp = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LocationSearchFragment.BUNDLE_DATA, bean);
+                intenttmp.putExtras(bundle);
+                getActivity().setResult(RESULT_OK, intenttmp);
+                getActivity().finish();
+                break;
+            default:
         }
     }
 
@@ -213,7 +230,20 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
             @Override
             protected void convert(ViewHolder holder, LocationBean data,
                                    int position) {
-                holder.setText(R.id.item_info_channel, data.getName());
+                String locationStr = data.getName();
+                try {
+                    String[] result = locationStr.split(" ");
+                    if (result.length > 3) {
+                        holder.setText(R.id.item_info_channel, result[result.length - 1]);
+                    } else {
+                        holder.setText(R.id.item_info_channel, result[result.length - 2]);
+                    }
+
+                } catch (Exception e) {
+                    holder.setText(R.id.item_info_channel, locationStr);
+                }
+
+
             }
 
             @Override
@@ -289,4 +319,9 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        getActivity().setResult(RESULT_OK, getActivity().getIntent());
+        getActivity().finish();
+    }
 }
