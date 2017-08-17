@@ -472,53 +472,63 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     /*******************************************  找人  *********************************************/
     /**
-     *
      * @param limit  每页数量
      * @param offset 偏移量, 注: 此参数为之前获取数量的总和
      * @return
      */
     @Override
     public Observable<List<UserInfoBean>> getHotUsers(Integer limit, Integer offset) {
-        return mUserInfoClient.getHotUsers(limit,offset)
+        return mUserInfoClient.getHotUsers(limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
-     *
      * @param limit  每页数量
      * @param offset 偏移量, 注: 此参数为之前获取数量的总和
      * @return
      */
     @Override
     public Observable<List<UserInfoBean>> getNewUsers(Integer limit, Integer offset) {
-        return mUserInfoClient.getNewUsers(limit,offset)
+        return mUserInfoClient.getNewUsers(limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
-     *
      * @param limit  每页数量
      * @param offset 偏移量, 注: 此参数为之前获取数量的总和
      * @return
      */
     @Override
     public Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset) {
-        return mUserInfoClient.getUsersRecommentByTag(limit,offset)
+        return mUserInfoClient.getUsersRecommentByTag(limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
-     *
-     * @param phones
+     * @param phones 单次最多 100 条
      * @return
      */
     @Override
     public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones) {
-        Map<String, ArrayList<String>> phonesMap=new HashMap<>();
-        phonesMap.put("phones",phones);
+
+        if (phones.size() > 100) {
+            return Observable.zip(getListObservable(phones.subList(0, 100)), getListObservable(phones.subList(100, phones.size()))
+                    , (userInfoBeen, userInfoBeen2) -> {
+                        userInfoBeen.addAll(userInfoBeen2);
+                        return userInfoBeen;
+                    });
+
+        } else {
+            return getListObservable(phones);
+        }
+    }
+
+    private Observable<List<UserInfoBean>> getListObservable(List<String> phones) {
+        Map<String, List<String>> phonesMap = new HashMap<>();
+        phonesMap.put("phones", phones);
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(phonesMap));
 
         return mUserInfoClient.getUsersByPhone(body)
@@ -529,7 +539,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     /*******************************************  签到  *********************************************/
 
     /**
-     *
      * @return
      */
     @Override
@@ -541,7 +550,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -552,7 +560,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     /**
-     *
      * @param offset 数据偏移数，默认为 0。
      * @return
      */
