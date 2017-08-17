@@ -16,6 +16,7 @@ import java.util.List;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -116,14 +117,21 @@ public interface QAClient {
      * 获取一个问题的回答列表
      *
      * @param question_id 问题id
-     * @param order_type default/time
-     * @return
+     * @param order_type  default/time
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)
     Observable<List<AnswerInfoBean>> getAnswerList(@Path("question") String question_id,
                                                    @Query("limit") Long limit,
                                                    @Query("order_type") String order_type,
                                                    @Query("offset") int size);
+
+    /**
+     * 删除问题
+     *
+     * @param question_id 问题id
+     */
+    @DELETE(ApiConfig.APP_PATH_GET_DELETE_QUESTION)
+    Observable<BaseJsonV2<Object>> deleteQuestion(@Path("answer_id") String question_id);
 
     /*******************************************  打赏  *********************************************/
 
@@ -150,4 +158,5 @@ public interface QAClient {
     @GET(APP_PATH_QA_ANSWER_REWARD_USER_LIST)
     Observable<List<RewardsListBean>> rewardQAList(@Path("answer_id") long answer_id, @Query("limit") Integer limit
             , @Query("offset") Integer offset, @Query("type") String order_type);
+
 }

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
@@ -21,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE;
 
 /**
  * @author Catherine
@@ -142,6 +145,33 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
+    public void deleteQuestion(Long question_id) {
+        mRootView.deleteQuestion(true, false, "");
+        Subscription subscription = mRepository.deleteQuestion(question_id)
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        EventBus.getDefault().post(mRootView.getCurrentQuestion(), EVENT_UPDATE_QUESTION_DELETE);
+                        mRootView.deleteQuestion(false, true, "");
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.deleteQuestion(false, false, message);
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void applyForExcellent(Long question_id, boolean isExcellent) {
+        mRepository.applyForExcellent(question_id, isExcellent);
+    }
+
+    @Override
     public void onStart(Share share) {
 
     }
@@ -159,5 +189,10 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void onCancel(Share share) {
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 }

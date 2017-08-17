@@ -12,8 +12,10 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -34,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
@@ -62,6 +65,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     private QuestionSelectListTypePopWindow mOrderTypeSelectPop; // 选择排序的弹框
     private QuestionInviteUserPopWindow mInvitePop; // 邀请回答的弹框
+    private ActionPopupWindow mMorePop; // 更多弹框
+    private boolean mIsMine = false;
 
     public QuestionDetailFragment instance(Bundle bundle) {
         QuestionDetailFragment fragment = new QuestionDetailFragment();
@@ -73,6 +78,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
+        Long userId = mQaListInfoBean.getUser_id();
+        mIsMine = userId.equals(AppApplication.getmCurrentLoginAuth().getUser_id());
         initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
@@ -166,6 +173,19 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    public void deleteQuestion(boolean isLoading, boolean success, String message) {
+        if (isLoading){
+            showSnackLoadingMessage(getString(R.string.info_deleting));
+        } else {
+            if (success){
+                getActivity().finish();
+            } else {
+                showSnackErrorMessage(message);
+            }
+        }
+    }
+
+    @Override
     public void onNetResponseSuccess(@NotNull List<AnswerInfoBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
             if (data.isEmpty()) { // 空白展位图
@@ -234,7 +254,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         });
         mQaDetailTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
                 , R.string.share, R.string.more, R.string.qa_detail_edit, R.string.collect});
-        mQaDetailTool.showQuestionTool(false);
+        mQaDetailTool.showQuestionTool(mIsMine);
         mQaDetailTool.setData();
     }
 
@@ -286,6 +306,27 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .alpha(1f)
                     .build();
         }
+        mMorePop = ActionPopupWindow.builder()
+                .with(getActivity())
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(POPUPWINDOW_ALPHA)
+                .item1Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : getString(R.string.qa_question_develop))
+                .item2Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : "")
+                .item2Color(R.color.important_for_note)
+                .bottomStr(getString(R.string.cancel))
+                .item1ClickListener(() -> {
+                    if (mIsMine){
+                        // 申请精选问答
+                        mPresenter.applyForExcellent(mQaListInfoBean.getId(), !(mQaListInfoBean.getExcellent() == 1));
+                    }
+                    mMorePop.dismiss();
+                })
+                .item2ClickListener(() -> {
+                    // 删除问答
+                    mPresenter.deleteQuestion(mQaListInfoBean.getId());
+                })
+                .build();
     }
 
     @Override

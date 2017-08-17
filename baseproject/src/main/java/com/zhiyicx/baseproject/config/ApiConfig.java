@@ -359,12 +359,15 @@ public class ApiConfig {
     public static final String APP_PATH_HANDLE_QUESTION_FOLLOW = "api/" + API_VERSION_2 + "/user/question-watches/{question}";
     public static final String APP_PATH_HANDLE_QUESTION_FOLLOW_S = "api/" + API_VERSION_2 + "/user/question-watches/%s";
     // 删除问题用
-    public static final String APP_PATH_GET_DELETE_QUESTION_S = "api/" + API_VERSION_2 + "/questions/%s";
+    public static final String APP_PATH_GET_DELETE_QUESTION = "api/" + API_VERSION_2 + "/questions/{question}";
     // 获取一个问题的回答列表
     public static final String APP_PATH_GET_QUESTION_ANSWER_LIST = "api/" + API_VERSION_2 + "/questions/{question}/answers";
     // 获取一个回答的详情
     public static final String APP_PATH_GET_ANSWER_DETAIL = "api/" + API_VERSION_2 + "/question-answers/{answer_id}";
     public static final String APP_PATH_GET_ANSWER_DETAIL_S = "api/" + API_VERSION_2 + "/question-answers/%s";
+    // 申请精选问答 POST
+    public static final String APP_PATH_APPLY_FOR_EXCELLENT = "api/" + API_VERSION_2 + "/user/question-application/{question}";
+    public static final String APP_PATH_APPLY_FOR_EXCELLENT_S = "api/" + API_VERSION_2 + "/user/question-application/%s";
     // 发布回答
     public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/answers";
     // 更新回答 PATCH

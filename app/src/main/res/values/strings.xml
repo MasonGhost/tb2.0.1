@@ -475,6 +475,9 @@
     <string name="qa_answer_count">%d 个回答</string>
     <string name="qa_title_question_detail">问题详情</string>
     <string name="qa_question_no_answer">还没有回答</string>
+    <string name="qa_apply_for_excellent">申请为精选问答</string>
+    <string name="qa_question_delete">删除问题</string>
+    <string name="qa_question_develop">敬请期待</string>
 
     <!--签到-->
     <string name="check_in">签到</string>
