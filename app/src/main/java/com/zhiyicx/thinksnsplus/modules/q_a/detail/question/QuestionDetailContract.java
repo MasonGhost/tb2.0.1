@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
+import android.graphics.Bitmap;
+
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
@@ -30,6 +32,7 @@ public interface QuestionDetailContract {
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{
         void getQuestionDetail(String questionId);
         void handleFollowState(String questionId, boolean isFollowed);
+        void shareQuestion(Bitmap bitmap);
     }
 
     interface Repository extends IBasePublishQuestionRepository{

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -244,7 +246,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
-
+                    mPresenter.shareQuestion(mQuestionDetailHeader.getShareBitmap());
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_4:// 编辑
                     // 发布者

@@ -51,6 +51,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         }
         // 是否采纳
         holder.setVisible(R.id.tv_adopt_flag, answerInfoBean.getAdoption() == 1 ? View.VISIBLE : View.GONE);
+        // 是否邀请
+        holder.setVisible(R.id.tv_invite_flag, answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
         // 正文
         holder.setText(R.id.tv_content, answerInfoBean.getBody());
         // 点赞数量

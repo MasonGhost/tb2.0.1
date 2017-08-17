@@ -460,6 +460,7 @@
     <string name="qa_topic_open_all">展开全部</string>
     <string name="qa_topic_close_all">收起</string>
     <string name="qa_question_answer_adopt">已采纳</string>
+    <string name="qa_question_answer_invite">邀请回答</string>
     <string name="qa_question_answer_adopting">采纳答案</string>
     <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
     <string name="qa_question_answer_anonymity">匿</string>
@@ -473,6 +474,7 @@
     <string name="qa_answer_list_order_by_time">按时间排序</string>
     <string name="qa_answer_count">%d 个回答</string>
     <string name="qa_title_question_detail">问题详情</string>
+    <string name="qa_question_no_answer">还没有回答</string>
 
     <!--签到-->
     <string name="check_in">签到</string>

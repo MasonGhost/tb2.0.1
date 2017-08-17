@@ -206,7 +206,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_INFO_REWARDS)
-    Observable<Object> rewardInfo(@Path("news_id") long news_id, @Field("amount") float amount);
+    Observable<Object> rewardInfo(@Path("news_id") long news_id, @Field("amount") Integer amount);
 
 
     /**

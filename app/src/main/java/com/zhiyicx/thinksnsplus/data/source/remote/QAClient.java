@@ -136,7 +136,7 @@ public interface QAClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_QA_ANSWER_REWARD)
-    Observable<Object> rewardQA(@Path("answer_id") long answer_id, @Field("amount") float amount);
+    Observable<Object> rewardQA(@Path("answer_id") long answer_id, @Field("amount") Integer amount);
 
 
     /**

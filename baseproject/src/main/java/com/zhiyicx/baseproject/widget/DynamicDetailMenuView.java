@@ -357,6 +357,6 @@ public class DynamicDetailMenuView extends FrameLayout {
         mIsQuestion = true;
         mLlDynamicDetailLike.setVisibility(GONE);
         mLlDynamicDetailEdit.setVisibility(isMine ? VISIBLE : GONE);
-        mLlDynamicDetailCollection.setVisibility(isMine ? GONE : VISIBLE);
+        mLlDynamicDetailCollection.setVisibility(GONE);
     }
 }

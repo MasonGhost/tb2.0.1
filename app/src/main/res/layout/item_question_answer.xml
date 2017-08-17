@@ -49,18 +49,35 @@
                     android:textSize="@dimen/size_content_comment"
                     tools:text="xxxxxx"/>
 
-            <TextView
-                    android:id="@+id/tv_adopt_flag"
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_marginLeft="@dimen/spacing_mid_small"
-                    android:layout_toRightOf="@+id/tv_name"
-                    android:text="@string/qa_question_answer_adopt"
-                    android:textColor="@color/themeColor"
-                    android:textSize="@dimen/size_note_assist"
-                    android:background="@drawable/shape_answer_adopt_bg"
-                    android:layout_alignBaseline="@+id/tv_name"
-                    android:padding="@dimen/spacing_tiny"/>
+                    android:layout_toRightOf="@+id/tv_name">
+                <!--邀请人的标志-->
+                <TextView
+                        android:id="@+id/tv_invite_flag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/qa_question_answer_invite"
+                        android:textColor="@color/dyanmic_top_flag"
+                        android:textSize="@dimen/size_note_assist"
+                        android:background="@drawable/shape_answer_invite_bg"
+                        android:padding="@dimen/spacing_tiny"/>
+                <!--采纳的标志-->
+                <TextView
+                        android:id="@+id/tv_adopt_flag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_mid_small"
+                        android:text="@string/qa_question_answer_adopt"
+                        android:textColor="@color/themeColor"
+                        android:textSize="@dimen/size_note_assist"
+                        android:background="@drawable/shape_answer_adopt_bg"
+                        android:padding="@dimen/spacing_tiny"/>
+            </LinearLayout>
+
             <TextView
                     android:id="@+id/tv_time"
                     android:layout_width="wrap_content"

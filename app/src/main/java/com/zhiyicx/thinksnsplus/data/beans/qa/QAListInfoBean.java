@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoListBeanConvert;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserTagListBeanConvert;
@@ -78,45 +79,14 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
     private List<AnswerInfoBean> invitation_answers; // 问题邀请用户回答的答案列表，具体数据结构参考「回答」文档。
     @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "question_id")})
     private List<AnswerInfoBean> adoption_answers; // 问题采纳的答案列表，具体数据结构参考「回答」文档。
-    @Convert(converter = UserTagListBeanConvert.class, columnType = String.class)
-    private List<UserTagBean> topics; // 问题话题列表，参考「话题」文档。
+    @Convert(converter = TopicConvert.class, columnType = String.class)
+    private List<QATopicBean> topics; // 问题话题列表，参考「话题」文档。
     @Convert(converter = UserInfoListBeanConvert.class, columnType = String.class)
     private List<UserInfoBean> invitations; // 问题邀请回答的用户列表，参考「用户」文档。
     @Convert(converter = UserInfoBeanConvert.class, columnType = String.class)
     private UserInfoBean user; // 用户资料，如果是 anonymity 是 1 则该字段不存在。
     @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "question_id")})
     private List<AnswerInfoBean> answerInfoBeanList;
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1951279767)
-    private transient QAListInfoBeanDao myDao;
-
-    @Generated(hash = 144172305)
-    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, List<UserTagBean> topics, List<UserInfoBean> invitations, UserInfoBean user) {
-        this.id = id;
-        this.user_id = user_id;
-        this.subject = subject;
-        this.body = body;
-        this.anonymity = anonymity;
-        this.amount = amount;
-        this.automaticity = automaticity;
-        this.look = look;
-        this.excellent = excellent;
-        this.status = status;
-        this.comments_count = comments_count;
-        this.answers_count = answers_count;
-        this.watchers_count = watchers_count;
-        this.likes_count = likes_count;
-        this.views_count = views_count;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.watched = watched;
-        this.topics = topics;
-        this.invitations = invitations;
-        this.user = user;
-    }
 
     @Generated(hash = 1163254106)
     public QAListInfoBean() {
@@ -273,11 +243,11 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.watched = watched;
     }
 
-    public List<UserTagBean> getTopics() {
+    public List<QATopicBean> getTopics() {
         return this.topics;
     }
 
-    public void setTopics(List<UserTagBean> topics) {
+    public void setTopics(List<QATopicBean> topics) {
         this.topics = topics;
     }
 
@@ -295,6 +265,18 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
 
     public void setUser(UserInfoBean user) {
         this.user = user;
+    }
+
+    public void setInvitation_answers(List<AnswerInfoBean> invitation_answers) {
+        this.invitation_answers = invitation_answers;
+    }
+
+    public void setAdoption_answers(List<AnswerInfoBean> adoption_answers) {
+        this.adoption_answers = adoption_answers;
+    }
+
+    public void setAnswerInfoBeanList(List<AnswerInfoBean> answerInfoBeanList) {
+        this.answerInfoBeanList = answerInfoBeanList;
     }
 
     /**
@@ -424,9 +406,39 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         myDao = daoSession != null ? daoSession.getQAListInfoBeanDao() : null;
     }
 
-    public void setAnswerInfoBeanList(List<AnswerInfoBean> answerInfoBeanList) {
-        this.answerInfoBeanList = answerInfoBeanList;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1951279767)
+    private transient QAListInfoBeanDao myDao;
+
+    @Generated(hash = 1721279130)
+    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, List<QATopicBean> topics, List<UserInfoBean> invitations, UserInfoBean user) {
+        this.id = id;
+        this.user_id = user_id;
+        this.subject = subject;
+        this.body = body;
+        this.anonymity = anonymity;
+        this.amount = amount;
+        this.automaticity = automaticity;
+        this.look = look;
+        this.excellent = excellent;
+        this.status = status;
+        this.comments_count = comments_count;
+        this.answers_count = answers_count;
+        this.watchers_count = watchers_count;
+        this.likes_count = likes_count;
+        this.views_count = views_count;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.watched = watched;
+        this.topics = topics;
+        this.invitations = invitations;
+        this.user = user;
     }
+
+    public static class TopicConvert extends BaseConvert<List<QATopicBean>> {}
 
     @Override
     public int describeContents() {
@@ -484,7 +496,7 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.watched = in.readByte() != 0;
         this.invitation_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
         this.adoption_answers = in.createTypedArrayList(AnswerInfoBean.CREATOR);
-        this.topics = in.createTypedArrayList(UserTagBean.CREATOR);
+        this.topics = in.createTypedArrayList(QATopicBean.CREATOR);
         this.invitations = in.createTypedArrayList(UserInfoBean.CREATOR);
         this.user = in.readParcelable(UserInfoBean.class.getClassLoader());
         this.answerInfoBeanList = in.createTypedArrayList(AnswerInfoBean.CREATOR);

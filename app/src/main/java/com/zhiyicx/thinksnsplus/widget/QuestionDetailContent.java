@@ -52,6 +52,7 @@ public class QuestionDetailContent extends FrameLayout {
     private ExpandableTextView mTvQuestionContent;
     private MarkdownView mMdvQuestionContent;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
+    private Bitmap mShareBitmap;
 
     public QuestionDetailContent(@NonNull Context context) {
         super(context);
@@ -117,6 +118,7 @@ public class QuestionDetailContent extends FrameLayout {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                             mItemInfoImage.setImageBitmap(resource);
+                            mShareBitmap = resource;
                         }
                     });
             mTvQuestionContent.setMaxLinesOnShrink(1);
@@ -194,5 +196,9 @@ public class QuestionDetailContent extends FrameLayout {
 
             }
         });
+    }
+
+    public Bitmap getShareBitmap(){
+        return mShareBitmap;
     }
 }
