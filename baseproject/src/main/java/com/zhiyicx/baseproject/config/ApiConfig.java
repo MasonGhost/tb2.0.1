@@ -523,6 +523,13 @@ public class ApiConfig {
     public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
     // 通过 phone 推荐
     public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";
+    // 更新用户地址
+    public static final String APP_PATH_UPDATE_USER_LOCATION = "api/" + API_VERSION_2 + "/around-amap";
+    // 根据经纬度查询周围最多50KM内的 TS+ 用户
+    public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
+
+
+
     // 签到
     // 获取签到信息
     public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/user/checkin";

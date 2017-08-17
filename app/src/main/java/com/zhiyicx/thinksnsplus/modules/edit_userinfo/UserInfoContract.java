@@ -11,6 +11,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
@@ -22,6 +23,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -34,6 +36,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RAN
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
 /**
  * @author LiuChao
@@ -259,6 +263,29 @@ public interface UserInfoContract {
          * @return
          */
         Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones);
+
+
+        /**
+         * 更新位置数据
+         *
+         * @param longitude 经度
+         * @param latitude  纬度
+         * @return
+         */
+        Observable<Object> updateUserLocation(double longitude,  double latitude);
+
+        /**
+         * 根据经纬度查询周围最多 50KM 内的 TS+ 用户
+         *
+         * @param longitude 当前用户所在位置的纬度
+         * @param latitude  当前用户所在位置的经度
+         * @param radius    搜索范围，米为单位 [0 - 50000], 默认3000
+         * @param limit     默认20， 最大100
+         * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
+         * @return
+         */
+        Observable<List<NearbyBean>> getNearbyData(double longitude,double latitude,Integer radius,Integer limit, Integer page);
+
 
 
         /*******************************************  签到  *********************************************/

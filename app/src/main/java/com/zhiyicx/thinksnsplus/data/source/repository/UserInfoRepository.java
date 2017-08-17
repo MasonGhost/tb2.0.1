@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -526,12 +527,43 @@ public class UserInfoRepository implements UserInfoContract.Repository {
         }
     }
 
+    /**
+     * @param phones
+     * @return
+     */
     private Observable<List<UserInfoBean>> getListObservable(List<String> phones) {
         Map<String, List<String>> phonesMap = new HashMap<>();
         phonesMap.put("phones", phones);
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(phonesMap));
 
         return mUserInfoClient.getUsersByPhone(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param longitude 经度
+     * @param latitude  纬度
+     * @return
+     */
+    @Override
+    public Observable<Object> updateUserLocation(double longitude, double latitude) {
+        return mUserInfoClient.updateUserLocation(longitude, latitude)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param longitude 当前用户所在位置的纬度
+     * @param latitude  当前用户所在位置的经度
+     * @param radius    搜索范围，米为单位 [0 - 50000], 默认3000
+     * @param limit     默认20， 最大100
+     * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
+     * @return
+     */
+    @Override
+    public Observable<List<NearbyBean>> getNearbyData(double longitude, double latitude, Integer radius, Integer limit, Integer page) {
+        return mUserInfoClient.getNearbyData(longitude, latitude, radius, limit, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

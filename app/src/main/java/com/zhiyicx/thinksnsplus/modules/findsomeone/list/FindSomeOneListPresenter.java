@@ -50,6 +50,7 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+
     @Inject
     FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 

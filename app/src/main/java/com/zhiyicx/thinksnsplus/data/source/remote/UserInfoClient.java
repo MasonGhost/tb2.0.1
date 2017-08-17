@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -50,8 +51,10 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
 /**
  * @author LiuChao
@@ -338,6 +341,30 @@ public interface UserInfoClient {
      */
     @POST(APP_PATH_GET_BY_PHONE_USER_INFO)
     Observable<List<UserInfoBean>> getUsersByPhone(@Body RequestBody phones);
+
+    /**
+     * 更新位置数据
+     *
+     * @param longitude 经度
+     * @param latitude  纬度
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_UPDATE_USER_LOCATION)
+    Observable<Object> updateUserLocation(@Field("longitude") double longitude, @Field("latitude") double latitude);
+
+    /**
+     * 根据经纬度查询周围最多 50KM 内的 TS+ 用户
+     *
+     * @param longitude 当前用户所在位置的纬度
+     * @param latitude  当前用户所在位置的经度
+     * @param radius    搜索范围，米为单位 [0 - 50000], 默认3000
+     * @param limit     默认20， 最大100
+     * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
+     * @return
+     */
+    @GET(APP_PATH_GET_USER_AROUND)
+    Observable<List<NearbyBean>> getNearbyData(@Query("longitude") double longitude, @Query("latitude") double latitude, @Query("radius") Integer radius, @Query("limit") Integer limit, @Query("page") Integer page);
 
     /*******************************************  签到  *********************************************/
 
