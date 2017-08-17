@@ -11,7 +11,8 @@
     <com.zhy.view.flowlayout.TagFlowLayout
             android:id="@+id/tfl_question"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_normal"/>
 
     <View
             style="@style/style_divider_horizontal"

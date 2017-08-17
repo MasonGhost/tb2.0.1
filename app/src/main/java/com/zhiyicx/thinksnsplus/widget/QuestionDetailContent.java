@@ -85,7 +85,7 @@ public class QuestionDetailContent extends FrameLayout {
      */
     public void setQuestionDetail(QAListInfoBean questionDetail) {
         String content = questionDetail.getBody();
-        String preContent = ""; // 预览的文字
+        String preContent = RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, questionDetail.getBody()); // 预览的文字
         List<ImageBean> list = new ArrayList<>();
         while (RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content) != -1) {
             // 取出id

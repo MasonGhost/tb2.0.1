@@ -1,8 +1,11 @@
-package com.zhiyicx.thinksnsplus.widget;
+package com.zhiyicx.baseproject.widget;
 
 import android.content.Context;
+import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -32,26 +35,30 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class QuestionDetailMenuView extends FrameLayout {
     public static final int DEFAULT_RESOURES_ID = -1; // 默认 id ，当子类使用默认 id 时，进行占位判断
     // item 数量
-    private static final int ITEM_NUMS_MAX = 4;
+    private static final int ITEM_NUMS_MAX = 5;
     public static final int ITEM_POSITION_0 = 0;
     public static final int ITEM_POSITION_1 = 1;
     public static final int ITEM_POSITION_2 = 2;
     public static final int ITEM_POSITION_3 = 3;
+    public static final int ITEM_POSITION_4 = 4;
 
-    protected View mLlDynamicDetailLike;
-    protected View mLlDynamicDetailComment;
-    protected View mLlDynamicDetailShare;
-    protected View mLlDynamicDetailMore;
+    protected View mLlQuestionDetailComment;
+    protected View mLlQuestionDetailShare;
+    protected View mLlQuestionDetailEdit;
+    protected View mLlQuestionDetailCollection;
+    protected View mLlQuestionDetailMore;
 
-    protected ImageView mIvDynamicDetailLike;
-    protected ImageView mIvDynamicDetailComment;
-    protected ImageView mIvDynamicDetailShare;
-    protected ImageView mIvDynamicDetailMore;
+    protected ImageView mIvQuestionDetailComment;
+    protected ImageView mIvQuestionDetailShare;
+    protected ImageView mIvQuestionDetailEdit;
+    protected ImageView mIvQuestionDetailCollection;
+    protected ImageView mIvQuestionDetailMore;
 
-    protected TextView mTvDynamicDetailLike;
-    protected TextView mTvDynamicDetailComment;
-    protected TextView mTvDynamicDetailShare;
-    protected TextView mTvDynamicDetailMore;
+    protected TextView mTvQuestionDetailComment;
+    protected TextView mTvQuestionDetailShare;
+    protected TextView mTvQuestionDetailEdit;
+    protected TextView mTvQuestionDetailCollection;
+    protected TextView mTvQuestionDetailMore;
 
     private OnItemClickListener mOnItemListener;
 
@@ -62,6 +69,7 @@ public class QuestionDetailMenuView extends FrameLayout {
             R.mipmap.home_ico_comment_normal,
             R.mipmap.detail_ico_share_normal,
             R.mipmap.detail_ico_edit_normal,
+            R.mipmap.detail_ico_good_uncollect,
             R.mipmap.home_ico_more
     };// 图片 ids 正常状态
     protected
@@ -69,15 +77,17 @@ public class QuestionDetailMenuView extends FrameLayout {
     int[] mImageCheckedResourceIds = new int[]{
             R.mipmap.home_ico_comment_normal,
             R.mipmap.detail_ico_share_normal,
-            R.mipmap.music_ico_like_normal,
+            R.mipmap.detail_ico_edit_normal,
+            R.mipmap.detail_ico_collect,
             R.mipmap.home_ico_more
     };// 图片 ids 选中状态
     protected
     @StringRes
     int[] mTexts = new int[]{
-            R.string.like,
             R.string.comment,
             R.string.share,
+            R.string.qa_detail_edit,
+            R.string.collect,
             R.string.more
     };// 文字 ids
 
@@ -88,73 +98,92 @@ public class QuestionDetailMenuView extends FrameLayout {
     @ColorRes
     int mTextCheckedColor = R.color.normal_for_disable_button_text;// 选中文本颜色
 
-    public QuestionDetailMenuView(Context context) {
+
+    public QuestionDetailMenuView(@NonNull Context context) {
         super(context);
         init(context, null);
     }
 
-    public QuestionDetailMenuView(Context context, AttributeSet attrs) {
+    public QuestionDetailMenuView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
+    public QuestionDetailMenuView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
+
     private void init(Context context, AttributeSet attrs) {
-        LayoutInflater.from(context).inflate(R.layout.view_dynamic_detail_menu, this);
-        mLlDynamicDetailLike = findViewById(R.id.ll_dynamic_detail_like);
-        mLlDynamicDetailComment = findViewById(R.id.ll_dynamic_detail_comment);
-        mLlDynamicDetailShare = findViewById(R.id.ll_dynamic_detail_share);
-        mLlDynamicDetailMore = findViewById(R.id.ll_dynamic_detail_more);
+        LayoutInflater.from(context).inflate(R.layout.view_question_detail_menu, this);
+        mLlQuestionDetailEdit = findViewById(R.id.ll_dynamic_detail_like);
+        mLlQuestionDetailComment = findViewById(R.id.ll_dynamic_detail_comment);
+        mLlQuestionDetailShare = findViewById(R.id.ll_dynamic_detail_share);
+        mLlQuestionDetailCollection = findViewById(R.id.ll_question_detail_collection);
+        mLlQuestionDetailMore = findViewById(R.id.ll_dynamic_detail_more);
 
-        mIvDynamicDetailLike = (ImageView) findViewById(R.id.iv_dynamic_detail_like);
-        mIvDynamicDetailComment = (ImageView) findViewById(R.id.iv_dynamic_detail_comment);
-        mIvDynamicDetailShare = (ImageView) findViewById(R.id.iv_dynamic_detail_share);
-        mIvDynamicDetailMore = (ImageView) findViewById(R.id.iv_dynamic_detail_more);
+        mIvQuestionDetailEdit = (ImageView) findViewById(R.id.iv_dynamic_detail_like);
+        mIvQuestionDetailComment = (ImageView) findViewById(R.id.iv_dynamic_detail_comment);
+        mIvQuestionDetailShare = (ImageView) findViewById(R.id.iv_dynamic_detail_share);
+        mIvQuestionDetailCollection = (ImageView) findViewById(R.id.iv_question_detail_collection);
+        mIvQuestionDetailMore = (ImageView) findViewById(R.id.iv_dynamic_detail_more);
 
-        mTvDynamicDetailLike = (TextView) findViewById(R.id.tv_dynamic_detail_like);
-        mTvDynamicDetailComment = (TextView) findViewById(R.id.tv_dynamic_detail_comment);
-        mTvDynamicDetailShare = (TextView) findViewById(R.id.tv_dynamic_detail_share);
-        mTvDynamicDetailMore = (TextView) findViewById(R.id.tv_dynamic_detail_more);
+        mTvQuestionDetailEdit = (TextView) findViewById(R.id.tv_dynamic_detail_like);
+        mTvQuestionDetailComment = (TextView) findViewById(R.id.tv_dynamic_detail_comment);
+        mTvQuestionDetailShare = (TextView) findViewById(R.id.tv_dynamic_detail_share);
+        mTvQuestionDetailCollection = (TextView) findViewById(R.id.tv_question_detail_collection);
+        mTvQuestionDetailMore = (TextView) findViewById(R.id.tv_dynamic_detail_more);
         initListener();
     }
 
     private void initListener() {
-        RxView.clicks(mLlDynamicDetailLike)
+        RxView.clicks(mLlQuestionDetailEdit)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnItemListener != null) {
-                            mOnItemListener.onItemClick((ViewGroup) mLlDynamicDetailLike, mIvDynamicDetailLike, ITEM_POSITION_0);
+                            mOnItemListener.onItemClick((ViewGroup) mLlQuestionDetailEdit, mIvQuestionDetailEdit, ITEM_POSITION_0);
                         }
                     }
                 });
-        RxView.clicks(mLlDynamicDetailComment)
+        RxView.clicks(mLlQuestionDetailComment)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnItemListener != null) {
-                            mOnItemListener.onItemClick((ViewGroup) mLlDynamicDetailComment, mIvDynamicDetailComment, ITEM_POSITION_1);
+                            mOnItemListener.onItemClick((ViewGroup) mLlQuestionDetailComment, mIvQuestionDetailComment, ITEM_POSITION_1);
                         }
                     }
                 });
-        RxView.clicks(mLlDynamicDetailShare)
+        RxView.clicks(mLlQuestionDetailShare)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnItemListener != null) {
-                            mOnItemListener.onItemClick((ViewGroup) mLlDynamicDetailShare, mIvDynamicDetailShare, ITEM_POSITION_2);
+                            mOnItemListener.onItemClick((ViewGroup) mLlQuestionDetailShare, mIvQuestionDetailShare, ITEM_POSITION_2);
                         }
                     }
                 });
-        RxView.clicks(mLlDynamicDetailMore)
+        RxView.clicks(mLlQuestionDetailCollection)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         if (mOnItemListener != null) {
-                            mOnItemListener.onItemClick((ViewGroup) mLlDynamicDetailMore, mIvDynamicDetailMore, ITEM_POSITION_3);
+                            mOnItemListener.onItemClick((ViewGroup) mLlQuestionDetailShare, mIvQuestionDetailShare, ITEM_POSITION_2);
+                        }
+                    }
+                });
+        RxView.clicks(mLlQuestionDetailMore)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnItemListener != null) {
+                            mOnItemListener.onItemClick((ViewGroup) mLlQuestionDetailMore, mIvQuestionDetailMore, ITEM_POSITION_3);
                         }
                     }
                 });
@@ -205,17 +234,19 @@ public class QuestionDetailMenuView extends FrameLayout {
 
         switch (postion) {
             case ITEM_POSITION_0:
-                setItemState(isChecked, mLlDynamicDetailLike, mIvDynamicDetailLike, mTvDynamicDetailLike, postion, isNeedSetText);
+                setItemState(isChecked, mLlQuestionDetailComment, mIvQuestionDetailComment, mTvQuestionDetailComment, postion, isNeedSetText);
                 break;
             case ITEM_POSITION_1:
-                setItemState(isChecked, mLlDynamicDetailComment, mIvDynamicDetailComment, mTvDynamicDetailComment, postion, isNeedSetText);
-
+                setItemState(isChecked, mLlQuestionDetailShare, mIvQuestionDetailShare, mTvQuestionDetailShare, postion, isNeedSetText);
                 break;
             case ITEM_POSITION_2:
-                setItemState(isChecked, mLlDynamicDetailShare, mIvDynamicDetailShare, mTvDynamicDetailShare, postion, isNeedSetText);
+                setItemState(isChecked, mLlQuestionDetailEdit, mIvQuestionDetailEdit, mTvQuestionDetailEdit, postion, isNeedSetText);
                 break;
             case ITEM_POSITION_3:
-                setItemState(isChecked, mLlDynamicDetailMore, mIvDynamicDetailMore, mTvDynamicDetailMore, postion, isNeedSetText);
+                setItemState(isChecked, mLlQuestionDetailCollection, mIvQuestionDetailCollection, mTvQuestionDetailCollection, postion, isNeedSetText);
+                break;
+            case ITEM_POSITION_4:
+                setItemState(isChecked, mLlQuestionDetailMore, mIvQuestionDetailMore, mTvQuestionDetailMore, postion, isNeedSetText);
                 break;
             default:
         }
@@ -271,10 +302,11 @@ public class QuestionDetailMenuView extends FrameLayout {
     public void setImageNormalResourceIds(int[] normalResourceIds) {
         this.mImageNormalResourceIds = normalResourceIds;
         // 初始化所有的控件图片
-        mIvDynamicDetailLike.setImageResource(normalResourceIds[0]);
-        mIvDynamicDetailComment.setImageResource(normalResourceIds[1]);
-        mIvDynamicDetailShare.setImageResource(normalResourceIds[2]);
-        mIvDynamicDetailMore.setImageResource(normalResourceIds[3]);
+        mIvQuestionDetailComment.setImageResource(normalResourceIds[0]);
+        mIvQuestionDetailShare.setImageResource(normalResourceIds[1]);
+        mIvQuestionDetailEdit.setImageResource(normalResourceIds[2]);
+        mIvQuestionDetailCollection.setImageResource(normalResourceIds[3]);
+        mIvQuestionDetailMore.setImageResource(normalResourceIds[4]);
     }
 
     /**
@@ -290,10 +322,11 @@ public class QuestionDetailMenuView extends FrameLayout {
     public void setButtonText(int[] texts) {
         this.mTexts = texts;
         // 初始化所有的控件图片
-        mTvDynamicDetailLike.setText(texts[0]);
-        mTvDynamicDetailComment.setText(texts[1]);
-        mTvDynamicDetailShare.setText(texts[2]);
-        mTvDynamicDetailMore.setText(texts[3]);
+        mTvQuestionDetailComment.setText(texts[0]);
+        mTvQuestionDetailEdit.setText(texts[1]);
+        mTvQuestionDetailShare.setText(texts[2]);
+        mTvQuestionDetailCollection.setText(texts[3]);
+        mTvQuestionDetailMore.setText(texts[4]);
     }
 
 

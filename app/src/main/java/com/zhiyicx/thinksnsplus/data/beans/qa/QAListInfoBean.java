@@ -88,6 +88,8 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
     private List<UserInfoBean> invitations; // 问题邀请回答的用户列表，参考「用户」文档。
     @Convert(converter = UserInfoBeanConvert.class, columnType = String.class)
     private UserInfoBean user; // 用户资料，如果是 anonymity 是 1 则该字段不存在。
+    @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "question_id")})
+    private List<AnswerInfoBean> answerInfoBeanList;
 
     @Override
     public Long getMaxId() {
@@ -267,6 +269,18 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
         this.user = user;
     }
 
+    public void setInvitation_answers(List<AnswerInfoBean> invitation_answers) {
+        this.invitation_answers = invitation_answers;
+    }
+
+    public void setAdoption_answers(List<AnswerInfoBean> adoption_answers) {
+        this.adoption_answers = adoption_answers;
+    }
+
+    public void setAnswerInfoBeanList(List<AnswerInfoBean> answerInfoBeanList) {
+        this.answerInfoBeanList = answerInfoBeanList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -405,6 +419,36 @@ public class QAListInfoBean extends BaseListBean implements Serializable{
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getQAListInfoBeanDao() : null;
+    }
+
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1961481343)
+    public List<AnswerInfoBean> getAnswerInfoBeanList() {
+        if (answerInfoBeanList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            AnswerInfoBeanDao targetDao = daoSession.getAnswerInfoBeanDao();
+            List<AnswerInfoBean> answerInfoBeanListNew = targetDao._queryQAListInfoBean_AnswerInfoBeanList(id);
+            synchronized (this) {
+                if (answerInfoBeanList == null) {
+                    answerInfoBeanList = answerInfoBeanListNew;
+                }
+            }
+        }
+        return answerInfoBeanList;
+    }
+
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 562190035)
+    public synchronized void resetAnswerInfoBeanList() {
+        answerInfoBeanList = null;
     }
 
     protected QAListInfoBean(Parcel in) {

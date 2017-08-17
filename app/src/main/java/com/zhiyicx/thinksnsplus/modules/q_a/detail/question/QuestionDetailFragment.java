@@ -1,25 +1,33 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
+import com.zhiyicx.baseproject.widget.QuestionDetailMenuView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import butterknife.BindView;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
 /**
@@ -32,11 +40,18 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter, AnswerInfoBean>
         implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener {
 
+    @BindView(R.id.tv_toolbar_left)
+    TextView mTvToolbarLeft;
+    @BindView(R.id.qa_detail_tool)
+    DynamicDetailMenuView mQaDetailTool;
+    @BindView(R.id.behavior_demo_coordinatorLayout)
+    CoordinatorLayout mCoordinatorLayout;
+
     private QAListInfoBean mQaListInfoBean;
     private QuestionDetailHeader mQuestionDetailHeader;
     private String mCurrentOrderType;
 
-    public QuestionDetailFragment instance(Bundle bundle){
+    public QuestionDetailFragment instance(Bundle bundle) {
         QuestionDetailFragment fragment = new QuestionDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -46,6 +61,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         initHeaderView();
+        initBottomToolStyle();
+        initBottomToolListener();
+        initListener();
         mCurrentOrderType = mQuestionDetailHeader.getCurrentOrderType();
     }
 
@@ -53,7 +71,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     protected void initData() {
         super.initData();
         mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
-        if (mQaListInfoBean != null){
+        if (mQaListInfoBean != null) {
             mPresenter.getQuestionDetail(String.valueOf(mQaListInfoBean.getId()));
         }
     }
@@ -69,8 +87,18 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    protected String setCenterTitle() {
-        return getString(R.string.qa_title_question_detail);
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_qusetion_detail;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
     }
 
     @Override
@@ -93,15 +121,20 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public int getRealSize() {
         int size = mListDatas.size();
-        if (mQaListInfoBean != null){
-            if (mQaListInfoBean.getInvitation_answers() != null){
+        if (mQaListInfoBean != null) {
+            if (mQaListInfoBean.getInvitation_answers() != null) {
                 size = size - mQaListInfoBean.getInvitation_answers().size();
             }
-            if (mQaListInfoBean.getAdoption_answers() != null){
+            if (mQaListInfoBean.getAdoption_answers() != null) {
                 size = size - mQaListInfoBean.getAdoption_answers().size();
             }
         }
         return size;
+    }
+
+    @Override
+    public void updateFollowState() {
+        mQuestionDetailHeader.updateFollowState(mQaListInfoBean);
     }
 
     @Override
@@ -112,26 +145,33 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 data.add(emptyData);
             }
         }
+        closeLoadingView();
         super.onNetResponseSuccess(data, isLoadMore);
     }
 
     @Override
     public void onFollowClick() {
-
+        mPresenter.handleFollowState(mQaListInfoBean.getId() + "", !mQaListInfoBean.isWatched());
     }
 
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
-
+        if (mQaListInfoBean.getAmount() == 0){
+            // 跳转设置悬赏
+        } else if (invitations != null){
+            // 弹出邀请的人
+        }
     }
 
     @Override
     public void onAddAnswerClick() {
+        // 跳转发布回答
 
     }
 
     @Override
     public void onChangeListOrderClick(String orderType) {
+        // 弹出排序选择框
         mCurrentOrderType = orderType;
     }
 
@@ -145,5 +185,54 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
+    private void initBottomToolStyle() {
+        // 初始化底部工具栏数据
+        mQaDetailTool.setImageNormalResourceIds(new int[]{R.mipmap.home_ico_good_normal
+                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
+                , R.mipmap.home_ico_more, R.mipmap.detail_ico_edit_normal, R.mipmap.detail_ico_good_uncollect
+        });
+        mQaDetailTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_high
+                , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
+                , R.mipmap.home_ico_more, R.mipmap.detail_ico_edit_normal, R.mipmap.detail_ico_collect
+        });
+        mQaDetailTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
+                , R.string.share, R.string.more, R.string.qa_detail_edit, R.string.collect});
+        mQaDetailTool.showQuestionTool(false);
+        mQaDetailTool.setData();
+    }
+
+    private void initBottomToolListener() {
+        mQaDetailTool.setItemOnClick((parent, v, position) -> {
+            mQaDetailTool.getTag(R.id.view_data);
+            switch (position) {
+                case DynamicDetailMenuView.ITEM_POSITION_1:// 跳转评论页
+
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
+
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_4:// 编辑
+                    // 发布者
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_5:// 收藏
+                    // 非发布者
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
+//                    initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getHas_collect());
+//                    mDealInfoMationPopWindow.show();
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+    private void initListener() {
+        mCoordinatorLayout.setEnabled(false);
+        RxView.clicks(mTvToolbarLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> getActivity().finish());
     }
 }

@@ -24,10 +24,12 @@ public interface QuestionDetailContract {
         QAListInfoBean getCurrentQuestion();
         String getCurrentOrderType();
         int getRealSize();
+        void updateFollowState();
     }
 
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{
         void getQuestionDetail(String questionId);
+        void handleFollowState(String questionId, boolean isFollowed);
     }
 
     interface Repository extends IBasePublishQuestionRepository{
