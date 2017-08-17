@@ -350,7 +350,7 @@ public interface UserInfoClient {
      * @return
      */
     @FormUrlEncoded
-    @PATCH(APP_PATH_UPDATE_USER_LOCATION)
+    @POST(APP_PATH_UPDATE_USER_LOCATION)
     Observable<Object> updateUserLocation(@Field("longitude") double longitude, @Field("latitude") double latitude);
 
     /**

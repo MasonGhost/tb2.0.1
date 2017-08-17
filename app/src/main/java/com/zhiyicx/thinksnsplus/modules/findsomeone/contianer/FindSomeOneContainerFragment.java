@@ -40,7 +40,7 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOne
  * @Date 2017/1/9
  * @Contact master.jungle68@gmail.com
  */
-public class FindSomeOneContainerFragment extends TSFragment {
+public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContainerContract.Presenter> implements FindSomeOneContainerContract.View {
     private static final int REQUST_CODE_LOCATION = 8200;
 
     @BindView(R.id.tv_toolbar_right)
@@ -132,6 +132,7 @@ public class FindSomeOneContainerFragment extends TSFragment {
                     LatLonPoint latLonPoint = new LatLonPoint(aMapLocation.getLatitude(), aMapLocation.getLongitude());
                     mTvToolbarRight.setText(aMapLocation.getCity());
                     EventBus.getDefault().post(latLonPoint, EventBusTagConfig.EVENT_NEARBY_LOCATION);
+                    mPresenter.updateUseLocation(latLonPoint);
                 } else {
                     //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
                     LogUtils.d("AmapError" + "location Error, ErrCode:"
