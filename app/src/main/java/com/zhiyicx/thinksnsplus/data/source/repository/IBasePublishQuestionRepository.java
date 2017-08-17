@@ -27,4 +27,6 @@ public interface IBasePublishQuestionRepository {
     Observable<List<ExpertBean>> getTopicExperts(Long maxId, int topic_id);
 
     void handleTopicFollowState(String topic_id, boolean isFollow);
+
+    void handleQuestionFollowState(String questionId, boolean isFollow);
 }

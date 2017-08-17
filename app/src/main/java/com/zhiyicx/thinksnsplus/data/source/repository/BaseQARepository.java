@@ -114,4 +114,28 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                             (backgroundRequestTaskBean);
                 });
     }
+
+    @Override
+    public void handleQuestionFollowState(String questionId, boolean isFollow) {
+        Observable.just(isFollow)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.PUT, params);
+                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                    }
+                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                            .APP_PATH_HANDLE_QUESTION_FOLLOW_S, questionId));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
+                });
+    }
 }

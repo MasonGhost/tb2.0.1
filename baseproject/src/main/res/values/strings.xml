@@ -49,6 +49,8 @@
     <string name="money_format_with_unit">%.2f元</string>
     <string name="money_format">%.2f</string>
     <string name="upload_sucess">上传成功</string>
+    <string name="qa_detail_edit">编辑</string>
+    <string name="collect">收藏</string>
     <!-- 注册 -->
     <string name="regist">注册</string>
     <string name="username_input_hint">输入2&#8211;8位用户名</string>

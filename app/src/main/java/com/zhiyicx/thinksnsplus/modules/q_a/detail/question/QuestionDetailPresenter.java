@@ -45,6 +45,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
                         @Override
                         protected void onSuccess(List<AnswerInfoBean> data) {
+                            mRootView.hideCenterLoading();
                             mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
                     });
@@ -76,13 +77,14 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                         totalList.addAll(qaListInfoBean.getAdoption_answers());
                     }
                     totalList.addAll(answerInfoBeanList);
-                    qaListInfoBean.setInvitation_answers(totalList);
+                    qaListInfoBean.setAnswerInfoBeanList(totalList);
                     return qaListInfoBean;
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<QAListInfoBean>() {
                     @Override
                     protected void onSuccess(QAListInfoBean data) {
+                        mRootView.hideCenterLoading();
                         mRootView.setQuestionDetail(data);
                     }
 
@@ -92,5 +94,12 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public void handleFollowState(String questionId, boolean isFollowed) {
+        mRootView.getCurrentQuestion().setWatched(isFollowed);
+        mRootView.updateFollowState();
+        mRepository.handleQuestionFollowState(questionId, isFollowed);
     }
 }
