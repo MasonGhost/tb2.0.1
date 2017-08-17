@@ -4,11 +4,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.amap.api.services.core.LatLonPoint;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.list.nearby.FindSomeOneNearbyListFragment;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +27,19 @@ import java.util.List;
 
 public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
 
+    public static final int PAGE_POSITION_HOT = 0;
+    public static final int PAGE_POSITION_NEW = 1;
+    public static final int PAGE_POSITION_RECOMMEND = 2;
+    public static final int PAGE_POSITION_NEARBY = 3;
+
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mTsvToolbar.setLeftImg(0);
+
+//        Bundle bundle = getArguments();
+//        int pageType = bundle.getInt(FindSomeOneListFragment.PAGE_TYPE);// 当前进入的是关注还是粉丝列表
 //        setCurrentItem();
     }
 
@@ -50,20 +63,29 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
         getFragment(fragmentList, FindSomeOneListFragment.TYPE_HOT);
         getFragment(fragmentList, FindSomeOneListFragment.TYPE_NEW);
         getFragment(fragmentList, FindSomeOneListFragment.TYPE_RECOMMENT);
-        getFragment(fragmentList, FindSomeOneListFragment.TYPE_NEARBY);
+        fragmentList.add(FindSomeOneNearbyListFragment.initFragment());
         return fragmentList;
     }
 
-    private void getFragment(List<Fragment> fragmentList,int type) {
+    private void getFragment(List<Fragment> fragmentList, int type) {
         Bundle bundle1 = new Bundle();
         bundle1.putInt(FindSomeOneListFragment.PAGE_TYPE, type);
         fragmentList.add(FindSomeOneListFragment.initFragment(bundle1));
     }
 
-    private void setCurrentItem() {
-        Bundle bundle = getArguments();
-        int pageType = bundle.getInt(FindSomeOneListFragment.PAGE_TYPE);// 当前进入的是关注还是粉丝列表
-        mVpFragment.setCurrentItem(pageType);// 设置进入页面时，切换到关注还是粉丝列表
+    /**
+     * 当前显示页切换
+     *
+     * @param position
+     * @param latLonPoint
+     */
+    public void setCurrentItem(int position, LatLonPoint latLonPoint) {
+
+        mVpFragment.setCurrentItem(position);// 设置进入页面时，切换到关注还是粉丝列表
+
+        if (position == PAGE_POSITION_NEARBY) {
+            EventBus.getDefault().post(latLonPoint, EventBusTagConfig.EVENT_NEARBY_LAT);
+        }
     }
 
     public static FindSomeOneContainerViewPagerFragment initFragment(Bundle bundle) {

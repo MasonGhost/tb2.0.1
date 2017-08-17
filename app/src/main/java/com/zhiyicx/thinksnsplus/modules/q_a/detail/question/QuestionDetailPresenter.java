@@ -40,4 +40,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     public boolean insertOrUpdateData(@NotNull List<AnswerInfoBean> data, boolean isLoadMore) {
         return false;
     }
+
+    @Override
+    public void getQuestionDetail(String questionId) {
+
+    }
 }

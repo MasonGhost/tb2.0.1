@@ -139,4 +139,9 @@ public class EventBusTagConfig {
      */
     public static final String EVENT_CHECK_IN_CLICK = "check_in_click";
 
+    /**
+     * 附近的人
+     */
+    public static final String EVENT_NEARBY_LAT = "nearby_lat";
+
 }

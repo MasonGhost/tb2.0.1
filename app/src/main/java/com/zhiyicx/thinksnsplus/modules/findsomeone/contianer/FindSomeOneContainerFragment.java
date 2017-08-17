@@ -11,6 +11,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeAddress;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
@@ -35,6 +36,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
+import static com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerViewPagerFragment.PAGE_POSITION_NEARBY;
 
 /**
  * @Describe
@@ -54,6 +56,7 @@ public class FindSomeOneContainerFragment extends TSFragment implements GeocodeS
     //声明定位回调监听器
     private AMapLocationClient mLocationClient;
 
+    private FindSomeOneContainerViewPagerFragment mFindSomeOneContainerViewPagerFragment;
 
     public static FindSomeOneContainerFragment newInstance(Bundle bundle) {
         FindSomeOneContainerFragment findSomeOneContainerFragment = new FindSomeOneContainerFragment();
@@ -139,8 +142,10 @@ public class FindSomeOneContainerFragment extends TSFragment implements GeocodeS
 
     @Override
     protected void initData() {
+        mFindSomeOneContainerViewPagerFragment = FindSomeOneContainerViewPagerFragment.initFragment(getActivity().getIntent().getExtras());
+
         ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager()
-                , FindSomeOneContainerViewPagerFragment.initFragment(getActivity().getIntent().getExtras())
+                , mFindSomeOneContainerViewPagerFragment
                 , R.id.fragment_container);
 
 
@@ -210,22 +215,24 @@ public class FindSomeOneContainerFragment extends TSFragment implements GeocodeS
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
         if (i == 1000) {
+            LatLonPoint latLonPoint;
             if (geocodeResult != null && geocodeResult.getGeocodeAddressList() != null &&
                     geocodeResult.getGeocodeAddressList().size() > 0) {
                 GeocodeAddress geocodeAddress = geocodeResult.getGeocodeAddressList().get(0);
                 double latitude = geocodeAddress.getLatLonPoint().getLatitude();//纬度
                 double longititude = geocodeAddress.getLatLonPoint().getLongitude();//经度
+                latLonPoint = geocodeAddress.getLatLonPoint();
                 // TODO: 2017/8/16 附近的人
 
             } else {
                 LogUtils.e("地址名出错");
+                latLonPoint = new LatLonPoint(0, 0);
             }
+            // TODO: 2017/8/17 切换到附近的人
+            mFindSomeOneContainerViewPagerFragment.setCurrentItem(PAGE_POSITION_NEARBY,latLonPoint);
         }
 
     }
 
-    @Override
-    public void setPresenter(Object presenter) {
 
-    }
 }
