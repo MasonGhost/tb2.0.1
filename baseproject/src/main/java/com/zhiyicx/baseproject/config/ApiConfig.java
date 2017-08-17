@@ -370,11 +370,11 @@ public class ApiConfig {
     // 更新回答 PATCH
     public static final String APP_PATH_UPDATE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
     // 采纳答案 PUT
-    public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/adoptions/{answer}";
-    public static final String APP_PATH_ADOPT_ANSWER_S = "api/" + API_VERSION_2 + "/questions/%s/adoptions/%s";
+    public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question_id}/adoptions/{answer_id}";
+    public static final String APP_PATH_ADOPT_ANSWER_S = "api/" + API_VERSION_2 + "/questions/%d/adoptions/%d";
     // 删除答案 DELETE
     public static final String APP_PATH_DELETE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
-    public static final String APP_PATH_DELETE_ANSWER_S = "api/" + API_VERSION_2 + "/question-answers/%s";
+    public static final String APP_PATH_DELETE_ANSWER_S = "api/" + API_VERSION_2 + "/question-answers/%d";
     // 获取回答评论列表
     public static final String APP_PATH_GET_ANSWER_COMMENTS = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/comments";
     // 点赞回答
@@ -387,6 +387,10 @@ public class ApiConfig {
     public static final String APP_PATH_QA_ANSWER_REWARD = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
     // 获取回答打赏列表
     public static final String APP_PATH_QA_ANSWER_REWARD_USER_LIST = "api/" + API_VERSION_2 + "/question-answers/{answer_id}/rewarders";
+    // 评论答案
+    public static final String APP_PATH_COMMENT_QA_ANSWER_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/comments";
+    // 删除答案评论
+    public static final String APP_PATH_DELETE_QA_ANSWER_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/comments/%d";
 
 
     /**

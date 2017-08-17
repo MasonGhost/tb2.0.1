@@ -10,6 +10,7 @@
     个人中心头像
     -->
     <dimen name="headpic_for_user_center">60dp</dimen>
+    <dimen name="headpic_for_answer">38dp</dimen>
     <!--
     使用场景：动态/消息/赞过的/排行榜/粉丝/消息评论的 列
     表头像、聊详情页头像、修改资料-更换头像

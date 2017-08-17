@@ -446,6 +446,7 @@
     <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
     <string name="qa_show_topic_followed_reward">%1$d 关注  ·  %2$d 回答  ·  ￥%3$.1f 悬赏</string>
     <string name="edit_quit">放弃编辑</string>
+    <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
     <string-array name="topic_detail_category">
         <item>最新</item>
@@ -460,6 +461,7 @@
     <string name="qa_topic_close_all">收起</string>
     <string name="qa_question_answer_adopt">已采纳</string>
     <string name="qa_question_answer_invite">邀请回答</string>
+    <string name="qa_question_answer_adopting">采纳答案</string>
     <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
     <string name="qa_question_answer_anonymity">匿</string>
     <string name="qa_reward_public">公开悬赏</string>

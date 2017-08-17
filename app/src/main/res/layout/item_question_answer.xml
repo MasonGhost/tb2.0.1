@@ -26,7 +26,7 @@
                     android:textSize="@dimen/size_content_assist"
                     android:background="@drawable/shape_answer_anonymity_bg"
                     android:visibility="gone"/>
-            <ImageView
+            <com.zhiyicx.baseproject.widget.UserAvatarView
                     android:id="@+id/iv_portrait"
                     android:layout_width="@dimen/answer_list_portrait_width"
                     android:layout_height="@dimen/answer_list_portrait_width"

@@ -55,7 +55,7 @@ public class AnswerDetailCommentItem implements ItemViewDelegate<AnswerCommentLi
 
     @Override
     public boolean isForViewType(AnswerCommentListBean item, int position) {
-        return position == 0 || !TextUtils.isEmpty(item.getBody());
+        return !TextUtils.isEmpty(item.getBody());
     }
 
     @Override

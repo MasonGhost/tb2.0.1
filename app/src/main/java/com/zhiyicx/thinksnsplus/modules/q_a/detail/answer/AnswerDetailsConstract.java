@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IRewardRepository;
 
@@ -50,7 +51,9 @@ public interface AnswerDetailsConstract {
 
         void updateAnswerHeader(AnswerInfoBean infoDetailBean);
 
-        void deleteInfo(boolean deleting, boolean success, String message);
+        void deleteAnswer();
+
+        void upDateFollowFansState(boolean isFollowed);
     }
 
     interface Presenter extends ITSListPresenter<AnswerCommentListBean> {
@@ -69,9 +72,13 @@ public interface AnswerDetailsConstract {
 
         void getAnswerDetail(long answer_id);
 
-        void deleteInfo();
+        void deleteAnswer();
 
         List<RealAdvertListBean> getAdvert();
+
+        void adoptionAnswer(long question_id,long answer_id);
+
+        void handleFollowUser(UserInfoBean userInfoBean);
     }
 
     interface Repository extends IBasePublishQuestionRepository {
@@ -89,6 +96,8 @@ public interface AnswerDetailsConstract {
 
         void deleteComment(long answer_id, long comment_id);
 
-        Observable<BaseJsonV2<Object>> deleteAnswer(long answer_id);
+        void deleteAnswer(long answer_id);
+
+        void adoptionAnswer(long question_id,long answer_id);
     }
 }

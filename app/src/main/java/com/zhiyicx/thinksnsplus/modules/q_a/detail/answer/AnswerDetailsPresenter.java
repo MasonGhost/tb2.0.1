@@ -3,16 +3,25 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.answer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.view.View;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.thridmanager.share.OnShareCallbackListener;
 import com.zhiyicx.common.thridmanager.share.Share;
 import com.zhiyicx.common.thridmanager.share.ShareContent;
 import com.zhiyicx.common.thridmanager.share.SharePolicy;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -32,6 +41,8 @@ import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -66,6 +77,9 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Inject
     public SharePolicy mSharePolicy;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -127,7 +141,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     public void shareInfo(Bitmap bitmap) {
         ((UmengSharePolicyImpl) mSharePolicy).setOnShareCallbackListener(this);
         ShareContent shareContent = new ShareContent();
-        shareContent.setTitle("ThinkSNS+\b\b资讯");
+        shareContent.setTitle("ThinkSNS+\b\b回答");
         shareContent.setUrl(String.format(Locale.getDefault(), APP_DOMAIN + APP_PATH_INFO_DETAILS_FORMAT,
                 mRootView.getAnswerInfo().getId()));
         shareContent.setContent(mRootView.getAnswerInfo().getBody());
@@ -137,14 +151,16 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         } else {
             shareContent.setBitmap(bitmap);
         }
+        int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, mRootView.getAnswerInfo().getBody());
 
-//        if (mRootView.getAnswerInfo().getImage() != null) {
-//            shareContent.setImage(ImageUtils.imagePathConvertV2(mRootView.getAnswerInfo()
-//                            .getImage().getId()
-//                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-//                    , mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_home)
-//                    , ImageZipConfig.IMAGE_70_ZIP));
-//        }
+        String shareUrl="";
+        if (id > 0) {
+            int w = DeviceUtils.getScreenWidth(mContext);
+            int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
+            shareUrl = ImageUtils.imagePathConvertV2(id, w, h, ImageZipConfig.IMAGE_80_ZIP);
+        }
+        shareContent.setImage(shareUrl);
+
         mSharePolicy.setShareContent(shareContent);
         mSharePolicy.showShare(((TSFragment) mRootView).getActivity());
     }
@@ -201,6 +217,12 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
+    public void adoptionAnswer(long question_id, long answer_id) {
+        mRootView.getAnswerInfo().setAdoption(1);
+        mRepository.adoptionAnswer(question_id, answer_id);
+    }
+
+    @Override
     public void getAnswerDetail(long answer_id) {
         Subscription subscription = Observable.zip(mRepository.getAnswerDetail(answer_id),
                 mRepository.getAnswerCommentList(answer_id, 0L), (answerInfoBean, answerCommentListBeen) -> {
@@ -221,25 +243,9 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
-    public void deleteInfo() {
-//        mRootView.deleteInfo(true, false, "");
-//        Subscription subscription = mRepository.deleteInfo(String.valueOf(mRootView.getAnswerInfo().getCategory().getId()),
-//                String.valueOf(mRootView.getNewsId()))
-//                .compose(mSchedulersTransformer)
-//                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
-//
-//                    @Override
-//                    protected void onSuccess(BaseJsonV2<Object> data) {
-//                        mRootView.deleteInfo(false, true, "");
-//                    }
-//
-//                    @Override
-//                    protected void onFailure(String message, int code) {
-//                        super.onFailure(message, code);
-//                        mRootView.deleteInfo(false, false, message);
-//                    }
-//                });
-//        addSubscrebe(subscription);
+    public void deleteAnswer() {
+        mRepository.deleteAnswer(mRootView.getAnswerInfo().getId());
+        mRootView.deleteAnswer();
     }
 
     @Override
@@ -252,7 +258,13 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
             mRootView.getListDatas().add(emptyData);
         }
         mRootView.refreshData();
-       // mRepository.deleteComment(mRootView.getNewsId().intValue(), data.getId().intValue());
+        mRepository.deleteComment(mRootView.getAnswerId().intValue(), data.getId().intValue());
+    }
+
+    @Override
+    public void handleFollowUser(UserInfoBean userInfoBean) {
+        mUserInfoRepository.handleFollow(userInfoBean);
+        mRootView.upDateFollowFansState(userInfoBean.isFollower());
     }
 
     @Override
@@ -267,26 +279,26 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     /**
      * 处理发送动态数据
      */
-    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST)
-    public void handleSendComment(InfoCommentListBean infoCommentListBean) {
-        LogUtils.d(TAG, "dynamicCommentBean = " + infoCommentListBean.toString());
-        Observable.just(infoCommentListBean)
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST)
+    public void handleSendComment(AnswerCommentListBean answerCommentListBean) {
+        LogUtils.d(TAG, "answerCommentListBean = " + answerCommentListBean.toString());
+        Observable.just(answerCommentListBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(infoCommentListBean1 -> {
+                .map(answerCommentListBean1 -> {
                     int size = mRootView.getListDatas().size();
                     int infoPosition = -1;
                     for (int i = 0; i < size; i++) {
-//                        if (mRootView.getListDatas().get(i).getComment_mark()
-//                                == infoCommentListBean1.getComment_mark()) {
-//                            infoPosition = i;
-//                            mRootView.getListDatas().get(i).setState(infoCommentListBean1
-//                                    .getState());
-//                            mRootView.getListDatas().get(i).setId(infoCommentListBean1.getId());
-//                            mRootView.getListDatas().get(i).setComment_mark
-//                                    (infoCommentListBean1.getComment_mark());
-//                            break;
-//                        }
+                        if (mRootView.getListDatas().get(i).getComment_mark()
+                                == answerCommentListBean1.getComment_mark()) {
+                            infoPosition = i;
+                            mRootView.getListDatas().get(i).setState(answerCommentListBean1
+                                    .getState());
+                            mRootView.getListDatas().get(i).setId(answerCommentListBean1.getId());
+                            mRootView.getListDatas().get(i).setComment_mark
+                                    (answerCommentListBean1.getComment_mark());
+                            break;
+                        }
                     }
                     return infoPosition;
                 })
@@ -301,15 +313,13 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void sendComment(int reply_id, String content) {
-        InfoCommentListBean createComment = new InfoCommentListBean();
-
-        createComment.setInfo_id(mRootView.getAnswerId().intValue());
+        AnswerCommentListBean createComment = new AnswerCommentListBean();
 
         createComment.setState(SEND_ING);
 
-        createComment.setComment_content(content);
+        createComment.setBody(content);
 
-        createComment.setReply_to_user_id(reply_id);
+        createComment.setReply_user((long) reply_id);
 
         createComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
@@ -329,15 +339,15 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         }
         createComment.setFromUserInfoBean(mUserInfoBeanGreenDao.getSingleDataFromCache(
                 AppApplication.getmCurrentLoginAuth().getUser_id()));
-//        mInfoCommentListBeanDao.insertOrReplace(createComment);
-//        if (mRootView.getListDatas().get(0).getComment_content() == null) {
-//            mRootView.getListDatas().remove(0);// 去掉占位图
-//        }
-//        mRootView.getListDatas().add(0, createComment);
-//        mRootView.getAnswerInfo().setComment_count(mRootView.getAnswerInfo().getComment_count() + 1);
-//        mRootView.refreshData();
-//        mRepository.sendComment(content, mRootView.getNewsId(), reply_id,
-//                createComment.getComment_mark());
+        mAnswerCommentListBeanGreenDao.insertOrReplace(createComment);
+        if (mRootView.getListDatas().get(0).getBody() == null) {
+            mRootView.getListDatas().remove(0);// 去掉占位图
+        }
+        mRootView.getListDatas().add(0, createComment);
+        mRootView.getAnswerInfo().setComments_count(mRootView.getAnswerInfo().getComments_count() + 1);
+        mRootView.refreshData();
+        mRepository.sendComment(content, mRootView.getAnswerId(), reply_id,
+                createComment.getComment_mark());
     }
 
     @Override

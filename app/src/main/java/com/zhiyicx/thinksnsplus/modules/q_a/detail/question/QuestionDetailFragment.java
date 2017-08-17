@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
 import com.zhiyicx.baseproject.widget.QuestionDetailMenuView;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.widget.QuestionInviteUserPopWindow;
 import com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -34,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
 /**
@@ -44,7 +46,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter, AnswerInfoBean>
-        implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener, QuestionSelectListTypePopWindow.OnOrderTypeSelectListener {
+        implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
+        QuestionSelectListTypePopWindow.OnOrderTypeSelectListener, MultiItemTypeAdapter.OnItemClickListener {
 
     @BindView(R.id.tv_toolbar_left)
     TextView mTvToolbarLeft;
@@ -97,6 +100,20 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong(BUNDLE_SOURCE_ID, mListDatas.get(position).getId());
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_qusetion_detail;
     }
@@ -132,8 +149,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public int getRealSize() {
         int size = mListDatas.size();
         if (mQaListInfoBean != null) {
-            if (mQaListInfoBean.getInvitation_answers() != null) {
-                size = size - mQaListInfoBean.getInvitation_answers().size();
+            if (mQaListInfoBean.getAnswerInfoBeanList() != null) {
+                size = size - mQaListInfoBean.getAnswerInfoBeanList().size();
             }
             if (mQaListInfoBean.getAdoption_answers() != null) {
                 size = size - mQaListInfoBean.getAdoption_answers().size();
@@ -161,16 +178,16 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onFollowClick() {
-        mPresenter.handleFollowState(mQaListInfoBean.getId() + "", !mQaListInfoBean.isWatched());
+        mPresenter.handleFollowState(mQaListInfoBean.getId() + "", !mQaListInfoBean.getWatched());
     }
 
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
-        if (mQaListInfoBean.getAmount() == 0){
+        if (mQaListInfoBean.getAmount() == 0) {
             // 跳转设置悬赏
-        } else if (invitations != null){
+        } else if (invitations != null) {
             // 弹出邀请的人
-            if (mInvitePop != null){
+            if (mInvitePop != null) {
                 mInvitePop.show();
             }
         }
@@ -250,14 +267,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 .subscribe(aVoid -> getActivity().finish());
     }
 
-    private void initPopWindow(){
+    private void initPopWindow() {
         mOrderTypeSelectPop = QuestionSelectListTypePopWindow.Builder()
                 .with(getActivity())
                 .parentView(mQuestionDetailHeader.getQuestionHeaderView())
                 .alpha(1f)
                 .setListener(this)
                 .build();
-        if (mQaListInfoBean.getInvitations() != null && mQaListInfoBean.getInvitations().size() > 0){
+        if (mQaListInfoBean.getInvitations() != null && mQaListInfoBean.getInvitations().size() > 0) {
             mInvitePop = QuestionInviteUserPopWindow.Builder()
                     .with(getActivity())
                     .parentView(mQuestionDetailHeader.getQuestionHeaderView())
