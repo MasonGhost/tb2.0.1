@@ -159,7 +159,7 @@ public class QuestionDetailHeader {
      */
     public void updateAnswerView(QAListInfoBean qaListInfoBean) {
         mTvAnswerCount.setText(String.format(mContext.getString(R.string.qa_answer_count), qaListInfoBean.getAnswers_count()));
-        mLlAnswerInfo.setVisibility(qaListInfoBean.getComments_count() == 0 ? View.GONE : View.VISIBLE);
+        mLlAnswerInfo.setVisibility(qaListInfoBean.getAnswers_count() == 0 ? View.GONE : View.VISIBLE);
     }
 
     public Bitmap getShareBitmap(){

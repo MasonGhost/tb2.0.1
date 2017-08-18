@@ -94,7 +94,8 @@ public class QuestionDetailContent extends FrameLayout {
             // 替换图片地址
             String url = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
             String format = String.format(MarkdownConfig.IMAGE_RESULT, url);
-            content = RegexUtils.getReplaceAll(content, MarkdownConfig.IMAGE_FORMAT, format);
+            String old = "@" + String.format(MarkdownConfig.IMAGE_RESULT, id + "");
+            content = content.replace(old, format);
             // 处理图片列表
             ImageBean imageBean = new ImageBean();
             imageBean.setStorage_id(id);
@@ -145,10 +146,11 @@ public class QuestionDetailContent extends FrameLayout {
 
     /**
      * 处理图文混排
+     *
      * @param content 正文
-     * @param list 图片列表
+     * @param list    图片列表
      */
-    private void dealContent(String content, List<ImageBean> list){
+    private void dealContent(String content, List<ImageBean> list) {
         InternalStyleSheet css = new Github();
         css.addRule("body", "line-height: 1.6", "padding: 10px");
         mMdvQuestionContent.addStyleSheet(css);
@@ -198,7 +200,7 @@ public class QuestionDetailContent extends FrameLayout {
         });
     }
 
-    public Bitmap getShareBitmap(){
+    public Bitmap getShareBitmap() {
         return mShareBitmap;
     }
 }

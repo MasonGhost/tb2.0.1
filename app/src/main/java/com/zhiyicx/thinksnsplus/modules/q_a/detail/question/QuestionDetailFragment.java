@@ -92,14 +92,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    protected void initData() {
-        super.initData();
-        if (mQaListInfoBean != null) {
-            mPresenter.getQuestionDetail(String.valueOf(mQaListInfoBean.getId()));
-        }
-    }
-
-    @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
