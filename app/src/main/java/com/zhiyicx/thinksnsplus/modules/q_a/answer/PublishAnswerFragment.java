@@ -37,6 +37,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
     protected void initData() {
         super.initData();
         mBody = getArguments().getString(BUNDLE_SOURCE_BODY, "");
+        mToolbarCenter.setText(getString(mBody.isEmpty() ? R.string.qa_update_answer : R.string.qa_publish_answer));
         if (!mBody.isEmpty()) {
             mRicheTest.clearAllLayout();
             mPresenter.pareseBody(mBody);
@@ -44,10 +45,10 @@ public class PublishAnswerFragment extends PublishContentFragment {
     }
 
     @Override
-    public void addImageViewAtIndex(String iamge, int iamge_id, String markdonw,boolean isLast) {
+    public void addImageViewAtIndex(String iamge, int iamge_id, String markdonw, boolean isLast) {
         mImageIdArray[mPicTag] = iamge_id;
         mPicTag++;
-        mRicheTest.updateImageViewAtIndex(mRicheTest.getLastIndex(), iamge, markdonw,isLast);
+        mRicheTest.updateImageViewAtIndex(mRicheTest.getLastIndex(), iamge, markdonw, isLast);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected String setCenterTitle() {
-        return getString(mBody.isEmpty()?R.string.qa_update_answer:R.string.qa_publish_answer);
+        return getString(R.string.qa_publish_answer);
     }
 
     @Override
