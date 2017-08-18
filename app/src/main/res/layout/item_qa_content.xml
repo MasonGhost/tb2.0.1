@@ -28,11 +28,11 @@
         android:layout_width="match_parent"
         android:visibility="gone"
         android:layout_height="@dimen/qa_info_iamge_height"
-        android:layout_marginBottom="@dimen/spacing_normal"
         android:scaleType="centerCrop"
         android:src="@mipmap/npc"/>
 
     <TextView
+        android:layout_marginTop="@dimen/spacing_normal"
         android:lineSpacingExtra="@dimen/spacing_mid_small_8dp"
         android:id="@+id/item_info_hotcomment"
         android:layout_width="match_parent"

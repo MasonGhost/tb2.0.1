@@ -23,6 +23,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
@@ -157,8 +158,15 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TagFrom.QA_PUBLISH.id && resultCode == RESULT_OK) {// 选择专家
             ExpertBean expertBean = data.getExtras().getParcelable(BUNDLE_RESULT);
-            mBtQaSelectExpert.setRightText(expertBean.getName());
-            mQAPublishBean.setInvitations(expertBean.getId() + "");
+            if (expertBean!=null){
+                List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
+                QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
+                typeIds.setUser(expertBean.getId());
+                typeIdsList.add(typeIds);
+
+                mBtQaSelectExpert.setRightText(expertBean.getName());
+                mQAPublishBean.setInvitations(typeIdsList);
+            }
             configSureButton();
         }
     }

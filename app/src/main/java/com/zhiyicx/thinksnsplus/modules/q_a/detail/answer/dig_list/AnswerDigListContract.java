@@ -1,11 +1,13 @@
-package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
+package com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
@@ -19,9 +21,9 @@ import rx.Observable;
  * @contact email:450127106@qq.com
  */
 
-public interface DigListContract {
+public interface AnswerDigListContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<DynamicDigListBean, Presenter> {
+    interface View extends ITSListView<AnswerDigListBean, Presenter> {
         void upDataFollowState(int position);
 
         /**
@@ -29,22 +31,22 @@ public interface DigListContract {
          *
          * @return
          */
-        DynamicDetailBeanV2 getDynamicBean();
+        AnswerInfoBean getAnswerInfoBean();
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
-    interface Repository extends IDynamicReppsitory {
-
+    interface Repository extends IBasePublishQuestionRepository {
+        Observable<List<AnswerDigListBean>> getAnswerDigListV2(Long answer_id, Long max_id);
     }
 
-    interface Presenter extends ITSListPresenter<DynamicDigListBean> {
+    interface Presenter extends ITSListPresenter<AnswerDigListBean> {
         /**
          * 关注或者取消关注
          */
         void handleFollowUser(int position, UserInfoBean followFansBean);
 
-        void requestNetData(Long maxId, boolean isLoadMore, long feed_id);
+        void requestNetData(Long maxId, boolean isLoadMore, long id);
 
-        List<DynamicDigListBean> requestCacheData(Long maxId, boolean isLoadMore, DynamicDetailBeanV2 dynamicBean);
+        List<AnswerDigListBean> requestCacheData(Long maxId, boolean isLoadMore, AnswerInfoBean answerInfoBean);
     }
 }

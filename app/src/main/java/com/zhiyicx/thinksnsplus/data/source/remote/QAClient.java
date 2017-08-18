@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
@@ -65,6 +66,15 @@ public interface QAClient {
     Observable<AnswerInfoBean> getAnswerDetail(@Path("answer_id") long answer_id);
 
     /**
+     * 获取回答的点赞列表
+     *
+     * @param answer_id 回答 id
+     */
+    @GET(ApiConfig.APP_PATH_LIKE_ANSWER)
+    Observable<List<AnswerDigListBean>> getAnswerDigList(@Path("answer_id") long answer_id, @Query
+            ("after") Long after, @Query("limit") Long limit);
+
+    /**
      * 获取回答评论列表
      *
      * @param answer_id 回答 id
@@ -116,7 +126,7 @@ public interface QAClient {
      * 获取一个问题的回答列表
      *
      * @param question_id 问题id
-     * @param order_type default/time
+     * @param order_type  default/time
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)

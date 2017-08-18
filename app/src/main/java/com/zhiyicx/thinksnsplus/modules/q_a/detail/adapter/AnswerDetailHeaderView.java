@@ -11,7 +11,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,8 +27,12 @@ import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
+import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -292,11 +295,12 @@ public class AnswerDetailHeaderView {
 
             // 设置跳转到点赞列表
             mDigListView.setDigContainerClickListener(digContainer -> {
-                Intent intent = new Intent(mContext, InfoDigListActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(InfoDigListActivity.BUNDLE_INFO_DIG, answerInfoBean);
-                intent.putExtra(InfoDigListActivity.BUNDLE_INFO_DIG, bundle);
+                bundle.putParcelable(AnswerDigListFragment.DIG_LIST_DATA, answerInfoBean);
+                Intent intent = new Intent(mContext, AnswerDigListActivity.class);
+                intent.putExtras(bundle);
                 mContext.startActivity(intent);
+
             });
         } else {
             mDigListView.setVisibility(GONE);

@@ -5,9 +5,9 @@ import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.beans.QATopicBeanDao;
 
-public class QATopicBeanTest extends AbstractDaoTestLongPk<QATopicBeanDao, QATopicBean> {
+public class QATypeIdsBeanTest extends AbstractDaoTestLongPk<QATopicBeanDao, QATopicBean> {
 
-    public QATopicBeanTest() {
+    public QATypeIdsBeanTest() {
         super(QATopicBeanDao.class);
     }
 
@@ -15,10 +15,11 @@ public class QATopicBeanTest extends AbstractDaoTestLongPk<QATopicBeanDao, QATop
     protected QATopicBean createEntity(Long key) {
         QATopicBean entity = new QATopicBean();
         entity.setId(key);
-        entity.setQuestions_count();
-        entity.setExperts_count();
-        entity.setFollows_count();
-        entity.setHas_follow();
+        entity.setId(1L);
+        entity.setQuestions_count(1);
+        entity.setExperts_count(1);
+        entity.setFollows_count(1);
+        entity.setHas_follow(true);
         return entity;
     }
 

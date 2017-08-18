@@ -72,6 +72,10 @@ public class RealAdvertListBean extends BaseListBean {
                     advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
                             .class));
                     break;
+                case AdvertConfig.APP_INFO_TYPE_ADVERT:
+                    advertFormat.setAnalog(gson.fromJson(gson.toJson(data), DynamicListAdvert
+                            .class));
+                    break;
             }
         }
 

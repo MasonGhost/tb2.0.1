@@ -16,7 +16,7 @@ public class QAPublishBean implements Parcelable {
 
     private String subject;// 问题主题或者说标题
     private List<Topic> topics;// 绑定的话题
-    private String invitations;// 问题邀请回答的人
+    private List<Invitations> invitations;// 问题邀请回答的人
     private String body;// 问题描述
     private int anonymity;// 是否匿名 1 匿名 ，0 不匿名
     private int automaticity;// 邀请悬赏自动入账，只邀请一个人的情况下，允许悬赏金额自动入账到被邀请回答者钱包中。1 自动入账 ，0 不自动入账
@@ -50,11 +50,11 @@ public class QAPublishBean implements Parcelable {
         this.topics = topics;
     }
 
-    public String getInvitations() {
+    public List<Invitations> getInvitations() {
         return invitations;
     }
 
-    public void setInvitations(String invitations) {
+    public void setInvitations(List<Invitations> invitations) {
         this.invitations = invitations;
     }
 
@@ -140,7 +140,47 @@ public class QAPublishBean implements Parcelable {
         }
     }
 
+    public static class Invitations implements Parcelable, Serializable {
+        private static final long serialVersionUID = -8734687577864836617L;
+        private int user;
 
+        protected Invitations(Parcel in) {
+            user = in.readInt();
+        }
+
+        public Invitations() {
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(user);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<Invitations> CREATOR = new Creator<Invitations>() {
+            @Override
+            public Invitations createFromParcel(Parcel in) {
+                return new Invitations(in);
+            }
+
+            @Override
+            public Invitations[] newArray(int size) {
+                return new Invitations[size];
+            }
+        };
+
+        public int getUser() {
+            return user;
+        }
+
+        public void setUser(int user) {
+            this.user = user;
+        }
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -150,7 +190,7 @@ public class QAPublishBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.subject);
         dest.writeTypedList(this.topics);
-        dest.writeString(this.invitations);
+        dest.writeTypedList(this.invitations);
         dest.writeString(this.body);
         dest.writeInt(this.anonymity);
         dest.writeInt(this.automaticity);
@@ -168,7 +208,7 @@ public class QAPublishBean implements Parcelable {
     protected QAPublishBean(Parcel in) {
         this.subject = in.readString();
         this.topics = in.createTypedArrayList(Topic.CREATOR);
-        this.invitations = in.readString();
+        this.invitations = in.createTypedArrayList(Invitations.CREATOR);
         this.body = in.readString();
         this.anonymity = in.readInt();
         this.automaticity = in.readInt();
