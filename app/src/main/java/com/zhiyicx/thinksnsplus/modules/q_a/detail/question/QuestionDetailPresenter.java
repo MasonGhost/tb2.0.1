@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
@@ -153,7 +154,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
-                        EventBus.getDefault().post(mRootView.getCurrentQuestion(), EVENT_UPDATE_QUESTION_DELETE);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(EVENT_UPDATE_QUESTION_DELETE, mRootView.getCurrentQuestion());
+                        EventBus.getDefault().post(bundle, EVENT_UPDATE_QUESTION_DELETE);
                         mRootView.handleLoading(false, true, "");
                     }
 

@@ -181,6 +181,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         } else {
             if (success){
                 if (TextUtils.isEmpty(message)){
+                    mMorePop.dismiss();
                     getActivity().finish();
                 } else {
                     showSnackSuccessMessage(message);

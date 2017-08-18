@@ -8,9 +8,12 @@ import android.view.View;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+
+import org.simple.eventbus.Subscriber;
 
 import javax.inject.Inject;
 
@@ -44,6 +47,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
     @Override
     public String getQAInfoType() {
         return mQAInfoType;
+    }
+
+    @Override
+    public void showDeleteSuccess() {
+        showSnackSuccessMessage(getString(R.string.qa_question_delete_success));
     }
 
     @Override
@@ -127,6 +135,29 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             }
         });
         return adapter;
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE)
+    public void updateList(Bundle bundle) {
+        if (bundle != null) {
+            QAListInfoBean qaListInfoBean = (QAListInfoBean) bundle.
+                    getSerializable(EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE);
+            if (qaListInfoBean != null) {
+                for (int i = 0; i < mListDatas.size(); i++) {
+                    if (qaListInfoBean.getId().equals(mListDatas.get(i).getId())){
+                        mListDatas.remove(i);
+                        refreshData();
+                        showDeleteSuccess();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 }
