@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+    <!--标签-->
+    <com.zhy.view.flowlayout.TagFlowLayout
+            android:id="@+id/tfl_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_normal"/>
+
+    <View
+            style="@style/style_divider_horizontal"
+            android:layout_marginLeft="@dimen/spacing_normal"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/spacing_normal">
+        <!--标题-->
+        <TextView
+                android:id="@+id/tv_question_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_primary_title"
+                android:textColor="@color/important_for_content"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/spacing_normal"
+                tools:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
+        <!--悬赏金额-->
+        <TextView
+                android:id="@+id/tv_reward_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_primary_title"
+                android:textColor="@color/important_for_note"
+                tools:text="xxxxx"/>
+    </LinearLayout>
+
+    <!--正文内容-->
+    <com.zhiyicx.thinksnsplus.widget.QuestionDetailContent
+            android:id="@+id/qd_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_normal">
+
+        <TextView
+                android:id="@+id/tv_question_feed_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/size_content_assist"
+                android:textColor="@color/normal_for_assist_text"
+                tools:text="xxxxx"/>
+
+        <!--围观金额-->
+        <TextView
+                android:id="@+id/tv_question_reward_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_content_assist"
+                android:textColor="@color/themeColor"
+                tools:text="xxxxx"/>
+
+        <CheckBox
+                android:id="@+id/tv_topic_change_follow"
+                android:layout_width="@dimen/topic_follow_btn_width_70"
+                android:layout_height="@dimen/channel_subscrib_btn_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/spacing_mid"
+                android:background="@drawable/shape_channel_list_subscrib_button"
+                android:button="@null"
+                android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
+                android:drawablePadding="@dimen/spacing_small_3dp"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:text="@string/follow"
+                android:textColor="@color/selector_channel_list_subscrib_button_divider"
+                android:textSize="@dimen/size_content_comment"/>
+    </LinearLayout>
+
+    <View
+            style="@style/style_divider_horizontal"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/question_detail_reward_type_height"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <ImageView
+                    android:id="@+id/iv_reward_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ico_question_reward"
+                    android:layout_marginRight="@dimen/spacing_mid_small"/>
+            <TextView
+                    android:id="@+id/tv_reward_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/qa_reward_public"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_dynamic_list_content"
+                    android:gravity="center"/>
+        </LinearLayout>
+
+        <View
+                style="@style/style_divider_veitical_light"
+                android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+                android:layout_marginBottom="@dimen/spacing_mid_small_8dp"/>
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <ImageView
+                    android:id="@+id/iv_add_answer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ico_question_answer"
+                    android:layout_marginRight="@dimen/spacing_mid_small"/>
+            <TextView
+                    android:id="@+id/tv_add_answer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/qa_add_answer"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_dynamic_list_content"
+                    android:gravity="center"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!--答案信息-->
+    <LinearLayout
+            android:id="@+id/ll_answer_info"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/question_detail_answer_info_height"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
+            android:background="@color/general_for_bg_light">
+        <TextView
+                android:id="@+id/tv_answer_count"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|left"
+                android:textSize="@dimen/size_content_assist"
+                android:textColor="@color/normal_for_assist_text"
+                tools:text="xxxxxx"/>
+        <!--修改排序-->
+        <TextView
+                android:id="@+id/tv_change_order"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"
+                android:textSize="@dimen/size_content_assist"
+                android:textColor="@color/normal_for_assist_text"
+                android:drawableRight="@mipmap/icon_question_sort"
+                android:drawablePadding="@dimen/spacing_normal"
+                android:text="@string/qa_answer_list_order_default"/>
+    </LinearLayout>
+
+</LinearLayout>

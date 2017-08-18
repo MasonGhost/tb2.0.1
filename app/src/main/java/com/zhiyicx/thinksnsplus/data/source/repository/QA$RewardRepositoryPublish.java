@@ -20,7 +20,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 
-public class QA$RewardRepositoryPublish extends BasePublishQuestionRepository implements QARewardContract.RepositoryPublish {
+public class QA$RewardRepositoryPublish extends BaseQARepository implements QARewardContract.RepositoryPublish {
 
     @Inject
     public QA$RewardRepositoryPublish(ServiceManager manager) {

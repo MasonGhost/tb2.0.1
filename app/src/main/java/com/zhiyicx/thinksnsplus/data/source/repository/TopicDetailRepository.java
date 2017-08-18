@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
-import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailContract;
 
@@ -16,7 +15,7 @@ import rx.Observable;
  * @contact email:648129313@qq.com
  */
 
-public class TopicDetailRepository extends BasePublishQuestionRepository implements TopicDetailContract.Repository{
+public class TopicDetailRepository extends BaseQARepository implements TopicDetailContract.Repository{
 
     @Inject
     public TopicDetailRepository(ServiceManager manager) {

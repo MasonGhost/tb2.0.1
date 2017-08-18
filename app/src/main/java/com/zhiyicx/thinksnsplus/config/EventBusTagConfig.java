@@ -39,9 +39,23 @@ public class EventBusTagConfig {
     // 详情界面删除内容通知
     public static final String DYNAMIC_LIST_DELETE_UPDATE = "dynamic_list_delete_update";
     // 动态列表发送评论
-    public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_to_List";
+    public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_comment_to_List";
+
     // 动态图片付费
     public static final String EVENT_DYNAMIC_TOLL_PICTRUE = "event_dynamic_toll_pictrue";
+
+    // 对某人进行关注或者取消关注，需要改变个人主页关注数量
+    public static final String EVENT_FOLLOW_AND_CANCEL_FOLLOW = "event_follow_and_cancle_follow";
+
+    // 频道进行订阅或者取消订阅
+    public static final String EVENT_CHANNEL_SUBSCRIB = "event_channel_subscrib";
+
+    // 加入/退出圈子
+    public static final String EVENT_GROUP_JOIN = "event_group_join";
+
+    /**
+     * 资讯相关
+     */
     // 资讯列表发送评论
     public static final String EVENT_SEND_COMMENT_TO_INFO_LIST = "event_send_info_to_List";
 
@@ -54,6 +68,9 @@ public class EventBusTagConfig {
     // 资讯详情界面删除内容通知
     public static final String EVENT_SEND_INFO_LIST_DELETE_UPDATE = "event_send_info_list_delete_update";
 
+    /**
+     * 音乐相关
+     */
     // 音乐播放缓冲进度
     public static final String EVENT_SEND_MUSIC_CACHE_PROGRESS = "event_send_music_cache_progress";
     // 音乐加载
@@ -62,22 +79,6 @@ public class EventBusTagConfig {
     public static final String EVENT_SEND_MUSIC_COMPLETE = "event_send_music_complete";
     // 音乐改变
     public static final String EVENT_SEND_MUSIC_CHANGE = "event_send_music_change";
-
-    // 对某人进行关注或者取消关注，需要改变个人主页关注数量
-    public static final String EVENT_FOLLOW_AND_CANCEL_FOLLOW = "event_follow_and_cancle_follow";
-
-    // 频道进行订阅或者取消订阅
-    public static final String EVENT_CHANNEL_SUBSCRIB = "event_channel_subscrib";
-
-    // 问答-话题
-    public static final String EVENT_QA_SUBSCRIB = "event_qatopic_subscrib";
-
-    // 加入/退出圈子
-    public static final String EVENT_GROUP_JOIN = "event_group_join";
-
-    /**
-     * 音乐相关
-     */
     // 音乐专辑收藏
     public static final String EVENT_ABLUM_COLLECT = "event_ablum_collect";
 
@@ -131,8 +132,19 @@ public class EventBusTagConfig {
      */
     public static final String EVENT_UNREAD_NOTIFICATION_LIMIT = "unread-notification-limit";
 
-    /*问答相关*/
+    /**
+     * 问答相关
+     */
     public static final String EVENT_CHANGE_EXPERT = "event_change_expert";
+    // 答案发送评论
+    public static final String EVENT_SEND_COMMENT_TO_ANSWER_LIST = "event_send_answer_comment_to_List";
+    // 问答-话题
+    public static final String EVENT_QA_SUBSCRIB = "event_qatopic_subscrib";
+    // 删除答案
+    public static final String EVENT_UPDATE_ANSWER_LIST_DELETE = "event_update_answer_list_delete";
+    // 删除问题
+    public static final String EVENT_UPDATE_QUESTION_DELETE= "event_update_question_delete";
+
 
     /**
      * 签到

@@ -158,7 +158,7 @@ public class ImageUtils {
      * @param withBorder
      * @description 单纯的一个丑字根本描述不了这段代码 by tym
      */
-    public static void loadQAUserHead(QAListInfoBean.UserBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
+    public static void loadQAUserHead(UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
         loadQAUserAvatar(userInfoBean, contentTextView, content, isAnonymity, withBorder);
     }
 
@@ -204,14 +204,14 @@ public class ImageUtils {
                 .into(imageView);
     }
 
-    private static void loadQAUserAvatar(QAListInfoBean.UserBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
+    private static void loadQAUserAvatar(UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
         String avatar = "";
         if (userInfoBean != null) {
             avatar = userInfoBean.getAvatar();
             long currentLoginUerId = AppApplication.getmCurrentLoginAuth() == null ? 0 : AppApplication.getmCurrentLoginAuth().getUser_id();
-            if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getId() == currentLoginUerId) {
+            if (System.currentTimeMillis() - laste_request_time > DEFAULT_SHAREPREFERENCES_OFFSET_TIME || userInfoBean.getExtra().getUser_id() == currentLoginUerId) {
 
-                if (userInfoBean.getId() == currentLoginUerId) {
+                if (userInfoBean.getExtra().getUser_id() == currentLoginUerId) {
                     mHeadPicSigture = SharePreferenceUtils.getLong(AppApplication.getContext(), SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE);
                 } else {
                     mHeadPicSigture = SharePreferenceUtils.getLong(AppApplication.getContext(), SHAREPREFERENCE_USER_HEADPIC_SIGNATURE);
@@ -220,7 +220,7 @@ public class ImageUtils {
                     mHeadPicSigture = System.currentTimeMillis();
                 }
                 SharePreferenceUtils.saveLong(AppApplication.getContext()
-                        , userInfoBean.getId() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
+                        , userInfoBean.getExtra().getUser_id() == currentLoginUerId ? SHAREPREFERENCE_CURRENT_LOGIN_USER_HEADPIC_SIGNATURE : SHAREPREFERENCE_USER_HEADPIC_SIGNATURE, mHeadPicSigture);
             }
             laste_request_time = System.currentTimeMillis();
         }

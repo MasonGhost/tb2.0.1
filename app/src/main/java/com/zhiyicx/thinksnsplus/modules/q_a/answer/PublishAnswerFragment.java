@@ -14,7 +14,12 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentFragmen
  */
 public class PublishAnswerFragment extends PublishContentFragment {
 
+    public static final String BUNDLE_SOURCE_ID = "source_id";
+
     public static PublishAnswerFragment newInstance(Bundle bundle) {
+        if (bundle == null || bundle.getLong(BUNDLE_SOURCE_ID) <= 0) {
+            throw new IllegalArgumentException("questin_id can not be null");
+        }
         PublishAnswerFragment publishContentFragment = new PublishAnswerFragment();
         publishContentFragment.setArguments(bundle);
         return publishContentFragment;
@@ -32,7 +37,7 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void setRightClick() {
-        mPresenter.publishAnswer(1L,getContentString(), mAnonymity);
+        mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), getContentString(), mAnonymity);
 
     }
 

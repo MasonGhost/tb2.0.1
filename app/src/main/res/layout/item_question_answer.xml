@@ -12,14 +12,30 @@
             android:orientation="horizontal"
             android:layout_margin="@dimen/spacing_normal">
 
-        <ImageView
-                android:id="@+id/iv_portrait"
-                android:layout_width="@dimen/qa_user_tag_height"
-                android:layout_height="@dimen/qa_user_tag_height"
-                android:scaleType="centerCrop"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:src="@mipmap/pic_default_portrait2"
-                android:layout_marginTop="@dimen/spacing_tiny"/>
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_normal">
+            <TextView
+                    android:id="@+id/iv_anonymity_flag"
+                    android:layout_width="@dimen/answer_list_portrait_width"
+                    android:layout_height="@dimen/answer_list_portrait_width"
+                    android:text="@string/qa_question_answer_anonymity"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_content_assist"
+                    android:background="@drawable/shape_answer_anonymity_bg"
+                    android:visibility="gone"/>
+            <com.zhiyicx.baseproject.widget.UserAvatarView
+                    android:id="@+id/iv_portrait"
+                    android:layout_width="@dimen/answer_list_portrait_width"
+                    android:layout_height="@dimen/answer_list_portrait_width"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/pic_default_portrait2"
+                    android:layout_marginTop="@dimen/spacing_tiny"/>
+        </FrameLayout>
+
+
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -33,18 +49,35 @@
                     android:textSize="@dimen/size_content_comment"
                     tools:text="xxxxxx"/>
 
-            <TextView
-                    android:id="@+id/tv_adopt_flag"
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_marginLeft="@dimen/spacing_mid_small"
-                    android:layout_toRightOf="@+id/tv_name"
-                    android:text="@string/qa_question_answer_adopt"
-                    android:textColor="@color/themeColor"
-                    android:textSize="@dimen/size_note_assist"
-                    android:background="@drawable/shape_answer_adopt_bg"
-                    android:layout_alignBaseline="@+id/tv_name"
-                    android:padding="@dimen/spacing_tiny"/>
+                    android:layout_toRightOf="@+id/tv_name">
+                <!--邀请人的标志-->
+                <TextView
+                        android:id="@+id/tv_invite_flag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/qa_question_answer_invite"
+                        android:textColor="@color/dyanmic_top_flag"
+                        android:textSize="@dimen/size_note_assist"
+                        android:background="@drawable/shape_answer_invite_bg"
+                        android:padding="@dimen/spacing_tiny"/>
+                <!--采纳的标志-->
+                <TextView
+                        android:id="@+id/tv_adopt_flag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_mid_small"
+                        android:text="@string/qa_question_answer_adopt"
+                        android:textColor="@color/themeColor"
+                        android:textSize="@dimen/size_note_assist"
+                        android:background="@drawable/shape_answer_adopt_bg"
+                        android:padding="@dimen/spacing_tiny"/>
+            </LinearLayout>
+
             <TextView
                     android:id="@+id/tv_time"
                     android:layout_width="wrap_content"
@@ -112,6 +145,7 @@
                 android:layout_alignParentRight="true"
                 android:textSize="@dimen/size_icon_assist"
                 android:textColor="@color/normal_for_disable_button_text"
+                android:visibility="gone"
                 tools:text="xxxxxxx"/>
     </RelativeLayout>
 </LinearLayout>

@@ -4,6 +4,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.DynamicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IRewardRepository;
@@ -28,12 +29,14 @@ public class BaseRewardRepository implements IRewardRepository {
     private InfoMainClient mInfoMainClient;
     private DynamicClient mDynamicClient;
     private UserInfoClient mUserInfoClient;
+    private QAClient mQAClient;
 
     @Inject
     public BaseRewardRepository(ServiceManager serviceManager) {
         mInfoMainClient = serviceManager.getInfoMainClient();
         mDynamicClient = serviceManager.getDynamicClient();
         mUserInfoClient = serviceManager.getUserInfoClient();
+        mQAClient = serviceManager.getQAClient();
     }
 
     /*******************************************  用户打赏  *********************************************/
@@ -41,7 +44,7 @@ public class BaseRewardRepository implements IRewardRepository {
 
     @Override
     public Observable<Object> rewardUser(long user_id, double amount) {
-        return mUserInfoClient.rewardUser(user_id, (float) amount)
+        return mUserInfoClient.rewardUser(user_id, (int) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -55,7 +58,7 @@ public class BaseRewardRepository implements IRewardRepository {
      */
     @Override
     public Observable<Object> rewardInfo(long news_id, double amount) {
-        return mInfoMainClient.rewardInfo(news_id, (float) amount)
+        return mInfoMainClient.rewardInfo(news_id, (int) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -95,7 +98,7 @@ public class BaseRewardRepository implements IRewardRepository {
      */
     @Override
     public Observable<Object> rewardDynamic(long feed_id, double amount) {
-        return mDynamicClient.rewardDynamic(feed_id, (float) amount)
+        return mDynamicClient.rewardDynamic(feed_id, (int) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -111,6 +114,35 @@ public class BaseRewardRepository implements IRewardRepository {
     @Override
     public Observable<List<RewardsListBean>> rewardDynamicList(long feed_id, Integer limit, Integer since, String order, String order_type) {
         return mDynamicClient.rewardDynamicList(feed_id, limit, since, order, order_type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*******************************************  问答回答打赏  *********************************************/
+
+    /**
+     * @param answer_id
+     * @param amount    打赏金额
+     * @return
+     */
+    @Override
+    public Observable<Object> rewardQA(long answer_id, double amount) {
+        return mQAClient.rewardQA(answer_id, (int) amount)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     *
+     * @param answer_id    动态 id
+     * @param limit      默认 20 ，获取列表条数，修正值 1 - 30
+     * @param offset     默认 0 ，数据偏移量，传递之前通过接口获取的总数。
+     * @param order_type 默认值 time, time - 按照打赏时间倒序，amount - 按照金额倒序
+     * @return
+     */
+    @Override
+    public Observable<List<RewardsListBean>> rewardQAList(long answer_id, Integer limit, Integer offset, String order_type) {
+        return mQAClient.rewardQAList(answer_id,limit,offset,order_type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

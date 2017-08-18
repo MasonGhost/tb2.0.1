@@ -5,6 +5,8 @@ import android.os.Parcel;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoBeanConvert;
+import com.zhiyicx.thinksnsplus.data.source.local.data_convert.UserInfoListBeanConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -26,39 +28,13 @@ public class QATopicBean extends BaseListBean implements Serializable{
     @Transient
     private static final long serialVersionUID = -2380980242688116330L;
 
-    /*{
-        "id": 1,
-            "name": "PHP",
-            "description": "我是PHP",
-            "questions_count": 5,
-            "experts_count": 1,
-            "follows_count": 0,
-            "has_follow": false,
-            "avatar": null,
-            "experts": [
-        {
-            "id": 2,
-                "name": "test1",
-                "bio": "0",
-                "sex": 0,
-                "location": "0",
-                "created_at": "2017-06-12 07:38:55",
-                "updated_at": "2017-06-12 07:38:55",
-                "avatar": null,
-                "bg": null,
-                "verified": null,
-                "extra": null
-        }
-    ]
-    }*/
-
     @Id
     private Long id;
     private String name;
     private String description;
     private int questions_count;
     private int experts_count;
-    @Convert(converter = UserInfoCovert.class, columnType = String.class)
+    @Convert(converter = UserInfoListBeanConvert.class, columnType = String.class)
     private List<UserInfoBean> experts;
     private int follows_count;
     private boolean has_follow;

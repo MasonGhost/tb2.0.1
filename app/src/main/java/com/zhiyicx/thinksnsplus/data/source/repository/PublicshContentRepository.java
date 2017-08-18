@@ -17,7 +17,7 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class PublicshContentRepository extends BasePublishQuestionRepository implements PublishContentConstact.Repository {
+public class PublicshContentRepository extends BaseQARepository implements PublishContentConstact.Repository {
 
     @Inject
     public PublicshContentRepository(ServiceManager serviceManager) {

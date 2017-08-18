@@ -10,7 +10,7 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/white">
         <FrameLayout
                 android:layout_width="match_parent"
@@ -149,7 +149,6 @@
                     android:textColorHint="@color/general_for_hint"
                     android:hint="@string/description_hint"
                     style="@style/style_edit"
-                    android:maxLines="5"
                     android:maxLength="@integer/certification_description_max_length"
                     tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
         </LinearLayout>

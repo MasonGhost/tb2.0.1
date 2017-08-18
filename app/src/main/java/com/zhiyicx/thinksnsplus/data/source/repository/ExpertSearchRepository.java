@@ -12,7 +12,7 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 
-public class ExpertSearchRepository extends BasePublishQuestionRepository implements ExpertSearchContract.Repository{
+public class ExpertSearchRepository extends BaseQARepository implements ExpertSearchContract.Repository{
 
     @Inject
     public ExpertSearchRepository(ServiceManager manager) {

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/headpic_for_user_center">
+
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+            android:id="@+id/iv_head_icon"
+            android:layout_width="@dimen/headpic_for_answer"
+            android:layout_height="@dimen/headpic_for_answer"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/spacing_mid_small_8dp"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:src="@mipmap/pic_default_portrait1"
+            app:ts_avatare_size="@dimen/headpic_for_answer"/>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_head_icon"
+            android:layout_toRightOf="@+id/iv_head_icon"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content_assist"
+            tools:text="xxxxx"/>
+
+        <TextView
+            android:id="@+id/tv_user_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_head_icon"
+            android:layout_toRightOf="@+id/iv_head_icon"
+            android:textColor="@color/normal_for_dynamic_list_content"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="xxxxx"/>
+
+        <CheckBox
+            android:id="@+id/tv_user_follow"
+            android:layout_width="@dimen/topic_follow_btn_width_70"
+            android:layout_height="@dimen/channel_subscrib_btn_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:background="@drawable/shape_channel_list_subscrib_button"
+            android:button="@null"
+            android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
+            android:drawablePadding="@dimen/spacing_small_3dp"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:text="@string/follow"
+            android:textColor="@color/selector_channel_list_subscrib_button_divider"
+            android:textSize="@dimen/size_content_comment"/>
+
+        <View
+            style="@style/style_divider_horizontal"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <br.tiagohm.markdownview.MarkdownView
+            android:id="@+id/answer_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            tools:ignore="WebViewLayout"/>
+
+        <!--用来占位的-->
+        <ImageView
+            android:id="@+id/iv_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/default_pic_personal"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <include
+        layout="@layout/item_dynamic_detail_dig"
+        android:visibility="gone"/>
+
+    <include
+        layout="@layout/include_reward"/>
+
+    <include
+        layout="@layout/advert_details"
+        />
+
+    <!--相关资讯以及标签-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_small_3dp"
+        android:background="@color/general_for_bg_light"/>
+
+    <!--评论数-->
+    <FrameLayout
+        android:id="@+id/answer_detail_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing_mid"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal"
+                android:paddingTop="@dimen/spacing_mid"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content_assist"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_line_bottom_themcolor"/>
+        </LinearLayout>
+
+        <View
+            style="@style/style_divider_horizontal_light"
+            android:layout_gravity="bottom"/>
+    </FrameLayout>
+</LinearLayout>

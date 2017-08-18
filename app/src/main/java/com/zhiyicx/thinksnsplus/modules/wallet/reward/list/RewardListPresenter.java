@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -30,15 +31,19 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Rep
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        switch (mRootView.getCurrentType()){
+        switch (mRootView.getCurrentType()) {
             case INFO:
-                getInfoRewardUsers(isLoadMore);
+                getRewardUsers(mRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getPage(), null, null)
+                        , isLoadMore);
                 break;
 
             case DYNAMIC:
-
+                getRewardUsers(mRepository.rewardDynamicList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getPage(), null, null)
+                        , isLoadMore);
                 break;
-
+            case QA_ANSWER:
+                getRewardUsers(mRepository.rewardQAList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE, mRootView.getPage(), null)
+                        , isLoadMore);
             default:
 
 
@@ -46,24 +51,23 @@ public class RewardListPresenter extends AppBasePresenter<RewardListContract.Rep
 
     }
 
-    private void getInfoRewardUsers(final boolean isLoadMore) {
-        Subscription subscription = mRepository.rewardInfoList(mRootView.getSourceId(), TSListFragment.DEFAULT_ONE_PAGE_SIZE,mRootView.getPage(),null,null)
-                .subscribe(new BaseSubscribeForV2<List<RewardsListBean>>() {
-                    @Override
-                    protected void onSuccess(List<RewardsListBean> data) {
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
-                    }
+    private void getRewardUsers(Observable<List<RewardsListBean>> observable, final boolean isLoadMore) {
+        Subscription subscription = observable.subscribe(new BaseSubscribeForV2<List<RewardsListBean>>() {
+            @Override
+            protected void onSuccess(List<RewardsListBean> data) {
+                mRootView.onNetResponseSuccess(data, isLoadMore);
+            }
 
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        mRootView.showMessage(message);
-                    }
+            @Override
+            protected void onFailure(String message, int code) {
+                mRootView.showMessage(message);
+            }
 
-                    @Override
-                    protected void onException(Throwable throwable) {
-                       mRootView.onResponseError(throwable,isLoadMore);
-                    }
-                });
+            @Override
+            protected void onException(Throwable throwable) {
+                mRootView.onResponseError(throwable, isLoadMore);
+            }
+        });
         addSubscrebe(subscription);
     }
 

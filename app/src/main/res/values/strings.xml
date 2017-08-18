@@ -240,6 +240,9 @@
     <string name="sticktop_instructions_detail">置顶金额必须是整数，不能出现小数</string>
     <string name="dynamic_list_top_dynamic">申请动态置顶</string>
     <string name="dynamic_list_top_dynamic_success">申请动态置顶成功</string>
+    <string name="dynamic_list_top_info_success">申请资讯置顶成功</string>
+    <string name="dynamic_list_top_success">申请置顶成功</string>
+    <string name="comment_top_success">申请评论置顶成功</string>
     <string name="to_top_description">当前平均置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
 
     <!--设置评论收费-->
@@ -443,6 +446,7 @@
     <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
     <string name="qa_show_topic_followed_reward">%1$d 关注  ·  %2$d 回答  ·  ￥%3$.1f 悬赏</string>
     <string name="edit_quit">放弃编辑</string>
+    <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
     <string-array name="topic_detail_category">
         <item>最新</item>
@@ -456,6 +460,24 @@
     <string name="qa_topic_open_all">展开全部</string>
     <string name="qa_topic_close_all">收起</string>
     <string name="qa_question_answer_adopt">已采纳</string>
+    <string name="qa_question_answer_invite">邀请回答</string>
+    <string name="qa_question_answer_adopting">采纳答案</string>
+    <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
+    <string name="qa_question_answer_anonymity">匿</string>
+    <string name="qa_reward_public">公开悬赏</string>
+    <string name="qa_reward_invited">已邀请悬赏</string>
+    <string name="qa_reward_setting">已设置悬赏</string>
+    <string name="qa_add_answer">添加回答</string>
+    <string name="qa_reward_amount">￥%1$.1f</string>
+    <string name="qa_watch_amount">￥%1$.1f围观</string>
+    <string name="qa_answer_list_order_default">默认排序</string>
+    <string name="qa_answer_list_order_by_time">按时间排序</string>
+    <string name="qa_answer_count">%d 个回答</string>
+    <string name="qa_title_question_detail">问题详情</string>
+    <string name="qa_question_no_answer">还没有回答</string>
+    <string name="qa_apply_for_excellent">申请为精选问答</string>
+    <string name="qa_question_delete">删除问题</string>
+    <string name="qa_question_develop">敬请期待</string>
 
     <!--签到-->
     <string name="check_in">签到</string>

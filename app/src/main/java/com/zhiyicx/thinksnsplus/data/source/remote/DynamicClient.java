@@ -247,7 +247,7 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_DYNAMIC_REWARDS)
-    Observable<Object> rewardDynamic(@Path("feed_id") long news_id, @Field("amount") float amount);
+    Observable<Object> rewardDynamic(@Path("feed_id") long news_id, @Field("amount") Integer amount);
 
 
     /**

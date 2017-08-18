@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 
-public class BasePublishQuestionRepository implements IBasePublishQuestionRepository {
+public class BaseQARepository implements IBasePublishQuestionRepository {
 
     protected QAClient mQAClient;
 
@@ -39,7 +39,7 @@ public class BasePublishQuestionRepository implements IBasePublishQuestionReposi
     Application mContext;
 
     @Inject
-    public BasePublishQuestionRepository(ServiceManager manager) {
+    public BaseQARepository(ServiceManager manager) {
         mQAClient = manager.getQAClient();
     }
 
@@ -110,6 +110,30 @@ public class BasePublishQuestionRepository implements IBasePublishQuestionReposi
                     }
                     backgroundRequestTaskBean.setPath(String.format(ApiConfig
                             .APP_PATH_HANDLE_TOPIC_FOLLOW_S, topic_id));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
+                });
+    }
+
+    @Override
+    public void handleQuestionFollowState(String questionId, boolean isFollow) {
+        Observable.just(isFollow)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.PUT, params);
+                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                    }
+                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                            .APP_PATH_HANDLE_QUESTION_FOLLOW_S, questionId));
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
                 });

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="@dimen/question_invite_width"
+              android:layout_height="@dimen/question_invite_height"
+              android:background="@drawable/shape_common_white_4"
+              android:gravity="center"
+              android:paddingLeft="@dimen/spacing_normal"
+              android:paddingRight="@dimen/spacing_normal">
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+                android:id="@+id/iv_user_portrait"
+                android:layout_width="@dimen/question_invite_portrait_width"
+                android:layout_height="@dimen/question_invite_portrait_width"/>
+
+        <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_icon_assist"
+                android:textColor="@color/normal_for_dynamic_list_content"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="xxxx"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>

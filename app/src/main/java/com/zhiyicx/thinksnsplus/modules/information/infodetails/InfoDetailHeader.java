@@ -34,7 +34,7 @@ import static com.umeng.socialize.utils.DeviceConfig.context;
  * @Description
  */
 public class InfoDetailHeader {
-    private static final String TAG = "InfoDetailHeader";
+    private static final String TAG = "AnswerDetailHeader";
     // 获取img标签正则
     private static final String IMAGE_URL_TAG = "<img.*src=(.*?)[^>]*?>";
     // 获取src路径的正则

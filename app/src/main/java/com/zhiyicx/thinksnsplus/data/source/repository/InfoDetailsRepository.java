@@ -106,8 +106,6 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
 
                                 }
                                 mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-
-
                                 return listBaseJson;
                             });
                         }
