@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author LiuChao
- * @describe
- * @date 2017/2/13
- * @contact email:450127106@qq.com
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/8/18
+ * @Contact master.jungle68@gmail.com
  */
-
 public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
 
     public static final int PAGE_POSITION_HOT = 0;
