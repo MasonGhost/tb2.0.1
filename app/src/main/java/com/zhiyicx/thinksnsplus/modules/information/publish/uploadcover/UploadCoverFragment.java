@@ -31,8 +31,7 @@ import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment
-        .BUNDLE_PUBLISH_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoFragment.BUNDLE_PUBLISH_BEAN;
 
 /**
  * @Describe
@@ -121,6 +120,9 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     public void uploadPicSuccess(int id) {
+        if (showUplaoding()) {
+            showSnackSuccessMessage("封面上传成功");
+        }
         mInfoPublishBean.setImage(id);
         mBtSure.setEnabled(true);
     }
@@ -193,7 +195,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
-        if (prompt == Prompt.SUCCESS) {
+        if (prompt == Prompt.DONE) {
             getActivity().finish();
             startActivity(new Intent(getActivity(), InfoActivity.class));
         }

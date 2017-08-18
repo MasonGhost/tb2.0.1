@@ -29,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
@@ -58,7 +59,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_ANS
  * @Author Jliuer
  * @Date 2017/03/08
  * @Email Jliuer@aliyun.com
- * @Description 资讯详情
+ * @Description 回答详情
  */
 public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract.Presenter,
         AnswerCommentListBean> implements AnswerDetailsConstract.View, InputLimitView
@@ -91,9 +92,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDealInfoMationPopWindow;
 
-    /**
-     * 传入的资讯信息
-     */
     private AnswerInfoBean mAnswerInfoBean;
     private boolean isFirstIn = true;
 
@@ -187,7 +185,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         }
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
-        mTvToolbarCenter.setText(getString(R.string.info_details));
+        mTvToolbarCenter.setText(getString(R.string.qa_title_answer_detail));
         initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
@@ -452,7 +450,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     mDealInfoMationPopWindow.hide();
                     Intent intent = new Intent(getContext(), PublishAnswerActivity.class);
                     Bundle bundle=new Bundle();
-                    bundle.putLong(BUNDLE_SOURCE_ID,mAnswerInfoBean.getQuestion_id());
+                    bundle.putString(PublishAnswerFragment.BUNDLE_SOURCE_BODY,mAnswerInfoBean.getBody());
+                    bundle.putLong(PublishAnswerFragment.BUNDLE_SOURCE_ID,mAnswerInfoBean.getQuestion_id());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 })

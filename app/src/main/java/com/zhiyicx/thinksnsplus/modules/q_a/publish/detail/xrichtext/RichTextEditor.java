@@ -257,7 +257,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             lastFocusEdit.setText(editStr1);
             String editStr2 = lastEditStr.substring(cursorIndex).trim();
             if (editStr2.length() == 0) {
-                editStr2 = " ";
+                editStr2 = "";
             }
             if (allLayout.getChildCount() - 1 == lastEditIndex) {
                 addEditTextAtIndex(lastEditIndex + 1, editStr2);
@@ -266,8 +266,6 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             addImageViewAtIndex(lastEditIndex + 1, imagePath);
             lastAddEdit.requestFocus();
             lastAddEdit.setSelection(0);
-//            lastFocusEdit.requestFocus();
-//            lastFocusEdit.setSelection(editStr1.length(), editStr1.length());//TODO
         }
         hideKeyBoard();
     }
@@ -296,6 +294,20 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     }
 
     /**
+     * 在特定位置插入EditText
+     *
+     * @param index   位置
+     * @param editStr EditText显示的文字
+     */
+    public void updateEditTextAtIndex(final int index, CharSequence editStr) {
+        lastAddEdit = createEditText("", EDIT_PADDING);
+        lastAddEdit.setText(editStr);
+        lastAddEdit.setOnFocusChangeListener(focusListener);
+
+        allLayout.addView(lastAddEdit, index);
+    }
+
+    /**
      * 在特定位置添加ImageView
      */
     private void addImageViewAtIndex(final int index, String imagePath) {
@@ -312,12 +324,41 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
             bmp.recycle();
         }
-        // TODO: 17/3/1 调整图片高度，这里是否有必要，如果出现微博长图，可能会很难看
+        // TODO: 17/8/1 调整图片高度，这里是否有必要，如果出现微博长图，可能会很难看
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
         lp.bottomMargin = 10;
         imageView.setLayoutParams(lp);
         allLayout.addView(imageLayout, index);
+
+        onTextChanged("", 0, 0, 0);
+    }
+
+    /**
+     * 在特定位置添加ImageView
+     */
+    public void updateImageViewAtIndex(final int index, String imagePath, String markdonw, boolean isLast) {
+        final RelativeLayout imageLayout = createImageLayout();
+        DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
+        Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
+        imageView.setAbsolutePath(markdonw);//保留这句，后面保存数据会用
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
+
+        // 调整imageView的高度，根据宽度来调整高度
+        Bitmap bmp = BitmapFactory.decodeFile(imagePath);
+        int imageHeight = 500;
+        if (bmp != null) {
+            imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
+            bmp.recycle();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
+            lp.bottomMargin = 10;
+            imageView.setLayoutParams(lp);
+        }
+        allLayout.addView(imageLayout, index);
+        if (isLast) {
+            addEditTextAtIndex(getLastIndex(), "");
+        }
         onTextChanged("", 0, 0, 0);
     }
 
@@ -366,9 +407,9 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (mOnContentChangeListener!=null){
+        if (mOnContentChangeListener != null) {
             List<EditData> data = buildEditData();
-            hasContent = data.size() > 1 || !data.get(0).inputStr.isEmpty();
+            hasContent = data.size() > 1 || data.size() == 1 && !data.get(0).inputStr.isEmpty();
             mOnContentChangeListener.onContentChange(hasContent);
         }
     }
