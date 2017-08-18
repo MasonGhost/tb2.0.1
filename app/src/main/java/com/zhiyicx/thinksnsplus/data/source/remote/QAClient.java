@@ -23,6 +23,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -48,6 +49,17 @@ public interface QAClient {
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
     Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
+
+    /**
+     *
+     * @param answer_id
+     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(ApiConfig.APP_PATH_UPDATE_ANSWER)
+    Observable<BaseJsonV2<Object>> uplaodAnswer(@Path("answer_id") Long answer_id, @Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
      * @param name   用于搜索话题，传递话题名称关键词。

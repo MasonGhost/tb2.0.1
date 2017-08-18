@@ -414,6 +414,7 @@
     <!--问答相关-->
     <string name="qa_publish">发布问题</string>
     <string name="qa_publish_answer">添加回答</string>
+    <string name="qa_update_answer">更新回答</string>
     <string name="qa_detail">问题详情</string>
     <string name="qa_publish_next">下一步</string>
     <string name="qa_publish_title_hint">请输入问题并以问号结尾</string>
@@ -475,6 +476,7 @@
     <string name="qa_answer_count">%d 个回答</string>
     <string name="qa_title_question_detail">问题详情</string>
     <string name="qa_question_no_answer">还没有回答~</string>
+    <string name="qa_title_answer_detail">回答详情</string>
     <string name="qa_apply_for_excellent">申请为精选问答</string>
     <string name="qa_question_delete">删除问题</string>
     <string name="qa_question_delete_success">删除成功</string>

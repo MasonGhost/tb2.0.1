@@ -8,16 +8,17 @@ import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
 
 /**
- * @author Catherine
- * @describe 资讯点赞列表bean
- * @date 2017/8/8
- * @contact email:648129313@qq.com
+ * @Author Jliuer
+ * @Date 2017/8/18 11:39
+ * @Email Jliuer@aliyun.com
+ * @Description 
  */
 @Entity
 public class AnswerDigListBean extends BaseListBean implements Serializable {
@@ -37,35 +38,6 @@ public class AnswerDigListBean extends BaseListBean implements Serializable {
     private String likeable_type;
     private String created_at;
     private String updated_at;
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 1064328054)
-    private transient AnswerDigListBeanDao myDao;
-
-    @Generated(hash = 1486280086)
-    public AnswerDigListBean(Long id, Long user_id, Long target_user,
-                             Long likeable_id, String likeable_type, String created_at,
-                             String updated_at) {
-        this.id = id;
-        this.user_id = user_id;
-        this.target_user = target_user;
-        this.likeable_id = likeable_id;
-        this.likeable_type = likeable_type;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-    }
-
-    @Generated(hash = 1766442027)
-    public AnswerDigListBean() {
-    }
 
     public Long getId() {
         return this.id;
@@ -123,79 +95,30 @@ public class AnswerDigListBean extends BaseListBean implements Serializable {
         this.updated_at = updated_at;
     }
 
-    @Generated(hash = 1533677598)
-    private transient Long diggUserInfo__resolvedKey;
-
-    /**
-     * To-one relationship, resolved on first access.
-     */
-    @Generated(hash = 1218409191)
+    @Keep
     public UserInfoBean getDiggUserInfo() {
-        Long __key = this.user_id;
-        if (diggUserInfo__resolvedKey == null
-                || !diggUserInfo__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean diggUserInfoNew = targetDao.load(__key);
-            synchronized (this) {
-                diggUserInfo = diggUserInfoNew;
-                diggUserInfo__resolvedKey = __key;
-            }
-        }
         return diggUserInfo;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
-    @Generated(hash = 165058629)
+    @Keep
     public void setDiggUserInfo(UserInfoBean diggUserInfo) {
-        synchronized (this) {
-            this.diggUserInfo = diggUserInfo;
-            user_id = diggUserInfo == null ? null : diggUserInfo.getUser_id();
-            diggUserInfo__resolvedKey = user_id;
-        }
+        this.diggUserInfo = diggUserInfo;
     }
-
-    @Generated(hash = 437417732)
-    private transient Long targetUserInfo__resolvedKey;
 
     /**
      * To-one relationship, resolved on first access.
      */
-    @Generated(hash = 368057598)
+    @Keep
     public UserInfoBean getTargetUserInfo() {
-        Long __key = this.target_user;
-        if (targetUserInfo__resolvedKey == null
-                || !targetUserInfo__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            UserInfoBeanDao targetDao = daoSession.getUserInfoBeanDao();
-            UserInfoBean targetUserInfoNew = targetDao.load(__key);
-            synchronized (this) {
-                targetUserInfo = targetUserInfoNew;
-                targetUserInfo__resolvedKey = __key;
-            }
-        }
         return targetUserInfo;
     }
 
     /**
      * called by internal mechanisms, do not call yourself.
      */
-    @Generated(hash = 875470237)
+    @Keep
     public void setTargetUserInfo(UserInfoBean targetUserInfo) {
-        synchronized (this) {
-            this.targetUserInfo = targetUserInfo;
-            target_user = targetUserInfo == null ? null
-                    : targetUserInfo.getUser_id();
-            targetUserInfo__resolvedKey = target_user;
-        }
+        this.targetUserInfo = targetUserInfo;
     }
 
     /**
@@ -233,6 +156,37 @@ public class AnswerDigListBean extends BaseListBean implements Serializable {
         }
         myDao.update(this);
     }
+
+    @Generated(hash = 1486280086)
+    public AnswerDigListBean(Long id, Long user_id, Long target_user, Long likeable_id,
+            String likeable_type, String created_at, String updated_at) {
+        this.id = id;
+        this.user_id = user_id;
+        this.target_user = target_user;
+        this.likeable_id = likeable_id;
+        this.likeable_type = likeable_type;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
+
+    @Generated(hash = 1766442027)
+    public AnswerDigListBean() {
+    }
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 1064328054)
+    private transient AnswerDigListBeanDao myDao;
+
+    @Generated(hash = 1533677598)
+    private transient Long diggUserInfo__resolvedKey;
+
+    @Generated(hash = 437417732)
+    private transient Long targetUserInfo__resolvedKey;
+
 
     @Override
     public int describeContents() {

@@ -90,16 +90,42 @@ public class JavaTest {
 
     @Test
     public void matchTest() {
-        String reg="(@!\\[.*]\\((\\d+)\\))";
-        String test="xxx@![image](123)ssss@![image](123)";
+        String reg = "(@!\\[.*]\\((\\d+)\\))";
+        String test = "xxx@![image](123)ssss@![image](123)";
         Matcher matcher = Pattern.compile(reg).matcher(test);
         if (matcher.find()) {
-           System.out.println("result::"+matcher.group(0));
-           System.out.println("result::"+matcher.group(1));
-           System.out.println("result::"+matcher.group(2));
-           System.out.println("result::"+matcher.groupCount());
+            System.out.println("result::" + matcher.group(0));
+            System.out.println("result::" + matcher.group(1));
+            System.out.println("result::" + matcher.group(2));
+            System.out.println("result::" + matcher.groupCount());
 
         }
+    }
+
+    @Test
+    public void subTest() {
+        String reg = "@!\\[.*]\\((\\d+)\\)";
+        String targetStr = "xxx@![image](123)ssss@![image](456)";
+        Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
+        Matcher matcher1 = pattern.matcher(targetStr);
+        int lastIndex = 0;
+        while (matcher1.find()) {
+            if (matcher1.start() > lastIndex) {
+                System.out.println("result 1 :: " + targetStr.substring(lastIndex, matcher1.start()));
+            }
+            String result2 = targetStr.substring(matcher1.start(), matcher1.end());
+            Matcher matcher2 = Pattern.compile(reg).matcher(result2);
+            System.out.println("result 2 :: " + result2);
+            if (matcher2.find()){
+                System.out.println("matcher 2 :: " + matcher2.group(0));
+                System.out.println("matcher 2 :: " + matcher2.group(1));
+            }
+            lastIndex = matcher1.end();
+        }
+        if (lastIndex != targetStr.length()) {
+            System.out.println("result 3 :: " + targetStr.substring(lastIndex, targetStr.length()));
+        }
+
     }
 
     /**
@@ -338,9 +364,9 @@ public class JavaTest {
 
 
     @Test
-    public void listRemoveDuplicateTest(){
+    public void listRemoveDuplicateTest() {
 
-        List<Integer>  data=new ArrayList<>();
+        List<Integer> data = new ArrayList<>();
         data.add(1);
         data.add(2);
         data.add(3);
@@ -353,7 +379,7 @@ public class JavaTest {
         data.add(6);
 
         ConvertUtils.removeDuplicate(data);
-        Assert.assertTrue(data.size()==6);
+        Assert.assertTrue(data.size() == 6);
         System.out.println("data = " + data.subList(0, data.size()));
 
 

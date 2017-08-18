@@ -378,7 +378,7 @@ public class ApiConfig {
     // 发布回答
     public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/answers";
     // 更新回答 PATCH
-    public static final String APP_PATH_UPDATE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
+    public static final String APP_PATH_UPDATE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer_id}";
     // 采纳答案 PUT
     public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question_id}/adoptions/{answer_id}";
     public static final String APP_PATH_ADOPT_ANSWER_S = "api/" + API_VERSION_2 + "/questions/%d/adoptions/%d";

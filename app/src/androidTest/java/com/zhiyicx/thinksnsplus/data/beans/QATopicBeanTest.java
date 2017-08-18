@@ -15,10 +15,10 @@ public class QATopicBeanTest extends AbstractDaoTestLongPk<QATopicBeanDao, QATop
     protected QATopicBean createEntity(Long key) {
         QATopicBean entity = new QATopicBean();
         entity.setId(key);
-        entity.setQuestions_count();
-        entity.setExperts_count();
-        entity.setFollows_count();
-        entity.setHas_follow();
+        entity.setQuestions_count(1);
+        entity.setExperts_count(1);
+        entity.setFollows_count(1);
+        entity.setHas_follow(true);
         return entity;
     }
 
