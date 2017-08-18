@@ -131,7 +131,13 @@ public interface QAClient {
      * @param question_id 问题id
      */
     @DELETE(ApiConfig.APP_PATH_GET_DELETE_QUESTION)
-    Observable<BaseJsonV2<Object>> deleteQuestion(@Path("answer_id") String question_id);
+    Observable<BaseJsonV2<Object>> deleteQuestion(@Path("question") String question_id);
+
+    /**
+     * 申请精选问答
+     */
+    @POST(ApiConfig.APP_PATH_APPLY_FOR_EXCELLENT)
+    Observable<BaseJsonV2<Object>> applyForExcellent(@Path("question") String question_id);
 
     /*******************************************  打赏  *********************************************/
 

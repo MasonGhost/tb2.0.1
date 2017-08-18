@@ -55,26 +55,7 @@ public class QuestionDetailRepository extends BaseQARepository implements Questi
     }
 
     @Override
-    public void applyForExcellent(Long question_id, boolean isExcellent) {
-        Observable.just(isExcellent)
-                .observeOn(Schedulers.io())
-                .subscribe(aBoolean -> {
-                    BackgroundRequestTaskBean backgroundRequestTaskBean;
-                    HashMap<String, Object> params = new HashMap<>();
-                    // 后台处理
-                    if (aBoolean) {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.PUT, params);
-                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
-                    } else {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
-                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
-                    }
-                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                            .APP_PATH_APPLY_FOR_EXCELLENT_S, String.valueOf(question_id)));
-                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                            (backgroundRequestTaskBean);
-                });
+    public Observable<BaseJsonV2<Object>> applyForExcellent(Long question_id) {
+        return mQAClient.applyForExcellent(String.valueOf(question_id));
     }
 }

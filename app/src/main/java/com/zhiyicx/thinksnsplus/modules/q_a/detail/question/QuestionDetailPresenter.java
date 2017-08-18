@@ -146,7 +146,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void deleteQuestion(Long question_id) {
-        mRootView.deleteQuestion(true, false, "");
+        mRootView.handleLoading(true, false, mContext.getString(R.string.info_deleting));
         Subscription subscription = mRepository.deleteQuestion(question_id)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
@@ -154,21 +154,37 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         EventBus.getDefault().post(mRootView.getCurrentQuestion(), EVENT_UPDATE_QUESTION_DELETE);
-                        mRootView.deleteQuestion(false, true, "");
+                        mRootView.handleLoading(false, true, "");
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.deleteQuestion(false, false, message);
+                        mRootView.handleLoading(false, false, message);
                     }
                 });
         addSubscrebe(subscription);
     }
 
     @Override
-    public void applyForExcellent(Long question_id, boolean isExcellent) {
-        mRepository.applyForExcellent(question_id, isExcellent);
+    public void applyForExcellent(Long question_id) {
+        mRootView.handleLoading(true, false, mContext.getString(R.string.bill_doing));
+        Subscription subscription = mRepository.applyForExcellent(question_id)
+                .compose(mSchedulersTransformer)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.handleLoading(false, true, data.getMessage().get(0));
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.handleLoading(false, false, message);
+                    }
+                });
+        addSubscrebe(subscription);
     }
 
     @Override

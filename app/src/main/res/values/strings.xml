@@ -478,6 +478,7 @@
     <string name="qa_apply_for_excellent">申请为精选问答</string>
     <string name="qa_question_delete">删除问题</string>
     <string name="qa_question_develop">敬请期待</string>
+    <string name="qa_question_excellent_reapply">已经是精选问答啦~</string>
 
     <!--签到-->
     <string name="check_in">签到</string>

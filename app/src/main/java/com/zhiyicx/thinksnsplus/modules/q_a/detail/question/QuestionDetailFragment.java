@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -173,12 +175,16 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void deleteQuestion(boolean isLoading, boolean success, String message) {
+    public void handleLoading(boolean isLoading, boolean success, String message) {
         if (isLoading){
-            showSnackLoadingMessage(getString(R.string.info_deleting));
+            showSnackLoadingMessage(message);
         } else {
             if (success){
-                getActivity().finish();
+                if (TextUtils.isEmpty(message)){
+                    getActivity().finish();
+                } else {
+                    showSnackSuccessMessage(message);
+                }
             } else {
                 showSnackErrorMessage(message);
             }
@@ -275,8 +281,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     // 非发布者
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
-//                    initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getHas_collect());
-//                    mDealInfoMationPopWindow.show();
+                    mMorePop.show();
                     break;
                 default:
                     break;
@@ -312,13 +317,17 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .item1Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : getString(R.string.qa_question_develop))
-                .item2Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : "")
-                .item2Color(R.color.important_for_note)
+                .item2Str(mIsMine ? getString(R.string.qa_question_delete) : "")
+                .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
                 .bottomStr(getString(R.string.cancel))
                 .item1ClickListener(() -> {
                     if (mIsMine){
-                        // 申请精选问答
-                        mPresenter.applyForExcellent(mQaListInfoBean.getId(), !(mQaListInfoBean.getExcellent() == 1));
+                        if (mQaListInfoBean.getExcellent() != 1){
+                            // 申请精选问答
+                            mPresenter.applyForExcellent(mQaListInfoBean.getId());
+                        } else {
+                            showSnackErrorMessage(getString(R.string.qa_question_excellent_reapply));
+                        }
                     }
                     mMorePop.dismiss();
                 })
