@@ -9,8 +9,11 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistory;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.DaggerQASearchListPresenterComponent;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchHistoryListAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListContract;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter;
@@ -31,13 +34,14 @@ import butterknife.BindView;
  * @Date 2017/8/10
  * @Contact master.jungle68@gmail.com
  */
-public class QATopicSearchListFragment extends QATopicListFragment {
+public class QATopicSearchListFragment extends QATopicListFragment implements ISearchListener {
 
     @BindView(R.id.rv_search_history)
     RecyclerView mRvSearchHistory;
 
     private MultiItemTypeAdapter mHsitoryAdapter;
-    private List<QAListInfoBean> mHistoryData=new ArrayList<>();
+    private List<QASearchHistory> mHistoryData = new ArrayList<>();
+    private String mSearchContent = "";
 
 
     public static QATopicSearchListFragment newInstance(Bundle bundle) {
@@ -50,7 +54,6 @@ public class QATopicSearchListFragment extends QATopicListFragment {
     protected int getBodyLayoutId() {
         return R.layout.fragment_qa_search_list;
     }
-
 
 
     @Override
@@ -91,12 +94,21 @@ public class QATopicSearchListFragment extends QATopicListFragment {
     }
 
     public MultiItemTypeAdapter getHistoryAdapter() {
-        return new QASearchListAdapter(getContext(), R.layout.item_qa_search_history_list, mHistoryData);
+        return new QASearchHistoryListAdapter(getContext(), R.layout.item_qa_search_history_list, mHistoryData);
     }
 
     @Override
     protected String getName() {
-        return "汤";
+        return mSearchContent;
     }
 
+    @Override
+    public void onEditChanged(String str) {
+        mSearchContent = str;
+        if (mRefreshlayout.isRefreshing()) {
+            onRefresh();
+        } else {
+            mRefreshlayout.setRefreshing(true);
+        }
+    }
 }

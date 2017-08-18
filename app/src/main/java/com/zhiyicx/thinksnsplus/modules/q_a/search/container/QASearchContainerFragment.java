@@ -9,8 +9,12 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.R;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Describe
@@ -77,8 +81,7 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
         RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
                 .compose(this.bindToLifecycle())
                 .subscribe(textViewAfterTextChangeEvent -> {
-
-
+                    mFindSomeOneContainerViewPagerFragment.onSearhChanged(textViewAfterTextChangeEvent.editable().toString());
                 });
 
     }
@@ -92,6 +95,8 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
                 break;
             default:
         }
+
+
     }
 
 }

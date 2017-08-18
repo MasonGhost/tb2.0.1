@@ -101,7 +101,6 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
                 });
         mRvList.setBackgroundResource(R.color.white);
         RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(textViewAfterTextChangeEvent -> {
                     if (textViewAfterTextChangeEvent.editable() != null && !TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
                         mPresenter.searchLocation(textViewAfterTextChangeEvent.editable().toString());

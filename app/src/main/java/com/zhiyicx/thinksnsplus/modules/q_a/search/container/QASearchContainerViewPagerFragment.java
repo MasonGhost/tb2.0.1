@@ -8,11 +8,13 @@ import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.nearby.FindSomeOneNearbyListFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.topic.QATopicSearchListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -23,7 +25,6 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
 
     public static final int PAGE_POSITION_QA = 0;
     public static final int PAGE_POSITION_TOPIC = 1;
-
 
 
     @Override
@@ -69,6 +70,23 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
         QASearchContainerViewPagerFragment fragment = new QASearchContainerViewPagerFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    /**
+     * 搜索内容变化
+     *
+     * @param string
+     */
+    public void onSearhChanged(String string) {
+        if (tsViewPagerAdapter == null || mVpFragment == null) {
+            return;
+        }
+        try {
+            ((ISearchListener) tsViewPagerAdapter.getItem(mVpFragment.getCurrentItem())).onEditChanged(string);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

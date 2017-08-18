@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -25,6 +27,7 @@ public class LocationSearchPresenter extends AppBasePresenter<LocationSearchCont
 
     @Inject
     SystemRepository mSystemRepository;
+    private Subscription searchSub;
 
     @Inject
     public LocationSearchPresenter(LocationSearchContract.Repository repository, LocationSearchContract.View rootView) {
@@ -48,7 +51,10 @@ public class LocationSearchPresenter extends AppBasePresenter<LocationSearchCont
 
     @Override
     public void searchLocation(String name) {
-        mSystemRepository.searchLocation(name)
+        if (searchSub!=null&&!searchSub.isUnsubscribed()) {
+            searchSub.unsubscribe();
+        }
+       searchSub= mSystemRepository.searchLocation(name)
                 .map(locationContainerBeen -> {
                     List<LocationBean> result = new ArrayList<>();
 
@@ -82,6 +88,7 @@ public class LocationSearchPresenter extends AppBasePresenter<LocationSearchCont
                         mRootView.onResponseError(throwable, false);
                     }
                 });
+        addSubscrebe(searchSub);
 
     }
 }

@@ -9,6 +9,8 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistory;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -25,7 +27,7 @@ import butterknife.BindView;
  * @Date 2017/8/10
  * @Contact master.jungle68@gmail.com
  */
-public class QASearchListFragment extends TSListFragment<QASearchListContract.Presenter, QAListInfoBean> implements QASearchListContract.View {
+public class QASearchListFragment extends TSListFragment<QASearchListContract.Presenter, QAListInfoBean> implements QASearchListContract.View, ISearchListener {
 
     @BindView(R.id.rv_search_history)
     RecyclerView mRvSearchHistory;
@@ -33,8 +35,9 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     @Inject
     QASearchListPresenter mQASearchListPresenter;
 
+    private String mSearchContent = "";
     private MultiItemTypeAdapter mHsitoryAdapter;
-    private List<QAListInfoBean> mHistoryData=new ArrayList<>();
+    private List<QASearchHistory> mHistoryData = new ArrayList<>();
 
 
     public static QASearchListFragment newInstance(Bundle bundle) {
@@ -99,11 +102,22 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     public MultiItemTypeAdapter getHistoryAdapter() {
-        return new QASearchListAdapter(getContext(), R.layout.item_qa_search_history_list, mHistoryData);
+        return new QASearchHistoryListAdapter(getContext(), R.layout.item_qa_search_history_list, mHistoryData);
     }
 
     @Override
     public String getSearchInput() {
-        return "我";
+        return mSearchContent;
+    }
+
+    @Override
+    public void onEditChanged(String str) {
+        mSearchContent = str;
+        if (mRefreshlayout.isRefreshing()) {
+            onRefresh();
+        } else {
+            mRefreshlayout.setRefreshing(true);
+        }
+
     }
 }

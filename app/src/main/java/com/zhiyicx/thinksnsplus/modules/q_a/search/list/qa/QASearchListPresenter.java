@@ -31,6 +31,7 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
 
     @Inject
     BaseQARepository mBaseQARepository;
+    private Subscription all;
 
     @Inject
     public QASearchListPresenter(QASearchListContract.Repository repository,
@@ -46,7 +47,10 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription all = mBaseQARepository.getQAQuestion(mRootView.getSearchInput(), maxId, "all")
+        if (all != null && !all.isUnsubscribed()) {
+            all.unsubscribe();
+        }
+        all = mBaseQARepository.getQAQuestion(mRootView.getSearchInput(), maxId, "all")
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
                     @Override
                     protected void onSuccess(List<QAListInfoBean> data) {
