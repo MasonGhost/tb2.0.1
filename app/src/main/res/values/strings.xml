@@ -481,6 +481,7 @@
     <string name="qa_question_develop">敬请期待</string>
     <string name="qa_question_excellent_reapply">已经是精选问答啦~</string>
     <string name="qa_question_comment_count">评论(%d)</string>
+    <string name="qa_question_comment_delete_success">删除成功</string>
 
     <!--签到-->
     <string name="check_in">签到</string>

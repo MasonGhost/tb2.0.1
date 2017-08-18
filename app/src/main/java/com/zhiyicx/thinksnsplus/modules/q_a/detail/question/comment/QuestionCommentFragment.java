@@ -63,7 +63,7 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
     private QAListInfoBean mQaListInfoBean;
 
     private ActionPopupWindow mDeleteCommentPopWindow;
-    private Long mReplyUserId;
+    private Long mReplyUserId = 0L;
 
     public QuestionCommentFragment instance(Bundle bundle) {
         QuestionCommentFragment fragment = new QuestionCommentFragment();
@@ -122,7 +122,7 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getBody())) {
             if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
                     .getUser_id()) {// 自己的评论
-                initPop(infoCommentListBean);
+                initPop(infoCommentListBean, position);
                 mDeleteCommentPopWindow.show();
             } else {
                 mReplyUserId = infoCommentListBean.getUser_id();
@@ -143,7 +143,10 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
 
     @Override
     public void onSendClick(View v, String text) {
-
+        DeviceUtils.hideSoftKeyboard(getContext(), v);
+        mIlvComment.setVisibility(View.GONE);
+        mVShadow.setVisibility(View.GONE);
+        mPresenter.sendComment(mReplyUserId.intValue(), text);
     }
 
     private void initListener(){
@@ -163,14 +166,28 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         mIlvComment.setOnSendClickListener(this);
     }
 
-    private void updateCommentCount(){
+    @Override
+    public void updateCommentCount(){
         mTvToolbarCenter.setText(String .format(getString(R.string.qa_question_comment_count), mQaListInfoBean.getComments_count()));
     }
 
-    private void initPop(QuestionCommentBean questionCommentBean){
+    @Override
+    public void setLoading(boolean isLoading, boolean isSuccess, String message) {
+        if (isLoading){
+            showSnackLoadingMessage(message);
+        } else {
+            if (isSuccess){
+                showSnackSuccessMessage(message);
+            } else {
+                showSnackErrorMessage(message);
+            }
+        }
+    }
+
+    private void initPop(QuestionCommentBean questionCommentBean, int position){
         mDeleteCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
-                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+//                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+//                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -188,7 +205,7 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
 //                    startActivity(intent);
                 })
                 .item2ClickListener(() -> {
-//                    mPresenter.deleteComment(data);
+                    mPresenter.deleteComment(mQaListInfoBean.getId(), questionCommentBean.getId(), position);
                     mDeleteCommentPopWindow.hide();
 
                 })

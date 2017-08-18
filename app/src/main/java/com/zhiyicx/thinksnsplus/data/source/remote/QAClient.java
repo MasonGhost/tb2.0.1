@@ -161,6 +161,12 @@ public interface QAClient {
                                                                  @Query("after") Long after,
                                                                  @Query("limit") Long limit);
 
+    /**
+     * 删除问题评论
+     */
+    @DELETE(ApiConfig.APP_PATH_DELETE_QUESTION_COMMENT)
+    Observable<BaseJsonV2<Object>> deleteQuestionComment(@Path("question") String question_id, @Path("answer") String answer_id);
+
     /*******************************************  打赏  *********************************************/
 
 
