@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_ALL;
 import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_FOLLOW;
 
 /**
@@ -46,7 +47,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
     QATopicListPresenter mQATopicListPresenter;
 
     public static final String BUNDLE_TOPIC_TYPE = "topic_type";
-    public String mTopictype = "";
+    public String mTopictype = TOPIC_TYPE_ALL;
 
     public static QATopicListFragment newInstance(String params) {
         QATopicListFragment fragment = new QATopicListFragment();
@@ -119,7 +120,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
                             if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
-                                mPresenter.handleTopicFollowState(position,topicBean.getId()+"", isJoined);
+                                mPresenter.handleTopicFollowState(position, topicBean.getId() + "", isJoined);
                             } else {
                                 subscrib.setChecked(false);
                             }
@@ -150,7 +151,9 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
                 .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .qATopiclistModule(new QATopiclistModule(this))
                 .build().inject(this);
-        mTopictype = getArguments().getString(BUNDLE_TOPIC_TYPE);
+        if (getArguments() != null) {
+            mTopictype = getArguments().getString(BUNDLE_TOPIC_TYPE, TOPIC_TYPE_ALL);
+        }
         super.initData();
 
     }
@@ -165,7 +168,7 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
         if (mTopictype.equals(TOPIC_TYPE_FOLLOW)) {
             requestNetData(mTopictype, maxId, isLoadMore);
         } else {
-            requestNetData(null, maxId, 1L, isLoadMore);
+            requestNetData(getName(), maxId, 1L, isLoadMore);
         }
 
     }
@@ -201,5 +204,9 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
                 .setUnderlined(false);
         links.add(answerCountLink);
         return links;
+    }
+
+    protected String getName() {
+        return null;
     }
 }

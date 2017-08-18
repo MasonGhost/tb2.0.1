@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.nearby.FindSomeOneNearbyListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.topic.QATopicSearchListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
     protected List<Fragment> initFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(QASearchListFragment.newInstance(getArguments()));
-        fragmentList.add(QASearchListFragment.newInstance(getArguments()));
+        fragmentList.add(QATopicSearchListFragment.newInstance(getArguments()));
         return fragmentList;
     }
 
