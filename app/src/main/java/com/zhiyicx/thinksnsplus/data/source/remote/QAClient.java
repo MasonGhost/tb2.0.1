@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
@@ -161,6 +162,22 @@ public interface QAClient {
      */
     @POST(ApiConfig.APP_PATH_APPLY_FOR_EXCELLENT)
     Observable<BaseJsonV2<Object>> applyForExcellent(@Path("question") String question_id);
+
+    /**
+     * 获取问题的评论列表
+     *
+     * @param question_id id
+     */
+    @GET(ApiConfig.APP_PATH_GET_QUESTION_COMMENT_LIST)
+    Observable<List<QuestionCommentBean>> getQuestionCommentList(@Path("question") String question_id,
+                                                                 @Query("after") Long after,
+                                                                 @Query("limit") Long limit);
+
+    /**
+     * 删除问题评论
+     */
+    @DELETE(ApiConfig.APP_PATH_DELETE_QUESTION_COMMENT)
+    Observable<BaseJsonV2<Object>> deleteQuestionComment(@Path("question") String question_id, @Path("answer") String answer_id);
 
     /*******************************************  打赏  *********************************************/
 
