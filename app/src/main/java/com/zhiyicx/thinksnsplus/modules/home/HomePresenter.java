@@ -13,10 +13,12 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -32,6 +34,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 
@@ -212,9 +215,58 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
         }
     }
 
+
+    /*******************************************  签到  *********************************************/
+
+
+    /**
+     *
+     * @param isClick
+     */
     @Subscriber(tag = EventBusTagConfig.EVENT_CHECK_IN_CLICK)
     public void checkInClick(boolean isClick) {
-
-        mRootView.showCheckInPop();
+       CheckInBean checkInBean= mRootView.getCheckInData();
+        if(checkInBean!=null) {
+            mRootView.showCheckInPop(checkInBean);
+        }else {
+            getCheckInInfo();
+        }
     }
+
+    @Override
+    public void checkIn() {
+       Subscription subscription= mUserInfoRepository.checkIn()
+        .subscribe(new BaseSubscribeForV2<Object>() {
+            @Override
+            protected void onSuccess(Object data) {
+                getCheckInInfo();
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                mRootView.showSnackErrorMessage(message);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                mRootView.showSnackErrorMessage(mContext.getString(R.string.check_in_fail));
+            }
+        });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void getCheckInInfo() {
+
+        Subscription subscription= mUserInfoRepository.getCheckInInfo()
+                .subscribe(new BaseSubscribeForV2<CheckInBean>() {
+                    @Override
+                    protected void onSuccess(CheckInBean data) {
+                        mRootView.showCheckInPop(data);
+                    }
+                });
+        addSubscrebe(subscription);
+
+    }
+
 }

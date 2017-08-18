@@ -188,6 +188,7 @@ dependencies {
     compile project(":media-cache")
     compile project(':banner')
     compile project(':tspay')
+    compile project(':contacts')
 
     // database
     compile dataDependences.greendao
@@ -203,5 +204,6 @@ dependencies {
     compile(name: 'lint-library-release', ext: 'aar')
 
     compile dataDependences.flowlayout
+//    compile dataDependences.contacts
 }
 

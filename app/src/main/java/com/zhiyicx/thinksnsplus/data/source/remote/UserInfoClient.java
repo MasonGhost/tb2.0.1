@@ -3,19 +3,23 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -26,6 +30,7 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -34,13 +39,22 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BATCH_SPECIFIED_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BY_PHONE_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RANKS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CURRENT_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
 /**
  * @author LiuChao
@@ -61,13 +75,6 @@ public interface UserInfoClient {
     @PATCH(APP_PATH_CHANGE_USER_INFO)
     Observable<Object> changeUserInfo(@FieldMap HashMap<String, Object> userFieldMap);
 
-    /**
-     * 获取用户信息  v1 版本
-     *
-     * @return
-     */
-    @POST(APP_PATH_GET_USER_INFO)
-    Observable<BaseJson<List<UserInfoBean>>> getUserInfo(@Body RequestBody requestBody);
 
     /**
      * 获取当前登录用户信息
@@ -293,5 +300,97 @@ public interface UserInfoClient {
     @POST(APP_PATH_REWARD_USER)
     Observable<Object> rewardUser(@Path("user_id") long user_id, @Field("amount") Integer amount);
 
+    /*******************************************  找人  *********************************************/
+
+    /**
+     * 热门用户
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @GET(APP_PATH_GET_HOT_USER_INFO)
+    Observable<List<UserInfoBean>> getHotUsers(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * 最新用户
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @GET(APP_PATH_GET_NEW_USER_INFO)
+    Observable<List<UserInfoBean>> getNewUsers(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * tag 推荐用户
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @GET(APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO)
+    Observable<List<UserInfoBean>> getUsersRecommentByTag(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * phone 推荐用户
+     * <p>
+     * { "phones": [ 18877778888, 18999998888, 17700001111 ] }
+     *
+     * @return
+     */
+    @POST(APP_PATH_GET_BY_PHONE_USER_INFO)
+    Observable<List<UserInfoBean>> getUsersByPhone(@Body RequestBody phones);
+
+    /**
+     * 更新位置数据
+     *
+     * @param longitude 经度
+     * @param latitude  纬度
+     * @return
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_UPDATE_USER_LOCATION)
+    Observable<Object> updateUserLocation(@Field("longitude") double longitude, @Field("latitude") double latitude);
+
+    /**
+     * 根据经纬度查询周围最多 50KM 内的 TS+ 用户
+     *
+     * @param longitude 当前用户所在位置的纬度
+     * @param latitude  当前用户所在位置的经度
+     * @param radius    搜索范围，米为单位 [0 - 50000], 默认3000
+     * @param limit     默认20， 最大100
+     * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
+     * @return
+     */
+    @GET(APP_PATH_GET_USER_AROUND)
+    Observable<List<NearbyBean>> getNearbyData(@Query("longitude") double longitude, @Query("latitude") double latitude, @Query("radius") Integer radius, @Query("limit") Integer limit, @Query("page") Integer page);
+
+    /*******************************************  签到  *********************************************/
+
+    /**
+     * 获取签到信息
+     *
+     * @return
+     */
+    @GET(APP_PATH_GET_CHECK_IN_INFO)
+    Observable<CheckInBean> getCheckInInfo();
+
+    /**
+     * 签到
+     *
+     * @return
+     */
+    @PUT(APP_PATH_CHECK_IN)
+    Observable<Object> checkIn();
+
+    /**
+     * 连续签到排行榜
+     *
+     * @param offset 数据偏移数，默认为 0。
+     * @return
+     */
+    @GET(APP_PATH_GET_CHECK_IN_RANKS)
+    Observable<List<UserInfoBean>> getCheckInRanks(@Query("offset") Integer offset);
 
 }

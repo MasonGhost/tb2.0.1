@@ -59,6 +59,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUN
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARDCH_LOCATION;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SGET_HOT_CITY;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_HASH;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_UPLAOD_FILE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SYSTEM_FEEDBACK;
@@ -285,6 +286,13 @@ public interface CommonClient {
     @GET(APP_PATH_SEARDCH_LOCATION)
     Observable<List<LocationContainerBean>> searchLocation(@Query("name") String name);
 
+    /**
+     * 热门城市
+     *
+     * @return
+     */
+    @GET(APP_PATH_SGET_HOT_CITY)
+    Observable<List<String>> getHoCity();
 
     /*******************************************  后台任务处理  *********************************************/
 

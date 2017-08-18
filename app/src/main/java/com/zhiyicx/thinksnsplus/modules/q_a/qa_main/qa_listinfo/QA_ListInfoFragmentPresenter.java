@@ -1,10 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
+import android.os.Bundle;
+
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -74,4 +78,5 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     public boolean insertOrUpdateData(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
         return false;
     }
+
 }

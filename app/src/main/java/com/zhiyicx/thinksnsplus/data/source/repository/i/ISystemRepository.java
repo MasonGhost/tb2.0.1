@@ -11,8 +11,11 @@ import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 import java.util.List;
 
 import retrofit2.http.Field;
+import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SGET_HOT_CITY;
 
 /**
  * @Describe 认证相关接口
@@ -91,6 +94,13 @@ public interface ISystemRepository {
      * @return
      */
     Observable<List<LocationContainerBean>> searchLocation(String name);
+
+    /**
+     * 热门城市
+     *
+     * @return
+     */
+    Observable<List<String>> getHoCity();
 
 
 }

@@ -25,6 +25,7 @@ public interface TopicDetailContract {
         String getCurrentType();
         QATopicBean getCurrentTopicBean();
         void updateFollowState();
+        void showDeleteSuccess();
     }
 
     interface Presenter extends ITSListPresenter<QAListInfoBean>{

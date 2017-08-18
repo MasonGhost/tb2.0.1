@@ -16,6 +16,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
@@ -72,6 +73,8 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @SerializedName("id")
     private Long user_id;
     private String name;
+    @Unique
+    @SerializedName("mobi")
     private String phone;
     private String email;
     @SerializedName("bio")
@@ -554,4 +557,30 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             return new UserInfoBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", intro='" + intro + '\'' +
+                ", sex=" + sex +
+                ", sexString='" + sexString + '\'' +
+                ", location='" + location + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", area='" + area + '\'' +
+                ", following=" + following +
+                ", follower=" + follower +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", cover='" + cover + '\'' +
+                ", wallet=" + wallet +
+                ", extra=" + extra +
+                ", verified=" + verified +
+                '}';
+    }
 }

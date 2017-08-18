@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -33,6 +34,7 @@ import static android.app.Activity.RESULT_OK;
 public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presenter> implements AddInfoContract.View {
 
     public static final String BUNDLE_PUBLISH_CATEGORY = "publish_category";
+    private static final int DEFAULT_COLUMN = 4;
 
     @BindView(R.id.fragment_channel_content_unsubscribe)
     RecyclerView mFragmentChannelContentUnsubscribe;
@@ -83,8 +85,9 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
     @Override
     protected void initView(View rootView) {
 
+
         mFragmentChannelContentUnsubscribe.setLayoutManager(new GridLayoutManager(getActivity(),
-                4));
+                DEFAULT_COLUMN));
     }
 
     private CommonAdapter initUnsubscribeAdapter() {
@@ -99,7 +102,7 @@ public class AddInfoCategoryFragment extends TSFragment<AddInfoContract.Presente
             @Override
             protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
                 RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(1, TimeUnit.SECONDS)
+                        .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
                         .compose(bindToLifecycle())
                         .subscribe(o -> {
                             if (mOnItemClickListener != null) {

@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import android.view.KeyEvent;
 
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.github.tamir7.contacts.Contacts;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.pingplusplus.android.Pingpp;
@@ -114,6 +115,8 @@ public class AppApplication extends TSApplication {
         Pingpp.enableDebugLog(BuildConfig.USE_LOG);
         // 友盟
         MobclickAgent.setDebugMode(com.zhiyicx.thinksnsplus.BuildConfig.DEBUG);
+        // 通讯录
+        Contacts.initialize(this);
     }
 
     /**

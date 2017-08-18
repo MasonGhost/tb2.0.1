@@ -3,7 +3,8 @@
     android:shape="rectangle" >
 
     <!-- 纯色 -->
-    <solid android:color="@color/bt_pressed" />
+    <stroke android:color="@color/bt_pressed"
+            android:width="@dimen/spacing_line"/>
     <corners
         android:radius="@dimen/button_corner_small"
         ></corners>

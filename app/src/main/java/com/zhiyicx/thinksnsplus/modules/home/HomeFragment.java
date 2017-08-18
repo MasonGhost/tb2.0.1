@@ -25,8 +25,10 @@ import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -35,6 +37,7 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;
@@ -107,6 +110,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
 
     private CheckInPopWindow mCheckInPopWindow; // 签到弹窗
 
+    private CheckInBean mCheckInBean; // 签到信息
 
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
@@ -466,9 +470,25 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
-    public void showCheckInPop() {
-        mCheckInPopWindow = new CheckInPopWindow(getContentView());
-        mCheckInPopWindow.show();
+    public CheckInBean getCheckInData() {
+        return mCheckInBean;
+    }
+
+    @Override
+    public void showCheckInPop(CheckInBean data) {
+
+        this.mCheckInBean = data;
+        if (mCheckInPopWindow != null) {
+            if (mCheckInPopWindow.isShowing()) {
+                mCheckInPopWindow.setData(mCheckInBean);
+            } else {
+                mCheckInPopWindow.setData(mCheckInBean);
+                mCheckInPopWindow.show();
+            }
+        } else {
+            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data, () -> mPresenter.checkIn());
+            mCheckInPopWindow.show();
+        }
     }
 
 }

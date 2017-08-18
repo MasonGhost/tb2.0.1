@@ -14,11 +14,13 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -39,9 +41,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -462,6 +466,174 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     @Override
     public Observable<Object> deleteTag(long tag_id) {
         return mUserInfoClient.deleteTag(tag_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*******************************************  找人  *********************************************/
+    /**
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getHotUsers(Integer limit, Integer offset) {
+        return mUserInfoClient.getHotUsers(limit, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getNewUsers(Integer limit, Integer offset) {
+        return mUserInfoClient.getNewUsers(limit, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset) {
+        return mUserInfoClient.getUsersRecommentByTag(limit, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param phones 单次最多 100 条
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones) {
+
+        if (phones.size() > 100) {
+            return Observable.zip(getListObservable(phones.subList(0, 100)), getListObservable(phones.subList(100, phones.size()))
+                    , (userInfoBeen, userInfoBeen2) -> {
+                        userInfoBeen.addAll(userInfoBeen2);
+                        return userInfoBeen;
+                    });
+
+        } else {
+            return getListObservable(phones);
+        }
+    }
+
+    /**
+     * @param phones
+     * @return
+     */
+    private Observable<List<UserInfoBean>> getListObservable(List<String> phones) {
+        Map<String, List<String>> phonesMap = new HashMap<>();
+        phonesMap.put("phones", phones);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(phonesMap));
+
+        return mUserInfoClient.getUsersByPhone(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param longitude 经度
+     * @param latitude  纬度
+     * @return
+     */
+    @Override
+    public Observable<Object> updateUserLocation(double longitude, double latitude) {
+        return mUserInfoClient.updateUserLocation(longitude, latitude)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param longitude 当前用户所在位置的纬度
+     * @param latitude  当前用户所在位置的经度
+     * @param radius    搜索范围，米为单位 [0 - 50000], 默认3000
+     * @param limit     默认20， 最大100
+     * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
+     * @return
+     */
+    @Override
+    public Observable<List<NearbyBean>> getNearbyData(double longitude, double latitude, Integer radius, Integer limit, Integer page) {
+        return mUserInfoClient.getNearbyData(longitude, latitude, radius, limit, page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<NearbyBean>, Observable<List<NearbyBean>>>() {
+                    @Override
+                    public Observable<List<NearbyBean>> call(List<NearbyBean> nearbyBeen) {
+                        List<Object> userIds = new ArrayList();
+                        for (NearbyBean nearbyBean : nearbyBeen) {
+                            userIds.add(nearbyBean.getUser_id());
+                        }
+                        return getUserInfo(userIds)
+                                .map(userinfobeans -> {
+                                    if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (NearbyBean nearbyBean : nearbyBeen) {
+                                            try {
+                                                if (userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())) != null) {
+                                                    nearbyBean.setUser(userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())));
+                                                }
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                    }
+                                    return nearbyBeen;
+                                });
+                    }
+                }).map(nearbyBeen -> {
+                    List<NearbyBean> result = new ArrayList<>();
+                    for (NearbyBean nearbyBean : nearbyBeen) {
+                        if (nearbyBean.getUser() != null) {
+                            result.add(nearbyBean);
+                        }
+
+                    }
+                    return result;
+                });
+    }
+
+    /*******************************************  签到  *********************************************/
+
+    /**
+     * @return
+     */
+    @Override
+    public Observable<CheckInBean> getCheckInInfo() {
+        return mUserInfoClient.getCheckInInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Observable<Object> checkIn() {
+        return mUserInfoClient.checkIn()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param offset 数据偏移数，默认为 0。
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getCheckInRanks(Integer offset) {
+        return mUserInfoClient.getCheckInRanks(offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -142,11 +142,19 @@ public class EventBusTagConfig {
     public static final String EVENT_QA_SUBSCRIB = "event_qatopic_subscrib";
     // 删除答案
     public static final String EVENT_UPDATE_ANSWER_LIST_DELETE = "event_update_answer_list_delete";
+    // 删除问题
+    public static final String EVENT_UPDATE_QUESTION_DELETE= "event_update_question_delete";
 
 
     /**
      * 签到
      */
     public static final String EVENT_CHECK_IN_CLICK = "check_in_click";
+
+    /**
+     * 附近的人
+     */
+    public static final String EVENT_NEARBY_LOCATION = "nearby_location";
+    public static final String EVENT_NEARBY_LOCATION_UPDATE = "nearby_location_update";
 
 }

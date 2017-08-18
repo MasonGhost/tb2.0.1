@@ -91,7 +91,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 android:layout_marginTop="@dimen/spacing_mid"
-                android:visibility="gone"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/discover_ico_findpeople"

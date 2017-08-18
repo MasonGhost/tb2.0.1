@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepos
 public interface QA_ListInfoConstact {
     interface View extends ITSListView<QAListInfoBean,Presenter>{
         String getQAInfoType();
+        void showDeleteSuccess();
     }
 
     interface Presenter extends ITSListPresenter<QAListInfoBean>{

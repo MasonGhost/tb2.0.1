@@ -359,12 +359,15 @@ public class ApiConfig {
     public static final String APP_PATH_HANDLE_QUESTION_FOLLOW = "api/" + API_VERSION_2 + "/user/question-watches/{question}";
     public static final String APP_PATH_HANDLE_QUESTION_FOLLOW_S = "api/" + API_VERSION_2 + "/user/question-watches/%s";
     // 删除问题用
-    public static final String APP_PATH_GET_DELETE_QUESTION_S = "api/" + API_VERSION_2 + "/questions/%s";
+    public static final String APP_PATH_GET_DELETE_QUESTION = "api/" + API_VERSION_2 + "/questions/{question}";
     // 获取一个问题的回答列表
     public static final String APP_PATH_GET_QUESTION_ANSWER_LIST = "api/" + API_VERSION_2 + "/questions/{question}/answers";
     // 获取一个回答的详情
     public static final String APP_PATH_GET_ANSWER_DETAIL = "api/" + API_VERSION_2 + "/question-answers/{answer_id}";
     public static final String APP_PATH_GET_ANSWER_DETAIL_S = "api/" + API_VERSION_2 + "/question-answers/%s";
+    // 申请精选问答 POST
+    public static final String APP_PATH_APPLY_FOR_EXCELLENT = "api/" + API_VERSION_2 + "/user/question-application/{question}";
+    public static final String APP_PATH_APPLY_FOR_EXCELLENT_S = "api/" + API_VERSION_2 + "/user/question-application/%s";
     // 发布回答
     public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/answers";
     // 更新回答 PATCH
@@ -430,6 +433,7 @@ public class ApiConfig {
     public static final String APP_PATH_GET_ALL_TAGS = "api/" + API_VERSION_2 + "/tags";// 获取全部标签标签
     // 地区
     public static final String APP_PATH_SEARDCH_LOCATION = "api/" + API_VERSION_2 + "/locations/search";// 搜索位置
+    public static final String APP_PATH_SGET_HOT_CITY = "api/" + API_VERSION_2 + "/locations/hots";// 热门城市
 
 
     /**
@@ -535,6 +539,28 @@ public class ApiConfig {
     public static final String APP_PATH_GET_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users/{user_id}";
     // 批量获取指定用户
     public static final String APP_PATH_GET_BATCH_SPECIFIED_USER_INFO = "api/" + API_VERSION_2 + "/users";
+    // 热门用户
+    public static final String APP_PATH_GET_HOT_USER_INFO = "api/" + API_VERSION_2 + "/user/populars";
+    // 最新用户
+    public static final String APP_PATH_GET_NEW_USER_INFO = "api/" + API_VERSION_2 + "/user/latests";
+    // 通过 tag 推荐
+    public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
+    // 通过 phone 推荐
+    public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";
+    // 更新用户地址
+    public static final String APP_PATH_UPDATE_USER_LOCATION = "api/" + API_VERSION_2 + "/around-amap";
+    // 根据经纬度查询周围最多50KM内的 TS+ 用户
+    public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
+
+
+
+    // 签到
+    // 获取签到信息
+    public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/user/checkin";
+    // 签到
+    public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin";
+    // 连续签到排行榜
+    public static final String APP_PATH_GET_CHECK_IN_RANKS = "api/" + API_VERSION_2 + "/checkin-ranks";
 
     /**
      * 资讯

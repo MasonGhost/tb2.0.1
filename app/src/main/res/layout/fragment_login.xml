@@ -121,8 +121,9 @@
             android:layout_marginRight="@dimen/third_margin"
             android:layout_weight="1"
             android:gravity="bottom"
+            android:visibility="gone"
             android:orientation="vertical"
-            android:visibility="gone">
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"

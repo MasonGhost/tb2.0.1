@@ -325,6 +325,11 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         ConvertUtils.stringLinkConvert(mTvTopicFeedCount, dealTopicDetail(mQaTopicBean));
     }
 
+    @Override
+    public void showDeleteSuccess() {
+        showSnackSuccessMessage(getString(R.string.qa_question_delete_success));
+    }
+
     private void setTopicDetailData(){
         setCenterText(mQaTopicBean.getName());
         mTvTopicName.setText(mQaTopicBean.getName());

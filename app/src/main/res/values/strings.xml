@@ -45,7 +45,7 @@
     <string name="chanel">频道</string>
     <string name="active">活动</string>
     <string name="buy_goods">购物</string>
-    <string name="find_person">找人</string>
+    <string name="find_person">@string/find_someone</string>
     <string name="near_person">附近的人</string>
     <string name="group">圈子</string>
     <string name="quiz">问答</string>
@@ -475,10 +475,32 @@
     <string name="qa_answer_count">%d 个回答</string>
     <string name="qa_title_question_detail">问题详情</string>
     <string name="qa_question_no_answer">还没有回答</string>
+    <string name="qa_apply_for_excellent">申请为精选问答</string>
+    <string name="qa_question_delete">删除问题</string>
+    <string name="qa_question_delete_success">删除成功</string>
+    <string name="qa_question_develop">敬请期待</string>
+    <string name="qa_question_excellent_reapply">已经是精选问答啦~</string>
 
     <!--签到-->
     <string name="check_in">签到</string>
+    <string name="checked">已签到</string>
     <string name="check_in_today">每日签到</string>
     <string name="check_in_total_day_format">累计签到%d天</string>
-    <string name="check_in_today_get_gold_format">签到得金币+%d</string>
+    <string name="check_in_today_get_gold">每日签到得金币</string>
+    <string name="check_in_fail">签到失败</string>
+
+
+    <!--找人-->
+    <string name="contacts">通讯录</string>
+    <string name="invite">邀请</string>
+    <string name="contacts_permission_tip">请打开通讯录权限，否则你将不能使用此功能！</string>
+    <string name="find_someone">找人</string>
+    <string name="neary_by">附近</string>
+    <string name="choose_city">选择城市</string>
+    <string name="current_location">当前定位</string>
+    <string name="unlocation">未定位</string>
+    <string name="hot_location">热门城市</string>
+    <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
+    <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
+
 </resources>

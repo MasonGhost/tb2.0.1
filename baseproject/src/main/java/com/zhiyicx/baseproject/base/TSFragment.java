@@ -250,7 +250,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     * 关闭加载动画
+     * 关闭中心放大缩小加载动画
      */
     protected void closeLoadingView() {
         if (mCenterLoadingView == null) {
@@ -263,7 +263,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     * 开启加载动画
+     * 开启中心放大缩小加载动画
      */
     protected void showLoadingView() {
         if (mCenterLoadingView == null) {
@@ -353,12 +353,19 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelOffset(R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(R.dimen.divider_line);
     }
 
+    /**
+     * 中心菊花
+     * @param msg
+     */
     @Override
     public void showCenterLoading(String msg) {
         if (mCenterLoadingDialog != null)
             mCenterLoadingDialog.showStateIng(msg);
     }
 
+    /**
+     * 中心菊花
+     */
     @Override
     public void hideCenterLoading() {
         if (mCenterLoadingDialog != null)

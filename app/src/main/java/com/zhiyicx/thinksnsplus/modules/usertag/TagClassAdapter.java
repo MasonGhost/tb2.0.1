@@ -20,10 +20,11 @@ import java.util.concurrent.TimeUnit;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
- * Created by Sergej Kravcenko on 4/24/2017.
- * Copyright (c) 2017 Sergej Kravcenko
+ * @Describe
+ * @Author Jungle68
+ * @Date 2017/8/14
+ * @Contact master.jungle68@gmail.com
  */
-
 public class TagClassAdapter extends StickyHeaderGridAdapter {
     private List<TagCategoryBean> mDatas;
     private OnItemClickListener mOnItemClickListener;
