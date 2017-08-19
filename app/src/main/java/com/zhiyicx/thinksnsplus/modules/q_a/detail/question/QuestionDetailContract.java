@@ -37,6 +37,7 @@ public interface QuestionDetailContract {
         void shareQuestion(Bitmap bitmap);
         void deleteQuestion(Long question_id);
         void applyForExcellent(Long question_id);
+        void handleAnswerLike(boolean isLiked, final long answer_id, AnswerInfoBean answerInfoBean);
     }
 
     interface Repository extends IBasePublishQuestionRepository{

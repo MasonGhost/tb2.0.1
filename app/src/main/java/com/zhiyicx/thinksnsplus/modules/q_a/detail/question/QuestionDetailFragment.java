@@ -94,7 +94,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
-        AnswerListItem answerListItem = new AnswerListItem();
+        AnswerListItem answerListItem = new AnswerListItem(mPresenter);
         multiItemTypeAdapter.addItemViewDelegate(answerListItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerEmptyItem());
         multiItemTypeAdapter.setOnItemClickListener(this);
@@ -105,7 +105,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_SOURCE_ID, mListDatas.get(position).getId());
+        bundle.putLong(BUNDLE_SOURCE_ID, mListDatas.get(position  - mHeaderAndFooterWrapper.getHeadersCount()).getId());
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -29,4 +29,6 @@ public interface IBasePublishQuestionRepository {
     void handleTopicFollowState(String topic_id, boolean isFollow);
 
     void handleQuestionFollowState(String questionId, boolean isFollow);
+
+    void handleAnswerLike(boolean isLiked, final long answer_id);
 }

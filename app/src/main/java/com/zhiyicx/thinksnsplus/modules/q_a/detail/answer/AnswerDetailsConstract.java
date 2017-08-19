@@ -89,8 +89,6 @@ public interface AnswerDetailsConstract {
 
         void handleCollect(boolean isCollected, long answer_id);
 
-        void handleLike(boolean isLiked, final long answer_id);
-
         void sendComment(String comment_content, long answer_id,
                          long reply_to_user_id, long comment_mark);
 

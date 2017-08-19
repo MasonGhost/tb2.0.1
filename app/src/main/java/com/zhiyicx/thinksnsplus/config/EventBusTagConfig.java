@@ -146,6 +146,8 @@ public class EventBusTagConfig {
     public static final String EVENT_UPDATE_QUESTION_DELETE= "event_update_question_delete";
     // 评论问题
     public static final String EVENT_SEND_COMMENT_TO_QUESTION_LIST = "event_send_question_comment_to_List";
+    // 评论点赞
+    public static final String EVENT_UPDATE_ANSWER_LIST_LIKE = "event_update_answer_list_like";
 
 
     /**

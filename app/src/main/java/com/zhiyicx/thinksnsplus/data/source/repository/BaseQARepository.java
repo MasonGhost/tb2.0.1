@@ -16,6 +16,7 @@ import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -137,5 +138,28 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
                 });
+    }
+
+    @Override
+    public void handleAnswerLike(boolean isLiked, long answer_id) {
+        Observable.just(isLiked)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.POST_V2, null);
+                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, null);
+                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
+                    }
+                    backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig
+                            .APP_PATH_LIKE_ANSWER_FORMAT, answer_id));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
     }
 }

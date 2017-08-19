@@ -19,11 +19,14 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +53,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Inject
     public SharePolicy mSharePolicy;
+    @Inject
+    public AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
 
     @Inject
     public QuestionDetailPresenter(QuestionDetailContract.Repository repository, QuestionDetailContract.View rootView) {
@@ -68,8 +73,11 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
                         @Override
                         protected void onSuccess(List<AnswerInfoBean> data) {
-                            mRootView.hideCenterLoading();
-                            mRootView.onNetResponseSuccess(data, isLoadMore);
+                            if (maxId == 0){
+                                mRootView.onNetResponseSuccess(dealAnswerList(mRootView.getCurrentQuestion(), data), isLoadMore);
+                            } else {
+                                mRootView.onNetResponseSuccess(data, isLoadMore);
+                            }
                         }
                     });
             addSubscrebe(subscription);
@@ -92,15 +100,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         Subscription subscription = Observable.zip(mRepository.getQuestionDetail(questionId),
                 mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), 0),
                 (qaListInfoBean, answerInfoBeanList) -> {
-                    List<AnswerInfoBean> totalList = new ArrayList<>();
-                    if (qaListInfoBean.getInvitation_answers() != null){
-                        totalList.addAll(qaListInfoBean.getInvitation_answers());
-                    }
-                    if (qaListInfoBean.getAdoption_answers() != null){
-                        totalList.addAll(qaListInfoBean.getAdoption_answers());
-                    }
-                    totalList.addAll(answerInfoBeanList);
-                    qaListInfoBean.setAnswerInfoBeanList(totalList);
+                    qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(qaListInfoBean, answerInfoBeanList));
                     return qaListInfoBean;
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -116,6 +116,18 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    private List<AnswerInfoBean> dealAnswerList(QAListInfoBean qaListInfoBean, List<AnswerInfoBean> list){
+        List<AnswerInfoBean> totalList = new ArrayList<>();
+        if (qaListInfoBean.getInvitation_answers() != null){
+            totalList.addAll(qaListInfoBean.getInvitation_answers());
+        }
+        if (qaListInfoBean.getAdoption_answers() != null){
+            totalList.addAll(qaListInfoBean.getAdoption_answers());
+        }
+        totalList.addAll(list);
+        return totalList;
     }
 
     @Override
@@ -190,6 +202,13 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
+    public void handleAnswerLike(boolean isLiked, long answer_id, AnswerInfoBean answerInfoBean) {
+        answerInfoBean.setLiked(isLiked);
+        mAnswerInfoListBeanGreenDao.insertOrReplace(answerInfoBean);
+        mRepository.handleAnswerLike(isLiked, answer_id);
+    }
+
+    @Override
     public void onStart(Share share) {
 
     }
@@ -207,6 +226,23 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void onCancel(Share share) {
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE)
+    public void updateLike(Bundle bundle){
+        if (bundle != null){
+            AnswerInfoBean answerInfoBean = (AnswerInfoBean) bundle.
+                    getSerializable(EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE);
+            if (answerInfoBean != null){
+                for (AnswerInfoBean answerInfoBean1 : mRootView.getListDatas()){
+                    if (answerInfoBean.getId().equals(answerInfoBean1.getId())){
+                        mRootView.getListDatas().set(mRootView.getListDatas().indexOf(answerInfoBean1), answerInfoBean);
+                        mRootView.refreshData();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override

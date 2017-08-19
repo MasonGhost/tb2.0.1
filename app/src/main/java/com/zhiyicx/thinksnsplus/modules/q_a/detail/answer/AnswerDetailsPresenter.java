@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.answer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -206,9 +207,16 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         }
         mRootView.getAnswerInfo().setLiked(isLiked);
         mRootView.setDigg(isLiked);
-
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE, mRootView.getAnswerInfo());
+        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE);
         mAnswerInfoListBeanGreenDao.insertOrReplace(mRootView.getAnswerInfo());
-        mRepository.handleLike(isLiked, news_id);
+        mRepository.handleAnswerLike(isLiked, news_id);
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
