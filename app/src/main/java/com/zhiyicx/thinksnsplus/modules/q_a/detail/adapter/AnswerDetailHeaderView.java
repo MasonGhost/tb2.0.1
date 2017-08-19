@@ -132,6 +132,7 @@ public class AnswerDetailHeaderView {
             if (!TextUtils.isEmpty(answerInfoBean.getBody())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 10px");
+                css.addRule(".container", "padding-right:0",";padding-left:0");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {

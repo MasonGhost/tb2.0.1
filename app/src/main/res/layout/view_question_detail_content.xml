@@ -7,6 +7,14 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/spacing_normal">
 
+    <ImageView
+            android:id="@+id/iv_solid"
+            android:layout_width="@dimen/item_hegiht"
+            android:layout_height="@dimen/item_hegiht"
+            android:src="@mipmap/default_pic_personal"
+            android:visibility="invisible"
+            android:layout_gravity="center"/>
+
     <LinearLayout
             android:id="@+id/ll_content_preview"
             android:layout_width="match_parent"
