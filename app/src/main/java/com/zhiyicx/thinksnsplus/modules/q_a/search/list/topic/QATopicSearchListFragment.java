@@ -5,26 +5,15 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistory;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.DaggerQASearchListPresenterComponent;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchHistoryListAdapter;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListAdapter;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListContract;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenterModule;
-import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -40,7 +29,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     RecyclerView mRvSearchHistory;
 
     private MultiItemTypeAdapter mHsitoryAdapter;
-    private List<QASearchHistory> mHistoryData = new ArrayList<>();
+    private List<QASearchHistoryBean> mHistoryData = new ArrayList<>();
     private String mSearchContent = "";
 
 

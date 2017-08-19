@@ -4,8 +4,7 @@ import android.content.Context;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistory;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -21,18 +20,18 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 
-public class QASearchHistoryListAdapter extends CommonAdapter<QASearchHistory> {
+public class QASearchHistoryListAdapter extends CommonAdapter<QASearchHistoryBean> {
 
-    public QASearchHistoryListAdapter(Context context, int layoutId, List<QASearchHistory> datas) {
+    public QASearchHistoryListAdapter(Context context, int layoutId, List<QASearchHistoryBean> datas) {
         super(context, layoutId, datas);
     }
 
     @Override
-    protected void convert(ViewHolder holder, QASearchHistory data, int position) {
+    protected void convert(ViewHolder holder, QASearchHistoryBean data, int position) {
         setItemData(holder, data, position);
     }
 
-    private void setItemData(final ViewHolder holder, final QASearchHistory data, final int position) {
+    private void setItemData(final ViewHolder holder, final QASearchHistoryBean data, final int position) {
         holder.setText(R.id.tv_content, data.getContent());
         RxView.clicks(holder.getView(R.id.iv_delete))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

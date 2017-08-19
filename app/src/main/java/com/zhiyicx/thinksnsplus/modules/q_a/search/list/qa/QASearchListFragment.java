@@ -9,7 +9,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistory;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -37,7 +37,7 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
 
     private String mSearchContent = "";
     private MultiItemTypeAdapter mHsitoryAdapter;
-    private List<QASearchHistory> mHistoryData = new ArrayList<>();
+    private List<QASearchHistoryBean> mHistoryData = new ArrayList<>();
 
 
     public static QASearchListFragment newInstance(Bundle bundle) {
