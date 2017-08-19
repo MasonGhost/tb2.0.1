@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.QuestionTopicsAdapter;
 import com.zhiyicx.thinksnsplus.widget.QuestionDetailContent;
+import com.zhiyicx.thinksnsplus.widget.QuestionInviteUserPopWindow;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.List;
@@ -44,7 +46,7 @@ public class QuestionDetailHeader {
     public static final String ORDER_DEFAULT = "default";
     public static final String ORDER_BY_TIME = "time";
 
-    private Context mContext;
+    private Activity mContext;
 
     private View mQuestionHeaderView;
     private TagFlowLayout mTflQuestion;
@@ -66,11 +68,13 @@ public class QuestionDetailHeader {
     private OnActionClickListener mListener;
     private String mCurrentOrderType = ORDER_DEFAULT;
 
+    private QuestionInviteUserPopWindow mInvitePop; // 邀请回答的弹框
+
     public View getQuestionHeaderView() {
         return mQuestionHeaderView;
     }
 
-    public QuestionDetailHeader(Context context, List<RealAdvertListBean> adverts) {
+    public QuestionDetailHeader(Activity context, List<RealAdvertListBean> adverts) {
         this.mContext = context;
         mQuestionHeaderView = LayoutInflater.from(context).inflate(R.layout.header_question_detail, null);
         mTflQuestion = (TagFlowLayout) mQuestionHeaderView.findViewById(R.id.tfl_question);
@@ -117,13 +121,14 @@ public class QuestionDetailHeader {
                 mTvQuestionRewardAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), answerInfoBean.getViews_count()));
             }
         }
-        // 悬赏信息
-        updateRewardType(qaListInfoBean);
+        initListener();
         // 是否关注了这个话题
         updateFollowState(qaListInfoBean);
         // 答案条数
         updateAnswerView(qaListInfoBean);
-        initListener();
+        // 悬赏信息
+        updateRewardType(qaListInfoBean);
+
     }
 
     /**
@@ -136,11 +141,11 @@ public class QuestionDetailHeader {
         // 悬赏状态
         if (qaListInfoBean.getAmount() == 0) {
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_public));
-        } else if (qaListInfoBean.getAnonymity() == 0) {
+        } else if (qaListInfoBean.getAutomaticity() == 0) {
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_setting));
-        } else {
+        } else if (qaListInfoBean.getInvitations() != null){
+            mIvRewardType.setImageResource(R.mipmap.ico_question_invited);
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_invited));
-            mIvAddAnswer.setImageResource(R.mipmap.ico_question_invited);
         }
     }
 
@@ -192,10 +197,24 @@ public class QuestionDetailHeader {
         RxView.clicks(mTvRewardType)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mListener != null) {
-                        mListener.onRewardTypeClick(mQaListInfoBean.getInvitations(), 0);
+                    if (mInvitePop == null) {
+                        initPop();
                     }
+                    mInvitePop.show();
                 });
+    }
+
+    private void initPop(){
+        if (mQaListInfoBean.getInvitations().size() > 0) {
+            if (mInvitePop == null){
+                mInvitePop = QuestionInviteUserPopWindow.Builder()
+                        .with(mContext)
+                        .parentView(mIvRewardType)
+                        .setData(mQaListInfoBean.getInvitations().get(0))
+                        .alpha(1f)
+                        .build();
+            }
+        }
     }
 
     public String getCurrentOrderType() {

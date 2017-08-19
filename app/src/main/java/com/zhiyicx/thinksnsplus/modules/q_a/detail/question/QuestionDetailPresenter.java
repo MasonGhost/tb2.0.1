@@ -107,7 +107,6 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 .subscribe(new BaseSubscribeForV2<QAListInfoBean>() {
                     @Override
                     protected void onSuccess(QAListInfoBean data) {
-                        mRootView.hideCenterLoading();
                         mRootView.setQuestionDetail(data);
                     }
 

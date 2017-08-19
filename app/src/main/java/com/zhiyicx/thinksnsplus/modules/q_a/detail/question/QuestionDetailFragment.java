@@ -67,7 +67,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     private String mCurrentOrderType;
 
     private QuestionSelectListTypePopWindow mOrderTypeSelectPop; // 选择排序的弹框
-    private QuestionInviteUserPopWindow mInvitePop; // 邀请回答的弹框
     private ActionPopupWindow mMorePop; // 更多弹框
     private boolean mIsMine = false;
 
@@ -128,14 +127,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     protected boolean setUseCenterLoading() {
-        return true;
+        return false;
     }
 
     @Override
     public void setQuestionDetail(QAListInfoBean questionDetail) {
         this.mQaListInfoBean = questionDetail;
-        mQuestionDetailHeader.setDetail(questionDetail);
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), false);
+        mQuestionDetailHeader.setDetail(questionDetail);
     }
 
     @Override
@@ -206,11 +205,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
         if (mQaListInfoBean.getAmount() == 0) {
             // 跳转设置悬赏
-        } else if (invitations != null) {
-            // 弹出邀请的人
-            if (mInvitePop != null) {
-                mInvitePop.show();
-            }
         }
     }
 
@@ -232,7 +226,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mQuestionDetailHeader = new QuestionDetailHeader(getContext(), null/*mPresenter.getAdvert()*/);
+        mQuestionDetailHeader = new QuestionDetailHeader(getActivity(), null/*mPresenter.getAdvert()*/);
         mQuestionDetailHeader.setOnActionClickListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mQuestionDetailHeader.getQuestionHeaderView());
         View mFooterView = new View(getContext());
@@ -295,45 +289,42 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     private void initPopWindow() {
-        mOrderTypeSelectPop = QuestionSelectListTypePopWindow.Builder()
-                .with(getActivity())
-                .parentView(mQuestionDetailHeader.getQuestionHeaderView())
-                .alpha(1f)
-                .setListener(this)
-                .build();
-        if (mQaListInfoBean.getInvitations() != null && mQaListInfoBean.getInvitations().size() > 0) {
-            mInvitePop = QuestionInviteUserPopWindow.Builder()
+        if (mOrderTypeSelectPop == null){
+            mOrderTypeSelectPop = QuestionSelectListTypePopWindow.Builder()
                     .with(getActivity())
                     .parentView(mQuestionDetailHeader.getQuestionHeaderView())
-                    .setData(mQaListInfoBean.getInvitations().get(0))
                     .alpha(1f)
+                    .setListener(this)
                     .build();
         }
-        mMorePop = ActionPopupWindow.builder()
-                .with(getActivity())
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .item1Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : getString(R.string.qa_question_develop))
-                .item2Str(mIsMine ? getString(R.string.qa_question_delete) : "")
-                .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
-                .bottomStr(getString(R.string.cancel))
-                .item1ClickListener(() -> {
-                    if (mIsMine) {
-                        if (mQaListInfoBean.getExcellent() != 1) {
-                            // 申请精选问答
-                            mPresenter.applyForExcellent(mQaListInfoBean.getId());
-                        } else {
-                            showSnackErrorMessage(getString(R.string.qa_question_excellent_reapply));
+        if (mMorePop == null){
+            mMorePop = ActionPopupWindow.builder()
+                    .with(getActivity())
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .item1Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : getString(R.string.qa_question_develop))
+                    .item2Str(mIsMine ? getString(R.string.qa_question_delete) : "")
+                    .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
+                    .bottomStr(getString(R.string.cancel))
+                    .item1ClickListener(() -> {
+                        if (mIsMine) {
+                            if (mQaListInfoBean.getExcellent() != 1) {
+                                // 申请精选问答
+                                mPresenter.applyForExcellent(mQaListInfoBean.getId());
+                            } else {
+                                showSnackErrorMessage(getString(R.string.qa_question_excellent_reapply));
+                            }
                         }
-                    }
-                    mMorePop.dismiss();
-                })
-                .item2ClickListener(() -> {
-                    // 删除问答
-                    mPresenter.deleteQuestion(mQaListInfoBean.getId());
-                })
-                .build();
+                        mMorePop.dismiss();
+                    })
+                    .item2ClickListener(() -> {
+                        // 删除问答
+                        mPresenter.deleteQuestion(mQaListInfoBean.getId());
+                    })
+                    .build();
+        }
+
     }
 
     @Override

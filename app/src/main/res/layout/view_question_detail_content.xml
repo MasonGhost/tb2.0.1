@@ -19,7 +19,7 @@
                 android:layout_height="@dimen/qa_info_iamge_height"
                 android:layout_marginBottom="@dimen/spacing_normal"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/npc"/>
+                android:visibility="gone"/>
 
         <!--正文内容:有图一排,无图三排,默认三排-->
         <com.zhiyicx.thinksnsplus.widget.ExpandableTextView

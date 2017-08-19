@@ -11,6 +11,8 @@ import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 /**
@@ -51,10 +53,7 @@ public class QuestionInviteUserPopWindow extends PopupWindow{
 
     private void initLayout() {
         mContentView = LayoutInflater.from(mActivity).inflate(R.layout.pop_question_invite, null);
-        UserAvatarView userAvatarView = (UserAvatarView) mContentView.findViewById(R.id.iv_user_portrait);
-        TextView tvUserName = (TextView) mContentView.findViewById(R.id.tv_user_name);
-        ImageUtils.loadCircleUserHeadPic(mUserInfoBean, userAvatarView);
-        tvUserName.setText(mUserInfoBean.getName());
+        bindData();
         setOnDismissListener(() -> setWindowAlpha(1.0f));
     }
 
@@ -70,6 +69,21 @@ public class QuestionInviteUserPopWindow extends PopupWindow{
         int width = UIUtils.getWindowWidth(mActivity) - mContentView.getResources().getDimensionPixelOffset(R.dimen.qa_top_select_width) -
                 mContentView.getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
         showAsDropDown(mParentView == null ? mContentView : mParentView, -20, 10);
+    }
+
+    public void setUserInfoBean(UserInfoBean userInfoBean){
+        this.mUserInfoBean = userInfoBean;
+        bindData();
+    }
+
+    private void bindData(){
+        UserAvatarView userAvatarView = (UserAvatarView) mContentView.findViewById(R.id.iv_user_portrait);
+        TextView tvUserName = (TextView) mContentView.findViewById(R.id.tv_user_name);
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean, userAvatarView);
+        tvUserName.setText(mUserInfoBean.getName());
+        mContentView.setOnClickListener(v -> {
+            PersonalCenterFragment.startToPersonalCenter(mActivity, mUserInfoBean);
+        });
     }
 
     public void hide() {
