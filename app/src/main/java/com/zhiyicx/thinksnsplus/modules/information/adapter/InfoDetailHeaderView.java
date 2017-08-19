@@ -150,10 +150,12 @@ public class InfoDetailHeaderView {
                             .getUpdated_at()));
             mFrom.setText(infoData);
             // 引用
-            InternalStyleSheet css = new Github();
-            css.addRule("body", "line-height: 1.6", "padding: 10px");
-            css.addRule(".container", "padding-right:0",";padding-left:0");
+
             if (!TextUtils.isEmpty(infoMain.getSubject())){
+                InternalStyleSheet css = new Github();
+                css.addRule(".container", "padding-right:0",";padding-left:10px");
+                css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
+                css.addRule("p", "margin:0");
                 mContentSubject.setVisibility(VISIBLE);
                 mContentSubject.addStyleSheet(css);
                 mContentSubject.loadMarkdown(infoMain.getSubject());
@@ -162,6 +164,9 @@ public class InfoDetailHeaderView {
             }
             // 资讯content
             if (!TextUtils.isEmpty(infoMain.getContent())) {
+                InternalStyleSheet css = new Github();
+                css.addRule("body", "line-height: 1.6", "padding: 0px");
+                css.addRule(".container", "padding-right:0",";padding-left:0");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
@@ -208,15 +213,7 @@ public class InfoDetailHeaderView {
 
                     }
                 });
-//                mContent.setWebViewClient(new WebViewClient(){
-//                    @Override
-//                    public void onPageFinished(WebView view, String url) {
-//                        super.onPageFinished(view, url);
-//
-//                    }
-//                });
             }
-
             // 评论信息
             updateCommentView(infoMain);
         }
