@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.answer;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -22,6 +24,9 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     public static final String BUNDLE_SOURCE_ID = "source_id";
     public static final String BUNDLE_SOURCE_BODY = "source_body";
+    public static final String BUNDLE_SOURCE_TYPE = "source_type";
+
+    private PublishType mType;
     private String mBody;
 
     public static PublishAnswerFragment newInstance(Bundle bundle) {
@@ -37,7 +42,9 @@ public class PublishAnswerFragment extends PublishContentFragment {
     protected void initData() {
         super.initData();
         mBody = getArguments().getString(BUNDLE_SOURCE_BODY, "");
-        mToolbarCenter.setText(getString(mBody.isEmpty() ? R.string.qa_update_answer : R.string.qa_publish_answer));
+        mType = (PublishType) getArguments().getSerializable(BUNDLE_SOURCE_TYPE);
+        mToolbarCenter.setText(getString(mBody.isEmpty() ? R.string.qa_update_answer : R.string
+                .qa_publish_answer));
         if (!mBody.isEmpty()) {
             mRicheTest.clearAllLayout();
             mPresenter.pareseBody(mBody);
@@ -68,10 +75,15 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void setRightClick() {
-        if (mBody.isEmpty()) {
-            mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), getContentString(), mAnonymity);
-        } else {
-            mPresenter.updateAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), getContentString(), mAnonymity);
+        if (mType == PublishType.PUBLISH_ANSWER) {
+            mPresenter.publishAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), getContentString()
+                    , mAnonymity);
+        } else if (mType == PublishType.UPDATE_ANSWER) {
+            mPresenter.updateAnswer(getArguments().getLong(BUNDLE_SOURCE_ID), getContentString(),
+                    mAnonymity);
+        } else if (mType == PublishType.UPDATE_QUESTION) {
+            mPresenter.updateQuestion(getArguments().getLong(BUNDLE_SOURCE_ID), getContentString(),
+                    mAnonymity);
         }
 
     }
@@ -88,7 +100,8 @@ public class PublishAnswerFragment extends PublishContentFragment {
                     builder.append(editData.imagePath);
                 } else {
                     builder.append(String.format(Locale.getDefault(),
-                            MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[mPicAddTag]));
+                            MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE,
+                            mImageIdArray[mPicAddTag]));
                 }
                 mPicAddTag++;
             }
@@ -105,5 +118,18 @@ public class PublishAnswerFragment extends PublishContentFragment {
     public void updateSuccess() {
         super.updateSuccess();
         getActivity().finish();
+    }
+
+    public static void startQActivity(Context context, PublishType type, long sourceId,
+                                           String body) {
+
+        Intent intent = new Intent(context, PublishAnswerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_SOURCE_TYPE, type);
+        bundle.putLong(BUNDLE_SOURCE_ID, sourceId);
+        bundle.putString(BUNDLE_SOURCE_BODY, body);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+
     }
 }

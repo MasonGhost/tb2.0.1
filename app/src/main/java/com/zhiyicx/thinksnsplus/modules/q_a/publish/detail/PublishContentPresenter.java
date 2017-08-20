@@ -106,6 +106,27 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
     }
 
     @Override
+    public void updateQuestion(Long question_id, String body, int anonymity) {
+        mRepository.updateQuestion(question_id, body, anonymity).subscribe(new
+                                                                            BaseSubscribeForV2<BaseJsonV2<Object>>() {
+            @Override
+            protected void onSuccess(BaseJsonV2<Object> data) {
+                mRootView.updateSuccess();
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+            }
+        });
+    }
+
+    @Override
     public void pareseBody(String body) {
 
         Observable.just(body)

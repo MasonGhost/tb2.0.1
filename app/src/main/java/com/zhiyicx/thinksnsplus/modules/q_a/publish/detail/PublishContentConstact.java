@@ -33,14 +33,17 @@ public interface PublishContentConstact {
         void uploadPic(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
 
         void publishAnswer(Long question_id,String body, int anonymity);
+        void updateAnswer(Long answer_id,String body, int anonymity);
+        void updateQuestion(Long question_id,String body, int anonymity);
 
         void pareseBody(String body);
 
-        void updateAnswer(Long answer_id,String body, int anonymity);
+
     }
 
     interface Repository extends IBasePublishQuestionRepository {
         Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(Long question_id,String body, int anonymity);
         Observable<BaseJsonV2<Object>> updateAnswer(Long answer_id,String body, int anonymity);
+        Observable<BaseJsonV2<Object>> updateQuestion(Long question_id,String body, int anonymity);
     }
 }

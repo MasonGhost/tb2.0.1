@@ -28,8 +28,8 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailCommentItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerDetailHeaderView;
@@ -138,7 +138,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
-        AnswerDetailCommentItem answerDetailCommentItem = new AnswerDetailCommentItem(new ItemOnCommentListener());
+        AnswerDetailCommentItem answerDetailCommentItem = new AnswerDetailCommentItem(new
+                ItemOnCommentListener());
         multiItemTypeAdapter.addItemViewDelegate(answerDetailCommentItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerDetailCommentEmptyItem());
         return multiItemTypeAdapter;
@@ -149,7 +150,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        mAnswerDetailHeaderView.updateReward(mAnswerInfoBean.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.QA_ANSWER);
+        mAnswerDetailHeaderView.updateReward(mAnswerInfoBean.getId(), mRewardsListBeen,
+                mRewardsCountBean, RewardType.QA_ANSWER);
     }
 
     @Override
@@ -248,7 +250,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<AnswerCommentListBean> data, boolean isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<AnswerCommentListBean> data, boolean
+            isLoadMore) {
         if (!isLoadMore) {
             if (data.isEmpty()) { // 空白展位图
                 AnswerCommentListBean emptyData = new AnswerCommentListBean();
@@ -286,7 +289,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         mAnswerDetailHeaderView.setAnswerHeaderEventListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mAnswerDetailHeaderView.getAnswerDetailHeader());
         View mFooterView = new View(getContext());
-        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -416,14 +420,18 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
      *
      * @param answerInfoBean curent answerInfoBean
      */
-    private void initDealAnswerPopupWindow(final AnswerInfoBean answerInfoBean, boolean isCollected) {
-//        boolean isMine = answerInfoBean.getQuestion().getUser().getExtra().getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+    private void initDealAnswerPopupWindow(final AnswerInfoBean answerInfoBean, boolean
+            isCollected) {
+//        boolean isMine = answerInfoBean.getQuestion().getUser().getExtra().getUser_id() ==
+// AppApplication.getmCurrentLoginAuth().getUser_id();
         boolean isMine = true;
         boolean isAdopted = answerInfoBean.getAdoption() == 1;
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.info_delete) : "")
-                .item2Str(getString(isAdopted ? R.string.qa_question_answer_adopt : (isMine ? R.string.qa_question_answer_adopting : R.string.empty)))
-                .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
+                .item2Str(getString(isAdopted ? R.string.qa_question_answer_adopt : (isMine ? R
+                        .string.qa_question_answer_adopting : R.string.empty)))
+                .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
+                        .string.dynamic_list_collect_dynamic))
                 .item4Str(getString(isMine ? R.string.edit : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
@@ -439,21 +447,20 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     if (isAdopted) {
                         return;
                     }
-                    mPresenter.adoptionAnswer(answerInfoBean.getQuestion_id(), answerInfoBean.getId());
+                    mPresenter.adoptionAnswer(answerInfoBean.getQuestion_id(), answerInfoBean
+                            .getId());
 
                 })
                 .item3ClickListener(() -> {// 申请置顶
-                    mPresenter.handleCollect(!answerInfoBean.getCollected(), answerInfoBean.getId());
+                    mPresenter.handleCollect(!answerInfoBean.getCollected(), answerInfoBean.getId
+                            ());
                     mDealInfoMationPopWindow.hide();
                 })
                 .item4ClickListener(() -> {// 编辑
                     mDealInfoMationPopWindow.hide();
-                    Intent intent = new Intent(getContext(), PublishAnswerActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString(PublishAnswerFragment.BUNDLE_SOURCE_BODY,mAnswerInfoBean.getBody());
-                    bundle.putLong(PublishAnswerFragment.BUNDLE_SOURCE_ID,mAnswerInfoBean.getQuestion_id());
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    PublishAnswerFragment.startQActivity(getActivity(), PublishType
+                            .UPDATE_ANSWER, mAnswerInfoBean.getId(), mAnswerInfoBean.getBody());
+
                 })
                 .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();
@@ -479,7 +486,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                     showCommentView();
                     String contentHint = getString(R.string.default_input_hint);
                     if (infoCommentListBean.getReply_user() != infoCommentListBean.getId()) {
-                        contentHint = getString(R.string.reply, infoCommentListBean.getFromUserInfoBean().getName());
+                        contentHint = getString(R.string.reply, infoCommentListBean
+                                .getFromUserInfoBean().getName());
                     }
                     mIlvComment.setEtContentHint(contentHint);
                 }

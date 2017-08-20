@@ -52,6 +52,18 @@ public interface QAClient {
 
     /**
      *
+     * @param question_id
+     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
+    Observable<BaseJsonV2<Object>> uplaodQuestion(@Path("question") Long question_id, @Field("body")
+            String body, @Field("anonymity") int anonymity);
+
+    /**
+     *
      * @param answer_id
      * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
      * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。

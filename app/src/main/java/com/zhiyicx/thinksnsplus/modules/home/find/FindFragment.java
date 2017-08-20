@@ -22,15 +22,10 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
-
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
@@ -40,9 +35,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
-import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
 
 /**
  * @Describe 发现页面
@@ -136,7 +128,7 @@ public class FindFragment extends TSFragment {
     }
 
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
-            R.id.find_person, R.id.find_nearby, R.id.find_quiz,R.id.find_qa})
+            R.id.find_person, R.id.find_nearby, R.id.find_quiz, R.id.find_qa})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
@@ -199,7 +191,8 @@ public class FindFragment extends TSFragment {
             case R.id.find_person:
                 long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
                 Bundle bundleFollow = new Bundle();
-                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment.FOLLOW_FRAGMENT_PAGE);
+                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment
+                        .FOLLOW_FRAGMENT_PAGE);
                 bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, followUserId);
                 Intent itFollow = new Intent(getActivity(), FindSomeOneContainerActivity.class);
                 itFollow.putExtras(bundleFollow);
@@ -232,7 +225,8 @@ public class FindFragment extends TSFragment {
                 .with(getActivity())
                 .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
 
-                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string.oppo_setting_windows_permission_hint :
+                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string
+                        .oppo_setting_windows_permission_hint :
                         com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
 
                 .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
