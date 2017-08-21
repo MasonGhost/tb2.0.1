@@ -110,12 +110,19 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_SOURCE_ID, mListDatas.get(position - mHeaderAndFooterWrapper
-                .getHeadersCount()).getId());
-        intent.putExtras(bundle);
-        startActivity(intent);
+        if (mQaListInfoBean.getLook() == 1
+                && !mQaListInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())){
+            // 开启了围观并且不是作者本人点击
+
+        } else {
+            Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putLong(BUNDLE_SOURCE_ID, mListDatas.get(position - mHeaderAndFooterWrapper
+                    .getHeadersCount()).getId());
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
     }
 
     @Override
@@ -211,9 +218,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
-        if (mQaListInfoBean.getAmount() == 0) {
-            // 跳转设置悬赏
-        }
+        // 跳转设置悬赏
+
     }
 
     @Override

@@ -141,11 +141,12 @@ public class QuestionDetailHeader {
         // 悬赏状态
         if (qaListInfoBean.getAmount() == 0) {
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_public));
-        } else if (qaListInfoBean.getAutomaticity() == 0) {
-            mTvRewardType.setText(mContext.getString(R.string.qa_reward_setting));
-        } else if (qaListInfoBean.getInvitations() != null){
+        } else if (qaListInfoBean.getInvitations() != null
+                && qaListInfoBean.getInvitations().size() > 0) {
             mIvRewardType.setImageResource(R.mipmap.ico_question_invited);
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_invited));
+        } else{
+            mTvRewardType.setText(mContext.getString(R.string.qa_reward_setting));
         }
     }
 
@@ -197,24 +198,27 @@ public class QuestionDetailHeader {
         RxView.clicks(mTvRewardType)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mInvitePop == null) {
+                    if (mQaListInfoBean.getInvitations() != null
+                            && mQaListInfoBean.getInvitations().size() > 0){
                         initPop();
+                    } else {
+                        if (mListener != null){
+                            mListener.onRewardTypeClick(null, 1);
+                        }
                     }
-                    mInvitePop.show();
                 });
     }
 
     private void initPop(){
-        if (mQaListInfoBean.getInvitations().size() > 0) {
-            if (mInvitePop == null){
-                mInvitePop = QuestionInviteUserPopWindow.Builder()
-                        .with(mContext)
-                        .parentView(mIvRewardType)
-                        .setData(mQaListInfoBean.getInvitations().get(0))
-                        .alpha(1f)
-                        .build();
-            }
+        if (mInvitePop == null){
+            mInvitePop = QuestionInviteUserPopWindow.Builder()
+                    .with(mContext)
+                    .parentView(mIvRewardType)
+                    .setData(mQaListInfoBean.getInvitations().get(0))
+                    .alpha(1f)
+                    .build();
         }
+        mInvitePop.show();
     }
 
     public String getCurrentOrderType() {
