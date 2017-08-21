@@ -50,7 +50,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showSnackErrorMessage(message);
+                        mRootView.showSnackErrorMessage("图片上传失败");
                         mRootView.uploadPicFailed();
                     }
 
