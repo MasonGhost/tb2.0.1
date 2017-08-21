@@ -3,7 +3,10 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.data.source.local.CommonMetadataBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.QASearchBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -23,6 +26,9 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicF
  */
 public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.Repository, QATopicListConstact.View>
         implements QATopicListConstact.Presenter {
+
+    @Inject
+    QASearchBeanGreenDaoImpl mQASearchBeanGreenDao;
 
     @Inject
     public QATopicListPresenter(QATopicListConstact.Repository repository, QATopicListConstact.View rootView) {
@@ -62,9 +68,11 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
 
     @Override
     public void requestNetData(String name, Long maxId, Long follow, boolean isLoadMore) {
+
         mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
             @Override
             protected void onSuccess(List<QATopicBean> data) {
+                saveSearhDatq(name);
                 mRootView.onNetResponseSuccess(data, isLoadMore);
             }
 
@@ -79,6 +87,16 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
                 mRootView.onResponseError(throwable, isLoadMore);
             }
         });
+    }
+
+    /**
+     * 存搜索记录
+     *
+     * @param searchContent save content
+     */
+    private void saveSearhDatq(String searchContent) {
+        QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent,QASearchHistoryBean.TYPE_QA_TOPIC);
+        mQASearchBeanGreenDao.saveSingleData(qaSearchHistoryBean);
     }
 
     @Override

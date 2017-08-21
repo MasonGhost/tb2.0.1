@@ -4,6 +4,9 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
+
+import java.util.List;
 
 /**
  * @Describe
@@ -22,6 +25,7 @@ public interface QASearchListContract {
 
     interface Presenter extends ITSListPresenter<QAListInfoBean> {
 
+        List<QASearchHistoryBean> getFirstShowHistory();
     }
 
     interface Repository {

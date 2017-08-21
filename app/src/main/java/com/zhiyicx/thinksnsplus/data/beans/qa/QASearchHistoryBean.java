@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans.qa;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * @Describe
@@ -12,22 +13,40 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class QASearchHistoryBean {
-    public static final int TYPE_QA = 0;
-    public static final int TYPE_QA_TOPIC = 1;
-    @Id
+    public static final int TYPE_DEFAULT = 0; // 操作按钮，查看全部，展开等
+    public static final int TYPE_QA = 1;
+    public static final int TYPE_QA_TOPIC = 2;
+    @Id(autoincrement = true)
     private Long id;
+    @Unique
     private String content;
-    private int type;
+    private long create_time;
+    private int type = TYPE_DEFAULT;
 
-    @Generated(hash = 296145513)
-    public QASearchHistoryBean(Long id, String content, int type) {
+    public QASearchHistoryBean(String content, int type) {
+        this.content = content;
+        this.type = type;
+    }
+
+    @Generated(hash = 2062135283)
+    public QASearchHistoryBean(Long id, String content, long create_time,
+            int type) {
         this.id = id;
         this.content = content;
+        this.create_time = create_time;
         this.type = type;
     }
 
     @Generated(hash = 2135059226)
     public QASearchHistoryBean() {
+    }
+
+    public long getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(long create_time) {
+        this.create_time = create_time;
     }
 
     public Long getId() {

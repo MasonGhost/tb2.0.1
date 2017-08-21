@@ -46,36 +46,22 @@ public class QASearchBeanGreenDaoImpl extends CommonCacheImpl<QASearchHistoryBea
         return walletBeanDao.load(primaryKey);
     }
 
-    public QASearchHistoryBean getSingleDataByUserId(Long user_id) {
-//        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
-//        QASearchHistoryBean walletBean = new QASearchHistoryBean();
-//        List<QASearchHistoryBean> walletBeanList = walletBeanDao.queryBuilder().where(QASearchHistoryBeanDao.Properties.User_id.eq(user_id)).list();
-//        if (walletBeanList.isEmpty()) {
-//            return walletBean;
-//        }
-//        return walletBeanDao.queryBuilder().where(QASearchHistoryBeanDao.Properties.User_id.eq(user_id)).list().get(0);
-        return null;
-    }
-
-    /**
-     * 通过 user id 获取钱包信息
-     *
-     * @param userId
-     * @return
-     */
-    public QASearchHistoryBean getSingleDataFromCacheByUserId(long userId) {
-        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
-        return walletBeanDao.queryBuilder()
-                .where(QASearchHistoryBeanDao.Properties.Id.eq(userId))
-                .unique();
-    }
 
     @Override
     public List<QASearchHistoryBean> getMultiDataFromCache() {
         QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
-        return walletBeanDao.loadAll();
+        return walletBeanDao.queryBuilder()
+                .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
+                .list();
     }
 
+    public List<QASearchHistoryBean> getFristShowData(int size) {
+        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
+        return walletBeanDao.queryBuilder()
+                .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
+                .limit(size)
+                .list();
+    }
 
     @Override
     public void clearTable() {
