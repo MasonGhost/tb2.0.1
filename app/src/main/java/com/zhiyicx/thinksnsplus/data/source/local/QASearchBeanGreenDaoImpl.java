@@ -117,10 +117,8 @@ public class QASearchBeanGreenDaoImpl extends CommonCacheImpl<QASearchHistoryBea
                 .unique();
 
         if (tmpe == null) {
-            System.out.println("tmpe = ");
             insertOrReplace(qaSearchHistoryBean);
         } else {
-            System.out.println("tmpe = " + tmpe.toString());
             tmpe.setCreate_time(qaSearchHistoryBean.getCreate_time());
             insertOrReplace(tmpe);
         }
