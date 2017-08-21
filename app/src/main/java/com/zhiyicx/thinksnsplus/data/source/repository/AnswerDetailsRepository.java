@@ -174,29 +174,6 @@ public class AnswerDetailsRepository extends BaseQARepository implements AnswerD
     }
 
     @Override
-    public void handleLike(boolean isLiked, long answer_id) {
-        Observable.just(isLiked)
-                .observeOn(Schedulers.io())
-                .subscribe(aBoolean -> {
-                    BackgroundRequestTaskBean backgroundRequestTaskBean;
-                    // 后台处理
-                    if (aBoolean) {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST_V2, null);
-                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
-                    } else {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE_V2, null);
-                        LogUtils.d(backgroundRequestTaskBean.getMethodType());
-                    }
-                    backgroundRequestTaskBean.setPath(String.format(Locale.getDefault(), ApiConfig
-                            .APP_PATH_LIKE_ANSWER_FORMAT, answer_id));
-                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                            (backgroundRequestTaskBean);
-                }, throwable -> throwable.printStackTrace());
-    }
-
-    @Override
     public void sendComment(String comment_content, long answer_id, long reply_to_user_id, long comment_mark) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();

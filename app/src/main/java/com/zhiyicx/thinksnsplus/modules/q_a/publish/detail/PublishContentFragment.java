@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.AnonymityPopWindow;
+import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
@@ -46,7 +47,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
 
     @BindView(R.id.riche_test)
-    RichTextEditor mRicheTest;
+    protected RichTextEditor mRicheTest;
     @BindView(R.id.im_arrowc)
     ImageView mImArrowc;
     @BindView(R.id.im_pic)
@@ -61,9 +62,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mInstructionsPopupWindow;
-    private int[] mImageIdArray;// 图片id
-    private int mPicTag;
-    private int mPicAddTag;
+    protected int[] mImageIdArray;// 已经添加的图片数量图片数组 id
+    protected int mPicTag;// 已经添加的图片数量
+    protected int mPicAddTag;// 封装数据时 当前 图片 下标
     protected int mAnonymity;
 
     private AnonymityPopWindow mAnonymityPopWindow;
@@ -78,6 +79,11 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     public void publishSuccess(QAAnswerBean answerBean) {
+
+    }
+
+    @Override
+    public void updateSuccess() {
 
     }
 
@@ -103,6 +109,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     protected void initView(View rootView) {
+        AndroidBug5497Workaround.assistActivity(getActivity());
         mToolbarRight.setEnabled(false);
         initLisenter();
     }
@@ -161,6 +168,15 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
         mRicheTest.insertImage(path, mRicheTest.getWidth());
+    }
+
+    @Override
+    public void addImageViewAtIndex(String iamgePath, int iamge_id, String markdonw,boolean isLast) {
+
+    }
+
+    @Override
+    public void addEditTextAtIndex(String text) {
 
     }
 

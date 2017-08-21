@@ -481,7 +481,7 @@ public final class TSnackbar {
      * @return
      */
     public TSnackbar setPromptThemBackground(Prompt prompt) {
-        if (prompt == Prompt.SUCCESS) {
+        if (prompt == Prompt.SUCCESS || prompt == Prompt.DONE) {
             setBackgroundColor(mContext.getResources().getColor(Prompt.SUCCESS.getBackgroundColor()));
             addIcon(Prompt.SUCCESS.getResIcon(), 0, 0);
         } else if (prompt == Prompt.ERROR) {

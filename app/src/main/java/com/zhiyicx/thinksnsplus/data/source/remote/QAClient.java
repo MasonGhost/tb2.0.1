@@ -3,11 +3,13 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
@@ -21,6 +23,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -48,6 +51,29 @@ public interface QAClient {
     Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
+     *
+     * @param question_id
+     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
+    Observable<BaseJsonV2<Object>> uplaodQuestion(@Path("question") Long question_id, @Field("body")
+            String body, @Field("anonymity") int anonymity);
+
+    /**
+     *
+     * @param answer_id
+     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(ApiConfig.APP_PATH_UPDATE_ANSWER)
+    Observable<BaseJsonV2<Object>> uplaodAnswer(@Path("answer_id") Long answer_id, @Field("body") String body, @Field("anonymity") int anonymity);
+
+    /**
      * @param name   用于搜索话题，传递话题名称关键词。
      * @param after  获取 id 之后的数据，要获取某条话题之后的数据，传递该话题 ID。
      * @param follow 是否检查当前用户是否关注了某话题，默认为不检查，如果传递 follow 切拥有任意值（空除外），都会检查当前用户与话题的关注关系。
@@ -64,6 +90,15 @@ public interface QAClient {
      */
     @GET(ApiConfig.APP_PATH_GET_ANSWER_DETAIL)
     Observable<AnswerInfoBean> getAnswerDetail(@Path("answer_id") long answer_id);
+
+    /**
+     * 获取回答的点赞列表
+     *
+     * @param answer_id 回答 id
+     */
+    @GET(ApiConfig.APP_PATH_LIKE_ANSWER)
+    Observable<List<AnswerDigListBean>> getAnswerDigList(@Path("answer_id") long answer_id, @Query
+            ("after") Long after, @Query("limit") Long limit);
 
     /**
      * 获取回答评论列表
@@ -117,7 +152,8 @@ public interface QAClient {
      * 获取一个问题的回答列表
      *
      * @param question_id 问题id
-     * @param order_type  default/time
+     * @param order_type default/time
+     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)
     Observable<List<AnswerInfoBean>> getAnswerList(@Path("question") String question_id,
@@ -131,7 +167,29 @@ public interface QAClient {
      * @param question_id 问题id
      */
     @DELETE(ApiConfig.APP_PATH_GET_DELETE_QUESTION)
-    Observable<BaseJsonV2<Object>> deleteQuestion(@Path("answer_id") String question_id);
+    Observable<BaseJsonV2<Object>> deleteQuestion(@Path("question") String question_id);
+
+    /**
+     * 申请精选问答
+     */
+    @POST(ApiConfig.APP_PATH_APPLY_FOR_EXCELLENT)
+    Observable<BaseJsonV2<Object>> applyForExcellent(@Path("question") String question_id);
+
+    /**
+     * 获取问题的评论列表
+     *
+     * @param question_id id
+     */
+    @GET(ApiConfig.APP_PATH_GET_QUESTION_COMMENT_LIST)
+    Observable<List<QuestionCommentBean>> getQuestionCommentList(@Path("question") String question_id,
+                                                                 @Query("after") Long after,
+                                                                 @Query("limit") Long limit);
+
+    /**
+     * 删除问题评论
+     */
+    @DELETE(ApiConfig.APP_PATH_DELETE_QUESTION_COMMENT)
+    Observable<BaseJsonV2<Object>> deleteQuestionComment(@Path("question") String question_id, @Path("answer") String answer_id);
 
     /*******************************************  打赏  *********************************************/
 

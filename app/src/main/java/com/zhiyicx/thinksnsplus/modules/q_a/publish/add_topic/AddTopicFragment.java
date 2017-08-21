@@ -78,13 +78,13 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        List<QAPublishBean.Topic> topicList = new ArrayList<>();
+        List<QAPublishBean.Topic> typeIdsList = new ArrayList<>();
         for (QATopicBean qaTopicBean : mQATopicBeanList) {
-            QAPublishBean.Topic topic = new QAPublishBean.Topic();
-            topic.setId(qaTopicBean.getId().intValue());
-            topicList.add(topic);
+            QAPublishBean.Topic typeIds = new QAPublishBean.Topic();
+            typeIds.setId(qaTopicBean.getId().intValue());
+            typeIdsList.add(typeIds);
         }
-        mQAPublishBean.setTopics(topicList);
+        mQAPublishBean.setTopics(typeIdsList);
         mQAPublishBean.setSubject(mEtQustion.getText().toString());
         Intent intent = new Intent(getActivity(), PublishContentActivity.class);
         Bundle bundle = new Bundle();

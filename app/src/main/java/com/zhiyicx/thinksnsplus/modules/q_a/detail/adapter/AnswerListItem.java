@@ -5,12 +5,22 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailContract;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailPresenter;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author Catherine
@@ -20,6 +30,12 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
  */
 
 public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
+
+    private QuestionDetailContract.Presenter mPresenter;
+
+    public AnswerListItem(QuestionDetailContract.Presenter mPresenter) {
+        this.mPresenter = mPresenter;
+    }
 
     @Override
     public int getItemViewLayoutId() {
@@ -44,6 +60,12 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 holder.setText(R.id.tv_watcher_count, String.format(holder.getConvertView().getContext()
                         .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean.getRewarder_count()));
             }
+            // 跳转
+            RxView.clicks(holder.getView(R.id.iv_portrait))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
+                    });
         } else if (answerInfoBean.getAnonymity() == 1){
             // 为空 应该就是匿名了
             holder.setVisible(R.id.iv_anonymity_flag, View.VISIBLE);
@@ -54,15 +76,31 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否邀请
         holder.setVisible(R.id.tv_invite_flag, answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
         // 正文
-        holder.setText(R.id.tv_content, answerInfoBean.getBody());
+        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
         // 点赞数量
         TextView tvLikeCount = holder.getView(R.id.tv_like_count);
         tvLikeCount.setText(String.valueOf(answerInfoBean.getLikes_count()));
+        dealLikeUI(answerInfoBean, tvLikeCount);
+        RxView.clicks(tvLikeCount)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (!answerInfoBean.getLiked()){
+                        answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() + 1);
+                    } else {
+                        answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() - 1);
+                    }
+                    mPresenter.handleAnswerLike(!answerInfoBean.getLiked(), answerInfoBean.getId(), answerInfoBean);
+                    // 修改UI
+                    dealLikeUI(answerInfoBean, tvLikeCount);
+                });
+    }
+
+    private void dealLikeUI(AnswerInfoBean answerInfoBean, TextView tvLikeCount){
         // 是否点赞
         Drawable unLike = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap.home_ico_good_normal);
         Drawable liked = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap.home_ico_good_high);
         tvLikeCount.setCompoundDrawables(answerInfoBean.getLiked() ? liked : unLike, null, null, null);
         // 回答数量
-        holder.setText(R.id.tv_comment_count, String.valueOf(answerInfoBean.getComments_count()));
+        tvLikeCount.setText(String.valueOf(answerInfoBean.getComments_count()));
     }
 }

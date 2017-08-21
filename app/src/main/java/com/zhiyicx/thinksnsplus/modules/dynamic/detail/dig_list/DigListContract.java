@@ -2,12 +2,15 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author LiuChao
@@ -18,7 +21,7 @@ import java.util.List;
 
 public interface DigListContract {
     //对于经常使用的关于UI的方法可以定义到BaseView中,如显示隐藏进度条,和显示文字消息
-    interface View extends ITSListView<DynamicDigListBean, DigListContract.Presenter> {
+    interface View extends ITSListView<DynamicDigListBean, Presenter> {
         void upDataFollowState(int position);
 
         /**

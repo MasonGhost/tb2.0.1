@@ -20,16 +20,30 @@ public interface PublishContentConstact {
 
         void publishSuccess(QAAnswerBean answerBean);
 
+        void updateSuccess();
+
         void uploadPicFailed();
+
+        void addImageViewAtIndex(String iamge,int iamge_id,String markdonw,boolean isLast);
+
+        void addEditTextAtIndex(String text);
     }
 
     interface Presenter extends IBaseTouristPresenter {
         void uploadPic(final String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
 
         void publishAnswer(Long question_id,String body, int anonymity);
+        void updateAnswer(Long answer_id,String body, int anonymity);
+        void updateQuestion(Long question_id,String body, int anonymity);
+
+        void pareseBody(String body);
+
+
     }
 
     interface Repository extends IBasePublishQuestionRepository {
         Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(Long question_id,String body, int anonymity);
+        Observable<BaseJsonV2<Object>> updateAnswer(Long answer_id,String body, int anonymity);
+        Observable<BaseJsonV2<Object>> updateQuestion(Long question_id,String body, int anonymity);
     }
 }

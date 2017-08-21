@@ -14,7 +14,12 @@ public enum Prompt {
     /**
      * 绿色,成功
      */
-    SUCCESS(R.drawable.msg_box_succeed, R.color.white);
+    SUCCESS(R.drawable.msg_box_succeed, R.color.white),
+
+    /**
+     * 绿色,成功,完成后退出
+     */
+    DONE(R.drawable.msg_box_succeed, R.color.white);
 
     private int resIcon;
     private int backgroundColor;

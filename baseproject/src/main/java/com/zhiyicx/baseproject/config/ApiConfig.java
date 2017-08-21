@@ -368,10 +368,17 @@ public class ApiConfig {
     // 申请精选问答 POST
     public static final String APP_PATH_APPLY_FOR_EXCELLENT = "api/" + API_VERSION_2 + "/user/question-application/{question}";
     public static final String APP_PATH_APPLY_FOR_EXCELLENT_S = "api/" + API_VERSION_2 + "/user/question-application/%s";
+    // 获取问答的评论列表
+    public static final String APP_PATH_GET_QUESTION_COMMENT_LIST = "api/" + API_VERSION_2 + "/questions/{question}/comments";
+    // 评论问题
+    public static final String APP_PATH_SEND_QUESTION_COMMENT = "api/" + API_VERSION_2 + "/questions/{question}/comments";
+    public static final String APP_PATH_SEND_QUESTION_COMMENT_S = "api/" + API_VERSION_2 + "/questions/%s/comments";
+    // 删除问题的评论
+    public static final String APP_PATH_DELETE_QUESTION_COMMENT = "api/" + API_VERSION_2 + "/questions/{question}/comments/{answer}";
     // 发布回答
     public static final String APP_PATH_PUBLISH_ANSWER = "api/" + API_VERSION_2 + "/questions/{question}/answers";
     // 更新回答 PATCH
-    public static final String APP_PATH_UPDATE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer}";
+    public static final String APP_PATH_UPDATE_ANSWER = "api/" + API_VERSION_2 + "/question-answers/{answer_id}";
     // 采纳答案 PUT
     public static final String APP_PATH_ADOPT_ANSWER = "api/" + API_VERSION_2 + "/questions/{question_id}/adoptions/{answer_id}";
     public static final String APP_PATH_ADOPT_ANSWER_S = "api/" + API_VERSION_2 + "/questions/%d/adoptions/%d";

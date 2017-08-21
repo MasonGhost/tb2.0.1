@@ -281,6 +281,10 @@
             android:name=".modules.q_a.detail.question.QuestionDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
 
         <!-- 认证相关页面 -->
         <activity
@@ -486,6 +490,8 @@
             android:name=".modules.findsomeone.contacts.ContactsActivity"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"/>
     </application>
 
 </manifest>

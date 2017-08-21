@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.service.backgroundtask;
 import android.app.Application;
 
 import com.google.gson.Gson;
+
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -28,6 +29,7 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
@@ -39,6 +41,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.QuestionCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -72,6 +75,7 @@ import rx.schedulers.Schedulers;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_QUESTION_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
@@ -124,6 +128,8 @@ public class BackgroundTaskHandler {
 
     @Inject
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2Dao;
+    @Inject
+    QuestionCommentBeanGreenDaoImpl mQuestionCommentBeanGreenDao;
 
     @Inject
     SendCertificationRepository mSendCertificationRepository;
@@ -348,6 +354,9 @@ public class BackgroundTaskHandler {
                 break;
             case SEND_CERTIFICATION:
                 sendCertification(backgroundRequestTaskBean);
+                break;
+            case SEND_QUESTION_COMMENT:
+                sendQuestionComment(backgroundRequestTaskBean);
                 break;
             default:
         }
@@ -1352,9 +1361,59 @@ public class BackgroundTaskHandler {
     }
 
     /**
+     * 发送问题评论
+     */
+    private void sendQuestionComment(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long commentMark = (Long) params.get("comment_mark");
+        final QuestionCommentBean questionCommentBean = mQuestionCommentBeanGreenDao.getCommentByCommentMark(commentMark);
+        if (questionCommentBean == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        // 发送动态到动态列表：状态为发送中
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            questionCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            questionCommentBean.setState(QuestionCommentBean.SEND_SUCCESS);
+                            mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
+                            EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        questionCommentBean.setState(QuestionCommentBean.SEND_ERROR);
+                        mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
+                        EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        questionCommentBean.setState(QuestionCommentBean.SEND_ERROR);
+                        mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
+                        EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                    }
+
+                });
+    }
+
+    /**
      * 检测是否需要重新请求
      *
-     * @param code
      * @return true 需要
      */
     private boolean checkIsNeedReRequest(int code) {

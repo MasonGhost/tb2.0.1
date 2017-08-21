@@ -49,6 +49,7 @@ public class QuestionDetailContent extends FrameLayout {
 
     private LinearLayout mLlContentPreview;
     private ImageView mItemInfoImage;
+    private ImageView mIvSolid;
     private ExpandableTextView mTvQuestionContent;
     private MarkdownView mMdvQuestionContent;
     private ArrayList<AnimationRectBean> animationRectBeanArrayList;
@@ -75,6 +76,7 @@ public class QuestionDetailContent extends FrameLayout {
         LayoutInflater.from(context).inflate(R.layout.view_question_detail_content, this);
         mLlContentPreview = (LinearLayout) findViewById(R.id.ll_content_preview);
         mItemInfoImage = (ImageView) findViewById(R.id.item_info_imag);
+        mIvSolid = (ImageView) findViewById(R.id.iv_solid);
         mTvQuestionContent = (ExpandableTextView) findViewById(R.id.tv_question_content);
         mMdvQuestionContent = (MarkdownView) findViewById(R.id.mdv_question_content);
     }
@@ -94,13 +96,14 @@ public class QuestionDetailContent extends FrameLayout {
             // 替换图片地址
             String url = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
             String format = String.format(MarkdownConfig.IMAGE_RESULT, url);
-            content = RegexUtils.getReplaceAll(content, MarkdownConfig.IMAGE_FORMAT, format);
+            String old = "@" + String.format(MarkdownConfig.IMAGE_RESULT, id + "");
+            content = content.replace(old, format);
             // 处理图片列表
             ImageBean imageBean = new ImageBean();
             imageBean.setStorage_id(id);
             imageBean.setImgUrl(url);
             list.add(imageBean);
-            AnimationRectBean rect = AnimationRectBean.buildFromImageView(mItemInfoImage);// 动画矩形
+            AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvSolid);// 动画矩形
             animationRectBeanArrayList.add(rect);
         }
         if (list.size() > 0) {
@@ -145,12 +148,14 @@ public class QuestionDetailContent extends FrameLayout {
 
     /**
      * 处理图文混排
+     *
      * @param content 正文
-     * @param list 图片列表
+     * @param list    图片列表
      */
-    private void dealContent(String content, List<ImageBean> list){
+    private void dealContent(String content, List<ImageBean> list) {
         InternalStyleSheet css = new Github();
-        css.addRule("body", "line-height: 1.6", "padding: 10px");
+        css.addRule("body", "line-height: 1.6", "padding: 0");
+        css.addRule(".container", "padding-right:0",";padding-left:0");
         mMdvQuestionContent.addStyleSheet(css);
         mMdvQuestionContent.loadMarkdown(content);
         mMdvQuestionContent.setOnElementListener(new MarkdownView.OnElementListener() {
@@ -198,7 +203,7 @@ public class QuestionDetailContent extends FrameLayout {
         });
     }
 
-    public Bitmap getShareBitmap(){
+    public Bitmap getShareBitmap() {
         return mShareBitmap;
     }
 }

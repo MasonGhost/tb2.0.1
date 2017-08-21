@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.topic;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -17,6 +18,7 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QATopicBeanGreenDaoImpl;
@@ -24,6 +26,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailContract;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 import java.util.Locale;
@@ -151,5 +154,28 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
     @Override
     public void onCancel(Share share) {
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_cancel));
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE)
+    public void updateList(Bundle bundle) {
+        if (bundle != null) {
+            QAListInfoBean qaListInfoBean = (QAListInfoBean) bundle.
+                    getSerializable(EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE);
+            if (qaListInfoBean != null) {
+                for (int i = 0; i < mRootView.getListDatas().size(); i++) {
+                    if (qaListInfoBean.getId().equals(mRootView.getListDatas().get(i).getId())){
+                        mRootView.getListDatas().remove(i);
+                        mRootView.refreshData();
+                        mRootView.showDeleteSuccess();
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

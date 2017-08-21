@@ -2,6 +2,7 @@
 <resources>
     <!--#########################################      tsp 间距定义       ################################-->
 
+    <dimen name="spacing_huge_100">100dp</dimen>
     <dimen name="spacing_huge">50dp</dimen>
     <dimen name="spacing_bigger_large">40dp</dimen>
     <dimen name="spacing_big_large">30dp</dimen>

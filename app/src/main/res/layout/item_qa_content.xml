@@ -13,7 +13,6 @@
         android:id="@+id/item_info_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_normal"
         android:ellipsize="end"
         android:gravity="bottom"
         android:maxLines="2"
@@ -24,15 +23,15 @@
         tools:text="流动性捉襟见肘，新三板如履薄冰"/>
 
     <ImageView
+        android:layout_marginTop="@dimen/spacing_normal"
         android:id="@+id/item_info_imag"
         android:layout_width="match_parent"
         android:visibility="gone"
         android:layout_height="@dimen/qa_info_iamge_height"
-        android:layout_marginBottom="@dimen/spacing_normal"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/npc"/>
+        android:scaleType="centerCrop"/>
 
     <TextView
+        android:layout_marginTop="@dimen/spacing_normal"
         android:lineSpacingExtra="@dimen/spacing_mid_small_8dp"
         android:id="@+id/item_info_hotcomment"
         android:layout_width="match_parent"

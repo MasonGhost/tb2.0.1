@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.information.publish;
 
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
@@ -44,7 +45,6 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                     @Override
                     protected void onSuccess(Integer data) {
                         mRootView.uploadPicSuccess(data);
-                        mRootView.showSnackSuccessMessage("图片上传成功");
                     }
 
                     @Override
@@ -69,7 +69,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
         mRepository.publishInfo(infoPublishBean).subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
             @Override
             protected void onSuccess(BaseJsonV2<Object> data) {
-                mRootView.showSnackSuccessMessage("发布成功");
+                mRootView.showSnackMessage("发布成功", Prompt.DONE);
             }
 
             @Override

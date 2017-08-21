@@ -28,7 +28,7 @@ public interface QuestionDetailContract {
         String getCurrentOrderType();
         int getRealSize();
         void updateFollowState();
-        void deleteQuestion(boolean isLoading, boolean success, String message);
+        void handleLoading(boolean isLoading, boolean success, String message);
     }
 
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{
@@ -36,13 +36,14 @@ public interface QuestionDetailContract {
         void handleFollowState(String questionId, boolean isFollowed);
         void shareQuestion(Bitmap bitmap);
         void deleteQuestion(Long question_id);
-        void applyForExcellent(Long question_id, boolean isExcellent);
+        void applyForExcellent(Long question_id);
+        void handleAnswerLike(boolean isLiked, final long answer_id, AnswerInfoBean answerInfoBean);
     }
 
     interface Repository extends IBasePublishQuestionRepository{
         Observable<QAListInfoBean> getQuestionDetail(String questionId);
         Observable<List<AnswerInfoBean>> getAnswerList(String questionId, String order_type, int size);
         Observable<BaseJsonV2<Object>> deleteQuestion(Long question_id);
-        void applyForExcellent(Long question_id, boolean isExcellent);
+        Observable<BaseJsonV2<Object>> applyForExcellent(Long question_id);
     }
 }

@@ -1,10 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,18 +14,18 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
-import com.zhiyicx.baseproject.widget.QuestionDetailMenuView;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
-import com.zhiyicx.thinksnsplus.widget.QuestionInviteUserPopWindow;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.comment.QuestionCommentActivity;
 import com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -38,8 +39,10 @@ import butterknife.BindView;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment
+        .BUNDLE_SOURCE_ID;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity
+        .BUNDLE_QUESTION_BEAN;
 
 /**
  * @author Catherine
@@ -48,9 +51,11 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  * @contact email:648129313@qq.com
  */
 
-public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter, AnswerInfoBean>
+public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
+        AnswerInfoBean>
         implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
-        QuestionSelectListTypePopWindow.OnOrderTypeSelectListener,MultiItemTypeAdapter.OnItemClickListener {
+        QuestionSelectListTypePopWindow.OnOrderTypeSelectListener, MultiItemTypeAdapter
+                .OnItemClickListener {
 
     @BindView(R.id.tv_toolbar_left)
     TextView mTvToolbarLeft;
@@ -64,7 +69,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     private String mCurrentOrderType;
 
     private QuestionSelectListTypePopWindow mOrderTypeSelectPop; // 选择排序的弹框
-    private QuestionInviteUserPopWindow mInvitePop; // 邀请回答的弹框
     private ActionPopupWindow mMorePop; // 更多弹框
     private boolean mIsMine = false;
 
@@ -89,18 +93,10 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    protected void initData() {
-        super.initData();
-        if (mQaListInfoBean != null) {
-            mPresenter.getQuestionDetail(String.valueOf(mQaListInfoBean.getId()));
-        }
-    }
-
-    @Override
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
-        AnswerListItem answerListItem = new AnswerListItem();
+        AnswerListItem answerListItem = new AnswerListItem(mPresenter);
         multiItemTypeAdapter.addItemViewDelegate(answerListItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerEmptyItem());
         multiItemTypeAdapter.setOnItemClickListener(this);
@@ -111,7 +107,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_SOURCE_ID,mListDatas.get(position).getId());
+        bundle.putLong(BUNDLE_SOURCE_ID, mListDatas.get(position - mHeaderAndFooterWrapper
+                .getHeadersCount()).getId());
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -133,14 +130,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     protected boolean setUseCenterLoading() {
-        return true;
+        return false;
     }
 
     @Override
     public void setQuestionDetail(QAListInfoBean questionDetail) {
         this.mQaListInfoBean = questionDetail;
-        mQuestionDetailHeader.setDetail(questionDetail);
         onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), false);
+        mQuestionDetailHeader.setDetail(questionDetail);
     }
 
     @Override
@@ -173,12 +170,17 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void deleteQuestion(boolean isLoading, boolean success, String message) {
-        if (isLoading){
-            showSnackLoadingMessage(getString(R.string.info_deleting));
+    public void handleLoading(boolean isLoading, boolean success, String message) {
+        if (isLoading) {
+            showSnackLoadingMessage(message);
         } else {
-            if (success){
-                getActivity().finish();
+            if (success) {
+                if (TextUtils.isEmpty(message)) {
+                    mMorePop.dismiss();
+                    getActivity().finish();
+                } else {
+                    showSnackSuccessMessage(message);
+                }
             } else {
                 showSnackErrorMessage(message);
             }
@@ -204,24 +206,17 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
-        if (mQaListInfoBean.getAmount() == 0){
+        if (mQaListInfoBean.getAmount() == 0) {
             // 跳转设置悬赏
-        } else if (invitations != null){
-            // 弹出邀请的人
-            if (mInvitePop != null){
-                mInvitePop.show();
-            }
         }
     }
 
     @Override
     public void onAddAnswerClick() {
         // 跳转发布回答
-        Intent intent = new Intent(getContext(), PublishAnswerActivity.class);
-        Bundle bundle=new Bundle();
-        bundle.putLong(BUNDLE_SOURCE_ID,1L);// 这个 question_id 加上
-        intent.putExtras(bundle);
-        startActivity(intent);
+        PublishAnswerFragment.startQActivity(getActivity(), PublishType
+                .PUBLISH_ANSWER, 1L// 这个 question_id 加上
+                , null);
     }
 
     @Override
@@ -232,11 +227,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     private void initHeaderView() {
         mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
-        mQuestionDetailHeader = new QuestionDetailHeader(getContext(), null/*mPresenter.getAdvert()*/);
+        mQuestionDetailHeader = new QuestionDetailHeader(getActivity(), null/*mPresenter
+        .getAdvert()*/);
         mQuestionDetailHeader.setOnActionClickListener(this);
         mHeaderAndFooterWrapper.addHeaderView(mQuestionDetailHeader.getQuestionHeaderView());
         View mFooterView = new View(getContext());
-        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, 1));
         mHeaderAndFooterWrapper.addFootView(mFooterView);
         mRvList.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -246,11 +243,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         // 初始化底部工具栏数据
         mQaDetailTool.setImageNormalResourceIds(new int[]{R.mipmap.home_ico_good_normal
                 , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
-                , R.mipmap.home_ico_more, R.mipmap.detail_ico_edit_normal, R.mipmap.detail_ico_good_uncollect
+                , R.mipmap.home_ico_more, R.mipmap.detail_ico_edit_normal, R.mipmap
+                .detail_ico_good_uncollect
         });
         mQaDetailTool.setImageCheckedResourceIds(new int[]{R.mipmap.home_ico_good_high
                 , R.mipmap.home_ico_comment_normal, R.mipmap.detail_ico_share_normal
-                , R.mipmap.home_ico_more, R.mipmap.detail_ico_edit_normal, R.mipmap.detail_ico_collect
+                , R.mipmap.home_ico_more, R.mipmap.detail_ico_edit_normal, R.mipmap
+                .detail_ico_collect
         });
         mQaDetailTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment
                 , R.string.share, R.string.more, R.string.qa_detail_edit, R.string.collect});
@@ -263,7 +262,11 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             mQaDetailTool.getTag(R.id.view_data);
             switch (position) {
                 case DynamicDetailMenuView.ITEM_POSITION_1:// 跳转评论页
-
+                    Intent intent = new Intent(getActivity(), QuestionCommentActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_QUESTION_BEAN, mQaListInfoBean);
+                    intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+                    startActivity(intent);
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
                     mPresenter.shareQuestion(mQuestionDetailHeader.getShareBitmap());
@@ -275,8 +278,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     // 非发布者
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
-//                    initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getHas_collect());
-//                    mDealInfoMationPopWindow.show();
+                    mMorePop.show();
                     break;
                 default:
                     break;
@@ -291,48 +293,52 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 .subscribe(aVoid -> getActivity().finish());
     }
 
-    private void initPopWindow(){
-        mOrderTypeSelectPop = QuestionSelectListTypePopWindow.Builder()
-                .with(getActivity())
-                .parentView(mQuestionDetailHeader.getQuestionHeaderView())
-                .alpha(1f)
-                .setListener(this)
-                .build();
-        if (mQaListInfoBean.getInvitations() != null && mQaListInfoBean.getInvitations().size() > 0){
-            mInvitePop = QuestionInviteUserPopWindow.Builder()
+    private void initPopWindow() {
+        if (mOrderTypeSelectPop == null) {
+            mOrderTypeSelectPop = QuestionSelectListTypePopWindow.Builder()
                     .with(getActivity())
                     .parentView(mQuestionDetailHeader.getQuestionHeaderView())
-                    .setData(mQaListInfoBean.getInvitations().get(0))
                     .alpha(1f)
+                    .setListener(this)
                     .build();
         }
-        mMorePop = ActionPopupWindow.builder()
-                .with(getActivity())
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .item1Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : getString(R.string.qa_question_develop))
-                .item2Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : "")
-                .item2Color(R.color.important_for_note)
-                .bottomStr(getString(R.string.cancel))
-                .item1ClickListener(() -> {
-                    if (mIsMine){
-                        // 申请精选问答
-                        mPresenter.applyForExcellent(mQaListInfoBean.getId(), !(mQaListInfoBean.getExcellent() == 1));
-                    }
-                    mMorePop.dismiss();
-                })
-                .item2ClickListener(() -> {
-                    // 删除问答
-                    mPresenter.deleteQuestion(mQaListInfoBean.getId());
-                })
-                .build();
+        if (mMorePop == null) {
+            mMorePop = ActionPopupWindow.builder()
+                    .with(getActivity())
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .item1Str(mIsMine ? getString(R.string.qa_apply_for_excellent) : getString(R
+                            .string.qa_question_develop))
+                    .item2Str(mIsMine ? getString(R.string.qa_question_delete) : "")
+                    .item2Color(ContextCompat.getColor(getContext(), R.color.important_for_note))
+                    .bottomStr(getString(R.string.cancel))
+                    .item1ClickListener(() -> {
+                        if (mIsMine) {
+                            if (mQaListInfoBean.getExcellent() != 1) {
+                                // 申请精选问答
+                                mPresenter.applyForExcellent(mQaListInfoBean.getId());
+                            } else {
+                                showSnackErrorMessage(getString(R.string
+                                        .qa_question_excellent_reapply));
+                            }
+                        }
+                        mMorePop.dismiss();
+                    })
+                    .item2ClickListener(() -> {
+                        // 删除问答
+                        mPresenter.deleteQuestion(mQaListInfoBean.getId());
+                    })
+                    .build();
+        }
+
     }
 
     @Override
     public void onOrderTypeSelected(int type) {
         mQuestionDetailHeader.setCurrentOrderType(type);
-        mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader.ORDER_BY_TIME;
+        mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader
+                .ORDER_BY_TIME;
         requestNetData(0L, false);
     }
 }
