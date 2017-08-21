@@ -59,8 +59,16 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
         mRvSearchHistory.setItemAnimator(new DefaultItemAnimator());//设置动画
         mHsitoryAdapter = getHistoryAdapter();
         mRvSearchHistory.setAdapter(mHsitoryAdapter);
+        refreshHistory();
     }
-
+    private void refreshHistory() {
+        mHsitoryAdapter.notifyDataSetChanged();
+        if(mHistoryData.isEmpty()){
+            mRvSearchHistory.setVisibility(View.GONE);
+        }else {
+            mRvSearchHistory.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     protected boolean showToolbar() {
