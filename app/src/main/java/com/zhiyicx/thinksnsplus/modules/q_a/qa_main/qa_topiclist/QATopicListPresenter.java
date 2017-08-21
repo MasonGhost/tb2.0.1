@@ -107,15 +107,6 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
         addSubscrebe(all);
     }
 
-    /**
-     * 存搜索记录
-     *
-     * @param searchContent save content
-     */
-    private void saveSearhDatq(String searchContent) {
-        QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent, QASearchHistoryBean.TYPE_QA_TOPIC);
-        mQASearchBeanGreenDao.saveSingleData(qaSearchHistoryBean);
-    }
 
     @Override
     public void handleTopicFollowState(int position, String topic_id, boolean isFollow) {
@@ -134,6 +125,15 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
         return false;
     }
 
+    /**
+     * 存搜索记录
+     *
+     * @param searchContent save content
+     */
+    private void saveSearhDatq(String searchContent) {
+        QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent, QASearchHistoryBean.TYPE_QA_TOPIC);
+        mQASearchBeanGreenDao.saveHistoryDataByType(qaSearchHistoryBean,QASearchHistoryBean.TYPE_QA_TOPIC);
+    }
 
     @Override
     public List<QASearchHistoryBean> getFirstShowHistory() {

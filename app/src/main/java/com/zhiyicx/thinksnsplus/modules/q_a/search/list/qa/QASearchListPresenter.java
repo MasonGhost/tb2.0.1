@@ -96,7 +96,7 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
      */
     private void saveSearhDatq(String searchContent) {
         QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent, QASearchHistoryBean.TYPE_QA);
-        mQASearchBeanGreenDao.saveSingleData(qaSearchHistoryBean);
+        mQASearchBeanGreenDao.saveHistoryDataByType(qaSearchHistoryBean,QASearchHistoryBean.TYPE_QA);
     }
 
     @Override

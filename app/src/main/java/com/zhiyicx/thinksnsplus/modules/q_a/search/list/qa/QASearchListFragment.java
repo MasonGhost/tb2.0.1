@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -66,10 +68,22 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     private List<QASearchHistoryBean> mHistoryData = new ArrayList<>();
 
 
+    private IHistoryCententClickListener mIHistoryCententClickListener;
+
+
     public static QASearchListFragment newInstance(Bundle bundle) {
         QASearchListFragment followFansListFragment = new QASearchListFragment();
         followFansListFragment.setArguments(bundle);
         return followFansListFragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof IHistoryCententClickListener) {
+            this.mIHistoryCententClickListener = (IHistoryCententClickListener) activity;
+        }
+
     }
 
     @Override
@@ -102,7 +116,7 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
 
         mHistoryData.addAll(mPresenter.getFirstShowHistory());
         if (mHistoryData.size() >= DEFAULT_FIRST_SHOW_HISTORY_SIZE) {
-            mHistoryData.add(new QASearchHistoryBean(getString(R.string.show_all_history),QASearchHistoryBean.TYPE_DEFAULT));
+            mHistoryData.add(new QASearchHistoryBean(getString(R.string.show_all_history), QASearchHistoryBean.TYPE_DEFAULT));
         }
         mRvSearchHistory.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvSearchHistory.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0));//设置Item的间隔
@@ -163,7 +177,9 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
                 RxView.clicks(holder.getView(R.id.tv_content))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
-                            // TODO: 2017/8/18 增加搜索输入
+                            if (mIHistoryCententClickListener != null) {
+                                mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
+                            }
 
                         });
                 RxView.clicks(holder.getView(R.id.iv_delete))
@@ -230,17 +246,21 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     private void checkEmptyView() {
-        if(mListDatas.isEmpty()){
+        if (mListDatas.isEmpty()) {
             mLlEmpty.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mLlEmpty.setVisibility(View.GONE);
         }
     }
+
     @Override
     public void onEditChanged(String str) {
+        if (mSearchContent.equals(str)) {
+            return;
+        }
         mSearchContent = str;
-        if(TextUtils.isEmpty(str)){
-            onNetResponseSuccess(new ArrayList<>(),false);
+        if (TextUtils.isEmpty(str)) {
+            onNetResponseSuccess(new ArrayList<>(), false);
             return;
         }
         // 请求网络数据，就隐藏历史

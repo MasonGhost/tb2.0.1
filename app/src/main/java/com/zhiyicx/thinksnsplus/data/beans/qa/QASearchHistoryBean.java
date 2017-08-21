@@ -18,7 +18,6 @@ public class QASearchHistoryBean {
     public static final int TYPE_QA_TOPIC = 2;
     @Id(autoincrement = true)
     private Long id;
-    @Unique
     private String content;
     private long create_time;
     private int type = TYPE_DEFAULT;
@@ -72,5 +71,15 @@ public class QASearchHistoryBean {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "QASearchHistoryBean{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", create_time=" + create_time +
+                ", type=" + type +
+                '}';
     }
 }

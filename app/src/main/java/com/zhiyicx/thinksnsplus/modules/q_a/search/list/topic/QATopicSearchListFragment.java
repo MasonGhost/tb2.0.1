@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.list.topic;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -56,10 +58,22 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     private List<QASearchHistoryBean> mHistoryData = new ArrayList<>();
     private String mSearchContent = "";
 
+    private IHistoryCententClickListener mIHistoryCententClickListener;
+
+
     public static QATopicSearchListFragment newInstance(Bundle bundle) {
         QATopicSearchListFragment followFansListFragment = new QATopicSearchListFragment();
         followFansListFragment.setArguments(bundle);
         return followFansListFragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof IHistoryCententClickListener) {
+            this.mIHistoryCententClickListener = (IHistoryCententClickListener) activity;
+        }
+
     }
 
     @Override
@@ -126,7 +140,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
 
     @Override
     protected int setEmptView() {
-        return R.mipmap.img_default_nobody;
+        return R.mipmap.img_default_nothing;
     }
 
     public void getHistoryAdapter() {
@@ -148,7 +162,9 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
                 RxView.clicks(holder.getView(R.id.tv_content))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
-                            // TODO: 2017/8/18 增加搜索输入
+                            if (mIHistoryCententClickListener != null) {
+                                mIHistoryCententClickListener.onContentClick(qaSearchHistoryBean.getContent());
+                            }
 
                         });
                 RxView.clicks(holder.getView(R.id.iv_delete))
@@ -201,6 +217,9 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
 
     @Override
     public void onEditChanged(String str) {
+        if (mSearchContent.equals(str)) {
+            return;
+        }
         mSearchContent = str;
         if (TextUtils.isEmpty(str)) {
             onNetResponseSuccess(new ArrayList<>(), false);

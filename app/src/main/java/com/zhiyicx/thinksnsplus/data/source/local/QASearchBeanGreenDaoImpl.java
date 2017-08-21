@@ -59,7 +59,7 @@ public class QASearchBeanGreenDaoImpl extends CommonCacheImpl<QASearchHistoryBea
      * @param size first show size
      * @return 第一次显示的
      */
-    public List<QASearchHistoryBean> getFristShowData(int size,int type) {
+    public List<QASearchHistoryBean> getFristShowData(int size, int type) {
         QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
         return walletBeanDao.queryBuilder()
                 .where(QASearchHistoryBeanDao.Properties.Type.eq(type))
@@ -106,6 +106,25 @@ public class QASearchBeanGreenDaoImpl extends CommonCacheImpl<QASearchHistoryBea
         walletBeanDao.deleteInTx(getQATopicSearchHistory());
     }
 
+    /**
+     * @param qaSearchHistoryBean
+     * @param type
+     */
+    public void saveHistoryDataByType(QASearchHistoryBean qaSearchHistoryBean, int type) {
+        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
+        QASearchHistoryBean tmpe = walletBeanDao.queryBuilder()
+                .where(QASearchHistoryBeanDao.Properties.Content.eq(qaSearchHistoryBean.getContent()), QASearchHistoryBeanDao.Properties.Type.eq(type))
+                .unique();
+
+        if (tmpe == null) {
+            System.out.println("tmpe = ");
+            insertOrReplace(qaSearchHistoryBean);
+        } else {
+            System.out.println("tmpe = " + tmpe.toString());
+            tmpe.setCreate_time(qaSearchHistoryBean.getCreate_time());
+            insertOrReplace(tmpe);
+        }
+    }
 
     @Override
     public void clearTable() {
