@@ -22,6 +22,7 @@ public class CustomWEBActivity extends TSActivity<RegisterPresenter, CustomWEBFr
     private static String flag = "";
 
     public static void startToWEBActivity(Context context, String... args) {
+        flag = "";
         Intent intent = new Intent(context, CustomWEBActivity.class);
         Bundle bundle = new Bundle();
         if (args.length > 0) {

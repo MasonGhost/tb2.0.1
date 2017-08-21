@@ -17,6 +17,7 @@ import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.baseproject.widget.popwindow.CenterInfoPopWindow;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -332,7 +333,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .subscribe(aVoid -> {
                     // 发布
                     try {
-                        mQAPublishBean.setAmount(mRewardMoney);
+                        mQAPublishBean.setAmount(PayConfig.realCurrencyYuan2Fen(mRewardMoney));
                         mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
                         mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
                         mPresenter.publishQuestion(mQAPublishBean);
