@@ -209,6 +209,11 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
+    public void payForExcellent() {
+
+    }
+
+    @Override
     public void onStart(Share share) {
 
     }

@@ -150,12 +150,11 @@ public class InfoDetailHeaderView {
                             .getUpdated_at()));
             mFrom.setText(infoData);
             // 引用
-
             if (!TextUtils.isEmpty(infoMain.getSubject())){
                 InternalStyleSheet css = new Github();
-                css.addRule(".container", "padding-right:0",";padding-left:10px");
+                css.addRule(".container", "padding-right:0px",";padding-left:0px");
                 css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
-                css.addRule("p", "margin:0");
+                css.addRule("p", "margin:10px");
                 mContentSubject.setVisibility(VISIBLE);
                 mContentSubject.addStyleSheet(css);
                 mContentSubject.loadMarkdown(infoMain.getSubject());
