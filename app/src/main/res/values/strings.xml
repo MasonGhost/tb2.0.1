@@ -484,6 +484,8 @@
     <string name="qa_question_excellent_reapply">已经是精选问答啦~</string>
     <string name="qa_question_comment_count">评论(%d)</string>
     <string name="qa_question_comment_delete_success">删除成功</string>
+    <string name="qa_search">\t\t\t\t\t\t问答\t\t\t\t\t\t\t</string>
+    <string name="qa_search_topic">\t\t\t\t\t\t话题\t\t\t\t\t\t\t</string>
 
     <!--签到-->
     <string name="check_in">签到</string>

@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.container.QASearchContainerActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -116,6 +117,12 @@ public class QA_Fragment extends TSFragment {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> getActivity().finish());
+
+        RxView.clicks(mIvSerach)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> startActivity(new Intent(getActivity(), QASearchContainerActivity.class))
+                );
     }
 
     private void hideFragment(FragmentTransaction fragmentTransaction) {

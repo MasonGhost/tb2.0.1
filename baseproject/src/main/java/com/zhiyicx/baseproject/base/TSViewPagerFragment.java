@@ -21,6 +21,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
     private static final int DEFAULT_OFFSET_PAGE = 3;
     protected TabSelectView mTsvToolbar;
     protected ViewPager mVpFragment;
+    protected TSViewPagerAdapter tsViewPagerAdapter;
 
     @Override
     protected int getBodyLayoutId() {
@@ -45,7 +46,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         mTsvToolbar = (TabSelectView) rootView.findViewById(R.id.tsv_toolbar);
         mVpFragment = (ViewPager) rootView.findViewById(R.id.vp_fragment);
         mVpFragment.setOffscreenPageLimit(DEFAULT_OFFSET_PAGE);
-        TSViewPagerAdapter tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
+        tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
         mTsvToolbar.initTabView(mVpFragment, initTitles());

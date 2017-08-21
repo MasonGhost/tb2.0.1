@@ -435,14 +435,23 @@
         </activity>
         <activity
             android:name=".modules.q_a.QA_Activity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask">
         </activity>
         <activity
+            android:name=".modules.q_a.search.container.QASearchContainerActivity"
+            android:screenOrientation="portrait"
+            >
+        </activity>
+        <activity
             android:name=".modules.q_a.publish.detail.PublishContentActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
-        <activity android:name=".modules.wallet.reward.RewardActivity"/>
-        <activity android:name=".modules.wallet.reward.list.RewardListActivity"/>
+        <activity android:name=".modules.wallet.reward.RewardActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".modules.wallet.reward.list.RewardListActivity"
+                  android:screenOrientation="portrait"/>
         <!--资讯发布-->
         <activity
             android:name=".modules.information.publish.PublishInfoActivity"

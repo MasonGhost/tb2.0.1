@@ -156,9 +156,13 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
     }
 
 
-    @OnClick({R.id.tv_toolbar_center, R.id.tv_toolbar_right_two, R.id.tv_toolbar_right})
+    @OnClick({R.id.tv_toolbar_left,R.id.tv_toolbar_center, R.id.tv_toolbar_right_two, R.id.tv_toolbar_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.tv_toolbar_left:
+                getActivity().finish();
+                break;
+
             case R.id.tv_toolbar_center:
                 startActivity(new Intent(getActivity(), SearchSomeOneActivity.class));
 
