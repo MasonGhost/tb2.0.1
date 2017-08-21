@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
@@ -51,6 +52,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         CenterInfoPopWindow.CenterPopWindowItem1ClickListener {
 
     public static final String BUNDLE_RESULT = "bundle_result";
+    public static final String BUNDLE_QUESTION_ID = "bundle_question_id";
 
     @BindView(R.id.tv_choose_tip)
     TextView mTvChooseTip;
@@ -94,6 +96,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     EditText mEtOnlookerInput;
     @BindView(R.id.ll_onlooker_set_custom_money)
     LinearLayout mLlOnlookerSetCustomMoney;
+    @BindView(R.id.rl_invite_container)
+    RelativeLayout mRlInviteContainer;
 
     // 悬赏相关
     private List<Float> mRewardLabels; // reward labels
@@ -105,6 +109,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     private CenterInfoPopWindow mRulePop; // 悬赏规则
 
     private QAPublishBean mQAPublishBean;
+    private Long mQuestionId = 0L; //  发布之后重新设置悬赏
 
     public static QARewardFragment instance(Bundle bundle) {
         QARewardFragment fragment = new QARewardFragment();
@@ -119,6 +124,13 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
+        if (getArguments().containsKey(BUNDLE_QUESTION_ID)){
+            mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
+        }
+        if (!mQuestionId.equals(0L)){
+            mBtPublish.setText(getString(R.string.sure));
+            mRlInviteContainer.setVisibility(View.GONE);
+        }
         mTvChooseTip.setText(R.string.qa_publish_reward_set_money);
         mTvInviteHint.setText(getString(R.string.qa_publish_reward));
         mTvInviteHint.append(getString(R.string.qa_publish_reward_invite));
@@ -134,7 +146,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected String setCenterTitle() {
-        return getString(R.string.qa_publish_reward_enable_skip);
+        return mQuestionId.equals(0L) ? getString(R.string.qa_publish_reward_enable_skip) : getString(R.string.qa_reward_public);
     }
 
     @Override
@@ -158,7 +170,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TagFrom.QA_PUBLISH.id && resultCode == RESULT_OK) {// 选择专家
             ExpertBean expertBean = data.getExtras().getParcelable(BUNDLE_RESULT);
-            if (expertBean!=null){
+            if (expertBean != null) {
                 List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
                 QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
                 typeIds.setUser(expertBean.getId());
@@ -332,10 +344,15 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .subscribe(aVoid -> {
                     // 发布
                     try {
-                        mQAPublishBean.setAmount(mRewardMoney);
-                        mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
-                        mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
-                        mPresenter.publishQuestion(mQAPublishBean);
+                        if (mQuestionId.equals(0L)){
+                            mQAPublishBean.setAmount(mRewardMoney);
+                            mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
+                            mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
+                            mPresenter.publishQuestion(mQAPublishBean);
+                        } else {
+                            // 已发布的资讯 重新设置悬赏金额
+                            mPresenter.resetReward(mQuestionId, mRewardMoney);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -429,4 +446,13 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         return true;
     }
 
+    @Override
+    public void resetRewardSuccess() {
+        Bundle bundle = new Bundle();
+        bundle.putDouble(BUNDLE_QUESTION_ID, mRewardMoney);
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
 }

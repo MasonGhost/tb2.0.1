@@ -15,7 +15,7 @@ public class QASearchHistoryBeanTest extends AbstractDaoTestLongPk<QASearchHisto
     protected QASearchHistoryBean createEntity(Long key) {
         QASearchHistoryBean entity = new QASearchHistoryBean();
         entity.setId(key);
-        entity.setType();
+        entity.setType(1);
         return entity;
     }
 

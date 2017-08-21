@@ -490,6 +490,10 @@
     <string name="qa_search">\t\t\t\t\t\t问答\t\t\t\t\t\t\t</string>
     <string name="qa_search_topic">\t\t\t\t\t\t话题\t\t\t\t\t\t\t</string>
     <string name="qa_pay_for_excellent">精选问答支付</string>
+    <string name="qa_pay_for_watch">围观支付</string>
+    <string name="qa_go_to_watch">去围观</string>
+    <string name="qa_go_to_watched">已围观</string>
+    <string name="qa_reset_reward_success">设置悬赏成功</string>
 
     <!--签到-->
     <string name="check_in">签到</string>

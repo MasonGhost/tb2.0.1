@@ -27,10 +27,14 @@ import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerListItem.OnGoToWatchClickListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.comment.QuestionCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment;
 import com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter.OnItemClickListener;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,12 +44,15 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment
         .BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity
         .BUNDLE_QUESTION_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment.BUNDLE_QUESTION_ID;
+import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.*;
 
 /**
  * @author Catherine
@@ -55,10 +62,10 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
-        AnswerInfoBean>
-        implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
-        QuestionSelectListTypePopWindow.OnOrderTypeSelectListener, MultiItemTypeAdapter
-                .OnItemClickListener {
+        AnswerInfoBean> implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
+        OnOrderTypeSelectListener,OnItemClickListener, OnGoToWatchClickListener {
+
+    public static final int REWARD_CODE = 1;
 
     @BindView(R.id.tv_toolbar_left)
     TextView mTvToolbarLeft;
@@ -102,6 +109,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
         AnswerListItem answerListItem = new AnswerListItem(mPresenter);
+        answerListItem.setOnGoToWatchClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(answerListItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerEmptyItem());
         multiItemTypeAdapter.setOnItemClickListener(this);
@@ -110,6 +118,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        AnswerInfoBean answerInfoBean =  mListDatas.get(position - mHeaderAndFooterWrapper
+                .getHeadersCount());
         if (mQaListInfoBean.getLook() == 1
                 && !mQaListInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())){
             // 开启了围观并且不是作者本人点击
@@ -117,8 +127,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         } else {
             Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putLong(BUNDLE_SOURCE_ID, mListDatas.get(position - mHeaderAndFooterWrapper
-                    .getHeadersCount()).getId());
+            bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
             intent.putExtras(bundle);
             startActivity(intent);
         }
@@ -219,7 +228,11 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
         // 跳转设置悬赏
-
+        Intent intent = new Intent(getActivity(), QARewardActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong(BUNDLE_QUESTION_ID, mQaListInfoBean.getId());
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REWARD_CODE);
     }
 
     @Override
@@ -308,7 +321,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     private void initPopWindow() {
         if (mOrderTypeSelectPop == null) {
-            mOrderTypeSelectPop = QuestionSelectListTypePopWindow.Builder()
+            mOrderTypeSelectPop = Builder()
                     .with(getActivity())
                     .parentView(mQuestionDetailHeader.getQuestionHeaderView())
                     .alpha(1f)
@@ -419,5 +432,23 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader
                 .ORDER_BY_TIME;
         requestNetData(0L, false);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REWARD_CODE && resultCode == RESULT_OK){
+            Bundle bundle = data.getExtras();
+            if (bundle != null){
+                Double amount = bundle.getDouble(BUNDLE_QUESTION_ID, 0);
+                mQaListInfoBean.setAmount(amount);
+                mQuestionDetailHeader.updateRewardType(mQaListInfoBean);
+            }
+        }
+    }
+
+    @Override
+    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position) {
+
     }
 }

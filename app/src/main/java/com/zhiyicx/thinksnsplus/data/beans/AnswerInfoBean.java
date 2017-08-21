@@ -62,6 +62,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     private List<RewardsListBean> rewarders;
     @ToOne(joinProperty = "question_id")
     private QAListInfoBean question;
+    private boolean could; // 是否开启了围观
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -71,12 +72,12 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
     @Generated(hash = 1250738736)
     private transient AnswerInfoBeanDao myDao;
 
-    @Generated(hash = 1083683949)
+    @Generated(hash = 59376019)
     public AnswerInfoBean(Long id, Long question_id, Long user_id, String body, int anonymity,
             int adoption, int invited, int comments_count, double rewards_amount, int rewarder_count,
             int likes_count, int views_count, String created_at, String updated_at, UserInfoBean user,
             boolean liked, boolean collected, boolean rewarded, List<AnswerDigListBean> likes,
-            List<RewardsListBean> rewarders) {
+            List<RewardsListBean> rewarders, boolean could) {
         this.id = id;
         this.question_id = question_id;
         this.user_id = user_id;
@@ -97,6 +98,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.rewarded = rewarded;
         this.likes = likes;
         this.rewarders = rewarders;
+        this.could = could;
     }
 
     @Generated(hash = 1616850933)
@@ -143,8 +145,12 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
                 ", user=" + user +
                 ", liked=" + liked +
                 ", collected=" + collected +
+                ", commentList=" + commentList +
                 ", rewarded=" + rewarded +
+                ", likes=" + likes +
+                ", rewarders=" + rewarders +
                 ", question=" + question +
+                ", could=" + could +
                 '}';
     }
 
@@ -403,6 +409,15 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         dest.writeTypedList(this.likes);
         dest.writeTypedList(this.rewarders);
         dest.writeParcelable(this.question, flags);
+        dest.writeByte(this.could ? (byte) 1 : (byte) 0);
+    }
+
+    public boolean getCould() {
+        return this.could;
+    }
+
+    public void setCould(boolean could) {
+        this.could = could;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -436,6 +451,7 @@ public class AnswerInfoBean extends BaseListBean implements Serializable{
         this.likes = in.createTypedArrayList(AnswerDigListBean.CREATOR);
         this.rewarders = in.createTypedArrayList(RewardsListBean.CREATOR);
         this.question = in.readParcelable(QAListInfoBean.class.getClassLoader());
+        this.could = in.readByte() != 0;
     }
 
     public static final Creator<AnswerInfoBean> CREATOR = new Creator<AnswerInfoBean>() {
