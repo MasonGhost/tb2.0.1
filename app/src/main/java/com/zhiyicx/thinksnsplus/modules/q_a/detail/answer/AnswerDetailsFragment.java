@@ -215,12 +215,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         return R.layout.fragment_info_detail;
     }
 
-
-    @Override
-    public void setPresenter(AnswerDetailsConstract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     @Override
     public Long getAnswerId() {
         return mAnswerInfoBean.getId();
@@ -299,6 +293,11 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     @Override
     public void loadFinish() {
         closeLoadingView();
+    }
+
+    @Override
+    public void clickUserInfo(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     @Override
