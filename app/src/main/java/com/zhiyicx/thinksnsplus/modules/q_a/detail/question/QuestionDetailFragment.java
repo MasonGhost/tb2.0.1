@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
@@ -70,6 +72,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     private QuestionSelectListTypePopWindow mOrderTypeSelectPop; // 选择排序的弹框
     private ActionPopupWindow mMorePop; // 更多弹框
+    private PayPopWindow mPayImagePopWindow;
     private boolean mIsMine = false;
 
     public QuestionDetailFragment instance(Bundle bundle) {
@@ -215,7 +218,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onAddAnswerClick() {
         // 跳转发布回答
         PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                .PUBLISH_ANSWER, 1L// 这个 question_id 加上
+                .PUBLISH_ANSWER, mQaListInfoBean.getId()// 这个 question_id 加上
                 , null);
     }
 
@@ -273,6 +276,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_4:// 编辑
                     // 发布者
+                    PublishAnswerFragment.startQActivity(getActivity(), PublishType
+                            .UPDATE_QUESTION, mQaListInfoBean.getId(), mQaListInfoBean.getBody());
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_5:// 收藏
                     // 非发布者
@@ -318,6 +323,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                             if (mQaListInfoBean.getExcellent() != 1) {
                                 // 申请精选问答
                                 mPresenter.applyForExcellent(mQaListInfoBean.getId());
+//                                mPayImagePopWindow.show();
                             } else {
                                 showSnackErrorMessage(getString(R.string
                                         .qa_question_excellent_reapply));
@@ -331,6 +337,45 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     })
                     .build();
         }
+
+//        if (mPayImagePopWindow == null){
+//            mPayImagePopWindow = PayPopWindow.builder()
+//                    .with(getActivity())
+//                    .isWrap(true)
+//                    .isFocus(true)
+//                    .isOutsideTouch(true)
+//                    .buildLinksColor1(R.color.themeColor)
+//                    .buildLinksColor2(R.color.important_for_content)
+//                    .contentView(R.layout.ppw_for_center)
+//                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+//                    .buildDescrStr(String.format(getString(strRes) + getString(R
+//                            .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
+//                    .buildLinksStr(getString(R.string.buy_pay_member))
+//                    .buildTitleStr(getString(R.string.buy_pay))
+//                    .buildItem1Str(getString(R.string.buy_pay_in))
+//                    .buildItem2Str(getString(R.string.buy_pay_out))
+//                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
+//                    .buildCenterPopWindowItem1ClickListener(() -> {
+//                        mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
+//                        mPayImagePopWindow.hide();
+//                    })
+//                    .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
+//                    .buildCenterPopWindowLinkClickListener(new PayPopWindow
+//                            .CenterPopWindowLinkClickListener() {
+//                        @Override
+//                        public void onLongClick() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onClicked() {
+//                            // 申请精选问答
+//                            mPresenter.applyForExcellent(mQaListInfoBean.getId());
+//                        }
+//                    })
+//                    .build();
+//        }
+
 
     }
 

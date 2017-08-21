@@ -48,7 +48,7 @@ public class ExpertBean extends BaseListBean{
     private String bg;
     private VerifiedBean verified;
     private ExtraBean extra;
-    private List<TagsBean> tags;
+    private List<UserTagBean> tags;
 
     public int getId() {
         return id;
@@ -154,11 +154,11 @@ public class ExpertBean extends BaseListBean{
         this.extra = extra;
     }
 
-    public List<TagsBean> getTags() {
+    public List<UserTagBean> getTags() {
         return tags;
     }
 
-    public void setTags(List<TagsBean> tags) {
+    public void setTags(List<UserTagBean> tags) {
         this.tags = tags;
     }
 
@@ -411,7 +411,7 @@ public class ExpertBean extends BaseListBean{
         this.bg = in.readString();
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
         this.extra = in.readParcelable(ExtraBean.class.getClassLoader());
-        this.tags = in.createTypedArrayList(TagsBean.CREATOR);
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
     }
 
     public static final Creator<ExpertBean> CREATOR = new Creator<ExpertBean>() {

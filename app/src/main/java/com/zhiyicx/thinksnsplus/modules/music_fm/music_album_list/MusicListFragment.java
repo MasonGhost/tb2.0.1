@@ -105,11 +105,6 @@ public class MusicListFragment extends TSListFragment<MusicContract.Presenter, M
     }
 
     @Override
-    public void setPresenter(MusicContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.music_fm);
     }
