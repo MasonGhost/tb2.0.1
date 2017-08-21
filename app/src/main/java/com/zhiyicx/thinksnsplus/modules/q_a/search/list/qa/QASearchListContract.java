@@ -26,6 +26,12 @@ public interface QASearchListContract {
     interface Presenter extends ITSListPresenter<QAListInfoBean> {
 
         List<QASearchHistoryBean> getFirstShowHistory();
+
+        void cleaerAllSearchHistory();
+
+        List<QASearchHistoryBean>  getAllSearchHistory();
+
+        void deleteSearchHistory(QASearchHistoryBean qaSearchHistoryBean);
     }
 
     interface Repository {

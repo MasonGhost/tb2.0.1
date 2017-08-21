@@ -26,6 +26,7 @@ public class QASearchHistoryBean {
     public QASearchHistoryBean(String content, int type) {
         this.content = content;
         this.type = type;
+        this.create_time=System.currentTimeMillis();
     }
 
     @Generated(hash = 2062135283)

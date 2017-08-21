@@ -88,7 +88,7 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
      * @param searchContent
      */
     private void saveSearhDatq(String searchContent) {
-        QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent,QASearchHistoryBean.TYPE_QA);
+        QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent, QASearchHistoryBean.TYPE_QA);
         mQASearchBeanGreenDao.saveSingleData(qaSearchHistoryBean);
     }
 
@@ -105,6 +105,21 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
 
     @Override
     public List<QASearchHistoryBean> getFirstShowHistory() {
-        return mQASearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE);
+        return mQASearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE,QASearchHistoryBean.TYPE_QA);
+    }
+
+    @Override
+    public void cleaerAllSearchHistory() {
+        mQASearchBeanGreenDao.clearAllQASearchHistory();
+    }
+
+    @Override
+    public List<QASearchHistoryBean> getAllSearchHistory() {
+        return mQASearchBeanGreenDao.getQASearchHistory();
+    }
+
+    @Override
+    public void deleteSearchHistory(QASearchHistoryBean qaSearchHistoryBean) {
+        mQASearchBeanGreenDao.deleteSingleCache(qaSearchHistoryBean);
     }
 }

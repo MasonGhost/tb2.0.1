@@ -26,7 +26,7 @@ public class QASearchBeanGreenDaoImpl extends CommonCacheImpl<QASearchHistoryBea
     @Override
     public long saveSingleData(QASearchHistoryBean singleData) {
         QASearchHistoryBeanDao walletBeanDao = getWDaoSession().getQASearchHistoryBeanDao();
-        return walletBeanDao.insert(singleData);
+        return walletBeanDao.insertOrReplace(singleData);
     }
 
     @Override
@@ -55,13 +55,57 @@ public class QASearchBeanGreenDaoImpl extends CommonCacheImpl<QASearchHistoryBea
                 .list();
     }
 
-    public List<QASearchHistoryBean> getFristShowData(int size) {
+    /**
+     * @param size first show size
+     * @return 第一次显示的
+     */
+    public List<QASearchHistoryBean> getFristShowData(int size,int type) {
         QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
         return walletBeanDao.queryBuilder()
+                .where(QASearchHistoryBeanDao.Properties.Type.eq(type))
                 .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
                 .limit(size)
                 .list();
     }
+
+    /**
+     * @return 全部问答搜索历史
+     */
+    public List<QASearchHistoryBean> getQASearchHistory() {
+        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
+        return walletBeanDao.queryBuilder()
+                .where(QASearchHistoryBeanDao.Properties.Type.eq(QASearchHistoryBean.TYPE_QA))
+                .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
+                .list();
+    }
+
+    /**
+     * @return 全部问答话题搜索历史
+     */
+    public List<QASearchHistoryBean> getQATopicSearchHistory() {
+        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
+        return walletBeanDao.queryBuilder()
+                .where(QASearchHistoryBeanDao.Properties.Type.eq(QASearchHistoryBean.TYPE_QA_TOPIC))
+                .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
+                .list();
+    }
+
+    /**
+     * 清楚所有问答搜索
+     */
+    public void clearAllQASearchHistory() {
+        QASearchHistoryBeanDao walletBeanDao = getWDaoSession().getQASearchHistoryBeanDao();
+        walletBeanDao.deleteInTx(getQASearchHistory());
+    }
+
+    /**
+     * 清楚所有问答搜索
+     */
+    public void clearAllQATopicSearchHistory() {
+        QASearchHistoryBeanDao walletBeanDao = getWDaoSession().getQASearchHistoryBeanDao();
+        walletBeanDao.deleteInTx(getQATopicSearchHistory());
+    }
+
 
     @Override
     public void clearTable() {

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_FOLLOW;
+import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
 /**
  * @Author Jliuer
@@ -114,6 +115,27 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
     @Override
     public boolean insertOrUpdateData(@NotNull List<QATopicBean> data, boolean isLoadMore) {
         return false;
+    }
+
+
+    @Override
+    public List<QASearchHistoryBean> getFirstShowHistory() {
+        return mQASearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE,QASearchHistoryBean.TYPE_QA_TOPIC);
+    }
+
+    @Override
+    public void cleaerAllSearchHistory() {
+        mQASearchBeanGreenDao.clearAllQATopicSearchHistory();
+    }
+
+    @Override
+    public List<QASearchHistoryBean> getAllSearchHistory() {
+        return mQASearchBeanGreenDao.getQATopicSearchHistory();
+    }
+
+    @Override
+    public void deleteSearchHistory(QASearchHistoryBean qaSearchHistoryBean) {
+        mQASearchBeanGreenDao.deleteSingleCache(qaSearchHistoryBean);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_QA_SUBSCRIB)

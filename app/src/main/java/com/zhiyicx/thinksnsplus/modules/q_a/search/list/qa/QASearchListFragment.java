@@ -2,11 +2,14 @@ package com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa;
 
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -26,6 +29,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
 /**
  * @Describe 问答搜索列表页
@@ -78,9 +82,12 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
 
     private void initHistoryView() {
 
-        mHistoryData = mPresenter.getFirstShowHistory();
-        mRvSearchHistory.setLayoutManager(getLayoutManager());
-        mRvSearchHistory.addItemDecoration(getItemDecoration());//设置Item的间隔
+        mHistoryData.addAll(mPresenter.getFirstShowHistory());
+        if (mHistoryData.size() >= DEFAULT_FIRST_SHOW_HISTORY_SIZE) {
+            mHistoryData.add(new QASearchHistoryBean(getString(R.string.show_all_history),QASearchHistoryBean.TYPE_DEFAULT));
+        }
+        mRvSearchHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRvSearchHistory.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvSearchHistory.setHasFixedSize(sethasFixedSize());
         mRvSearchHistory.setItemAnimator(new DefaultItemAnimator());//设置动画
@@ -120,7 +127,7 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     public void getHistoryAdapter() {
-        mHsitoryAdapter = new MultiItemTypeAdapter(getContext(), mListDatas);
+        mHsitoryAdapter = new MultiItemTypeAdapter<>(getContext(), mHistoryData);
         mHsitoryAdapter.addItemViewDelegate(new ItemViewDelegate<QASearchHistoryBean>() {
             @Override
             public int getItemViewLayoutId() {
@@ -144,9 +151,44 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
                 RxView.clicks(holder.getView(R.id.iv_delete))
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
-                            // TODO: 2017/8/18 删除历史
+                            mPresenter.deleteSearchHistory(mHistoryData.get(position));
                             mListDatas.remove(position);
                             mHsitoryAdapter.notifyItemRemoved(position);
+                            mHsitoryAdapter.notifyDataSetChanged();
+
+                        });
+            }
+        });
+        mHsitoryAdapter.addItemViewDelegate(new ItemViewDelegate<QASearchHistoryBean>() {
+            @Override
+            public int getItemViewLayoutId() {
+                return R.layout.item_qa_search_history_cotrol;
+            }
+
+            @Override
+            public boolean isForViewType(QASearchHistoryBean item, int position) {
+                return item.getType() == QASearchHistoryBean.TYPE_DEFAULT;
+
+            }
+
+            @Override
+            public void convert(ViewHolder holder, QASearchHistoryBean o, QASearchHistoryBean lastT, int position, int itemCounts) {
+                holder.setText(R.id.tv_content, o.getContent());
+                RxView.clicks(holder.getView(R.id.tv_content))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> {
+                            if (o.getContent().equals(getString(R.string.show_all_history))) { // 显示所有历史
+                                mHistoryData.clear();
+                                mHistoryData.addAll(mPresenter.getAllSearchHistory());
+                                mHistoryData.add(new QASearchHistoryBean(getString(R.string.clear_all_history), QASearchHistoryBean.TYPE_DEFAULT));
+                                mHsitoryAdapter.notifyDataSetChanged();
+
+                            } else { // 清空历史
+                                mHistoryData.clear();
+                                mPresenter.cleaerAllSearchHistory();
+                                mHsitoryAdapter.notifyDataSetChanged();
+
+                            }
                         });
             }
         });

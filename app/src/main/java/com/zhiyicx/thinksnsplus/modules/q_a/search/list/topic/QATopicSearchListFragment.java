@@ -2,20 +2,30 @@ package com.zhiyicx.thinksnsplus.modules.q_a.search.list.topic;
 
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchHistoryListAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
+import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
 /**
  * @Describe 问答话题搜索列表页
@@ -48,16 +58,27 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
         initHistoryView();
     }
 
     private void initHistoryView() {
-        mRvSearchHistory.setLayoutManager(getLayoutManager());
-        mRvSearchHistory.addItemDecoration(getItemDecoration());//设置Item的间隔
+
+        mHistoryData.addAll(mPresenter.getFirstShowHistory());
+        if (mHistoryData.size() >= DEFAULT_FIRST_SHOW_HISTORY_SIZE) {
+            mHistoryData.add(new QASearchHistoryBean(getString(R.string.show_all_history),QASearchHistoryBean.TYPE_DEFAULT));
+        }
+
+        mRvSearchHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRvSearchHistory.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0));//设置Item的间隔
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRvSearchHistory.setHasFixedSize(sethasFixedSize());
         mRvSearchHistory.setItemAnimator(new DefaultItemAnimator());//设置动画
-        mHsitoryAdapter = getHistoryAdapter();
+        getHistoryAdapter();
         mRvSearchHistory.setAdapter(mHsitoryAdapter);
         refreshHistory();
     }
@@ -90,8 +111,69 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
         return R.mipmap.img_default_nobody;
     }
 
-    public MultiItemTypeAdapter getHistoryAdapter() {
-        return new QASearchHistoryListAdapter(getContext(), R.layout.item_qa_search_history_list, mHistoryData);
+    public void getHistoryAdapter() {
+        mHsitoryAdapter = new MultiItemTypeAdapter<>(getContext(), mHistoryData);
+        mHsitoryAdapter.addItemViewDelegate(new ItemViewDelegate<QASearchHistoryBean>() {
+            @Override
+            public int getItemViewLayoutId() {
+                return R.layout.item_qa_search_history_list;
+            }
+
+            @Override
+            public boolean isForViewType(QASearchHistoryBean item, int position) {
+                return item.getType() != QASearchHistoryBean.TYPE_DEFAULT;
+            }
+
+            @Override
+            public void convert(ViewHolder holder, QASearchHistoryBean qaSearchHistoryBean, QASearchHistoryBean lastT, int position, int itemCounts) {
+                holder.setText(R.id.tv_content, qaSearchHistoryBean.getContent());
+                RxView.clicks(holder.getView(R.id.tv_content))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> {
+                            // TODO: 2017/8/18 增加搜索输入
+
+                        });
+                RxView.clicks(holder.getView(R.id.iv_delete))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> {
+                            mPresenter.deleteSearchHistory(mHistoryData.get(position));
+                            mListDatas.remove(position);
+                            mHsitoryAdapter.notifyItemRemoved(position);
+                            refreshHistory();
+                        });
+            }
+        });
+        mHsitoryAdapter.addItemViewDelegate(new ItemViewDelegate<QASearchHistoryBean>() {
+            @Override
+            public int getItemViewLayoutId() {
+                return R.layout.item_qa_search_history_cotrol;
+            }
+
+            @Override
+            public boolean isForViewType(QASearchHistoryBean item, int position) {
+                return item.getType() == QASearchHistoryBean.TYPE_DEFAULT;
+
+            }
+
+            @Override
+            public void convert(ViewHolder holder, QASearchHistoryBean o, QASearchHistoryBean lastT, int position, int itemCounts) {
+                holder.setText(R.id.tv_content, o.getContent());
+                RxView.clicks(holder.getView(R.id.tv_content))
+                        .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                        .subscribe(aVoid -> {
+                            if (o.getContent().equals(getString(R.string.show_all_history))) { // 显示所有历史
+                                mHistoryData.clear();
+                                mHistoryData.addAll(mPresenter.getAllSearchHistory());
+                                mHistoryData.add(new QASearchHistoryBean(getString(R.string.clear_all_history), QASearchHistoryBean.TYPE_DEFAULT));
+                                refreshHistory();
+                            } else { // 清空历史
+                                mHistoryData.clear();
+                                mPresenter.cleaerAllSearchHistory();
+                                refreshHistory();
+                            }
+                        });
+            }
+        });
     }
 
     @Override

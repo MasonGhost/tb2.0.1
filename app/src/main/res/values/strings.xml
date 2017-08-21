@@ -488,7 +488,8 @@
     <string name="qa_question_comment_delete_success">删除成功</string>
     <string name="qa_search">\t\t\t\t\t\t问答\t\t\t\t\t\t\t</string>
     <string name="qa_search_topic">\t\t\t\t\t\t话题\t\t\t\t\t\t\t</string>
-
+    <string name="show_all_history">显示全部历史</string>
+    <string name="clear_all_history">清空搜索历史</string>
     <!--签到-->
     <string name="check_in">签到</string>
     <string name="checked">已签到</string>
@@ -510,5 +511,6 @@
     <string name="hot_location">热门城市</string>
     <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
     <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
+
 
 </resources>
