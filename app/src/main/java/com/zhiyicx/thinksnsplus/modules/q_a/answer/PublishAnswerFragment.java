@@ -120,6 +120,13 @@ public class PublishAnswerFragment extends PublishContentFragment {
         getActivity().finish();
     }
 
+    /**
+     *
+     * @param context
+     * @param type
+     * @param sourceId
+     * @param body
+     */
     public static void startQActivity(Context context, PublishType type, long sourceId,
                                            String body) {
 

@@ -1,14 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
-import android.os.Bundle;
-
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.Subscriber;
 
 import java.util.List;
 
@@ -21,6 +18,9 @@ import javax.inject.Inject;
  * @Description
  */
 public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoConstact.Repository, QA_ListInfoConstact.View> implements QA_ListInfoConstact.Presenter {
+
+    @Inject
+    QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
     @Inject
     public QA_ListInfoFragmentPresenter(QA_ListInfoConstact.Repository repository, QA_ListInfoConstact.View rootView) {
@@ -60,23 +60,14 @@ public class QA_ListInfoFragmentPresenter extends AppBasePresenter<QA_ListInfoCo
     }
 
     @Override
-    public boolean isLogin() {
-        return false;
-    }
-
-    @Override
-    public boolean handleTouristControl() {
-        return false;
-    }
-
-    @Override
     public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+        return mQAListInfoBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override
     public boolean insertOrUpdateData(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
-        return false;
+        mQAListInfoBeanGreenDao.saveMultiData(data);
+        return true;
     }
 
 }
