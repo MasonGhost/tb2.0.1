@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -11,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,6 +61,10 @@ public class QASearchListPresenter extends AppBasePresenter<QASearchListContract
             all.unsubscribe();
         }
         final String searchContent = mRootView.getSearchInput();
+        if(TextUtils.isEmpty(searchContent)){// 无搜索内容
+            mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
+            return;
+        }
         all = mBaseQARepository.getQAQuestion(searchContent, maxId, "all")
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
                     @Override

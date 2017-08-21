@@ -511,6 +511,10 @@
     <string name="hot_location">热门城市</string>
     <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
     <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
+    <string name="not_find_qa_to_publish">未找到相关问题，去提问？</string>
+    <string name="not_find_qa_topic_to_publish">未找到相关话题~</string>
+    <string name="request_to_publish_topic">申请创建话题~</string>
+    <string name="to_publish_qa">去提问</string>
 
 
 </resources>

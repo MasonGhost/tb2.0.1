@@ -4,27 +4,41 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.ToastUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchHistoryListAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_ALL;
+import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_SEARCH;
 import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
 /**
@@ -42,7 +56,6 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     private List<QASearchHistoryBean> mHistoryData = new ArrayList<>();
     private String mSearchContent = "";
 
-
     public static QATopicSearchListFragment newInstance(Bundle bundle) {
         QATopicSearchListFragment followFansListFragment = new QATopicSearchListFragment();
         followFansListFragment.setArguments(bundle);
@@ -51,9 +64,13 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
 
     @Override
     protected int getBodyLayoutId() {
-        return R.layout.fragment_qa_search_list;
+        return R.layout.fragment_qa_topic_search_list;
     }
 
+    @Override
+    protected String initTopicType() {
+        return TOPIC_TYPE_SEARCH;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -70,7 +87,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
 
         mHistoryData.addAll(mPresenter.getFirstShowHistory());
         if (mHistoryData.size() >= DEFAULT_FIRST_SHOW_HISTORY_SIZE) {
-            mHistoryData.add(new QASearchHistoryBean(getString(R.string.show_all_history),QASearchHistoryBean.TYPE_DEFAULT));
+            mHistoryData.add(new QASearchHistoryBean(getString(R.string.show_all_history), QASearchHistoryBean.TYPE_DEFAULT));
         }
 
         mRvSearchHistory.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -82,11 +99,12 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
         mRvSearchHistory.setAdapter(mHsitoryAdapter);
         refreshHistory();
     }
+
     private void refreshHistory() {
         mHsitoryAdapter.notifyDataSetChanged();
-        if(mHistoryData.isEmpty()){
+        if (mHistoryData.isEmpty()) {
             mRvSearchHistory.setVisibility(View.GONE);
-        }else {
+        } else {
             mRvSearchHistory.setVisibility(View.VISIBLE);
         }
     }
@@ -137,7 +155,7 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
                             mPresenter.deleteSearchHistory(mHistoryData.get(position));
-                            mListDatas.remove(position);
+                            mHistoryData.remove(position);
                             mHsitoryAdapter.notifyItemRemoved(position);
                             refreshHistory();
                         });
@@ -184,10 +202,18 @@ public class QATopicSearchListFragment extends QATopicListFragment implements IS
     @Override
     public void onEditChanged(String str) {
         mSearchContent = str;
+        if (TextUtils.isEmpty(str)) {
+            onNetResponseSuccess(new ArrayList<>(), false);
+            return;
+        }
+        // 请求网络数据，就隐藏历史
+        mRvSearchHistory.setVisibility(View.GONE);
+
         if (mRefreshlayout.isRefreshing()) {
             onRefresh();
         } else {
             mRefreshlayout.setRefreshing(true);
         }
     }
+
 }

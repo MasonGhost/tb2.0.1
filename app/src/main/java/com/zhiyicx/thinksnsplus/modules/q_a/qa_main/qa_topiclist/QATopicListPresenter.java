@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -12,11 +14,15 @@ import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_FOLLOW;
+import static com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QATopicFragmentContainerFragment.TOPIC_TYPE_SEARCH;
 import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
 
 /**
@@ -30,6 +36,8 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
 
     @Inject
     QASearchBeanGreenDaoImpl mQASearchBeanGreenDao;
+
+    private Subscription all;
 
     @Inject
     public QATopicListPresenter(QATopicListConstact.Repository repository, QATopicListConstact.View rootView) {
@@ -48,7 +56,7 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
 
     @Override
     public void requestNetData(String type, Long maxId, boolean isLoadMore) {
-        mRepository.getFollowTopic(type, maxId).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
+        Subscription subscribe = mRepository.getFollowTopic(type, maxId).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
             @Override
             protected void onSuccess(List<QATopicBean> data) {
                 mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -65,12 +73,20 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
                 mRootView.onResponseError(throwable, isLoadMore);
             }
         });
+        addSubscrebe(subscribe);
     }
 
     @Override
     public void requestNetData(String name, Long maxId, Long follow, boolean isLoadMore) {
-
-        mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
+        if (all != null && !all.isUnsubscribed()) {
+            all.unsubscribe();
+        }
+        if (mRootView.getType().equals(TOPIC_TYPE_SEARCH) && TextUtils.isEmpty(name)) {
+            // 无搜索内容
+            mRootView.onNetResponseSuccess(new ArrayList<>(), isLoadMore);
+            return;
+        }
+        all = mRepository.getAllTopic(name, maxId, follow).subscribe(new BaseSubscribeForV2<List<QATopicBean>>() {
             @Override
             protected void onSuccess(List<QATopicBean> data) {
                 saveSearhDatq(name);
@@ -88,6 +104,7 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
                 mRootView.onResponseError(throwable, isLoadMore);
             }
         });
+        addSubscrebe(all);
     }
 
     /**
@@ -96,7 +113,7 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
      * @param searchContent save content
      */
     private void saveSearhDatq(String searchContent) {
-        QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent,QASearchHistoryBean.TYPE_QA_TOPIC);
+        QASearchHistoryBean qaSearchHistoryBean = new QASearchHistoryBean(searchContent, QASearchHistoryBean.TYPE_QA_TOPIC);
         mQASearchBeanGreenDao.saveSingleData(qaSearchHistoryBean);
     }
 
@@ -120,7 +137,7 @@ public class QATopicListPresenter extends AppBasePresenter<QATopicListConstact.R
 
     @Override
     public List<QASearchHistoryBean> getFirstShowHistory() {
-        return mQASearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE,QASearchHistoryBean.TYPE_QA_TOPIC);
+        return mQASearchBeanGreenDao.getFristShowData(DEFAULT_FIRST_SHOW_HISTORY_SIZE, QASearchHistoryBean.TYPE_QA_TOPIC);
     }
 
     @Override

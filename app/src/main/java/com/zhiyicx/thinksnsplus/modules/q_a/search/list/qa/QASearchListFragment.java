@@ -1,10 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -14,11 +19,15 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QASearchHistoryBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.search.list.ISearchListener;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPresenter.DEFAULT_FIRST_SHOW_HISTORY_SIZE;
@@ -41,6 +51,12 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
 
     @BindView(R.id.rv_search_history)
     RecyclerView mRvSearchHistory;
+    @BindView(R.id.tv_tip)
+    TextView mTvTip;
+    @BindView(R.id.bt_do)
+    Button mBtDo;
+    @BindView(R.id.ll_empty)
+    LinearLayout mLlEmpty;
 
     @Inject
     QASearchListPresenter mQASearchListPresenter;
@@ -77,6 +93,8 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
         super.initView(rootView);
 
         initHistoryView();
+        mTvTip.setText(getString(R.string.not_find_qa_to_publish));
+        mBtDo.setText(getString(R.string.to_publish_qa));
 
     }
 
@@ -152,7 +170,7 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
                         .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                         .subscribe(aVoid -> {
                             mPresenter.deleteSearchHistory(mHistoryData.get(position));
-                            mListDatas.remove(position);
+                            mHistoryData.remove(position);
                             mHsitoryAdapter.notifyItemRemoved(position);
                             mHsitoryAdapter.notifyDataSetChanged();
 
@@ -200,13 +218,47 @@ public class QASearchListFragment extends TSListFragment<QASearchListContract.Pr
     }
 
     @Override
+    public void onNetResponseSuccess(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
+        super.onNetResponseSuccess(data, isLoadMore);
+        checkEmptyView();
+    }
+
+    @Override
+    public void onResponseError(Throwable throwable, boolean isLoadMore) {
+        super.onResponseError(throwable, isLoadMore);
+        checkEmptyView();
+    }
+
+    private void checkEmptyView() {
+        if(mListDatas.isEmpty()){
+            mLlEmpty.setVisibility(View.VISIBLE);
+        }else {
+            mLlEmpty.setVisibility(View.GONE);
+        }
+    }
+    @Override
     public void onEditChanged(String str) {
         mSearchContent = str;
+        if(TextUtils.isEmpty(str)){
+            onNetResponseSuccess(new ArrayList<>(),false);
+            return;
+        }
+        // 请求网络数据，就隐藏历史
+        mRvSearchHistory.setVisibility(View.GONE);
+
+
         if (mRefreshlayout.isRefreshing()) {
             onRefresh();
         } else {
             mRefreshlayout.setRefreshing(true);
         }
 
+    }
+
+
+    @OnClick(R.id.bt_do)
+    public void onViewClicked() {
+        // 发布话题
+        startActivity(new Intent(getActivity(), PublishQuestionActivity.class));
     }
 }

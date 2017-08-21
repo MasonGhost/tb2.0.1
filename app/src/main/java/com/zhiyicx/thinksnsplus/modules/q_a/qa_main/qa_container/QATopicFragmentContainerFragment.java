@@ -61,6 +61,7 @@ public class QATopicFragmentContainerFragment extends TSViewPagerFragment {
     private List<Fragment> mFragments;
     public static final String TOPIC_TYPE_FOLLOW = "follow";
     public static final String TOPIC_TYPE_ALL = "all";
+    public static final String TOPIC_TYPE_SEARCH = "search";
 
     public static QATopicFragmentContainerFragment getInstance() {
         return new QATopicFragmentContainerFragment();
