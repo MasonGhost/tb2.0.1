@@ -40,9 +40,8 @@ public class PublishQuestionAdapter extends CommonAdapter<QAListInfoBean> {
 
     private void setItemData(final ViewHolder holder, final QAListInfoBean qa_listInfoBean, final int position) {
 
-
         // 设置用户名，用户简介
-        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,qa_listInfoBean.getBody()));
+        holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,qa_listInfoBean.getSubject()));
 
         // 添加点击事件
         RxView.clicks(holder.getConvertView())
