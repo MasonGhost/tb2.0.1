@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -93,6 +94,20 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTopictype= initTopicType();
+    }
+
+    protected String initTopicType() {
+        if (getArguments() != null) {
+            return getArguments().getString(BUNDLE_TOPIC_TYPE, TOPIC_TYPE_ALL);
+        } else {
+            return TOPIC_TYPE_ALL;
+        }
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         CommonAdapter adapter = new CommonAdapter<QATopicBean>(getContext(), R.layout.item_qatopic_list, mListDatas) {
             @Override
@@ -151,12 +166,11 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
                 .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .qATopiclistModule(new QATopiclistModule(this))
                 .build().inject(this);
-        if (getArguments() != null) {
-            mTopictype = getArguments().getString(BUNDLE_TOPIC_TYPE, TOPIC_TYPE_ALL);
-        }
+
         super.initData();
 
     }
+
 
     @Override
     public String getType() {

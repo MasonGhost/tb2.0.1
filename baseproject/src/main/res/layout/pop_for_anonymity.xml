@@ -10,6 +10,7 @@
     app:cardElevation="1dp">
 
     <LinearLayout
+        android:background="@drawable/shape_anonymity_button"
         android:id="@+id/ppw_anony"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

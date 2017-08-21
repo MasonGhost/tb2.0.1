@@ -26,7 +26,7 @@ public class QASearchBeanGreenDaoImpl extends CommonCacheImpl<QASearchHistoryBea
     @Override
     public long saveSingleData(QASearchHistoryBean singleData) {
         QASearchHistoryBeanDao walletBeanDao = getWDaoSession().getQASearchHistoryBeanDao();
-        return walletBeanDao.insert(singleData);
+        return walletBeanDao.insertOrReplace(singleData);
     }
 
     @Override
@@ -46,36 +46,85 @@ public class QASearchBeanGreenDaoImpl extends CommonCacheImpl<QASearchHistoryBea
         return walletBeanDao.load(primaryKey);
     }
 
-    public QASearchHistoryBean getSingleDataByUserId(Long user_id) {
-//        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
-//        QASearchHistoryBean walletBean = new QASearchHistoryBean();
-//        List<QASearchHistoryBean> walletBeanList = walletBeanDao.queryBuilder().where(QASearchHistoryBeanDao.Properties.User_id.eq(user_id)).list();
-//        if (walletBeanList.isEmpty()) {
-//            return walletBean;
-//        }
-//        return walletBeanDao.queryBuilder().where(QASearchHistoryBeanDao.Properties.User_id.eq(user_id)).list().get(0);
-        return null;
-    }
-
-    /**
-     * 通过 user id 获取钱包信息
-     *
-     * @param userId
-     * @return
-     */
-    public QASearchHistoryBean getSingleDataFromCacheByUserId(long userId) {
-        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
-        return walletBeanDao.queryBuilder()
-                .where(QASearchHistoryBeanDao.Properties.Id.eq(userId))
-                .unique();
-    }
 
     @Override
     public List<QASearchHistoryBean> getMultiDataFromCache() {
         QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
-        return walletBeanDao.loadAll();
+        return walletBeanDao.queryBuilder()
+                .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
+                .list();
     }
 
+    /**
+     * @param size first show size
+     * @return 第一次显示的
+     */
+    public List<QASearchHistoryBean> getFristShowData(int size, int type) {
+        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
+        return walletBeanDao.queryBuilder()
+                .where(QASearchHistoryBeanDao.Properties.Type.eq(type))
+                .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
+                .limit(size)
+                .list();
+    }
+
+    /**
+     * @return 全部问答搜索历史
+     */
+    public List<QASearchHistoryBean> getQASearchHistory() {
+        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
+        return walletBeanDao.queryBuilder()
+                .where(QASearchHistoryBeanDao.Properties.Type.eq(QASearchHistoryBean.TYPE_QA))
+                .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
+                .list();
+    }
+
+    /**
+     * @return 全部问答话题搜索历史
+     */
+    public List<QASearchHistoryBean> getQATopicSearchHistory() {
+        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
+        return walletBeanDao.queryBuilder()
+                .where(QASearchHistoryBeanDao.Properties.Type.eq(QASearchHistoryBean.TYPE_QA_TOPIC))
+                .orderDesc(QASearchHistoryBeanDao.Properties.Create_time)
+                .list();
+    }
+
+    /**
+     * 清楚所有问答搜索
+     */
+    public void clearAllQASearchHistory() {
+        QASearchHistoryBeanDao walletBeanDao = getWDaoSession().getQASearchHistoryBeanDao();
+        walletBeanDao.deleteInTx(getQASearchHistory());
+    }
+
+    /**
+     * 清楚所有问答搜索
+     */
+    public void clearAllQATopicSearchHistory() {
+        QASearchHistoryBeanDao walletBeanDao = getWDaoSession().getQASearchHistoryBeanDao();
+        walletBeanDao.deleteInTx(getQATopicSearchHistory());
+    }
+
+    /**
+     * @param qaSearchHistoryBean
+     * @param type
+     */
+    public void saveHistoryDataByType(QASearchHistoryBean qaSearchHistoryBean, int type) {
+        QASearchHistoryBeanDao walletBeanDao = getRDaoSession().getQASearchHistoryBeanDao();
+        QASearchHistoryBean tmpe = walletBeanDao.queryBuilder()
+                .where(QASearchHistoryBeanDao.Properties.Content.eq(qaSearchHistoryBean.getContent()), QASearchHistoryBeanDao.Properties.Type.eq(type))
+                .unique();
+
+        if (tmpe == null) {
+            System.out.println("tmpe = ");
+            insertOrReplace(qaSearchHistoryBean);
+        } else {
+            System.out.println("tmpe = " + tmpe.toString());
+            tmpe.setCreate_time(qaSearchHistoryBean.getCreate_time());
+            insertOrReplace(tmpe);
+        }
+    }
 
     @Override
     public void clearTable() {

@@ -12,6 +12,7 @@ import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -28,6 +29,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -220,7 +222,7 @@ public class UpLoadRepository implements IUploadRepository {
                                                 return Observable.just(failure);
                                             }
                                         }
-                                    });
+                                    }, Observable::error, () -> null);
 
                         }
                     }

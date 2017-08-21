@@ -64,7 +64,6 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
         TopDynamicCommentBean.CommentBean commentBean = topDynamicCommentBean.getComment();
         boolean hasImage = feedBean != null && !feedBean.getImages().isEmpty();
 
-
         holder.setVisible(R.id.iv_detail_image, hasImage ? View.VISIBLE : View.GONE);
         holder.setVisible(R.id.tv_deatil, !hasImage ? View.VISIBLE : View.GONE);
 

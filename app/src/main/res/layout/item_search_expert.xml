@@ -14,8 +14,7 @@
         android:id="@+id/iv_headpic"
         android:layout_width="@dimen/headpic_for_list"
         android:layout_height="@dimen/headpic_for_list"
-        android:layout_marginRight="@dimen/spacing_mid"
-        app:ts_avatare_size="@dimen/headpic_for_list"
+        android:layout_marginLeft="@dimen/spacing_mid"
         android:src="@mipmap/pic_default_portrait1"
         app:pressShape="circle"/>
 
@@ -60,19 +59,20 @@
         android:background="@color/general_for_line_light"/>
 
     <CheckBox
-        android:layout_alignBottom="@+id/iv_headpic"
         android:id="@+id/tv_expert_subscrib"
         android:layout_width="@dimen/channel_subscrib_btn_width"
         android:layout_height="@dimen/channel_subscrib_btn_height"
+        android:layout_alignBottom="@+id/iv_headpic"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/spacing_normal"
         android:background="@drawable/shape_channel_list_subscrib_button"
         android:button="@null"
         android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
         android:drawablePadding="@dimen/spacing_small_3dp"
         android:paddingLeft="@dimen/spacing_normal"
-        tools:text="关注"
         android:textColor="@color/selector_channel_list_subscrib_button_divider"
-        android:textSize="@dimen/size_content_comment"/>
+        android:textSize="@dimen/size_content_comment"
+        tools:text="关注"/>
 
 </RelativeLayout>

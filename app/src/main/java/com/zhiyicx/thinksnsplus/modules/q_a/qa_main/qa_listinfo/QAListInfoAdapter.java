@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
@@ -33,8 +34,12 @@ import java.util.Locale;
  */
 public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
+    private int mContentMaxShowNum;
+
     public QAListInfoAdapter(Context context, int layoutId, List<QAListInfoBean> datas) {
         super(context, layoutId, datas);
+        mContentMaxShowNum = mContext.getResources().getInteger(R.integer
+                .dynamic_list_content_max_show_size);
     }
 
     @Override
@@ -43,11 +48,10 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         holder.setText(R.id.item_info_title, infoBean.getSubject());
         holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyForDetail(infoBean.getCreated_at()));
         holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
-                , infoBean.getWatchers_count(), infoBean.getAnswers_count(), infoBean.getAmount()));
+                , infoBean.getWatchers_count(), infoBean.getAnswers_count(), PayConfig.realCurrencyFen2Yuan(infoBean.getAmount())));
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean));
         TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
         String content = infoBean.getBody();
-        imageView.getLayoutParams();
         int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
 
         if (id > 0) {
@@ -87,7 +91,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                 .setUnderlined(false);
         links.add(answerCountLink);
 
-        Link rewardMoneyLink = new Link("￥" + infoBean.getAmount()).setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link rewardMoneyLink = new Link("￥" + PayConfig.realCurrencyFen2Yuan(infoBean.getAmount())).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .withdrawals_item_enable))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))

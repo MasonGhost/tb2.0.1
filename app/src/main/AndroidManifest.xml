@@ -440,6 +440,7 @@
         </activity>
         <activity
             android:name=".modules.q_a.search.container.QASearchContainerActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
             >
         </activity>

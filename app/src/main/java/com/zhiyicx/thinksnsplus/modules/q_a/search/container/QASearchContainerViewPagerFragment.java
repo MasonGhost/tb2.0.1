@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.search.container;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
@@ -25,13 +26,29 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
 
     public static final int PAGE_POSITION_QA = 0;
     public static final int PAGE_POSITION_TOPIC = 1;
-
+    private String mCurrentSearchContent = "";
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mTsvToolbar.setLeftImg(0);
+        mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                onSearhChanged(mCurrentSearchContent);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
@@ -78,6 +95,7 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
      * @param string
      */
     public void onSearhChanged(String string) {
+        this.mCurrentSearchContent = string;
         if (tsViewPagerAdapter == null || mVpFragment == null) {
             return;
         }

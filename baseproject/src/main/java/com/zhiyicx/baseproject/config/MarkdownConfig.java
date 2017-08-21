@@ -10,5 +10,5 @@ public class MarkdownConfig {
     public static final String IMAGE_TAG = "@![%s](%d)";//@![title](file id)
     public static final String IMAGE_TITLE = "image";
     public static final String IMAGE_RESULT = "![image](%s)";
-    public static final String IMAGE_FORMAT = "(@!\\[.*]\\((\\d+)\\))";
+    public static final String IMAGE_FORMAT = "@!\\[.*?]\\((\\d+)\\)";
 }

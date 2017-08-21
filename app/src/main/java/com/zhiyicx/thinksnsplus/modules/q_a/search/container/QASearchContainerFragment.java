@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.container;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
@@ -8,6 +9,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -84,6 +86,7 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
                     mFindSomeOneContainerViewPagerFragment.onSearhChanged(textViewAfterTextChangeEvent.editable().toString());
                 });
 
+
     }
 
 
@@ -95,8 +98,15 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
                 break;
             default:
         }
+    }
 
-
+    /**
+     * 更新搜索内容
+     *
+     * @param content
+     */
+    public void onHistoryContentUpdate(String content) {
+        mFragmentInfoSearchEdittext.setText(content);
     }
 
 }

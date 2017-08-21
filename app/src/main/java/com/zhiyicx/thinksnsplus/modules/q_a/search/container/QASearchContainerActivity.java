@@ -5,8 +5,9 @@ import android.os.Bundle;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
 
-public class QASearchContainerActivity extends TSActivity<QASearchContainerPresenter, QASearchContainerFragment> {
+public class QASearchContainerActivity extends TSActivity<QASearchContainerPresenter, QASearchContainerFragment> implements IHistoryCententClickListener {
 
 
     @Override
@@ -32,5 +33,10 @@ public class QASearchContainerActivity extends TSActivity<QASearchContainerPrese
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mContanierFragment.onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Override
+    public void onContentClick(String str) {
+        mContanierFragment.onHistoryContentUpdate(str);
     }
 }
