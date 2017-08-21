@@ -416,6 +416,7 @@
     <string name="qa_update_publish">更新问题</string>
     <string name="qa_publish_answer">添加回答</string>
     <string name="qa_update_answer">更新回答</string>
+    <string name="qa_update_question">更新问题</string>
     <string name="qa_detail">问题详情</string>
     <string name="qa_publish_next">下一步</string>
     <string name="qa_publish_title_hint">请输入问题并以问号结尾</string>
