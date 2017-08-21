@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.ChatRoom;
@@ -103,6 +105,13 @@ public class JavaTest {
     }
 
     @Test
+    public void replaceTest() {
+        String tag = "@![image](580)哈哈哈哈哈ヽ(ｏ`皿′ｏ)ﾉ((*゜Д゜)ゞ”😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁@![image](581)";
+        Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
+        System.out.print(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, "result:: " + pattern.matcher(tag).replaceAll("")));
+    }
+
+    @Test
     public void subTest() {
         String reg = "@!\\[.*]\\((\\d+)\\)";
         String targetStr = "xxx@![image](123)ssss@![image](456)";
@@ -110,13 +119,14 @@ public class JavaTest {
         Matcher matcher1 = pattern.matcher(targetStr);
         int lastIndex = 0;
         while (matcher1.find()) {
+            System.out.println("result:: " + matcher1.group(1));
             if (matcher1.start() > lastIndex) {
                 System.out.println("result 1 :: " + targetStr.substring(lastIndex, matcher1.start()));
             }
             String result2 = targetStr.substring(matcher1.start(), matcher1.end());
             Matcher matcher2 = Pattern.compile(reg).matcher(result2);
             System.out.println("result 2 :: " + result2);
-            if (matcher2.find()){
+            if (matcher2.find()) {
                 System.out.println("matcher 2 :: " + matcher2.group(0));
                 System.out.println("matcher 2 :: " + matcher2.group(1));
             }

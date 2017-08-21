@@ -19,9 +19,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
-import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -64,7 +62,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     protected AnimationDrawable mAnimationDrawable;
 
     private List<LocationBean> mHotCitys = new ArrayList<>();
-    private CommonAdapter mUnSubscribeAdapter;
+    private CommonAdapter mHotCitysAdapter;
 
     private String mCurrentLocation = "";
 
@@ -225,7 +223,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     }
 
     private CommonAdapter initUnsubscribeAdapter() {
-        mUnSubscribeAdapter = new CommonAdapter<LocationBean>(getActivity(),
+        mHotCitysAdapter = new CommonAdapter<LocationBean>(getActivity(),
                 R.layout.item_info_channel, mHotCitys) {
             @Override
             protected void convert(ViewHolder holder, LocationBean data,
@@ -233,7 +231,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                 String locationStr = data.getName();
                 try {
                     String[] result = locationStr.split(" ");
-                    if (result.length > 3) {
+                    if (result.length > 2) {
                         holder.setText(R.id.item_info_channel, result[result.length - 1]);
                     } else {
                         holder.setText(R.id.item_info_channel, result[result.length - 2]);
@@ -268,7 +266,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
             }
         };
 
-        mUnSubscribeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+        mHotCitysAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 LocationBean bean = mHotCitys.get(position);
@@ -287,7 +285,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
             }
         });
 
-        return mUnSubscribeAdapter;
+        return mHotCitysAdapter;
     }
 
 

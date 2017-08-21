@@ -91,7 +91,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                 .setUnderlined(false);
         links.add(answerCountLink);
 
-        Link rewardMoneyLink = new Link("￥" + infoBean.getAmount()).setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link rewardMoneyLink = new Link("￥" + PayConfig.realCurrencyFen2Yuan(infoBean.getAmount())).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .withdrawals_item_enable))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))

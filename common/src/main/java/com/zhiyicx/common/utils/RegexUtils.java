@@ -274,7 +274,7 @@ public class RegexUtils {
         Matcher matcher = Pattern.compile(regex).matcher(input);
         if (matcher.find()) {
             try {
-                return Integer.parseInt(matcher.group(2));
+                return Integer.parseInt(matcher.group(1));
             } catch (NumberFormatException e) {
                 return -1;
             }
