@@ -13,12 +13,14 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout;
 import com.zhiyicx.thinksnsplus.widget.flowtag.OnTagSelectListener;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -50,7 +52,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean>{
 
     @Override
     protected void convert(ViewHolder holder, ExpertBean expertBean, int position) {
-        ImageView ivHeadpic = holder.getView(R.id.iv_headpic);
+        UserAvatarView ivHeadpic = holder.getView(R.id.iv_headpic);
         TextView tvName = holder.getView(R.id.tv_name);
         TextView tvDigCount = holder.getView(R.id.tv_dig_count);
         CheckBox subscrib = holder.getView(R.id.tv_expert_subscrib);
@@ -62,6 +64,12 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean>{
         ftlTags.setTagCheckedMode(FlowTagLayout.FLOW_TAG_CHECKED_NONE);
         List<UserTagBean> tagBeenList = expertBean.getTags();
 
+
+        UserInfoBean userInfoBean=new UserInfoBean();
+        userInfoBean.setUser_id((long)expertBean.getExtra().getUser_id());
+        userInfoBean.setFollower(expertBean.isFollower());
+        userInfoBean.setFollowing(expertBean.isFollowing());
+        userInfoBean.setVerified(expertBean.getVerified());
         boolean isJoined = expertBean.isFollowing();
         subscrib.setChecked(isJoined);
         subscrib.setText(isJoined ? getContext().getString(R.string.qa_topic_followed) : getContext().getString(R.string.qa_topic_follow));
@@ -70,11 +78,8 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean>{
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
-                        UserInfoBean userInfoBean=new UserInfoBean();
-                        userInfoBean.setUser_id((long)expertBean.getExtra().getUser_id());
-                        userInfoBean.setFollower(expertBean.isFollower());
-                        userInfoBean.setFollowing(expertBean.isFollowing());
                         mPresenter.handleFollowUser(userInfoBean);
+                        subscrib.setText(!isJoined ? getContext().getString(R.string.qa_topic_followed) : getContext().getString(R.string.qa_topic_follow));
                     } else {
                         subscrib.setChecked(false);
                     }
@@ -86,7 +91,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean>{
         ftlTags.setOnTagSelectListener((parent, selectedList) -> {
 
         });
-        //        ImageUtils.loadCircleUserHeadPic(userInfoBean, headPic);
+        ImageUtils.loadCircleUserHeadPic(userInfoBean, ivHeadpic);
     }
 
     private List<Link> setLinks(ExpertBean expertBean) {
