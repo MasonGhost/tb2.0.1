@@ -274,7 +274,7 @@ public class RegexUtils {
         Matcher matcher = Pattern.compile(regex).matcher(input);
         if (matcher.find()) {
             try {
-                return Integer.parseInt(matcher.group(2));
+                return Integer.parseInt(matcher.group(1));
             } catch (NumberFormatException e) {
                 return -1;
             }
@@ -293,8 +293,6 @@ public class RegexUtils {
 
     public static List<String> cutStringByImgTag(String targetStr) {
         List<String> splitTextList = new ArrayList<>();
-        String reg = "@!\\[.*]\\((\\d+)\\)";
-//        String targetStr = "xxx@![image](123)ssss@![image](456)";
         Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
         Matcher matcher1 = pattern.matcher(targetStr);
         int lastIndex = 0;
@@ -302,24 +300,17 @@ public class RegexUtils {
 
             if (matcher1.start() > lastIndex) {
                 String result1 = targetStr.substring(lastIndex, matcher1.start());// 文字
-                System.out.println("result 1 :: " + result1);
                 splitTextList.add(result1);
             }
             String result2 = targetStr.substring(matcher1.start(), matcher1.end());// 图片
             splitTextList.add(result2);
 
-            Matcher matcher2 = Pattern.compile(reg).matcher(result2);
-            System.out.println("result 2 :: " + result2);
-            if (matcher2.find()){
-                System.out.println("matcher 2 :: " + matcher2.group(0));
-                System.out.println("matcher 2 :: " + matcher2.group(1));
-            }
             lastIndex = matcher1.end();
         }
         if (lastIndex != targetStr.length()) {
             System.out.println("result 3 :: " + targetStr.substring(lastIndex, targetStr.length()));
         }
-        if (splitTextList.size()>0){
+        if (splitTextList.size()>0){// 最后添加标识符
             String last=splitTextList.get(splitTextList.size()-1);
             splitTextList.set(splitTextList.size()-1,last+"tym_last");
         }

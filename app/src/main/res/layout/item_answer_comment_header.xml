@@ -10,6 +10,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/rl_userinfo_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/headpic_for_user_center">
 

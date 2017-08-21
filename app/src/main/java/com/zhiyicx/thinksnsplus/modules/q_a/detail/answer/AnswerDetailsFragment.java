@@ -215,12 +215,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         return R.layout.fragment_info_detail;
     }
 
-
-    @Override
-    public void setPresenter(AnswerDetailsConstract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     @Override
     public Long getAnswerId() {
         return mAnswerInfoBean.getId();
@@ -299,6 +293,11 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     @Override
     public void loadFinish() {
         closeLoadingView();
+    }
+
+    @Override
+    public void clickUserInfo(UserInfoBean userInfoBean) {
+        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
     }
 
     @Override
@@ -422,9 +421,8 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
      */
     private void initDealAnswerPopupWindow(final AnswerInfoBean answerInfoBean, boolean
             isCollected) {
-//        boolean isMine = answerInfoBean.getQuestion().getUser().getExtra().getUser_id() ==
-// AppApplication.getmCurrentLoginAuth().getUser_id();
-        boolean isMine = true;
+        boolean isMine = answerInfoBean.getQuestion().getUser().getExtra().getUser_id() ==
+                AppApplication.getmCurrentLoginAuth().getUser_id();
         boolean isAdopted = answerInfoBean.getAdoption() == 1;
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
                 .item1Str(isMine ? getString(R.string.info_delete) : "")
@@ -432,7 +430,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
                         .string.qa_question_answer_adopting : R.string.empty)))
                 .item3Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R
                         .string.dynamic_list_collect_dynamic))
-                .item4Str(getString(isMine ? R.string.edit : R.string.empty))
+                .item4Str(getString(isMine && !isAdopted ? R.string.edit : R.string.empty))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

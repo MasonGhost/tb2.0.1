@@ -77,7 +77,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas);
+        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas,mPresenter);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {

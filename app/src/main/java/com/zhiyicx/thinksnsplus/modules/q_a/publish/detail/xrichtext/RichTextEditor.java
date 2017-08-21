@@ -224,7 +224,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                 R.layout.rich_edit_imageview, null);
         layout.setTag(viewTagIndex++);
         View closeView = layout.findViewById(R.id.image_close);
-        //closeView.setVisibility(GONE);
+        closeView.setVisibility(GONE);
         closeView.setTag(layout.getTag());
         closeView.setOnClickListener(btnListener);
         return layout;

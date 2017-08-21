@@ -13,8 +13,10 @@ import android.webkit.WebViewClient;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
@@ -26,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
@@ -43,15 +46,18 @@ import com.zzhoujay.richtext.RichText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
+import rx.functions.Action1;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author Catherine
@@ -74,6 +80,7 @@ public class AnswerDetailHeaderView {
     private TextView mCommentCountView;
 
     private View mAnswerDetailHeader;
+    private RelativeLayout mUserInfoContainer;
     private Context mContext;
     private int screenWidth;
     private int picWidth;
@@ -102,6 +109,7 @@ public class AnswerDetailHeaderView {
                 .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 
         mUserAvatarView = (UserAvatarView) mAnswerDetailHeader.findViewById(R.id.iv_head_icon);
+        mUserInfoContainer = (RelativeLayout) mAnswerDetailHeader.findViewById(R.id.rl_userinfo_container);
         mName = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_user_name);
         mDescription = (TextView) mAnswerDetailHeader.findViewById(R.id.tv_user_desc);
         mUserFollow = (CheckBox) mAnswerDetailHeader.findViewById(R.id.tv_user_follow);
@@ -120,6 +128,7 @@ public class AnswerDetailHeaderView {
                 }
             }
         });
+
         mUserFollow.setOnCheckedChangeListener((buttonView, isChecked) -> mAnswerHeaderEventListener.userFollowClick(isChecked));
         if (adverts != null) {
             initAdvert(context, adverts);
@@ -132,7 +141,7 @@ public class AnswerDetailHeaderView {
             if (!TextUtils.isEmpty(answerInfoBean.getBody())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 10px");
-                css.addRule(".container", "padding-right:0",";padding-left:0");
+                css.addRule(".container", "padding-right:0", ";padding-left:0");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(answerInfoBean.getBody()));
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
@@ -180,7 +189,13 @@ public class AnswerDetailHeaderView {
                     }
                 });
             }
-
+            RxView.clicks(mUserInfoContainer)
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+                        if (mAnswerHeaderEventListener != null) {
+                            mAnswerHeaderEventListener.clickUserInfo(answerInfoBean.getUser());
+                        }
+                    });
             mName.setText(answerInfoBean.getUser().getName());
             mDescription.setText(answerInfoBean.getUser().getIntro());
             boolean isSelf = answerInfoBean.getUser().getExtra().getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
@@ -342,6 +357,9 @@ public class AnswerDetailHeaderView {
 
     public interface AnswerHeaderEventListener {
         void loadFinish();
+
         void userFollowClick(boolean isChecked);
+
+        void clickUserInfo(UserInfoBean user);
     }
 }

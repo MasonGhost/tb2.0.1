@@ -1,8 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +18,7 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.dragview.OverScrollView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.AnonymityPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -109,7 +112,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     protected void initView(View rootView) {
-        AndroidBug5497Workaround.assistActivity(getActivity());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
         mToolbarRight.setEnabled(false);
         initLisenter();
     }
@@ -289,6 +294,8 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> initAnonymityPopWindow(R.string.qa_publish_enable_anonymous));
+
+        mPbImageUpload.setOnTouchListener((v, event) -> true);
 
         mRicheTest.setOnContentEmptyListener(this);
     }
