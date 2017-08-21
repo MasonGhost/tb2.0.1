@@ -43,8 +43,15 @@ public class PublishAnswerFragment extends PublishContentFragment {
         super.initData();
         mBody = getArguments().getString(BUNDLE_SOURCE_BODY, "");
         mType = (PublishType) getArguments().getSerializable(BUNDLE_SOURCE_TYPE);
-        mToolbarCenter.setText(getString(mBody.isEmpty() ? R.string.qa_update_answer : R.string
-                .qa_publish_answer));
+
+        if (mType == PublishType.PUBLISH_ANSWER) {
+            mToolbarCenter.setText(getString( R.string.qa_publish_answer));
+        } else if (mType == PublishType.UPDATE_ANSWER) {
+            mToolbarCenter.setText(getString( R.string.qa_update_answer));
+        } else if (mType == PublishType.UPDATE_QUESTION) {
+            mToolbarCenter.setText(getString( R.string.qa_update_publish));
+        }
+
         if (!mBody.isEmpty()) {
             mRicheTest.clearAllLayout();
             mPresenter.pareseBody(mBody);
