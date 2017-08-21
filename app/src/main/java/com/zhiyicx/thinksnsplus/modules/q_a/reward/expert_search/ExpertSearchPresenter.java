@@ -5,6 +5,8 @@ import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +23,9 @@ import javax.inject.Inject;
 @FragmentScoped
 public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract.Repository, ExpertSearchContract.View>
         implements ExpertSearchContract.Presenter {
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public ExpertSearchPresenter(ExpertSearchContract.Repository repository, ExpertSearchContract.View rootView) {
@@ -51,6 +56,11 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
                 mRootView.onResponseError(throwable,isLoadMore);
             }
         });
+    }
+
+    @Override
+    public void handleFollowUser(UserInfoBean userInfoBean) {
+        mUserInfoRepository.handleFollow(userInfoBean);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -109,7 +110,9 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     protected void initView(View rootView) {
-        AndroidBug5497Workaround.assistActivity(getActivity());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            AndroidBug5497Workaround.assistActivity(getActivity());
+        }
         mToolbarRight.setEnabled(false);
         initLisenter();
     }

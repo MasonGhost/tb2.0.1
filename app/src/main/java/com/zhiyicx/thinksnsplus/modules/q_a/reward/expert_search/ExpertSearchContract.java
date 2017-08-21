@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
 /**
@@ -20,6 +21,7 @@ public interface ExpertSearchContract {
 
     interface Presenter extends ITSListPresenter<ExpertBean>{
         void requestNetData(Long maxId,int topic_id,boolean isLoadMore);
+        void handleFollowUser(UserInfoBean userInfoBean);
     }
 
     interface Repository extends IBasePublishQuestionRepository{

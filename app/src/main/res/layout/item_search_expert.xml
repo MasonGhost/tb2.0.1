@@ -1,61 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingTop="@dimen/spacing_large">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/spacing_large">
 
     <!--用户头像-->
     <com.zhiyicx.baseproject.widget.imageview.FilterImageView
-            android:id="@+id/iv_headpic"
-            android:layout_width="@dimen/headpic_for_list"
-            android:layout_height="@dimen/headpic_for_list"
-            android:layout_marginLeft="@dimen/spacing_mid"
-            android:src="@mipmap/pic_default_portrait1"
-            android:visibility="visible"
-            app:pressShape="circle"/>
+        android:id="@+id/iv_headpic"
+        android:layout_width="@dimen/headpic_for_list"
+        android:layout_height="@dimen/headpic_for_list"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:src="@mipmap/pic_default_portrait1"
+        android:visibility="visible"
+        app:pressShape="circle"/>
 
     <LinearLayout
-            android:id="@+id/ll_user_info"
-            android:layout_toRightOf="@+id/iv_headpic"
-            android:layout_width="match_parent"
+        android:id="@+id/ll_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid"
+        android:layout_toRightOf="@+id/iv_headpic"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="@dimen/spacing_mid"
-            android:layout_marginRight="@dimen/spacing_mid">
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_content"
+            tools:text="xxxxxx"/>
 
         <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_content"
-                android:textColor="@color/important_for_content"
-                tools:text="xxxxxx"/>
-
-        <TextView
-                android:id="@+id/tv_dig_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_normal"
-                android:textColor="@color/normal_for_assist_text"
-                android:textSize="@dimen/size_content_comment"
-                tools:text="xxx"/>
+            android:id="@+id/tv_dig_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_content_comment"
+            tools:text="xxx"/>
 
         <com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout
-                android:id="@+id/ftl_tags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_normal"/>
+            android:id="@+id/ftl_tags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"/>
     </LinearLayout>
 
     <View
-            android:layout_below="@+id/ll_user_info"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_line"
-            android:layout_marginTop="@dimen/spacing_mid"
-            android:background="@color/general_for_line_light"/>
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_line"
+        android:layout_below="@+id/ll_user_info"
+        android:layout_marginTop="@dimen/spacing_mid"
+        android:background="@color/general_for_line_light"/>
+
+    <CheckBox
+        android:layout_alignBottom="@+id/iv_headpic"
+        android:id="@+id/tv_expert_subscrib"
+        android:layout_width="@dimen/channel_subscrib_btn_width"
+        android:layout_height="@dimen/channel_subscrib_btn_height"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:background="@drawable/shape_channel_list_subscrib_button"
+        android:button="@null"
+        android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
+        android:drawablePadding="@dimen/spacing_small_3dp"
+        android:paddingLeft="@dimen/spacing_normal"
+        tools:text="关注"
+        android:textColor="@color/selector_channel_list_subscrib_button_divider"
+        android:textSize="@dimen/size_content_comment"/>
 
 </RelativeLayout>

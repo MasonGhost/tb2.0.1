@@ -6,14 +6,18 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SubscriptSpan;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
+import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.widget.flowtag.FlowTagLayout;
 import com.zhiyicx.thinksnsplus.widget.flowtag.OnTagSelectListener;
@@ -23,7 +27,10 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @author Catherine
@@ -34,8 +41,11 @@ import java.util.regex.Pattern;
 
 public class SearchExpertAdapter extends CommonAdapter<ExpertBean>{
 
-    public SearchExpertAdapter(Context context, List<ExpertBean> datas) {
+    ExpertSearchContract.Presenter mPresenter;
+
+    public SearchExpertAdapter(Context context, List<ExpertBean> datas,ExpertSearchContract.Presenter presenter) {
         super(context, R.layout.item_search_expert, datas);
+        mPresenter=presenter;
     }
 
     @Override
@@ -43,6 +53,7 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean>{
         ImageView ivHeadpic = holder.getView(R.id.iv_headpic);
         TextView tvName = holder.getView(R.id.tv_name);
         TextView tvDigCount = holder.getView(R.id.tv_dig_count);
+        CheckBox subscrib = holder.getView(R.id.tv_expert_subscrib);
         FlowTagLayout ftlTags = holder.getView(R.id.ftl_tags);
         tvName.setText(expertBean.getName());
         tvDigCount.setText(String.format(Locale.getDefault(), mContext.getString(R.string.qa_publish_show_expert),
@@ -50,24 +61,25 @@ public class SearchExpertAdapter extends CommonAdapter<ExpertBean>{
         ConvertUtils.stringLinkConvert(tvDigCount, setLinks(expertBean));
         ftlTags.setTagCheckedMode(FlowTagLayout.FLOW_TAG_CHECKED_NONE);
         List<UserTagBean> tagBeenList = expertBean.getTags();
-//        UserTagBean tagBean = new UserTagBean();
-//        tagBean.setTagName("既宅又腐");
-//        UserTagBean tagBean1 = new UserTagBean();
-//        tagBean1.setTagName("没有前途");
-//        UserTagBean tagBean2 = new UserTagBean();
-//        tagBean2.setTagName("中二青年欢乐多");
-//        UserTagBean tagBean3 = new UserTagBean();
-//        tagBean3.setTagName("智障儿童欢乐多");
-//        UserTagBean tagBean4 = new UserTagBean();
-//        tagBean4.setTagName("眼镜控");
-//        UserTagBean tagBean5 = new UserTagBean();
-//        tagBean5.setTagName("白锅锅喜欢背锅");
-//        tagBeenList.add(tagBean);
-//        tagBeenList.add(tagBean1);
-//        tagBeenList.add(tagBean2);
-//        tagBeenList.add(tagBean3);
-//        tagBeenList.add(tagBean4);
-//        tagBeenList.add(tagBean5);
+
+        boolean isJoined = expertBean.isFollowing();
+        subscrib.setChecked(isJoined);
+        subscrib.setText(isJoined ? getContext().getString(R.string.qa_topic_followed) : getContext().getString(R.string.qa_topic_follow));
+        subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
+        RxView.clicks(subscrib)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(aVoid -> {
+                    if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
+                        UserInfoBean userInfoBean=new UserInfoBean();
+                        userInfoBean.setUser_id((long)expertBean.getExtra().getUser_id());
+                        userInfoBean.setFollower(expertBean.isFollower());
+                        userInfoBean.setFollowing(expertBean.isFollowing());
+                        mPresenter.handleFollowUser(userInfoBean);
+                    } else {
+                        subscrib.setChecked(false);
+                    }
+                });
+
         UserTagAdapter adapter = new UserTagAdapter(mContext);
         ftlTags.setAdapter(adapter);
         adapter.clearAndAddAll(tagBeenList);
