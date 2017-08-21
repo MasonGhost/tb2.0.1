@@ -15,13 +15,14 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.AnswerEmptyItem;
@@ -73,6 +74,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     private QuestionSelectListTypePopWindow mOrderTypeSelectPop; // 选择排序的弹框
     private ActionPopupWindow mMorePop; // 更多弹框
     private PayPopWindow mPayImagePopWindow;
+    private CenterAlertPopWindow mDeleteQuestionPopWindow; // 删除问题提示框
     private boolean mIsMine = false;
 
     public QuestionDetailFragment instance(Bundle bundle) {
@@ -322,60 +324,86 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                         if (mIsMine) {
                             if (mQaListInfoBean.getExcellent() != 1) {
                                 // 申请精选问答
-                                mPresenter.applyForExcellent(mQaListInfoBean.getId());
-//                                mPayImagePopWindow.show();
+//                                mPresenter.applyForExcellent(mQaListInfoBean.getId());
+                                mPayImagePopWindow.show();
                             } else {
                                 showSnackErrorMessage(getString(R.string
                                         .qa_question_excellent_reapply));
                             }
                         }
-                        mMorePop.dismiss();
+                        mMorePop.hide();
                     })
                     .item2ClickListener(() -> {
-                        // 删除问答
-                        mPresenter.deleteQuestion(mQaListInfoBean.getId());
+                        if (mDeleteQuestionPopWindow != null){
+                            mDeleteQuestionPopWindow.show();
+                        }
+                        mMorePop.hide();
                     })
                     .build();
         }
 
-//        if (mPayImagePopWindow == null){
-//            mPayImagePopWindow = PayPopWindow.builder()
-//                    .with(getActivity())
-//                    .isWrap(true)
-//                    .isFocus(true)
-//                    .isOutsideTouch(true)
-//                    .buildLinksColor1(R.color.themeColor)
-//                    .buildLinksColor2(R.color.important_for_content)
-//                    .contentView(R.layout.ppw_for_center)
-//                    .backgroundAlpha(POPUPWINDOW_ALPHA)
-//                    .buildDescrStr(String.format(getString(strRes) + getString(R
-//                            .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(amout)))
-//                    .buildLinksStr(getString(R.string.buy_pay_member))
-//                    .buildTitleStr(getString(R.string.buy_pay))
-//                    .buildItem1Str(getString(R.string.buy_pay_in))
-//                    .buildItem2Str(getString(R.string.buy_pay_out))
-//                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(amout)))
-//                    .buildCenterPopWindowItem1ClickListener(() -> {
-//                        mPresenter.payNote(dynamicPosition, imagePosition, note, isImage);
-//                        mPayImagePopWindow.hide();
-//                    })
-//                    .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
-//                    .buildCenterPopWindowLinkClickListener(new PayPopWindow
-//                            .CenterPopWindowLinkClickListener() {
-//                        @Override
-//                        public void onLongClick() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onClicked() {
-//                            // 申请精选问答
-//                            mPresenter.applyForExcellent(mQaListInfoBean.getId());
-//                        }
-//                    })
-//                    .build();
-//        }
+        if (mPayImagePopWindow == null){
+            mPayImagePopWindow = PayPopWindow.builder()
+                    .with(getActivity())
+                    .isWrap(true)
+                    .isFocus(true)
+                    .isOutsideTouch(true)
+                    .buildLinksColor1(R.color.themeColor)
+                    .buildLinksColor2(R.color.important_for_content)
+                    .contentView(R.layout.ppw_for_center)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
+                            .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(1000)))
+                    .buildLinksStr(getString(R.string.qa_pay_for_excellent))
+                    .buildTitleStr(getString(R.string.qa_pay_for_excellent))
+                    .buildItem1Str(getString(R.string.buy_pay_in_payment))
+                    .buildItem2Str(getString(R.string.buy_pay_out))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(1000)))
+                    .buildCenterPopWindowItem1ClickListener(() -> {
+                        mPresenter.applyForExcellent(mQaListInfoBean.getId());
+                        mPayImagePopWindow.hide();
+                    })
+                    .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
+                    .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                            .CenterPopWindowLinkClickListener() {
+                        @Override
+                        public void onLongClick() {
 
+                        }
+
+                        @Override
+                        public void onClicked() {
+
+                        }
+                    })
+                    .build();
+        }
+
+        if (mDeleteQuestionPopWindow == null){
+            mDeleteQuestionPopWindow = CenterAlertPopWindow.builder()
+                    .with(getActivity())
+                    .parentView(getView())
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .animationStyle(R.style.style_actionPopupAnimation)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .titleStr(getString(R.string.qa_question_delete))
+                    .desStr(getString(R.string.qa_question_delete_alert))
+                    .buildCenterPopWindowItem1ClickListener(new CenterAlertPopWindow.CenterPopWindowItemClickListener() {
+                        @Override
+                        public void onRightClicked() {
+                            // 删除问题
+                            mPresenter.deleteQuestion(mQaListInfoBean.getId());
+                        }
+
+                        @Override
+                        public void onLeftClicked() {
+                            mDeleteQuestionPopWindow.hide();
+
+                        }
+                    })
+                    .build();
+        }
 
     }
 
