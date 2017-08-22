@@ -33,4 +33,9 @@ public class QA$RewardRepositoryPublish extends BaseQARepository implements QARe
         return mQAClient.publishQuestion(body).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Observable<BaseJsonV2<Object>> resetReward(Long question_id, double amount) {
+        return mQAClient.updateQuestionReward(String.valueOf(question_id), (int) amount);
+    }
 }

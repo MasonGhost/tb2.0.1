@@ -105,10 +105,6 @@ public class QuestionDetailHeader {
         }
         // 标题信息
         mTvQuestionTitle.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, qaListInfoBean.getSubject()));
-        // 悬赏金额
-        if (qaListInfoBean.getAmount() != 0) {
-            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_reward_amount), qaListInfoBean.getAmount()));
-        }
         // 正文
         mQdContent.setQuestionDetail(qaListInfoBean);
         // 关注回答数
@@ -138,6 +134,13 @@ public class QuestionDetailHeader {
      * @param qaListInfoBean bean
      */
     public void updateRewardType(QAListInfoBean qaListInfoBean) {
+        // 悬赏金额
+        if (qaListInfoBean.getAmount() != 0) {
+            mTvRewardAmount.setVisibility(View.VISIBLE);
+            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_reward_amount), qaListInfoBean.getAmount()));
+        } else {
+            mTvRewardAmount.setVisibility(View.GONE);
+        }
         // 悬赏状态
         if (qaListInfoBean.getAmount() == 0) {
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_public));
@@ -201,7 +204,7 @@ public class QuestionDetailHeader {
                     if (mQaListInfoBean.getInvitations() != null
                             && mQaListInfoBean.getInvitations().size() > 0){
                         initPop();
-                    } else {
+                    } else if (mQaListInfoBean.getAmount() == 0){
                         if (mListener != null){
                             mListener.onRewardTypeClick(null, 1);
                         }

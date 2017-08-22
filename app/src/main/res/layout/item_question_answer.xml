@@ -106,9 +106,9 @@
             style="@style/style_divider_horizontal"/>
 
     <!--工具栏-->
-    <RelativeLayout
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/question_detail_reward_type_height"
             android:layout_marginLeft="@dimen/spacing_bigger_large"
             android:paddingTop="@dimen/spacing_normal"
             android:paddingBottom="@dimen/spacing_normal"
@@ -123,6 +123,7 @@
             android:drawableLeft="@mipmap/home_ico_good_normal"
             android:drawablePadding="@dimen/spacing_small_3dp"
             android:gravity="center"
+            android:layout_centerVertical="true"
             tools:text="123"/>
 
         <TextView
@@ -133,21 +134,35 @@
                 android:textColor="@color/general_for_loading_more"
                 android:layout_toRightOf="@+id/tv_like_count"
                 android:drawableLeft="@mipmap/home_ico_comment_normal"
+                android:layout_centerVertical="true"
                 android:drawablePadding="@dimen/spacing_small_3dp"
                 android:layout_marginLeft="@dimen/spacing_large"
-                android:gravity="center"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
                 tools:text="123"/>
 
         <TextView
                 android:id="@+id/tv_watcher_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/tv_to_watch"
                 android:textSize="@dimen/size_icon_assist"
+                android:layout_centerVertical="true"
                 android:textColor="@color/normal_for_disable_button_text"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:text="xxxxxxx"/>
-    </RelativeLayout>
+        <!--去围观-->
+        <TextView
+                android:id="@+id/tv_to_watch"
+                android:layout_width="@dimen/qa_watch_button_width"
+                android:layout_height="@dimen/qa_watch_button_height"
+                android:text="@string/qa_go_to_watch"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:background="@drawable/selector_button_corner_solid_big"/>
+    </LinearLayout>
 
     <View
             style="@style/style_divider_horizontal"

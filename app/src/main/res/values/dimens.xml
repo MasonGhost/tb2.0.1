@@ -87,6 +87,8 @@
     <dimen name="question_invite_portrait_width">26dp</dimen>
     <dimen name="question_invite_width">110dp</dimen>
     <dimen name="question_invite_height">40dp</dimen>
+    <dimen name="qa_watch_button_width">55dp</dimen>
+    <dimen name="qa_watch_button_height">25dp</dimen>
 
     <!--启动广告-->
     <dimen name="iamge_logo_height">114dp</dimen>

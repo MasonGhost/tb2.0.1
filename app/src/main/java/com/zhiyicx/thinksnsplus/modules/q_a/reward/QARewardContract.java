@@ -19,13 +19,16 @@ import rx.Observable;
 public interface QARewardContract {
 
     interface View extends IBaseView<Presenter>{
+        void resetRewardSuccess();
     }
 
     interface Presenter extends IBasePresenter{
         void publishQuestion(QAPublishBean qaPublishBean);
+        void resetReward(Long question_id, double amount);
     }
 
     interface RepositoryPublish extends IBasePublishQuestionRepository {
         Observable<BaseJsonV2<QAPublishBean>> publishQuestion(QAPublishBean qaPublishBean);
+        Observable<BaseJsonV2<Object>> resetReward(Long question_id, double amount);
     }
 }

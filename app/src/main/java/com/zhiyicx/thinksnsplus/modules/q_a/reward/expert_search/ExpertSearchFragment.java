@@ -14,6 +14,7 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.concurrent.TimeUnit;
@@ -22,6 +23,7 @@ import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment.BUNDLE_RESULT;
+import static com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity.BUNDLE_TOPIC_BEAN;
 
 /**
  * @author Catherine
@@ -42,6 +44,8 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     @BindView(R.id.tv_recommend_hint)
     TextView mTvRecommendHint;
 
+    private QATopicBean mQaTopicBean;
+
     public ExpertSearchFragment instance(Bundle bundle) {
         ExpertSearchFragment fragment = new ExpertSearchFragment();
         fragment.setArguments(bundle);
@@ -51,6 +55,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     @Override
     protected void initData() {
         super.initData();
+        mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
         initListener();
     }
 
@@ -63,7 +68,11 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        requestNetData(maxId, 3, isLoadMore);
+        if (mQaTopicBean != null){
+            requestNetData(maxId, mQaTopicBean.getId().intValue(), isLoadMore);
+        } else {
+            requestNetData(maxId, 3, isLoadMore);
+        }
     }
 
     private void requestNetData(Long maxId, int topic_id, boolean isLoadMore) {
@@ -84,12 +93,16 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
                 // 点击直接回到悬赏页面
                 ExpertBean expertBean = mListDatas.get(position);
                 if (expertBean != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(BUNDLE_RESULT, expertBean);
-                    Intent intent = new Intent();
-                    intent.putExtras(bundle);
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                    getActivity().finish();
+                    if (mQaTopicBean != null){
+
+                    } else {
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(BUNDLE_RESULT, expertBean);
+                        Intent intent = new Intent();
+                        intent.putExtras(bundle);
+                        getActivity().setResult(Activity.RESULT_OK, intent);
+                        getActivity().finish();
+                    }
                 }
             }
 

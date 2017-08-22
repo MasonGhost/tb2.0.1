@@ -341,6 +341,8 @@ public class ApiConfig {
      */
     // 发布问题
     public static final String APP_PATH_PUBLISH_QUESTIONS = "api/" + API_VERSION_2 + "/questions";
+    // 更新问题的悬赏 PATCH
+    public static final String APP_PATH_UPDATE_QUESTION_REWARD = "api/" + API_VERSION_2 + "/questions/{question}/amount";
     // 获取全部话题
     public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
     // 获取认证用户关注的话题或者专家话题
