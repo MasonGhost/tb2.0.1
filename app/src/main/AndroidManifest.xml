@@ -301,7 +301,11 @@
             android:name=".modules.certification.detail.CertificationDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-
+        <!--排行榜相关页面-->
+        <activity
+                android:name=".modules.rank.main.container.RankIndexActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"

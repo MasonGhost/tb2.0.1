@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.detail.topic;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -41,6 +42,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 import com.zhiyicx.thinksnsplus.widget.HorizontalStackIconView;
@@ -386,6 +388,11 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                    // 跳转专家列表
+                    Intent intent = new Intent(getActivity(), ExpertSearchActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_TOPIC_BEAN, mQaTopicBean);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 });
     }
 

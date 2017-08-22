@@ -14,6 +14,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @author Catherine
  * @describe
@@ -39,7 +41,29 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
 
     @Override
     public void requestNetData(Long maxId, int topic_id, boolean isLoadMore) {
-        mRepository.getTopicExperts(maxId, topic_id)
+        mRepository.getTopicExperts(maxId, topic_id).subscribe(new BaseSubscribeForV2<List<ExpertBean>>() {
+            @Override
+            protected void onSuccess(List<ExpertBean> data) {
+                mRootView.onNetResponseSuccess(data, isLoadMore);
+            }
+
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.onResponseError(throwable, isLoadMore);
+            }
+        });
+    }
+
+    @Override
+    public void requestNetData(int size, String topic_ids, boolean isLoadMore) {
+        Subscription subscription = mRepository.getExpertList(size, topic_ids)
+                .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<ExpertBean>>() {
                     @Override
                     protected void onSuccess(List<ExpertBean> data) {
@@ -57,6 +81,7 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
                         mRootView.onResponseError(throwable, isLoadMore);
                     }
                 });
+        addSubscrebe(subscription);
     }
 
     @Override

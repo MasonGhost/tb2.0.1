@@ -40,6 +40,7 @@ import butterknife.BindView;
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity.BUNDLE_TOPIC_IDS;
 import static com.zhiyicx.thinksnsplus.modules.usertag.TagFrom.QA_PUBLISH;
 
 /**
@@ -125,7 +126,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-        if (getArguments().containsKey(BUNDLE_QUESTION_ID)) {
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_QUESTION_ID)) {
             mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
         }
         if (!mQuestionId.equals(0L)) {
@@ -143,10 +144,6 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         initDefaultMoney();
         initAlertPopupWindow();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
-        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        if (draft != null) {
-            mQAPublishBean = draft;
-        }
     }
 
     @Override
@@ -168,18 +165,6 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     protected void setRightClick() {
         // 重置
         resetValue();
-    }
-
-    @Override
-    protected void setLeftClick() {
-        super.setLeftClick();
-        mPresenter.saveQuestion(mQAPublishBean);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        mPresenter.saveQuestion(mQAPublishBean);
     }
 
     @Override
@@ -353,6 +338,15 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .subscribe(aVoid -> {
                     // 跳转搜索选择专家列表
                     Intent intent = new Intent(getActivity(), ExpertSearchActivity.class);
+                    Bundle bundle = new Bundle();
+                    String topic_ids = "";
+                    if (mQAPublishBean.getTopics() != null) {
+                        for (QAPublishBean.Topic qaTopicBean : mQAPublishBean.getTopics()) {
+                            topic_ids += qaTopicBean.getId() + ",";
+                        }
+                    }
+                    bundle.putString(BUNDLE_TOPIC_IDS, topic_ids);
+                    intent.putExtras(bundle);
                     startActivityForResult(intent, QA_PUBLISH.id);
                 });
         RxView.clicks(mBtPublish)

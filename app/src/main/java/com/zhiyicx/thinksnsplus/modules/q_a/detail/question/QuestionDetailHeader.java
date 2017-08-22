@@ -112,10 +112,7 @@ public class QuestionDetailHeader {
                 qaListInfoBean.getWatchers_count(), qaListInfoBean.getAnswers_count()));
         // 是否有围观
         if (qaListInfoBean.getLook() == 1) {
-            if (qaListInfoBean.getInvitation_answers() != null && qaListInfoBean.getInvitation_answers().size() > 0) {
-                AnswerInfoBean answerInfoBean = qaListInfoBean.getInvitation_answers().get(0);
-                mTvQuestionRewardAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), answerInfoBean.getViews_count()));
-            }
+            updateOutLook(qaListInfoBean);
         }
         initListener();
         // 是否关注了这个话题
@@ -148,7 +145,7 @@ public class QuestionDetailHeader {
                 && qaListInfoBean.getInvitations().size() > 0) {
             mIvRewardType.setImageResource(R.mipmap.ico_question_invited);
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_invited));
-        } else{
+        } else {
             mTvRewardType.setText(mContext.getString(R.string.qa_reward_setting));
         }
     }
@@ -171,7 +168,18 @@ public class QuestionDetailHeader {
         mLlAnswerInfo.setVisibility(qaListInfoBean.getAnswers_count() == 0 ? View.GONE : View.VISIBLE);
     }
 
-    public Bitmap getShareBitmap(){
+    /**
+     * 更新围观信息
+     */
+    public void updateOutLook(QAListInfoBean qaListInfoBean) {
+        if (qaListInfoBean.getInvitation_answers() != null && qaListInfoBean.getInvitation_answers().size() > 0) {
+            AnswerInfoBean answerInfoBean = qaListInfoBean.getInvitation_answers().get(0);
+            double totalAmount = answerInfoBean.getOnlookers_count() * 0.01;
+            mTvQuestionRewardAmount.setText(String.format(mContext.getString(R.string.qa_watch_amount), totalAmount));
+        }
+    }
+
+    public Bitmap getShareBitmap() {
         return mQdContent.getShareBitmap();
     }
 
@@ -202,18 +210,18 @@ public class QuestionDetailHeader {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mQaListInfoBean.getInvitations() != null
-                            && mQaListInfoBean.getInvitations().size() > 0){
+                            && mQaListInfoBean.getInvitations().size() > 0) {
                         initPop();
-                    } else {
-                        if (mListener != null){
+                    } else if (mQaListInfoBean.getAmount() == 0) {
+                        if (mListener != null) {
                             mListener.onRewardTypeClick(null, 1);
                         }
                     }
                 });
     }
 
-    private void initPop(){
-        if (mInvitePop == null){
+    private void initPop() {
+        if (mInvitePop == null) {
             mInvitePop = QuestionInviteUserPopWindow.Builder()
                     .with(mContext)
                     .parentView(mIvRewardType)

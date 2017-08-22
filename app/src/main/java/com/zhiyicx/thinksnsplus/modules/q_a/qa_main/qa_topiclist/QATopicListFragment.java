@@ -221,6 +221,6 @@ public class QATopicListFragment extends TSListFragment<QATopicListConstact.Pres
     }
 
     protected String getName() {
-        return null;
+        return "";
     }
 }
