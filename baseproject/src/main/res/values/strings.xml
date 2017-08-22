@@ -101,6 +101,8 @@
     <string name="setting_permission_hint">请为TS+开放相机权限: 手机设置-授权管理-TS+(打开)</string>
     <!--  登录  -->
     <string name="bt_login">登录</string>
+    <string name="login_fail">登录失败</string>
+    <string name="login_cancel">取消登录</string>
     <string name="no_login">不登录，先随便逛逛</string>
     <string name="permisson_refused">如需使用此功能，请允许权限认证！</string>
     <string name="permisson_refused_nerver_ask">如需使用此功能，请前往应用设置开放权限！</string>

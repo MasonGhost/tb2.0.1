@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
@@ -38,10 +39,16 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_BIND_WITH_INPUT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_BIND_WITH_LOGIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANDEL_BIND;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_BIND_OR_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BATCH_SPECIFIED_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BIND_THIRDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BY_PHONE_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RANKS;
@@ -392,5 +399,73 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_GET_CHECK_IN_RANKS)
     Observable<List<UserInfoBean>> getCheckInRanks(@Query("offset") Integer offset);
+
+    /*******************************************  三方登录  *********************************************/
+
+    /**
+     * 获取已经绑定的三方
+     * qq	    腾讯 QQ 。
+     * weibo	新浪 Weibo 。
+     * wechat	腾讯微信 。
+     *
+     * @return 请求成功后，将返回用户已绑定第三方的 provider 名称，不存在列表中的代表用户并为绑定。
+     */
+    @GET(APP_PATH_GET_BIND_THIRDS)
+    Observable<List<String>> getBindThirds();
+
+    /**
+     * 检查绑定并获取用户授权
+     *
+     * @param access_token thrid token
+     * @return 返回的数据参考 「用户／授权」接口，如果返回 404 则表示没有改账号没有注册，进入第三方登录注册流程。
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_CHECK_BIND_OR_GET_USER_INFO)
+    Observable<AuthBean> checkThridIsRegitser(@Path("provider") String provider, @Field("access_token") String access_token);
+
+    /**
+     * 检查注册信息或者注册用户
+     *
+     * @param provider     type qq\weibo\wechat
+     * @param access_token 获取的 Provider Access Token。
+     * @param name         用户名。
+     * @param check        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
+     * @return
+     */
+    @PUT(APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO)
+    Observable<List<String>> checkUserOrRegisterUser(@Path("provider") String provider, @Field("access_token") String access_token, @Field("name") String name, @Field("check") Boolean check);
+
+    /**
+     * 已登录账号绑定
+     *
+     * @param provider
+     * @param access_token
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_BIND_WITH_LOGIN)
+    Observable<AuthBean> bindWithLogin(@Path("provider") String provider, @Field("access_token") String access_token);
+
+    /**
+     * 输入账号密码绑定
+     *
+     * @param provider     type qq\weibo\wechat
+     * @param access_token 获取的 Provider Access Token。
+     * @param login        用户登录名，手机，邮箱
+     * @param password     用户密码。
+     * @return
+     */
+    @FormUrlEncoded
+    @PATCH(APP_PATH_BIND_WITH_INPUT)
+    Observable<AuthBean> bindWithInput(@Path("provider") String provider, @Field("access_token") String access_token, @Field("login") String login, @Field("password") String password);
+
+    /**
+     * 取消绑定
+     *
+     * @param provider type qq\weibo\wechat
+     * @return
+     */
+    @DELETE(APP_PATH_CANDEL_BIND)
+    Observable<AuthBean> cancelBind(@Path("provider") String provider);
 
 }

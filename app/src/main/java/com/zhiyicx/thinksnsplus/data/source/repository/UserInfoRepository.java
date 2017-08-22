@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
@@ -634,6 +635,92 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     @Override
     public Observable<List<UserInfoBean>> getCheckInRanks(Integer offset) {
         return mUserInfoClient.getCheckInRanks(offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*******************************************  三方  *********************************************/
+    /**
+     * 获取已经绑定的三方
+     *
+     * @return
+     */
+    @Override
+    public Observable<List<String>> getBindThirds() {
+        return mUserInfoClient.getBindThirds()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 检查绑定并获取用户授权
+     *
+     * @param provider
+     * @param access_token thrid token
+     * @return
+     */
+    @Override
+    public Observable<AuthBean> checkThridIsRegitser(String provider, String access_token) {
+        return mUserInfoClient.checkThridIsRegitser(provider, access_token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 检查注册信息或者注册用户
+     *
+     * @param provider     type qq\weibo\wechat
+     * @param access_token 获取的 Provider Access Token。
+     * @param name         用户名。
+     * @param check        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
+     * @return
+     */
+    @Override
+    public Observable<List<String>> checkUserOrRegisterUser(String provider, String access_token, String name, Boolean check) {
+        return mUserInfoClient.checkUserOrRegisterUser(provider, access_token, name, check)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 已登录账号绑定
+     *
+     * @param provider
+     * @param access_token
+     * @return
+     */
+    @Override
+    public Observable<AuthBean> bindWithLogin(String provider, String access_token) {
+        return mUserInfoClient.bindWithLogin(provider, access_token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 输入账号密码绑定
+     *
+     * @param provider     type qq\weibo\wechat
+     * @param access_token 获取的 Provider Access Token。
+     * @param login        用户登录名，手机，邮箱
+     * @param password     用户密码。
+     * @return
+     */
+    @Override
+    public Observable<AuthBean> bindWithInput(String provider, String access_token, String login, String password) {
+        return mUserInfoClient.bindWithInput(provider, access_token, login, password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 取消绑定
+     *
+     * @param provider type qq\weibo\wechat
+     * @return
+     */
+    @Override
+    public Observable<AuthBean> cancelBind(String provider) {
+        return mUserInfoClient.cancelBind(provider)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

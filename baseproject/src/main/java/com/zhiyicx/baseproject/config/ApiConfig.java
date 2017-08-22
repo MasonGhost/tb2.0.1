@@ -560,14 +560,32 @@ public class ApiConfig {
     // 根据经纬度查询周围最多50KM内的 TS+ 用户
     public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
 
-
-    // 签到
+    /**
+     * 签到
+     */
     // 获取签到信息
     public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/user/checkin";
     // 签到
     public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin";
     // 连续签到排行榜
     public static final String APP_PATH_GET_CHECK_IN_RANKS = "api/" + API_VERSION_2 + "/checkin-ranks";
+
+    /**
+     * 三方登录绑定
+     */
+    // 获取已绑定的第三方
+    public static final String APP_PATH_GET_BIND_THIRDS = "api/" + API_VERSION_2 + "/user/socialite";
+    // 检查绑定并获取用户授权
+    public static final String APP_PATH_CHECK_BIND_OR_GET_USER_INFO = "api/" + API_VERSION_2 + "/socialite/{provider}";
+    // 检查注册信息或者注册用户
+    public static final String APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO = "api/" + API_VERSION_2 + "/socialite/{provider}";
+    // 已登录账号绑定
+    public static final String APP_PATH_BIND_WITH_LOGIN = "api/" + API_VERSION_2 + "/user/socialite/{provider}";
+    // 输入账号密码绑定
+    public static final String APP_PATH_BIND_WITH_INPUT = "api/" + API_VERSION_2 + "/socialite/{provider}";
+    // 输取消绑定
+    public static final String APP_PATH_CANDEL_BIND = "api/" + API_VERSION_2 + "/user/socialite/{provider}";
+
 
     /**
      * 资讯
