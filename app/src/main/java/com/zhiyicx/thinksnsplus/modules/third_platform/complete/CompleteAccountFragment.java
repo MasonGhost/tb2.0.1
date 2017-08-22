@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.third_platform.complete;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -72,24 +73,30 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
 
     @Override
     protected void initView(View rootView) {
-        // 下一步
-        RxView.clicks(mBtLoginLogin)
+        //  应用名检查
+        RxView.clicks(mIvCheck)
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.MILLISECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mBtLoginLogin.isEnabled()) {
 
                     } else {
-                      mEtLoginPhone.setText("");
+                        mEtLoginPhone.setText("");
                     }
                 });
-        // 应用名检查
-        RxView.clicks(mIvCheck)
+        // 下一步
+        RxView.clicks(mBtLoginLogin)
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.MILLISECONDS)
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> {
-                    mPresenter.thridRegister(mThridInfoBean, mEtLoginPhone.getText().toString());
+                .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {// 获取到了权限
+                        mPresenter.thridRegister(mThridInfoBean, mEtLoginPhone.getText().toString());
+                    } else {// 拒绝权限，但是可以再次请求
+                        showErrorTips(getString(R.string.permisson_refused));
+                    }
                 });
+
         // 用户名输入框观察
         RxTextView.afterTextChangeEvents(mEtLoginPhone)
                 .compose(this.bindToLifecycle())
@@ -157,7 +164,7 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     private void setConfirmEnable(boolean isEnable) {
         mBtLoginLogin.setEnabled(isEnable);
         if (isEnable) {
-            mIvCheck.setImageResource(R.mipmap.common_ico_bottom_home_normal);
+            mIvCheck.setImageResource(R.mipmap.ico_edit_chosen_32);
         } else {
             mIvCheck.setImageResource(R.mipmap.login_inputbox_clean);
 

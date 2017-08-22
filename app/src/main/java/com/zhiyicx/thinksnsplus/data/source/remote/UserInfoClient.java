@@ -17,6 +17,7 @@ import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -427,14 +428,15 @@ public interface UserInfoClient {
     /**
      * 检查注册信息或者注册用户
      *
-     * @param provider     type qq\weibo\wechat
+     * @param provider      type qq\weibo\wechat
      * @param thridInfoBean 获取的 Provider Access Token。
-     * @param thridInfoBean         用户名。
-     * @param thridInfoBean        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
+     * @param thridInfoBean 用户名。
+     * @param thridInfoBean 如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
      * @return
      */
     @PATCH(APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO)
     Observable<AuthBean> checkUserOrRegisterUser(@Path("provider") String provider, @Body ThridInfoBean thridInfoBean);
+
     /**
      * 已登录账号绑定
      *
@@ -449,14 +451,14 @@ public interface UserInfoClient {
      * 输入账号密码绑定
      *
      * @param provider     type qq\weibo\wechat
-     * @param access_token 获取的 Provider Access Token。
-     * @param login        用户登录名，手机，邮箱
-     * @param password     用户密码。
+     * @param bindAccountRequstBean 获取的 Provider Access Token。
+     * @param bindAccountRequstBean        用户登录名，手机，邮箱
+     * @param bindAccountRequstBean     用户密码。
      * @return
      */
-    @FormUrlEncoded
-    @PATCH(APP_PATH_BIND_WITH_INPUT)
-    Observable<AuthBean> bindWithInput(@Path("provider") String provider, @Field("access_token") String access_token, @Field("login") String login, @Field("password") String password);
+    @PUT(APP_PATH_BIND_WITH_INPUT)
+    Observable<AuthBean> bindWithInput(@Path("provider") String provider,
+                                       @Body BindAccountRequstBean bindAccountRequstBean);
 
     /**
      * 取消绑定
