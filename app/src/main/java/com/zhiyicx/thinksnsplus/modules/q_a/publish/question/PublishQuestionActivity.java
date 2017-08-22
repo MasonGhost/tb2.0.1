@@ -14,7 +14,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 public class PublishQuestionActivity extends TSActivity<PublishQuestionPresenter, PublishQuestionFragment> {
     @Override
     protected PublishQuestionFragment getFragment() {
-        return PublishQuestionFragment.newInstance();
+        return PublishQuestionFragment.newInstance(getIntent().getExtras());
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
 import rx.Observable;
@@ -38,7 +39,8 @@ public interface PublishContentConstact {
 
         void pareseBody(String body);
 
-
+        void saveQuestion(QAPublishBean qestion);
+        QAPublishBean getDraftQuestion(long qestion_mark);
     }
 
     interface Repository extends IBasePublishQuestionRepository {

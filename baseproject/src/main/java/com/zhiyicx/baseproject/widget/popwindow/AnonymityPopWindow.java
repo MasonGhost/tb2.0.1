@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.zhiyicx.baseproject.R;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
@@ -34,12 +35,14 @@ public class AnonymityPopWindow extends CustomPopupWindow {
         return new CBuilder();
     }
 
-    public CBuilder newBuilder(){
+    public CBuilder newBuilder() {
         return new CBuilder(this);
     }
 
     private void initSwitchButton() {
         final SwitchCompat switchCompat = (SwitchCompat) mContentView.findViewById(R.id.ppw_switch);
+        final TextView descrip = (TextView) mContentView.findViewById(R.id.tv_ppw_desc);
+        descrip.setText(descrStr);
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

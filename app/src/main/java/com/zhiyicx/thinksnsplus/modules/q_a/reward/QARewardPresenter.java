@@ -69,4 +69,14 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                 });
         addSubscrebe(subscription);
     }
+
+    @Override
+    public QAPublishBean getDraftQuestion(long qestion_mark) {
+        return mRepository.getDraftQuestion(qestion_mark);
+    }
+
+    @Override
+    public void saveQuestion(QAPublishBean qestion) {
+        mRepository.saveQuestion(qestion);
+    }
 }

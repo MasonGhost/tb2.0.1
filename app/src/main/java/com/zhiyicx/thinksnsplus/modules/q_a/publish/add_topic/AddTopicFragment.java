@@ -76,21 +76,41 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     }
 
     @Override
+    protected void setLeftClick() {
+        saveQustion();
+        super.setLeftClick();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        saveQustion();
+        super.onBackPressed();
+
+    }
+
+    @Override
     protected void setRightClick() {
         super.setRightClick();
-        List<QAPublishBean.Topic> typeIdsList = new ArrayList<>();
-        for (QATopicBean qaTopicBean : mQATopicBeanList) {
-            QAPublishBean.Topic typeIds = new QAPublishBean.Topic();
-            typeIds.setId(qaTopicBean.getId().intValue());
-            typeIdsList.add(typeIds);
-        }
-        mQAPublishBean.setTopics(typeIdsList);
-        mQAPublishBean.setSubject(mEtQustion.getText().toString());
+        saveQustion();
         Intent intent = new Intent(getActivity(), PublishContentActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void saveQustion() {
+        List<QAPublishBean.Topic> typeIdsList = new ArrayList<>();
+        for (QATopicBean qaTopicBean : mQATopicBeanList) {
+            QAPublishBean.Topic typeIds = new QAPublishBean.Topic();
+            typeIds.setId(qaTopicBean.getId().intValue());
+            typeIds.setName(qaTopicBean.getName());
+            typeIdsList.add(typeIds);
+        }
+        mQAPublishBean.setTopics(typeIdsList);
+        mQAPublishBean.setSubject(mEtQustion.getText().toString());
+        mPresenter.saveQuestion(mQAPublishBean);
     }
 
     @Override
@@ -135,7 +155,27 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         super.initData();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
         mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean.getSubject()));
+
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (draft != null) {
+            mQAPublishBean = draft;
+            List<QAPublishBean.Topic> topics = mQAPublishBean.getTopics();
+            if (topics != null && !topics.isEmpty()) {
+                mQATopicBeanList.clear();
+                for (QAPublishBean.Topic topic : topics) {
+                    QATopicBean qaTopicBean = new QATopicBean((long) topic.getId(), topic.getName());
+                    mQATopicBeanList.add(qaTopicBean);
+                }
+                mTopicsAdapter.notifyDataChanged();
+            }
+
+        }
     }
 
     @Override

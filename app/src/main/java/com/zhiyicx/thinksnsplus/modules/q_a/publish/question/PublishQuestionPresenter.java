@@ -3,7 +3,9 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +24,9 @@ public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionCo
         implements PublishQuestionContract.Presenter{
 
     @Inject
+    QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
+
+    @Inject
     public PublishQuestionPresenter(PublishQuestionContract.Repository repository, PublishQuestionContract.View rootView) {
         super(repository, rootView);
     }
@@ -29,6 +34,21 @@ public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionCo
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
+    }
+
+    @Override
+    public QAPublishBean getDraftQuestion(long qestion_mark) {
+        return mRepository.getDraftQuestion(qestion_mark);
+    }
+
+    @Override
+    public void saveQuestion(QAPublishBean qestion) {
+        mRepository.saveQuestion(qestion);
+    }
+
+    @Override
+    public void deleteQuestion(QAPublishBean qestion) {
+        mRepository.deleteQuestion(qestion);
     }
 
     @Override
@@ -55,7 +75,7 @@ public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionCo
 
     @Override
     public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+        return mQAListInfoBeanGreenDao.getMultiDataFromCache();
     }
 
     @Override

@@ -18,4 +18,6 @@ public class PublishQARepository extends BaseQARepository implements PublishQues
     public PublishQARepository(ServiceManager manager) {
         super(manager);
     }
+
+
 }

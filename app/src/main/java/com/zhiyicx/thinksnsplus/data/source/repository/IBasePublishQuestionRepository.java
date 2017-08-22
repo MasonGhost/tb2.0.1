@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 
@@ -31,4 +32,8 @@ public interface IBasePublishQuestionRepository {
     void handleQuestionFollowState(String questionId, boolean isFollow);
 
     void handleAnswerLike(boolean isLiked, final long answer_id);
+
+    void saveQuestion(QAPublishBean qestion);
+    void deleteQuestion(QAPublishBean qestion);
+    QAPublishBean getDraftQuestion(long qestion_mark);
 }

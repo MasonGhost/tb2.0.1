@@ -12,6 +12,7 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -22,11 +23,11 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
+import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
-import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
@@ -35,7 +36,6 @@ import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationAc
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.CertificationTypePopupWindow;
-import com.zhiyicx.baseproject.widget.UserAvatarView;
 
 import javax.inject.Inject;
 
@@ -82,8 +82,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     CombinationButton mBtWallet;
     @BindView(R.id.bt_suggestion)
     CombinationButton mBtSuggestion;
-    @BindView(R.id.bt_question_answer)
-    CombinationButton mBtQuestionAnswer;
+    @BindView(R.id.bt_draft_box)
+    CombinationButton mDraftBox;
     @BindView(R.id.bt_setting)
     CombinationButton mBtSetting;
     @BindView(R.id.bt_certification)
@@ -185,7 +185,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
     }
 
-    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_suggestion, R.id.bt_question_answer, R.id.bt_setting, R.id.bt_certification})
+    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container,
+            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet,
+            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -232,18 +234,18 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(getActivity(), FeedBackActivity.class));
                 //LoadingDialogUtils.showStateSuccess(getContext());
                 break;
-            case R.id.bt_question_answer:
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+            case R.id.bt_draft_box:
+                startActivity(new Intent(getActivity(), DraftBoxActivity.class));
                 break;
             case R.id.bt_setting:
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
             case R.id.bt_certification:
                 // 弹窗选择个人或者机构
-                if (mUserCertificationInfo != null && mUserCertificationInfo.getId() != 0){
+                if (mUserCertificationInfo != null && mUserCertificationInfo.getId() != 0) {
                     Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                     Bundle bundleData = new Bundle();
-                    if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)){
+                    if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
                         // 跳转个人认证
                         bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
                     } else {
@@ -268,7 +270,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         this.mUserInfoBean = userInfoBean;
         // 设置用户头像
-        ImageUtils.loadCircleUserHeadPic(mUserInfoBean,mIvHeadIcon);
+        ImageUtils.loadCircleUserHeadPic(mUserInfoBean, mIvHeadIcon);
         // 设置用户名
         mTvUserName.setText(userInfoBean.getName());
         // 设置简介
@@ -298,23 +300,23 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void updateCertification(UserCertificationInfo data) {
-        if (data != null && data.getId() != 0){
+        if (data != null && data.getId() != 0) {
             mUserCertificationInfo = data;
-            if (data.getStatus() == 1){
+            if (data.getStatus() == 1) {
                 mBtCertification.setRightText(getString(R.string.certification_state_success));
-            } else if (data.getStatus() == 0){
+            } else if (data.getStatus() == 0) {
                 mBtCertification.setRightText(getString(R.string.certification_state_ing));
             }
         } else {
             mBtCertification.setRightText("");
         }
-        if (mCertificationWindow != null){
+        if (mCertificationWindow != null) {
             mCertificationWindow.dismiss();
         }
     }
 
-    private void initCertificationTypePop(){
-        if (mCertificationWindow == null){
+    private void initCertificationTypePop() {
+        if (mCertificationWindow == null) {
             mCertificationWindow = CertificationTypePopupWindow.Builder()
                     .with(getActivity())
                     .alpha(0.8f)
@@ -328,7 +330,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     public void onTypeSelected(int position) {
         Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
         Bundle bundle = new Bundle();
-        if (position == 0){
+        if (position == 0) {
             // 跳转个人认证
             bundle.putInt(BUNDLE_TYPE, 0);
         } else {

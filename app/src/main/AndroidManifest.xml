@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.zhiyicx.thinksnsplus">
+
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -260,6 +261,7 @@
         <activity
             android:name=".modules.q_a.publish.question.PublishQuestionActivity"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.q_a.publish.add_topic.AddTopicActivity"
@@ -282,9 +284,9 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-                android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
+            android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- 认证相关页面 -->
         <activity
@@ -435,27 +437,30 @@
         </activity>
         <activity
             android:name=".modules.q_a.QA_Activity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".modules.q_a.search.container.QASearchContainerActivity"
-            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
-            >
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".modules.q_a.publish.detail.PublishContentActivity"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
-        <activity android:name=".modules.wallet.reward.RewardActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".modules.wallet.reward.list.RewardListActivity"
-                  android:screenOrientation="portrait"/>
-        <!--资讯发布-->
+        <activity
+            android:name=".modules.wallet.reward.RewardActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.reward.list.RewardListActivity"
+            android:screenOrientation="portrait"/>
+        <!-- 资讯发布 -->
         <activity
             android:name=".modules.information.publish.PublishInfoActivity"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -465,13 +470,13 @@
         </activity>
         <activity
             android:name=".modules.information.publish.addinfo.AddInfoCategoryActivity"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".modules.information.publish.uploadcover.UploadCoverActivity"/>
         <activity android:name=".modules.wallet.sticktop.StickTopActivity"/>
         <activity
             android:name=".modules.q_a.answer.PublishAnswerActivity"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
@@ -479,8 +484,7 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
 
-
-        <!--找人-->
+        <!-- 找人 -->
         <activity
             android:name=".modules.findsomeone.contianer.FindSomeOneContainerActivity"
             android:screenOrientation="portrait"/>
@@ -490,9 +494,9 @@
         <activity
             android:name=".modules.findsomeone.contacts.ContactsActivity"
             android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"/>
+        <activity android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"/>
+        <activity android:name=".modules.draftbox.DraftBoxActivity">
+        </activity>
     </application>
 
 </manifest>

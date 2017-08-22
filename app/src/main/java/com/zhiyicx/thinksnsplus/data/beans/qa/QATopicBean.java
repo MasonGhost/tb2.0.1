@@ -119,6 +119,11 @@ public class QATopicBean extends BaseListBean implements Serializable{
 
     public QATopicBean() {
     }
+
+    public QATopicBean(Long id,String name) {
+        this.id=id;
+        this.name=name;
+    }
     
 
     public static class UserInfoCovert extends BaseConvert<List<UserInfoBean>>{}

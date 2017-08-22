@@ -8,8 +8,10 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
@@ -38,6 +40,9 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Inject
     Application mContext;
+
+    @Inject
+    protected QAPublishBeanGreenDaoImpl mQAPublishBeanGreenDaoImpl;
 
     @Inject
     public BaseQARepository(ServiceManager manager) {
@@ -161,5 +166,20 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
+    }
+
+    @Override
+    public void saveQuestion(QAPublishBean qestion) {
+        mQAPublishBeanGreenDaoImpl.saveSingleData(qestion);
+    }
+
+    @Override
+    public void deleteQuestion(QAPublishBean qestion) {
+        mQAPublishBeanGreenDaoImpl.deleteSingleCache(qestion);
+    }
+
+    @Override
+    public QAPublishBean getDraftQuestion(long qestion_mark) {
+        return mQAPublishBeanGreenDaoImpl.getSingleDataFromCache(qestion_mark);
     }
 }

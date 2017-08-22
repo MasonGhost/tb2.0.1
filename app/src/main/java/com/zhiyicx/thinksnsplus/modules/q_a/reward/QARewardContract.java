@@ -25,6 +25,9 @@ public interface QARewardContract {
     interface Presenter extends IBasePresenter{
         void publishQuestion(QAPublishBean qaPublishBean);
         void resetReward(Long question_id, double amount);
+
+        void saveQuestion(QAPublishBean qestion);
+        QAPublishBean getDraftQuestion(long qestion_mark);
     }
 
     interface RepositoryPublish extends IBasePublishQuestionRepository {

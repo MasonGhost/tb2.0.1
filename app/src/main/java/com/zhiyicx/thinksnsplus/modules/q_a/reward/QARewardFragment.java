@@ -125,10 +125,10 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-        if (getArguments().containsKey(BUNDLE_QUESTION_ID)){
+        if (getArguments().containsKey(BUNDLE_QUESTION_ID)) {
             mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
         }
-        if (!mQuestionId.equals(0L)){
+        if (!mQuestionId.equals(0L)) {
             mBtPublish.setText(getString(R.string.sure));
             mRlInviteContainer.setVisibility(View.GONE);
         }
@@ -143,6 +143,10 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         initDefaultMoney();
         initAlertPopupWindow();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (draft != null) {
+            mQAPublishBean = draft;
+        }
     }
 
     @Override
@@ -164,6 +168,18 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     protected void setRightClick() {
         // 重置
         resetValue();
+    }
+
+    @Override
+    protected void setLeftClick() {
+        super.setLeftClick();
+        mPresenter.saveQuestion(mQAPublishBean);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mPresenter.saveQuestion(mQAPublishBean);
     }
 
     @Override
@@ -345,7 +361,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .subscribe(aVoid -> {
                     // 发布
                     try {
-                        if (mQuestionId.equals(0L)){
+                        if (mQuestionId.equals(0L)) {
                             mQAPublishBean.setAmount(mRewardMoney);
                             mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
                             mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);

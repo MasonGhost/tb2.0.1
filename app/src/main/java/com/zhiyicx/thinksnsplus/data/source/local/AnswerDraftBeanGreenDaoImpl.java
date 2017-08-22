@@ -1,6 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.local;
 
+import android.app.Application;
+
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @Author Jliuer
@@ -8,5 +16,63 @@ import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class AnswerDraftBeanGreenDaoImpl extends CommonCacheImpl {
+public class AnswerDraftBeanGreenDaoImpl extends CommonCacheImpl<AnswerDraftBean> {
+
+    private AnswerDraftBeanDao mAnswerDraftBeanDao;
+
+    @Inject
+    public AnswerDraftBeanGreenDaoImpl(Application context) {
+        super(context);
+        mAnswerDraftBeanDao = getWDaoSession().getAnswerDraftBeanDao();
+    }
+
+    @Override
+    public long saveSingleData(AnswerDraftBean singleData) {
+        return mAnswerDraftBeanDao.insertOrReplace(singleData);
+    }
+
+    @Override
+    public void saveMultiData(List<AnswerDraftBean> multiData) {
+
+    }
+
+    @Override
+    public boolean isInvalide() {
+        return false;
+    }
+
+    @Override
+    public AnswerDraftBean getSingleDataFromCache(Long primaryKey) {
+        return mAnswerDraftBeanDao.load(primaryKey);
+    }
+
+    @Override
+    public List<AnswerDraftBean> getMultiDataFromCache() {
+        return null;
+    }
+
+    @Override
+    public void clearTable() {
+        mAnswerDraftBeanDao.deleteAll();
+    }
+
+    @Override
+    public void deleteSingleCache(Long primaryKey) {
+        mAnswerDraftBeanDao.deleteByKey(primaryKey);
+    }
+
+    @Override
+    public void deleteSingleCache(AnswerDraftBean dta) {
+        mAnswerDraftBeanDao.delete(dta);
+    }
+
+    @Override
+    public void updateSingleData(AnswerDraftBean newData) {
+        saveSingleData(newData);
+    }
+
+    @Override
+    public long insertOrReplace(AnswerDraftBean newData) {
+        return saveSingleData(newData);
+    }
 }

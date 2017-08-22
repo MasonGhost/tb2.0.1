@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -66,7 +67,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mInstructionsPopupWindow;
     protected int[] mImageIdArray;// 已经添加的图片数量图片数组 id
-    protected int mPicTag;// 已经添加的图片数量
+    private int mPicTag;// 已经添加的图片数量
     protected int mPicAddTag;// 封装数据时 当前 图片 下标
     protected int mAnonymity;
 
@@ -88,6 +89,18 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     public void updateSuccess() {
 
+    }
+
+    @Override
+    protected void setLeftClick() {
+        saveQuestion();
+        super.setLeftClick();
+    }
+
+    @Override
+    public void onBackPressed() {
+        saveQuestion();
+        super.onBackPressed();
     }
 
     @Override
@@ -122,13 +135,18 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        saveQuestion();
         Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
-        mQAPublishBean.setBody(getContentString());
-        mQAPublishBean.setAnonymity(mAnonymity);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void saveQuestion() {
+        mQAPublishBean.setBody(getContentString());
+        mQAPublishBean.setAnonymity(mAnonymity);
+        mPresenter.saveQuestion(mQAPublishBean);
     }
 
     @NonNull
@@ -138,8 +156,13 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         for (RichTextEditor.EditData editData : datas) {
             builder.append(editData.inputStr);
             if (!editData.imagePath.isEmpty()) {
-                builder.append(String.format(Locale.getDefault(),
-                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[mPicAddTag]));
+                if (editData.imagePath.contains("![image]")) {
+                    builder.append(editData.imagePath);
+                } else {
+                    builder.append(String.format(Locale.getDefault(),
+                            MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE,
+                            mImageIdArray[mPicAddTag]));
+                }
                 mPicAddTag++;
             }
         }
@@ -155,6 +178,21 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (draft != null) {
+            mQAPublishBean = draft;
+            String body = mQAPublishBean.getBody();
+            if (!TextUtils.isEmpty(body)) {
+                mRicheTest.clearAllLayout();
+                mPresenter.pareseBody(body);
+            }
+
+        }
     }
 
     @Override
@@ -176,13 +214,15 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Override
-    public void addImageViewAtIndex(String iamgePath, int iamge_id, String markdonw,boolean isLast) {
-
+    public void addImageViewAtIndex(String iamge, int iamge_id, String markdonw, boolean isLast) {
+        mImageIdArray[mPicTag] = iamge_id;
+        mPicTag++;
+        mRicheTest.updateImageViewAtIndex(mRicheTest.getLastIndex(), iamge, markdonw, isLast);
     }
 
     @Override
     public void addEditTextAtIndex(String text) {
-
+        mRicheTest.updateEditTextAtIndex(mRicheTest.getLastIndex(), text);
     }
 
     @Override

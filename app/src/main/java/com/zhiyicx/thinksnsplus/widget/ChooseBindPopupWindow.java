@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +23,16 @@ import com.zhiyicx.thinksnsplus.R;
  * @contact email:648129313@qq.com
  */
 
-public class ChooseBindPopupWindow extends PopupWindow{
+public class ChooseBindPopupWindow extends PopupWindow {
 
     private Activity mActivity;
     private View mParentView;
     private View mContentView;
     private float mAlpha;
     private String mCancel;
+    private String mItem1Str;
+    private String mItem2Str;
+    protected boolean isOutsideTouch;
     private OnItemChooseListener mItemClickListener;
     private int mWidth;
     private int mHeight;
@@ -44,8 +48,11 @@ public class ChooseBindPopupWindow extends PopupWindow{
         this.mParentView = builder.mParentView;
         this.mAlpha = builder.mAlpha;
         this.mCancel = builder.mCancel;
+        this.isOutsideTouch=builder.isOutsideTouch;
         this.mWidth = builder.mWidth;
         this.mHeight = builder.mHeight;
+        this.mItem1Str = builder.mItem1Str;
+        this.mItem2Str = builder.mItem2Str;
         this.mItemLayout = builder.mItemLayout;
         this.mItemClickListener = builder.mItemChooseListener;
         initView();
@@ -56,7 +63,7 @@ public class ChooseBindPopupWindow extends PopupWindow{
         setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
         setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         setFocusable(false);
-        setOutsideTouchable(false);
+        setOutsideTouchable(isOutsideTouch);
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
         setBackgroundDrawable(mBackgroundDrawable);
@@ -66,13 +73,19 @@ public class ChooseBindPopupWindow extends PopupWindow{
         mContentView = LayoutInflater.from(mActivity).inflate(R.layout.pop_choose_bind, null);
         TextView chooseToCompleteAccount = (TextView) mContentView.findViewById(R.id.choose_to_complete_account);
         TextView chooseToBindAccount = (TextView) mContentView.findViewById(R.id.choose_to_bind_account);
+        if (!TextUtils.isEmpty(mItem1Str)){
+            chooseToCompleteAccount.setText(mItem1Str);
+        }
+        if (!TextUtils.isEmpty(mItem2Str)){
+            chooseToBindAccount.setText(mItem2Str);
+        }
         chooseToCompleteAccount.setOnClickListener(v -> {
-            if (mItemClickListener != null){
+            if (mItemClickListener != null) {
                 mItemClickListener.onItemChose(0);
             }
         });
         chooseToBindAccount.setOnClickListener(v -> {
-            if (mItemClickListener != null){
+            if (mItemClickListener != null) {
                 mItemClickListener.onItemChose(1);
             }
         });
@@ -104,9 +117,12 @@ public class ChooseBindPopupWindow extends PopupWindow{
         private View mParentView;
         private float mAlpha;
         private int mWidth = 0;
+        protected boolean isOutsideTouch = false;// 默认为false
         private int mHeight = 0;
         private int mItemLayout = 0;
         private String mCancel;
+        private String mItem1Str;
+        private String mItem2Str;
         private OnItemChooseListener mItemChooseListener;
 
         private Builder() {
@@ -132,6 +148,11 @@ public class ChooseBindPopupWindow extends PopupWindow{
             return this;
         }
 
+        public ChooseBindPopupWindow.Builder isOutsideTouch(boolean isOutsideTouch) {
+            this.isOutsideTouch = isOutsideTouch;
+            return this;
+        }
+
         public ChooseBindPopupWindow.Builder parentView(View parentView) {
             this.mParentView = parentView;
             return this;
@@ -139,6 +160,16 @@ public class ChooseBindPopupWindow extends PopupWindow{
 
         public ChooseBindPopupWindow.Builder cancel(String cancel) {
             this.mCancel = cancel;
+            return this;
+        }
+
+        public ChooseBindPopupWindow.Builder itemlStr(String itemlStr) {
+            this.mItem1Str = itemlStr;
+            return this;
+        }
+
+        public ChooseBindPopupWindow.Builder item2Str(String item2Str) {
+            this.mItem2Str = item2Str;
             return this;
         }
 
@@ -157,7 +188,7 @@ public class ChooseBindPopupWindow extends PopupWindow{
         }
     }
 
-    public interface OnItemChooseListener{
+    public interface OnItemChooseListener {
         void onItemChose(int position);
     }
 

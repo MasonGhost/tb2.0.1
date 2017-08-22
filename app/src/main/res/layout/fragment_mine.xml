@@ -239,14 +239,13 @@
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--Q&A-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
-                android:id="@+id/bt_question_answer"
+                android:id="@+id/bt_draft_box"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
-                android:visibility="gone"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_question"
-                app:leftText="@string/question_answer"
+                app:leftText="@string/draft_box"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
             <!--设置-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton

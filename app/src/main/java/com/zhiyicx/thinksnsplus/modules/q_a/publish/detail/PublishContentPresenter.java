@@ -6,6 +6,7 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 
 import javax.inject.Inject;
@@ -154,6 +155,16 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                         mRootView.addEditTextAtIndex(text);
                     }
                 });
+    }
+
+    @Override
+    public QAPublishBean getDraftQuestion(long qestion_mark) {
+        return mRepository.getDraftQuestion(qestion_mark);
+    }
+
+    @Override
+    public void saveQuestion(QAPublishBean qestion) {
+        mRepository.saveQuestion(qestion);
     }
 
 }

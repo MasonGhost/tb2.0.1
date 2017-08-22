@@ -9,4 +9,5 @@ import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxContract;
  * @Description
  */
 public class DraftBoxRepository implements DraftBoxContract.Repository {
+
 }

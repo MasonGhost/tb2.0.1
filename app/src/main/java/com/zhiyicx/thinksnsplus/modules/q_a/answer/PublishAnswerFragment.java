@@ -59,18 +59,6 @@ public class PublishAnswerFragment extends PublishContentFragment {
     }
 
     @Override
-    public void addImageViewAtIndex(String iamge, int iamge_id, String markdonw, boolean isLast) {
-        mImageIdArray[mPicTag] = iamge_id;
-        mPicTag++;
-        mRicheTest.updateImageViewAtIndex(mRicheTest.getLastIndex(), iamge, markdonw, isLast);
-    }
-
-    @Override
-    public void addEditTextAtIndex(String text) {
-        mRicheTest.updateEditTextAtIndex(mRicheTest.getLastIndex(), text);
-    }
-
-    @Override
     protected String setCenterTitle() {
         return getString(R.string.qa_publish_answer);
     }
@@ -95,26 +83,26 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     }
 
-    @NonNull
-    @Override
-    protected String getContentString() {
-        StringBuilder builder = new StringBuilder();
-        List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
-        for (RichTextEditor.EditData editData : datas) {
-            builder.append(editData.inputStr);
-            if (!editData.imagePath.isEmpty()) {
-                if (editData.imagePath.contains("![image]")) {
-                    builder.append(editData.imagePath);
-                } else {
-                    builder.append(String.format(Locale.getDefault(),
-                            MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE,
-                            mImageIdArray[mPicAddTag]));
-                }
-                mPicAddTag++;
-            }
-        }
-        return builder.toString();
-    }
+//    @NonNull
+//    @Override
+//    protected String getContentString() {
+//        StringBuilder builder = new StringBuilder();
+//        List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
+//        for (RichTextEditor.EditData editData : datas) {
+//            builder.append(editData.inputStr);
+//            if (!editData.imagePath.isEmpty()) {
+//                if (editData.imagePath.contains("![image]")) {
+//                    builder.append(editData.imagePath);
+//                } else {
+//                    builder.append(String.format(Locale.getDefault(),
+//                            MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE,
+//                            mImageIdArray[mPicAddTag]));
+//                }
+//                mPicAddTag++;
+//            }
+//        }
+//        return builder.toString();
+//    }
 
     @Override
     public void publishSuccess(QAAnswerBean answerBean) {
