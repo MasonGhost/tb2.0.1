@@ -40,6 +40,7 @@ import butterknife.BindView;
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity.BUNDLE_TOPIC_IDS;
 import static com.zhiyicx.thinksnsplus.modules.usertag.TagFrom.QA_PUBLISH;
 
 /**
@@ -125,10 +126,10 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-        if (getArguments() != null && getArguments().containsKey(BUNDLE_QUESTION_ID)){
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_QUESTION_ID)) {
             mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
         }
-        if (!mQuestionId.equals(0L)){
+        if (!mQuestionId.equals(0L)) {
             mBtPublish.setText(getString(R.string.sure));
             mRlInviteContainer.setVisibility(View.GONE);
         }
@@ -337,6 +338,15 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .subscribe(aVoid -> {
                     // 跳转搜索选择专家列表
                     Intent intent = new Intent(getActivity(), ExpertSearchActivity.class);
+                    Bundle bundle = new Bundle();
+                    String topic_ids = "";
+                    if (mQAPublishBean.getTopics() != null) {
+                        for (QAPublishBean.Topic qaTopicBean : mQAPublishBean.getTopics()) {
+                            topic_ids += qaTopicBean.getId() + ",";
+                        }
+                    }
+                    bundle.putString(BUNDLE_TOPIC_IDS, topic_ids);
+                    intent.putExtras(bundle);
                     startActivityForResult(intent, QA_PUBLISH.id);
                 });
         RxView.clicks(mBtPublish)
@@ -345,7 +355,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .subscribe(aVoid -> {
                     // 发布
                     try {
-                        if (mQuestionId.equals(0L)){
+                        if (mQuestionId.equals(0L)) {
                             mQAPublishBean.setAmount(mRewardMoney);
                             mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
                             mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
