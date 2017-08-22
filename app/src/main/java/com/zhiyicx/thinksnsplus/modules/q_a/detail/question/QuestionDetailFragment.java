@@ -123,9 +123,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mCurrentPosition = position - mHeaderAndFooterWrapper
                 .getHeadersCount();
         AnswerInfoBean answerInfoBean =  mListDatas.get(mCurrentPosition);
-        if (mQaListInfoBean.getLook() == 1
-                && !mQaListInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())){
-            // 开启了围观并且不是作者本人点击
+        // 开启了围观并且不是作者本人点击
+        if (!answerInfoBean.getCould()){
             mPayWatchPopWindow.show();
         } else {
             startToAnswerDetail(answerInfoBean);
@@ -426,6 +425,10 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                         // 跳转查看 围观肯定是第一个
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
                         if (answerInfoBean != null){
+                            answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
+                            mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
+                            mQuestionDetailHeader.updateOutLook(mQaListInfoBean);
+                            refreshData();
                             startToAnswerDetail(answerInfoBean);
                         }
                         mPayWatchPopWindow.hide();
@@ -497,6 +500,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onToWatchClick(AnswerInfoBean answerInfoBean, int position) {
-
+        mCurrentPosition = position - mHeaderAndFooterWrapper
+                .getHeadersCount();
+        mPayWatchPopWindow.show();
     }
 }

@@ -60,7 +60,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
             holder.setVisible(R.id.tv_watcher_count, isInvited ? View.VISIBLE : View.GONE);
             if (isInvited) {
                 holder.setText(R.id.tv_watcher_count, String.format(holder.getConvertView().getContext()
-                        .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean.getRewarder_count()));
+                        .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean.getOnlookers_count()));
             }
             // 跳转
             RxView.clicks(holder.getView(R.id.iv_portrait))
@@ -77,6 +77,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         holder.setVisible(R.id.tv_adopt_flag, answerInfoBean.getAdoption() == 1 ? View.VISIBLE : View.GONE);
         // 是否邀请
         holder.setVisible(R.id.tv_invite_flag, answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
+        // 时间
+        holder.setText(R.id.tv_time, answerInfoBean.getCreated_at());
         // 正文
         holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
         // 点赞数量
@@ -101,9 +103,9 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         tvToWatch.setVisibility(answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
         // 是否已经围观了
         tvToWatch.setEnabled(!answerInfoBean.getCould());
-        tvToWatch.setText(!answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string.qa_go_to_watched)
+        tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string.qa_go_to_watched)
                 : tvToWatch.getContext().getString(R.string.qa_go_to_watch));
-        tvToWatch.setTextColor(!answerInfoBean.getCould() ? ContextCompat.getColor(tvToWatch.getContext(), R.color.normal_for_assist_text)
+        tvToWatch.setTextColor(answerInfoBean.getCould() ? ContextCompat.getColor(tvToWatch.getContext(), R.color.normal_for_assist_text)
                 : ContextCompat.getColor(tvToWatch.getContext(), R.color.white));
         RxView.clicks(tvToWatch)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

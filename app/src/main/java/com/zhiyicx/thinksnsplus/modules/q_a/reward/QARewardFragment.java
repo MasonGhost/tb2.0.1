@@ -125,7 +125,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
 
     @Override
     protected void initView(View rootView) {
-        if (getArguments().containsKey(BUNDLE_QUESTION_ID)){
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_QUESTION_ID)){
             mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
         }
         if (!mQuestionId.equals(0L)){

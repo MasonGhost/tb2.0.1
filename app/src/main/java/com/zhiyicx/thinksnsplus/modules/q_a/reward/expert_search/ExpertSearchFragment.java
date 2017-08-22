@@ -55,7 +55,9 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     @Override
     protected void initData() {
         super.initData();
-        mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_TOPIC_BEAN)) {
+            mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
+        }
         initListener();
     }
 
@@ -68,7 +70,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        if (mQaTopicBean != null){
+        if (mQaTopicBean != null) {
             requestNetData(maxId, mQaTopicBean.getId().intValue(), isLoadMore);
         } else {
             requestNetData(maxId, 3, isLoadMore);
@@ -86,14 +88,14 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas,mPresenter);
+        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas, mPresenter);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 // 点击直接回到悬赏页面
                 ExpertBean expertBean = mListDatas.get(position);
                 if (expertBean != null) {
-                    if (mQaTopicBean != null){
+                    if (mQaTopicBean != null) {
 
                     } else {
                         Bundle bundle = new Bundle();
