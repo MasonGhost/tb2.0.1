@@ -505,6 +505,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             this.mUserInfoBean = userInfoBean;
             setBottomVisible(userInfoBean.getUser_id());
             mPersonalCenterHeaderViewItem.initHeaderViewData(userInfoBean);
+            // ui进行刷新
+            setFollowState(userInfoBean);
         }
     }
 
