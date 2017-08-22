@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
@@ -427,14 +428,13 @@ public interface UserInfoClient {
      * 检查注册信息或者注册用户
      *
      * @param provider     type qq\weibo\wechat
-     * @param access_token 获取的 Provider Access Token。
-     * @param name         用户名。
-     * @param check        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
+     * @param thridInfoBean 获取的 Provider Access Token。
+     * @param thridInfoBean         用户名。
+     * @param thridInfoBean        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
      * @return
      */
-    @PUT(APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO)
-    Observable<List<String>> checkUserOrRegisterUser(@Path("provider") String provider, @Field("access_token") String access_token, @Field("name") String name, @Field("check") Boolean check);
-
+    @PATCH(APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO)
+    Observable<AuthBean> checkUserOrRegisterUser(@Path("provider") String provider, @Body ThridInfoBean thridInfoBean);
     /**
      * 已登录账号绑定
      *
@@ -442,9 +442,8 @@ public interface UserInfoClient {
      * @param access_token
      * @return
      */
-    @FormUrlEncoded
     @PATCH(APP_PATH_BIND_WITH_LOGIN)
-    Observable<AuthBean> bindWithLogin(@Path("provider") String provider, @Field("access_token") String access_token);
+    Observable<AuthBean> bindWithLogin(@Path("provider") String provider, @Body String access_token);
 
     /**
      * 输入账号密码绑定

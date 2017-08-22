@@ -349,7 +349,7 @@ public interface UserInfoContract {
          * @param check        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
          * @return
          */
-        Observable<List<String>> checkUserOrRegisterUser(String provider, String access_token, String name,  Boolean check);
+        Observable<AuthBean> checkUserOrRegisterUser(String provider, String access_token, String name,  Boolean check);
 
         /**
          * 已登录账号绑定

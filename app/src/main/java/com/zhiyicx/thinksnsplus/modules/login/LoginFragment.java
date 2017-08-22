@@ -22,6 +22,7 @@ import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -29,6 +30,7 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
@@ -46,6 +48,7 @@ import butterknife.OnClick;
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
+import static com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity.BUNDLE_THIRD_INFO;
 
 /**
  * @author LiuChao
@@ -120,7 +123,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mRxPermissions.setLogging(true); //是否需要日志
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
-                    System.out.println("aBoolean = " + aBoolean);
                 });
         mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
 
@@ -174,9 +176,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
-                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
-                    startActivity(intent);
-//                    thridLogin(SHARE_MEDIA.QQ);
+                    thridLogin(SHARE_MEDIA.QQ);
 
                 });
         RxView.clicks(mTvLoginByWeibo)
@@ -192,7 +192,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
                     thridLogin(SHARE_MEDIA.WEIXIN);
-
                 });
     }
 
@@ -377,6 +376,11 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
 
+    private String mThridName;
+
+
+    private String mAccessToken;
+
     UMAuthListener authListener = new UMAuthListener() {
         /**
          * @desc 授权开始的回调
@@ -384,6 +388,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onStart(SHARE_MEDIA platform) {
+            showSnackLoadingMessage(getString(R.string.loading_state));
 
         }
 
@@ -396,7 +401,24 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             System.out.println("platform = " + data);
+            String providerQq = ApiConfig.PROVIDER_QQ;
+            switch (platform) {
+                case QQ:
+                    providerQq = ApiConfig.PROVIDER_QQ;
+                    break;
+                case SINA:
+                    providerQq = ApiConfig.PROVIDER_WEIBO;
+                    break;
 
+                case WEIXIN:
+                    providerQq = ApiConfig.PROVIDER_WECHAT;
+                    break;
+                default:
+
+            }
+            mThridName = data.get("screen_name");
+            mAccessToken = data.get("accessToken");
+            mPresenter.checkBindOrLogin(providerQq, mAccessToken);
         }
 
         /**
@@ -420,4 +442,17 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
             showSnackWarningMessage(getString(R.string.login_cancel));
         }
     };
+
+    /**
+     * @param provider
+     * @param access_token
+     */
+    @Override
+    public void registerByThrid(String provider, String access_token) {
+        Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putParcelable(BUNDLE_THIRD_INFO,new ThridInfoBean(provider,access_token,mThridName));
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 }

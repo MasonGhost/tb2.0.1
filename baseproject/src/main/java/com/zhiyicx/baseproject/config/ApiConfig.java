@@ -575,6 +575,10 @@ public class ApiConfig {
     /**
      * 三方登录绑定
      */
+    public static final String PROVIDER_QQ = "qq";
+    public static final String PROVIDER_WEIBO = "weibo";
+    public static final String PROVIDER_WECHAT = "wechat";
+
     // 获取已绑定的第三方
     public static final String APP_PATH_GET_BIND_THIRDS = "api/" + API_VERSION_2 + "/user/socialite";
     // 检查绑定并获取用户授权

@@ -2,6 +2,6 @@
 <resources>
 
     <!--登录注册编辑框左边的文字宽度-->
-    <dimen name="edit_lefttext_width">60dp</dimen>
+    <dimen name="edit_lefttext_width">70dp</dimen>
 
 </resources>

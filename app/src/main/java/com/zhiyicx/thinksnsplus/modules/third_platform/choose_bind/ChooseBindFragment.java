@@ -65,10 +65,12 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
         if (position == 0){
             // 跳转完善资料
             Intent intent = new Intent(getActivity(), CompleteAccountActivity.class);
+            intent.putExtras(getArguments());
             startActivity(intent);
         } else if (position == 1){
             // 跳转绑定已有的账号
             Intent intent = new Intent(getActivity(), BindOldAccountActivity.class);
+            intent.putExtras(getArguments());
             startActivity(intent);
         }
     }

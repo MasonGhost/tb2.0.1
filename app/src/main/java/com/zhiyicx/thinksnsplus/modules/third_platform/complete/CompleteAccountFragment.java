@@ -1,21 +1,34 @@
 package com.zhiyicx.thinksnsplus.modules.third_platform.complete;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
+import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.utils.ActivityHandler;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
+import com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity;
+import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
+import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import rx.functions.Action1;
 
 /**
  * @author Catherine
@@ -34,7 +47,8 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     @BindView(R.id.bt_login_login)
     LoadingButton mBtLoginLogin;
 
-    private boolean mIsPhoneEdited;
+
+    private ThridInfoBean mThridInfoBean;
 
     public CompleteAccountFragment instance(Bundle bundle) {
         CompleteAccountFragment fragment = new CompleteAccountFragment();
@@ -43,19 +57,39 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mThridInfoBean = getArguments().getParcelable(ChooseBindActivity.BUNDLE_THIRD_INFO);
+        } else {
+            throw new IllegalArgumentException("thrid info not be null");
+        }
+    }
+
+    @Override
     protected void initView(View rootView) {
+        // 下一步
+        RxView.clicks(mBtLoginLogin)
+                .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.MILLISECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    mPresenter.thridRegister(mThridInfoBean, mEtLoginPhone.getText().toString());
+                });
+        // 用户名输入框观察
+        RxTextView.afterTextChangeEvents(mEtLoginPhone)
+                .compose(this.bindToLifecycle())
+                .subscribe(textViewAfterTextChangeEvent -> {
+                    setConfirmEnable(false);
+                    if (!TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
+                        mPresenter.checkName(mThridInfoBean, textViewAfterTextChangeEvent.editable().toString());
+                    }
+                });
 
     }
 
     @Override
     protected void initData() {
-        // 用户名输入框观察
-        RxTextView.textChanges(mEtLoginPhone)
-                .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(charSequence -> {
-                    mIsPhoneEdited = !TextUtils.isEmpty(charSequence.toString());
-                    setConfirmEnable();
-                });
+        mEtLoginPhone.setText(mThridInfoBean.getName());
     }
 
     @Override
@@ -88,10 +122,24 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
         }
     }
 
+    @Override
+    public void checkNameSuccess(ThridInfoBean thridInfoBean, String name) {
+        showErrorTips("");
+        setConfirmEnable(true);
+    }
+
+    @Override
+    public void registerSuccess() {
+        DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPhone);
+        ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
+        EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.REGISTER, null);
+        getActivity().finish();
+    }
+
     /**
      * 设置登录按钮是否可点击
      */
-    private void setConfirmEnable() {
-        mBtLoginLogin.setEnabled(mIsPhoneEdited);
+    private void setConfirmEnable(boolean isEnable) {
+        mBtLoginLogin.setEnabled(isEnable);
     }
 }

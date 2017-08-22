@@ -26,6 +26,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETED;
+
 /**
  * @author LiuChao
  * @describe
@@ -68,19 +70,7 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
-                        mAuthRepository.clearAuthBean();
-                        // 登录成功跳转
-                        mAuthRepository.saveAuthBean(data);// 保存auth信息
-                        // IM 登录 需要 token ,所以需要先保存登录信息
-                        handleIMLogin();
-                        // 钱包信息我也不知道在哪儿获取
-                        mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
-                        mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
-                        if (data.getUser().getWallet() != null) {
-                            mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
-                        }
-                        mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
-                        mRootView.setLoginState(true);
+                        loginSuccess(data);
                     }
 
                     @Override
@@ -100,9 +90,62 @@ public class LoginPresenter extends AppBasePresenter<LoginContract.Repository, L
         addSubscrebe(subscription);
     }
 
+    private void loginSuccess(AuthBean data) {
+        mAuthRepository.clearAuthBean();
+        // 登录成功跳转
+        mAuthRepository.saveAuthBean(data);// 保存auth信息
+        // IM 登录 需要 token ,所以需要先保存登录信息
+        handleIMLogin();
+        // 钱包信息我也不知道在哪儿获取
+        mWalletRepository.getWalletConfigWhenStart(Long.parseLong(data.getUser_id() + ""));
+        mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
+        if (data.getUser().getWallet() != null) {
+            mWalletBeanGreenDao.insertOrReplace(data.getUser().getWallet());
+        }
+        mAccountBeanGreenDao.insertOrReplaceByName(mRootView.getAccountBean());
+        mRootView.setLoginState(true);
+    }
+
     @Override
     public List<AccountBean> getAllAccountList() {
         return mAccountBeanGreenDao.getMultiDataFromCache();
+    }
+
+    /**
+     * 三方登录或者注册
+     *
+     * @param provider
+     * @param access_token
+     */
+    @Override
+    public void checkBindOrLogin(String provider, String access_token) {
+
+        mUserInfoRepository.checkThridIsRegitser(provider, access_token)
+                .subscribe(new BaseSubscribeForV2<AuthBean>() {
+                    @Override
+                    protected void onSuccess(AuthBean data) {
+                        loginSuccess(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        if (code == DATA_HAS_BE_DELETED) {
+                            // 三方注册
+                            mRootView.registerByThrid(provider,access_token);
+                        } else {
+                            // 登录失败
+                            mRootView.setLoginState(false);
+                            mRootView.showErrorTips(message);
+                        }
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showErrorTips(mContext.getString(R.string.err_net_not_work));
+                        mRootView.setLoginState(false);
+                    }
+                });
+
     }
 
     private void handleIMLogin() {

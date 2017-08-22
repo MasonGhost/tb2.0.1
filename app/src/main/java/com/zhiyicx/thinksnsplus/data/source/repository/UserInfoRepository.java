@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -676,8 +677,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<List<String>> checkUserOrRegisterUser(String provider, String access_token, String name, Boolean check) {
-        return mUserInfoClient.checkUserOrRegisterUser(provider, access_token, name, check)
+    public Observable<AuthBean> checkUserOrRegisterUser(String provider, String access_token, String name, Boolean check) {
+        return mUserInfoClient.checkUserOrRegisterUser(provider,new ThridInfoBean(provider, access_token, name, check))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
