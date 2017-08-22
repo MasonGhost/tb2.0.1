@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
@@ -182,8 +183,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void applyForExcellent(Long question_id) {
-        mRootView.handleLoading(true, false, mContext.getString(R.string.bill_doing));
         Subscription subscription = mRepository.applyForExcellent(question_id)
+                .doOnSubscribe(() -> mRootView.handleLoading(true, false, mContext.getString(R.string.bill_doing)))
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 

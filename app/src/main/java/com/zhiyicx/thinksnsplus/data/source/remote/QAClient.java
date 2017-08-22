@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
@@ -216,5 +217,8 @@ public interface QAClient {
     @GET(APP_PATH_QA_ANSWER_REWARD_USER_LIST)
     Observable<List<RewardsListBean>> rewardQAList(@Path("answer_id") long answer_id, @Query("limit") Integer limit
             , @Query("offset") Integer offset, @Query("type") String order_type);
+
+    @PATCH(ApiConfig.APP_PATH_UPDATE_QUESTION_REWARD)
+    Observable<BaseJsonV2<Object>> updateQuestionReward(@Path("question") String question_id, @Query("amount") int amount);
 
 }

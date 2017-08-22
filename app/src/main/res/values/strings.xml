@@ -492,6 +492,10 @@
     <string name="show_all_history">显示全部历史</string>
     <string name="clear_all_history">清空搜索历史</string>
     <string name="qa_pay_for_excellent">精选问答支付</string>
+    <string name="qa_pay_for_watch">围观支付</string>
+    <string name="qa_go_to_watch">去围观</string>
+    <string name="qa_go_to_watched">已围观</string>
+    <string name="qa_reset_reward_success">设置悬赏成功</string>
 
     <!--签到-->
     <string name="check_in">签到</string>
