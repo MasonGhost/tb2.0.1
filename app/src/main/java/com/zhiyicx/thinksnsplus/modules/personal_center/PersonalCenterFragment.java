@@ -403,7 +403,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 break;
 
             case 2: // 浏览
-                onItemClick(null, null, (dataPosition + 1)); // 加上 header
+                onItemClick(null, null, (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())); // 加上 header
                 break;
 
             case 3: // 更多
@@ -411,7 +411,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 mDeletDynamicPopWindow.show();
                 break;
             default:
-                onItemClick(null, null, (dataPosition + 1)); // 加上 header
+                onItemClick(null, null, (dataPosition + mHeaderAndFooterWrapper.getHeadersCount())); // 加上 header
         }
     }
 

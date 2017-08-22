@@ -544,7 +544,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 2: // 浏览
-                onItemClick(null, null, dataPosition);
+                onItemClick(null, null, dataPosition+ mHeaderAndFooterWrapper.getHeadersCount());
                 break;
 
             case 3: // 更多
@@ -573,7 +573,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
                 break;
             default:
-                onItemClick(null, null, dataPosition);
+                onItemClick(null, null, dataPosition+ mHeaderAndFooterWrapper.getHeadersCount());
+
         }
     }
 
