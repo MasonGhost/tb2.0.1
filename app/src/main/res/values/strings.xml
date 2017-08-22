@@ -523,5 +523,29 @@
     <string name="request_to_publish_topic">申请创建话题~</string>
     <string name="to_publish_qa">去提问</string>
 
-
+    <!--排行榜相关-->
+    <string name="rank">排行榜</string>
+    <string name="rank_user">用户</string>
+    <string name="rank_qa">问答</string>
+    <string name="rank_dynamic">动态</string>
+    <string name="rank_info">资讯</string>
+    <!--用户-->
+    <string name="rank_user_type_all">全站粉丝排行榜</string>
+    <string name="rank_user_type_riches">财富达人排行榜</string>
+    <string name="rank_user_type_income">收入达人排行榜</string>
+    <string name="rank_user_type_sign_in">社区签到排行榜</string>
+    <string name="rank_user_type_expert">社区专家排行榜</string>
+    <string name="rank_user_type_qa">问答达人排行榜</string>
+    <!--问答-->
+    <string name="rank_qa_type_day">今日解答排行榜</string>
+    <string name="rank_qa_type_week">一周解答排行榜</string>
+    <string name="rank_qa_type_month">本月解答排行榜</string>
+    <!--动态-->
+    <string name="rank_dynamic_type_day">今日动态排行榜</string>
+    <string name="rank_dynamic_type_week">一周动态排行榜</string>
+    <string name="rank_dynamic_type_month">本月动态排行榜</string>
+    <!--资讯-->
+    <string name="rank_info_type_day">今日资讯排行榜</string>
+    <string name="rank_info_type_week">一周资讯排行榜</string>
+    <string name="rank_info_type_month">本月资讯排行榜</string>
 </resources>
