@@ -15,7 +15,7 @@ public class RankIndexActivity extends TSActivity{
 
     @Override
     protected Fragment getFragment() {
-        return null;
+        return new RankIndexFragment().instance();
     }
 
     @Override
