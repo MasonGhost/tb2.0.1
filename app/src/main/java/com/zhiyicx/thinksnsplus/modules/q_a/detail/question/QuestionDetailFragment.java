@@ -80,9 +80,11 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     private QuestionSelectListTypePopWindow mOrderTypeSelectPop; // 选择排序的弹框
     private ActionPopupWindow mMorePop; // 更多弹框
-    private PayPopWindow mPayImagePopWindow;
+    private PayPopWindow mPayImagePopWindow; // 申请精选
+    private PayPopWindow mPayWatchPopWindow; // 围观答案
     private CenterAlertPopWindow mDeleteQuestionPopWindow; // 删除问题提示框
     private boolean mIsMine = false;
+    private int mCurrentPosition;
 
     public QuestionDetailFragment instance(Bundle bundle) {
         QuestionDetailFragment fragment = new QuestionDetailFragment();
@@ -118,20 +120,25 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        AnswerInfoBean answerInfoBean =  mListDatas.get(position - mHeaderAndFooterWrapper
-                .getHeadersCount());
+        mCurrentPosition = position - mHeaderAndFooterWrapper
+                .getHeadersCount();
+        AnswerInfoBean answerInfoBean =  mListDatas.get(mCurrentPosition);
         if (mQaListInfoBean.getLook() == 1
                 && !mQaListInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())){
             // 开启了围观并且不是作者本人点击
-
+            mPayWatchPopWindow.show();
         } else {
-            Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
-            intent.putExtras(bundle);
-            startActivity(intent);
+            startToAnswerDetail(answerInfoBean);
         }
 
+    }
+
+    private void startToAnswerDetail(AnswerInfoBean answerInfoBean){
+        Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -381,6 +388,47 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         mPresenter.applyForExcellent(mQaListInfoBean.getId());
                         mPayImagePopWindow.hide();
+                    })
+                    .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
+                    .buildCenterPopWindowLinkClickListener(new PayPopWindow
+                            .CenterPopWindowLinkClickListener() {
+                        @Override
+                        public void onLongClick() {
+
+                        }
+
+                        @Override
+                        public void onClicked() {
+
+                        }
+                    })
+                    .build();
+        }
+
+        if (mPayWatchPopWindow == null){
+            mPayWatchPopWindow = PayPopWindow.builder()
+                    .with(getActivity())
+                    .isWrap(true)
+                    .isFocus(true)
+                    .isOutsideTouch(true)
+                    .buildLinksColor1(R.color.themeColor)
+                    .buildLinksColor2(R.color.important_for_content)
+                    .contentView(R.layout.ppw_for_center)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
+                            .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(10)))
+                    .buildLinksStr(getString(R.string.qa_pay_for_watch))
+                    .buildTitleStr(getString(R.string.qa_pay_for_watch))
+                    .buildItem1Str(getString(R.string.buy_pay_in_payment))
+                    .buildItem2Str(getString(R.string.buy_pay_out))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(10)))
+                    .buildCenterPopWindowItem1ClickListener(() -> {
+                        // 跳转查看 围观肯定是第一个
+                        AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
+                        if (answerInfoBean != null){
+                            startToAnswerDetail(answerInfoBean);
+                        }
+                        mPayWatchPopWindow.hide();
                     })
                     .buildCenterPopWindowItem2ClickListener(() -> mPayImagePopWindow.hide())
                     .buildCenterPopWindowLinkClickListener(new PayPopWindow

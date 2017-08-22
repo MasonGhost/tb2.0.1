@@ -204,7 +204,7 @@ public class QuestionDetailHeader {
                     if (mQaListInfoBean.getInvitations() != null
                             && mQaListInfoBean.getInvitations().size() > 0){
                         initPop();
-                    } else {
+                    } else if (mQaListInfoBean.getAmount() == 0){
                         if (mListener != null){
                             mListener.onRewardTypeClick(null, 1);
                         }
