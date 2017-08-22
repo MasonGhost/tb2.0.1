@@ -2,14 +2,20 @@ package com.zhiyicx.thinksnsplus.modules.settings.account;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -41,6 +47,8 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     @BindView(R.id.bt_bind_weibo)
     CombinationButton mBtBindWeibo;
 
+    private UserInfoBean mCurrentUser;
+
     @Override
     protected void initView(View rootView) {
 
@@ -49,6 +57,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     @Override
     protected void initData() {
         initListener();
+        mPresenter.getBindSocialAcounts();
     }
 
     @Override
@@ -104,5 +113,31 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_account_management;
+    }
+
+    @Override
+    public void updateBindStatus(List<String> data, UserInfoBean userInfoBean) {
+        mCurrentUser=userInfoBean;
+        setText(mBtBindPhone,TextUtils.isEmpty(userInfoBean.getPhone()));
+        setText(mBtBindEmail,TextUtils.isEmpty(userInfoBean.getEmail()));
+        setText(mBtBindQq,data.contains(ApiConfig.PROVIDER_QQ) );
+        setText(mBtBindWechat,data.contains(ApiConfig.PROVIDER_WECHAT) );
+        setText(mBtBindWeibo,data.contains(ApiConfig.PROVIDER_WEIBO) );
+
+        setColor(mBtBindPhone,TextUtils.isEmpty(userInfoBean.getPhone()));
+        setColor(mBtBindEmail,TextUtils.isEmpty(userInfoBean.getEmail()));
+        setColor(mBtBindQq,data.contains(ApiConfig.PROVIDER_QQ));
+        setColor(mBtBindWechat,data.contains(ApiConfig.PROVIDER_WECHAT));
+        setColor(mBtBindWeibo,data.contains(ApiConfig.PROVIDER_WEIBO));
+
+    }
+
+    private void setColor(CombinationButton combinationButton, boolean b) {
+        combinationButton.setRightTextColor(SkinUtils.getColor(b? R.color.dyanmic_top_flag : R.color.normal_for_assist_text));
+
+    }
+
+    private void setText(CombinationButton combinationButton,boolean b) {
+        combinationButton.setRightText(getString(b? R.string.not_binding : R.string.had_binding));
     }
 }

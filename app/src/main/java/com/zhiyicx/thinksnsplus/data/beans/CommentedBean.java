@@ -64,11 +64,11 @@ public class CommentedBean extends BaseListBean {
      */
     @Id
     private Long id; // 数据体 id
-    @SerializedName("commentable_type")
+    @SerializedName(value="channel", alternate={"commentable_type"})
     private String channel; // 数据所属扩展包名 目前可能的参数有 feeds musics news
-    @SerializedName("commentable_id")
+    @SerializedName(value="target_id", alternate={"commentable_id"})
     private Long target_id;
-    @SerializedName("body")
+    @SerializedName(value="comment_content", alternate={"body"})
     private String comment_content; // 评论类容
     private String target_title;
     private Long target_image; // 封面 id

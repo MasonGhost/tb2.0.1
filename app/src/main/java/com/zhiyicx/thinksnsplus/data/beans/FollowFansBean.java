@@ -35,11 +35,11 @@ public class FollowFansBean extends BaseListBean implements Serializable {
     @Unique
     private String origintargetUser;// 当前用户和目标用户的userId拼接字段
     private long originUserId;// 当前用户
-    @SerializedName("user_id")
+    @SerializedName(value = "targetUserId",alternate = {"user_id"})
     private long targetUserId;// 目标用户
-    @SerializedName("my_follow_status")
+    @SerializedName(value = "origin_follow_status",alternate = {"my_follow_status"})
     private int origin_follow_status;// 当前用户对目标用户的关注状态
-    @SerializedName("follow_status")
+    @SerializedName(value = "target_follow_status",alternate = {"follow_status"})
     private int target_follow_status;// 目标用户对当前用户的关注状态
     @ToOne(joinProperty = "originUserId")
     private UserInfoBean originUserInfo;// 当前用户信息
