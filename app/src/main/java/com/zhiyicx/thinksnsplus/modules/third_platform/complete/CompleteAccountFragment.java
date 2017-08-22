@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -41,11 +43,13 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
         implements CompleteAccountContract.View {
 
     @BindView(R.id.et_login_phone)
-    DeleteEditText mEtLoginPhone;
+    EditText mEtLoginPhone;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
     @BindView(R.id.bt_login_login)
     LoadingButton mBtLoginLogin;
+    @BindView(R.id.iv_check)
+    ImageView mIvCheck;
 
 
     private ThridInfoBean mThridInfoBean;
@@ -70,6 +74,17 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     protected void initView(View rootView) {
         // 下一步
         RxView.clicks(mBtLoginLogin)
+                .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.MILLISECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    if (mBtLoginLogin.isEnabled()) {
+
+                    } else {
+                      mEtLoginPhone.setText("");
+                    }
+                });
+        // 应用名检查
+        RxView.clicks(mIvCheck)
                 .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.MILLISECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
@@ -141,5 +156,11 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
      */
     private void setConfirmEnable(boolean isEnable) {
         mBtLoginLogin.setEnabled(isEnable);
+        if (isEnable) {
+            mIvCheck.setImageResource(R.mipmap.common_ico_bottom_home_normal);
+        } else {
+            mIvCheck.setImageResource(R.mipmap.login_inputbox_clean);
+
+        }
     }
 }

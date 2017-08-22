@@ -16,15 +16,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.zhiyicx.baseproject.widget.edittext.DeleteEditText
+            <EditText
                 android:id="@+id/et_login_phone"
                 style="@style/style_edit"
                 android:inputType="textPersonName"
                 android:visibility="visible"/>
             <ImageView
+                android:id="@+id/iv_check"
                 android:layout_width="wrap_content"
                 android:layout_gravity="right|center_vertical"
-                android:src="@mipmap/ico_me_advance"
+                android:src="@mipmap/ico_edit_chosen_32"
                 android:paddingRight="@dimen/spacing_mid"
                 android:paddingLeft="@dimen/spacing_normal"
                 android:layout_height="match_parent"/>
