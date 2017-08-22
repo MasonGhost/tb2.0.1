@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
@@ -26,7 +27,8 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment
+        .BUNDLE_PUBLISHQA_BEAN;
 
 
 /**
@@ -36,7 +38,9 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuest
  * @Contact master.jungle68@gmail.com
  */
 
-public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter, QATopicBean> implements AddTopicContract.View, MultiItemTypeAdapter.OnItemClickListener, TagFlowLayout.OnTagClickListener {
+public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter, QATopicBean>
+        implements AddTopicContract.View, MultiItemTypeAdapter.OnItemClickListener, TagFlowLayout
+        .OnTagClickListener {
 
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
@@ -110,7 +114,18 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         }
         mQAPublishBean.setTopics(typeIdsList);
         mQAPublishBean.setSubject(mEtQustion.getText().toString());
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        mQAPublishBean.setBody(draft.getBody());
         mPresenter.saveQuestion(mQAPublishBean);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        LogUtils.d(draft.getBody()==null?"null":draft.getBody());
+        // 221503417191704
+
     }
 
     @Override
@@ -154,33 +169,30 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initData() {
         super.initData();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
-        mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean.getSubject()));
-
+        mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean
+                .getSubject()));
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+
         QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
         if (draft != null) {
-            mQAPublishBean = draft;
-            List<QAPublishBean.Topic> topics = mQAPublishBean.getTopics();
+            List<QAPublishBean.Topic> topics = draft.getTopics();
             if (topics != null && !topics.isEmpty()) {
                 mQATopicBeanList.clear();
                 for (QAPublishBean.Topic topic : topics) {
-                    QATopicBean qaTopicBean = new QATopicBean((long) topic.getId(), topic.getName());
+                    QATopicBean qaTopicBean = new QATopicBean((long) topic.getId(), topic.getName
+                            ());
                     mQATopicBeanList.add(qaTopicBean);
                 }
                 mTopicsAdapter.notifyDataChanged();
             }
-
         }
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        AddTopicAdapter adapter = new AddTopicAdapter(getContext(), R.layout.item_publish_question_add_topic, mListDatas);
+        AddTopicAdapter adapter = new AddTopicAdapter(getContext(), R.layout
+                .item_publish_question_add_topic, mListDatas);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -195,7 +207,8 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             mQATopicBeanList.add(mListDatas.get(position));
             mTopicsAdapter.notifyDataChanged();
         } else {
-            showSnackErrorMessage(getString(R.string.qa_publish_select_topic_count_hint, mMaxTagNums));
+            showSnackErrorMessage(getString(R.string.qa_publish_select_topic_count_hint,
+                    mMaxTagNums));
         }
     }
 

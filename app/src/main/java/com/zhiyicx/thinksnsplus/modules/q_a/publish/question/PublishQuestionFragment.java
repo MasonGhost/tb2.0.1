@@ -33,7 +33,8 @@ import butterknife.BindView;
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
  */
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean>
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter,
+        QAListInfoBean>
         implements PublishQuestionContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
@@ -102,35 +103,25 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mDraftQuestion != null) {
-            QAPublishBean draft = mPresenter.getDraftQuestion(mDraftQuestion.getMark());
-            if (draft != null) {
-                mDraftQuestion = draft;
-            }
-            mEtQustion.setText(mDraftQuestion.getSubject());
-        }
-    }
-
     private void addTopic() {
         Intent intent = new Intent(getActivity(), AddTopicActivity.class);
         Bundle bundle = new Bundle();
+        saveQuestion();
+        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mDraftQuestion);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    private void saveQuestion() {
         if (mDraftQuestion == null) {
             mDraftQuestion = new QAPublishBean();
-            String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
+            String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+                    .currentTimeMillis();
             mDraftQuestion.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
             mDraftQuestion.setMark(Long.parseLong(mark));
             mDraftQuestion.setSubject(mQuestionStr);
-
-            bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mDraftQuestion);
-        } else {
-            bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mDraftQuestion);
+            mPresenter.saveQuestion(mDraftQuestion);
         }
-        mPresenter.saveQuestion(mDraftQuestion);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 
     @Override
@@ -144,6 +135,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         super.initData();
         try {
             mDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+            mEtQustion.setText(mDraftQuestion.getSubject() );
         } catch (Exception e) {
         }
     }
@@ -169,7 +161,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        PublishQuestionAdapter adapter = new PublishQuestionAdapter(getContext(), R.layout.item_publish_question, mListDatas);
+        PublishQuestionAdapter adapter = new PublishQuestionAdapter(getContext(), R.layout
+                .item_publish_question, mListDatas);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -202,11 +195,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
                 .item1ClickListener(() -> {
+                    mPresenter.deleteQuestion(mDraftQuestion);
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
+                    saveQuestion();
                     mEditWarningPopupWindow.hide();
+                    getActivity().finish();
                 })
                 .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
     }

@@ -149,6 +149,12 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         mPresenter.saveQuestion(mQAPublishBean);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+    }
+
     @NonNull
     protected String getContentString() {
         StringBuilder builder = new StringBuilder();
@@ -173,6 +179,16 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     protected void initData() {
         mImageIdArray = new int[100];
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (draft != null) {
+            String body = draft.getBody();
+            if (!TextUtils.isEmpty(body)) {
+                mRicheTest.clearAllLayout();
+                mPresenter.pareseBody(body);
+            }
+        }
+
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
@@ -180,20 +196,6 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .build().photoSelectorImpl();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        if (draft != null) {
-            mQAPublishBean = draft;
-            String body = mQAPublishBean.getBody();
-            if (!TextUtils.isEmpty(body)) {
-                mRicheTest.clearAllLayout();
-                mPresenter.pareseBody(body);
-            }
-
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
