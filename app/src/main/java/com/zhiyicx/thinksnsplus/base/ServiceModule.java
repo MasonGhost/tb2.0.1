@@ -12,6 +12,7 @@ import com.zhiyicx.thinksnsplus.data.source.remote.LoginClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
+import com.zhiyicx.thinksnsplus.data.source.remote.RankClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.RegisterClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.UserInfoClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
@@ -163,6 +164,13 @@ public class ServiceModule {
     @Provides
     QAClient provideQAClient(Retrofit retrofit) {
         return retrofit.create(QAClient.class);
+    }
+
+
+    @Singleton
+    @Provides
+    RankClient provideRankClient(Retrofit retrofit) {
+        return retrofit.create(RankClient.class);
     }
 
 }

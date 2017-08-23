@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -30,11 +31,15 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
         RecyclerView rvUsers = holder.getView(R.id.rv_users);
         rvUsers.setNestedScrollingEnabled(false);
         GridLayoutManager layoutManager = new GridLayoutManager(mContext, 5);
+        int diver = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+        rvUsers.addItemDecoration(new GridDecoration(diver, diver));
         rvUsers.setLayoutManager(layoutManager);
-        if (rankIndexBean.getUserInfoList().size() > 5){
-            rvUsers.setAdapter(new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList().subList(0, 5)));
-        } else {
-            rvUsers.setAdapter(new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList()));
+        if (rankIndexBean.getUserInfoList() != null){
+            if (rankIndexBean.getUserInfoList().size() > 5){
+                rvUsers.setAdapter(new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList().subList(0, 5)));
+            } else {
+                rvUsers.setAdapter(new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList()));
+            }
         }
     }
 }
