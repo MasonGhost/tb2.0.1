@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.search.name;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
@@ -16,6 +18,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -28,6 +32,8 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
 
     @Inject
     UserInfoRepository mUserInfoRepository;
+    private Subscription searchSub;
+
 
     @Inject
     public SearchSomeOnePresenter(SearchSomeOneContract.Repository repository, SearchSomeOneContract.View rootView) {
@@ -51,7 +57,11 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
 
     @Override
     public void searchUser(String name) {
-        mUserInfoRepository.searchUserInfo(null,name,null,null,null)
+        if (searchSub!=null&&!searchSub.isUnsubscribed()) {
+            searchSub.unsubscribe();
+        }
+      
+        searchSub= mUserInfoRepository.searchUserInfo(null,name,null,null,null)
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
@@ -70,6 +80,7 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
                         mRootView.onResponseError(throwable, false);
                     }
                 });
+        addSubscrebe(searchSub);
 
     }
 

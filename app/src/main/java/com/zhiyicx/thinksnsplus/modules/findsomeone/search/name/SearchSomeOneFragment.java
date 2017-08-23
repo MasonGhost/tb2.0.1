@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -97,6 +98,11 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
                     return false;
                 });
         mRvList.setBackgroundResource(R.color.white);
+        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
+                .subscribe(textViewAfterTextChangeEvent -> {
+                    mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
+
+                });
     }
 
     @Override
