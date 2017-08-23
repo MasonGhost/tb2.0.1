@@ -197,8 +197,19 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
 
     @Override
     public void updateContacts(ArrayList<ContactsContainerBean> data) {
+
         mBundleData=new ArrayList<>();
-        mBundleData.addAll(data);
+        ContactsContainerBean contactsContainerBean=new ContactsContainerBean();
+        contactsContainerBean.setTitle(data.get(0).getTitle());
+        contactsContainerBean.setContacts(new ArrayList<>());
+        contactsContainerBean.getContacts().addAll(data.get(0).getContacts());
+        mBundleData.add(contactsContainerBean);
+        ContactsContainerBean contactsContainerBean2=new ContactsContainerBean();
+        contactsContainerBean2.setTitle(data.get(1).getTitle());
+        contactsContainerBean2.setContacts(new ArrayList<>());
+        contactsContainerBean2.getContacts().addAll(data.get(1).getContacts());
+        mBundleData.add(contactsContainerBean2);
+
         mListData.clear();
         mListData.addAll(data);
         for (int i = 0; i < mListData.size(); i++) {
