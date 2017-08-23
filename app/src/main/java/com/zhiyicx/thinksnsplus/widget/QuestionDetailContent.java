@@ -5,24 +5,30 @@ import android.graphics.Bitmap;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
@@ -126,6 +132,7 @@ public class QuestionDetailContent extends FrameLayout {
                     });
             mTvQuestionContent.setMaxLinesOnShrink(1);
             mTvQuestionContent.setText(preContent);
+            dealPreContent(mTvQuestionContent);
             mTvQuestionContent.setExpandListener(new ExpandableTextView.OnExpandListener() {
                 @Override
                 public void onExpand(ExpandableTextView view) {
@@ -155,7 +162,7 @@ public class QuestionDetailContent extends FrameLayout {
     private void dealContent(String content, List<ImageBean> list) {
         InternalStyleSheet css = new Github();
         css.addRule("body", "line-height: 1.6", "padding: 0");
-        css.addRule(".container", "padding-right:0",";padding-left:0");
+        css.addRule(".container", "padding-right:0", ";padding-left:0");
         mMdvQuestionContent.addStyleSheet(css);
         mMdvQuestionContent.loadMarkdown(content);
         mMdvQuestionContent.setOnElementListener(new MarkdownView.OnElementListener() {
@@ -203,7 +210,35 @@ public class QuestionDetailContent extends FrameLayout {
         });
     }
 
+    /**
+     * 处理只有一排并且完全显示了内容的情况
+     */
+    private void dealPreContent(TextView textView) {
+        // 处理一排的情况
+        String content = textView.getText() + "";
+        if (!content.contains(mContext.getString(R.string.qa_topic_open_all))){
+            if (TextUtils.isEmpty(content)){
+                textView.setText(mContext.getString(R.string.qa_topic_open_all));
+            } else if (textView.getLineCount() == 1){
+                textView.append(mContext.getString(R.string.qa_topic_open_all));
+            }
+            ConvertUtils.stringLinkConvert(textView, setLinks());
+        }
+    }
+
     public Bitmap getShareBitmap() {
         return mShareBitmap;
+    }
+
+    private List<Link> setLinks() {
+        List<Link> links = new ArrayList<>();
+        Link followCountLink = new Link(mContext.getString(R.string.qa_topic_open_all)).setTextColor(ContextCompat.getColor(getContext(), R.color
+                .themeColor))
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
+                        .general_for_hint))
+                .setHighlightAlpha(.8f)
+                .setUnderlined(false);
+        links.add(followCountLink);
+        return links;
     }
 }
