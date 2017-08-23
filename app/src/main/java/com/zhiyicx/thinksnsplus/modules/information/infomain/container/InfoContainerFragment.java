@@ -147,6 +147,16 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     }
 
     @Override
+    protected void musicWindowsStatus(boolean isShow) {
+        super.musicWindowsStatus(isShow);
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindowTwo() {
+        return mTvRightTwo;
+    }
+
+    @Override
     protected void initData() {
         mPresenter.getInfoType();
     }

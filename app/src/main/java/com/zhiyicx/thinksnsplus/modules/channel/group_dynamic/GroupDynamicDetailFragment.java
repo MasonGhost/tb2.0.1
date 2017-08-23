@@ -117,7 +117,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
     }
 
     @Override
-    protected View getLeftViewOfMusicWindow() {
+    protected View getRightViewOfMusicWindow() {
         return mTvToolbarRight;
     }
 
