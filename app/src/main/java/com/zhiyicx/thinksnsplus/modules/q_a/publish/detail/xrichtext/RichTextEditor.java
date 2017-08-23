@@ -61,6 +61,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     public boolean onTouchEvent(MotionEvent ev) {
         if (getChildCount() == 1) {
             lastAddEdit.requestFocus();
+            showKeyBoard();
         }
         return super.onTouchEvent(ev);
     }
@@ -286,6 +287,12 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), 0);
+    }
+
+    public void showKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInputFromInputMethod(lastFocusEdit.getWindowToken(), 0);
     }
 
     /**
