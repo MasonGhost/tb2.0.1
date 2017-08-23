@@ -92,18 +92,6 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Override
-    protected void setLeftClick() {
-        saveQuestion();
-        super.setLeftClick();
-    }
-
-    @Override
-    public void onBackPressed() {
-        saveQuestion();
-        super.onBackPressed();
-    }
-
-    @Override
     protected boolean usePermisson() {
         return true;
     }
@@ -143,16 +131,22 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         startActivity(intent);
     }
 
-    private void saveQuestion() {
-        mQAPublishBean.setBody(getContentString());
-        mQAPublishBean.setAnonymity(mAnonymity);
-        mPresenter.saveQuestion(mQAPublishBean);
+    @Override
+    protected void setLeftClick() {
+        super.setLeftClick();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        mQAPublishBean = draft;
+    }
+
+    private void saveQuestion() {
+        mQAPublishBean.setBody(getContentString());
+        mQAPublishBean.setAnonymity(mAnonymity);
+        mPresenter.saveQuestion(mQAPublishBean);
     }
 
     @NonNull

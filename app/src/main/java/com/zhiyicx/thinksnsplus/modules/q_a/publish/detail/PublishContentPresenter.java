@@ -109,22 +109,22 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
     @Override
     public void updateQuestion(Long question_id, String body, int anonymity) {
         mRepository.updateQuestion(question_id, body, anonymity).subscribe(new
-                                                                            BaseSubscribeForV2<BaseJsonV2<Object>>() {
-            @Override
-            protected void onSuccess(BaseJsonV2<Object> data) {
-                mRootView.updateSuccess();
-            }
+                                                                                   BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                                                                                       @Override
+                                                                                       protected void onSuccess(BaseJsonV2<Object> data) {
+                                                                                           mRootView.updateSuccess();
+                                                                                       }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
+                                                                                       @Override
+                                                                                       protected void onFailure(String message, int code) {
+                                                                                           super.onFailure(message, code);
+                                                                                       }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-            }
-        });
+                                                                                       @Override
+                                                                                       protected void onException(Throwable throwable) {
+                                                                                           super.onException(throwable);
+                                                                                       }
+                                                                                   });
     }
 
     @Override
@@ -141,13 +141,13 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(text -> {
-                    boolean isLast= text.contains("tym_last");
-                    text.replaceAll("tym_last","");
+                    boolean isLast = text.contains("tym_last");
+                    text = text.replaceAll("tym_last", "");
                     if (text.contains("![image]")) {
                         int id = RegexUtils.getImageId(text);
                         String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
                         if (id > 0) {
-                            mRootView.addImageViewAtIndex(imagePath, id, text,isLast);
+                            mRootView.addImageViewAtIndex(imagePath, id, text, isLast);
                         } else {
                             mRootView.showSnackErrorMessage("图片" + 1 + "已丢失，请重新插入！");
                         }
