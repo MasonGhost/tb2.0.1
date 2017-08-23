@@ -1,5 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
@@ -36,4 +37,8 @@ public interface IBasePublishQuestionRepository {
     void saveQuestion(QAPublishBean qestion);
     void deleteQuestion(QAPublishBean qestion);
     QAPublishBean getDraftQuestion(long qestion_mark);
+
+    void saveAnswer(AnswerDraftBean answer);
+    void deleteAnswer(AnswerDraftBean answer);
+    AnswerDraftBean getDraftAnswer(long answer_mark);
 }

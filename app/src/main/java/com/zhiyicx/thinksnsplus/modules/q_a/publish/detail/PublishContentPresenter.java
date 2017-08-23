@@ -5,6 +5,7 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
@@ -12,10 +13,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -108,23 +106,23 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void updateQuestion(Long question_id, String body, int anonymity) {
-        mRepository.updateQuestion(question_id, body, anonymity).subscribe(new
-                                                                                   BaseSubscribeForV2<BaseJsonV2<Object>>() {
-                                                                                       @Override
-                                                                                       protected void onSuccess(BaseJsonV2<Object> data) {
-                                                                                           mRootView.updateSuccess();
-                                                                                       }
+        mRepository.updateQuestion(question_id, body, anonymity)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.updateSuccess();
+                    }
 
-                                                                                       @Override
-                                                                                       protected void onFailure(String message, int code) {
-                                                                                           super.onFailure(message, code);
-                                                                                       }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
 
-                                                                                       @Override
-                                                                                       protected void onException(Throwable throwable) {
-                                                                                           super.onException(throwable);
-                                                                                       }
-                                                                                   });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                    }
+                });
     }
 
     @Override
@@ -167,4 +165,18 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
         mRepository.saveQuestion(qestion);
     }
 
+    @Override
+    public void saveAnswer(AnswerDraftBean answer) {
+
+    }
+
+    @Override
+    public void deleteAnswer(AnswerDraftBean answer) {
+
+    }
+
+    @Override
+    public QAPublishBean getDraftAnswer(long answer_mark) {
+        return null;
+    }
 }

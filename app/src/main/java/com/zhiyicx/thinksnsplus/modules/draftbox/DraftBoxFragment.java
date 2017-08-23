@@ -8,9 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.AnswerDraftItem;
 import com.zhiyicx.thinksnsplus.modules.draftbox.adapter.QuestionDraftItem;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishAnswerFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.answer.PublishType;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
@@ -35,17 +39,12 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
 
     @Override
     protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
-    protected boolean isLoadingMoreEnable() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {
-        return false;
+        return true;
     }
 
     @Override
@@ -57,8 +56,11 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
     protected RecyclerView.Adapter getAdapter() {
         MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getContext(), mListDatas);
         QuestionDraftItem questionDraftItem = new QuestionDraftItem(getActivity());
+        AnswerDraftItem answerDraftItem = new AnswerDraftItem(getActivity());
         adapter.addItemViewDelegate(questionDraftItem);
+        adapter.addItemViewDelegate(answerDraftItem);
         questionDraftItem.setQuestionDraftItemEvent(this);
+        answerDraftItem.setQuestionDraftItemEvent(this);
         return adapter;
     }
 
@@ -71,13 +73,17 @@ public class DraftBoxFragment extends TSListFragment<DraftBoxContract.Presenter,
 
     @Override
     public void toEditDraft(BaseDraftBean draftBean) {
-        if (draftBean instanceof QAPublishBean){
+        if (draftBean instanceof QAPublishBean) {
             QAPublishBean realData = (QAPublishBean) draftBean;
             Intent intent = new Intent(getActivity(), PublishQuestionActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, realData);
             intent.putExtras(bundle);
             startActivity(intent);
+        }else if (draftBean instanceof AnswerDraftBean){
+            AnswerDraftBean realData = (AnswerDraftBean) draftBean;
+            PublishAnswerFragment.startQActivity(getActivity(), PublishType
+                    .UPDATE_ANSWER, realData.getId(), realData.getBody());
         }
     }
 

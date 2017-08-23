@@ -17,28 +17,15 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class AnswerDraftBean extends BaseDraftBean implements Parcelable {
 
-    @Id
+
     private Long id;
-    @Unique
+    @Id
     private Long mark;
     private String subject;// 问题主题或者说标题
     private String body;// 答案详情
     private int anonymity;// 是否匿名 1 匿名 ，0 不匿名
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeValue(this.mark);
-        dest.writeString(this.subject);
-        dest.writeString(this.body);
-        dest.writeInt(this.anonymity);
-    }
+    private String updated_at;
+    private String created_at;
 
     public Long getId() {
         return this.id;
@@ -80,35 +67,35 @@ public class AnswerDraftBean extends BaseDraftBean implements Parcelable {
         this.anonymity = anonymity;
     }
 
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
     public AnswerDraftBean() {
     }
 
-    protected AnswerDraftBean(Parcel in) {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.mark = (Long) in.readValue(Long.class.getClassLoader());
-        this.subject = in.readString();
-        this.body = in.readString();
-        this.anonymity = in.readInt();
-    }
 
-    @Generated(hash = 1300082588)
-    public AnswerDraftBean(Long id, Long mark, String subject, String body, int anonymity) {
+    @Generated(hash = 1234838596)
+    public AnswerDraftBean(Long id, Long mark, String subject, String body, int anonymity,
+            String updated_at, String created_at) {
         this.id = id;
         this.mark = mark;
         this.subject = subject;
         this.body = body;
         this.anonymity = anonymity;
+        this.updated_at = updated_at;
+        this.created_at = created_at;
     }
-
-    public static final Creator<AnswerDraftBean> CREATOR = new Creator<AnswerDraftBean>() {
-        @Override
-        public AnswerDraftBean createFromParcel(Parcel source) {
-            return new AnswerDraftBean(source);
-        }
-
-        @Override
-        public AnswerDraftBean[] newArray(int size) {
-            return new AnswerDraftBean[size];
-        }
-    };
 }

@@ -141,13 +141,22 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        mQAPublishBean = draft;
+    protected void setLeftClick() {
+        saveQustion();
+        super.setLeftClick();
     }
 
+    @Override
+    public void onBackPressed() {
+        saveQustion();
+        super.onBackPressed();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+    }
 
     @Override
     protected void initData() {

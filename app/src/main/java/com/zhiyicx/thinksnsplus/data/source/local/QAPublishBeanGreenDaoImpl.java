@@ -30,7 +30,6 @@ public class QAPublishBeanGreenDaoImpl extends CommonCacheImpl<QAPublishBean> {
 
     @Override
     public long saveSingleData(QAPublishBean singleData) {
-        List<QAPublishBean> all=getMultiDataFromCache();
         return mQAPublishBeanDao.insertOrReplace(singleData);
     }
 
@@ -46,16 +45,12 @@ public class QAPublishBeanGreenDaoImpl extends CommonCacheImpl<QAPublishBean> {
 
     @Override
     public QAPublishBean getSingleDataFromCache(Long primaryKey) {
-        QAPublishBean draft=mQAPublishBeanDao.queryBuilder().where(QAPublishBeanDao.Properties.Mark.eq
-                (primaryKey))
-                .build().unique();
-        return draft;
-//        return mQAPublishBeanDao.load(primaryKey);
+        return getRDaoSession().getQAPublishBeanDao().load(primaryKey);
     }
 
     @Override
     public List<QAPublishBean> getMultiDataFromCache() {
-        return mQAPublishBeanDao.loadAll();
+        return getRDaoSession().getQAPublishBeanDao().loadAll();
     }
 
     public List<BaseDraftBean> getMultiBasetDraftDataFromCache() {
