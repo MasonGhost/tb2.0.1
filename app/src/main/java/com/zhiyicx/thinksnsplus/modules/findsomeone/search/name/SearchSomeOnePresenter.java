@@ -60,7 +60,7 @@ public class SearchSomeOnePresenter extends AppBasePresenter<SearchSomeOneContra
         if (searchSub!=null&&!searchSub.isUnsubscribed()) {
             searchSub.unsubscribe();
         }
-      
+
         searchSub= mUserInfoRepository.searchUserInfo(null,name,null,null,null)
                 .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override

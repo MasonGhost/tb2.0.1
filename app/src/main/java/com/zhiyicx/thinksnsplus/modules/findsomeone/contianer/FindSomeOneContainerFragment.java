@@ -199,18 +199,22 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                 try {
                     locationStr = LocationBean.getlocation(locationBean);
                     String[] result = locationStr.split("，");
-                    if (result.length > 3) {
+                    if (result.length > 2) {
                         mTvToolbarRight.setText(result[result.length - 1]);
                     } else {
                         mTvToolbarRight.setText(result[result.length - 2]);
                     }
                 } catch (Exception e) {
-                    locationStr = locationBean.getName();
-                    String[] result = locationStr.split(" ");
-                    if (result.length > 3) {
-                        mTvToolbarRight.setText(result[result.length - 1]);
-                    } else {
-                        mTvToolbarRight.setText(result[result.length - 2]);
+                    try {
+                        locationStr = locationBean.getName();
+                        String[] result = locationStr.split(" ");
+                        if (result.length > 2) {
+                            mTvToolbarRight.setText(result[result.length - 1]);
+                        } else {
+                            mTvToolbarRight.setText(result[result.length - 2]);
+                        }
+                    }catch (Exception e1){
+
                     }
                 }
             }

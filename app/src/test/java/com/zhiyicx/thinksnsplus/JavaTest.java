@@ -11,6 +11,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -392,6 +393,25 @@ public class JavaTest {
         Assert.assertTrue(data.size() == 6);
         System.out.println("data = " + data.subList(0, data.size()));
 
+
+    }
+
+    @Test
+    public void listAddAllTest() {
+//        List<List<AuthBean>> data = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            data.add(new AuthBean(i));
+//        }
+//        List<List<AuthBean>> test1 = new ArrayList<>();
+//        test1.addAll(data);
+//
+//        List<List<AuthBean>> test2 = new ArrayList<>();
+//        test2.addAll(data);
+//
+//        test2.subList(0, 5);
+//
+//        System.out.println("test1 = " + test1.size());
+//        System.out.println("test2 = " + test2.size());
 
     }
 }
