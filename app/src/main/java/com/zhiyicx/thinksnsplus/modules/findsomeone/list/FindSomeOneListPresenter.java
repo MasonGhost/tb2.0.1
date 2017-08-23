@@ -42,6 +42,7 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListF
 public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListContract.Repository,
         FindSomeOneListContract.View> implements FindSomeOneListContract.Presenter {
 
+    public static final int DEFAULT_PAGE_SIZE = 15;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 
@@ -85,19 +86,19 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
     public void requestNetData(final Long maxId, final boolean isLoadMore, final int pageType) {
         Observable<List<UserInfoBean>> observable = null;
 
-        switch (pageType){
+        switch (pageType) {
             case TYPE_HOT:
-                observable=mUserInfoRepository.getHotUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
+                observable = mUserInfoRepository.getHotUsers(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
 
             case TYPE_NEW:
-                observable=mUserInfoRepository.getNewUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
+                observable = mUserInfoRepository.getNewUsers(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
             case TYPE_RECOMMENT:
-                observable=mUserInfoRepository.getUsersRecommentByTag(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
+                observable = mUserInfoRepository.getUsersRecommentByTag(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
             case TYPE_NEARBY:
-                observable=mUserInfoRepository.getHotUsers(TSListFragment.DEFAULT_PAGE_SIZE,maxId.intValue());
+                observable = mUserInfoRepository.getHotUsers(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
         }
 
