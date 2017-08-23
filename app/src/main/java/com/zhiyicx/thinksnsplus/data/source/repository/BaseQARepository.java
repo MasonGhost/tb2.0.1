@@ -6,11 +6,13 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.QAClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -43,6 +45,9 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
 
     @Inject
     protected QAPublishBeanGreenDaoImpl mQAPublishBeanGreenDaoImpl;
+
+    @Inject
+    protected AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
 
     @Inject
     public BaseQARepository(ServiceManager manager) {
@@ -181,5 +186,20 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     @Override
     public QAPublishBean getDraftQuestion(long qestion_mark) {
         return mQAPublishBeanGreenDaoImpl.getSingleDataFromCache(qestion_mark);
+    }
+
+    @Override
+    public void saveAnswer(AnswerDraftBean answer) {
+
+    }
+
+    @Override
+    public void deleteAnswer(AnswerDraftBean answer) {
+
+    }
+
+    @Override
+    public AnswerDraftBean getDraftAnswer(long answer_mark) {
+        return null;
     }
 }

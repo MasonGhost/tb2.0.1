@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @author Catherine
  * @describe
@@ -21,10 +23,12 @@ import javax.inject.Inject;
  */
 @FragmentScoped
 public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionContract.Repository, PublishQuestionContract.View>
-        implements PublishQuestionContract.Presenter{
+        implements PublishQuestionContract.Presenter {
 
     @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
+
+    private Subscription searchSub;
 
     @Inject
     public PublishQuestionPresenter(PublishQuestionContract.Repository repository, PublishQuestionContract.View rootView) {
@@ -53,24 +57,28 @@ public class PublishQuestionPresenter extends AppBasePresenter<PublishQuestionCo
 
     @Override
     public void requestNetData(String subject, Long maxId, String type, boolean isLoadMore) {
-        mRepository.getQAQuestion(subject,maxId,type)
+        if (searchSub != null && !searchSub.isUnsubscribed()) {
+            searchSub.unsubscribe();
+        }
+        searchSub = mRepository.getQAQuestion(subject, maxId, type)
                 .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
-            @Override
-            protected void onSuccess(List<QAListInfoBean> data) {
-                mRootView.onNetResponseSuccess(data, isLoadMore);
-            }
+                    @Override
+                    protected void onSuccess(List<QAListInfoBean> data) {
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.onResponseError(throwable, isLoadMore);
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+                });
+        addSubscrebe(searchSub);
     }
 
     @Override

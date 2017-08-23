@@ -80,20 +80,6 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     }
 
     @Override
-    protected void setLeftClick() {
-        saveQustion();
-        super.setLeftClick();
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        saveQustion();
-        super.onBackPressed();
-
-    }
-
-    @Override
     protected void setRightClick() {
         super.setRightClick();
         saveQustion();
@@ -114,18 +100,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
         }
         mQAPublishBean.setTopics(typeIdsList);
         mQAPublishBean.setSubject(mEtQustion.getText().toString());
-        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        mQAPublishBean.setBody(draft.getBody());
         mPresenter.saveQuestion(mQAPublishBean);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        LogUtils.d(draft.getBody()==null?"null":draft.getBody());
-        // 221503417191704
-
     }
 
     @Override
@@ -166,13 +141,30 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     }
 
     @Override
+    protected void setLeftClick() {
+        saveQustion();
+        super.setLeftClick();
+    }
+
+    @Override
+    public void onBackPressed() {
+        saveQustion();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+    }
+
+    @Override
     protected void initData() {
         super.initData();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
         mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean
                 .getSubject()));
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
-
 
         QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
         if (draft != null) {

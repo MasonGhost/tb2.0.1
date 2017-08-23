@@ -260,8 +260,8 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.q_a.publish.question.PublishQuestionActivity"
-            android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.q_a.publish.add_topic.AddTopicActivity"
@@ -419,30 +419,40 @@
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.dynamic.topdynamic.DynamicTopActivity">
-        </activity>
-        <activity android:name=".modules.wallet.withdrawals.WithdrawalsActivity">
-        </activity>
-        <activity android:name=".modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity">
-        </activity>
-        <activity android:name=".modules.wallet.bill_detail.BillDetailActivity">
-        </activity>
+        <activity
+            android:name=".modules.dynamic.topdynamic.DynamicTopActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.withdrawals.WithdrawalsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.bill_detail.BillDetailActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity"
-            android:theme="@style/DynamciSelectTheme">
-        </activity>
-        <activity android:name=".modules.dynamic.send.picture_toll.PictureTollActivity">
-        </activity>
-        <activity android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity">
-        </activity>
-        <activity android:name=".modules.dynamic.topdynamic_comment.DynamicCommentTopActivity">
-        </activity>
-        <activity android:name=".modules.wallet.bill.BillActivity">
-        </activity>
-        <activity android:name=".modules.feedback.FeedBackActivity">
-        </activity>
-        <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/DynamciSelectTheme"/>
+        <activity
+            android:name=".modules.dynamic.send.picture_toll.PictureTollActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.dynamic.topdynamic_comment.DynamicCommentTopActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.bill.BillActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.feedback.FeedBackActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.message.messagereview.MessageReviewActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.q_a.QA_Activity"
             android:launchMode="singleTask"
@@ -455,8 +465,8 @@
         </activity>
         <activity
             android:name=".modules.q_a.publish.detail.PublishContentActivity"
-            android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity
@@ -480,11 +490,16 @@
             android:name=".modules.information.publish.addinfo.AddInfoCategoryActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.information.publish.uploadcover.UploadCoverActivity"/>
-        <activity android:name=".modules.wallet.sticktop.StickTopActivity"/>
+        <activity
+            android:name=".modules.information.publish.uploadcover.UploadCoverActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.sticktop.StickTopActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.q_a.answer.PublishAnswerActivity"
             android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
@@ -502,9 +517,14 @@
         <activity
             android:name=".modules.findsomeone.contacts.ContactsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"/>
-        <activity android:name=".modules.draftbox.DraftBoxActivity">
-        </activity>
+        <activity
+            android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.draftbox.DraftBoxActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

@@ -6,10 +6,8 @@ import android.view.View;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
-import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
-import com.zhiyicx.thinksnsplus.widget.ChooseBindPopupWindow;
-import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.concurrent.TimeUnit;
@@ -18,50 +16,34 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 /**
  * @Author Jliuer
- * @Date 2017/08/22/14:06
+ * @Date 2017/08/23/14:22
  * @Email Jliuer@aliyun.com
- * @Description 草稿箱
+ * @Description
  */
-public class QuestionDraftItem extends BaseDraftItem {
+public class AnswerDraftItem extends BaseDraftItem {
 
-    public QuestionDraftItem(Activity activity) {
+    public AnswerDraftItem(Activity activity) {
         super(activity);
     }
 
     @Override
-    public int getItemViewLayoutId() {
-        return R.layout.item_draft;
-    }
-
-    @Override
     public boolean isForViewType(BaseDraftBean item, int position) {
-        return item instanceof QAPublishBean;
+        return item instanceof AnswerDraftBean;
     }
 
     @Override
     public void convert(ViewHolder holder, BaseDraftBean draftBean, BaseDraftBean lastT, int position, int itemCounts) {
-        QAPublishBean realData = (QAPublishBean) draftBean;
+        AnswerDraftBean realData = (AnswerDraftBean) draftBean;
         holder.setText(R.id.tv_draft_title, realData.getSubject());
         holder.setText(R.id.tv_draft_time, TimeUtils.getTimeFriendlyForDetail(realData.getCreated_at()));
         holder.setVisible(R.id.tv_draft_content, View.GONE);
-
-//        RxView.clicks(holder.getImageViwe(R.id.iv_draft_more))
-//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-//                .subscribe(aVoid -> {
-//                    if (mQuestionDraftItemEvent != null) {
-//                        initPopWindow(holder.getImageViwe(R.id.iv_draft_more), realData);
-//                    }
-//                });
 
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mQuestionDraftItemEvent != null) {
                         initPopWindow(holder.getImageViwe(R.id.iv_draft_more), realData);
-//                        mQuestionDraftItemEvent.toEditDraft(realData);
                     }
                 });
-
     }
-
 }

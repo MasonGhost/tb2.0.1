@@ -23,7 +23,9 @@ import rx.Subscription;
  */
 
 public class RewardPresenter extends AppBasePresenter<RewardContract.Repository, RewardContract.View> implements RewardContract.Presenter {
+
     public static final int DEFAULT_DELAY_TIME = 2;
+
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
@@ -54,6 +56,7 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
                 break;
             case USER: // 用户打赏
                 hanldeRewardResult(mRepository.rewardUser(sourceId, rewardMoney));
+                break;
             case QA_ANSWER: // 问答回答打赏
                 hanldeRewardResult(mRepository.rewardQA(sourceId, rewardMoney));
                 break;

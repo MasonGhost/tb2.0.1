@@ -164,7 +164,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
 
             case REGISTER:
                 mToolbarLeft.setVisibility(View.INVISIBLE);
-                mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
+                mToolbarRight.setTextColor(SkinUtils.getColor(R.color.themeColor));
                 mToolbarRight.setVisibility(View.VISIBLE);
                 break;
             case USER_EDIT:
