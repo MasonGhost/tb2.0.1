@@ -148,11 +148,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         return 0;
     }
 
-//    @Override
-//    protected int setRightImg() {
-//        return ico_me_message_normal;
-//    }
-
     @Override
     protected boolean showToolBarDivider() {
         return true;
@@ -186,7 +181,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     }
 
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container,
-            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet,
+            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet,R.id.bt_music,
             R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -219,10 +214,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(intent);
                 break;
             case R.id.bt_ranking:
-
                 Intent toRank = new Intent(getContext(), RankActivity.class);
                 startActivity(toRank);
-
                 break;
             case R.id.bt_collect:
                 startActivity(new Intent(getActivity(), CollectListActivity.class));
