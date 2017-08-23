@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
@@ -15,11 +18,15 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.PROVIDER_WECHAT;
+import static com.zhiyicx.baseproject.config.ApiConfig.PROVIDER_WEIBO;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_STATE;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_TYPE;
@@ -47,7 +54,13 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     @BindView(R.id.bt_bind_weibo)
     CombinationButton mBtBindWeibo;
 
+    private List<String> mBindAccounts = new ArrayList<>();
     private UserInfoBean mCurrentUser;
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_account_management;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -94,50 +107,174 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    // 跳转绑定/解绑QQ
+                    handleThirdAccount(ApiConfig.PROVIDER_QQ);
+
                 });
         RxView.clicks(mBtBindWechat)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转绑定/解绑微信
+                    thridLogin(SHARE_MEDIA.WEIXIN);
                 });
         RxView.clicks(mBtBindWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转绑定/解绑微博
+                    thridLogin(SHARE_MEDIA.SINA);
                 });
     }
 
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_account_management;
+    private void handleThirdAccount(String provider) {
+        // 跳转绑定/解绑QQ
+        if (mBindAccounts.contains(provider)) { // 解绑
+            if (TextUtils.isEmpty(mCurrentUser.getPhone())) {
+                showSnackErrorMessage(getString(R.string.you_must_bind_phone));
+            } else {
+                mPresenter.bindOrUnbindThirdAccount(provider, null, false);
+            }
+        } else { // 绑定
+            switch (provider) {
+                case ApiConfig.PROVIDER_QQ:
+                    thridLogin(SHARE_MEDIA.QQ);
+                    break;
+                case ApiConfig.PROVIDER_WEIBO:
+                    thridLogin(SHARE_MEDIA.SINA);
+                    break;
+                case ApiConfig.PROVIDER_WECHAT:
+                    thridLogin(SHARE_MEDIA.WEIXIN);
+                    break;
+                default:
+                    thridLogin(SHARE_MEDIA.QQ);
+            }
+
+        }
     }
 
+
+    public void thridLogin(SHARE_MEDIA type) {
+        UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
+        mShareAPI.getPlatformInfo(getActivity(), type, authListener);
+
+    }
+
+    private String mThridName;
+
+
+    private String mAccessToken;
+
+    UMAuthListener authListener = new UMAuthListener() {
+        /**
+         * @desc 授权开始的回调
+         * @param platform 平台名称
+         */
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+            showSnackLoadingMessage(getString(R.string.loading_state));
+
+        }
+
+        /**
+         * @desc 授权成功的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param data 用户资料返回
+         */
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            String provider = ApiConfig.PROVIDER_QQ;
+            switch (platform) {
+                case QQ:
+                    provider = ApiConfig.PROVIDER_QQ;
+                    break;
+                case SINA:
+                    provider = PROVIDER_WEIBO;
+                    break;
+
+                case WEIXIN:
+                    provider = PROVIDER_WECHAT;
+                    break;
+                default:
+
+            }
+            mThridName = data.get("screen_name");
+            mAccessToken = data.get("accessToken");
+            mPresenter.bindOrUnbindThirdAccount(provider, mAccessToken, true);
+        }
+
+        /**
+         * @desc 授权失败的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param t 错误原因
+         */
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+            showSnackErrorMessage(getString(R.string.login_fail));
+        }
+
+        /**
+         * @desc 授权取消的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         */
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            showSnackWarningMessage(getString(R.string.login_cancel));
+        }
+    };
+
+    /**
+     *
+     * @param provider
+     */
+    @Override
+    public void bindThirdSuccess(String provider) {
+        mBindAccounts.add(provider);
+        updateBindStatus(mBindAccounts,mCurrentUser);
+    }
+
+    /**
+     *
+     * @param provider
+     */
+    @Override
+    public void unBindThirdSuccess(String provider) {
+        mBindAccounts.remove(provider);
+        updateBindStatus(mBindAccounts,mCurrentUser);
+    }
+
+    /**
+     *
+     * @param data                bind accounts
+     * @param userInfoBean
+     */
     @Override
     public void updateBindStatus(List<String> data, UserInfoBean userInfoBean) {
-        mCurrentUser=userInfoBean;
-        setText(mBtBindPhone,TextUtils.isEmpty(userInfoBean.getPhone()));
-        setText(mBtBindEmail,TextUtils.isEmpty(userInfoBean.getEmail()));
-        setText(mBtBindQq,data.contains(ApiConfig.PROVIDER_QQ) );
-        setText(mBtBindWechat,data.contains(ApiConfig.PROVIDER_WECHAT) );
-        setText(mBtBindWeibo,data.contains(ApiConfig.PROVIDER_WEIBO) );
+        this.mBindAccounts.clear();
+        this.mBindAccounts.addAll(data);
+        this.mCurrentUser = userInfoBean;
+        setText(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
+        setText(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
+        setText(mBtBindQq, data.contains(ApiConfig.PROVIDER_QQ));
+        setText(mBtBindWechat, data.contains(PROVIDER_WECHAT));
+        setText(mBtBindWeibo, data.contains(PROVIDER_WEIBO));
 
-        setColor(mBtBindPhone,TextUtils.isEmpty(userInfoBean.getPhone()));
-        setColor(mBtBindEmail,TextUtils.isEmpty(userInfoBean.getEmail()));
-        setColor(mBtBindQq,data.contains(ApiConfig.PROVIDER_QQ));
-        setColor(mBtBindWechat,data.contains(ApiConfig.PROVIDER_WECHAT));
-        setColor(mBtBindWeibo,data.contains(ApiConfig.PROVIDER_WEIBO));
+        setColor(mBtBindPhone, TextUtils.isEmpty(userInfoBean.getPhone()));
+        setColor(mBtBindEmail, TextUtils.isEmpty(userInfoBean.getEmail()));
+        setColor(mBtBindQq, data.contains(ApiConfig.PROVIDER_QQ));
+        setColor(mBtBindWechat, data.contains(PROVIDER_WECHAT));
+        setColor(mBtBindWeibo, data.contains(PROVIDER_WEIBO));
 
     }
 
     private void setColor(CombinationButton combinationButton, boolean b) {
-        combinationButton.setRightTextColor(SkinUtils.getColor(b? R.color.dyanmic_top_flag : R.color.normal_for_assist_text));
+        combinationButton.setRightTextColor(SkinUtils.getColor(b ? R.color.normal_for_assist_text : R.color.dyanmic_top_flag));
 
     }
 
-    private void setText(CombinationButton combinationButton,boolean b) {
-        combinationButton.setRightText(getString(b? R.string.not_binding : R.string.had_binding));
+    private void setText(CombinationButton combinationButton, boolean b) {
+        combinationButton.setRightText(getString(b ? R.string.had_binding : R.string.not_binding));
     }
 }

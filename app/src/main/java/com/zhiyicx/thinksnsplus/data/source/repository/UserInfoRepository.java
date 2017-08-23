@@ -692,7 +692,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<AuthBean> bindWithLogin(String provider, String access_token) {
+    public Observable<Object> bindWithLogin(String provider, String access_token) {
         return mUserInfoClient.bindWithLogin(provider, access_token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -721,7 +721,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<AuthBean> cancelBind(String provider) {
+    public Observable<Object> cancelBind(String provider) {
         return mUserInfoClient.cancelBind(provider)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

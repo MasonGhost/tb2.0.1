@@ -15,17 +15,46 @@ import java.util.List;
 
 public interface AccountManagementContract {
 
-    interface View extends IBaseView<Presenter>{
-
+    interface View extends IBaseView<Presenter> {
+        /**
+         * update baind status
+         *
+         * @param data                bind accounts
+         * @param singleDataFromCache current user info
+         */
         void updateBindStatus(List<String> data, UserInfoBean singleDataFromCache);
+
+        /**
+         * bind success call back
+         *
+         * @param provider
+         */
+        void bindThirdSuccess(String provider);
+
+        /**
+         * unbind success call back
+         *
+         * @param provider
+         */
+        void unBindThirdSuccess(String provider);
+
     }
 
-    interface Presenter extends IBasePresenter{
-
+    interface Presenter extends IBasePresenter {
+        /**
+         * get third binded account
+         */
         void getBindSocialAcounts();
+
+        /**
+         * @param provider    type
+         * @param accessToken accesse token
+         * @param isBind      true to bind ,false to unbind
+         */
+        void bindOrUnbindThirdAccount(String provider, String accessToken, boolean isBind);
     }
 
-    interface Repository{
+    interface Repository {
 
     }
 }

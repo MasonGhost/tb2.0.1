@@ -524,6 +524,7 @@
     <string name="not_find_qa_topic_to_publish">未找到相关话题~</string>
     <string name="request_to_publish_topic">申请创建话题~</string>
     <string name="to_publish_qa">去提问</string>
+    <string name="you_must_bind_phone">你必须绑定手机才能解绑三方哦</string>
 
 
 </resources>

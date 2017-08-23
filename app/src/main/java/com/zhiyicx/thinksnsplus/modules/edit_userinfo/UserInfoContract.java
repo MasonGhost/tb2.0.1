@@ -358,7 +358,7 @@ public interface UserInfoContract {
          * @param access_token
          * @return
          */
-        Observable<AuthBean> bindWithLogin( String provider, String access_token);
+        Observable<Object> bindWithLogin( String provider, String access_token);
 
         /**
          * 输入账号密码绑定
@@ -377,7 +377,7 @@ public interface UserInfoContract {
          * @param provider type qq\weibo\wechat
          * @return
          */
-        Observable<AuthBean> cancelBind( String provider);
+        Observable<Object> cancelBind( String provider);
 
 
     }

@@ -445,7 +445,7 @@ public interface UserInfoClient {
      * @return
      */
     @PATCH(APP_PATH_BIND_WITH_LOGIN)
-    Observable<AuthBean> bindWithLogin(@Path("provider") String provider, @Body String access_token);
+    Observable<Object> bindWithLogin(@Path("provider") String provider, @Body String access_token);
 
     /**
      * 输入账号密码绑定
@@ -467,6 +467,6 @@ public interface UserInfoClient {
      * @return
      */
     @DELETE(APP_PATH_CANDEL_BIND)
-    Observable<AuthBean> cancelBind(@Path("provider") String provider);
+    Observable<Object> cancelBind(@Path("provider") String provider);
 
 }
