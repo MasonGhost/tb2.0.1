@@ -83,6 +83,9 @@ public class ApiConfig {
     public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     public static final String APP_PATH_UPDATE_USER_AVATAR = "api/" + API_VERSION_2 + "/user/avatar";// 修改用户头像
     public static final String APP_PATH_UPDATE_USER_BG = "api/" + API_VERSION_2 + "/user/bg";// 修改用户背景
+    public static final String APP_PATH_UPDATE_USER_PHONE_OR_EMAIL = "api/" + API_VERSION_2 + "/user";// 更新认证用户的手机号码和邮箱
+    public static final String APP_PATH_DELETE_USER_PHONE = "api/" + API_VERSION_2 + "/user/phone";// 解除用户 Phone 绑定
+    public static final String APP_PATH_DELETE_USER_EMAIL = "api/" + API_VERSION_2 + "/user/email";// 解除用户 E-Mail 绑定
 
 
     // 用户标签

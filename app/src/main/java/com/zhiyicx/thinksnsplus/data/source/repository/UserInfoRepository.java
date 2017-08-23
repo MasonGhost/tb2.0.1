@@ -26,6 +26,9 @@ import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -442,6 +445,47 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 });
     }
 
+    /**
+     *
+     * @param phone
+     * @param email
+     * @param verifiable_code
+     * @return
+     */
+    @Override
+    public Observable<Object> updatePhoneOrEmail(String phone, String email, String verifiable_code) {
+        return mUserInfoClient.updatePhoneOrEmail(new UpdateUserPhoneOrEmailRequestBean(phone,email,verifiable_code))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     *
+     * @param password
+     * @param verify_code
+     * @return
+     */
+    @Override
+    public Observable<Object> deletePhone(String password, String verify_code) {
+        return mUserInfoClient.deletePhone(new DeleteUserPhoneOrEmailRequestBean(password,verify_code))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     *
+     * @param password
+     * @param verify_code
+     * @return
+     */
+    @Override
+    public Observable<Object> deleteEmail(String password, String verify_code) {
+        return mUserInfoClient.deleteEmail(new DeleteUserPhoneOrEmailRequestBean(password,verify_code))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
     /*******************************************  标签  *********************************************/
 
 
@@ -693,7 +737,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<Object> bindWithLogin(String provider, String access_token) {
-        return mUserInfoClient.bindWithLogin(provider, access_token)
+        return mUserInfoClient.bindWithLogin(provider, new ThirdAccountBindRequestBean(access_token))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

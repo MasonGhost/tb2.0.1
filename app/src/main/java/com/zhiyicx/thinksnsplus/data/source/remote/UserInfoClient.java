@@ -18,6 +18,9 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -237,6 +240,35 @@ public interface UserInfoClient {
     @POST(ApiConfig.APP_PATH_UPDATE_USER_BG)
     Observable<Object> updateBg(@Body MultipartBody multipartBody);
 
+
+    /**
+     * 更新认证用户的手机号码和邮箱
+     *
+     * @param updateUserPhoneOrEmailRequestBean request data
+     * @return
+     */
+    @PUT(ApiConfig.APP_PATH_UPDATE_USER_PHONE_OR_EMAIL)
+    Observable<Object> updatePhoneOrEmail(@Body UpdateUserPhoneOrEmailRequestBean updateUserPhoneOrEmailRequestBean);
+
+    /**
+     * 解除用户 Phone 绑定:
+     *
+     * @param deleteUserPhoneOrEmailRequestBean
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_DELETE_USER_PHONE)
+    Observable<Object> deletePhone(@Body DeleteUserPhoneOrEmailRequestBean deleteUserPhoneOrEmailRequestBean);
+
+    /**
+     * 解除用户 E-Mail 绑定:
+     *
+     * @param deleteUserPhoneOrEmailRequestBean
+     * @return
+     */
+    @DELETE(ApiConfig.APP_PATH_DELETE_USER_EMAIL)
+    Observable<Object> deleteEmail(@Body DeleteUserPhoneOrEmailRequestBean deleteUserPhoneOrEmailRequestBean);
+
+
     /*******************************************  标签  *********************************************/
 
 
@@ -445,15 +477,15 @@ public interface UserInfoClient {
      * @return
      */
     @PATCH(APP_PATH_BIND_WITH_LOGIN)
-    Observable<Object> bindWithLogin(@Path("provider") String provider, @Body String access_token);
+    Observable<Object> bindWithLogin(@Path("provider") String provider, @Body ThirdAccountBindRequestBean access_token);
 
     /**
      * 输入账号密码绑定
      *
-     * @param provider     type qq\weibo\wechat
+     * @param provider              type qq\weibo\wechat
      * @param bindAccountRequstBean 获取的 Provider Access Token。
-     * @param bindAccountRequstBean        用户登录名，手机，邮箱
-     * @param bindAccountRequstBean     用户密码。
+     * @param bindAccountRequstBean 用户登录名，手机，邮箱
+     * @param bindAccountRequstBean 用户密码。
      * @return
      */
     @PUT(APP_PATH_BIND_WITH_INPUT)

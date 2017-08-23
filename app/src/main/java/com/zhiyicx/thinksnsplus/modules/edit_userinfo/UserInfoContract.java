@@ -15,11 +15,14 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -81,6 +84,7 @@ public interface UserInfoContract {
 
         /**
          * 更新用户标签
+         *
          * @param datas tags
          */
         void updateTags(List<UserTagBean> datas);
@@ -199,7 +203,35 @@ public interface UserInfoContract {
         Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key);
 
 
-/*******************************************  标签  *********************************************/
+        /**
+         * 更新认证用户的手机号码和邮箱
+         * @param phone
+         * @param email
+         * @param verifiable_code
+         * @return
+         */
+        Observable<Object> updatePhoneOrEmail(String phone, String email, String verifiable_code);
+
+        /**
+         * 解除用户 Phone 绑定:
+         *
+         * @param password
+         * @param verify_code
+         * @return
+         */
+        Observable<Object> deletePhone(String password, String verify_code);
+
+        /**
+         * 解除用户 E-Mail 绑定:
+         *
+         * @param password
+         * @param verify_code
+         * @return
+         */
+        Observable<Object> deleteEmail(String password, String verify_code);
+
+
+        /*******************************************  标签  *********************************************/
 
         /**
          * 获取一个用户的标签
@@ -242,7 +274,7 @@ public interface UserInfoContract {
          * @param offset 偏移量, 注: 此参数为之前获取数量的总和
          * @return
          */
-        Observable<List<UserInfoBean>> getHotUsers( Integer limit,Integer offset);
+        Observable<List<UserInfoBean>> getHotUsers(Integer limit, Integer offset);
 
         /**
          * 最新用户
@@ -251,7 +283,7 @@ public interface UserInfoContract {
          * @param offset 偏移量, 注: 此参数为之前获取数量的总和
          * @return
          */
-        Observable<List<UserInfoBean>> getNewUsers(Integer limit,Integer offset);
+        Observable<List<UserInfoBean>> getNewUsers(Integer limit, Integer offset);
 
         /**
          * tag 推荐用户
@@ -260,7 +292,7 @@ public interface UserInfoContract {
          * @param offset 偏移量, 注: 此参数为之前获取数量的总和
          * @return
          */
-        Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit,  Integer offset);
+        Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset);
 
         /**
          * phone 推荐用户
@@ -279,7 +311,7 @@ public interface UserInfoContract {
          * @param latitude  纬度
          * @return
          */
-        Observable<Object> updateUserLocation(double longitude,  double latitude);
+        Observable<Object> updateUserLocation(double longitude, double latitude);
 
         /**
          * 根据经纬度查询周围最多 50KM 内的 TS+ 用户
@@ -291,8 +323,7 @@ public interface UserInfoContract {
          * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
          * @return
          */
-        Observable<List<NearbyBean>> getNearbyData(double longitude,double latitude,Integer radius,Integer limit, Integer page);
-
+        Observable<List<NearbyBean>> getNearbyData(double longitude, double latitude, Integer radius, Integer limit, Integer page);
 
 
         /*******************************************  签到  *********************************************/
@@ -317,7 +348,7 @@ public interface UserInfoContract {
          * @param offset 数据偏移数，默认为 0。
          * @return
          */
-        Observable<List<UserInfoBean>> getCheckInRanks( Integer offset);
+        Observable<List<UserInfoBean>> getCheckInRanks(Integer offset);
 
 
         /*******************************************  三方登录  *********************************************/
@@ -338,7 +369,7 @@ public interface UserInfoContract {
          * @param access_token thrid token
          * @return 返回的数据参考 「用户／授权」接口，如果返回 404 则表示没有改账号没有注册，进入第三方登录注册流程。
          */
-        Observable<AuthBean> checkThridIsRegitser(String provider,String access_token);
+        Observable<AuthBean> checkThridIsRegitser(String provider, String access_token);
 
         /**
          * 检查注册信息或者注册用户
@@ -349,7 +380,7 @@ public interface UserInfoContract {
          * @param check        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
          * @return
          */
-        Observable<AuthBean> checkUserOrRegisterUser(String provider, String access_token, String name,  Boolean check);
+        Observable<AuthBean> checkUserOrRegisterUser(String provider, String access_token, String name, Boolean check);
 
         /**
          * 已登录账号绑定
@@ -358,7 +389,7 @@ public interface UserInfoContract {
          * @param access_token
          * @return
          */
-        Observable<Object> bindWithLogin( String provider, String access_token);
+        Observable<Object> bindWithLogin(String provider, String access_token);
 
         /**
          * 输入账号密码绑定
@@ -369,7 +400,7 @@ public interface UserInfoContract {
          * @param password     用户密码。
          * @return
          */
-        Observable<AuthBean> bindWithInput( String provider, String access_token, String login,String password);
+        Observable<AuthBean> bindWithInput(String provider, String access_token, String login, String password);
 
         /**
          * 取消绑定
@@ -377,7 +408,7 @@ public interface UserInfoContract {
          * @param provider type qq\weibo\wechat
          * @return
          */
-        Observable<Object> cancelBind( String provider);
+        Observable<Object> cancelBind(String provider);
 
 
     }

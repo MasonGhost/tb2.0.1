@@ -63,6 +63,11 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
 
     }
@@ -87,8 +92,8 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     Intent intent = new Intent(getActivity(), AccountBindActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_PHONE);
-                    bundle.putBoolean(BUNDLE_BIND_STATE, false);
-                    intent.putExtra(BUNDLE_BIND_TYPE, bundle);
+                    bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getPhone()));
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 });
         RxView.clicks(mBtBindEmail)
@@ -99,8 +104,8 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     Intent intent = new Intent(getActivity(), AccountBindActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
-                    bundle.putBoolean(BUNDLE_BIND_STATE, false);
-                    intent.putExtra(BUNDLE_BIND_TYPE, bundle);
+                    bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getEmail()));
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 });
         RxView.clicks(mBtBindQq)
@@ -115,14 +120,14 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转绑定/解绑微信
-                    thridLogin(SHARE_MEDIA.WEIXIN);
+                    handleThirdAccount(ApiConfig.PROVIDER_WECHAT);
                 });
         RxView.clicks(mBtBindWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 跳转绑定/解绑微博
-                    thridLogin(SHARE_MEDIA.SINA);
+                    handleThirdAccount(ApiConfig.PROVIDER_WEIBO);
                 });
     }
 
@@ -226,28 +231,25 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     };
 
     /**
-     *
      * @param provider
      */
     @Override
     public void bindThirdSuccess(String provider) {
         mBindAccounts.add(provider);
-        updateBindStatus(mBindAccounts,mCurrentUser);
+        updateText(mBindAccounts, mCurrentUser);
     }
 
     /**
-     *
      * @param provider
      */
     @Override
     public void unBindThirdSuccess(String provider) {
         mBindAccounts.remove(provider);
-        updateBindStatus(mBindAccounts,mCurrentUser);
+        updateText(mBindAccounts, mCurrentUser);
     }
 
     /**
-     *
-     * @param data                bind accounts
+     * @param data         bind accounts
      * @param userInfoBean
      */
     @Override
@@ -255,18 +257,22 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
         this.mBindAccounts.clear();
         this.mBindAccounts.addAll(data);
         this.mCurrentUser = userInfoBean;
+        updateText(mBindAccounts, mCurrentUser);
+
+    }
+
+    private void updateText(List<String> data, UserInfoBean userInfoBean) {
         setText(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
         setText(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
         setText(mBtBindQq, data.contains(ApiConfig.PROVIDER_QQ));
         setText(mBtBindWechat, data.contains(PROVIDER_WECHAT));
         setText(mBtBindWeibo, data.contains(PROVIDER_WEIBO));
 
-        setColor(mBtBindPhone, TextUtils.isEmpty(userInfoBean.getPhone()));
-        setColor(mBtBindEmail, TextUtils.isEmpty(userInfoBean.getEmail()));
+        setColor(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
+        setColor(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
         setColor(mBtBindQq, data.contains(ApiConfig.PROVIDER_QQ));
         setColor(mBtBindWechat, data.contains(PROVIDER_WECHAT));
         setColor(mBtBindWeibo, data.contains(PROVIDER_WEIBO));
-
     }
 
     private void setColor(CombinationButton combinationButton, boolean b) {

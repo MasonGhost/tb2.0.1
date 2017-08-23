@@ -12,7 +12,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 
 public interface AccountBindContract {
 
-    interface View extends IBaseView<Presenter>{
+    interface View extends IBaseView<Presenter> {
 
         void setSureBtEnabled(boolean isEnable);
 
@@ -22,13 +22,23 @@ public interface AccountBindContract {
 
         void setVerifyCodeBtText(String text);
 
+        void unBindPhoneOrEmailSuccess(boolean isPhone);
+
+        void BindPhoneOrEmailSuccess(boolean isPhone);
     }
 
     interface Presenter extends IBasePresenter {
 
+        void getVertifyCode(String trim);
+
+        void getVerifyCodeByEmail(String trim);
+
+        void bindPhoneOrEmail(String phone, String email, String verifyCode, boolean isphone);
+
+        void unBindPhoneOrEmail(String password, String verifyCode, boolean isPhone);
     }
 
-    interface Repository{
+    interface Repository {
 
     }
 }

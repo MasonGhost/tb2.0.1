@@ -74,6 +74,9 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
                     .subscribe(new BaseSubscribeForV2<Object>() {
                         @Override
                         protected void onSuccess(Object data) {
+
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.bind_success));
+
                             mRootView.bindThirdSuccess(provider);
 
                         }
@@ -98,6 +101,8 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
                     .subscribe(new BaseSubscribeForV2<Object>() {
                         @Override
                         protected void onSuccess(Object data) {
+                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.unbind_success));
+
                             mRootView.unBindThirdSuccess(provider);
                         }
 
