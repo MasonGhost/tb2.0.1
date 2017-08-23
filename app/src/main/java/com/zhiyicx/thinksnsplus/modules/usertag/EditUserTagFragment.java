@@ -346,7 +346,7 @@ public class EditUserTagFragment extends TSFragment<EditUserTagContract.Presente
             mToolbarRight.setTextColor(SkinUtils.getColor(R.color.themeColor));
             mToolbarRight.setText(getString(R.string.next));
         } else {
-            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.general_for_hint));
+            mToolbarRight.setTextColor(SkinUtils.getColor(R.color.themeColor));
             mToolbarRight.setText(R.string.jump_over);
         }
     }

@@ -111,13 +111,13 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
 
     @Override
     public void getVerifyCodeByEmail(String email) {
-        if (checkEmail(email)){
+        if (checkEmail(email)) {
             return;
         }
         mRootView.setVertifyCodeBtEnabled(false);
         mRootView.setVertifyCodeLoadin(true);
         Subscription getVerifySub = mRepository.getNonMemberVerifyCodeByEmail(email)
-                .subscribe(new BaseSubscribeForV2<Object>(){
+                .subscribe(new BaseSubscribeForV2<Object>() {
 
                     @Override
                     protected void onSuccess(Object data) {
@@ -173,13 +173,9 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
                     @Override
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
-                        UserInfoBean registerUserInfo = new UserInfoBean();
-                        registerUserInfo.setUser_id(Long.valueOf(data.getUser_id()));
-                        registerUserInfo.setName(name);
-                        registerUserInfo.setPhone(phone);
-                        data.setUser(registerUserInfo);
+
                         mAuthRepository.saveAuthBean(data);// 保存登录认证信息
-                        mUserInfoBeanGreenDao.insertOrReplace(registerUserInfo);
+                        mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
                         mRootView.goHome();
@@ -223,13 +219,9 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
                     @Override
                     public void onSuccess(AuthBean data) {
                         mRootView.setRegisterBtEnabled(true);
-                        UserInfoBean registerUserInfo = new UserInfoBean();
-                        registerUserInfo.setUser_id(Long.valueOf(data.getUser_id()));
-                        registerUserInfo.setName(name);
-                        registerUserInfo.setEmail(email);
-                        data.setUser(registerUserInfo);
+
                         mAuthRepository.saveAuthBean(data);// 保存登录认证信息
-                        mUserInfoBeanGreenDao.insertOrReplace(registerUserInfo);
+                        mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                         // IM 登录 需要 token ,所以需要先保存登录信息
                         handleIMLogin();
                         mRootView.goHome();
@@ -295,8 +287,8 @@ public class RegisterPresenter extends AppBasePresenter<RegisterContract.Reposit
         return false;
     }
 
-    private boolean checkEmail(String email){
-        if (!RegexUtils.isEmail(email)){
+    private boolean checkEmail(String email) {
+        if (!RegexUtils.isEmail(email)) {
             mRootView.showMessage(mContext.getString(R.string.email_address_toast_hint));
             return true;
         }
