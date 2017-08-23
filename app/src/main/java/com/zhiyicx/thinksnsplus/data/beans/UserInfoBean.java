@@ -416,6 +416,58 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             this.updated_at = updated_at;
         }
 
+        public static long getSerialVersionUID() {
+            return serialVersionUID;
+        }
+
+        public int getQuestions_count() {
+            return questions_count;
+        }
+
+        public void setQuestions_count(int questions_count) {
+            this.questions_count = questions_count;
+        }
+
+        public int getAnswers_count() {
+            return answers_count;
+        }
+
+        public void setAnswers_count(int answers_count) {
+            this.answers_count = answers_count;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public int getRank() {
+            return rank;
+        }
+
+        public void setRank(int rank) {
+            this.rank = rank;
+        }
+
+        public int getCheckin_count() {
+            return checkin_count;
+        }
+
+        public void setCheckin_count(int checkin_count) {
+            this.checkin_count = checkin_count;
+        }
+
+        public int getLast_checkin_count() {
+            return last_checkin_count;
+        }
+
+        public void setLast_checkin_count(int last_checkin_count) {
+            this.last_checkin_count = last_checkin_count;
+        }
+
         @Override
         public String toString() {
             return "UserInfoExtraBean{" +

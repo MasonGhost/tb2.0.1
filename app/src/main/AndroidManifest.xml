@@ -306,6 +306,10 @@
                 android:name=".modules.rank.main.container.RankIndexActivity"
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="adjustResize"/>
+        <activity
+                android:name=".modules.rank.type_list.RankTypeListActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"
