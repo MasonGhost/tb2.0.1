@@ -550,4 +550,11 @@
     <string name="rank_info_type_day">今日资讯排行榜</string>
     <string name="rank_info_type_week">一周资讯排行榜</string>
     <string name="rank_info_type_month">本月资讯排行榜</string>
+
+    <string name="rank_type_fans">粉丝：%d</string>
+    <string name="rank_type_answer_count">回答量：%d</string>
+    <string name="rank_type_answer_dig_count">问答点赞量：%d</string>
+    <string name="rank_type_like_count">点赞量：%d</string>
+    <string name="rank_type_view_count">浏览量：%d</string>
+    <string name="rank_type_check_in">连续签到：%d</string>
 </resources>

@@ -1,16 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.rank.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.zhiyicx.common.utils.recycleviewdecoration.GridDecoration;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
+import com.zhiyicx.thinksnsplus.modules.rank.type_list.RankTypeListActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.rank.type_list.RankTypeListActivity.BUNDLE_RANK_BEAN;
 
 /**
  * @author Catherine
@@ -30,9 +38,9 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
         holder.setText(R.id.tv_rank_type, rankIndexBean.getSubCategory());
         RecyclerView rvUsers = holder.getView(R.id.rv_users);
         rvUsers.setNestedScrollingEnabled(false);
-        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 5);
-        int diver = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_large);
-        rvUsers.addItemDecoration(new GridDecoration(diver, diver));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+//        int width = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+//        rvUsers.addItemDecoration(new LinearDecoration(0, 0, 0, ConvertUtils.px2dp(mContext, width)));
         rvUsers.setLayoutManager(layoutManager);
         if (rankIndexBean.getUserInfoList() != null){
             if (rankIndexBean.getUserInfoList().size() > 5){
@@ -41,5 +49,15 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
                 rvUsers.setAdapter(new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList()));
             }
         }
+        RxView.clicks(holder.getView(R.id.ll_info_container))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    // 跳转二级页面
+                    Intent intent = new Intent(mContext, RankTypeListActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_RANK_BEAN, rankIndexBean);
+                    intent.putExtras(bundle);
+                    mContext.startActivity(intent);
+                });
     }
 }

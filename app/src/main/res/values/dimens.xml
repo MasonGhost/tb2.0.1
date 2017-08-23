@@ -102,4 +102,8 @@
     <dimen name="location_search_item_space">18dp</dimen>
     <dimen name="qa_search_empty_size">17sp</dimen>
     <dimen name="qa_search_empty_bt_with">200dp</dimen>
+
+    <!--排行榜-->
+    <dimen name="type_item_height">67dp</dimen>
+    <dimen name="type_item_user_portrait">38dp</dimen>
 </resources>
