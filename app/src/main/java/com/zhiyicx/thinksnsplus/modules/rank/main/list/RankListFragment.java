@@ -66,4 +66,9 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     protected boolean showToolbar() {
         return false;
     }
+
+    @Override
+    public String getCategory() {
+        return mRankIndexBean == null ? "" : mRankIndexBean.getCategory();
+    }
 }

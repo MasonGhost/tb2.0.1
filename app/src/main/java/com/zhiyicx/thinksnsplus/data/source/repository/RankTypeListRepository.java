@@ -1,21 +1,21 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.rank.main.list.RankListContract;
+import com.zhiyicx.thinksnsplus.modules.rank.type_list.RankTypeListContract;
 
 import javax.inject.Inject;
 
 /**
  * @author Catherine
  * @describe
- * @date 2017/8/22
+ * @date 2017/8/23
  * @contact email:648129313@qq.com
  */
 
-public class RankListRepository extends BaseRankRepository implements RankListContract.Repository{
+public class RankTypeListRepository extends BaseRankRepository implements RankTypeListContract.Repository{
 
     @Inject
-    public RankListRepository(ServiceManager manager) {
+    public RankTypeListRepository(ServiceManager manager) {
         super(manager);
     }
 }
