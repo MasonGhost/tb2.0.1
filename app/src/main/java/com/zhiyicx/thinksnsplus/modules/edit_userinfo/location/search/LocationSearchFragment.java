@@ -48,8 +48,6 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     TextView mFragmentInfoSearchCancle;
     @BindView(R.id.fragment_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
-    @BindView(R.id.fragment_search_cancle)
-    TextView mTvSearchCancel;
 
 
     public static LocationSearchFragment newInstance(Bundle args) {
@@ -89,7 +87,7 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     }
     @Override
     protected View getRightViewOfMusicWindow() {
-        return mTvSearchCancel;
+        return mFragmentInfoSearchCancle;
     }
 
     @Override
