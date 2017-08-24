@@ -30,6 +30,8 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -150,11 +152,12 @@ public class InfoDetailHeaderView {
                             .getUpdated_at()));
             mFrom.setText(infoData);
             // 引用
-            if (!TextUtils.isEmpty(infoMain.getSubject())){
+            if (!TextUtils.isEmpty(infoMain.getSubject())) {
                 InternalStyleSheet css = new Github();
-                css.addRule(".container", "padding-right:0px",";padding-left:0px");
+                css.addRule(".container", "padding:0px", "margin:0px");
                 css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
-                css.addRule("p", "margin:10px");
+                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
+                css.addRule("p", "margin:0px", "padding:10px");
                 mContentSubject.setVisibility(VISIBLE);
                 mContentSubject.addStyleSheet(css);
                 mContentSubject.loadMarkdown(infoMain.getSubject());
@@ -165,7 +168,7 @@ public class InfoDetailHeaderView {
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 0px");
-                css.addRule(".container", "padding-right:0",";padding-left:0");
+                css.addRule(".container", "padding-right:0", ";padding-left:0");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
@@ -256,8 +259,8 @@ public class InfoDetailHeaderView {
     }
 
     private void dealImageList(String imgPath, String id) {
-        for (ImageBean item : mImgList){
-            if (item.getImgUrl().equals(imgPath)){
+        for (ImageBean item : mImgList) {
+            if (item.getImgUrl().equals(imgPath)) {
                 return;
             }
         }
@@ -274,7 +277,7 @@ public class InfoDetailHeaderView {
         try {
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvDetail);// 动画矩形
             animationRectBeanArrayList.add(rect);
-        } catch (Exception e){
+        } catch (Exception e) {
             LogUtils.d("Cathy", e.toString());
         }
 
@@ -354,6 +357,12 @@ public class InfoDetailHeaderView {
                 protected void convert(ViewHolder holder, InfoListDataBean infoListDataBean, int position) {
                     final TextView title = holder.getView(R.id.item_info_title);
                     final ImageView imageView = holder.getView(R.id.item_info_imag);
+
+                    // 记录点击过后颜色
+                    if (AppApplication.sOverRead.contains(infoListDataBean.getId())) {
+                        title.setTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
+                    }
+
                     title.setText(infoListDataBean.getTitle());
                     if (infoListDataBean.getImage() == null) {
                         imageView.setVisibility(View.GONE);
@@ -381,6 +390,13 @@ public class InfoDetailHeaderView {
                     // 是否置顶
                     holder.setVisible(R.id.tv_top_flag, infoListDataBean.isTop() ? View.VISIBLE : View.GONE);
                     holder.itemView.setOnClickListener(v -> {
+                        if (!AppApplication.sOverRead.contains(infoListDataBean.getId())) {
+                            AppApplication.sOverRead.add(infoListDataBean.getId());
+                        }
+                        FileUtils.saveBitmapToFile(mContext, ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
+                                , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
+                        title.setTextColor(mContext.getResources()
+                                .getColor(R.color.normal_for_assist_text));
                         // 跳转到新的咨询页
                         Intent intent = new Intent(mContext, InfoDetailsActivity.class);
                         Bundle bundle = new Bundle();

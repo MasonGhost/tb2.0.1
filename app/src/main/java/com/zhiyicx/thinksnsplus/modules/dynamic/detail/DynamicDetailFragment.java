@@ -21,6 +21,7 @@ import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircle
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.InputLimitView.OnSendClickListener;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.BuildConfig;
@@ -91,6 +92,8 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
     DynamicDetailMenuView mDdDynamicTool;
     @BindView(R.id.tv_toolbar_center)
     TextView mTvToolbarCenter;
+    @BindView(R.id.iv_user_portrait)
+    UserAvatarView mIvUserPortrait;
     @BindView(R.id.tv_toolbar_left)
     TextView mTvToolbarLeft;
     @BindView(R.id.tv_toolbar_right)
@@ -215,6 +218,9 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         RxView.clicks(mTvToolbarCenter)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
+        RxView.clicks(mIvUserPortrait)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> onUserInfoClick(mDynamicBean.getUserInfoBean()));
         mIlvComment.setOnSendClickListener(this);
         mToolbar.setOnSystemUiVisibilityChangeListener(visibility -> {
 
@@ -304,19 +310,20 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         UserInfoBean userInfoBean = dynamicBean.getUserInfoBean();// 动态所属用户的信息
         mTvToolbarCenter.setText(userInfoBean.getName());
-        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-        Glide.with(getContext())
-                .load(ImageUtils.getUserAvatar(dynamicBean.getUserInfoBean()))
-                .bitmapTransform(new GlideCircleTransform(getContext()))
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .error(R.mipmap.pic_default_portrait1)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
-                        mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
-                    }
-                });
+        ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
+//        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
+//        Glide.with(getContext())
+//                .load(ImageUtils.getUserAvatar(dynamicBean.getUserInfoBean()))
+//                .bitmapTransform(new GlideCircleTransform(getContext()))
+//                .placeholder(R.mipmap.pic_default_portrait1)
+//                .error(R.mipmap.pic_default_portrait1)
+//                .into(new SimpleTarget<GlideDrawable>() {
+//                    @Override
+//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+//                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
+//                        mTvToolbarCenter.setCompoundDrawables(resource, null, null, null);
+//                    }
+//                });
     }
 
     @Override
