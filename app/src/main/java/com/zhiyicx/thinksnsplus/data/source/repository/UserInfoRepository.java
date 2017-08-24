@@ -332,6 +332,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     public Observable<List<DigedBean>> call(final List<DigedBean> data) {
                         List<Object> userIds = new ArrayList();
                         for (DigedBean digedBean : data) {
+                            digedBean.initDelet();
                             userIds.add(digedBean.getUser_id());
                             userIds.add(digedBean.getTarget_user());
                         }
@@ -374,6 +375,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         }
                         List<Object> userIds = new ArrayList();
                         for (CommentedBean commentedBean : data) {
+                            commentedBean.initDelet();
                             userIds.add(commentedBean.getUser_id());
                             userIds.add(commentedBean.getTarget_user());
                             userIds.add(commentedBean.getReply_user());
