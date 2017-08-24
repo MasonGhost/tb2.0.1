@@ -28,9 +28,8 @@ class MusicDetailPresenterModule {
     }
 
     @Provides
-    MusicDetailContract.Repository provideMusicRepository(ServiceManager serviceManager,
-                                                          Application application) {
-        return new MusicDetailRepository(serviceManager,application);
+    MusicDetailContract.Repository provideMusicRepository(MusicDetailRepository musicDetailRepository) {
+        return musicDetailRepository;
     }
 
 }

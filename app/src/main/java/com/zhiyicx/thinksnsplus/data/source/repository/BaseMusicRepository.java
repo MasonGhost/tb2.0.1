@@ -8,13 +8,15 @@ import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
-import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentContract;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IMusicRepository;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
@@ -27,20 +29,33 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHandler.NET_CALLBACK;
 
 /**
  * @Author Jliuer
- * @Date 2017/03/22
+ * @Date 2017/08/24/17:12
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicCommentRepositroty extends BaseMusicRepository implements MusicCommentContract.Repository {
+public class BaseMusicRepository implements IMusicRepository {
+
+    protected MusicClient mMusicClient;
+    @Inject
+    protected Application mContext;
+    @Inject
+    protected UserInfoRepository mUserInfoRepository;
+    @Inject
+    protected MusicDetailRepository mMusicDetailRepository;
+    @Inject
+    protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    protected MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
 
     @Inject
-    public MusicCommentRepositroty(ServiceManager serviceManager) {
-        super(serviceManager);
+    public BaseMusicRepository(ServiceManager serviceManager) {
+        mMusicClient = serviceManager.getMusicClient();
     }
 
     @Override
@@ -171,12 +186,95 @@ public class MusicCommentRepositroty extends BaseMusicRepository implements Musi
     }
 
     @Override
+    public Observable<MusicAlbumDetailsBean> getMusicAblum(String id) {
+        return mMusicClient.getMusicAblum(id);
+    }
+
+    @Override
     public Observable<MusicDetaisBean> getMusicDetails(String music_id) {
         return mMusicClient.getMusicDetails(music_id);
     }
 
     @Override
-    public Observable<MusicAlbumDetailsBean> getMusicAblum(String id) {
-        return mMusicClient.getMusicAblum(id);
+    public void handleCollect(boolean isCollected, final String special_id) {
+        Observable.just(isCollected)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("special_id", special_id);
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                    }
+                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                            .APP_PATH_MUSIC_ABLUM_COLLECT_FORMAT, special_id));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
+    }
+
+    @Override
+    public void shareAblum(String special_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("special_id", special_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                (BackgroundTaskRequestMethodConfig.PATCH, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                .APP_PATH_MUSIC_ABLUM_SHARE, special_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                (backgroundRequestTaskBean);
+    }
+
+    @Override
+    public Observable<List<MusicAlbumListBean>> getMusicAblumList(long max_id) {
+        return mMusicClient.getMusicList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
+    }
+
+    public List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId) {
+        return mMusicAlbumListDao.getMultiDataFromCache();
+    }
+
+    @Override
+    public void handleLike(boolean isLiked, final String music_id) {
+        Observable.just(isLiked)
+                .observeOn(Schedulers.io())
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("music_id", music_id);
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
+                    }
+                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                            .APP_PATH_MUSIC_DIGG_FORMAT, music_id));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
+    }
+
+    @Override
+    public void shareMusic(String music_id) {
+        BackgroundRequestTaskBean backgroundRequestTaskBean;
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("music_id", music_id);
+        // 后台处理
+        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                (BackgroundTaskRequestMethodConfig.PATCH, params);
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                .APP_PATH_MUSIC_SHARE, music_id));
+        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                (backgroundRequestTaskBean);
     }
 }

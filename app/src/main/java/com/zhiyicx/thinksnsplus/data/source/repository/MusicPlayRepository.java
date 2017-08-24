@@ -1,22 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import android.content.Context;
-
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
-import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayContract;
-import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
-
-import java.util.HashMap;
 
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * @Author Jliuer
@@ -25,51 +12,10 @@ import rx.schedulers.Schedulers;
  * @Description
  */
 
-public class MusicPlayRepository implements MusicPlayContract.Repository {
-
-    MusicClient mMusicClient;
-    protected Context mContext;
+public class MusicPlayRepository extends BaseMusicRepository implements MusicPlayContract.Repository {
 
     @Inject
-    public MusicPlayRepository(ServiceManager serviceManager, Context context) {
-        mContext = context;
-        mMusicClient = serviceManager.getMusicClient();
-    }
-
-    @Override
-    public void handleLike(boolean isLiked, final String music_id) {
-        Observable.just(isLiked)
-                .observeOn(Schedulers.io())
-                .subscribe(aBoolean -> {
-                    BackgroundRequestTaskBean backgroundRequestTaskBean;
-                    HashMap<String, Object> params = new HashMap<>();
-                    params.put("music_id", music_id);
-                    // 后台处理
-                    if (aBoolean) {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
-                    } else {
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
-                    }
-                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                            .APP_PATH_MUSIC_DIGG_FORMAT, music_id));
-                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                            (backgroundRequestTaskBean);
-                }, throwable -> throwable.printStackTrace());
-    }
-
-    @Override
-    public void shareMusic(String music_id) {
-        BackgroundRequestTaskBean backgroundRequestTaskBean;
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("music_id", music_id);
-        // 后台处理
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                (BackgroundTaskRequestMethodConfig.PATCH, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                .APP_PATH_MUSIC_SHARE, music_id));
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                (backgroundRequestTaskBean);
+    public MusicPlayRepository(ServiceManager serviceManager) {
+        super(serviceManager);
     }
 }

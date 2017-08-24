@@ -30,9 +30,7 @@ public class MusicCommentPresenterModule {
     }
 
     @Provides
-    MusicCommentContract.Repository provideMusicCommentRepository(Application application,
-                                                                  ServiceManager
-                                                                  serviceManager) {
-        return new MusicCommentRepositroty(application,serviceManager);
+    MusicCommentContract.Repository provideMusicCommentRepository(MusicCommentRepositroty musicCommentRepositroty) {
+        return musicCommentRepositroty;
     }
 }

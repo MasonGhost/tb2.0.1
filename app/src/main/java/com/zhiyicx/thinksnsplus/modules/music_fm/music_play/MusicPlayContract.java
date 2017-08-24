@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IMusicRepository;
 
 import java.util.List;
 
@@ -30,8 +31,7 @@ public interface MusicPlayContract {
         void handleLike(boolean isLiked, final String music_id);
     }
 
-    interface Repository {
-        void shareMusic(String music_id);
-        void handleLike(boolean isLiked, String music_id);
+    interface Repository extends IMusicRepository{
+
     }
 }

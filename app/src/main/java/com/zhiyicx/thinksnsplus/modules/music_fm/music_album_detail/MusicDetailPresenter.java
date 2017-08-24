@@ -17,7 +17,6 @@ import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
@@ -208,7 +207,7 @@ public class MusicDetailPresenter extends AppBasePresenter<MusicDetailContract.R
 
     @Override
     public void onSuccess(Share share) {
-        if (!istourist()){
+        if (!istourist()) {
             mMusicDetailRepository.shareAblum(mRootView.getCurrentAblum().getId() + "");
         }
         mRootView.showSnackSuccessMessage(mContext.getString(R.string.share_sccuess));

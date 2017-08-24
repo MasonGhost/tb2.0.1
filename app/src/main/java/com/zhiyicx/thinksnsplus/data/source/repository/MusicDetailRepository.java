@@ -31,15 +31,14 @@ import rx.schedulers.Schedulers;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicDetailRepository implements MusicDetailContract.Repository {
-    private MusicClient mMusicClient;
-    private Context mContext;
+public class MusicDetailRepository extends BaseMusicRepository implements MusicDetailContract.Repository {
+
 
     @Inject
-    public MusicDetailRepository(ServiceManager serviceManager, Application application) {
-        mMusicClient = serviceManager.getMusicClient();
-        mContext = application;
+    public MusicDetailRepository(ServiceManager serviceManager) {
+        super(serviceManager);
     }
+
 
     @Override
     public Observable<MusicAlbumDetailsBean> getMusicAblum(String id) {
