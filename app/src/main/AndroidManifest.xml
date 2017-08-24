@@ -504,6 +504,8 @@
         </activity>
         <activity android:name=".modules.my_manuscripts.ManuscriptsActivity">
         </activity>
+        <activity android:name=".modules.my_music.MyMusicActivity">
+        </activity>
     </application>
 
 </manifest>

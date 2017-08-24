@@ -117,6 +117,8 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="single_music">单曲</string>
+    <string name="music_album">专辑</string>
     <string name="music_lyric">暂无歌词</string>
 
     <!--资讯-->
