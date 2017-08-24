@@ -280,8 +280,8 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
     }
 
     @Override
-    public void handleViewCount(Long feed_id, int position) {
-        if (feed_id == null || feed_id == 0) {
+    public void handleViewCount(Long id, int position) {
+        if (id == null || id == 0) {
             return;
         }
         mRootView.getListDatas().get(position).setViews(mRootView.getListDatas().get(position).getViews() + 1);

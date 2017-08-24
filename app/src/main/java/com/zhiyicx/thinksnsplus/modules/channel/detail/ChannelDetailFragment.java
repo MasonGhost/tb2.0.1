@@ -627,6 +627,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         if (mListDatas.get(position).getId() == null || mListDatas.get(position).getId() == 0) {
             return;
         }
+        mPresenter.handleViewCount(mListDatas.get(position).getId(), position);
         Intent intent = new Intent(getActivity(), GroupDynamicDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(DYNAMIC_DETAIL_DATA, mListDatas.get(position));
