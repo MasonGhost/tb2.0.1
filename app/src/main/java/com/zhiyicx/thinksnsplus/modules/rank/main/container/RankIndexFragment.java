@@ -103,7 +103,7 @@ public class RankIndexFragment extends TSViewPagerFragment {
         // 资讯
         Bundle bundleInfo = new Bundle();
         RankIndexBean rankIndexBeanInfo = new RankIndexBean();
-        rankIndexBeanInfo.setCategory(getString(R.string.rank_dynamic));
+        rankIndexBeanInfo.setCategory(getString(R.string.rank_info));
         bundleInfo.putSerializable(BUNDLE_RANK_TYPE, rankIndexBeanInfo);
         fragments.add(new RankListFragment().instance(bundleInfo));
         return fragments;
