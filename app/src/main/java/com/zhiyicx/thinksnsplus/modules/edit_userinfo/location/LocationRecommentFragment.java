@@ -54,6 +54,8 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     ImageView mIvAnimation;
     @BindView(R.id.rv_hot_city)
     RecyclerView mRvHotCity;
+    @BindView(R.id.tv_cancel)
+    TextView mTvSearchCancel;
 
     // 声明 AMapLocationClientOption 对象
     public AMapLocationClientOption mLocationOption = null;
@@ -91,6 +93,10 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     @Override
     protected boolean usePermisson() {
         return true;
+    }
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTvSearchCancel;
     }
 
     @Override

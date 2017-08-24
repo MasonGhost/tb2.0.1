@@ -99,7 +99,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     public void onBackPressed() {
-        handleBack();
+        super.onBackPressed();
     }
 
     @Override

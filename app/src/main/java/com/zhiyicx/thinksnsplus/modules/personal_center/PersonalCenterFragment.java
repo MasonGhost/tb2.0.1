@@ -330,6 +330,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
+        int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -337,7 +338,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean.getImages().get(position).getAmount(),
+            initImageCenterPopWindow(dynamicPosition, position, (float) dynamicBean.getImages().get(position).getAmount(),
                     dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc, true);
             return;
         }
@@ -358,7 +359,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
-            imageBean.setDynamicPosition(holder.getAdapterPosition());
+            imageBean.setDynamicPosition(dynamicPosition);
             imageBean.setFeed_id(dynamicBean.getId());
             imageBean.setWidth(task.getWidth());
             imageBean.setHeight(task.getHeight());

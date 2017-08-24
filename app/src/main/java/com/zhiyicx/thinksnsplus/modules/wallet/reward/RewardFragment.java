@@ -99,6 +99,19 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     }
 
     @Override
+    protected String setRightTitle() {
+//        mToolbarRight.setTextColor(getColor(R.color.themeColor));
+        return getString(R.string.dynamic_send_toll_reset);
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mRbDaysGroup.clearCheck();
+        mEtInput.setText("");
+    }
+
+    @Override
     protected void initView(View rootView) {
         mTvChooseTip.setText(R.string.choose_reward_money);
         initListener();
@@ -152,7 +165,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     public void showSnackErrorMessage(String message) {
         super.showSnackErrorMessage(message);
-        mBtTop.setEnabled(true);
+        configSureButton();
     }
 
     private void initListener() {
@@ -217,6 +230,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     private void configSureButton() {
         mBtTop.setEnabled(mRewardMoney > 0);
+        mToolbarRight.setEnabled(mRewardMoney>0);
     }
 
 

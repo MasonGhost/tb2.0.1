@@ -827,7 +827,7 @@ public class BackgroundTaskHandler {
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
 
             int[] position = new int[1];
-            test(sendDynamicDataBean, photos, position);
+            recursionUplaodImage(sendDynamicDataBean, photos, position);
 
             observable=Observable.just(sendDynamicDataBean)
 
@@ -914,7 +914,7 @@ public class BackgroundTaskHandler {
 
     }
 
-    private void test(final SendDynamicDataBeanV2 sendDynamicDataBean, List<ImageBean> photos, final int[] position) {
+    private void recursionUplaodImage(final SendDynamicDataBeanV2 sendDynamicDataBean, List<ImageBean> photos, final int[] position) {
         if (position[0] == photos.size()) {
             return;
         }
@@ -927,9 +927,9 @@ public class BackgroundTaskHandler {
             @Override
             public void call(BaseJson<Integer> integerBaseJson) {
                 if (integerBaseJson.isStatus()) {
-                    position[0]++;
                     sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
-                    test(sendDynamicDataBean, photos, position);
+                    position[0]++;// 完成后+1
+                    recursionUplaodImage(sendDynamicDataBean, photos, position);
                 } else {
                     throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
                 }

@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListContract;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListPresenter;
 import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -85,7 +86,7 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
 
         } else {
             mUserInfoRepository.getNearbyData(mLatLonPoint.getLongitude(), mLatLonPoint.getLatitude()
-                    , DEFAULT_NEARBY_RADIUS, TSListFragment.DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment.DEFAULT_PAGE)
+                    , DEFAULT_NEARBY_RADIUS, FindSomeOneListPresenter.DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment.DEFAULT_PAGE)
                     .subscribe(new BaseSubscribeForV2<List<NearbyBean>>() {
                         @Override
                         protected void onSuccess(List<NearbyBean> data) {

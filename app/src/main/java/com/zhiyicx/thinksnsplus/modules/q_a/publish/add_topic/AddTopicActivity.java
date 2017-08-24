@@ -25,4 +25,9 @@ public class AddTopicActivity extends TSActivity<AddTopicPresenter, AddTopicFrag
                 .build()
                 .inject(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }

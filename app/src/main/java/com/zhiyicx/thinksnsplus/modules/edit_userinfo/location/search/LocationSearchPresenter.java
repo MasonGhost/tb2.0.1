@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search;
 
+import android.text.TextUtils;
+
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
@@ -54,6 +56,11 @@ public class LocationSearchPresenter extends AppBasePresenter<LocationSearchCont
         if (searchSub!=null&&!searchSub.isUnsubscribed()) {
             searchSub.unsubscribe();
         }
+        if(TextUtils.isEmpty(name)){
+            mRootView.onNetResponseSuccess( new ArrayList<>(), false);
+            return;
+        }
+
        searchSub= mSystemRepository.searchLocation(name)
                 .map(locationContainerBeen -> {
                     List<LocationBean> result = new ArrayList<>();
