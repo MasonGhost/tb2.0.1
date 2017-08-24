@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.settings.bind;
 
 import android.os.CountDownTimer;
 
-import com.zhiyicx.baseproject.cache.CacheBean;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -19,8 +18,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action0;
-import rx.functions.Action1;
 
 import static com.zhiyicx.thinksnsplus.modules.register.RegisterPresenter.S_TO_MS_SPACING;
 
@@ -71,15 +68,16 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
      * 获取验证码
      *
      * @param phone 电话号码
+     * @param isBind true, 解绑
      */
     @Override
-    public void getVertifyCode(String phone) {
+    public void getVertifyCode(String phone, boolean isBind) {
         if (checkPhone(phone)) {
             return;
         }
         mRootView.setVerifyCodeBtEnabled(false);
         mRootView.setVerifyCodeLoading(true);
-        Subscription getVertifySub = mVertifyCodeRepository.getNonMemberVertifyCode(phone)
+        Subscription getVertifySub = (isBind?mVertifyCodeRepository.getMemberVertifyCode(phone):mVertifyCodeRepository.getNonMemberVertifyCode(phone))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
@@ -109,14 +107,20 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
         addSubscrebe(getVertifySub);
     }
 
+    /**
+     *
+     * @param email
+     * @param isBind true, 解绑
+     */
     @Override
-    public void getVerifyCodeByEmail(String email) {
+    public void getVerifyCodeByEmail(String email, boolean isBind) {
         if (checkEmail(email)) {
             return;
         }
         mRootView.setVerifyCodeBtEnabled(false);
         mRootView.setVerifyCodeLoading(true);
-        Subscription getVerifySub = mVertifyCodeRepository.getNonMemberVerifyCodeByEmail(email)
+
+        Subscription getVerifySub = (isBind?mVertifyCodeRepository.getMemberVerifyCodeByEmail(email):mVertifyCodeRepository.getNonMemberVerifyCodeByEmail(email))
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {

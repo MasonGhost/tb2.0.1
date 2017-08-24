@@ -36,6 +36,7 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
+import retrofit2.http.HTTP;
 import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -256,7 +257,8 @@ public interface UserInfoClient {
      * @param deleteUserPhoneOrEmailRequestBean
      * @return
      */
-    @DELETE(ApiConfig.APP_PATH_DELETE_USER_PHONE)
+    @HTTP(method = "DELETE", path = ApiConfig.APP_PATH_DELETE_USER_PHONE, hasBody = true)
+//    @DELETE(ApiConfig.APP_PATH_DELETE_USER_PHONE)
     Observable<Object> deletePhone(@Body DeleteUserPhoneOrEmailRequestBean deleteUserPhoneOrEmailRequestBean);
 
     /**
@@ -265,7 +267,8 @@ public interface UserInfoClient {
      * @param deleteUserPhoneOrEmailRequestBean
      * @return
      */
-    @DELETE(ApiConfig.APP_PATH_DELETE_USER_EMAIL)
+    @HTTP(method = "DELETE", path = ApiConfig.APP_PATH_DELETE_USER_EMAIL, hasBody = true)
+//    @DELETE(ApiConfig.APP_PATH_DELETE_USER_EMAIL)
     Observable<Object> deleteEmail(@Body DeleteUserPhoneOrEmailRequestBean deleteUserPhoneOrEmailRequestBean);
 
 

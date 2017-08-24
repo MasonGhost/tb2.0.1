@@ -450,6 +450,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
      */
     @Override
     public void registerByThrid(String provider, String access_token) {
+        showSnackWarningMessage(getString(R.string.empty));
         Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
         Bundle bundle=new Bundle();
         bundle.putParcelable(BUNDLE_THIRD_INFO,new ThridInfoBean(provider,access_token,mThridName));

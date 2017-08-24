@@ -29,9 +29,9 @@ public interface AccountBindContract {
 
     interface Presenter extends IBasePresenter {
 
-        void getVertifyCode(String trim);
+        void getVertifyCode(String trim, boolean isBind);
 
-        void getVerifyCodeByEmail(String trim);
+        void getVerifyCodeByEmail(String trim, boolean isBind);
 
         void bindPhoneOrEmail(String phone, String email, String verifyCode, boolean isphone);
 

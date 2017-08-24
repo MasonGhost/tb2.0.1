@@ -103,6 +103,11 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
     }
@@ -218,9 +223,9 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentType == DEAL_TYPE_PHONE) {
-                        mPresenter.getVertifyCode(mEtPhone.getText().toString().trim());
+                        mPresenter.getVertifyCode(mEtPhone.getText().toString().trim(),mIsBind);
                     } else {
-                        mPresenter.getVerifyCodeByEmail(mEtEmail.getText().toString().trim());
+                        mPresenter.getVerifyCodeByEmail(mEtEmail.getText().toString().trim(),mIsBind);
                     }
                 });
         // 点击绑定/解除按钮

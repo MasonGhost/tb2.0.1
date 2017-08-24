@@ -283,4 +283,18 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     private void setText(CombinationButton combinationButton, boolean b) {
         combinationButton.setRightText(getString(b ? R.string.had_binding : R.string.not_binding));
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.updaeUserInfo();
+    }
+
+    @Override
+    public void updateUserinfo(UserInfoBean singleDataFromCache) {
+        if (singleDataFromCache != null) {
+            mCurrentUser = singleDataFromCache;
+            updateText(mBindAccounts, mCurrentUser);
+        }
+    }
 }

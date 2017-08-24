@@ -38,6 +38,7 @@ public interface AccountManagementContract {
          */
         void unBindThirdSuccess(String provider);
 
+        void updateUserinfo(UserInfoBean singleDataFromCache);
     }
 
     interface Presenter extends IBasePresenter {
@@ -52,6 +53,8 @@ public interface AccountManagementContract {
          * @param isBind      true to bind ,false to unbind
          */
         void bindOrUnbindThirdAccount(String provider, String accessToken, boolean isBind);
+
+        void updaeUserInfo();
     }
 
     interface Repository {

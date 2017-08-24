@@ -124,4 +124,9 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
 
 
     }
+
+    @Override
+    public void updaeUserInfo() {
+        mRootView.updateUserinfo(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
+    }
 }
