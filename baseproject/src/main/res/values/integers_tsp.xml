@@ -63,7 +63,10 @@
     <integer name="info_summary_max_length">200</integer>
     <integer name="info_summary_show_limit_length">150</integer>
 
-
+    <!--意见反馈-->
+    <integer name="feed_back_content_max_size">200</integer>
+    <!--意见反馈内容字数在达到数量后提示-->
+    <integer name="feed_back_content_input_size">150</integer>
     <!--#########################################      浏览器相关       ################################-->
     <!-- 浏览器最大长度-->
     <integer name="progressbar_max">100</integer>
