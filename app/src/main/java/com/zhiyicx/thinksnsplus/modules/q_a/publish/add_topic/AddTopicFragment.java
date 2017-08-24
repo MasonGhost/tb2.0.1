@@ -148,8 +148,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
 
     @Override
     public void onBackPressed() {
-        saveQustion();
-        super.onBackPressed();
+        setLeftClick();
     }
 
     @Override
