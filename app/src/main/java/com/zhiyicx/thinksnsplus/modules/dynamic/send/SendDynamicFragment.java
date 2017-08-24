@@ -489,8 +489,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             } else {
 
-                /*           这里肯定是要删的                               */
+                /*           这里肯定是要删的           真滴很烦             */
                 if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
+
+                    mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+
+                    if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
+                        return; // 九张
+                    }
                     if (isToll) {
                         selectedPhotos.remove(selectedPhotos.size() - 1);
                     } else {
@@ -498,7 +504,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         selectedPhotos.add(new ImageBean());
                     }
                     mCommonAdapter.notifyDataSetChanged();
-                    mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+
                 }
                 /*                                                           */
 

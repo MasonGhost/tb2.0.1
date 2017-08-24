@@ -243,10 +243,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         View view = getRightViewOfMusicWindow();
         View view_test = getRightViewOfMusicWindowTwo();
         if (view != null && WindowUtils.getIsPause()) {
-            view.setTranslationX(0);
-            if (view_test!=null){
-                view_test.setTranslationX(0);
-            }
+            int rightX = ConvertUtils.dp2px(view.getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(view.getContext(), 15);
+            view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),view.getPaddingRight()-rightX,view.getPaddingBottom());
         }
         if (WindowUtils.getIsPause()) {
             WindowUtils.removeWindowDismisslistener(this);
@@ -473,18 +471,9 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
                                     int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-                                    view.setTranslationX(-rightX);
-                                    if (view_test!=null){
-                                        view_test.setTranslationX(-rightX);
-                                    }
-
-
+                                    view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),view.getPaddingRight()+rightX,view.getPaddingBottom());
                                     rightViewHadTranslated = true;
                                 } else {
-                                    view.setTranslationX(0);
-                                    if (view_test!=null){
-                                        view_test.setTranslationX(0);
-                                    }
                                     rightViewHadTranslated = false;
                                 }
                             }
@@ -500,6 +489,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     protected View getRightViewOfMusicWindowTwo() {
         return null;
     }
+
 
     protected boolean needCenterLoadingDialog() {
         return false;

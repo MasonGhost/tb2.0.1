@@ -249,7 +249,8 @@
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
     <string name="dynamic_comment_toll">设置评论收费</string>
-    <string name="limit_monye">金额必须是整数且大于0元，不能出现小数</string>
+    <string name="limit_monye">金额必须大于0元</string>
+    <string name="limit_monye_death">金额必须是整数且大于0元，不能出现小数</string>
     <string name="monye_instructions">金额说明</string>
     <string name="dynamic_comment_toll_success">设置评论收费成功</string>
     <string name="dynamic_comment_toll_money">设置评论收费金额</string>
