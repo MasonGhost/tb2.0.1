@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.DigitsKeyListener;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.modules.certification.send.SendCertificationActivity;
+import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import org.simple.eventbus.Subscriber;
 
@@ -69,13 +72,12 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     @BindView(R.id.ll_company)
     LinearLayout mLlCompany;
     @BindView(R.id.edit_input_description)
-    SEditText mTvDescription;
+    UserInfoInroduceInputView mTvDescription;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
     @BindView(R.id.bt_to_send)
     LoadingButton mBtToSend;
-    @BindView(R.id.tv_limit_tip)
-    TextView mTvLimitTip;
+
 
     private int mType; // 申请的类型
     private SendCertificationBean mSendBean;
@@ -101,6 +103,9 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
         String digists = "0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         mTvIdCard.getEditInput().setKeyListener(DigitsKeyListener.getInstance(digists));
         mTvCompanyPrincipalIdCard.getEditInput().setKeyListener(DigitsKeyListener.getInstance(digists));
+
+        mTvDescription.getEtContent().setGravity(Gravity.RIGHT);
+        mTvDescription.getEtContent(). setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
     }
 
     @Override
@@ -110,6 +115,7 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
         mLimitMaxSize = getResources().getInteger(R.integer.certification_description_max_length);
         mShowLimitMaxSize = getResources().getInteger(R.integer.certification_description_show_limit_length);
         initListener();
+        mTvName.getEditInput().requestFocus();
     }
 
     private void initListener() {
@@ -162,26 +168,6 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
                 .subscribe(charSequence -> {
                     mSendBean.setPhone(String.valueOf(charSequence));
                     setConfirmEnable();
-                });
-        // 描述 公用
-        RxTextView.textChanges(mTvDescription)
-                .compose(this.<CharSequence>bindToLifecycle())
-                .subscribe(charSequence -> {
-                    // 监听描述的输入
-                    mSendBean.setDesc(String.valueOf(charSequence));
-                    setConfirmEnable();
-                    // 设置提示语
-                    if (!TextUtils.isEmpty(charSequence) && charSequence.length() > mShowLimitMaxSize){
-                        mLimitTipStr = "<" + charSequence.length() + ">" + "/" + mLimitMaxSize;
-                        CharSequence chars = ColorPhrase.from(mLimitTipStr).withSeparator("<>")
-                                .innerColor(ContextCompat.getColor(getContext(), R.color.important_for_note))
-                                .outerColor(ContextCompat.getColor(getContext(), R.color.general_for_hint))
-                                .format();
-                        mTvLimitTip.setText(chars);
-                        mTvLimitTip.setVisibility(VISIBLE);
-                    } else {
-                        mTvLimitTip.setVisibility(View.GONE);
-                    }
                 });
 
 
