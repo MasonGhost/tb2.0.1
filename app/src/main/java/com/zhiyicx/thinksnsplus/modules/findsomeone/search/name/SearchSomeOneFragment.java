@@ -46,6 +46,8 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
 
     @BindView(R.id.fragment_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
+    @BindView(R.id.fragment_search_cancle)
+    TextView mTvSearchCancel;
 
 
     public static SearchSomeOneFragment newInstance(Bundle args) {
@@ -73,6 +75,11 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
     @Override
     protected boolean isLoadingMoreEnable() {
         return false;
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTvSearchCancel;
     }
 
     @Override

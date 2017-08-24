@@ -48,6 +48,8 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     TextView mFragmentInfoSearchCancle;
     @BindView(R.id.fragment_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
+    @BindView(R.id.fragment_search_cancle)
+    TextView mTvSearchCancel;
 
 
     public static LocationSearchFragment newInstance(Bundle args) {
@@ -84,6 +86,10 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
             int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
             mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
         }
+    }
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTvSearchCancel;
     }
 
     @Override
