@@ -351,9 +351,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
         // 通知列表
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicBean);
+        bundle.putParcelable(EventBusTagConfig.EVENT_UPDATE_GROUP_COLLECTION, dynamicBean);
         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
-        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_DYNAMIC);
+        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_COLLECTION);
         // 通知服务器
         mRepository.handleCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
     }
