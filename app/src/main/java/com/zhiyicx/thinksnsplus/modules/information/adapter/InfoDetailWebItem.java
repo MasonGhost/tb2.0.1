@@ -16,7 +16,6 @@ import android.webkit.WebViewClient;
 import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.NetUtils;
 import com.zhiyicx.common.utils.ToastUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -30,9 +29,6 @@ import java.util.regex.Pattern;
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
-
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAILS_FORMAT;
 
 /**
  * @Author Jliuer

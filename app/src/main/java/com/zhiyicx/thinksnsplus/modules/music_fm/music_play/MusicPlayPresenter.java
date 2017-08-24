@@ -6,6 +6,7 @@ import android.graphics.Color;
 
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
+import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -24,6 +25,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumDetailsBeanGreenDaoI
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.simple.eventbus.EventBus;
 
@@ -124,8 +126,7 @@ public class MusicPlayPresenter extends BasePresenter<MusicPlayContract.Reposito
         ShareContent shareContent = new ShareContent();
         shareContent.setTitle(mRootView.getCurrentMusic().getTitle());
         shareContent.setContent(mRootView.getCurrentMusic().getLyric());
-        shareContent.setUrl(String.format(ApiConfig.NO_PROCESS_IMAGE_PATH,
-                mRootView.getCurrentMusic().getStorage().getId()));
+        shareContent.setUrl(ImageUtils.imagePathConvertV2(mRootView.getCurrentMusic().getStorage().getId(),0,0, ImageZipConfig.IMAGE_50_ZIP));
         if (bitmap==null){
             shareContent.setBitmap(ConvertUtils.drawBg4Bitmap(Color.WHITE, BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.icon_256)));
         }else{

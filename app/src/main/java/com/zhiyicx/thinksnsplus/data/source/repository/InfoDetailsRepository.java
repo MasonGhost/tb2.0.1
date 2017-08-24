@@ -56,64 +56,6 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     }
 
     @Override
-    public Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String feed_id,
-                                                                              Long max_id, Long
-                                                                                      limit) {
-        return mInfoMainClient.getInfoCommentList(feed_id, max_id,
-                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
-                .flatMap(new Func1<BaseJson<List<InfoCommentListBean>>,
-                        Observable<BaseJson<List<InfoCommentListBean>>>>() {
-
-                    @Override
-                    public Observable<BaseJson<List<InfoCommentListBean>>> call
-                            (final BaseJson<List<InfoCommentListBean>> listBaseJson) {
-
-                        if (listBaseJson.getData().isEmpty()) {
-                            return Observable.just(listBaseJson);
-                        } else {
-                            final List<Object> user_ids = new ArrayList<>();
-                            for (InfoCommentListBean commentListBean : listBaseJson.getData()) {
-                                user_ids.add(commentListBean.getUser_id());
-                                user_ids.add(commentListBean.getReply_to_user_id());
-                            }
-                            if (user_ids.isEmpty()) {
-                                return Observable.just(listBaseJson);
-                            }
-                            return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new
-                                        SparseArray<>();
-                                for (UserInfoBean userInfoBean : userinfobeans) {
-                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id()
-                                            .intValue(), userInfoBean);
-                                }
-                                for (InfoCommentListBean commentListBean : listBaseJson
-                                        .getData()) {
-                                    commentListBean.setFromUserInfoBean
-                                            (userInfoBeanSparseArray.get((int) commentListBean
-                                                    .getUser_id()));
-                                    if (commentListBean.getReply_to_user_id() == 0) { // 如果
-                                        // reply_user_id = 0 回复动态
-                                        UserInfoBean userInfoBean = new UserInfoBean();
-                                        userInfoBean.setUser_id(0L);
-                                        commentListBean.setToUserInfoBean(userInfoBean);
-                                    } else {
-                                        commentListBean.setToUserInfoBean
-                                                (userInfoBeanSparseArray.get(
-                                                        (int) commentListBean
-                                                                .getReply_to_user_id()));
-                                    }
-
-                                }
-                                mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                return listBaseJson;
-                            });
-                        }
-                    }
-                });
-    }
-
-    @Override
     public Observable<InfoCommentBean> getInfoCommentListV2(String news_id, Long max_id, Long limit) {
         return mInfoMainClient.getInfoCommentListV2(news_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
                 .flatMap(new Func1<InfoCommentBean, Observable<InfoCommentBean>>() {
@@ -310,11 +252,6 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     @Override
     public Observable<BaseJsonV2<Object>> deleteInfo(String category, String news_id) {
         return mInfoMainClient.deleteInfo(category, news_id);
-    }
-
-    @Override
-    public Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id) {
-        return mInfoMainClient.getInfoWebContent(news_id);
     }
 
 

@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordContract;
@@ -26,11 +25,6 @@ public class ChangePasswordRepository implements ChangePasswordContract.Reposito
         mPasswordClient = serviceManager.getPasswordClient();
     }
 
-    @Override
-    public Observable<BaseJson<CacheBean>> changePassword(String oldPassword, String newPassword) {
-        return mPasswordClient.changePassword("success", oldPassword, newPassword)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
 
     @Override
     public Observable<CacheBean> changePasswordV2(String oldPassword, String newPassword) {
