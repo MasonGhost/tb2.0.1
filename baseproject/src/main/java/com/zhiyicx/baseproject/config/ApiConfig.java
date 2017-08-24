@@ -304,6 +304,12 @@ public class ApiConfig {
     // 歌曲详情
     public static final String APP_PATH_MUSIC_DETAILS = "api/" + API_VERSION_2 + "/music/{music_id}";
 
+    // 购买的单曲
+    public static final String APP_PATH_MUSIC_PAIDS = "api/" + API_VERSION_2 + "/music/paids";
+
+    // 购买的专辑
+    public static final String APP_PATH_MUSIC_ALBUM_PAIDS = "api/" + API_VERSION_2 + "/music-specials/paids";
+
     // 评论歌曲
     public static final String APP_PATH_MUSIC_COMMENT = "api/" + API_VERSION_2 + "/music/{music_id}/comments";
     public static final String APP_PATH_MUSIC_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/music/%s/comments";

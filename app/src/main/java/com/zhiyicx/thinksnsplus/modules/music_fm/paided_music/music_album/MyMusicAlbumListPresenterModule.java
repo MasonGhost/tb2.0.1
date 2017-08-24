@@ -12,10 +12,10 @@ import dagger.Provides;
  * @Description
  */
 @Module
-public class MyMusicAlbumListModule {
+public class MyMusicAlbumListPresenterModule {
     MyMusicAblumListContract.View mView;
 
-    public MyMusicAlbumListModule(MyMusicAblumListContract.View view) {
+    public MyMusicAlbumListPresenterModule(MyMusicAblumListContract.View view) {
         mView = view;
     }
 

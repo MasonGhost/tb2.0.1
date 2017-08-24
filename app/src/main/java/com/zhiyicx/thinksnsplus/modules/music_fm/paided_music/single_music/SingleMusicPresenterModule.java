@@ -1,10 +1,31 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.single_music;
 
+import com.zhiyicx.thinksnsplus.data.source.repository.MusicPaidsListRepository;
+
+import dagger.Module;
+import dagger.Provides;
+
 /**
  * @Author Jliuer
  * @Date 2017/08/24/17:35
  * @Email Jliuer@aliyun.com
  * @Description
  */
+@Module
 public class SingleMusicPresenterModule {
+    SingleMusicListContract.View mView;
+
+    public SingleMusicPresenterModule(SingleMusicListContract.View view) {
+        mView = view;
+    }
+
+    @Provides
+    SingleMusicListContract.View provideSingleMusicContractView(){
+        return mView;
+    }
+
+    @Provides
+    SingleMusicListContract.Repository provideSingleMusicContractRepository(MusicPaidsListRepository musicPaidsListRepository){
+        return musicPaidsListRepository;
+    }
 }

@@ -504,7 +504,7 @@
         </activity>
         <activity android:name=".modules.my_manuscripts.ManuscriptsActivity">
         </activity>
-        <activity android:name=".modules.my_music.MyMusicActivity">
+        <activity android:name=".modules.music_fm.paided_music.MyMusicActivity">
         </activity>
     </application>
 

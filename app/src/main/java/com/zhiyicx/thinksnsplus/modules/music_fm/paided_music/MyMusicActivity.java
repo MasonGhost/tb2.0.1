@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.my_music;
+package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music;
 
 import android.support.v4.app.Fragment;
 

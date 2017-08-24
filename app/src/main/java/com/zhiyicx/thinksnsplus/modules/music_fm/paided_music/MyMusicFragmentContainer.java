@@ -1,11 +1,11 @@
-package com.zhiyicx.thinksnsplus.modules.my_music;
+package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music;
 
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.my_music.music_album.MyMusicAblumListFragment;
-import com.zhiyicx.thinksnsplus.modules.my_music.single_music.MySingleMusicListFragment;
+import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.music_album.MyMusicAblumListFragment;
+import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.single_music.MySingleMusicListFragment;
 
 import java.util.Arrays;
 import java.util.List;

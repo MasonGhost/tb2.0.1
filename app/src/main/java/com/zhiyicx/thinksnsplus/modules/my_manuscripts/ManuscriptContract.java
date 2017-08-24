@@ -10,7 +10,7 @@ import com.zhiyicx.baseproject.base.ITSListView;
  * @Description
  */
 public interface ManuscriptContract {
-    interface View extends ITSListView<>{}
-    interface Presenter extends ITSListPresenter<>{}
-    interface Repository{}
+//    interface View extends ITSListView<>{}
+//    interface Presenter extends ITSListPresenter<>{}
+//    interface Repository{}
 }

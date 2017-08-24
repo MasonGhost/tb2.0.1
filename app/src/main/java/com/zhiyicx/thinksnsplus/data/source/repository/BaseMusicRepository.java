@@ -47,8 +47,6 @@ public class BaseMusicRepository implements IMusicRepository {
     @Inject
     protected UserInfoRepository mUserInfoRepository;
     @Inject
-    protected MusicDetailRepository mMusicDetailRepository;
-    @Inject
     protected UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
     @Inject
     protected MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;

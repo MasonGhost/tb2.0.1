@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.my_manuscripts;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.zhiyicx.baseproject.base.TSListFragment;
 
 /**
@@ -9,5 +11,13 @@ import com.zhiyicx.baseproject.base.TSListFragment;
  * @Description
  */
 public class ManuscriptFragment extends TSListFragment {
+    @Override
+    public void setPresenter(Object presenter) {
 
+    }
+
+    @Override
+    protected RecyclerView.Adapter getAdapter() {
+        return null;
+    }
 }

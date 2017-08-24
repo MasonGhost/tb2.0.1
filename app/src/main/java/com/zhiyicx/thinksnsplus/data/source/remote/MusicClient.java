@@ -24,10 +24,12 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_COMM
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ABLUM_SHARE;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_ALBUM_PAIDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_COLLECT_ABLUM_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_DETAILS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_DIGG;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_PAIDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_MUSIC_SHARE;
 
 
@@ -63,6 +65,16 @@ public interface MusicClient {
     // 获取歌曲详情
     @GET(APP_PATH_MUSIC_DETAILS)
     Observable<MusicDetaisBean> getMusicDetails(@Path("music_id") String music_id);
+
+    // 获取已购买的音乐单曲
+    @GET(APP_PATH_MUSIC_PAIDS)
+    Observable<List<MusicDetaisBean>> getMyPaidsMusicList(@Query("max_id") Long max_id,
+                                                          @Query("limit") Long limit);
+
+    // 获取已购买的音乐专辑
+    @GET(APP_PATH_MUSIC_ALBUM_PAIDS)
+    Observable<List<MusicAlbumListBean>> getMyPaidsMusicAlbumList(@Query("max_id") Long max_id,
+                                                          @Query("limit") Long limit);
 
     // 获取歌曲评论列表
     @GET(APP_PATH_MUSIC_COMMENT)

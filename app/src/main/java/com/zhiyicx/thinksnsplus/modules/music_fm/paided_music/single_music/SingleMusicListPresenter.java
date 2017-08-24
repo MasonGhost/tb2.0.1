@@ -1,6 +1,7 @@
-package com.zhiyicx.thinksnsplus.modules.my_music.single_music;
+package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.single_music;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,17 +16,22 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class SingleMusicPresenter extends AppBasePresenter<SingleMusicContract.Repository,SingleMusicContract.View>
-        implements SingleMusicContract.Presenter {
+public class SingleMusicListPresenter extends AppBasePresenter<SingleMusicListContract.Repository,SingleMusicListContract.View>
+        implements SingleMusicListContract.Presenter {
 
     @Inject
-    public SingleMusicPresenter(SingleMusicContract.Repository repository, SingleMusicContract.View rootView) {
+    public SingleMusicListPresenter(SingleMusicListContract.Repository repository, SingleMusicListContract.View rootView) {
         super(repository, rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-
+        mRepository.getMyPaidsMusicList(maxId).subscribe(new BaseSubscribeForV2<List<MusicDetaisBean>>() {
+            @Override
+            protected void onSuccess(List<MusicDetaisBean> data) {
+                mRootView.onNetResponseSuccess(data,isLoadMore);
+            }
+        });
     }
 
     @Override
