@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailContract;
 import com.zhiyicx.thinksnsplus.modules.channel.detail.ChannelDetailFragment;
@@ -15,6 +16,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.list.adapter.DynamicListBaseItem
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,4 +126,25 @@ public class CollectGroupDynamicListFragment extends ChannelDetailFragment {
         channelDetailFragment.setArguments(bundle);
         return channelDetailFragment;
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_GROUP_COLLECTION)
+    public void deleteCollection(Bundle bundle) {
+        if (bundle != null){
+            GroupDynamicListBean dynamicBean = bundle.getParcelable(EventBusTagConfig.EVENT_UPDATE_GROUP_COLLECTION);
+            if (dynamicBean != null){
+                for (GroupDynamicListBean dynamicBeanItem : mListDatas){
+                    if (dynamicBeanItem.getId().equals(dynamicBean.getId())){
+                        mListDatas.remove(dynamicBeanItem);
+                        break;
+                    }
+                }
+                if (mListDatas.isEmpty()) {// 添加暂未图
+                    mListDatas.add(new GroupDynamicListBean());
+                }
+                refreshData();
+            }
+        }
+    }
+
+
 }
