@@ -150,11 +150,12 @@ public class InfoDetailHeaderView {
                             .getUpdated_at()));
             mFrom.setText(infoData);
             // 引用
-            if (!TextUtils.isEmpty(infoMain.getSubject())){
+            if (!TextUtils.isEmpty(infoMain.getSubject())) {
                 InternalStyleSheet css = new Github();
-                css.addRule(".container", "padding-right:0px",";padding-left:0px");
+                css.addRule(".container", "padding:0px", "margin:0px");
                 css.addRule("body", "line-height: 1.6", "padding: 0px", "background-color: #f4f5f5");
-                css.addRule("p", "margin:10px");
+                css.addRule("blockquote", "margin:0px", "padding:0px", "border-left:5px solid #e3e3e3");
+                css.addRule("p", "margin:0px", "padding:10px");
                 mContentSubject.setVisibility(VISIBLE);
                 mContentSubject.addStyleSheet(css);
                 mContentSubject.loadMarkdown(infoMain.getSubject());
@@ -165,7 +166,7 @@ public class InfoDetailHeaderView {
             if (!TextUtils.isEmpty(infoMain.getContent())) {
                 InternalStyleSheet css = new Github();
                 css.addRule("body", "line-height: 1.6", "padding: 0px");
-                css.addRule(".container", "padding-right:0",";padding-left:0");
+                css.addRule(".container", "padding-right:0", ";padding-left:0");
                 mContent.addStyleSheet(css);
                 mContent.loadMarkdown(dealPic(infoMain.getContent()));
                 mContent.setOnElementListener(new MarkdownView.OnElementListener() {
@@ -256,8 +257,8 @@ public class InfoDetailHeaderView {
     }
 
     private void dealImageList(String imgPath, String id) {
-        for (ImageBean item : mImgList){
-            if (item.getImgUrl().equals(imgPath)){
+        for (ImageBean item : mImgList) {
+            if (item.getImgUrl().equals(imgPath)) {
                 return;
             }
         }
@@ -274,7 +275,7 @@ public class InfoDetailHeaderView {
         try {
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvDetail);// 动画矩形
             animationRectBeanArrayList.add(rect);
-        } catch (Exception e){
+        } catch (Exception e) {
             LogUtils.d("Cathy", e.toString());
         }
 
