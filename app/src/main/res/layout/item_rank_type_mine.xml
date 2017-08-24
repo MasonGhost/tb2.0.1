@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <include layout="@layout/item_rank_type_list"/>
+    <View
+            style="@style/style_divider_horizontal_light"
+            android:layout_height="@dimen/spacing_small_3dp"
+            android:background="@color/general_for_bg_light"/>
+</LinearLayout>

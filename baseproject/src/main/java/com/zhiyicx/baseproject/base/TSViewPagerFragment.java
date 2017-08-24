@@ -22,6 +22,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
     protected TabSelectView mTsvToolbar;
     protected ViewPager mVpFragment;
     protected TSViewPagerAdapter tsViewPagerAdapter;
+    protected List<Fragment> mFragmentList;
 
     @Override
     protected int getBodyLayoutId() {

@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.ChatRoom;
@@ -89,6 +90,15 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void testTime(){
+        String time="2017-06-15 02:15:25";
+        System.out.println("result::" + TimeUtils.getTimeFriendlyForDetail(time));
+        System.out.println("result1::" + TimeUtils.getTimeFriendlyNormal(time));
+        System.out.println("result2::" + TimeUtils.utc2LocalStr(time));
+        System.out.println("result3::" + TimeUtils.getifferenceDays(TimeUtils.utc2LocalLong(time)));
     }
 
     @Test

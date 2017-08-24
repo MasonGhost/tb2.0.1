@@ -615,4 +615,31 @@ public class ApiConfig {
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK = "api/" + API_VERSION_2 + "/wallet/charges/{charge}?mode=retrieve";
     public static final String APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT = "api/" + API_VERSION_2 + "/wallet/charges/%s?mode=retrieve";
 
+    /*排行榜相关*/
+    /*用户*/
+    // 全站粉丝排行榜
+    public static final String APP_PATH_RANK_ALL_FOLLOWER = "api/" + API_VERSION_2 + "/ranks/followers";
+    // 财富达人排行
+    public static final String APP_PATH_RANK_ALL_RICHES = "api/" + API_VERSION_2 + "/ranks/balance";
+    // 收入排行榜
+    public static final String APP_PATH_RANK_INCOME = "api/" + API_VERSION_2 + "/ranks/income";
+    // 连续签到排行榜
+    public static final String APP_PATH_RANK_CHECK_IN = "api/" + API_VERSION_2 + "/checkin-ranks";
+    /*用户 end*/
+    /*问答*/
+    // 解答排行 type	string	-	筛选类型 day - 日排行 week - 周排行 month - 月排行
+    public static final String APP_PATH_RANK_QUESTION_ANSWER = "api/" + API_VERSION_2 + "/question-ranks/answers";
+    // 问答达人排行
+    public static final String APP_PATH_RANK_QUESTION_LIKES = "api/" + API_VERSION_2 + "/question-ranks/likes";
+    // 社区专家排行
+    public static final String APP_PATH_RANK_QUESTION_EXPERTS = "api/" + API_VERSION_2 + "/question-ranks/experts";
+    /*问答 end*/
+    /*动态*/
+    // 动态排行
+    public static final String APP_PATH_RANK_FEEDS = "api/" + API_VERSION_2 + "/feeds/ranks";
+    /*动态 end*/
+    /*资讯*/
+    // 资讯排行
+    public static final String APP_PATH_RANK_NEWS = "api/" + API_VERSION_2 + " /news/ranks";
+    /*资讯 end*/
 }

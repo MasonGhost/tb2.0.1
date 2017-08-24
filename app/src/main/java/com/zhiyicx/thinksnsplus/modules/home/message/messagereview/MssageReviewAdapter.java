@@ -82,13 +82,13 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
         }
 
         String content = String.format(getString(R.string.review_description), (float) topDynamicCommentBean.getAmount(),
-                commentBean == null ? " " : topDynamicCommentBean.getComment().getContent());
+                commentBean == null ? " " : topDynamicCommentBean.getComment().getBody());
 
         TextView contentView = holder.getView(R.id.tv_content);
         TextView flagView = holder.getView(R.id.tv_review);
         contentView.setText(content);
         List<Link> links = setLiknks(holder, String.format(getString(R.string.dynamic_send_toll_select_money),
-                (float) topDynamicCommentBean.getAmount()), commentBean == null ? " " : topDynamicCommentBean.getComment().getContent());
+                (float) topDynamicCommentBean.getAmount()), commentBean == null ? " " : topDynamicCommentBean.getComment().getBody());
         contentView.setLinksClickable(false);// 不能消费了点击事件啊
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(contentView, links);

@@ -240,9 +240,13 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      */
     @Override
     public void onDismiss() {
-        View view = getLeftViewOfMusicWindow();
+        View view = getRightViewOfMusicWindow();
+        View view_test = getRightViewOfMusicWindowTwo();
         if (view != null && WindowUtils.getIsPause()) {
             view.setTranslationX(0);
+            if (view_test!=null){
+                view_test.setTranslationX(0);
+            }
         }
         if (WindowUtils.getIsPause()) {
             WindowUtils.removeWindowDismisslistener(this);
@@ -443,7 +447,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 音乐悬浮窗是否正在显示
      */
 //    protected void musicWindowsStatus(boolean isShow) {
-//        final View view = getLeftViewOfMusicWindow();
+//        final View view = getRightViewOfMusicWindow();
 //        if (view != null && isShow && !rightViewHadTranslated) {
 //            if (view.getVisibility() == View.VISIBLE) {
 //                // 向左移动一定距离
@@ -458,44 +462,43 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 //    }
     protected void musicWindowsStatus(final boolean isShow) {
         WindowUtils.changeToBlackIcon();
-        final View view = getLeftViewOfMusicWindow();
-        if (getLeftViewOfMusicWindow() != null) {
-            mViewTreeSubscription = RxView.globalLayouts(getLeftViewOfMusicWindow())
+        final View view = getRightViewOfMusicWindow();
+        final View view_test = getRightViewOfMusicWindowTwo();
+        if (getRightViewOfMusicWindow() != null) {
+            mViewTreeSubscription = RxView.globalLayouts(getRightViewOfMusicWindow())
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
-
                             if (view != null && isShow && !rightViewHadTranslated) {
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
                                     int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
                                     view.setTranslationX(-rightX);
+                                    if (view_test!=null){
+                                        view_test.setTranslationX(-rightX);
+                                    }
+
+
                                     rightViewHadTranslated = true;
                                 } else {
                                     view.setTranslationX(0);
+                                    if (view_test!=null){
+                                        view_test.setTranslationX(0);
+                                    }
                                     rightViewHadTranslated = false;
                                 }
                             }
-
-//                            if (view != null && isShow) {
-//                                if (view.getVisibility() == View.VISIBLE) {
-//                                    // 向左移动一定距离
-//                                    int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-//                                    view.setTranslationX(-rightX);
-//                                }
-//                            } else if (view != null) {
-//                                view.setTranslationX(0);
-//                            }
-//                            if (mViewTreeSubscription != null) {
-//                                mViewTreeSubscription.unsubscribe();
-//                            }
                         }
                     });
         }
     }
 
-    protected View getLeftViewOfMusicWindow() {
+    protected View getRightViewOfMusicWindow() {
         return mToolbarRight;
+    }
+
+    protected View getRightViewOfMusicWindowTwo() {
+        return null;
     }
 
     protected boolean needCenterLoadingDialog() {
