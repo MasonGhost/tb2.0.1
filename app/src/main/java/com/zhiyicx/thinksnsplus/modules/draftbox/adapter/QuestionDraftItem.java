@@ -45,20 +45,19 @@ public class QuestionDraftItem extends BaseDraftItem {
         holder.setText(R.id.tv_draft_time, TimeUtils.getTimeFriendlyForDetail(realData.getCreated_at()));
         holder.setVisible(R.id.tv_draft_content, View.GONE);
 
-//        RxView.clicks(holder.getImageViwe(R.id.iv_draft_more))
-//                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-//                .subscribe(aVoid -> {
-//                    if (mQuestionDraftItemEvent != null) {
-//                        initPopWindow(holder.getImageViwe(R.id.iv_draft_more), realData);
-//                    }
-//                });
+        RxView.clicks(holder.getImageViwe(R.id.iv_draft_more))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (mQuestionDraftItemEvent != null) {
+                        initPopWindow(holder.getImageViwe(R.id.iv_draft_more), draftBean);
+                    }
+                });
 
         RxView.clicks(holder.getConvertView())
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mQuestionDraftItemEvent != null) {
-                        initPopWindow(holder.getImageViwe(R.id.iv_draft_more), realData);
-//                        mQuestionDraftItemEvent.toEditDraft(realData);
+                        mQuestionDraftItemEvent.toEditDraft(draftBean);
                     }
                 });
 

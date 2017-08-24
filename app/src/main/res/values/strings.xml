@@ -142,7 +142,7 @@
     <string name="info_author">作者</string>
     <string name="info_author_hint">不填写则默认为本站用户名</string>
     <string name="info_summary">摘要</string>
-    <string name="info_summary_hint">不填写则默认为文章前200字</string>
+    <string name="info_summary_hint">请输入摘要信息</string>
     <string name="info_relate">相关资讯</string>
     <string name="info_apply_for_top">申请文章置顶</string>
     <string name="info_alert_reapply_for_top">已经置顶，不能重复申请</string>

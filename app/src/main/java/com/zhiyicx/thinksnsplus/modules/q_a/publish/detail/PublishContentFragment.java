@@ -139,8 +139,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     public void onBackPressed() {
-        saveQuestion();
-        super.onBackPressed();
+        setLeftClick();
     }
 
     @Override
