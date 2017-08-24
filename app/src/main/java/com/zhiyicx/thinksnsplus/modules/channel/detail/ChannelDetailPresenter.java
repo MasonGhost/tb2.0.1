@@ -286,7 +286,6 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
         }
         mRootView.getListDatas().get(position).setViews(mRootView.getListDatas().get(position).getViews() + 1);
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(mRootView.getListDatas().get(position));
-        mRepository.handleDynamicViewCount(feed_id);
         mRootView.refreshData();
     }
 
