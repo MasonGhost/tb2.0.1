@@ -59,7 +59,7 @@ public class RankTypeListFragment extends TSListFragment<RankTypeListContract.Pr
         if (mRankIndexBean == null){
             mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_BEAN);
         }
-        return mRankIndexBean == null ? "" : mRankIndexBean.getSubCategory();
+        return mRankIndexBean == null ? "" : mRankIndexBean.getType();
     }
 
     @Override

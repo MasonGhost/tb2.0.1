@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
 import com.zhiyicx.thinksnsplus.modules.rank.type_list.RankTypeListActivity;
@@ -39,8 +41,8 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
         RecyclerView rvUsers = holder.getView(R.id.rv_users);
         rvUsers.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-//        int width = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_large);
-//        rvUsers.addItemDecoration(new LinearDecoration(0, 0, 0, ConvertUtils.px2dp(mContext, width)));
+        int width = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_tiny);
+        rvUsers.addItemDecoration(new LinearDecoration(0, 0, 0, ConvertUtils.px2dp(mContext, width)));
         rvUsers.setLayoutManager(layoutManager);
         if (rankIndexBean.getUserInfoList() != null){
             if (rankIndexBean.getUserInfoList().size() > 5){
