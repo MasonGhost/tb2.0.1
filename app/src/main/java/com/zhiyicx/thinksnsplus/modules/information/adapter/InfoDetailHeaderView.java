@@ -30,6 +30,8 @@ import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.Toll;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -355,6 +357,12 @@ public class InfoDetailHeaderView {
                 protected void convert(ViewHolder holder, InfoListDataBean infoListDataBean, int position) {
                     final TextView title = holder.getView(R.id.item_info_title);
                     final ImageView imageView = holder.getView(R.id.item_info_imag);
+
+                    // 记录点击过后颜色
+                    if (AppApplication.sOverRead.contains(infoListDataBean.getId())) {
+                        title.setTextColor(SkinUtils.getColor(R.color.normal_for_assist_text));
+                    }
+
                     title.setText(infoListDataBean.getTitle());
                     if (infoListDataBean.getImage() == null) {
                         imageView.setVisibility(View.GONE);
@@ -382,6 +390,13 @@ public class InfoDetailHeaderView {
                     // 是否置顶
                     holder.setVisible(R.id.tv_top_flag, infoListDataBean.isTop() ? View.VISIBLE : View.GONE);
                     holder.itemView.setOnClickListener(v -> {
+                        if (!AppApplication.sOverRead.contains(infoListDataBean.getId())) {
+                            AppApplication.sOverRead.add(infoListDataBean.getId());
+                        }
+                        FileUtils.saveBitmapToFile(mContext, ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
+                                , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
+                        title.setTextColor(mContext.getResources()
+                                .getColor(R.color.normal_for_assist_text));
                         // 跳转到新的咨询页
                         Intent intent = new Intent(mContext, InfoDetailsActivity.class);
                         Bundle bundle = new Bundle();

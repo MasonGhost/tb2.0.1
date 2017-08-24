@@ -108,7 +108,7 @@ public interface GroupDynamicDetailContract {
          * @param group_id   圈子id
          * @param dynamic_id 动态id
          */
-        void getCurrentDynamicDetail(long group_id, long dynamic_id);
+        void getCurrentDynamicDetail(long group_id, long dynamic_id,boolean refreshUI);
 
         /**
          * 获取当前动态的点赞列表

@@ -156,7 +156,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         super.setLoadingViewHolderClick();
         if (mGroupDynamicListBean == null) {
             mPresenter.getCurrentDynamicDetail(getArguments().getLong(MessageCommentAdapter
-                    .BUNDLE_SOURCE_ID), 0);
+                    .BUNDLE_SOURCE_ID), 0, true);
         } else {
             mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), DEFAULT_PAGE_MAX_ID, mGroupDynamicListBean
                     .getUser_id() + "");
@@ -190,7 +190,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                        mPresenter.handleFollowUser(mGroupDynamicListBean.getUserInfoBean());
+                    mPresenter.handleFollowUser(mGroupDynamicListBean.getUserInfoBean());
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -232,10 +232,11 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
             mGroupDynamicListBean = bundle.getParcelable(DYNAMIC_DETAIL_DATA);
             if (mGroupDynamicListBean == null) {
                 mPresenter.getCurrentDynamicDetail(bundle.getLong(MessageCommentAdapter
-                        .BUNDLE_SOURCE_ID), 0);
+                        .BUNDLE_SOURCE_ID), 0, true);
             } else {
                 mPresenter.getDetailAll(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(),
                         DEFAULT_PAGE_MAX_ID, mGroupDynamicListBean.getUser_id() + "");
+                mPresenter.getCurrentDynamicDetail(mGroupDynamicListBean.getGroup_id(), mGroupDynamicListBean.getId(), false);
             }
         }
     }
@@ -466,7 +467,7 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
                 case DynamicDetailMenuView.ITEM_POSITION_0:
                     // 处理喜欢逻辑，包括服务器，数据库，ui
                     boolean isLike = mGroupDynamicListBean.getHas_like();
-                    mPresenter.handleLike(!isLike,mGroupDynamicListBean.getGroup_id(),
+                    mPresenter.handleLike(!isLike, mGroupDynamicListBean.getGroup_id(),
                             mGroupDynamicListBean.getId(), mGroupDynamicListBean);
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_1:
@@ -508,11 +509,11 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
      */
     private void setToolBarRightFollowState(UserInfoBean userInfoBean1) {
         mTvToolbarRight.setVisibility(View.VISIBLE);
-        if(userInfoBean1.isFollowing()&&userInfoBean1.isFollower()){
+        if (userInfoBean1.isFollowing() && userInfoBean1.isFollower()) {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed_eachother), null);
-        }else if(userInfoBean1.isFollower()){
+        } else if (userInfoBean1.isFollower()) {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_followed), null);
-        }else {
+        } else {
             mTvToolbarRight.setCompoundDrawables(null, null, UIUtils.getCompoundDrawables(getContext(), R.mipmap.detail_ico_follow), null);
         }
     }
