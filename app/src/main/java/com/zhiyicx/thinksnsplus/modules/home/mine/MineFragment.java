@@ -328,6 +328,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void onTypeSelected(int position) {
+        mCertificationWindow.dismiss();
         Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
         Bundle bundle = new Bundle();
         if (position == 0) {
