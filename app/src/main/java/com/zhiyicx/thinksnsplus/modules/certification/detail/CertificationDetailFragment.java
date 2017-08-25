@@ -121,6 +121,7 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             mTvName.setText(info.getData().getName());
             mTvIdCard.setText(info.getData().getNumber());
             mTvIdPhone.setText(info.getData().getPhone());
+            setCenterText(getString(R.string.certification_personage));
         } else {
             mTvCompanyName.setText(info.getData().getOrg_name());
             mTvCompanyAddress.setText(info.getData().getOrg_address());
@@ -128,6 +129,7 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             mTvCompanyPrincipalIdCard.setText(info.getData().getNumber());
             mTvCompanyPrincipalPhone.setText(info.getData().getPhone());
             mIvPicTwo.setVisibility(View.GONE);
+            setCenterText(getString(R.string.certification_company));
         }
         List<Integer> files = info.getData().getFiles();
         if (files != null){
