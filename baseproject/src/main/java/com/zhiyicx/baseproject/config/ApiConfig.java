@@ -640,6 +640,6 @@ public class ApiConfig {
     /*动态 end*/
     /*资讯*/
     // 资讯排行
-    public static final String APP_PATH_RANK_NEWS = "api/" + API_VERSION_2 + " /news/ranks";
+    public static final String APP_PATH_RANK_NEWS = "api/" + API_VERSION_2 + "/news/ranks";
     /*资讯 end*/
 }
