@@ -40,29 +40,27 @@ public class BaseDraftItem implements ItemViewDelegate<BaseDraftBean> {
 
     }
 
-    protected void initPopWindow(View v, BaseDraftBean realData) {
-        if (mPopupWindow == null) {
-            mPopupWindow = ChooseBindPopupWindow.Builder()
-                    .with(mActivity)
-                    .alpha(0.8f)
-                    .itemlStr("编辑")
-                    .item2Str("删除")
-                    .isOutsideTouch(true)
-                    .itemListener(position -> {
-                        if (position == 0) {
-                            if (mQuestionDraftItemEvent != null) {
-                                mQuestionDraftItemEvent.toEditDraft(realData);
-                            }
-                        } else if (position == 1) {
-                            if (mQuestionDraftItemEvent != null) {
-                                mQuestionDraftItemEvent.deleteDraft(realData);
-                            }
+    protected void initPopWindow(View v, BaseDraftBean draftBean) {
+        mPopupWindow = ChooseBindPopupWindow.Builder()
+                .with(mActivity)
+                .alpha(0.8f)
+                .itemlStr("编辑")
+                .item2Str("删除")
+                .isOutsideTouch(true)
+                .itemListener(position -> {
+                    if (position == 0) {
+                        if (mQuestionDraftItemEvent != null) {
+                            mQuestionDraftItemEvent.toEditDraft(draftBean);
                         }
-                        mPopupWindow.hide();
-                    })
-                    .build();
-        }
-        mPopupWindow.showAsDropDown(v,-20, 10);
+                    } else if (position == 1) {
+                        if (mQuestionDraftItemEvent != null) {
+                            mQuestionDraftItemEvent.deleteDraft(draftBean);
+                        }
+                    }
+                    mPopupWindow.hide();
+                })
+                .build();
+        mPopupWindow.showAsDropDown(v, -20, 10);
     }
 
     public void setQuestionDraftItemEvent(QuestionDraftItemEvent questionDraftItemEvent) {
