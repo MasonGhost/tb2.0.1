@@ -240,8 +240,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
             case R.id.bt_certification:
-                // 弹窗选择个人或者机构
-                if (mUserCertificationInfo != null && mUserCertificationInfo.getId() != 0) {
+                // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
+                if (mUserCertificationInfo != null
+                        && mUserCertificationInfo.getId() != 0
+                        && mUserCertificationInfo.getStatus() != 2) {
                     Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                     Bundle bundleData = new Bundle();
                     if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
@@ -305,6 +307,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 mBtCertification.setRightText(getString(R.string.certification_state_success));
             } else if (data.getStatus() == 0) {
                 mBtCertification.setRightText(getString(R.string.certification_state_ing));
+            } else if (data.getStatus() == 2){
+                mBtCertification.setRightText(getString(R.string.certification_state_failed));
             }
         } else {
             mBtCertification.setRightText("");

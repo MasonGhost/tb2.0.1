@@ -86,5 +86,7 @@ public interface HomeContract {
          * 获取签到信息
          */
         void getCheckInInfo();
+
+        double getWalletRatio();
     }
 }

@@ -35,10 +35,6 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
         if (e instanceof HttpException) {
             Response response = ((HttpException) e).response();
             try {
-                if (((HttpException) e).code() == DATA_HAS_BE_DELETED) {
-                    onFailure("data has be deleted !", response.code());
-                    return;
-                }
                 if (response != null && response.errorBody() != null) {
                     //解析response content
                     String bodyString = ConvertUtils.getResponseBodyString(response);
@@ -49,7 +45,7 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
                             new TypeToken<Map<String, String[]>>() {
                             }.getType());
                     for (String[] value : errorMessageMap.values()) {
-                        onFailure(value[0], 0); //  app 端只需要一个
+                        onFailure(value[0], ((HttpException) e).code()); //  app 端只需要一个
                         return;
                     }
                 } else {

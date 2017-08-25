@@ -408,7 +408,7 @@
     <string name="send_certification">上传</string>
     <string name="send_certification_ing">上传中</string>
     <string name="certification_state_success">已认证</string>
-    <string name="certification_state_failed">申请失败</string>
+    <string name="certification_state_failed">被驳回</string>
     <string name="certification_state_ing">待审核</string>
     <string name="certification_ing_hint">认证信息审核中，我们会在7个工作日内给您答复</string>
 

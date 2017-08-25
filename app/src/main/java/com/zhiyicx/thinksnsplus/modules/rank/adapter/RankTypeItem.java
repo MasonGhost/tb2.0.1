@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -42,15 +43,20 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
         this.mPresenter = presenter;
     }
 
-    private void dealFollowState(CheckBox tvUserSubscrib, UserInfoBean userInfoBean) {
-        tvUserSubscrib.setChecked(userInfoBean.getFollower());
-        tvUserSubscrib.setText(userInfoBean.getFollower() ? mContext.getString(R.string.followed) : mContext.getString(R.string.follow));
+    private void dealFollowState(ViewHolder holder, UserInfoBean userInfoBean) {
+        if (userInfoBean.isFollowing() && userInfoBean.isFollower()) {
+            holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed_eachother);
+        } else if (userInfoBean.isFollower()) {
+            holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_followed);
+        } else {
+            holder.setImageResource(R.id.iv_user_follow, R.mipmap.ico_me_follow);
+        }
     }
 
     private void dealRankType(int count, TextView tv) {
         String format = "";
         // 粉丝
-        switch (mRankType){
+        switch (mRankType) {
             case RankTypeConfig.RANK_USER_FOLLOWER:
                 format = mContext.getString(R.string.rank_type_fans);
                 break;
@@ -105,24 +111,24 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
         ImageUtils.loadCircleUserHeadPic(userInfoBean, holder.getView(R.id.iv_user_portrait));
         holder.setText(R.id.tv_user_name, userInfoBean.getName());
         // 排行的信息
-        if (mRankType.equals(RankTypeConfig.RANK_USER_CHECK_ID)){
+        if (mRankType.equals(RankTypeConfig.RANK_USER_CHECK_ID)) {
             dealRankType(userInfoBean.getExtra().getCheckin_count(), holder.getView(R.id.tv_rank_type));
         } else {
             dealRankType(userInfoBean.getExtra().getCount(), holder.getView(R.id.tv_rank_type));
         }
         // 关注按钮
-        CheckBox tvUserSubscrib = holder.getView(R.id.tv_user_subscrib);
-        if (userInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())){
-            tvUserSubscrib.setVisibility(View.GONE);
+        ImageView ivUserFollow = holder.getView(R.id.iv_user_follow);
+        if (userInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())) {
+            ivUserFollow.setVisibility(View.GONE);
         } else {
-            tvUserSubscrib.setVisibility(View.VISIBLE);
-            dealFollowState(tvUserSubscrib, userInfoBean);
-            RxView.clicks(tvUserSubscrib)
+            ivUserFollow.setVisibility(View.VISIBLE);
+            dealFollowState(holder, userInfoBean);
+            RxView.clicks(ivUserFollow)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
                         // 修改关注状态
                         userInfoBean.setFollower(!userInfoBean.getFollower());
-                        dealFollowState(tvUserSubscrib, userInfoBean);
+                        dealFollowState(holder, userInfoBean);
                         // 网络请求
                         mPresenter.handleFollowState(userInfoBean);
                     });

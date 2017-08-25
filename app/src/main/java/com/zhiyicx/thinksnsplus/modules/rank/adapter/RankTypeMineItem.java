@@ -38,6 +38,6 @@ public class RankTypeMineItem extends RankTypeItem {
     public void convert(ViewHolder holder, UserInfoBean userInfoBean, UserInfoBean lastT, int position, int itemCounts) {
         super.convert(holder, userInfoBean, lastT, position, itemCounts);
         holder.setVisible(R.id.tv_rank, View.GONE);
-        holder.setVisible(R.id.tv_user_subscrib, View.GONE);
+        holder.setVisible(R.id.iv_user_follow, View.GONE);
     }
 }

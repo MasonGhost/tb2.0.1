@@ -170,6 +170,13 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
                     setConfirmEnable();
                 });
 
+        RxTextView.textChanges(mTvDescription.getEtContent())
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(charSequence -> {
+                    mSendBean.setDesc(String.valueOf(charSequence));
+                    setConfirmEnable();
+                });
+
 
         RxView.clicks(mBtToSend)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

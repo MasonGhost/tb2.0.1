@@ -44,7 +44,7 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
         rvUsers.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         int width = mContext.getResources().getDimensionPixelOffset(R.dimen.spacing_tiny);
-        rvUsers.addItemDecoration(new LinearDecoration(0, 0, 0, ConvertUtils.px2dp(mContext, width)));
+        rvUsers.addItemDecoration(new LinearDecoration(0, 0, ConvertUtils.px2dp(mContext, 10), 0));
         rvUsers.setLayoutManager(layoutManager);
         if (rankIndexBean.getUserInfoList() != null){
             RankIndexUserAdapter adapter;
