@@ -87,6 +87,7 @@ public class MessageCommentPresenter extends AppBasePresenter<MessageCommentCont
                     @Override
                     protected void onSuccess(Object data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.comment_success));
+                        requestNetData(0L, false);
                     }
 
                     @Override
