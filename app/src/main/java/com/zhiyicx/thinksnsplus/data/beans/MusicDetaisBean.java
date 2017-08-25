@@ -17,7 +17,8 @@ import java.io.Serializable;
  * @Email Jliuer@aliyun.com
  * @Description 音乐详情
  */
-public class MusicDetaisBean extends BaseListBean {
+public class MusicDetaisBean extends BaseListBean implements Serializable,Parcelable{
+    private static final long serialVersionUID = 5177124821653334394L;
     /**
      * id : 1
      * created_at : 2017-03-16 17:11:26
