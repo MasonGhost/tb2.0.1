@@ -12,8 +12,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_small"
             android:layout_marginRight="@dimen/spacing_small"
-            android:src="@mipmap/default_pic_personal"
-            android:scaleType="centerCrop"
             android:layout_centerHorizontal="true"/>
 
     <TextView
@@ -22,8 +20,9 @@
             android:layout_height="wrap_content"
             android:textColor="@color/normal_for_dynamic_list_content"
             android:textSize="@dimen/size_icon_assist"
-            android:layout_marginTop="@dimen/spacing_small_3dp"
+            android:layout_marginTop="@dimen/spacing_mid_small_8dp"
             android:maxLines="1"
+            android:ellipsize="middle"
             android:layout_below="@+id/iv_user_portrait"
             tools:text="xxxxxxxxxxxx"
             android:gravity="center"
