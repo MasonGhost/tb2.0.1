@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
@@ -229,6 +230,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
             case R.id.bt_wallet:
                 startActivity(new Intent(getActivity(), WalletActivity.class));
+                break;
+            case R.id.bt_music:
+                startActivity(new Intent(getActivity(), MyMusicActivity.class));
                 break;
             case R.id.bt_suggestion:
                 startActivity(new Intent(getActivity(), FeedBackActivity.class));

@@ -17,7 +17,9 @@ import rx.Observable;
  */
 public interface MyMusicAblumListContract {
     interface View extends ITSListView<MusicAlbumListBean,Presenter> {}
-    interface Presenter extends ITSListPresenter<MusicAlbumListBean> {}
+    interface Presenter extends ITSListPresenter<MusicAlbumListBean> {
+        void updateOneMusic(MusicAlbumListBean albumListBean);
+    }
     interface Repository extends IMusicRepository {
         Observable<List<MusicAlbumListBean>> getMyPaidsMusicAlbumList(long max_id);
     }
