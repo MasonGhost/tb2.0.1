@@ -140,7 +140,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
         AMapLocationListener mAMapLocationListener = aMapLocation -> {
             if (aMapLocation != null) {
                 if (aMapLocation.getErrorCode() == 0) {
-                    mIscationed=true;
+                    mIscationed = true;
                     //可在其中解析amapLocation获取相应内容。
                     LogUtils.d("1 = " + aMapLocation.getAddress());
                     LogUtils.d("2 = " + aMapLocation.getCity());
@@ -211,15 +211,15 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
             if (data.getExtras() != null) {
                 LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
 
-                try {
-                    locationStr = LocationBean.getlocation(locationBean);
+                locationStr = LocationBean.getlocation(locationBean);
+                if (locationStr.contains("，")) {
                     String[] result = locationStr.split("，");
                     if (result.length > 2) {
                         mTvToolbarRight.setText(result[result.length - 1]);
                     } else {
                         mTvToolbarRight.setText(result[result.length - 2]);
                     }
-                } catch (Exception e) {
+                } else {
                     try {
                         locationStr = locationBean.getName();
                         String[] result = locationStr.split(" ");
@@ -229,9 +229,10 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                             mTvToolbarRight.setText(result[result.length - 2]);
                         }
                     } catch (Exception e1) {
-
+                        locationStr = locationBean.getName();
                     }
                 }
+
             }
             if (TextUtils.isEmpty(locationStr)) {
                 mTvToolbarRight.setText(getString(R.string.choose_city));
