@@ -806,8 +806,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
             mInstructionsPopupWindow.newBuilder()
                     .item1Str(title)
                     .desStr(des)
-                    .build();
-            mInstructionsPopupWindow.show();
+                    .build().show();
             return;
         }
         mInstructionsPopupWindow = ActionPopupWindow.builder()
