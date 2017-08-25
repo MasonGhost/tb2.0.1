@@ -107,7 +107,7 @@ public class CheckInPopWindow extends PopupWindow {
 
         mRvUserCheckInList = (RecyclerView) mContentView.findViewById(R.id.rv_user_check_in_list);
 
-        mLayoutManager = new LinearLayoutManager(mParentView.getContext(), LinearLayoutManager.HORIZONTAL, true);
+        mLayoutManager = new LinearLayoutManager(mParentView.getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRvUserCheckInList.setLayoutManager(mLayoutManager);
         mRvUserCheckInList.setHasFixedSize(true);
         mRvUserCheckInList.addItemDecoration(new LinearDecoration(0, 0, mParentView.getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small), 0));
