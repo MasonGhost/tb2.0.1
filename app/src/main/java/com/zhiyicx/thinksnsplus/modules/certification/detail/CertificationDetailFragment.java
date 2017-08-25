@@ -105,6 +105,7 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
         mInfo = getArguments().getParcelable(BUNDLE_DETAIL_DATA);
         mLlPersonage.setVisibility(mType == 0 ? View.VISIBLE : View.GONE);
         mLlCompany.setVisibility(mType == 1 ? View.VISIBLE : View.GONE);
+        setCenterText(mType == 0 ? getString( R.string.certification_personage) : getString(R.string.certification_company));
     }
 
     @Override
@@ -129,7 +130,6 @@ public class CertificationDetailFragment extends TSFragment<CertificationDetailC
             mTvCompanyPrincipalIdCard.setText(info.getData().getNumber());
             mTvCompanyPrincipalPhone.setText(info.getData().getPhone());
             mIvPicTwo.setVisibility(View.GONE);
-            setCenterText(getString(R.string.certification_company));
         }
         List<Integer> files = info.getData().getFiles();
         if (files != null){
