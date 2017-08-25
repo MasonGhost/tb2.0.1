@@ -13,8 +13,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
-import com.zhiyicx.baseproject.widget.textview.DrawableSizeTextView;
+import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -46,7 +45,7 @@ public class BillDetailFragment extends TSFragment {
     @BindView(R.id.bill_user_container)
     LinearLayout mBillUserContainer;
     @BindView(R.id.bill_user_head)
-    DrawableSizeTextView mBillUserHead;
+    TextView mBillUserHead;
     @BindView(R.id.bill_account)
     TextView mBillAccount;
     @BindView(R.id.bill_account_container)
@@ -55,6 +54,8 @@ public class BillDetailFragment extends TSFragment {
     TextView mBillDesc;
     @BindView(R.id.bill_time)
     TextView mBillTime;
+    @BindView(R.id.iv_user_portrait)
+    UserAvatarView mIvUserPortrait;
 
     private BillDetailBean mBillDetailBean;
 
@@ -112,20 +113,21 @@ public class BillDetailFragment extends TSFragment {
 
     private void dealUserInfo(UserInfoBean userInfoBean) {
         mBillUserHead.setText(userInfoBean.getName());
-        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
-
-        Glide.with(getContext())
-                .load(ImageUtils.getUserAvatar(userInfoBean))
-                .bitmapTransform(new GlideCircleTransform(getContext()))
-                .placeholder(R.mipmap.pic_default_portrait1)
-                .error(R.mipmap.pic_default_portrait1)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
-                        mBillUserHead.setCompoundDrawables(resource, null, null, null);
-                    }
-                });
+        ImageUtils.loadCircleUserHeadPic(userInfoBean, mIvUserPortrait);
+//        final int headIconWidth = getResources().getDimensionPixelSize(R.dimen.headpic_for_assist);
+//
+//        Glide.with(getContext())
+//                .load(ImageUtils.getUserAvatar(userInfoBean))
+//                .bitmapTransform(new GlideCircleTransform(getContext()))
+//                .placeholder(R.mipmap.pic_default_portrait1)
+//                .error(R.mipmap.pic_default_portrait1)
+//                .into(new SimpleTarget<GlideDrawable>() {
+//                    @Override
+//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+//                        resource.setBounds(0, 0, headIconWidth, headIconWidth);
+//                        mBillUserHead.setCompoundDrawables(resource, null, null, null);
+//                    }
+//                });
     }
 
 }
