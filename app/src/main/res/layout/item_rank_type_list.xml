@@ -62,21 +62,14 @@
     </RelativeLayout>
 
     <!--关注按钮-->
-    <CheckBox
-            android:id="@+id/tv_user_subscrib"
-            android:layout_width="@dimen/topic_follow_btn_width_70"
-            android:layout_height="@dimen/channel_subscrib_btn_height"
-            android:layout_alignParentRight="true"
+    <ImageView
+            android:id="@+id/iv_user_follow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/spacing_mid"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:background="@drawable/shape_channel_list_subscrib_button"
-            android:button="@null"
-            android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
-            android:paddingLeft="@dimen/spacing_normal"
-            tools:text="关注"
-            android:gravity="center"
-            android:textColor="@color/selector_channel_list_subscrib_button_divider"
-            android:textSize="@dimen/size_content_comment"/>
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid"
+            android:src="@mipmap/ico_me_follow"/>
 
 </LinearLayout>
