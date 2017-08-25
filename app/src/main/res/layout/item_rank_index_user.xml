@@ -2,16 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/rl_user_container"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/spacing_huge"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:background="@color/white">
 
     <com.zhiyicx.baseproject.widget.UserAvatarView
             android:id="@+id/iv_user_portrait"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_small"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:src="@mipmap/default_pic_personal"
+            android:scaleType="centerCrop"
             android:layout_centerHorizontal="true"/>
 
     <TextView
@@ -22,9 +24,8 @@
             android:textSize="@dimen/size_icon_assist"
             android:layout_marginTop="@dimen/spacing_small_3dp"
             android:maxLines="1"
-            android:ellipsize="middle"
             android:layout_below="@+id/iv_user_portrait"
-            tools:text="xxxxxxxxxx"
+            tools:text="xxxxxxxxxxxx"
             android:gravity="center"
             android:layout_centerHorizontal="true"/>
 

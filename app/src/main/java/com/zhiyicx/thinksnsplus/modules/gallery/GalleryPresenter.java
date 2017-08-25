@@ -63,8 +63,8 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
         if (walletBean != null) {
             balance = walletBean.getBalance();
         }
-        DynamicDetailBeanV2 dynamicDetail= mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
-        double amount =dynamicDetail.getImages().get(imagePosition).getAmount();
+        DynamicDetailBeanV2 dynamicDetail = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
+        double amount = dynamicDetail.getImages().get(imagePosition).getAmount();
         if (balance < amount) {
             mRootView.goRecharge(WalletActivity.class);
             return;
@@ -74,6 +74,9 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
+                        walletBean.setBalance(walletBean.getBalance() - note);
+                        mWalletBeanGreenDao.insertOrReplace(walletBean);
+                        
                         mRootView.hideCenterLoading();
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
                         dynamicDetailBeanV2.getImages().get(imagePosition).setPaid(true);

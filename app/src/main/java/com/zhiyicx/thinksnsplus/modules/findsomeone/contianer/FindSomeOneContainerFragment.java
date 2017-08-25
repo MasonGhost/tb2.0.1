@@ -225,6 +225,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                         }
                     } catch (Exception e1) {
                         locationStr = locationBean.getName();
+                        mTvToolbarRight.setText(locationStr);
                     }
                 }
 

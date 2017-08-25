@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.common.base.BaseApplication;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -55,7 +56,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                 .info_publish_original)) ?
                 realData.getAuthor() : realData.getFrom();
         String infoData = String.format(title.getContext().getString(R.string.info_list_count)
-                , from, realData.getHits(), TimeUtils.getTimeFriendlyNormal(realData
+                , from, ConvertUtils.numberConvert(realData.getHits()) , TimeUtils.getTimeFriendlyNormal(realData
                         .getCreated_at()));
         holder.setText(R.id.item_info_timeform, infoData);
 

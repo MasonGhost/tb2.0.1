@@ -76,7 +76,8 @@
             android:gravity="center"
             android:text="@string/see_origin_photo_vip"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_content_assist"/>
+            android:textSize="@dimen/size_content_assist"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </FrameLayout>

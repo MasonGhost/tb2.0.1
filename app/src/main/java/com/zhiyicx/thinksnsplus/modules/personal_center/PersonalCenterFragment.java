@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -77,6 +78,8 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -316,6 +319,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             requestData();
         }
         super.initData();
+        // 支持魅族手机首页状太栏文字白色问题
+        supportFlymeSutsusbar();
     }
 
     /**
@@ -903,5 +908,15 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .build();
         mPayImagePopWindow.show();
 
+    }
+
+    private void supportFlymeSutsusbar() {
+        Observable.timer(1500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    }
+                });
     }
 }

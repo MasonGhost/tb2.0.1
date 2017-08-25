@@ -494,6 +494,8 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
+                        walletBean.setBalance(walletBean.getBalance()-note);
+                        mWalletBeanGreenDao.insertOrReplace(walletBean);
                         if (isImage) {
                             return Observable.just(stringBaseJsonV2);
                         }
