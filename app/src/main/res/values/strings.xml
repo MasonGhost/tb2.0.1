@@ -221,6 +221,7 @@
     <string name="all_group">全部圈子</string>
     <string name="join_group">加入</string>
     <string name="quit_group">退出</string>
+    <string name="group_mine">我的圈子</string>
 
     <!--收藏-->
     <string name="collect">收藏</string>
