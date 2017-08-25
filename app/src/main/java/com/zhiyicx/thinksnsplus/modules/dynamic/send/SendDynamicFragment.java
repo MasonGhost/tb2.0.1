@@ -355,7 +355,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void addPlaceHolder() {
-        if (selectedPhotos.size() < MAX_PHOTOS && !isToll) {// 这个需求是真的怪，打开收费时隐藏添加图片,头皮发麻
+        // selectedPhotos.size() == 0 这个是为了配合这个奇葩需求
+        if (selectedPhotos.size() == 0 || selectedPhotos.size() < MAX_PHOTOS && !isToll) {// 这个需求是真的怪，打开收费时隐藏添加图片,头皮发麻
             // 占位缺省图
             ImageBean camera = new ImageBean();
             selectedPhotos.add(camera);
@@ -504,7 +505,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         selectedPhotos.add(new ImageBean());
                     }
                     mCommonAdapter.notifyDataSetChanged();
-
                 }
                 /*                                                           */
 

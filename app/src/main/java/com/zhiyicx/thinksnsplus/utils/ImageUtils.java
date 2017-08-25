@@ -150,7 +150,7 @@ public class ImageUtils {
     }
 
     /**
-     *
+     * 问答那里的图文混排头像处理
      * @param userInfoBean
      * @param contentTextView
      * @param content
@@ -204,6 +204,11 @@ public class ImageUtils {
                 .into(imageView);
     }
 
+    /**
+     * 问答那里的图文混排头像处理
+     * @param userInfoBean
+     * @param withBorder
+     */
     private static void loadQAUserAvatar(UserInfoBean userInfoBean, TextView contentTextView, String content, boolean isAnonymity, boolean withBorder) {
         String avatar = "";
         if (userInfoBean != null) {
