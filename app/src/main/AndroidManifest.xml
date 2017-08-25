@@ -207,10 +207,6 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".modules.rank.RankActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
             android:name=".modules.wallet.WalletActivity"
             android:screenOrientation="portrait">
         </activity>

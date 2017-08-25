@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.type_list.RankTypeListActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -45,11 +47,24 @@ public class RankIndexAdapter extends CommonAdapter<RankIndexBean>{
         rvUsers.addItemDecoration(new LinearDecoration(0, 0, 0, ConvertUtils.px2dp(mContext, width)));
         rvUsers.setLayoutManager(layoutManager);
         if (rankIndexBean.getUserInfoList() != null){
+            RankIndexUserAdapter adapter;
             if (rankIndexBean.getUserInfoList().size() > 5){
-                rvUsers.setAdapter(new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList().subList(0, 5)));
+                adapter = new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList().subList(0, 5));
             } else {
-                rvUsers.setAdapter(new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList()));
+                adapter = new RankIndexUserAdapter(mContext, rankIndexBean.getUserInfoList());
             }
+            rvUsers.setAdapter(adapter);
+            adapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    PersonalCenterFragment.startToPersonalCenter(mContext, rankIndexBean.getUserInfoList().get(position));
+                }
+
+                @Override
+                public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                    return false;
+                }
+            });
         }
         RxView.clicks(holder.getView(R.id.ll_info_container))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
