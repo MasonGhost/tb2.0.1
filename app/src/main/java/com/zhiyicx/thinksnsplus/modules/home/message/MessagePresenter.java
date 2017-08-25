@@ -633,11 +633,16 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         String tip = "";
         for (int i = 0; i < commentsNoti.size(); i++) {
             if (i < max_num) {
-                if (tip.contains(commentsNoti.get(i).getUserInfo().getName())) {
-                    max_num++;
-                } else {
-                    tip += commentsNoti.get(i).getUserInfo().getName() + "、";
+                try {
+                    if (tip.contains(commentsNoti.get(i).getUserInfo().getName())) {
+                        max_num++;
+                    } else {
+                        tip += commentsNoti.get(i).getUserInfo().getName() + "、";
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
+
             } else {
                 break;
             }
