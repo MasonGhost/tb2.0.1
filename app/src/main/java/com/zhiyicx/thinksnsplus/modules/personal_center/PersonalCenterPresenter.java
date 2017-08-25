@@ -336,7 +336,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         }
         mRootView.getListDatas().get(position).setFeed_view_count(mRootView.getListDatas().get(position).getFeed_view_count() + 1);
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(position));
-        mRepository.handleDynamicViewCount(feed_id);
+//        mRepository.handleDynamicViewCount(feed_id);
         mRootView.refreshData();
     }
 

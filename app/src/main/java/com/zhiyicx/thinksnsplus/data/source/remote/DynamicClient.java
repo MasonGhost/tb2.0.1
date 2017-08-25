@@ -80,15 +80,6 @@ public interface DynamicClient {
     Observable<DynamicCommentBeanV2> getDynamicCommentListV2(@Path("feed_id") Long feed_id, @Query("after") Long after, @Query("limit") Long limit);
 
     /**
-     * 增加动态浏览量
-     *
-     * @param feed_id 动态的唯一 id
-     * @return
-     */
-    @POST(ApiConfig.APP_PATH_HANDLE_DYNAMIC_VIEWCOUNT)
-    Observable<BaseJson<Object>> handleDynamicViewCount(@Path("feed_id") Long feed_id);
-
-    /**
      * 获取动态详情 V2
      *
      * @param feed_id 动态id

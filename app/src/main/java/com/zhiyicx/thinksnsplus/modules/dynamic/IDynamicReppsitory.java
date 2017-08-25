@@ -109,11 +109,4 @@ public interface IDynamicReppsitory {
      */
     Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id, int amout);
 
-    /**
-     * 增加动态浏览量
-     *
-     * @param feed_id 动态的唯一 id
-     * @return
-     */
-    void handleDynamicViewCount(Long feed_id);
 }

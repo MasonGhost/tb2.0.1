@@ -334,34 +334,6 @@ public class BaseDynamicRepository implements IDynamicReppsitory {
 
 
     /**
-     * 增加动态浏览量
-     *
-     * @param feed_id 动态的唯一 id
-     * @return
-     */
-    @Override
-    public void handleDynamicViewCount(Long feed_id) {
-        mDynamicClient.handleDynamicViewCount(feed_id)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new BaseSubscribe<Object>() {
-                    @Override
-                    protected void onSuccess(Object data) {
-
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        LogUtils.d(message);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        LogUtils.e(throwable, "handleDynamicViewCount");
-                    }
-                });
-    }
-
-    /**
      * 获取动态详情 V2
      *
      * @param feed_id 动态id
