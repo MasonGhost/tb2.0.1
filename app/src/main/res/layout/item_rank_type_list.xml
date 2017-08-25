@@ -13,12 +13,12 @@
     <!--排行-->
     <TextView
             android:id="@+id/tv_rank"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/type_item_rank_num_width"
             android:layout_height="wrap_content"
             android:textSize="@dimen/size_rank_number"
             android:textColor="@color/themeColor"
-            tools:text="1"
-            android:layout_marginRight="@dimen/spacing_bigger_large_35"/>
+            tools:text="100"
+            android:layout_marginRight="@dimen/spacing_large"/>
 
     <RelativeLayout
             android:layout_width="0dp"
@@ -64,7 +64,7 @@
     <!--关注按钮-->
     <CheckBox
             android:id="@+id/tv_user_subscrib"
-            android:layout_width="@dimen/channel_subscrib_btn_width"
+            android:layout_width="@dimen/topic_follow_btn_width_70"
             android:layout_height="@dimen/channel_subscrib_btn_height"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -73,9 +73,9 @@
             android:background="@drawable/shape_channel_list_subscrib_button"
             android:button="@null"
             android:drawableLeft="@drawable/selector_channel_list_subscrib_button_left_drawable"
-            android:drawablePadding="@dimen/spacing_small_3dp"
             android:paddingLeft="@dimen/spacing_normal"
             tools:text="关注"
+            android:gravity="center"
             android:textColor="@color/selector_channel_list_subscrib_button_divider"
             android:textSize="@dimen/size_content_comment"/>
 

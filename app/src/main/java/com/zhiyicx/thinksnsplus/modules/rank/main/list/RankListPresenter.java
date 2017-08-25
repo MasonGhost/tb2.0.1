@@ -6,6 +6,8 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.RankIndexBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfig;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +30,9 @@ import rx.schedulers.Schedulers;
 @FragmentScoped
 public class RankListPresenter extends AppBasePresenter<RankListContract.Repository, RankListContract.View>
         implements RankListContract.Presenter {
+
+    @Inject
+    RankIndexBeanGreenDaoImpl mRankIndexBeanGreenDao;
 
     @Inject
     public RankListPresenter(RankListContract.Repository repository, RankListContract.View rootView) {
@@ -57,12 +62,12 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
                 , mRepository.getRankQuestionLikes(0),
                 (userInfoFollower, userInfoRiches, userInfoIncome, userInfoCheckIn, userInfoExpert, userInfoQuestionLike) -> {
                     List<RankIndexBean> list = new ArrayList<RankIndexBean>();
-                    dealResultList(list, mContext.getString(R.string.rank_user_type_all), userInfoFollower);
-                    dealResultList(list, mContext.getString(R.string.rank_user_type_riches), userInfoRiches);
-                    dealResultList(list, mContext.getString(R.string.rank_user_type_income), userInfoIncome);
-                    dealResultList(list, mContext.getString(R.string.rank_user_type_sign_in), userInfoCheckIn);
-                    dealResultList(list, mContext.getString(R.string.rank_user_type_expert), userInfoExpert);
-                    dealResultList(list, mContext.getString(R.string.rank_user_type_qa), userInfoQuestionLike);
+                    dealResultList(list, mContext.getString(R.string.rank_user_type_all), RankTypeConfig.RANK_USER_FOLLOWER, userInfoFollower);
+                    dealResultList(list, mContext.getString(R.string.rank_user_type_riches), RankTypeConfig.RANK_USER_RICHES, userInfoRiches);
+                    dealResultList(list, mContext.getString(R.string.rank_user_type_income), RankTypeConfig.RANK_USER_INCOME, userInfoIncome);
+                    dealResultList(list, mContext.getString(R.string.rank_user_type_sign_in), RankTypeConfig.RANK_USER_CHECK_ID, userInfoCheckIn);
+                    dealResultList(list, mContext.getString(R.string.rank_user_type_expert), RankTypeConfig.RANK_USER_EXPERT, userInfoExpert);
+                    dealResultList(list, mContext.getString(R.string.rank_user_type_qa), RankTypeConfig.RANK_USER_QUESTION_LIKE, userInfoQuestionLike);
                     return list;
                 })
                 .subscribeOn(Schedulers.io())
@@ -71,6 +76,7 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
 
                     @Override
                     protected void onSuccess(List<RankIndexBean> data) {
+                        mRankIndexBeanGreenDao.saveMultiData(data);
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -89,9 +95,9 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
                 , mRepository.getRankAnswer("month", 0),
                 (userInfoDay, userInfoWeek, userInfoMonth) -> {
                     List<RankIndexBean> list = new ArrayList<RankIndexBean>();
-                    dealResultList(list, mContext.getString(R.string.rank_qa_type_day), userInfoDay);
-                    dealResultList(list, mContext.getString(R.string.rank_qa_type_week), userInfoWeek);
-                    dealResultList(list, mContext.getString(R.string.rank_qa_type_month), userInfoMonth);
+                    dealResultList(list, mContext.getString(R.string.rank_qa_type_day), RankTypeConfig.RANK_QUESTION_DAY, userInfoDay);
+                    dealResultList(list, mContext.getString(R.string.rank_qa_type_week), RankTypeConfig.RANK_QUESTION_WEEK, userInfoWeek);
+                    dealResultList(list, mContext.getString(R.string.rank_qa_type_month), RankTypeConfig.RANK_QUESTION_MONTH, userInfoMonth);
                     return list;
                 })
                 .subscribeOn(Schedulers.io())
@@ -100,6 +106,7 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
 
                     @Override
                     protected void onSuccess(List<RankIndexBean> data) {
+                        mRankIndexBeanGreenDao.saveMultiData(data);
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -118,9 +125,9 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
                 , mRepository.getRankDynamic("month", 0),
                 (userInfoDay, userInfoWeek, userInfoMonth) -> {
                     List<RankIndexBean> list = new ArrayList<RankIndexBean>();
-                    dealResultList(list, mContext.getString(R.string.rank_dynamic_type_day), userInfoDay);
-                    dealResultList(list, mContext.getString(R.string.rank_dynamic_type_week), userInfoWeek);
-                    dealResultList(list, mContext.getString(R.string.rank_dynamic_type_month), userInfoMonth);
+                    dealResultList(list, mContext.getString(R.string.rank_dynamic_type_day), RankTypeConfig.RANK_DYNAMIC_DAY, userInfoDay);
+                    dealResultList(list, mContext.getString(R.string.rank_dynamic_type_week), RankTypeConfig.RANK_DYNAMIC_WEEK, userInfoWeek);
+                    dealResultList(list, mContext.getString(R.string.rank_dynamic_type_month), RankTypeConfig.RANK_DYNAMIC_MONTH, userInfoMonth);
                     return list;
                 })
                 .subscribeOn(Schedulers.io())
@@ -129,6 +136,7 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
 
                     @Override
                     protected void onSuccess(List<RankIndexBean> data) {
+                        mRankIndexBeanGreenDao.saveMultiData(data);
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -147,9 +155,9 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
                 , mRepository.getRankInfo("month", 0),
                 (userInfoDay, userInfoWeek, userInfoMonth) -> {
                     List<RankIndexBean> list = new ArrayList<RankIndexBean>();
-                    dealResultList(list, mContext.getString(R.string.rank_info_type_day), userInfoDay);
-                    dealResultList(list, mContext.getString(R.string.rank_info_type_week), userInfoWeek);
-                    dealResultList(list, mContext.getString(R.string.rank_info_type_month), userInfoMonth);
+                    dealResultList(list, mContext.getString(R.string.rank_info_type_day), RankTypeConfig.RANK_INFORMATION_DAY, userInfoDay);
+                    dealResultList(list, mContext.getString(R.string.rank_info_type_week), RankTypeConfig.RANK_INFORMATION_WEEK, userInfoWeek);
+                    dealResultList(list, mContext.getString(R.string.rank_info_type_month), RankTypeConfig.RANK_INFORMATION_MONTH, userInfoMonth);
                     return list;
                 })
                 .subscribeOn(Schedulers.io())
@@ -158,6 +166,7 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
 
                     @Override
                     protected void onSuccess(List<RankIndexBean> data) {
+                        mRankIndexBeanGreenDao.saveMultiData(data);
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -170,10 +179,11 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
         addSubscrebe(subscription);
     }
 
-    private void dealResultList(List<RankIndexBean> list, String subCategory, List<UserInfoBean> listUser) {
+    private void dealResultList(List<RankIndexBean> list, String subCategory, String type,  List<UserInfoBean> listUser) {
         RankIndexBean rankIndexBean = new RankIndexBean();
         rankIndexBean.setCategory(mRootView.getCategory());
         rankIndexBean.setSubCategory(subCategory);
+        rankIndexBean.setType(type);
         if (!listUser.isEmpty()){
             rankIndexBean.setUserInfoList(listUser);
             list.add(rankIndexBean);
@@ -182,7 +192,8 @@ public class RankListPresenter extends AppBasePresenter<RankListContract.Reposit
 
     @Override
     public List<RankIndexBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
+        List<RankIndexBean> list =  mRankIndexBeanGreenDao.getIndexRankList(mRootView.getCategory());
+        return list;
     }
 
     @Override

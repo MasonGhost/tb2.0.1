@@ -16,10 +16,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -30,7 +28,6 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
-import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -40,7 +37,6 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BATCH_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BY_PHONE_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
@@ -52,7 +48,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INF
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
@@ -115,15 +110,6 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_GET_IM_INFO)
     Observable<BaseJson<IMBean>> getIMInfo();
-
-    /**
-     * 获取用户关注状态
-     *
-     * @param user_ids 多个用户 id 通过“ ，”来隔开
-     */
-    @GET(ApiConfig.APP_PATH_GET_USER_FOLLOW_STATE)
-    Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(@Query("user_ids") String user_ids);
-
 
     /**
      * 用户点赞排行

@@ -147,11 +147,6 @@ public interface UserInfoContract {
         Observable<UserInfoBean> getLocalUserInfoBeforeNet(long user_id);
 
         /**
-         * 获取用户关注状态
-         */
-        Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
-
-        /**
          * 关注操作
          *
          * @param followFansBean

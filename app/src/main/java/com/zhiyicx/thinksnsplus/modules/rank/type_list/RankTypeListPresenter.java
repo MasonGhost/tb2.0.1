@@ -8,15 +8,21 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfig;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+
+import static com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfig.RANK_DAY;
+import static com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfig.RANK_MONTH;
+import static com.zhiyicx.thinksnsplus.modules.rank.main.container.RankTypeConfig.RANK_WEEK;
 
 /**
  * @author Catherine
@@ -42,63 +48,57 @@ public class RankTypeListPresenter extends AppBasePresenter<RankTypeListContract
     public void requestNetData(Long maxId, boolean isLoadMore) {
         Observable<List<UserInfoBean>> observable = null;
         int size = mRootView.getListDatas().size();
+        if (maxId == 0){
+            size = 0;
+        }
         String type = mRootView.getRankType();
-        // 全站粉丝
-        if (type.equals(mContext.getString(R.string.rank_user_type_all))){
-            observable = mRepository.getRankFollower(size);
-        }
-        // 财富
-        if (type.equals(mContext.getString(R.string.rank_user_type_riches))){
-            observable = mRepository.getRankRiches(size);
-        }
-        // 收入
-        if (type.equals(mContext.getString(R.string.rank_user_type_income))){
-            observable = mRepository.getRankIncome(size);
-        }
-        // 连续签到
-        if (type.equals(mContext.getString(R.string.rank_user_type_sign_in))){
-            observable = mRepository.getRankCheckIn(size);
-        }
-        // 专家
-        if (type.equals(mContext.getString(R.string.rank_user_type_expert))){
-            observable = mRepository.getRankQuestionExpert(size);
-        }
-        // 问答达人
-        if (type.equals(mContext.getString(R.string.rank_user_type_qa))){
-            observable = mRepository.getRankQuestionLikes(size);
-        }
-        /*问答*/
-        // 今日解答
-        if (type.equals(mContext.getString(R.string.rank_qa_type_day))){
-            observable = mRepository.getRankAnswer("day", size);
-        }
-        // 本周解答
-        if (type.equals(mContext.getString(R.string.rank_qa_type_week))){
-            observable = mRepository.getRankAnswer("week", size);
-        }
-        // 本月解答
-        if (type.equals(mContext.getString(R.string.rank_qa_type_month))){
-            observable = mRepository.getRankAnswer("month", size);
-        }
-        /*动态*/
-        if (type.equals(mContext.getString(R.string.rank_dynamic_type_day))){
-            observable = mRepository.getRankDynamic("day", size);
-        }
-        if (type.equals(mContext.getString(R.string.rank_dynamic_type_week))){
-            observable = mRepository.getRankDynamic("week", size);
-        }
-        if (type.equals(mContext.getString(R.string.rank_dynamic_type_month))){
-            observable = mRepository.getRankDynamic("month", size);
-        }
-       /*资讯*/
-        if (type.equals(mContext.getString(R.string.rank_info_type_day))){
-            observable = mRepository.getRankInfo("day", size);
-        }
-        if (type.equals(mContext.getString(R.string.rank_info_type_week))){
-            observable = mRepository.getRankInfo("week", size);
-        }
-        if (type.equals(mContext.getString(R.string.rank_info_type_month))){
-            observable = mRepository.getRankInfo("month", size);
+        switch (type){
+            case RankTypeConfig.RANK_USER_FOLLOWER:
+                observable = mRepository.getRankFollower(size);
+                break;
+            case RankTypeConfig.RANK_USER_RICHES:
+                observable = mRepository.getRankRiches(size);
+                break;
+            case RankTypeConfig.RANK_USER_INCOME:
+                observable = mRepository.getRankIncome(size);
+                break;
+            case RankTypeConfig.RANK_USER_CHECK_ID:
+                observable = mRepository.getRankCheckIn(size);
+                break;
+            case RankTypeConfig.RANK_USER_EXPERT:
+                observable = mRepository.getRankQuestionExpert(size);
+                break;
+            case RankTypeConfig.RANK_USER_QUESTION_LIKE:
+                observable = mRepository.getRankQuestionLikes(size);
+                break;
+            case RankTypeConfig.RANK_QUESTION_DAY:
+                observable = mRepository.getRankAnswer(RANK_DAY, size);
+                break;
+            case RankTypeConfig.RANK_QUESTION_WEEK:
+                observable = mRepository.getRankAnswer(RANK_WEEK, size);
+                break;
+            case RankTypeConfig.RANK_QUESTION_MONTH:
+                observable = mRepository.getRankAnswer(RANK_MONTH, size);
+                break;
+            case RankTypeConfig.RANK_DYNAMIC_DAY:
+                observable = mRepository.getRankDynamic(RANK_DAY, size);
+                break;
+            case RankTypeConfig.RANK_DYNAMIC_WEEK:
+                observable = mRepository.getRankDynamic(RANK_WEEK, size);
+                break;
+            case RankTypeConfig.RANK_DYNAMIC_MONTH:
+                observable = mRepository.getRankDynamic(RANK_MONTH, size);
+                break;
+            case RankTypeConfig.RANK_INFORMATION_DAY:
+                observable = mRepository.getRankInfo(RANK_DAY, size);
+                break;
+            case RankTypeConfig.RANK_INFORMATION_WEEK:
+                observable = mRepository.getRankInfo(RANK_WEEK, size);
+                break;
+            case RankTypeConfig.RANK_INFORMATION_MONTH:
+                observable = mRepository.getRankInfo(RANK_MONTH, size);
+                break;
+            default:
         }
         if (observable != null){
             Subscription subscription = observable
@@ -107,11 +107,11 @@ public class RankTypeListPresenter extends AppBasePresenter<RankTypeListContract
 
                         @Override
                         protected void onSuccess(List<UserInfoBean> data) {
-                            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.
-                                    getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
-                            if (userInfoBean != null && maxId == 0){
-                                data.add(0, userInfoBean);
-                            }
+//                            UserInfoBean userInfoBean = mUserInfoBeanGreenDao.
+//                                    getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id());
+//                            if (userInfoBean != null && maxId == 0){
+//                                data.add(0, userInfoBean);
+//                            }
                             mRootView.onNetResponseSuccess(data, isLoadMore);
                         }
 
@@ -137,7 +137,7 @@ public class RankTypeListPresenter extends AppBasePresenter<RankTypeListContract
 
     @Override
     public void handleFollowState(UserInfoBean userInfoBean) {
+        userInfoBean.setFollower(!userInfoBean.getFollower());
         mUserInfoRepository.handleFollow(userInfoBean);
-        mUserInfoBeanGreenDao.updateSingleData(userInfoBean);
     }
 }

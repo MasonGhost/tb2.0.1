@@ -2,10 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.rank.type_list;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.rank.adapter.RankTypeEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.rank.adapter.RankTypeItem;
 import com.zhiyicx.thinksnsplus.modules.rank.adapter.RankTypeMineItem;
@@ -49,8 +51,21 @@ public class RankTypeListFragment extends TSListFragment<RankTypeListContract.Pr
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
         multiItemTypeAdapter.addItemViewDelegate(new RankTypeItem(getContext(), getRankType(), mPresenter));
-        multiItemTypeAdapter.addItemViewDelegate(new RankTypeMineItem(getContext(), getRankType(), mPresenter));
+//        multiItemTypeAdapter.addItemViewDelegate(new RankTypeMineItem(getContext(), getRankType(), mPresenter));
         multiItemTypeAdapter.addItemViewDelegate(new RankTypeEmptyItem());
+        multiItemTypeAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (mListDatas.get(position) != null && !mListDatas.get(position).getUser_id().equals(0L)){
+                    PersonalCenterFragment.startToPersonalCenter(getContext(), mListDatas.get(position));
+                }
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
         return multiItemTypeAdapter;
     }
 
@@ -59,7 +74,7 @@ public class RankTypeListFragment extends TSListFragment<RankTypeListContract.Pr
         if (mRankIndexBean == null){
             mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_BEAN);
         }
-        return mRankIndexBean == null ? "" : mRankIndexBean.getSubCategory();
+        return mRankIndexBean == null ? "" : mRankIndexBean.getType();
     }
 
     @Override

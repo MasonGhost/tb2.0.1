@@ -29,7 +29,6 @@ public interface ChangePasswordContract {
      * Model 层定义接口,外部只需关心 model 返回的数据,无需关心内部细节,及是否使用缓存
      */
     interface Repository  {
-        Observable<BaseJson<CacheBean>> changePassword(String oldPassword, String newPassword);
         Observable<CacheBean> changePasswordV2(String oldPassword, String newPassword);
     }
 

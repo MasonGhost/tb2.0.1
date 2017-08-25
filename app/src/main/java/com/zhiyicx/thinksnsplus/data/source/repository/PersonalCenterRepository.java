@@ -36,22 +36,4 @@ public class PersonalCenterRepository extends BaseDynamicRepository implements P
         return getDynamicListV2(DYNAMIC_TYPE_USERS, max_id, user_id, false);
     }
 
-    @Override
-    public Observable<BaseJson<FollowFansBean>> getUserFollowState(String user_ids) {
-        return mUserInfoRepository.getUserFollowState(user_ids)
-                .map(listBaseJson -> {
-                    BaseJson<FollowFansBean> beanBaseJson = new BaseJson<>();
-                    List<FollowFansBean> followFansBeanList = listBaseJson.getData();
-                    if (listBaseJson.isStatus() && followFansBeanList != null && !followFansBeanList.isEmpty()) {
-                        // 肯定最多返回一条用户数据
-                        beanBaseJson.setData(followFansBeanList.get(0));
-                    } else {
-                        beanBaseJson.setData(null);
-                    }
-                    beanBaseJson.setStatus(listBaseJson.isStatus());
-                    beanBaseJson.setMessage(listBaseJson.getMessage());
-                    beanBaseJson.setCode(listBaseJson.getCode());
-                    return beanBaseJson;
-                });
-    }
 }
