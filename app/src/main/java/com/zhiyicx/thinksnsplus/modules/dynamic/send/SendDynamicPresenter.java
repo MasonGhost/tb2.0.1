@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -102,7 +103,8 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
                     mContext.getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
-        int contentLenght = sendDynamicDataBeanV2.getFeed_content().length();
+        int contentLenght = ConvertUtils.stringLenghtDealForEmoji(sendDynamicDataBeanV2.getFeed_content());
+
         if (mRootView.wordsNumLimit() && contentLenght <= 50) {
             mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string.dynamic_send_toll_notes), 50));
             return;

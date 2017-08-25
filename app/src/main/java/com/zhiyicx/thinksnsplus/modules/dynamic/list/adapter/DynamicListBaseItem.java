@@ -194,6 +194,8 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                 boolean canLookWords = dynamicBean.getPaid_node() == null || dynamicBean
                         .getPaid_node().isPaid();
 
+                int contentLenght = content.length();
+
                 if (!canLookWords) {
                     content += mContext.getString(R.string.words_holder);
                 }
@@ -202,7 +204,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     TextViewUtils.newInstance(contentView, content)
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
-                            .position(50, content.length())
+                            .position(contentLenght, content.length())
                             .dynamicPosition(position)
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
@@ -213,7 +215,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                     TextViewUtils.newInstance(contentView, content)
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
-                            .position(50, content.length())
+                            .position(contentLenght, content.length())
                             .dynamicPosition(position)
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
