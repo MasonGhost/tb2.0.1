@@ -33,11 +33,13 @@ public class RankIndexUserAdapter extends CommonAdapter<UserInfoBean> {
         RelativeLayout rlUserContainer = holder.getView(R.id.rl_user_container);
         UserAvatarView userAvatarView = holder.getView(R.id.iv_user_portrait);
 //        ImageView userAvatarView = holder.getView(R.id.iv_user_portrait);
-        int width = (UIUtils.getWindowWidth(mContext) - ConvertUtils.px2dp(mContext, 2 * 15)) / 5;
-        int portrait = width - ConvertUtils.px2dp(mContext, 2 * 5);
+        int width = (UIUtils.getWindowWidth(mContext) - ConvertUtils.dp2px(mContext, 2 * 15)) / 5;
+        int portrait = width - ConvertUtils.dp2px(mContext, 2 * 5);
         rlUserContainer.getLayoutParams().width = width;
-        userAvatarView.getLayoutParams().width = portrait;
-        userAvatarView.getLayoutParams().height = portrait;
+        userAvatarView.getIvAvatar().getLayoutParams().width = portrait;
+        userAvatarView.getIvAvatar().getLayoutParams().height = portrait;
+        userAvatarView.getIvVerify().getLayoutParams().width = (int) (portrait / 3.5);
+        userAvatarView.getIvVerify().getLayoutParams().height = (int) (portrait / 3.5);
         ImageUtils.loadCircleUserHeadPic(userInfoBean, userAvatarView);
         holder.setText(R.id.tv_user_name, userInfoBean.getName());
     }
