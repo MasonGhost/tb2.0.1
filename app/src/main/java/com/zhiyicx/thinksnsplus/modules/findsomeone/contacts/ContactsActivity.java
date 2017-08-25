@@ -2,10 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.findsomeone.contacts;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.usertag.DaggerEditUserTagComponent;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagPresenter;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagPresenterModule;
 
 /**
  * @Describe 用户标签

@@ -22,10 +22,8 @@ import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequest
 import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
 import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -65,7 +63,6 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INF
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
@@ -128,15 +125,6 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_GET_IM_INFO)
     Observable<BaseJson<IMBean>> getIMInfo();
-
-    /**
-     * 获取用户关注状态
-     *
-     * @param user_ids 多个用户 id 通过“ ，”来隔开
-     */
-    @GET(ApiConfig.APP_PATH_GET_USER_FOLLOW_STATE)
-    Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(@Query("user_ids") String user_ids);
-
 
     /**
      * 用户点赞排行
@@ -258,7 +246,6 @@ public interface UserInfoClient {
      * @return
      */
     @HTTP(method = "DELETE", path = ApiConfig.APP_PATH_DELETE_USER_PHONE, hasBody = true)
-//    @DELETE(ApiConfig.APP_PATH_DELETE_USER_PHONE)
     Observable<Object> deletePhone(@Body DeleteUserPhoneOrEmailRequestBean deleteUserPhoneOrEmailRequestBean);
 
     /**
@@ -268,7 +255,6 @@ public interface UserInfoClient {
      * @return
      */
     @HTTP(method = "DELETE", path = ApiConfig.APP_PATH_DELETE_USER_EMAIL, hasBody = true)
-//    @DELETE(ApiConfig.APP_PATH_DELETE_USER_EMAIL)
     Observable<Object> deleteEmail(@Body DeleteUserPhoneOrEmailRequestBean deleteUserPhoneOrEmailRequestBean);
 
 

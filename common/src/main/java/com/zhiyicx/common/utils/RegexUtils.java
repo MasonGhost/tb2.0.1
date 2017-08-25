@@ -297,7 +297,6 @@ public class RegexUtils {
         Matcher matcher1 = pattern.matcher(targetStr);
         int lastIndex = 0;
         while (matcher1.find()) {
-
             if (matcher1.start() > lastIndex) {
                 String result1 = targetStr.substring(lastIndex, matcher1.start());// 文字
                 splitTextList.add(result1);
@@ -307,21 +306,21 @@ public class RegexUtils {
 
             lastIndex = matcher1.end();
         }
-        if (lastIndex != targetStr.length()) {
-            System.out.println("result 3 :: " + targetStr.substring(lastIndex, targetStr.length()));
+        if (lastIndex != targetStr.length()) {// 没有匹配
+            splitTextList.add(targetStr.substring(lastIndex, targetStr.length()));
         }
-        if (splitTextList.size()>0){// 最后添加标识符
-            String last=splitTextList.get(splitTextList.size()-1);
-            splitTextList.set(splitTextList.size()-1,last+"tym_last");
+        if (splitTextList.size() > 0) {// 最后添加标识符
+            String last = splitTextList.get(splitTextList.size() - 1);
+            splitTextList.set(splitTextList.size() - 1, last + "tym_last");
         }
         return splitTextList;
     }
 
-    public static int getImageId(String input){
+    public static int getImageId(String input) {
         String reg = "@!\\[.*]\\((\\d+)\\)";
         Matcher matcher2 = Pattern.compile(reg).matcher(input);
         System.out.println("result 2 :: " + input);
-        if (matcher2.find()){
+        if (matcher2.find()) {
             System.out.println("matcher 2 :: " + matcher2.group(0));
             System.out.println("matcher 2 :: " + matcher2.group(1));
         }

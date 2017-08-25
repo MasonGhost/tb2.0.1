@@ -33,6 +33,7 @@
     <string name="mine_collect">收藏</string>
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
+    <string name="draft_box">草稿箱</string>
     <string name="certification">认证</string>
     <string name="setting">设置</string>
     <string name="wallet">钱包</string>
@@ -124,7 +125,7 @@
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
     <!--资讯的列表的信息汇总，来自-浏览数-时间-->
-    <string name="info_list_count">%1$s  ·  %2$d 浏览  ·  %3$s</string>
+    <string name="info_list_count">%1$s  ·  %2$s 浏览  ·  %3$s</string>
     <string name="info_publish_original">原创</string>
     <string name="info_top">顶</string>
     <string name="info_publish_hint">提示</string>
@@ -143,7 +144,7 @@
     <string name="info_author">作者</string>
     <string name="info_author_hint">不填写则默认为本站用户名</string>
     <string name="info_summary">摘要</string>
-    <string name="info_summary_hint">不填写则默认为文章前200字</string>
+    <string name="info_summary_hint">请输入摘要信息</string>
     <string name="info_relate">相关资讯</string>
     <string name="info_apply_for_top">申请文章置顶</string>
     <string name="info_alert_reapply_for_top">已经置顶，不能重复申请</string>
@@ -250,7 +251,8 @@
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
     <string name="dynamic_comment_toll">设置评论收费</string>
-    <string name="limit_monye">金额必须是整数且大于0元，不能出现小数</string>
+    <string name="limit_monye">金额必须大于0元</string>
+    <string name="limit_monye_death">金额必须是整数且大于0元，不能出现小数</string>
     <string name="monye_instructions">金额说明</string>
     <string name="dynamic_comment_toll_success">设置评论收费成功</string>
     <string name="dynamic_comment_toll_money">设置评论收费金额</string>
@@ -408,7 +410,7 @@
     <string name="send_certification">上传</string>
     <string name="send_certification_ing">上传中</string>
     <string name="certification_state_success">已认证</string>
-    <string name="certification_state_failed">申请失败</string>
+    <string name="certification_state_failed">被驳回</string>
     <string name="certification_state_ing">待审核</string>
     <string name="certification_ing_hint">认证信息审核中，我们会在7个工作日内给您答复</string>
 
@@ -498,6 +500,7 @@
     <string name="qa_go_to_watch">去围观</string>
     <string name="qa_go_to_watched">已围观</string>
     <string name="qa_reset_reward_success">设置悬赏成功</string>
+    <string name="qa_expert_list">专家列表</string>
 
     <!--签到-->
     <string name="check_in">签到</string>
@@ -528,5 +531,36 @@
     <string name="bind_success">账号绑定成功</string>
     <string name="unbind_success">账号解绑成功</string>
 
+    <!--排行榜相关-->
+    <string name="rank">排行榜</string>
+    <string name="rank_user">用户</string>
+    <string name="rank_qa">问答</string>
+    <string name="rank_dynamic">动态</string>
+    <string name="rank_info">资讯</string>
+    <!--用户-->
+    <string name="rank_user_type_all">全站粉丝排行榜</string>
+    <string name="rank_user_type_riches">财富达人排行榜</string>
+    <string name="rank_user_type_income">收入达人排行榜</string>
+    <string name="rank_user_type_sign_in">社区签到排行榜</string>
+    <string name="rank_user_type_expert">社区专家排行榜</string>
+    <string name="rank_user_type_qa">问答达人排行榜</string>
+    <!--问答-->
+    <string name="rank_qa_type_day">今日解答排行榜</string>
+    <string name="rank_qa_type_week">一周解答排行榜</string>
+    <string name="rank_qa_type_month">本月解答排行榜</string>
+    <!--动态-->
+    <string name="rank_dynamic_type_day">今日动态排行榜</string>
+    <string name="rank_dynamic_type_week">一周动态排行榜</string>
+    <string name="rank_dynamic_type_month">本月动态排行榜</string>
+    <!--资讯-->
+    <string name="rank_info_type_day">今日资讯排行榜</string>
+    <string name="rank_info_type_week">一周资讯排行榜</string>
+    <string name="rank_info_type_month">本月资讯排行榜</string>
 
+    <string name="rank_type_fans">粉丝：%d</string>
+    <string name="rank_type_answer_count">回答量：%d</string>
+    <string name="rank_type_answer_dig_count">问答点赞量：%d</string>
+    <string name="rank_type_like_count">点赞量：%d</string>
+    <string name="rank_type_view_count">浏览量：%d</string>
+    <string name="rank_type_check_in">连续签到：%d</string>
 </resources>

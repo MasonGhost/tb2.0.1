@@ -140,30 +140,17 @@
                     android:textSize="@dimen/size_content"
                     android:text="@string/certification_basic_info_description"/>
 
-
-            <com.zhiyicx.baseproject.widget.edittext.SEditText
-                    android:id="@+id/edit_input_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:textColorHint="@color/general_for_hint"
-                    android:hint="@string/description_hint"
-                    style="@style/style_edit"
-                    android:maxLength="@integer/certification_description_max_length"
-                    tools:text="xxxxxxxxxxxxxxxxxxxxxxxxx"/>
-        </LinearLayout>
-
-        <TextView
-                android:id="@+id/tv_limit_tip"
-                android:layout_width="wrap_content"
+            <com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView
+                android:id="@+id/edit_input_description"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="@dimen/spacing_mid"
+                android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginRight="@dimen/spacing_mid"
-                android:paddingBottom="@dimen/spacing_small"
-                android:textColor="@color/important_for_note"
-                android:textSize="@dimen/size_note_assist"
-                tools:text="210/255"/>
+                app:hintContent="@string/description_hint"
+                app:limitSize="@integer/certification_description_max_length"
+                app:showLimitSize="@integer/certification_description_show_limit_length"
+              />
+        </LinearLayout>
 
         <ImageView style="@style/style_divider_horizontal"/>
 

@@ -101,7 +101,6 @@ public class AddInfoFragment extends TSFragment<AddInfoContract.Presenter> imple
         Intent intent = new Intent(getActivity(), UploadCoverActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISH_BEAN, mInfoPublishBean);
-
         intent.putExtras(bundle);
         startActivity(intent);
     }

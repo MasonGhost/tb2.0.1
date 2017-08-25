@@ -192,6 +192,9 @@ public interface QAClient {
     @DELETE(ApiConfig.APP_PATH_DELETE_QUESTION_COMMENT)
     Observable<BaseJsonV2<Object>> deleteQuestionComment(@Path("question") String question_id, @Path("answer") String answer_id);
 
+    @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERT_LIST)
+    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("offset") int size);
+
     /*******************************************  打赏  *********************************************/
 
 

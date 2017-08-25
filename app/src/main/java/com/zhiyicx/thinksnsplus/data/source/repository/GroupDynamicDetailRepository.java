@@ -25,8 +25,5 @@ public class GroupDynamicDetailRepository extends BaseChannelRepository implemen
         super(serviceManager);
     }
 
-    @Override
-    public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
-        return mUserInfoRepository.getUserFollowState(user_ids);
-    }
+
 }

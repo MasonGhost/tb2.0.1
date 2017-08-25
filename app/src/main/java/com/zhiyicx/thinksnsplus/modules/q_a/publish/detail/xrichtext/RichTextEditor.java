@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -54,6 +55,15 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     public RichTextEditor(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (getChildCount() == 1) {
+            lastAddEdit.requestFocus();
+            showKeyBoard();
+        }
+        return super.onTouchEvent(ev);
     }
 
     public RichTextEditor(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -277,6 +287,12 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), 0);
+    }
+
+    public void showKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInputFromInputMethod(lastFocusEdit.getWindowToken(), 0);
     }
 
     /**

@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
@@ -26,7 +27,8 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment.BUNDLE_PUBLISHQA_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment
+        .BUNDLE_PUBLISHQA_BEAN;
 
 
 /**
@@ -36,7 +38,9 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuest
  * @Contact master.jungle68@gmail.com
  */
 
-public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter, QATopicBean> implements AddTopicContract.View, MultiItemTypeAdapter.OnItemClickListener, TagFlowLayout.OnTagClickListener {
+public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter, QATopicBean>
+        implements AddTopicContract.View, MultiItemTypeAdapter.OnItemClickListener, TagFlowLayout
+        .OnTagClickListener {
 
     @BindView(R.id.et_qustion)
     EditText mEtQustion;
@@ -78,19 +82,25 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        List<QAPublishBean.Topic> typeIdsList = new ArrayList<>();
-        for (QATopicBean qaTopicBean : mQATopicBeanList) {
-            QAPublishBean.Topic typeIds = new QAPublishBean.Topic();
-            typeIds.setId(qaTopicBean.getId().intValue());
-            typeIdsList.add(typeIds);
-        }
-        mQAPublishBean.setTopics(typeIdsList);
-        mQAPublishBean.setSubject(mEtQustion.getText().toString());
+        saveQustion();
         Intent intent = new Intent(getActivity(), PublishContentActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void saveQustion() {
+        List<QAPublishBean.Topic> typeIdsList = new ArrayList<>();
+        for (QATopicBean qaTopicBean : mQATopicBeanList) {
+            QAPublishBean.Topic typeIds = new QAPublishBean.Topic();
+            typeIds.setId(qaTopicBean.getId().intValue());
+            typeIds.setName(qaTopicBean.getName());
+            typeIdsList.add(typeIds);
+        }
+        mQAPublishBean.setTopics(typeIdsList);
+        mQAPublishBean.setSubject(mEtQustion.getText().toString());
+        mPresenter.saveQuestion(mQAPublishBean);
     }
 
     @Override
@@ -131,16 +141,49 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     }
 
     @Override
+    protected void setLeftClick() {
+        saveQustion();
+        super.setLeftClick();
+    }
+
+    @Override
+    public void onBackPressed() {
+        setLeftClick();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+    }
+
+    @Override
     protected void initData() {
         super.initData();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
-        mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean.getSubject()));
+        mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean
+                .getSubject()));
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
+
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (draft != null) {
+            List<QAPublishBean.Topic> topics = draft.getTopics();
+            if (topics != null && !topics.isEmpty()) {
+                mQATopicBeanList.clear();
+                for (QAPublishBean.Topic topic : topics) {
+                    QATopicBean qaTopicBean = new QATopicBean((long) topic.getId(), topic.getName
+                            ());
+                    mQATopicBeanList.add(qaTopicBean);
+                }
+                mTopicsAdapter.notifyDataChanged();
+            }
+        }
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        AddTopicAdapter adapter = new AddTopicAdapter(getContext(), R.layout.item_publish_question_add_topic, mListDatas);
+        AddTopicAdapter adapter = new AddTopicAdapter(getContext(), R.layout
+                .item_publish_question_add_topic, mListDatas);
         adapter.setOnItemClickListener(this);
         return adapter;
     }
@@ -155,7 +198,8 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             mQATopicBeanList.add(mListDatas.get(position));
             mTopicsAdapter.notifyDataChanged();
         } else {
-            showSnackErrorMessage(getString(R.string.qa_publish_select_topic_count_hint, mMaxTagNums));
+            showSnackErrorMessage(getString(R.string.qa_publish_select_topic_count_hint,
+                    mMaxTagNums));
         }
     }
 

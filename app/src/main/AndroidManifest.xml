@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.zhiyicx.thinksnsplus">
+
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -206,10 +207,6 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".modules.rank.RankActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
             android:name=".modules.wallet.WalletActivity"
             android:screenOrientation="portrait">
         </activity>
@@ -259,6 +256,7 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.q_a.publish.question.PublishQuestionActivity"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
@@ -282,15 +280,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-                android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
+            android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- 认证相关页面 -->
         <activity
             android:name=".modules.certification.input.CertificationInputActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.certification.send.SendCertificationActivity"
             android:screenOrientation="portrait"
@@ -299,7 +297,15 @@
             android:name=".modules.certification.detail.CertificationDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-
+        <!--排行榜相关页面-->
+        <activity
+                android:name=".modules.rank.main.container.RankIndexActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
+        <activity
+                android:name=".modules.rank.type_list.RankTypeListActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"
@@ -409,53 +415,66 @@
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.dynamic.topdynamic.DynamicTopActivity">
-        </activity>
-        <activity android:name=".modules.wallet.withdrawals.WithdrawalsActivity">
-        </activity>
-        <activity android:name=".modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity">
-        </activity>
-        <activity android:name=".modules.wallet.bill_detail.BillDetailActivity">
-        </activity>
+        <activity
+            android:name=".modules.dynamic.topdynamic.DynamicTopActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.withdrawals.WithdrawalsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.bill_detail.BillDetailActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity"
-            android:theme="@style/DynamciSelectTheme">
-        </activity>
-        <activity android:name=".modules.dynamic.send.picture_toll.PictureTollActivity">
-        </activity>
-        <activity android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity">
-        </activity>
-        <activity android:name=".modules.dynamic.topdynamic_comment.DynamicCommentTopActivity">
-        </activity>
-        <activity android:name=".modules.wallet.bill.BillActivity">
-        </activity>
-        <activity android:name=".modules.feedback.FeedBackActivity">
-        </activity>
-        <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/DynamciSelectTheme"/>
+        <activity
+            android:name=".modules.dynamic.send.picture_toll.PictureTollActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.dynamic.topdynamic_comment.DynamicCommentTopActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.bill.BillActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.feedback.FeedBackActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.message.messagereview.MessageReviewActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.q_a.QA_Activity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".modules.q_a.search.container.QASearchContainerActivity"
-            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
-            >
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".modules.q_a.publish.detail.PublishContentActivity"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
-        <activity android:name=".modules.wallet.reward.RewardActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".modules.wallet.reward.list.RewardListActivity"
-                  android:screenOrientation="portrait"/>
-        <!--资讯发布-->
+        <activity
+            android:name=".modules.wallet.reward.RewardActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.reward.list.RewardListActivity"
+            android:screenOrientation="portrait"/>
+        <!-- 资讯发布 -->
         <activity
             android:name=".modules.information.publish.PublishInfoActivity"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -465,13 +484,18 @@
         </activity>
         <activity
             android:name=".modules.information.publish.addinfo.AddInfoCategoryActivity"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.information.publish.uploadcover.UploadCoverActivity"/>
-        <activity android:name=".modules.wallet.sticktop.StickTopActivity"/>
+        <activity
+            android:name=".modules.information.publish.uploadcover.UploadCoverActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.sticktop.StickTopActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.q_a.answer.PublishAnswerActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
@@ -479,8 +503,7 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
 
-
-        <!--找人-->
+        <!-- 找人 -->
         <activity
             android:name=".modules.findsomeone.contianer.FindSomeOneContainerActivity"
             android:screenOrientation="portrait"/>
@@ -490,9 +513,14 @@
         <activity
             android:name=".modules.findsomeone.contacts.ContactsActivity"
             android:screenOrientation="portrait"/>
-
         <activity
-            android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"/>
+            android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.draftbox.DraftBoxActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

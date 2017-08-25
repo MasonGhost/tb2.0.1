@@ -220,25 +220,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     }
 
-    /**
-     * 获取用户关注状态
-     *
-     * @param user_ids
-     * @return
-     */
-    @Override
-    public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
-        return mUserInfoClient.getUserFollowState(user_ids)
-                .map(listBaseJson -> {
-                    if (listBaseJson.isStatus()) {
-                        for (FollowFansBean followFansBean : listBaseJson.getData()) {
-                            followFansBean.setOriginUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-                            followFansBean.setOrigintargetUser("");
-                        }
-                    }
-                    return listBaseJson;
-                });
-    }
 
     /**
      * 关注操作
@@ -338,6 +319,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     public Observable<List<DigedBean>> call(final List<DigedBean> data) {
                         List<Object> userIds = new ArrayList();
                         for (DigedBean digedBean : data) {
+                            digedBean.initDelet();
                             userIds.add(digedBean.getUser_id());
                             userIds.add(digedBean.getTarget_user());
                         }
@@ -380,6 +362,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         }
                         List<Object> userIds = new ArrayList();
                         for (CommentedBean commentedBean : data) {
+                            commentedBean.initDelet();
                             userIds.add(commentedBean.getUser_id());
                             userIds.add(commentedBean.getTarget_user());
                             userIds.add(commentedBean.getReply_user());

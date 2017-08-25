@@ -351,6 +351,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
+        int dynamicPosition=holder.getAdapterPosition()-mHeaderAndFooterWrapper.getHeadersCount();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -362,7 +363,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
                 .LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean
+            initImageCenterPopWindow(dynamicPosition, position, (float) dynamicBean
                             .getImages().get(position).getAmount(),
                     dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc,
                     true);
@@ -385,7 +386,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
-            imageBean.setDynamicPosition(holder.getAdapterPosition());
+            imageBean.setDynamicPosition(dynamicPosition);
             imageBean.setFeed_id(dynamicBean.getId());
             imageBean.setWidth(task.getWidth());
             imageBean.setHeight(task.getHeight());
@@ -544,7 +545,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 2: // 浏览
-                onItemClick(null, null, dataPosition);
+                onItemClick(null, null, dataPosition+ mHeaderAndFooterWrapper.getHeadersCount());
                 break;
 
             case 3: // 更多
@@ -573,7 +574,8 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
                 break;
             default:
-                onItemClick(null, null, dataPosition);
+                onItemClick(null, null, dataPosition+ mHeaderAndFooterWrapper.getHeadersCount());
+
         }
     }
 

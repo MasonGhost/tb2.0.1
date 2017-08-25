@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+    <!--排行榜信息-->
+    <LinearLayout
+            android:id="@+id/ll_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_mid"
+            android:gravity="center_vertical"
+            android:descendantFocusability="beforeDescendants">
+        <TextView
+                android:id="@+id/tv_rank_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/important_for_content"
+                android:textSize="@dimen/size_content"
+                android:gravity="center_vertical"
+                tools:text="xxxxxxxxx"/>
+        <TextView
+                android:id="@+id/tv_to_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/all"
+                android:textSize="@dimen/size_icon_assist"
+                android:textColor="@color/normal_for_assist_text"
+                android:layout_gravity="center_vertical"
+                android:drawablePadding="@dimen/spacing_normal"
+                android:gravity="center_vertical"
+                android:drawableRight="@mipmap/ic_arrow_smallgrey"/>
+    </LinearLayout>
+
+    <!--排行榜的用户列表-->
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_users"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:layout_marginRight="@dimen/spacing_mid"
+            android:layout_marginBottom="@dimen/spacing_mid"/>
+
+    <View
+            style="@style/style_divider_horizontal_light"
+            android:background="@color/general_for_bg_light"
+            android:layout_height="@dimen/spacing_small"/>
+
+</LinearLayout>

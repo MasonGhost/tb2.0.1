@@ -40,21 +40,26 @@
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <!--回答者名字-->
-            <com.zhiyicx.thinksnsplus.widget.NoDefaultPadingTextView
-                    android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/important_for_content"
-                    android:textSize="@dimen/size_content_comment"
-                    tools:text="xxxxxx"/>
 
             <LinearLayout
+                    android:id="@+id/ll_flat_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginLeft="@dimen/spacing_mid_small"
-                    android:layout_toRightOf="@+id/tv_name">
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/spacing_mid_small">
+
+                <!--回答者名字-->
+                <com.zhiyicx.thinksnsplus.widget.NoDefaultPadingTextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/important_for_content"
+                        android:textSize="@dimen/size_content_comment"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/spacing_mid_small"
+                        tools:text="xxxxxx"/>
+
                 <!--邀请人的标志-->
                 <TextView
                         android:id="@+id/tv_invite_flag"
@@ -84,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/size_icon_assist"
                     android:layout_alignParentRight="true"
-                    android:layout_alignBaseline="@+id/tv_name"
+                    android:layout_alignBaseline="@+id/ll_flat_container"
                     android:textColor="@color/general_for_hint"
                     tools:text="xxxxxx"/>
             <!--回答的内容-->

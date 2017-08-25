@@ -43,19 +43,6 @@ public class PublishQuestionAdapter extends CommonAdapter<QAListInfoBean> {
         // 设置用户名，用户简介
         holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT,qa_listInfoBean.getSubject()));
 
-        // 添加点击事件
-        RxView.clicks(holder.getConvertView())
-                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> {
-                    Intent intent = new Intent(mContext, AddTopicActivity.class);
-                    Bundle bundle = new Bundle();
-                    QAPublishBean qaPublishBean = new QAPublishBean();
-                    qaPublishBean.setSubject(qa_listInfoBean.getBody());
-                    bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, qaPublishBean);
-                    intent.putExtras(bundle);
-                    mContext.startActivity(intent);
-                });
-
     }
 
 

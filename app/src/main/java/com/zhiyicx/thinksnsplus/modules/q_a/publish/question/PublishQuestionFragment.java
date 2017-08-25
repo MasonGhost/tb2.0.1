@@ -13,11 +13,14 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
 
@@ -30,8 +33,9 @@ import butterknife.BindView;
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
  */
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean>
-        implements PublishQuestionContract.View {
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter,
+        QAListInfoBean>
+        implements PublishQuestionContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
 
@@ -44,8 +48,9 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     private String mQuestionStr = "";
     private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
 
-    public static PublishQuestionFragment newInstance() {
-        Bundle args = new Bundle();
+    private QAPublishBean mDraftQuestion;
+
+    public static PublishQuestionFragment newInstance(Bundle args) {
         PublishQuestionFragment fragment = new PublishQuestionFragment();
         fragment.setArguments(args);
         return fragment;
@@ -96,23 +101,43 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         } else {
             showSnackErrorMessage(getString(R.string.qa_publish_title_toast));
         }
-
     }
 
     private void addTopic() {
         Intent intent = new Intent(getActivity(), AddTopicActivity.class);
         Bundle bundle = new Bundle();
-        QAPublishBean qaPublishBean = new QAPublishBean();
-        qaPublishBean.setSubject(mQuestionStr);
-        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, qaPublishBean);
+        saveQuestion();
+        bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mDraftQuestion);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void saveQuestion() {
+        if (mDraftQuestion == null) {
+            mDraftQuestion = new QAPublishBean();
+            String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+                    .currentTimeMillis();
+            mDraftQuestion.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+            mDraftQuestion.setMark(Long.parseLong(mark));
+            mDraftQuestion.setSubject(mQuestionStr);
+            mPresenter.saveQuestion(mDraftQuestion);
+        }
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initListener();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        try {
+            mDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+            mEtQustion.setText(mDraftQuestion.getSubject() );
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -136,8 +161,21 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        PublishQuestionAdapter adapter = new PublishQuestionAdapter(getContext(), R.layout.item_publish_question, mListDatas);
+        PublishQuestionAdapter adapter = new PublishQuestionAdapter(getContext(), R.layout
+                .item_publish_question, mListDatas);
+        adapter.setOnItemClickListener(this);
         return adapter;
+    }
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        mEtQustion.setText(mListDatas.get(position).getSubject() + "?");
+        addTopic();
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
     }
 
     /**
@@ -157,11 +195,14 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                 .backgroundAlpha(0.8f)
                 .with(getActivity())
                 .item1ClickListener(() -> {
+                    mPresenter.deleteQuestion(mDraftQuestion);
                     mEditWarningPopupWindow.hide();
                     getActivity().finish();
                 })
                 .item2ClickListener(() -> {
+                    saveQuestion();
                     mEditWarningPopupWindow.hide();
+                    getActivity().finish();
                 })
                 .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
     }

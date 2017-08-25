@@ -336,7 +336,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         }
         mRootView.getListDatas().get(position).setFeed_view_count(mRootView.getListDatas().get(position).getFeed_view_count() + 1);
         mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(position));
-        mRepository.handleDynamicViewCount(feed_id);
+//        mRepository.handleDynamicViewCount(feed_id);
         mRootView.refreshData();
     }
 
@@ -354,16 +354,6 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                 (String.valueOf(mRootView.getListDatas().get(position).getFeed_mark())));
         backgroundRequestTaskBean.setParams(params);
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-    }
-
-    @Override
-    public void deleteComment(DynamicDetailBeanV2 dynamicBean, int dynamicPosition, long comment_id, int commentPositon) {
-        mRootView.getListDatas().get(dynamicPosition).setFeed_comment_count(dynamicBean.getFeed_comment_count() - 1);
-        mDynamicDetailBeanV2GreenDao.insertOrReplace(mRootView.getListDatas().get(dynamicPosition));
-        mDynamicCommentBeanGreenDao.deleteSingleCache(dynamicBean.getComments().get(commentPositon));
-        mRootView.getListDatas().get(dynamicPosition).getComments().remove(commentPositon);
-        mRootView.refreshData(dynamicPosition);
-        mRepository.deleteComment(dynamicBean.getId(), comment_id);
     }
 
     @Override
@@ -513,6 +503,9 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
+                        walletBean.setBalance(walletBean.getBalance() - note);
+                        mWalletBeanGreenDao.insertOrReplace(walletBean);
+
                         if (isImage) {
                             return Observable.just(stringBaseJsonV2);
                         }

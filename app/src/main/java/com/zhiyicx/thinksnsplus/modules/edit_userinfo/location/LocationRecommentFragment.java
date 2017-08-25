@@ -54,6 +54,8 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     ImageView mIvAnimation;
     @BindView(R.id.rv_hot_city)
     RecyclerView mRvHotCity;
+    @BindView(R.id.tv_cancel)
+    TextView mTvSearchCancel;
 
     // 声明 AMapLocationClientOption 对象
     public AMapLocationClientOption mLocationOption = null;
@@ -91,6 +93,10 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
     @Override
     protected boolean usePermisson() {
         return true;
+    }
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTvSearchCancel;
     }
 
     @Override
@@ -142,7 +148,7 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                     //可在其中解析amapLocation获取相应内容。
                     LogUtils.d("1 = " + aMapLocation.getAddress());
                     LogUtils.d("2 = " + aMapLocation.getCity());
-                    mCurrentLocation = aMapLocation.getCountry() + " " + aMapLocation.getProvince() + " " + aMapLocation.getCity();
+                    mCurrentLocation = aMapLocation.getCity();
                     mTvCurrentLocation.setText(aMapLocation.getCity());
                 } else {
                     //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。

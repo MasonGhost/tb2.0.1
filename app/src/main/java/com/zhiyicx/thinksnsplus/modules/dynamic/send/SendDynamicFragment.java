@@ -355,7 +355,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void addPlaceHolder() {
-        if (selectedPhotos.size() < MAX_PHOTOS && !isToll) {// 这个需求是真的怪，打开收费时隐藏添加图片,头皮发麻
+        // selectedPhotos.size() == 0 这个是为了配合这个奇葩需求
+        if (selectedPhotos.size() == 0 || selectedPhotos.size() < MAX_PHOTOS && !isToll) {// 这个需求是真的怪，打开收费时隐藏添加图片,头皮发麻
             // 占位缺省图
             ImageBean camera = new ImageBean();
             selectedPhotos.add(camera);
@@ -489,8 +490,14 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                 mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             } else {
 
-                /*           这里肯定是要删的                               */
+                /*           这里肯定是要删的           真滴很烦             */
                 if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
+
+                    mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+
+                    if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
+                        return; // 九张
+                    }
                     if (isToll) {
                         selectedPhotos.remove(selectedPhotos.size() - 1);
                     } else {
@@ -498,7 +505,6 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                         selectedPhotos.add(new ImageBean());
                     }
                     mCommonAdapter.notifyDataSetChanged();
-                    mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
                 }
                 /*                                                           */
 
@@ -797,8 +803,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void initInstructionsPop(String title, String des) {
         if (mInstructionsPopupWindow != null) {
-            mInstructionsPopupWindow.newBuilder().item1Str(title).desStr(des);
-            mInstructionsPopupWindow.show();
+            mInstructionsPopupWindow.newBuilder()
+                    .item1Str(title)
+                    .desStr(des)
+                    .build().show();
             return;
         }
         mInstructionsPopupWindow = ActionPopupWindow.builder()

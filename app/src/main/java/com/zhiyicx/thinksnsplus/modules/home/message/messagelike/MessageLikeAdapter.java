@@ -73,7 +73,11 @@ public class MessageLikeAdapter extends CommonAdapter<DigedBean> {
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
             holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, digedBean.getSource_content());
+            if(digedBean.getIsDelete()){
+                holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
+            }else {
+                holder.setText(R.id.tv_deatil, digedBean.getSource_content());
+            }
         }
 
         holder.setText(R.id.tv_name, digedBean.getDigUserInfo().getName());

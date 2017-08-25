@@ -81,13 +81,18 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         if (parent_id < 0) {
             return;
         }
-        Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas()), mRootView.getTopDyas())
+
+        double amount=PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas());
+        Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, amount, mRootView.getTopDyas())
                 .doOnSubscribe(() ->
                         mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
                 )
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
+                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        walletBean.setBalance(walletBean.getBalance() - amount);
+                        mWalletBeanGreenDao.insertOrReplace(walletBean);
                         switch (mRootView.getType()) {
                             case TYPE_DYNAMIC:
                                 mRootView.showSnackSuccessMessage(mContext.getString(R.string.dynamic_list_top_dynamic_success));

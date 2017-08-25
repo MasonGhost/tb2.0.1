@@ -63,9 +63,6 @@ public interface FindPasswordContract {
          * @param newPassword 新密码
          * @return
          */
-        Observable<BaseJson<CacheBean>> findPassword(String phone
-                , String vertifyCode, String newPassword);
-
         Observable<CacheBean> findPasswordV2(String phone
                 , String vertifyCode, String newPassword);
 

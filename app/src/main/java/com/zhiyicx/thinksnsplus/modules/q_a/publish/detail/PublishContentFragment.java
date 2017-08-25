@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -62,11 +63,11 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @BindView(R.id.rl_publish_tool)
     RelativeLayout mRlPublishTool;
 
-    private PhotoSelectorImpl mPhotoSelector;
+    protected PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mInstructionsPopupWindow;
     protected int[] mImageIdArray;// 已经添加的图片数量图片数组 id
-    protected int mPicTag;// 已经添加的图片数量
+    private int mPicTag;// 已经添加的图片数量
     protected int mPicAddTag;// 封装数据时 当前 图片 下标
     protected int mAnonymity;
 
@@ -122,13 +123,35 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        saveQuestion();
         Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
-        mQAPublishBean.setBody(getContentString());
-        mQAPublishBean.setAnonymity(mAnonymity);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    protected void setLeftClick() {
+        saveQuestion();
+        super.setLeftClick();
+    }
+
+    @Override
+    public void onBackPressed() {
+        setLeftClick();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+    }
+
+    private void saveQuestion() {
+        mQAPublishBean.setBody(getContentString());
+        mQAPublishBean.setAnonymity(mAnonymity);
+        mPresenter.saveQuestion(mQAPublishBean);
     }
 
     @NonNull
@@ -138,8 +161,13 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         for (RichTextEditor.EditData editData : datas) {
             builder.append(editData.inputStr);
             if (!editData.imagePath.isEmpty()) {
-                builder.append(String.format(Locale.getDefault(),
-                        MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE, mImageIdArray[mPicAddTag]));
+                if (editData.imagePath.contains("![image]")) {
+                    builder.append(editData.imagePath);
+                } else {
+                    builder.append(String.format(Locale.getDefault(),
+                            MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE,
+                            mImageIdArray[mPicAddTag]));
+                }
                 mPicAddTag++;
             }
         }
@@ -149,13 +177,24 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void initData() {
         mImageIdArray = new int[100];
-        mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
                         .NO_CRAFT))
                 .build().photoSelectorImpl();
+
+        mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (draft != null) {
+            String body = draft.getBody();
+            if (!TextUtils.isEmpty(body)) {
+                mRicheTest.clearAllLayout();
+                mPresenter.pareseBody(body);
+            }
+        }
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -176,13 +215,15 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Override
-    public void addImageViewAtIndex(String iamgePath, int iamge_id, String markdonw,boolean isLast) {
-
+    public void addImageViewAtIndex(String iamge, int iamge_id, String markdonw, boolean isLast) {
+        mImageIdArray[mPicTag] = iamge_id;
+        mPicTag++;
+        mRicheTest.updateImageViewAtIndex(mRicheTest.getLastIndex(), iamge, markdonw, isLast);
     }
 
     @Override
     public void addEditTextAtIndex(String text) {
-
+        mRicheTest.updateEditTextAtIndex(mRicheTest.getLastIndex(), text);
     }
 
     @Override

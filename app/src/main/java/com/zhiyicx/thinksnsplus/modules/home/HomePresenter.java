@@ -14,6 +14,7 @@ import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
@@ -22,7 +23,9 @@ import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
@@ -53,6 +56,9 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
+    WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
     @Inject
     public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
@@ -220,45 +226,44 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
 
     /**
-     *
      * @param isClick
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_CHECK_IN_CLICK)
     public void checkInClick(boolean isClick) {
-       CheckInBean checkInBean= mRootView.getCheckInData();
-        if(checkInBean!=null) {
+        CheckInBean checkInBean = mRootView.getCheckInData();
+        if (checkInBean != null) {
             mRootView.showCheckInPop(checkInBean);
-        }else {
+        } else {
             getCheckInInfo();
         }
     }
 
     @Override
     public void checkIn() {
-       Subscription subscription= mUserInfoRepository.checkIn()
-        .subscribe(new BaseSubscribeForV2<Object>() {
-            @Override
-            protected void onSuccess(Object data) {
-                getCheckInInfo();
-            }
+        Subscription subscription = mUserInfoRepository.checkIn()
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        getCheckInInfo();
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                mRootView.showSnackErrorMessage(message);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                mRootView.showSnackErrorMessage(mContext.getString(R.string.check_in_fail));
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.check_in_fail));
+                    }
+                });
         addSubscrebe(subscription);
     }
 
     @Override
     public void getCheckInInfo() {
 
-        Subscription subscription= mUserInfoRepository.getCheckInInfo()
+        Subscription subscription = mUserInfoRepository.getCheckInInfo()
                 .subscribe(new BaseSubscribeForV2<CheckInBean>() {
                     @Override
                     protected void onSuccess(CheckInBean data) {
@@ -269,4 +274,8 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
     }
 
+    @Override
+    public double getWalletRatio() {
+        return mWalletConfigBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()).getRatio();
+    }
 }

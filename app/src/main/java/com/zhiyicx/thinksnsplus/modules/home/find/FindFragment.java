@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
+import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;
@@ -62,6 +63,8 @@ public class FindFragment extends TSFragment {
     CombinationButton mFindNearby;
     @BindView(R.id.find_quiz)
     CombinationButton mFindQuiz;
+    @BindView(R.id.find_rank)
+    CombinationButton mFindRank;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -128,7 +131,7 @@ public class FindFragment extends TSFragment {
     }
 
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
-            R.id.find_person, R.id.find_nearby, R.id.find_quiz, R.id.find_qa})
+            R.id.find_person, R.id.find_nearby, R.id.find_quiz, R.id.find_qa, R.id.find_rank})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
@@ -208,6 +211,9 @@ public class FindFragment extends TSFragment {
                 break;
             case R.id.find_quiz:
                 startActivity(new Intent(getActivity(), QARewardActivity.class));
+                break;
+            case R.id.find_rank:
+                startActivity(new Intent(getActivity(), RankIndexActivity.class));
                 break;
             default:
                 break;

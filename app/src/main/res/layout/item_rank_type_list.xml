@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/type_item_height"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/spacing_mid"
+        android:paddingRight="@dimen/spacing_mid"
+        android:gravity="center_vertical">
+
+    <!--排行-->
+    <TextView
+            android:id="@+id/tv_rank"
+            android:layout_width="@dimen/type_item_rank_num_width"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_rank_number"
+            android:textColor="@color/themeColor"
+            tools:text="100"
+            android:layout_marginRight="@dimen/spacing_large"/>
+
+    <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+        <com.zhiyicx.baseproject.widget.UserAvatarView
+                android:id="@+id/iv_user_portrait"
+                android:layout_width="@dimen/type_item_user_portrait"
+                android:layout_height="@dimen/type_item_user_portrait"
+                android:layout_marginRight="@dimen/spacing_mid"
+                android:layout_centerVertical="true"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_toRightOf="@+id/iv_user_portrait"
+                android:gravity="center_vertical">
+            <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_content"
+                    android:textColor="@color/important_for_content"
+                    tools:text="xxxxxxxx"/>
+
+            <!--排序的分类 什么粉丝啊  点赞啊 这种-->
+            <TextView
+                    android:id="@+id/tv_rank_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_content_assist"
+                    android:textColor="@color/normal_for_assist_text"
+                    android:layout_marginTop="@dimen/spacing_mid_small_8dp"
+                    android:visibility="visible"
+                    tools:text="xxxxxxxx"/>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <!--关注按钮-->
+    <ImageView
+            android:id="@+id/iv_user_follow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/spacing_mid"
+            android:paddingLeft="@dimen/spacing_mid"
+            android:paddingRight="@dimen/spacing_mid"
+            android:src="@mipmap/ico_me_follow"/>
+
+</LinearLayout>

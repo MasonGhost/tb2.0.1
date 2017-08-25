@@ -5,10 +5,6 @@ import android.content.Intent;
 
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.DaggerLocationSearchComponent;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchPresenter;
-import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchPresenterModule;
 
 /**
  * @Describe  用户搜索

@@ -78,9 +78,7 @@ public interface InfoDetailsConstract {
     }
 
     interface Repository extends IRewardRepository {
-        Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String news_id,
-                                                                           Long max_id,
-                                                                           Long limit);
+
         Observable<InfoCommentBean> getInfoCommentListV2(String news_id,
                                                          Long max_id,
                                                          Long limit);
@@ -92,7 +90,6 @@ public interface InfoDetailsConstract {
 
         Observable<InfoListDataBean> getInfoDetail(String news_id);
 
-        Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id);
 
         void handleCollect(boolean isCollected, String news_id);
 

@@ -56,7 +56,7 @@ public class UserCertificationInfo extends BaseListBean{
     @Convert(converter = DataConvert.class, columnType = String.class)
     private UserCertificationData data;
     private long examiner;
-    private long status;
+    private long status; // 2-被驳回 0-审核 1-通过
     private String created_at;
     private String updated_at;
     @Convert(converter = CategoryConvert.class, columnType = String.class)

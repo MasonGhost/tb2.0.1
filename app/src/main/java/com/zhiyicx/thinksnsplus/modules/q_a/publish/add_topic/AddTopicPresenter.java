@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,5 +63,15 @@ public class AddTopicPresenter extends AppBasePresenter<AddTopicContract.Reposit
     @Override
     public boolean insertOrUpdateData(@NotNull List<QATopicBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public QAPublishBean getDraftQuestion(long qestion_mark) {
+        return mRepository.getDraftQuestion(qestion_mark);
+    }
+
+    @Override
+    public void saveQuestion(QAPublishBean qestion) {
+        mRepository.saveQuestion(qestion);
     }
 }

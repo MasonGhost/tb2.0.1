@@ -58,7 +58,7 @@ public class ZoomView {
         if (originHeight + max_distance <= halfScreenHeight) {
             max_distance = halfScreenHeight - originHeight;
         }
-        LogUtils.i("ZoomViewConstructor" + "   max_distance" + max_distance + "  originHeight" + originHeight);
+        //LogUtils.i("ZoomViewConstructor" + "   max_distance" + max_distance + "  originHeight" + originHeight);
         can_refresh_distance = max_distance / 2;//可刷新距离，为最大移动距离的一半
 
     }
@@ -97,7 +97,7 @@ public class ZoomView {
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        LogUtils.i("zoomView-->" + zoomView.getTop());
+                        //LogUtils.i("zoomView-->" + zoomView.getTop());
                         if (!mScaling) {
                             //当图片也就是第一个item完全可见的时候，记录触摸屏幕的位置
                             if (mLinearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {

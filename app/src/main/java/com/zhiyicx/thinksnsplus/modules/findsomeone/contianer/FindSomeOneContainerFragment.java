@@ -10,11 +10,6 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.services.core.LatLonPoint;
-import com.amap.api.services.geocoder.GeocodeAddress;
-import com.amap.api.services.geocoder.GeocodeResult;
-import com.amap.api.services.geocoder.GeocodeSearch;
-import com.amap.api.services.geocoder.RegeocodeResult;
-import com.vladsch.flexmark.ast.Text;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
@@ -52,6 +47,8 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
     //声明定位回调监听器
     private AMapLocationClient mLocationClient;
 
+    private boolean mIscationed = false;
+
     private FindSomeOneContainerViewPagerFragment mFindSomeOneContainerViewPagerFragment;
 
     public static FindSomeOneContainerFragment newInstance(Bundle bundle) {
@@ -59,6 +56,11 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
         findSomeOneContainerFragment.setArguments(bundle);
         return findSomeOneContainerFragment;
 
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mTvToolbarRight;
     }
 
     @Override
@@ -90,15 +92,22 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                 , R.id.fragment_container);
 
         initListener();
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
-                    if (aBoolean) {
+                    if (aBoolean && !mIscationed) {
                         initLocation();
                     } else {
                         mTvToolbarRight.setText(getString(R.string.emptyStr));
                     }
                 });
-
     }
 
     private void initLocation() {
@@ -126,6 +135,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
         AMapLocationListener mAMapLocationListener = aMapLocation -> {
             if (aMapLocation != null) {
                 if (aMapLocation.getErrorCode() == 0) {
+                    mIscationed = true;
                     //可在其中解析amapLocation获取相应内容。
                     LogUtils.d("1 = " + aMapLocation.getAddress());
                     LogUtils.d("2 = " + aMapLocation.getCity());
@@ -156,7 +166,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
     }
 
 
-    @OnClick({R.id.tv_toolbar_left,R.id.tv_toolbar_center, R.id.tv_toolbar_right_two, R.id.tv_toolbar_right})
+    @OnClick({R.id.tv_toolbar_left, R.id.tv_toolbar_center, R.id.tv_toolbar_right_two, R.id.tv_toolbar_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_left:
@@ -196,23 +206,29 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
             if (data.getExtras() != null) {
                 LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
 
-                try {
-                    locationStr = LocationBean.getlocation(locationBean);
+                locationStr = LocationBean.getlocation(locationBean);
+                if (locationStr.contains("，")) {
                     String[] result = locationStr.split("，");
-                    if (result.length > 3) {
+                    if (result.length > 2) {
                         mTvToolbarRight.setText(result[result.length - 1]);
                     } else {
                         mTvToolbarRight.setText(result[result.length - 2]);
                     }
-                } catch (Exception e) {
-                    locationStr = locationBean.getName();
-                    String[] result = locationStr.split(" ");
-                    if (result.length > 3) {
-                        mTvToolbarRight.setText(result[result.length - 1]);
-                    } else {
-                        mTvToolbarRight.setText(result[result.length - 2]);
+                } else {
+                    try {
+                        locationStr = locationBean.getName();
+                        String[] result = locationStr.split(" ");
+                        if (result.length > 2) {
+                            mTvToolbarRight.setText(result[result.length - 1]);
+                        } else {
+                            mTvToolbarRight.setText(result[result.length - 2]);
+                        }
+                    } catch (Exception e1) {
+                        locationStr = locationBean.getName();
+                        mTvToolbarRight.setText(locationStr);
                     }
                 }
+
             }
             if (TextUtils.isEmpty(locationStr)) {
                 mTvToolbarRight.setText(getString(R.string.choose_city));

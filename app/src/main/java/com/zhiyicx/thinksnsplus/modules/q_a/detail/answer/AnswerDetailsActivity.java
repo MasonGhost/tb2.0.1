@@ -6,9 +6,6 @@ import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.modules.information.infodetails.DaggerInfoDetailsComponent;
-
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
 
 /**
  * @Author Jliuer
@@ -36,6 +33,6 @@ public class AnswerDetailsActivity extends TSActivity<AnswerDetailsPresenter, An
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UmengSharePolicyImpl.onActivityResult(requestCode, resultCode, data, this);
-        mContanierFragment.onActivityResult(requestCode,resultCode,data);
+        mContanierFragment.onActivityResult(requestCode, resultCode, data);
     }
 }
