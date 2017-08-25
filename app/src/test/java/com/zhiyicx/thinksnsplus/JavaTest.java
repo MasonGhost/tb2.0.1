@@ -394,4 +394,26 @@ public class JavaTest {
 
 
     }
+
+    @Test
+    public void testEmoji() {
+        containsEmoji("😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁22");
+    }
+
+    private static boolean containsEmoji(String str) {
+        int test = 0;
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
+            if (isEmojiCharacter(str.charAt(i))) {
+                test++;
+            }
+        }
+        System.out.println("result::" + test);
+        System.out.println("len::" + len);
+        return false;
+    }
+
+    private static boolean isEmojiCharacter(char codePoint) {
+        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF || codePoint >= 0xE000 && codePoint <= 0xFFFD);
+    }
 }
