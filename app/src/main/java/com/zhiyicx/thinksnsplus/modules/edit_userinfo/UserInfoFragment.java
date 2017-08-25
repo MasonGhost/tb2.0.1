@@ -39,6 +39,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.LocationRecommentActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.location.search.LocationSearchFragment;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoCategoryActivity;
@@ -283,7 +284,7 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
                 // 尝试隐藏键盘
                 DeviceUtils.hideSoftKeyboard(getContext(), mLlCityContainer);
 
-                Intent intent = new Intent(getActivity(), LocationSearchActivity.class);
+                Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);
 //                Bundle bundle = new Bundle();
 //                bundle.putString(LocationSearchFragment.BUNDLE_LOCATION_STRING, mTvCity.getText().toString().trim());
 //                intent.putExtras(bundle);
