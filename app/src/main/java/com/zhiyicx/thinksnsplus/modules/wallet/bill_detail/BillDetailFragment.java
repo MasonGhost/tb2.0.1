@@ -82,10 +82,15 @@ public class BillDetailFragment extends TSFragment {
     @Override
     protected void initData() {
         mBillDetailBean = getArguments().getParcelable(BILL_INFO);
-        int action = mBillDetailBean.getAction();
+        int action = mBillDetailBean.getAction(); // action =0代表 money 增加
         int status = mBillDetailBean.getStatus();
         boolean is_user = mBillDetailBean.getUserInfoBean() != null;
-        mBillUser.setText(getString(action == 0 ? R.string.account_to_name : R.string.account_form_name));
+        if (mBillDetailBean.getChannel().equals("system")) {  // action ==0  -， 1 +
+            mBillUser.setText(getString(action == 0 ? R.string.account_form_name : R.string.account_to_name));
+        } else {
+            mBillUser.setText(getString(action == 0 ? R.string.account_to_name : R.string.account_form_name));
+        }
+
         mBillStatus.setText(getString(status == 0 ? R.string.transaction_doing : (status == 1 ? R.string.transaction_success : R.string.transaction_fail)));
         String moneyStr = (status == 1 ? (action == 0 ? "- " : "+ ") : "") + String.format(Locale.getDefault(), getString(R.string.dynamic_send_toll_select_money_),
                 PayConfig.realCurrencyFen2Yuan(mBillDetailBean.getAmount()));
