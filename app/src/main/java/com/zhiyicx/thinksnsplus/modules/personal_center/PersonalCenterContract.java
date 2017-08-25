@@ -7,6 +7,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.IDynamicReppsitory;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicContract;
 
