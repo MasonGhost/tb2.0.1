@@ -99,7 +99,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        handleBack();
     }
 
     @Override
@@ -117,6 +117,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         return 0;
     }
 
+
     @Override
     protected void setRightClick() {
         super.setRightClick();
@@ -125,7 +126,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         infoPublishBean.setContent(getContentString());
         infoPublishBean.setAmout(100);
         infoPublishBean.setCover(mImageIdArray[0]);
-        infoPublishBean.setImage(mImageIdArray[0]==0?null:(long)mImageIdArray[0]);
+        infoPublishBean.setImage(mImageIdArray[0] == 0 ? null : (long) mImageIdArray[0]);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
         Bundle bundle = new Bundle();
@@ -357,11 +358,12 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     private void handleBack() {
-        if (mToolbarRight.isEnabled()) {
+        if (!TextUtils.isEmpty(mEtInfoTitle.getEtContent().getText()) || mRicheTest.isHasContent()) {
             mRicheTest.hideKeyBoard();
             initCanclePopupWindow();
         } else {
             super.setLeftClick();
         }
     }
+
 }
