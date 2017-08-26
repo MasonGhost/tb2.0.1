@@ -270,8 +270,7 @@ public interface UserInfoClient {
      * 更新认证信息
      */
     @PATCH(ApiConfig.APP_PATH_CERTIFICATION)
-    Observable<BaseJsonV2<Object>> updateUserCertificationInfo();
-
+    Observable<BaseJsonV2<Object>> updateUserCertificationInfo(@Body RequestBody requestBody);
 
     /*******************************************  打赏  *********************************************/
 

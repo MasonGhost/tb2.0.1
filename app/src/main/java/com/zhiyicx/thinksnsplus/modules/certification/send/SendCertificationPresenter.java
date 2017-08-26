@@ -24,6 +24,7 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -38,6 +39,8 @@ public class SendCertificationPresenter extends BasePresenter<SendCertificationC
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
 
     @Inject
     public SendCertificationPresenter(SendCertificationContract.Repository repository, SendCertificationContract.View rootView) {
@@ -46,6 +49,13 @@ public class SendCertificationPresenter extends BasePresenter<SendCertificationC
 
     @Override
     public void sendCertification(SendCertificationBean bean) {
+        UserCertificationInfo userCertificationInfo = mUserCertificationInfoGreenDao.getInfoByUserId();
+        if (userCertificationInfo != null && userCertificationInfo.getStatus() == 2){
+            // 表明是重新提交的
+            bean.setUpdate(true);
+        } else {
+            bean.setUpdate(false);
+        }
         mRootView.updateSendState(true, false, mContext.getString(R.string.send_certification_ing));
         Subscription subscription = mRepository.sendCertification(bean)
                 .compose(mSchedulersTransformer)
