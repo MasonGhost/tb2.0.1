@@ -76,7 +76,11 @@ public class SendCertificationRepository implements SendCertificationContract.Re
             public Observable<BaseJsonV2<Object>> call(SendCertificationBean bean) {
                 RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(bean));
                 LogUtils.d("Cathy", new Gson().toJson(bean));
-                return mUserInfoClient.sendUserCertificationInfo(body);
+                if (bean.isUpdate()){
+                    return mUserInfoClient.updateUserCertificationInfo(body);
+                } else {
+                    return mUserInfoClient.sendUserCertificationInfo(body);
+                }
             }
         });
     }
