@@ -125,7 +125,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         infoPublishBean.setContent(getContentString());
         infoPublishBean.setAmout(100);
         infoPublishBean.setCover(mImageIdArray[0]);
-        infoPublishBean.setImage(mImageIdArray[0]);
+        infoPublishBean.setImage(mImageIdArray[0]==0?null:(long)mImageIdArray[0]);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
         Bundle bundle = new Bundle();
