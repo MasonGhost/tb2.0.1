@@ -69,7 +69,7 @@ public class SendCertificationRepository implements SendCertificationContract.Re
             }
             return integers;
         }).map(integers -> {
-            bean.setPicList(null);
+//            bean.setPicList(null);
             return bean;
         }).flatMap(new Func1<SendCertificationBean, Observable<BaseJsonV2<Object>>>() {
             @Override
