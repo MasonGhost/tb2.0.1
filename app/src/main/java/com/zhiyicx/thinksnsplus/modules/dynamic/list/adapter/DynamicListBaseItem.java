@@ -333,7 +333,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .override(w, h)
                         .placeholder(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.mipmap.pic_locked)
+                        .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked)
                         .into(view);
             } else {
                 Glide.with(mContext)
@@ -341,7 +341,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                         .override(w, h)
                         .placeholder(R.drawable.shape_default_image)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.mipmap.pic_locked)
+                        .error(R.drawable.shape_default_image)
                         .into(view);
             }
         }

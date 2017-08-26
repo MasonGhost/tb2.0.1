@@ -22,15 +22,15 @@ public class PayConfig {
 
     public static final String WX_APP_ID = "wx324324324";
     public static final double MONEY_UNIT = 100; // 人民币以分为单位，* 100  后做计算防止浮点数丢失，处理完再除以 100
-    public static final double RATIO_UNIT = 100; // 转换率单位 %
+    public static final double RATIO_UNIT = 100; // 转换率单位 %，这个是针对 元 单位的
 
     /**
      * @param d     游戏币
      * @param ratio 转换率，是个百分数：500  -> 500%
-     * @return 真实货币分单位
+     * @return 真实货币元单位 再乘以 MONEY_UNIT 得到 分单位
      */
     public static double gameCurrency2RealCurrency(double d, int ratio) {
-        return (RATIO_UNIT * d / ratio);
+        return (RATIO_UNIT * d / ratio) * MONEY_UNIT;
     }
 
     /**
@@ -39,23 +39,24 @@ public class PayConfig {
      * @return 与真实货币 分单位对应的 游戏币
      */
     public static double realCurrency2GameCurrency(double d, int ratio) {
-        return (d / MONEY_UNIT * ratio / RATIO_UNIT);
+        // 转换比例是针对  元 的，所有要先把分 转成 元
+        return (realCurrencyFen2Yuan(d) * ratio / RATIO_UNIT);
     }
 
     /**
-     * @param d 真实货币 元单位
+     * @param d     真实货币 元单位
      * @return 真实货币 分单位
      */
     public static double realCurrencyYuan2Fen(double d) {
-        return d * MONEY_UNIT;
+        return d*MONEY_UNIT;
     }
 
     /**
-     * @param d 真实货币 分单位
+     * @param d     真实货币 分单位
      * @return 真实货币 元单位
      */
     public static double realCurrencyFen2Yuan(double d) {
-        return d / MONEY_UNIT;
+        return d/MONEY_UNIT;
     }
 
 }
