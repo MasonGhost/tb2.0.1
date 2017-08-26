@@ -1,25 +1,18 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.list;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListContract;
-import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 
 import org.jetbrains.annotations.NotNull;
-import org.simple.eventbus.Subscriber;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,7 +35,7 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListF
 public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListContract.Repository,
         FindSomeOneListContract.View> implements FindSomeOneListContract.Presenter {
 
-    public static final int DEFAULT_PAGE_SIZE = 15;
+    public static final int DEFAULT_PAGE_SIZE = TSListFragment.DEFAULT_PAGE_SIZE;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 

@@ -150,7 +150,12 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                 .map(listBaseJson -> {
                     if (!isLoadMore && AppApplication.getmCurrentLoginAuth().getUser_id() == user_id) { // 如果是刷新，并且获取到了数据，更新发布的动态 ,把发布的动态信息放到请求数据的前面
                         List<DynamicDetailBeanV2> data = getDynamicBeenFromDBV2();
-                        mRootView.updateDynamicCounts(data.size());//修改动态条数
+                        try {
+                            mRootView.updateDynamicCounts(data.size());//修改动态条数
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         data.addAll(listBaseJson);
                     }
                     for (int i = 0; i < listBaseJson.size(); i++) { // 把自己发的评论加到评论列表的前面
@@ -498,7 +503,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
             mRootView.goRecharge(WalletActivity.class);
             return;
         }
-        mCommentRepository.paykNote(note)
+        Subscription subscribe = mCommentRepository.paykNote(note)
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
@@ -552,6 +557,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                         mRootView.hideCenterLoading();
                     }
                 });
+        addSubscrebe(subscribe);
     }
 
     /**
@@ -580,7 +586,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
     public void handleSendComment(DynamicCommentBean dynamicCommentBean) {
-        Observable.just(dynamicCommentBean)
+        Subscription subscribe = Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(dynamicCommentBean1 -> {
@@ -611,6 +617,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
 
     }
 
@@ -622,7 +629,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
      */
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
     public void updateDynamic(Bundle data) {
-        Observable.just(data)
+        Subscription subscribe = Observable.just(data)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(bundle -> {
@@ -649,6 +656,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                     }
 
                 }, throwable -> throwable.printStackTrace());
+        addSubscrebe(subscribe);
 
 
     }
