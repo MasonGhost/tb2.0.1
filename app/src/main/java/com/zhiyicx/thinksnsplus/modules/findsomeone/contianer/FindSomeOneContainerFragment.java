@@ -105,7 +105,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                     if (aBoolean && !mIscationed) {
                         initLocation();
                     } else {
-                        mTvToolbarRight.setText(getString(R.string.choose_city));
+//                        mTvToolbarRight.setText(getString(R.string.choose_city));
                     }
                 });
     }
