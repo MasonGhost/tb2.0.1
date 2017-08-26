@@ -74,6 +74,7 @@ public interface UserInfoContract {
 
         /**
          * 更新用户标签
+         *
          * @param datas tags
          */
         void updateTags(List<UserTagBean> datas);
@@ -230,7 +231,7 @@ public interface UserInfoContract {
          * @param offset 偏移量, 注: 此参数为之前获取数量的总和
          * @return
          */
-        Observable<List<UserInfoBean>> getHotUsers( Integer limit,Integer offset);
+        Observable<List<UserInfoBean>> getHotUsers(Integer limit, Integer offset);
 
         /**
          * 最新用户
@@ -239,7 +240,7 @@ public interface UserInfoContract {
          * @param offset 偏移量, 注: 此参数为之前获取数量的总和
          * @return
          */
-        Observable<List<UserInfoBean>> getNewUsers(Integer limit,Integer offset);
+        Observable<List<UserInfoBean>> getNewUsers(Integer limit, Integer offset);
 
         /**
          * tag 推荐用户
@@ -248,7 +249,7 @@ public interface UserInfoContract {
          * @param offset 偏移量, 注: 此参数为之前获取数量的总和
          * @return
          */
-        Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit,  Integer offset);
+        Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset);
 
         /**
          * phone 推荐用户
@@ -267,7 +268,7 @@ public interface UserInfoContract {
          * @param latitude  纬度
          * @return
          */
-        Observable<Object> updateUserLocation(double longitude,  double latitude);
+        Observable<Object> updateUserLocation(double longitude, double latitude);
 
         /**
          * 根据经纬度查询周围最多 50KM 内的 TS+ 用户
@@ -279,8 +280,7 @@ public interface UserInfoContract {
          * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
          * @return
          */
-        Observable<List<NearbyBean>> getNearbyData(double longitude,double latitude,Integer radius,Integer limit, Integer page);
-
+        Observable<List<NearbyBean>> getNearbyData(double longitude, double latitude, Integer radius, Integer limit, Integer page);
 
 
         /*******************************************  签到  *********************************************/
@@ -305,7 +305,7 @@ public interface UserInfoContract {
          * @param offset 数据偏移数，默认为 0。
          * @return
          */
-        Observable<List<UserInfoBean>> getCheckInRanks( Integer offset);
+        Observable<List<UserInfoBean>> getCheckInRanks(Integer offset);
     }
 
     interface Presenter extends IBasePresenter {

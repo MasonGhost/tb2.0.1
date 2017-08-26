@@ -49,6 +49,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARCH_RECOMMENT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
 /**
@@ -316,6 +317,16 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO)
     Observable<List<UserInfoBean>> getUsersRecommentByTag(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * 搜索用户
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @GET(APP_PATH_SEARCH_RECOMMENT_USER)
+    Observable<List<UserInfoBean>> searchUserinfoWithRecommend(@Query("limit") Integer limit, @Query("offset") Integer offset, @Query("keyword") String keyword);
 
     /**
      * phone 推荐用户
