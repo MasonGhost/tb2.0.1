@@ -241,24 +241,25 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
             case R.id.bt_certification:
                 // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
-                if (mUserCertificationInfo != null
-                        && mUserCertificationInfo.getId() != 0
-                        && mUserCertificationInfo.getStatus() != 2) {
-                    Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
-                    Bundle bundleData = new Bundle();
-                    if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
-                        // 跳转个人认证
-                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
-                    } else {
-                        // 跳转企业认证
-                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
-                    }
-                    bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
-                    intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
-                    startActivity(intentToDetail);
-                } else {
-                    initCertificationTypePop();
-                }
+//                if (mUserCertificationInfo != null
+//                        && mUserCertificationInfo.getId() != 0
+//                        && mUserCertificationInfo.getStatus() != 2) {
+//                    Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
+//                    Bundle bundleData = new Bundle();
+//                    if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
+//                        // 跳转个人认证
+//                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 0);
+//                    } else {
+//                        // 跳转企业认证
+//                        bundleData.putInt(BUNDLE_DETAIL_TYPE, 1);
+//                    }
+//                    bundleData.putParcelable(BUNDLE_DETAIL_DATA, mUserCertificationInfo);
+//                    intentToDetail.putExtra(BUNDLE_DETAIL_TYPE, bundleData);
+//                    startActivity(intentToDetail);
+//                } else {
+//                    initCertificationTypePop();
+//                }
+                initCertificationTypePop();
                 break;
             default:
         }
