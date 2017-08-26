@@ -271,7 +271,7 @@ public class DynamicDetailHeader {
                                     height, part, AppApplication.getTOKEN()))
                             .placeholder(R.drawable.shape_default_image)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .error(R.mipmap.pic_locked);
+                            .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked);
             if (!canLook) {// 切换展位图防止闪屏
                 requestBuilder.placeholder(R.mipmap.pic_locked);
             }
