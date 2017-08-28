@@ -120,9 +120,9 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        if (subscription.isUnsubscribed()) {
+        if (!subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
+        super.onDestroyView();
     }
 }
