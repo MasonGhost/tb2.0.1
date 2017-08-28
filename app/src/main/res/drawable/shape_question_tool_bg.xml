@@ -3,4 +3,7 @@
     <stroke
         android:width="@dimen/divider_line"
         android:color="@color/themeColor"/>
+    <corners
+            android:radius="@dimen/button_corner_tiny"
+            />
 </shape>
