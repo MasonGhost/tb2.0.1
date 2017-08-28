@@ -924,8 +924,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
         mStatusBar.unsubscribe();
+        super.onDestroyView();
     }
 }
