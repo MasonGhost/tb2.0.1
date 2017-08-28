@@ -124,6 +124,7 @@ public class MyQuestionFragment extends TSViewPagerFragment {
             public IPagerTitleView getTitleView(Context context, final int index) {
                 ClipPagerTitleView clipPagerTitleView = new ClipPagerTitleView(context);
                 clipPagerTitleView.setText(mStringList.get(index));
+                clipPagerTitleView.setTextSize(getResources().getDimensionPixelSize(R.dimen.size_sub_title));
                 clipPagerTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
                 clipPagerTitleView.setClipColor(Color.WHITE);
                 clipPagerTitleView.setOnClickListener(v -> mVpFragment.setCurrentItem(index));
