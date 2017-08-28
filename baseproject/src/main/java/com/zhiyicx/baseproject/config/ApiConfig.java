@@ -415,6 +415,8 @@ public class ApiConfig {
     public static final String APP_PATH_DELETE_QA_ANSWER_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/comments/%d";
     // 批量获取专家列表
     public static final String APP_PATH_GET_TOPIC_EXPERT_LIST = "api/" + API_VERSION_2 +  "/question-experts";
+    // 获取用户发布的问题列表
+    public static final String APP_PATH_GET_USER_QUESTIONS = "api/" + API_VERSION_2 +  "/user/questions";
 
 
     /**

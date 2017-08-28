@@ -15,7 +15,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepos
 public interface MyPublishQuestionContract {
 
     interface View extends ITSListView<QAListInfoBean, Presenter>{
-
+        String getMyQuestionType();
     }
 
     interface Presenter extends ITSListPresenter<QAListInfoBean>{

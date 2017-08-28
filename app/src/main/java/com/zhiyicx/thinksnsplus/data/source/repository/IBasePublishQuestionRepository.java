@@ -7,6 +7,7 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 
 import java.util.List;
 
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -22,6 +23,8 @@ public interface IBasePublishQuestionRepository {
     Observable<List<QATopicBean>> getFollowTopic(String type, Long after);
 
     Observable<List<QAListInfoBean>> getQAQuestion(String subject, Long maxId, String type);
+
+    Observable<List<QAListInfoBean>> getUserQAQustion(String type,Long after);
 
     Observable<List<QAListInfoBean>> getQAQuestionByTopic(String topicId, String subject, Long maxId, String type);
 

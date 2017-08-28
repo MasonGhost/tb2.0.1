@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.mine.question;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,23 @@ public class MyPublishQuestionPresenter extends AppBasePresenter<MyPublishQuesti
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        mRepository.getUserQAQustion(mRootView.getMyQuestionType(),maxId).subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
+            @Override
+            protected void onSuccess(List<QAListInfoBean> data) {
+                mRootView.onNetResponseSuccess(data, isLoadMore);
+            }
 
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.onResponseError(throwable, isLoadMore);
+            }
+        });
     }
 
     @Override

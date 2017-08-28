@@ -52,10 +52,9 @@ public interface QAClient {
     Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
-     *
      * @param question_id
-     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
-     * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
+     * @param body        如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param anonymity   如果 body 字段不传，则本字段必须存在，是否匿名。
      * @return
      */
     @FormUrlEncoded
@@ -64,9 +63,8 @@ public interface QAClient {
             String body, @Field("anonymity") int anonymity);
 
     /**
-     *
      * @param answer_id
-     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
      * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
      * @return
      */
@@ -126,6 +124,13 @@ public interface QAClient {
     Observable<List<QAListInfoBean>> getQAQustion(@Query("subject") String subject, @Query
             ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
 
+    /**
+     * @param type  数据筛选类型 all-全部 invitation-邀请 reward-悬赏 other-其他 默认全部
+     * @param after 获取 id 之后的数据，要获取某条问题之后的数据，传递该问题 ID。
+     */
+    @GET(ApiConfig.APP_PATH_GET_USER_QUESTIONS)
+    Observable<List<QAListInfoBean>> getUserQAQustion(@Query("type") String type, @Query("after") Long after, @Query("limit") Long limit);
+
     @GET(ApiConfig.APP_PATH_GET_QUESTION_LIST_BY_TOPIC)
     Observable<List<QAListInfoBean>> getQAQustionByTopic(@Path("topic") String topic_id, @Query("subject") String subject, @Query
             ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
@@ -153,7 +158,7 @@ public interface QAClient {
      * 获取一个问题的回答列表
      *
      * @param question_id 问题id
-     * @param order_type default/time
+     * @param order_type  default/time
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)
