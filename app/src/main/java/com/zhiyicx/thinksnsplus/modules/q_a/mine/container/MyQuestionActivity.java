@@ -13,7 +13,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 
 public class MyQuestionActivity extends TSActivity{
 
-    public static final String BUNDLE_MY_QUESTON_TYPE = "bundle_my_question_type";
+    public static final String BUNDLE_MY_QUESTION_TYPE = "bundle_my_question_type";
 
     @Override
     protected Fragment getFragment() {
