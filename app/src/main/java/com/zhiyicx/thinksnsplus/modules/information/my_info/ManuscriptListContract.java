@@ -11,7 +11,7 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IBaseInfoRepository;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public interface ManuscriptContract {
+public interface ManuscriptListContract {
 
     interface View extends ITSListView<InfoListDataBean, Presenter> {
         String getMyInfoType();

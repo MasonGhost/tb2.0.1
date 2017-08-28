@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.my_manuscripts;
+package com.zhiyicx.thinksnsplus.modules.information.my_info;
 
 import android.support.v4.app.Fragment;
 
@@ -8,7 +8,7 @@ public class ManuscriptsActivity extends TSActivity {
 
     @Override
     protected Fragment getFragment() {
-        return null;
+        return ManuscriptContainerFragment.getInstance();
     }
 
     @Override

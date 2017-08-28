@@ -1,6 +1,10 @@
 package com.zhiyicx.thinksnsplus.modules.information.my_info;
 
+import com.zhiyicx.common.dagger.scope.FragmentScoped;
+import com.zhiyicx.thinksnsplus.base.AppComponent;
 import com.zhiyicx.thinksnsplus.base.InjectComponent;
+
+import dagger.Component;
 
 /**
  * @Author Jliuer
@@ -8,5 +12,7 @@ import com.zhiyicx.thinksnsplus.base.InjectComponent;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public interface ManuscriptListComponent extends InjectComponent {
+@FragmentScoped
+@Component(dependencies = AppComponent.class, modules = ManuscripListPresenterModule.class)
+public interface ManuscriptListComponent extends InjectComponent<ManuscriptListFragment> {
 }

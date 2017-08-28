@@ -1,10 +1,16 @@
-package com.zhiyicx.thinksnsplus.modules.my_manuscripts;
+package com.zhiyicx.thinksnsplus.modules.information.my_info;
 
 import android.support.v4.app.Fragment;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.thinksnsplus.R;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptListFragment.MY_INFO_TYPE_DONE;
+import static com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptListFragment.MY_INFO_TYPE_ERROR;
+import static com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptListFragment.MY_INFO_TYPE_ING;
 
 /**
  * @Author Jliuer
@@ -14,16 +20,22 @@ import java.util.List;
  */
 public class ManuscriptContainerFragment extends TSViewPagerFragment {
 
-
-
     @Override
     protected List<String> initTitles() {
-        return null;
+        return Arrays.asList(getString(R.string.info_published), getString(R.string.info_publishing), getString(R.string.info_publishfailed));
+    }
+
+    public static ManuscriptContainerFragment getInstance() {
+        ManuscriptContainerFragment manuscriptContainerFragment = new ManuscriptContainerFragment();
+        return manuscriptContainerFragment;
     }
 
     @Override
     protected List<Fragment> initFragments() {
-        return null;
+        Fragment publishedFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_DONE);
+        Fragment publishingFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_ING);
+        Fragment publishfailedFragment = ManuscriptListFragment.getInstance(MY_INFO_TYPE_ERROR);
+        return Arrays.asList(publishedFragment, publishingFragment, publishfailedFragment);
     }
 
     @Override
