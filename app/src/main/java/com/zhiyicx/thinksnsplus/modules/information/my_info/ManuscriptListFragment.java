@@ -47,6 +47,12 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
     }
 
     @Override
+    protected void initData() {
+
+        super.initData();
+    }
+
+    @Override
     public String getMyInfoType() {
         return getArguments().getString(MY_INFO_TYPE, MY_INFO_TYPE);
     }

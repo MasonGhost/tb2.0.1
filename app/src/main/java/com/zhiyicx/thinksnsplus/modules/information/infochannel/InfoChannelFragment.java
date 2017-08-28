@@ -30,11 +30,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment.SUBSCRIBE_EXTRA;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
-
 /**
  * @Author Jliuer
  * @Date 2017/03/06

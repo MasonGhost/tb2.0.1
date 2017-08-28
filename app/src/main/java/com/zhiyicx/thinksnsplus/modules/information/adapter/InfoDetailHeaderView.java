@@ -73,8 +73,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 
 /**
  * @author Catherine

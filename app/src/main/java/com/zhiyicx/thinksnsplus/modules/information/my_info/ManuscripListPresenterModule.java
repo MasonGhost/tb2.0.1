@@ -13,6 +13,7 @@ import dagger.Provides;
  */
 @Module
 public class ManuscripListPresenterModule {
+
     ManuscriptListContract.View mView;
 
     public ManuscripListPresenterModule(ManuscriptListContract.View view) {
