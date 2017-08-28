@@ -429,7 +429,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-            showSnackWarningMessage(getString(R.string.login_fail));
+            dismissSnack();
             showErrorTips(getString(R.string.login_fail));
         }
 
@@ -441,6 +441,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         @Override
         public void onCancel(SHARE_MEDIA platform, int action) {
             showSnackWarningMessage(getString(R.string.login_cancel));
+            dismissSnack();
+
         }
     };
 

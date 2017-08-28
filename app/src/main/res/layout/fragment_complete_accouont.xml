@@ -43,6 +43,6 @@
         style="@style/style_login_button"
         android:layout_marginTop="@dimen/button_login_margin_top"
         android:enabled="false"
-        app:text="@string/bt_login"/>
+        app:text="@string/next"/>
 
 </LinearLayout>

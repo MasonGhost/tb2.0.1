@@ -58,6 +58,7 @@ public class CompleteAccountPresenter extends BasePresenter<CompleteAccountContr
                     protected void onSuccess(AuthBean data) {
                         if(isCheck) {
                             mRootView.checkNameSuccess(thridInfoBean, name);
+                            checkOrRegister(thridInfoBean, name,false);
                         }else { // register success
 //                            UserInfoBean registerUserInfo = new UserInfoBean();
 //                            registerUserInfo.setUser_id(Long.valueOf(data.getUser_id()));

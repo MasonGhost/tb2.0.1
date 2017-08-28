@@ -91,7 +91,7 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
-                        mPresenter.thridRegister(mThridInfoBean, mEtLoginPhone.getText().toString());
+                        mPresenter.checkName(mThridInfoBean, mEtLoginPhone.getText().toString());
                     } else {// 拒绝权限，但是可以再次请求
                         showErrorTips(getString(R.string.permisson_refused));
                     }
@@ -101,10 +101,7 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
         RxTextView.afterTextChangeEvents(mEtLoginPhone)
                 .compose(this.bindToLifecycle())
                 .subscribe(textViewAfterTextChangeEvent -> {
-                    setConfirmEnable(false);
-                    if (!TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
-                        mPresenter.checkName(mThridInfoBean, textViewAfterTextChangeEvent.editable().toString());
-                    }
+                    setConfirmEnable(!TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString().trim()));
                 });
 
     }
@@ -147,11 +144,11 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     @Override
     public void checkNameSuccess(ThridInfoBean thridInfoBean, String name) {
         showErrorTips("");
-        setConfirmEnable(true);
     }
 
     @Override
     public void registerSuccess() {
+
         DeviceUtils.hideSoftKeyboard(getContext(), mEtLoginPhone);
         ActivityHandler.getInstance().finishAllActivityEcepteCurrent();// 清除 homeAcitivity 重新加载
         EditUserTagFragment.startToEditTagActivity(getActivity(), TagFrom.REGISTER, null);
@@ -164,10 +161,11 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     private void setConfirmEnable(boolean isEnable) {
         mBtLoginLogin.setEnabled(isEnable);
         if (isEnable) {
-            mIvCheck.setImageResource(R.mipmap.ico_edit_chosen_32);
-        } else {
+//            mIvCheck.setImageResource(R.mipmap.ico_edit_chosen_32);
             mIvCheck.setImageResource(R.mipmap.login_inputbox_clean);
-
+            mIvCheck.setVisibility(View.VISIBLE);
+        } else {
+            mIvCheck.setVisibility(View.GONE);
         }
     }
 }
