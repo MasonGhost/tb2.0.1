@@ -34,6 +34,7 @@ import java.util.List;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION_BUNDLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_EMPTY_ROOT;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_ROOT;
@@ -173,8 +174,8 @@ public class MusicPlayService extends MediaBrowserServiceCompat implements
     @Override
     public void onCustomAction(String action, Bundle extras) {
         LogUtils.d("onCustomAction");
-        MusicAlbumDetailsBean musicAblum = (MusicAlbumDetailsBean) extras.getSerializable(MUSIC_ACTION);
         String tym = extras.getString(MUSIC_ID, MUSIC_ID);
+        MusicAlbumDetailsBean musicAblum =(MusicAlbumDetailsBean)extras.getSerializable(MUSIC_ACTION_BUNDLE);
         if (musicAblum != null) {
             MusicProvider newMusicProvider = new MusicProvider(new MusicDataConvert(musicAblum));
             newMusicProvider.retrieveMediaAsync(success -> {

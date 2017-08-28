@@ -10,9 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.utils.WindowUtils;
-import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.recycleviewdecoration.TGridDecoration;
 import com.zhiyicx.thinksnsplus.R;
@@ -34,7 +32,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLLECT;
 
 /**
@@ -43,8 +40,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_ABLUM_COLL
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MyMusicAblumListFragment extends TSListFragment<MyMusicAblumListContract.Presenter,MusicAlbumListBean>
-        implements MyMusicAblumListContract.View{
+public class MyMusicAblumListFragment extends TSListFragment<MyMusicAblumListContract.Presenter, MusicAlbumListBean>
+        implements MyMusicAblumListContract.View {
 
     @Inject
     MyMusicAlbumPresenter mMyMusicAlbumPresenter;
@@ -52,6 +49,21 @@ public class MyMusicAblumListFragment extends TSListFragment<MyMusicAblumListCon
     public static MyMusicAblumListFragment getInstance() {
         MyMusicAblumListFragment myMusicAblumListFragment = new MyMusicAblumListFragment();
         return myMusicAblumListFragment;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 
     @Override
@@ -75,8 +87,6 @@ public class MyMusicAblumListFragment extends TSListFragment<MyMusicAblumListCon
      * 数量改变 event_bus 来的
      */
     private MusicAlbumListBean mMusicAlbumListBean;
-
-    private PayPopWindow mPayMusicPopWindow;
 
     @Override
     public void onResume() {
@@ -134,7 +144,7 @@ public class MyMusicAblumListFragment extends TSListFragment<MyMusicAblumListCon
             protected void convert(ViewHolder holder, MusicAlbumListBean musicListBean, int
                     position) {
                 ImageView imag = holder.getView(R.id.music_list_image);
-                holder.setVisible(R.id.music_list_toll_flag,musicListBean.getPaid_node() == null ? View.GONE : View.VISIBLE);
+                holder.setVisible(R.id.music_list_toll_flag, musicListBean.getPaid_node() == null ? View.GONE : View.VISIBLE);
                 Glide.with(getContext())
                         .load(ImageUtils.imagePathConvertV2(musicListBean.getStorage().getId(), width, width,
                                 ImageZipConfig.IMAGE_70_ZIP))
@@ -191,14 +201,16 @@ public class MyMusicAblumListFragment extends TSListFragment<MyMusicAblumListCon
     @Subscriber(tag = EVENT_ABLUM_COLLECT, mode = ThreadMode.MAIN)
     public void onCollectCountUpdate(MusicAlbumListBean e_albumListBean) {
         mMusicAlbumListBean = e_albumListBean;
-        Observable.from(mListDatas).filter(albumListBean -> mMusicAlbumListBean.getId() == albumListBean.getId()).subscribe(albumListBean_same -> {
-            albumListBean_same.setCollect_count(mMusicAlbumListBean.getCollect_count());
-            albumListBean_same.setShare_count(mMusicAlbumListBean.getShare_count());
-            albumListBean_same.setHas_collect(mMusicAlbumListBean.getHas_collect());
-            albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
-            albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
-            mPresenter.updateOneMusic(albumListBean_same);
-            mHeaderAndFooterWrapper.notifyDataSetChanged();
-        });
+        Observable.from(mListDatas)
+                .filter(albumListBean -> mMusicAlbumListBean.getId() == albumListBean.getId())
+                .subscribe(albumListBean_same -> {
+                    albumListBean_same.setCollect_count(mMusicAlbumListBean.getCollect_count());
+                    albumListBean_same.setShare_count(mMusicAlbumListBean.getShare_count());
+                    albumListBean_same.setHas_collect(mMusicAlbumListBean.getHas_collect());
+                    albumListBean_same.setComment_count(mMusicAlbumListBean.getComment_count());
+                    albumListBean_same.setTaste_count(mMusicAlbumListBean.getTaste_count());
+                    mPresenter.updateOneMusic(albumListBean_same);
+                    mHeaderAndFooterWrapper.notifyDataSetChanged();
+                });
     }
 }

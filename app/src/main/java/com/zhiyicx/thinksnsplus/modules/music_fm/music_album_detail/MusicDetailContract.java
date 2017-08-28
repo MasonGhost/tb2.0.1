@@ -35,7 +35,7 @@ public interface MusicDetailContract {
 
         MusicAlbumListBean getmMusicAlbumListBean();
 
-        List<MusicAlbumDetailsBean.MusicsBean> getListDatas();
+        List<MusicDetaisBean> getListDatas();
 
         void refreshData(int position);
     }
@@ -51,7 +51,7 @@ public interface MusicDetailContract {
 
         MusicAlbumDetailsBean getCacheAblumDetail(int id);
 
-        void payNote(int position,int note);
+        void payNote(int position, int note);
 
     }
 
