@@ -111,7 +111,8 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                     if (aBoolean) {
                         initLocation();
                     } else {
-                        mTvCurrentLocation.setText(getString(R.string.empty));
+                        mTvCurrentLocation.setText(getString(R.string.wu));
+                        handleAnimation(false);
                     }
                 });
     }
@@ -201,6 +202,9 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                 startLocation();
                 break;
             case R.id.tv_current_location:
+                if(mTvCurrentLocation.getText().toString().trim().equals(getString(R.string.wu))){
+                    return;
+                }
                 LocationBean bean = new LocationBean();
                 bean.setName(mCurrentLocation);
                 Intent intenttmp = new Intent();
