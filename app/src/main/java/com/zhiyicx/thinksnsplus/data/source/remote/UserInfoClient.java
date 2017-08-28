@@ -128,18 +128,6 @@ public interface UserInfoClient {
     Observable<BaseJson<IMBean>> getIMInfo();
 
     /**
-     * 用户点赞排行
-     *
-     * @param page  页码 默认为 1
-     * @param limit 返回数据条数 默认15条
-     * @return
-     */
-    @GET(ApiConfig.APP_PATH_GET_DIGGS_RANK)
-    Observable<BaseJson<List<DigRankBean>>> getDigRankList(@Query("page") int page,
-                                                           @Query("limit") int limit);
-
-
-    /**
      * 获取用户收到的点赞
      *
      * @param after 用来翻页数据体记录 id
@@ -160,18 +148,6 @@ public interface UserInfoClient {
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
     Observable<List<CommentedBean>> getMyComments(@Query("after") int after,
                                                   @Query("limit") int limit);
-
-    /**
-     * 获取用户收到的评论
-     *
-     * @param time 零时区的秒级时间戳
-     * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
-     * @return
-     */
-    @GET(ApiConfig.APP_PATH_GET_MY_FLUSHMESSAGES)
-    Observable<BaseJson<List<FlushMessages>>> getMyFlushMessages(@Query("time") long time,
-                                                                 @Query("key") String key);
-
     /**
      * 未读通知数量检查
      *

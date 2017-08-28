@@ -165,14 +165,6 @@ public interface UserInfoContract {
         void handleFollow(UserInfoBean followFansBean);
 
         /**
-         * 获取点赞排行榜
-         *
-         * @param page
-         * @return
-         */
-        Observable<BaseJson<List<DigRankBean>>> getDidRankList(int page);
-
-        /**
          * 获取用户收到的点赞
          *
          * @param max_id
@@ -188,15 +180,6 @@ public interface UserInfoContract {
          * @return
          */
         Observable<List<CommentedBean>> getMyComments(int max_id);
-
-
-        /**
-         * @param time 零时区的秒级时间戳
-         * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
-         * @return
-         */
-        Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key);
-
 
         /**
          * 更新认证用户的手机号码和邮箱

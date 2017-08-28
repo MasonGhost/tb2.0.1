@@ -38,7 +38,7 @@ public class ApiConfig {
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
-    public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION + "/system/about";// 关于我们网站
+    public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
 
     // 图片地址 V2
@@ -69,10 +69,8 @@ public class ApiConfig {
      * 用户 UserInfoClient
      */
     public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION_2 + "/user";// 修改用户信息
-    public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION + "/im/users";// 获取 IM 帐号信息
     public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION_2 + "/user/likes"; // 获取用户收到的点赞
     public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION_2 + "/user/comments"; // 获取用户收到的评论
-    public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     public static final String APP_PATH_UPDATE_USER_AVATAR = "api/" + API_VERSION_2 + "/user/avatar";// 修改用户头像
     public static final String APP_PATH_UPDATE_USER_BG = "api/" + API_VERSION_2 + "/user/bg";// 修改用户背景
     public static final String APP_PATH_UPDATE_USER_PHONE_OR_EMAIL = "api/" + API_VERSION_2 + "/user";// 更新认证用户的手机号码和邮箱
@@ -130,9 +128,10 @@ public class ApiConfig {
     /**
      * 聊天相关
      */
-    public static final String APP_PATH_CREATE_CONVERSAITON = "api/" + API_VERSION + "/im/conversations";// 创建对话
-    public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/" + API_VERSION + "/im/conversations/list/all";// 获取登陆用户的对话列表
-    public static final String APP_PATH_GET_SINGLE_CONVERSAITON = "api/" + API_VERSION + "/im/conversations/{cid}";// 获取单个对话信息
+    public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION_2 + "/im/users";// 获取 IM 帐号信息
+    public static final String APP_PATH_CREATE_CONVERSAITON = "api/" + API_VERSION_2 + "/im/conversations";// 创建对话
+    public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/" + API_VERSION_2 + "/im/conversations/list/all";// 获取登陆用户的对话列表
+    public static final String APP_PATH_GET_SINGLE_CONVERSAITON = "api/" + API_VERSION_2 + "/im/conversations/{cid}";// 获取单个对话信息
 
     /**
      * 关注粉丝 FollowFansClient
@@ -143,9 +142,6 @@ public class ApiConfig {
     public static final String APP_PATH_FOLLOW_USER_FORMART = "api/" + API_VERSION_2 + "/user/followings/%d";// 关注用户
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/" + API_VERSION_2 + "/user/followings/{user_id}";// 取消用户关注
     public static final String APP_PATH_CANCEL_FOLLOW_USER_FORMART = "api/" + API_VERSION_2 + "/user/followings/%d";// 取消用户关注
-
-
-    public static final String APP_PATH_GET_DIGGS_RANK = "api/" + API_VERSION + "/diggsrank";//  用户点赞排行
 
     /**
      * 动态相关
@@ -282,10 +278,10 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/" + API_VERSION_2 + "/music/specials/{special_id}";
 
     // 分享歌曲
-    public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION + "/music/%s/share";
+    public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION_2 + "/music/%s/share";
 
     // 分享专辑
-    public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION + "/music/special/%s/share";
+    public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION_2 + "/music/specials/%s/share";
 
     /**
      * 问答相关
@@ -365,8 +361,8 @@ public class ApiConfig {
     public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION_2 + "/tokens/{token}";// 刷新 token
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
 
-    public static final String APP_PATH_SYSTEM_FEEDBACK = "api/" + API_VERSION + "/system/feedback";// 意见反馈
-    public static final String APP_PATH_GET_SYSTEM_CONVERSATIONS = "api/" + API_VERSION + "/system/conversations";// 获取系统会话列表
+    public static final String APP_PATH_SYSTEM_FEEDBACK = "api/" + API_VERSION_2 + "/user/feedback";// 意见反馈
+    public static final String APP_PATH_GET_SYSTEM_CONVERSATIONS = "api/" + API_VERSION_2 + "/conversations";// 获取系统会话列表
 
     ////////////////////////////////////////// 以下是通用 V2 接口
     public static final String APP_PATH_STORAGE_HASH = "api/" + API_VERSION_2 + "/files/uploaded/{hash}";// 校检文件hash V2

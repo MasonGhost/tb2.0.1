@@ -269,45 +269,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     /**
-     * 获取点赞排行榜
-     *
-     * @param page
-     * @return
-     */
-    @Override
-    public Observable<BaseJson<List<DigRankBean>>> getDidRankList(int page) {
-        return mUserInfoClient.getDigRankList(page, TSListFragment.DEFAULT_PAGE_SIZE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<DigRankBean>>, Observable<BaseJson<List<DigRankBean>>>>() {
-                    @Override
-                    public Observable<BaseJson<List<DigRankBean>>> call(final BaseJson<List<DigRankBean>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Object> userIds = new ArrayList();
-                            for (DigRankBean digRankBean : listBaseJson.getData()) {
-                                userIds.add(digRankBean.getUser_id());
-                            }
-                            return getUserInfo(userIds)
-                                    .map(userinfobeans -> {
-                                        if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : userinfobeans) {
-                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                            }
-                                            for (DigRankBean digRankBean : listBaseJson.getData()) {
-                                                digRankBean.setDigUserInfo(userInfoBeanSparseArray.get(digRankBean.getUser_id().intValue()));
-                                            }
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                        }
-                                        return listBaseJson;
-                                    });
-                        }
-                        return Observable.just(listBaseJson);
-                    }
-                });
-    }
-
-    /**
      * 获取我收到的赞的列表
      *
      * @param max_id
@@ -393,41 +354,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                     }
                                     return data;
                                 });
-                    }
-                });
-    }
-
-    /**
-     * 获取用户收到的最新消息
-     *
-     * @param time 零时区的秒级时间戳
-     * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
-     * @return
-     */
-    @Override
-    public Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key) {
-        return mUserInfoClient.getMyFlushMessages(time, key).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<FlushMessages>>, Observable<BaseJson<List<FlushMessages>>>>() {
-                    @Override
-                    public Observable<BaseJson<List<FlushMessages>>> call(final BaseJson<List<FlushMessages>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Object> userIdstmp = new ArrayList();
-                            for (FlushMessages flushMessages : listBaseJson.getData()) {
-                                userIdstmp.addAll(flushMessages.getUids());
-                            }
-                            if (userIdstmp.isEmpty()) {
-                                return Observable.just(listBaseJson);
-                            }
-                            return getUserInfo(userIdstmp)
-                                    .map(userinfobeans -> {
-                                        if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                        }
-                                        return listBaseJson;
-                                    });
-                        }
-                        return Observable.just(listBaseJson);
                     }
                 });
     }
