@@ -18,8 +18,8 @@ public class MyGroupFragment extends TSListFragment<MyGroupContract.Presenter, G
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return null/*new ChannelListFragmentAdapter(getContext()
-                , R.layout.item_channel_list, mListDatas, mPresenter)*/;
+        return new ChannelListFragmentAdapter(getContext()
+                , R.layout.item_channel_list, mListDatas, mPresenter);
     }
 
     @Override
@@ -35,5 +35,13 @@ public class MyGroupFragment extends TSListFragment<MyGroupContract.Presenter, G
     @Override
     protected String setCenterTitle() {
         return getString(R.string.group_mine);
+    }
+
+    @Override
+    public void updateGroupJoinState(int position, GroupInfoBean groupInfoBean) {
+        if (groupInfoBean.getIs_member() == 0){
+            mListDatas.remove(position);
+            refreshData();
+        }
     }
 }

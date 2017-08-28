@@ -15,10 +15,10 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IBaseChannelRepository;
 public interface MyGroupContract {
 
     interface View extends ITSListView<GroupInfoBean, Presenter>{
-
+        void updateGroupJoinState(int position, GroupInfoBean groupInfoBean);
     }
     interface Presenter extends ITSListPresenter<GroupInfoBean>{
-
+        void handleGroupJoin(int position, GroupInfoBean groupInfoBean);
     }
     interface Repository extends IBaseChannelRepository{
 

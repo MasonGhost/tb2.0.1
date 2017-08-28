@@ -4,6 +4,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.GroupInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +22,9 @@ import rx.Subscription;
  */
 @FragmentScoped
 public class MyGroupPresenter extends AppBasePresenter<MyGroupContract.Repository, MyGroupContract.View> implements MyGroupContract.Presenter{
+
+    @Inject
+    GroupInfoBeanGreenDaoImpl mGroupInfoBeanGreenDao;
 
     @Inject
     public MyGroupPresenter(MyGroupContract.Repository repository, MyGroupContract.View rootView) {
@@ -54,5 +58,22 @@ public class MyGroupPresenter extends AppBasePresenter<MyGroupContract.Repositor
     @Override
     public boolean insertOrUpdateData(@NotNull List<GroupInfoBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public void handleGroupJoin(int position, GroupInfoBean groupInfoBean) {
+        boolean isJoined = groupInfoBean.getIs_member() == 1;
+        if (isJoined) {
+            // 已经订阅，变为未订阅
+            groupInfoBean.setMembers_count(groupInfoBean.getMembers_count() - 1);// 订阅数-1
+        } else {
+            // 未订阅，变为已订阅
+            groupInfoBean.setMembers_count(groupInfoBean.getMembers_count() + 1);// 订阅数+1
+        }
+        // 更改数据源，切换订阅状态
+        groupInfoBean.setIs_member(isJoined ? 0 : 1);
+        mGroupInfoBeanGreenDao.updateSingleData(groupInfoBean);
+        mRepository.handleGroupJoin(groupInfoBean);
+        mRootView.updateGroupJoinState(position, groupInfoBean);
     }
 }
