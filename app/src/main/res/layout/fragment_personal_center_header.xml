@@ -118,7 +118,6 @@
         android:paddingBottom="@dimen/spacing_mid"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_normal"
         app:max_select="0"
         />
 

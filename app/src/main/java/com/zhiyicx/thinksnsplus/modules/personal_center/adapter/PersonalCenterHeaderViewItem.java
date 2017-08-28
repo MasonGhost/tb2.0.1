@@ -305,9 +305,14 @@ public class PersonalCenterHeaderViewItem {
             userInfoBean.setTags(new ArrayList<>());
         }
         tv_certify.setText(userInfoBean.getVerified() != null ? mActivity.getString(R.string.default_certify) : userInfoBean.getVerified().getType());
-        tv_addres.setText(TextUtils.isEmpty(userInfoBean.getLocation()) ? mActivity.getString(R.string.default_location) : userInfoBean.getLocation());
 
-        mUserInfoTagsAdapter = new UserInfoTagsAdapter(userInfoBean.getTags(), mActivity);
+        if (TextUtils.isEmpty(userInfoBean.getLocation())) {
+            tv_addres.setVisibility(View.GONE);
+        } else {
+            tv_addres.setVisibility(View.VISIBLE);
+            tv_addres.setText(userInfoBean.getLocation());
+        }
+        mUserInfoTagsAdapter = new UserInfoTagsAdapter(userInfoBean.getTags(), mActivity, true);
         mFlTags.setAdapter(mUserInfoTagsAdapter);
     }
 

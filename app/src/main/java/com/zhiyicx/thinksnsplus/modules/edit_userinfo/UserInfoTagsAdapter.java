@@ -23,16 +23,28 @@ import java.util.List;
 public class UserInfoTagsAdapter extends TagAdapter<UserTagBean> {
 
     private final LayoutInflater mInflater;
+    private boolean mIsCircleRadus = false;
 
     public UserInfoTagsAdapter(List<UserTagBean> datas, Context context) {
         super(datas);
         mInflater = LayoutInflater.from(context);
     }
 
+    public UserInfoTagsAdapter(List<UserTagBean> datas, Context context, boolean isCircleRadus) {
+        super(datas);
+        mInflater = LayoutInflater.from(context);
+        mIsCircleRadus = isCircleRadus;
+    }
+
     @Override
     public View getView(FlowLayout parent, int position, UserTagBean qaTopicBean) {
         TextView tv = (TextView) mInflater.inflate(R.layout.item_userinfo_tags,
                 parent, false);
+        if (mIsCircleRadus) {
+            tv.setBackgroundResource(R.drawable.shape_default_radus_circle_gray);
+        } else {
+            tv.setBackgroundResource(R.drawable.item_react_bg_gray);
+        }
         tv.setText(qaTopicBean.getTagName());
         return tv;
     }
