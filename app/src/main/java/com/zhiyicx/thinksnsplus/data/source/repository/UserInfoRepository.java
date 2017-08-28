@@ -158,7 +158,11 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public Observable<UserInfoBean> getCurrentLoginUserInfo() {
         return mUserInfoClient.getCurrentLoginUserInfo()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(userInfoBean -> {
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                    return userInfoBean;
+                });
     }
 
     /**
@@ -191,7 +195,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     @Override
     public Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit) {
-        return mUserInfoClient.searchUserinfoWithRecommend(limit,since,name)
+        return mUserInfoClient.searchUserinfoWithRecommend(limit, since, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -429,7 +433,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     /**
-     *
      * @param phone
      * @param email
      * @param verifiable_code
@@ -437,33 +440,31 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<Object> updatePhoneOrEmail(String phone, String email, String verifiable_code) {
-        return mUserInfoClient.updatePhoneOrEmail(new UpdateUserPhoneOrEmailRequestBean(phone,email,verifiable_code))
+        return mUserInfoClient.updatePhoneOrEmail(new UpdateUserPhoneOrEmailRequestBean(phone, email, verifiable_code))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
-     *
      * @param password
      * @param verify_code
      * @return
      */
     @Override
     public Observable<Object> deletePhone(String password, String verify_code) {
-        return mUserInfoClient.deletePhone(new DeleteUserPhoneOrEmailRequestBean(password,verify_code))
+        return mUserInfoClient.deletePhone(new DeleteUserPhoneOrEmailRequestBean(password, verify_code))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
-     *
      * @param password
      * @param verify_code
      * @return
      */
     @Override
     public Observable<Object> deleteEmail(String password, String verify_code) {
-        return mUserInfoClient.deleteEmail(new DeleteUserPhoneOrEmailRequestBean(password,verify_code))
+        return mUserInfoClient.deleteEmail(new DeleteUserPhoneOrEmailRequestBean(password, verify_code))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -707,7 +708,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<AuthBean> checkUserOrRegisterUser(String provider, String access_token, String name, Boolean check) {
-        return mUserInfoClient.checkUserOrRegisterUser(provider,new ThridInfoBean(provider, access_token, name, check))
+        return mUserInfoClient.checkUserOrRegisterUser(provider, new ThridInfoBean(provider, access_token, name, check))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

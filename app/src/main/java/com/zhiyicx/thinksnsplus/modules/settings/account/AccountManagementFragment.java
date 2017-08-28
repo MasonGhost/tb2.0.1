@@ -236,7 +236,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     @Override
     public void bindThirdSuccess(String provider) {
         mBindAccounts.add(provider);
-        updateText(mBindAccounts, mCurrentUser);
+        updateText(mBindAccounts);
     }
 
     /**
@@ -245,31 +245,25 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     @Override
     public void unBindThirdSuccess(String provider) {
         mBindAccounts.remove(provider);
-        updateText(mBindAccounts, mCurrentUser);
+        updateText(mBindAccounts);
     }
 
     /**
-     * @param data         bind accounts
-     * @param userInfoBean
+     * @param data bind accounts
      */
     @Override
-    public void updateBindStatus(List<String> data, UserInfoBean userInfoBean) {
+    public void updateBindStatus(List<String> data) {
         this.mBindAccounts.clear();
         this.mBindAccounts.addAll(data);
-        this.mCurrentUser = userInfoBean;
-        updateText(mBindAccounts, mCurrentUser);
+        updateText(mBindAccounts);
 
     }
 
-    private void updateText(List<String> data, UserInfoBean userInfoBean) {
-        setText(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
-        setText(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
+    private void updateText(List<String> data) {
         setText(mBtBindQq, data.contains(ApiConfig.PROVIDER_QQ));
         setText(mBtBindWechat, data.contains(PROVIDER_WECHAT));
         setText(mBtBindWeibo, data.contains(PROVIDER_WEIBO));
 
-        setColor(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
-        setColor(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
         setColor(mBtBindQq, data.contains(ApiConfig.PROVIDER_QQ));
         setColor(mBtBindWechat, data.contains(PROVIDER_WECHAT));
         setColor(mBtBindWeibo, data.contains(PROVIDER_WEIBO));
@@ -291,10 +285,14 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
     }
 
     @Override
-    public void updateUserinfo(UserInfoBean singleDataFromCache) {
-        if (singleDataFromCache != null) {
-            mCurrentUser = singleDataFromCache;
-            updateText(mBindAccounts, mCurrentUser);
+    public void updateUserinfo(UserInfoBean userInfoBean) {
+        if (userInfoBean != null) {
+            mCurrentUser = userInfoBean;
+            setText(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
+            setText(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
+
+            setColor(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
+            setColor(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
         }
     }
 }

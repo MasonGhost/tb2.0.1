@@ -20,9 +20,8 @@ public interface AccountManagementContract {
          * update baind status
          *
          * @param data                bind accounts
-         * @param singleDataFromCache current user info
          */
-        void updateBindStatus(List<String> data, UserInfoBean singleDataFromCache);
+        void updateBindStatus(List<String> data);
 
         /**
          * bind success call back

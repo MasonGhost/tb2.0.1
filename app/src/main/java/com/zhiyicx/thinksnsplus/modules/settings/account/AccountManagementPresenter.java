@@ -5,6 +5,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
@@ -45,21 +46,46 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
                 .subscribe(new BaseSubscribeForV2<List<String>>() {
                     @Override
                     protected void onSuccess(List<String> data) {
-                        mRootView.updateBindStatus(data, mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
+                        mRootView.updateBindStatus(data);
 
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
         addSubscrebe(subscribe);
+    }
+
+    private void updateUserinfo() {
+        Subscription subscribe2 = mUserInfoRepository.getCurrentLoginUserInfo()
+                .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
+                    @Override
+                    protected void onSuccess(UserInfoBean data) {
+                        mRootView.updateUserinfo(data);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
+        addSubscrebe(subscribe2);
     }
 
     /**
@@ -127,6 +153,6 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
 
     @Override
     public void updaeUserInfo() {
-        mRootView.updateUserinfo(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()));
+        updateUserinfo();
     }
 }
