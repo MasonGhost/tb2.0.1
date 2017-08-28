@@ -32,7 +32,6 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
@@ -473,11 +472,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
         if (handleTouristControl()) {
             return;
         }
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-        double balance = 0;
-        if (walletBean != null) {
-            balance = walletBean.getBalance();
-        }
+
         double amount;
         if (isImage) {
             amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
@@ -485,17 +480,29 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 
-        if (balance < amount) {
-            mRootView.goRecharge(WalletActivity.class);
-            return;
-        }
-        mCommentRepository.paykNote(note)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+        mCommentRepository.getCurrentLoginUserInfo()
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<String>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<String>> call(UserInfoBean userInfoBean) {
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        if (userInfoBean.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                            if (userInfoBean.getWallet().getBalance() < amount) {
+                                mRootView.goRecharge(WalletActivity.class);
+                                return Observable.error(new RuntimeException(""));
+                            }
+                        }
+                        return mCommentRepository.paykNote(note);
+                    }
+                }, throwable -> {
+                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    return null;
+                }, () -> null)
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                        walletBean.setBalance(walletBean.getBalance()-note);
-                        mWalletBeanGreenDao.insertOrReplace(walletBean);
                         if (isImage) {
                             return Observable.just(stringBaseJsonV2);
                         }

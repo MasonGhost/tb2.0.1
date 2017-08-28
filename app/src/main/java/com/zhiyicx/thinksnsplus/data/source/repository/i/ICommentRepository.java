@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.source.repository.i;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 
 import rx.Observable;
 
@@ -21,5 +23,9 @@ public interface ICommentRepository {
     Observable<PurChasesBean> checkNote(int note);
 
     Observable<BaseJsonV2<String>> paykNote(int note);
+
+    Observable<WalletConfigBean> getWalletConfig();
+
+    Observable<UserInfoBean> getCurrentLoginUserInfo();
 
 }
