@@ -35,7 +35,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
 
     @Override
     protected boolean showToolbar() {
-        return true;
+        return false;
     }
 
     protected abstract List<String> initTitles();
