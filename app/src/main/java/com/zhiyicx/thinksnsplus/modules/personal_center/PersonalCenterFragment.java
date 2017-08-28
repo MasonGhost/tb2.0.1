@@ -79,6 +79,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -130,6 +131,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     InputLimitView mIlvComment;
     @BindView(R.id.v_shadow)
     View mVShadow;
+
+    private Subscription mStatusBar;
 
 
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
@@ -911,12 +914,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void supportFlymeSutsusbar() {
-        Observable.timer(1500, TimeUnit.MILLISECONDS)
+        mStatusBar = Observable.timer(1500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                     }
                 });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mStatusBar.unsubscribe();
     }
 }
