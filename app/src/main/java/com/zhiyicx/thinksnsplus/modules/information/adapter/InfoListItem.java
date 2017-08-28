@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.common.base.BaseApplication;
@@ -18,6 +19,12 @@ import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
 
@@ -49,8 +56,9 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                 .info_channel_list_image_width);
         int h = title.getContext().getResources().getDimensionPixelOffset(R.dimen
                 .info_channel_list_height);
-
-        holder.itemView.setOnClickListener(v -> itemClick(position, imageView, title, realData));
+        RxView.clicks(holder.itemView)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> itemClick(position, imageView, title, realData));
         // 投稿来源，浏览数，时间
         String from = realData.getFrom().equals(title.getContext().getString(R.string
                 .info_publish_original)) ?

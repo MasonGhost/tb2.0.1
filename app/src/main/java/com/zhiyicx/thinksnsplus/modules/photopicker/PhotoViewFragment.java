@@ -151,7 +151,7 @@ public class PhotoViewFragment extends TSFragment {
 
                 hasAnim = currentItem == position;
                 // 是否包含了已经选中的图片
-                mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(position)));
+                mRbSelectPhoto.setChecked(!unCheckImagePath.contains(allPaths.get(position)));
 
             }
 
@@ -186,20 +186,24 @@ public class PhotoViewFragment extends TSFragment {
                     unCheckImagePath.remove(path);
                     unCheckImage.remove(mImageBean);
                 } else {
-                    //unCheckImage.add(mImageBean);
+                    unCheckImage.remove(mImageBean);
+                    unCheckImagePath.remove(path);
                     //tolls.remove(mImageBean);
                 }
             } else {
                 // 当前取消选择改图片，直接移除
-                //seletedPaths.remove(path);
-                unCheckImage.add(mImageBean);
-                unCheckImagePath.add(path);
+//                seletedPaths.remove(path);
+                if (!unCheckImagePath.contains(path)){
+                    unCheckImage.add(mImageBean);
+                    unCheckImagePath.add(path);
+                }
+
                 //tolls.remove(mImageBean);
             }
             // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
             mBtComplete.setEnabled(seletedPaths.size() > 0);
             // 重置当前的选择数量
-            mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
+            mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size() - unCheckImagePath.size(),
                     maxCount));
             // 通知图片列表进行刷新
             // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅

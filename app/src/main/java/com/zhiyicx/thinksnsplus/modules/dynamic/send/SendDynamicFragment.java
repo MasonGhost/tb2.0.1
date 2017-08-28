@@ -484,17 +484,15 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
         mTvToll.setRightImageClickListener(v -> {
             isToll = !isToll;
+            mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 sl_send_dynamic.smoothScrollTo(0, 0);
-                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+//                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             } else {
 
                 /*           这里肯定是要删的           真滴很烦             */
                 if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
-
-                    mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
-
                     if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
                         return; // 九张
                     }

@@ -563,4 +563,5 @@
     <string name="rank_type_like_count">点赞量：%d</string>
     <string name="rank_type_view_count">浏览量：%d</string>
     <string name="rank_type_check_in">连续签到：%d</string>
+    <string name="please_input_intro">请输入简介</string>
 </resources>
