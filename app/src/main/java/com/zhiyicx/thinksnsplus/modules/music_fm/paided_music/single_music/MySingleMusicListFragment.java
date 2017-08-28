@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
@@ -74,6 +76,12 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
     }
 
     @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        mRvList.addItemDecoration(new LinearDecoration(0, ConvertUtils.dp2px(getContext(), getItemDecorationSpacing()), 0, 0));//设置Item的间隔
+    }
+
+    @Override
     protected void initData() {
         mAlbumDetailsBean = new MusicAlbumDetailsBean();
         DaggerSingleMusicLIstComponent.builder()
@@ -101,6 +109,11 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
 
         }
 
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return super.getItemDecorationSpacing();
     }
 
     @Override

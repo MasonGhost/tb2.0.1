@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,7 +16,11 @@ import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
@@ -101,6 +107,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private UserInfoBean mUserInfoBean;
     private UserCertificationInfo mUserCertificationInfo;
 
+    private ActionPopupWindow mActionPopupWindow;// 请求音乐权限弹窗
+
     public MineFragment() {
     }
 
@@ -181,8 +189,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
     }
 
-    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container,R.id.bt_my_info,
-            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet,R.id.bt_music,
+    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
+            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
             R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -232,7 +240,16 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(getActivity(), WalletActivity.class));
                 break;
             case R.id.bt_music:
-                startActivity(new Intent(getActivity(), MyMusicActivity.class));
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (Settings.canDrawOverlays(getContext())) {
+                        startActivity(new Intent(getActivity(), MyMusicActivity.class));
+                    } else {
+                        initPermissionPopUpWindow();
+                        mActionPopupWindow.show();
+                    }
+                } else {
+                    startActivity(new Intent(getActivity(), MyMusicActivity.class));
+                }
                 break;
             case R.id.bt_suggestion:
                 startActivity(new Intent(getActivity(), FeedBackActivity.class));
@@ -343,5 +360,36 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
         startActivity(intent);
+    }
+
+    private void initPermissionPopUpWindow() {
+        if (mActionPopupWindow != null) {
+            return;
+        }
+        String model = android.os.Build.MODEL;
+        final boolean isOppoR9s = model.equalsIgnoreCase("oppo r9s");
+        mActionPopupWindow = PermissionPopupWindow.builder()
+                .permissionName(getString(com.zhiyicx.baseproject.R.string.windows_permission))
+                .with(getActivity())
+                .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
+
+                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string
+                        .oppo_setting_windows_permission_hint :
+                        com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
+
+                .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
+                .item2ClickListener(() -> {
+                    mActionPopupWindow.hide();
+                    if (isOppoR9s) {
+                        DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
+                    } else {
+                        DeviceUtils.openAppDetail(getActivity());
+                    }
+                })
+                .bottomClickListener(() -> mActionPopupWindow.hide())
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .build();
     }
 }
