@@ -29,7 +29,6 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnimationRectBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
@@ -157,7 +156,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     protected View getRightViewOfMusicWindow() {
-        return mIvSubscribBtn;
+        return mLlToolbarContainerParent;
     }
 
     @Override
@@ -387,7 +386,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
 
     @Override
     public void onMenuItemClick(View view, int dataPosition, int viewPosition) {
-        dataPosition  -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+        dataPosition -= mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
         mCurrentPostion = dataPosition;
 
         switch (viewPosition) { // 0 1 2 3 代表 view item 位置
@@ -421,7 +420,7 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
                 Bitmap shareBitMap = null;
                 try {
                     ImageView imageView = (ImageView) layoutManager.findViewByPosition
-                            (dataPosition+mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
+                            (dataPosition + mHeaderAndFooterWrapper.getHeadersCount()).findViewById(R.id.siv_0);
                     shareBitMap = ConvertUtils.drawable2BitmapWithWhiteBg(getContext(), imageView
                             .getDrawable(), R.mipmap.icon_256);
                 } catch (Exception e) {

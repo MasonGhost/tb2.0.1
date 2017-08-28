@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -15,7 +16,7 @@ import android.widget.TextView;
  * @contact email:450127106@qq.com
  */
 
-public class ColorFilterTextView extends TextView {
+public class ColorFilterTextView extends AppCompatTextView {
 
     public ColorFilterTextView(Context context) {
         super(context);
