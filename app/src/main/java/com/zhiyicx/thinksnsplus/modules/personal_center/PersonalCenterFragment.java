@@ -79,6 +79,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -131,6 +132,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @BindView(R.id.v_shadow)
     View mVShadow;
 
+    private Subscription mStatusbar;
 
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     // 上一个页面传过来的用户信息
@@ -911,12 +913,18 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void supportFlymeSutsusbar() {
-        Observable.timer(1500, TimeUnit.MILLISECONDS)
+        mStatusbar = Observable.timer(1500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                     }
                 });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mStatusbar.unsubscribe();
     }
 }
