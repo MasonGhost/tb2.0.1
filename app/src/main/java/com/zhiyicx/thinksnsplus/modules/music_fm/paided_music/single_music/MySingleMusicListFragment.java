@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.single_music;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -11,13 +13,16 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
+import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -31,6 +36,7 @@ import javax.inject.Inject;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION_BUNDLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailFragment.MUSIC_INFO;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE;
 
 /**
@@ -69,7 +75,7 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
 
     @Override
     protected void initData() {
-        mAlbumDetailsBean=new MusicAlbumDetailsBean();
+        mAlbumDetailsBean = new MusicAlbumDetailsBean();
         DaggerSingleMusicLIstComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .singleMusicPresenterModule(new SingleMusicPresenterModule(this))
@@ -128,11 +134,23 @@ public class MySingleMusicListFragment extends TSListFragment<SingleMusicListCon
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 MusicDetaisBean item = mListDatas.get(position);
 
-                MediaControllerCompat controllerCompat = getActivity()
-                        .getSupportMediaController();
+                Intent intent = new Intent(getActivity(), MusicPlayActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(MUSIC_INFO, mAlbumDetailsBean);
+                intent.putExtra(MUSIC_INFO, bundle);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                WindowUtils.setMusicAlbumDetailsBean(bundle);
+                MediaControllerCompat controller = getActivity().getSupportMediaController();
+                MediaMetadataCompat metadata = controller.getMetadata();
+                if (metadata != null) {
+                    intent.putExtra(MusicDetailActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION,
+                            metadata.getDescription());
+                }
+                startActivity(intent);
+
                 String id = MediaIDHelper.createMediaID("" + item.getId(),
                         MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-                controllerCompat.getTransportControls()
+                controller.getTransportControls()
                         .playFromMediaId(id, null);
             }
 

@@ -507,12 +507,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         mMediaId = mCurrentMusic.getDescription().getMediaId();
                     }
 
-                    MediaControllerCompat controllerCompat = getActivity()
-                            .getSupportMediaController();
+
                     String id = MediaIDHelper.createMediaID("" + item.getId(),
                             MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-                    mMediaId_test=id;
-                    controllerCompat.getTransportControls()
+                    mMediaId_test = id;
+                    controller.getTransportControls()
                             .playFromMediaId(id, null);
 
                 }

@@ -11,7 +11,6 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zhiyicx.baseproject.base.TSActivity;
-import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_play.MusicPlayService;
 
 public class MyMusicActivity extends TSActivity {
@@ -43,11 +42,19 @@ public class MyMusicActivity extends TSActivity {
                 }
             };
 
-    private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
-        MediaControllerCompat mediaController = new MediaControllerCompat(
-                this, token);
-        setSupportMediaController(mediaController);
-        mediaController.registerCallback(mMediaControllerCallback);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mMediaBrowserCompat.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (getSupportMediaController() != null) {
+            getSupportMediaController().unregisterCallback(mMediaControllerCallback);
+        }
+        mMediaBrowserCompat.disconnect();
     }
 
     @Override
@@ -55,6 +62,12 @@ public class MyMusicActivity extends TSActivity {
         mMediaBrowserCompat = new MediaBrowserCompat(this, new ComponentName(this,
                 MusicPlayService.class), mConnectionCallback, null);
         return MyMusicFragmentContainer.getInstance();
+    }
+
+    private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
+        MediaControllerCompat mediaController = new MediaControllerCompat(this, token);
+        setSupportMediaController(mediaController);
+        mediaController.registerCallback(mMediaControllerCallback);
     }
 
     @Override
