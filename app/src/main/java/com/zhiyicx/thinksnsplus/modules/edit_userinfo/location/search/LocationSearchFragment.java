@@ -78,14 +78,6 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     }
 
     @Override
-    protected void musicWindowsStatus(boolean isShow) {
-        super.musicWindowsStatus(isShow);
-        if (isShow) {
-            int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-            mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
-        }
-    }
-    @Override
     protected View getRightViewOfMusicWindow() {
         return mFragmentInfoSearchCancle;
     }

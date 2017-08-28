@@ -83,15 +83,6 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
     }
 
     @Override
-    protected void musicWindowsStatus(boolean isShow) {
-        super.musicWindowsStatus(isShow);
-        if (isShow) {
-            int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-            mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
-        }
-    }
-
-    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mEmptyView.setVisibility(View.GONE);
@@ -108,7 +99,6 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
         RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
                 .subscribe(textViewAfterTextChangeEvent -> {
                     mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
-
                 });
     }
 

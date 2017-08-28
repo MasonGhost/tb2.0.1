@@ -61,7 +61,6 @@
                 android:layout_width="@dimen/channel_subscrib_btn_width"
                 android:layout_height="@dimen/channel_subscrib_btn_height"
                 android:layout_alignParentRight="true"
-                android:paddingRight="@dimen/spacing_big_large"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/spacing_mid"
                 android:layout_marginRight="@dimen/spacing_mid"
