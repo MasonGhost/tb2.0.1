@@ -108,7 +108,7 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
         // 设置订阅状态
         boolean isJoined = groupInfoBean.getIs_member() == 1;
         tv_channel_subscrib.setChecked(isJoined);
-        tv_channel_subscrib.setText(isJoined ? getContext().getString(R.string.quit_group) : getContext().getString(R.string.join_group));
+        tv_channel_subscrib.setText(isJoined ? getContext().getString(R.string.group_joined) : getContext().getString(R.string.join_group));
         tv_channel_subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         RxView.clicks(tv_channel_subscrib)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

@@ -321,6 +321,8 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         mTvTopicChangeFollow.setChecked(mQaTopicBean.getHas_follow());
         mTvTopicChangeFollow.setText(mQaTopicBean.getHas_follow() ?
                 getContext().getString(R.string.followed) : getContext().getString(R.string.follow));
+        mTvTopicChangeFollow.setPadding(mQaTopicBean.getHas_follow() ?
+                getResources().getDimensionPixelSize(R.dimen.spacing_small) : getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         mTvTopicFeedCount.setText(String.format(Locale.getDefault(),
                 getString(R.string.qa_show_topic_detail_feed), String.valueOf(mQaTopicBean.getFollows_count()),
                 String.valueOf(mQaTopicBean.getQuestions_count())));
