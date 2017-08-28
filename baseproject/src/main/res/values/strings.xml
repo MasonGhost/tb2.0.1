@@ -83,6 +83,7 @@
     <string name="find_password_by_email">邮箱找回</string>
     <string name="login_by_third_platform">社交账号登陆</string>
     <string name="third_platform_complete_account">完善资料</string>
+    <string name="third_platform_complete_register">注册新用户</string>
     <string name="third_platform_bind_old_account">绑定已有账号</string>
     <string name="third_platform_bind_account">绑定账号</string>
     <string name="third_platform_exist_account">已有账号</string>
