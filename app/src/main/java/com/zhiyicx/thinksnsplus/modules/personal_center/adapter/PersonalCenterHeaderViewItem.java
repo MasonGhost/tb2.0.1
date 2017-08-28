@@ -239,7 +239,7 @@ public class PersonalCenterHeaderViewItem {
         // 标题栏的用户名
         userName.setText(userInfoBean.getName());
         // 设置简介
-        tv_user_intro.setText(userInfoBean.getIntro());
+        tv_user_intro.setText(mActivity.getString(R.string.default_location_format, userInfoBean.getIntro()));
 
         // 设置关注人数
         String followContent = "关注 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowings_count()) + ">";
