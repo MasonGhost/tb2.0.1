@@ -687,8 +687,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicDetailBeanV2
                         .SEND_SUCCESS && !dynamicBean
-                        .getComments().get(commentPosition).getPinned() &&
-                        !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R
+                        .getComments().get(commentPosition).getPinned() ? getString(R
                         .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))

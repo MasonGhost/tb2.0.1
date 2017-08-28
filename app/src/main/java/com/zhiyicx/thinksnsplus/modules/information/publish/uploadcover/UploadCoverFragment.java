@@ -78,7 +78,8 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         super.setRightClick();
         mIvInfoCoverIamge.setVisibility(View.GONE);
         mTvInfoCover.setVisibility(View.VISIBLE);
-        mInfoPublishBean.setImage(mInfoPublishBean.getCover());
+        mInfoPublishBean.setImage(mInfoPublishBean.getCover()==0?
+                null:(long)mInfoPublishBean.getCover());
     }
 
     @Override
@@ -123,7 +124,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
         if (showUplaoding()) {
             showSnackSuccessMessage("封面上传成功");
         }
-        mInfoPublishBean.setImage(id);
+        mInfoPublishBean.setImage((long)id);
         mBtSure.setEnabled(true);
     }
 

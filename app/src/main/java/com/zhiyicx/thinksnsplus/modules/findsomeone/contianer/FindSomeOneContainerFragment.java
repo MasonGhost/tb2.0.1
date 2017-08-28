@@ -105,7 +105,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                     if (aBoolean && !mIscationed) {
                         initLocation();
                     } else {
-                        mTvToolbarRight.setText(getString(R.string.emptyStr));
+//                        mTvToolbarRight.setText(getString(R.string.choose_city));
                     }
                 });
     }
@@ -202,6 +202,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            mIscationed = true;
             String locationStr = "";
             if (data.getExtras() != null) {
                 LocationBean locationBean = data.getExtras().getParcelable(LocationSearchFragment.BUNDLE_DATA);
@@ -232,6 +233,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
             }
             if (TextUtils.isEmpty(locationStr)) {
                 mTvToolbarRight.setText(getString(R.string.choose_city));
+                mIscationed = false;
             }
             EventBus.getDefault().post(locationStr, EventBusTagConfig.EVENT_NEARBY_LOCATION_UPDATE);
         }

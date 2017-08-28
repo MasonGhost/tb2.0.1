@@ -160,7 +160,8 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
                         mInputMoney = 0d;
                     }
                     setConfirmEnable();
-                }, throwable -> mInputMoney = 0d);
+                }, throwable -> {mInputMoney = 0d;
+                    setConfirmEnable();});
 
         RxTextView.textChanges(mEtTopTotal)
                 .compose(this.bindToLifecycle())
@@ -183,8 +184,8 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
     private void setConfirmEnable() {
         boolean enable = mCurrentDays > 0 && mInputMoney > 0;
         mBtTop.setEnabled(enable);
-        if (!enable)
-            return;
+//        if (!enable)
+//            return;
         mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
     }
 

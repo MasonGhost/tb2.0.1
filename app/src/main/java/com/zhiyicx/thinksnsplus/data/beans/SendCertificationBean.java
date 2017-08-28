@@ -38,6 +38,7 @@ public class SendCertificationBean implements Parcelable{
     private String org_name;
     private String org_address;
     private List<ImageBean> picList;
+    private boolean isUpdate; // 是否更新
 
     public String getType() {
         return type;
@@ -111,6 +112,14 @@ public class SendCertificationBean implements Parcelable{
         this.picList = picList;
     }
 
+    public boolean isUpdate() {
+        return isUpdate;
+    }
+
+    public void setUpdate(boolean update) {
+        isUpdate = update;
+    }
+
     @Override
     public String toString() {
         return "SendCertificationBean{" +
@@ -123,6 +132,7 @@ public class SendCertificationBean implements Parcelable{
                 ", org_name='" + org_name + '\'' +
                 ", org_address='" + org_address + '\'' +
                 ", picList=" + picList +
+                ", isUpdate=" + isUpdate +
                 '}';
     }
 
@@ -145,6 +155,7 @@ public class SendCertificationBean implements Parcelable{
         dest.writeString(this.org_name);
         dest.writeString(this.org_address);
         dest.writeTypedList(this.picList);
+        dest.writeByte(this.isUpdate ? (byte) 1 : (byte) 0);
     }
 
     protected SendCertificationBean(Parcel in) {
@@ -158,6 +169,7 @@ public class SendCertificationBean implements Parcelable{
         this.org_name = in.readString();
         this.org_address = in.readString();
         this.picList = in.createTypedArrayList(ImageBean.CREATOR);
+        this.isUpdate = in.readByte() != 0;
     }
 
     public static final Creator<SendCertificationBean> CREATOR = new Creator<SendCertificationBean>() {

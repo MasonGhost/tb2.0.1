@@ -31,11 +31,11 @@ public class ApiConfig {
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
     //    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
-    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
+//    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
 
 //    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
 
-//    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
+    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
     public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION + "/system/about";// 关于我们网站
@@ -475,6 +475,7 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NEW_USER_INFO = "api/" + API_VERSION_2 + "/user/latests";
     // 通过 tag 推荐
     public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
+    public static final String APP_PATH_SEARCH_RECOMMENT_USER= "api/" + API_VERSION_2 + "/user/search";
     // 通过 phone 推荐
     public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";
     // 更新用户地址
