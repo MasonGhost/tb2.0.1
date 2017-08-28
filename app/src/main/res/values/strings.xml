@@ -306,6 +306,7 @@
     <string name="choose_withdrawals_style_formart">%s提现</string>
 
     <string name="wallet_config_info_get_loading_tip">钱包配置信息获取中&#8230;</string>
+    <string name="wallet_config_info_get_load_failed_tip">钱包配置信息获取失败</string>
     <string name="get_success">获取成功</string>
     <string name="pay_fail">支付失败</string>
     <string name="pay_success">支付成功</string>
