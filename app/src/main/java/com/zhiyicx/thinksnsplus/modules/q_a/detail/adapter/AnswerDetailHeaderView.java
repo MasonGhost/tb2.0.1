@@ -293,6 +293,7 @@ public class AnswerDetailHeaderView {
     public void updateUserFollow(boolean isFollowed) {
         mUserFollow.setChecked(isFollowed);
         mUserFollow.setText(isFollowed ? mUserFollow.getContext().getString(R.string.qa_topic_followed) : mUserFollow.getContext().getString(R.string.qa_topic_follow));
+        mUserFollow.setPadding(isFollowed ? mContext.getResources().getDimensionPixelSize(R.dimen.spacing_small) : mContext.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
     }
 
     public void updateDigList(AnswerInfoBean answerInfoBean) {

@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.my_manuscripts;
+package com.zhiyicx.thinksnsplus.modules.information.my_info;
 
 import android.support.v7.widget.RecyclerView;
 

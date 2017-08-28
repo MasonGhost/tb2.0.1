@@ -28,6 +28,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
+import com.zhiyicx.thinksnsplus.modules.channel.mine.MyGroupActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
@@ -189,6 +190,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
     }
 
+    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container,R.id.bt_my_info,
+            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet,R.id.bt_music,
+            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group})
     @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
             R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
             R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification})
@@ -279,6 +283,13 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 } else {
                     initCertificationTypePop();
                 }
+                break;
+            case R.id.bt_my_qa:
+                // 我的问答
+                break;
+            case R.id.bt_my_group:
+                // 我的圈子
+                startActivity(new Intent(getActivity(), MyGroupActivity.class));
                 break;
             default:
         }

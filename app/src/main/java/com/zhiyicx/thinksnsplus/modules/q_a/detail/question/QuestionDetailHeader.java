@@ -158,6 +158,7 @@ public class QuestionDetailHeader {
     public void updateFollowState(QAListInfoBean qaListInfoBean) {
         mTvTopicChangeFollow.setChecked(qaListInfoBean.getWatched());
         mTvTopicChangeFollow.setText(qaListInfoBean.getWatched() ? mContext.getString(R.string.followed) : mContext.getString(R.string.follow));
+        mTvTopicChangeFollow.setPadding(qaListInfoBean.getWatched() ? mContext.getResources().getDimensionPixelSize(R.dimen.spacing_small) : mContext.getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
     }
 
     /**

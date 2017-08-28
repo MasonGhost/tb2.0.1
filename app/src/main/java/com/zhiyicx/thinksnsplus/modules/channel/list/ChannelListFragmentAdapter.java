@@ -10,8 +10,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
+import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.modules.channel.mine.MyGroupContract;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -37,9 +40,10 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
-    private ChannelListContract.Presenter mPresenter;
 
-    public ChannelListFragmentAdapter(Context context, int layoutId, List<GroupInfoBean> datas, ChannelListContract.Presenter presenter) {
+    private ITSListPresenter mPresenter;
+
+    public ChannelListFragmentAdapter(Context context, int layoutId, List<GroupInfoBean> datas, ITSListPresenter presenter) {
         super(context, layoutId, datas);
         mPresenter = presenter;
     }
@@ -104,13 +108,17 @@ public class ChannelListFragmentAdapter extends CommonAdapter<GroupInfoBean> {
         // 设置订阅状态
         boolean isJoined = groupInfoBean.getIs_member() == 1;
         tv_channel_subscrib.setChecked(isJoined);
-        tv_channel_subscrib.setText(isJoined ? getContext().getString(R.string.quit_group) : getContext().getString(R.string.join_group));
+        tv_channel_subscrib.setText(isJoined ? getContext().getString(R.string.group_joined) : getContext().getString(R.string.join_group));
         tv_channel_subscrib.setPadding(isJoined ? getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small) : getContext().getResources().getDimensionPixelSize(R.dimen.spacing_normal), 0, 0, 0);
         RxView.clicks(tv_channel_subscrib)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
                     if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
-                        mPresenter.handleGroupJoin(position, groupInfoBean);
+                        if (mPresenter instanceof ChannelListContract.Presenter){
+                            ((ChannelListContract.Presenter)mPresenter).handleGroupJoin(position, groupInfoBean);
+                        } else if (mPresenter instanceof MyGroupContract.Presenter){
+                            ((MyGroupContract.Presenter)mPresenter).handleGroupJoin(position, groupInfoBean);
+                        }
                     } else {
                         tv_channel_subscrib.setChecked(false);
                     }
