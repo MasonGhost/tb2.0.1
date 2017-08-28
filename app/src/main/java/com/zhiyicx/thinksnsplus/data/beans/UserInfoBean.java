@@ -20,6 +20,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -105,6 +106,16 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @Convert(converter = VerifiedBeanConverter.class, columnType = String.class)
     private VerifiedBean verified;
 
+    @Convert(converter = UserTagsBeanConverter.class, columnType = String.class)
+    private List<UserTagBean> tags;
+
+    public List<UserTagBean> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<UserTagBean> tags) {
+        this.tags = tags;
+    }
 
     public String getSexString() {
         switch (getSex()) {
@@ -161,9 +172,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
     public String getIntro() {
-        if(TextUtils.isEmpty(intro)){
+        if (TextUtils.isEmpty(intro)) {
             return AppApplication.getContext().getResources().getString(R.string.intro_default);
-        }else {
+        } else {
             return intro;
         }
     }
@@ -301,10 +312,10 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public UserInfoBean() {
     }
 
-    @Generated(hash = 1781470643)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified) {
+    @Generated(hash = 1966877277)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex, String location,
+            boolean following, boolean follower, String created_at, String updated_at, String avatar, String cover,
+            UserInfoExtraBean extra, VerifiedBean verified, List<UserTagBean> tags) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
@@ -320,6 +331,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.cover = cover;
         this.extra = extra;
         this.verified = verified;
+        this.tags = tags;
     }
 
     /**
@@ -469,6 +481,13 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     }
 
+    /**
+     * UsertagBean 转 String 形式存入数据库
+     */
+    public static class UserTagsBeanConverter extends BaseConvert<List<UserTagBean>> {
+
+    }
+
 
     @Override
     public Long getMaxId() {
@@ -520,6 +539,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeParcelable(this.wallet, flags);
         dest.writeParcelable(this.extra, flags);
         dest.writeParcelable(this.verified, flags);
+        dest.writeTypedList(this.tags);
     }
 
     protected UserInfoBean(Parcel in) {
@@ -544,6 +564,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -581,6 +602,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
                 ", wallet=" + wallet +
                 ", extra=" + extra +
                 ", verified=" + verified +
+                ", tags=" + tags +
                 '}';
     }
 }

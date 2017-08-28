@@ -29,11 +29,18 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
+import com.zhy.view.flowlayout.FlowLayout;
+import com.zhy.view.flowlayout.TagFlowLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author LiuChao
@@ -56,7 +63,9 @@ public class PersonalCenterHeaderViewItem {
     private TextView tv_user_fans;// 用户粉丝数量
     private LinearLayout ll_dynamic_count_container;// 动态数量的容器
     private TextView tv_dynamic_count;// 动态数量
-
+    private TagFlowLayout mFlTags;
+    private TextView tv_certify;// 认证
+    private TextView tv_addres;// 地址
     private Activity mActivity;
     private RecyclerView mRecyclerView;
     private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
@@ -102,6 +111,7 @@ public class PersonalCenterHeaderViewItem {
 
     private View headerView;
     private int userNameFirstY = 0;
+    private UserInfoTagsAdapter mUserInfoTagsAdapter;
 
     public PersonalCenterHeaderViewItem(Activity activity, PhotoSelectorImpl photoSelector, RecyclerView recyclerView, HeaderAndFooterWrapper headerAndFooterWrapper, View mToolBarContainer) {
         mActivity = activity;
@@ -229,21 +239,21 @@ public class PersonalCenterHeaderViewItem {
         // 标题栏的用户名
         userName.setText(userInfoBean.getName());
         // 设置简介
-        tv_user_intro.setText(userInfoBean.getIntro());
+        tv_user_intro.setText(mActivity.getString(R.string.default_location_format, userInfoBean.getIntro()));
 
         // 设置关注人数
         String followContent = "关注 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowings_count()) + ">";
         CharSequence followString = ColorPhrase.from(followContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
-                .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
+                .innerColor(ContextCompat.getColor(mActivity, R.color.white))
+                .outerColor(ContextCompat.getColor(mActivity, R.color.white))
                 .format();
         tv_user_follow.setText(followString);
 
         // 设置粉丝人数
         String fansContent = "粉丝 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowers_count()) + ">";
         CharSequence fansString = ColorPhrase.from(fansContent).withSeparator("<>")
-                .innerColor(ContextCompat.getColor(mActivity, R.color.themeColor))
-                .outerColor(ContextCompat.getColor(mActivity, R.color.normal_for_assist_text))
+                .innerColor(ContextCompat.getColor(mActivity, R.color.white))
+                .outerColor(ContextCompat.getColor(mActivity, R.color.white))
                 .format();
         tv_user_fans.setText(fansString);
 
@@ -291,6 +301,19 @@ public class PersonalCenterHeaderViewItem {
             mActivity.startActivity(itFollow);
         });
         mHeaderAndFooterWrapper.notifyDataSetChanged();
+        if (userInfoBean.getTags() == null) {
+            userInfoBean.setTags(new ArrayList<>());
+        }
+        tv_certify.setText(userInfoBean.getVerified() != null ? mActivity.getString(R.string.default_certify) : userInfoBean.getVerified().getType());
+
+        if (TextUtils.isEmpty(userInfoBean.getLocation())) {
+            tv_addres.setVisibility(View.GONE);
+        } else {
+            tv_addres.setVisibility(View.VISIBLE);
+            tv_addres.setText(userInfoBean.getLocation());
+        }
+        mUserInfoTagsAdapter = new UserInfoTagsAdapter(userInfoBean.getTags(), mActivity, true);
+        mFlTags.setAdapter(mUserInfoTagsAdapter);
     }
 
     private void initHeaderViewUI(View headerView) {
@@ -305,6 +328,10 @@ public class PersonalCenterHeaderViewItem {
         tv_user_fans = (TextView) headerView.findViewById(R.id.tv_user_fans);
         ll_dynamic_count_container = (LinearLayout) headerView.findViewById(R.id.ll_dynamic_count_container);
         tv_dynamic_count = (TextView) headerView.findViewById(R.id.tv_dynamic_count);
+        mFlTags = (TagFlowLayout) headerView.findViewById(R.id.fl_tags);
+        tv_certify = (TextView) headerView.findViewById(R.id.tv_verify);
+        tv_addres = (TextView) headerView.findViewById(R.id.tv_address);
+
         // 高度为屏幕宽度一半加上20dp
         int width = UIUtils.getWindowWidth(mActivity);
         int height = UIUtils.getWindowWidth(mActivity) / 2 + mActivity.getResources().getDimensionPixelSize(R.dimen.spacing_large);

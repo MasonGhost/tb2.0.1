@@ -582,4 +582,6 @@
     <string name="rank_info_type_day">今日资讯排行榜</string>
     <string name="rank_info_type_week">一周资讯排行榜</string>
     <string name="rank_info_type_month">本月资讯排行榜</string>
+    <string name="default_location_format">简介：%s</string>
+    <string name="default_certify">当前用户还没有认证呢</string>
 </resources>
