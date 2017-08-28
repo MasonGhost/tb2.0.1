@@ -92,14 +92,6 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                 , R.id.fragment_container);
 
         initListener();
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
                     if (aBoolean && !mIscationed) {
@@ -108,6 +100,7 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
 //                        mTvToolbarRight.setText(getString(R.string.choose_city));
                     }
                 });
+
     }
 
     private void initLocation() {
@@ -158,7 +151,6 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
 
     @Override
     protected void initData() {
-
 
     }
 
