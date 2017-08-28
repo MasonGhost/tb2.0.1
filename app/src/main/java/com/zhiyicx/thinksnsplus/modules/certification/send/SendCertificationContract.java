@@ -22,6 +22,7 @@ public interface SendCertificationContract {
 
     interface Presenter extends IBasePresenter {
         void sendCertification(SendCertificationBean bean);
+        SendCertificationBean checkUpdateData(SendCertificationBean bean);
     }
 
     interface Repository{

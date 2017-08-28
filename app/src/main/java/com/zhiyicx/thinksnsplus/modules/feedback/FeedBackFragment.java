@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import rx.Observable;
+import rx.Subscription;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
@@ -31,6 +32,7 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
     UserInfoInroduceInputView mEtDynamicContent;
     @BindView(R.id.tv_feedback_contract)
     EditText mTvFeedbackContract;
+    Subscription subscription;
 
     private ActionPopupWindow mFeedBackInstructionsPopupWindow;
 
@@ -66,7 +68,8 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
     @Override
     public void showSnackSuccessMessage(String message) {
         super.showSnackSuccessMessage(message);
-        Observable.timer(1, TimeUnit.SECONDS).subscribe(aLong -> getActivity().finish());
+        subscription = Observable.timer(1, TimeUnit.SECONDS).subscribe(aLong -> getActivity().finish());
+
 
     }
 
@@ -115,4 +118,11 @@ public class FeedBackFragment extends TSFragment<FeedBackContract.Presenter> imp
         mFeedBackInstructionsPopupWindow.show();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+    }
 }

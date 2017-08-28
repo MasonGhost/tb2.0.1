@@ -82,7 +82,7 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
                     .into(holder.getImageViwe(R.id.iv_detail_image));
         }
 
-        String content = String.format(getString(R.string.review_description), (float) topDynamicCommentBean.getAmount(),
+        String content = String.format(getString(R.string.review_description), PayConfig.realCurrencyFen2Yuan((float) topDynamicCommentBean.getAmount()),
                 commentBean == null ? " " : topDynamicCommentBean.getComment().getBody());
 
         TextView contentView = holder.getView(R.id.tv_content);

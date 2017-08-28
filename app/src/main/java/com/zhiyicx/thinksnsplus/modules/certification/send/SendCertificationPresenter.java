@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.certification.send;
 
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
@@ -19,11 +20,13 @@ import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 
 
 import org.simple.eventbus.EventBus;
+import org.w3c.dom.Text;
 
 import java.util.Date;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -38,6 +41,8 @@ public class SendCertificationPresenter extends BasePresenter<SendCertificationC
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
 
     @Inject
     public SendCertificationPresenter(SendCertificationContract.Repository repository, SendCertificationContract.View rootView) {
@@ -47,6 +52,7 @@ public class SendCertificationPresenter extends BasePresenter<SendCertificationC
     @Override
     public void sendCertification(SendCertificationBean bean) {
         mRootView.updateSendState(true, false, mContext.getString(R.string.send_certification_ing));
+        checkUpdateData(bean);
         Subscription subscription = mRepository.sendCertification(bean)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
@@ -89,6 +95,48 @@ public class SendCertificationPresenter extends BasePresenter<SendCertificationC
                     }
                 });
         addSubscrebe(subscription);
+    }
+
+    @Override
+    public SendCertificationBean checkUpdateData(SendCertificationBean bean) {
+        UserCertificationInfo userCertificationInfo = mUserCertificationInfoGreenDao.getInfoByUserId();
+        if (userCertificationInfo != null){
+            bean.setUpdate(true);
+            // 公司信息 如果新的申请是企业 才去验证是否修改
+            if (bean.getType().equals(SendCertificationBean.ORG)){
+                if (!TextUtils.isEmpty(userCertificationInfo.getData().getOrg_name())
+                        && userCertificationInfo.getData().getOrg_name().equals(bean.getOrg_name())){
+                    bean.setOrg_name("");
+                }
+                if (!TextUtils.isEmpty(userCertificationInfo.getData().getOrg_address())
+                        && userCertificationInfo.getData().getOrg_address().equals(bean.getOrg_address())){
+                    bean.setOrg_address("");
+                }
+            }
+            // 类型是否改变
+            if (userCertificationInfo.getCertification_name().equals(bean.getType())){
+                bean.setType("");
+            }
+            // 描述是否改变
+            if (userCertificationInfo.getData().getDesc().equals(bean.getDesc())){
+                bean.setDesc("");
+            }
+            // 用户名是否改变
+            if (userCertificationInfo.getData().getName().equals(bean.getName())){
+                bean.setName("");
+            }
+            // 身份在是否改变
+            if (userCertificationInfo.getData().getNumber().equals(bean.getNumber())){
+                bean.setNumber("");
+            }
+            // 电话是否改变
+            if (userCertificationInfo.getData().getPhone().equals(bean.getPhone())){
+                bean.setPhone("");
+            }
+        } else {
+            bean.setUpdate(false);
+        }
+        return bean;
     }
 
     @Override

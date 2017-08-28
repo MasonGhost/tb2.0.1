@@ -803,10 +803,11 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void initInstructionsPop(String title, String des) {
         if (mInstructionsPopupWindow != null) {
-            mInstructionsPopupWindow.newBuilder()
+            mInstructionsPopupWindow= mInstructionsPopupWindow.newBuilder()
                     .item1Str(title)
                     .desStr(des)
-                    .build().show();
+                    .build();
+            mInstructionsPopupWindow.show();
             return;
         }
         mInstructionsPopupWindow = ActionPopupWindow.builder()

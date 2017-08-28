@@ -191,7 +191,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     @Override
     public Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit) {
-        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, name, since, order, limit)
+        return mUserInfoClient.searchUserinfoWithRecommend(limit,since,name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -536,6 +536,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
 
     /**
      * @param phones 单次最多 100 条
