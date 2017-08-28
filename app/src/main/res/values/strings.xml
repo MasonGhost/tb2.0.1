@@ -503,6 +503,7 @@
     <string name="qa_go_to_watched">已围观</string>
     <string name="qa_reset_reward_success">设置悬赏成功</string>
     <string name="qa_expert_list">专家列表</string>
+    <string name="qa_mine">我的问答</string>
 
     <!--签到-->
     <string name="check_in">签到</string>
