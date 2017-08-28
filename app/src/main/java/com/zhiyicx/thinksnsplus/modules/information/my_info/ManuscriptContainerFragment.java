@@ -25,6 +25,16 @@ public class ManuscriptContainerFragment extends TSViewPagerFragment {
         return Arrays.asList(getString(R.string.info_published), getString(R.string.info_publishing), getString(R.string.info_publishfailed));
     }
 
+    @Override
+    protected int setLeftImg() {
+        return 0;
+    }
+
+    @Override
+    protected String setCenterTitle() {
+        return getString(R.string.my_info);
+    }
+
     public static ManuscriptContainerFragment getInstance() {
         ManuscriptContainerFragment manuscriptContainerFragment = new ManuscriptContainerFragment();
         return manuscriptContainerFragment;

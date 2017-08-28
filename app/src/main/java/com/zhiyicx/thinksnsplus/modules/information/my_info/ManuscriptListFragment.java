@@ -48,7 +48,10 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
 
     @Override
     protected void initData() {
-
+        DaggerManuscriptListComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .manuscripListPresenterModule(new ManuscripListPresenterModule(this))
+                .build().inject(this);
         super.initData();
     }
 
