@@ -1,7 +1,8 @@
 allprojects {
     repositories {
         jcenter()
-        maven { url "https://jitpack.io"
+        maven {
+            url "https://jitpack.io"
         }
     }
 }
@@ -11,8 +12,8 @@ ext {
     applicationId = "com.zhiyicx.thinksnsplus"
     minSdkVersion = 16
     targetSdkVersion = 25
-    versionCode = 31
-    versionName = "0.8.3"
+    versionCode = 42
+    versionName = "0.8.5.8"
     compileSdkVersion = 25
     buildToolsVersion = "25.0.1"
 
@@ -104,6 +105,10 @@ ext {
             jiguangJpush                 : 'cn.jiguang.sdk:jpush:3.0.3',
             jiguangJcore                 : 'cn.jiguang.sdk:jcore:1.1.1',
             umeng                        : 'com.umeng.analytics:analytics:latest.integration',
+            amapLocation                 : 'com.amap.api:location:latest.integration',
+            a3Dmap                       : 'com.amap.api:3dmap:latest.integration',
+            amapSearch                   : 'com.amap.api:search:latest.integration',
+
             pingPayCore                  : "com.pingxx:pingpp-core:${payVersion}",//使用 ping++ 支付时必须添加
             pingWxPay                    : "com.pingxx:pingpp-wxpay:${payVersion}",//ping++ 使用微信支付时添加
             pingAliPay                   : "com.pingxx:pingpp-alipay:${payVersion}",//ping++ 使用支付宝时添加
@@ -122,10 +127,12 @@ ext {
             // font
             calligraphyFont              : 'uk.co.chrisjenx:calligraphy:2.3.0',
             // markdown editor
-            markdown                     : 'com.github.tiagohm.MarkdownView:emoji:0.17.0',
+            markdownView                 : 'com.github.tiagohm.MarkdownView:library:0.17.0',
             editor                       : 'jp.wasabeef:richeditor-android:1.2.2',
+            richtext                     : 'com.zzhoujay.richtext:richtext:2.5.4',
 
-            flowlayout                   : 'com.zhy:flowlayout-lib:1.0.3'
+            flowlayout                   : 'com.zhy:flowlayout-lib:1.0.3',
+            contacts                     : 'com.github.tamir7.contacts:contacts:1.1.7',
     ]
     sdksoupportDependencies = [
             appcompatV7     : "com.android.support:appcompat-v7:${androidSupportSdkVersion}",

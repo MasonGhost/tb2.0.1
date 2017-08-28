@@ -12,18 +12,25 @@ import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
+import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.information.infochannel.ChannelActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoMainContract;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infosearch.SearchActivity;
+import com.zhiyicx.thinksnsplus.modules.information.publish.PublishInfoActivity;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -37,12 +44,15 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.functions.Action1;
 
+import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_CERTIFICATION_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
 
 /**
@@ -60,6 +70,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     ImageView mFragmentInfocontainerChange;
     @BindView(R.id.fragment_infocontainer_content)
     ViewPager mFragmentInfocontainerContent;
+    private TextView mTvRightTwo;
 
     public static final String SUBSCRIBE_EXTRA = "mycates";
     protected static final int DEFAULT_OFFSET_PAGE = 3;
@@ -97,6 +108,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     private InfoTypeBean mInfoTypeBean;
     private CommonNavigator mCommonNavigator;
 
+    private ActionPopupWindow mCertificationAlertPopWindow; // 提示需要认证的
+    private ActionPopupWindow mPayAlertPopWindow; // 提示需要付钱的
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_infocontainer;
@@ -109,6 +123,7 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
         initMagicIndicator(initTitles());
         initFragments();
         mFragmentInfocontainerContent.setAdapter(mMyAdapter);
+        initPopWindow();
     }
 
     @Override
@@ -118,16 +133,32 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
 
     @Override
     protected int setRightImg() {
-        return R.mipmap.ico_search;
+        return R.mipmap.ico_news_contribute;
     }
 
     @Override
     protected void setRightClick() {
-
-        if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
-            return;
+        // 发布提示 1、首先需要认证 2、需要付费
+        if (mPresenter.checkCertification()){
+            if (mPresenter.isNeedPayTip()){
+                mPayAlertPopWindow.show();
+                mPresenter.savePayTip(false);
+            } else {
+                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+            }
+        } else {
+            mCertificationAlertPopWindow.show();
         }
-        startActivity(new Intent(getActivity(), SearchActivity.class));
+    }
+
+    @Override
+    protected void musicWindowsStatus(boolean isShow) {
+        super.musicWindowsStatus(isShow);
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindowTwo() {
+        return mTvRightTwo;
     }
 
     @Override
@@ -181,9 +212,9 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setInfoType(InfoTypeBean infoType) {
         mInfoTypeBean = infoType;
-        mInfoTypeBean.getMy_cates().add(0, new InfoTypeMyCatesBean(-1L, getString(R.string
-                .info_recommend)));
-        for (InfoTypeMyCatesBean myCatesBean : infoType.getMy_cates()) {
+        mInfoTypeBean.getMy_cates().add(0, new InfoTypeCatesBean(-1L, getString(R.string
+                .info_recommend),true));
+        for (InfoTypeCatesBean myCatesBean : infoType.getMy_cates()) {
             if (mInfoTypeBean.getMy_cates().indexOf(myCatesBean) != 0
                     && !mTitle.contains(myCatesBean.getName())) {
                 LogUtils.d(myCatesBean.getName());
@@ -198,6 +229,77 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     @Override
     public void setPresenter(InfoMainContract.InfoContainerPresenter infoContainerPresenter) {
         mPresenter = infoContainerPresenter;
+    }
+
+    @Override
+    protected int getToolBarLayoutId() {
+        return R.layout.toolbar_right_two_img;
+    }
+
+    @Override
+    protected void initDefaultToolBar(View toolBarContainer) {
+        super.initDefaultToolBar(toolBarContainer);
+        mTvRightTwo = (TextView) toolBarContainer.findViewById(R.id.tv_toolbar_right_two);
+        mTvRightTwo.setCompoundDrawables(UIUtils.getCompoundDrawables(getContext(), R.mipmap.ico_search), null, null, null);
+        RxView.clicks(mTvRightTwo)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
+                .compose(this.<Void>bindToLifecycle())
+                .subscribe(aVoid -> {
+                    if (!TouristConfig.INFO_CAN_SEARCH && mPresenter.handleTouristControl()) {
+                        return;
+                    }
+                    startActivity(new Intent(getActivity(), SearchActivity.class));
+                });
+    }
+
+    private void initPopWindow(){
+        if (mCertificationAlertPopWindow == null){
+            mCertificationAlertPopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .item2Str(getString(R.string.certification_personage))
+                    .item3Str(getString(R.string.certification_company))
+                    .desStr(getString(R.string.info_publish_hint_certification))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .bottomClickListener(() -> mCertificationAlertPopWindow.hide())
+                    .item2ClickListener(() -> {// 个人认证
+                        mCertificationAlertPopWindow.hide();
+                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_TYPE, 0);
+                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                        startActivity(intent);
+                    })
+                    .item3ClickListener(() -> {// 企业认证
+                        mCertificationAlertPopWindow.hide();
+                        Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_TYPE, 1);
+                        intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
+                        startActivity(intent);
+                    })
+                    .build();
+        }
+        if (mPayAlertPopWindow == null){
+            mPayAlertPopWindow = ActionPopupWindow.builder()
+                    .item1Str(getString(R.string.info_publish_hint))
+                    .item6Str(getString(R.string.info_publish_go_to_next))
+                    .desStr(getString(R.string.info_publish_hint_pay))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .bottomClickListener(() -> mPayAlertPopWindow.hide())
+                    .item6ClickListener(() -> {
+                        mPayAlertPopWindow.hide();
+                        startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+                    })
+                    .build();
+        }
     }
 
     protected List<String> initTitles() {

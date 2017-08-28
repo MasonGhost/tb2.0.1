@@ -93,6 +93,19 @@ public class SharePreferenceUtils {
     }
 
     /**
+     * 返回存在 sharedPreferences 的信息
+     *
+     * @param key
+     * @return
+     */
+    public static boolean getBoolean(Context context, String key, boolean defaultValue) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        return mSharedPreferences.getBoolean(key, defaultValue);
+    }
+
+    /**
      * 存储重要信息到 sharedPreferences；
      *
      * @param key

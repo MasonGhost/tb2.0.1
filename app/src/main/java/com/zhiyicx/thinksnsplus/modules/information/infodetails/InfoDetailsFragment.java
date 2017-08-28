@@ -7,7 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,10 +17,9 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.InputLimitView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
-import com.zhiyicx.common.config.ConstantConfig;
+import com.zhiyicx.common.BuildConfig;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.FileUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
@@ -30,14 +29,17 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentEmptyItem;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailCommentItem;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailHeaderView;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoDetailWebItem;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.wallet.reward.RewardType;
-import com.zhiyicx.thinksnsplus.widget.ReWardView;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopActivity;
+import com.zhiyicx.thinksnsplus.modules.wallet.sticktop.StickTopFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.DynamicDetailMenuView.ITEM_POSITION_0;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_UPDATE_LIST_DELETE;
 import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentAdapter.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment.BUNDLE_INFO_TYPE;
@@ -83,6 +86,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     InputLimitView mIlvComment;
     @BindView(R.id.ll_bottom_menu_container)
     ViewGroup mLLBottomMenuContainer;
+
+    private InfoDetailHeaderView mInfoDetailHeader;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDealInfoMationPopWindow;
@@ -126,26 +131,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     protected MultiItemTypeAdapter getAdapter() {
         MultiItemTypeAdapter multiItemTypeAdapter = new MultiItemTypeAdapter<>(getActivity(),
                 mListDatas);
-        multiItemTypeAdapter.addItemViewDelegate(new InfoDetailWebItem(getActivity(), new
-                ItemOnWebEventListener()) {
-            @Override
-            protected void dealRewards(ViewHolder holder) {
-                ((ReWardView) holder.getView(R.id.v_reward)).initData(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean,RewardType.INFO);
-                ((ReWardView) holder.getView(R.id.v_reward)).setOnRewardsClickListener(() -> {
-                });
-            }
-
-            @Override
-            public void dealCommentCount(ViewHolder holder) {
-                if (mListDatas.get(mListDatas.size() - 1).getComment_content() != null) {
-                    holder.getView(R.id.info_detail_comment).setVisibility(View.VISIBLE);
-                    holder.setText(R.id.tv_comment_count,
-                            getActivity().getResources().getString(R.string.dynamic_comment_count, mListDatas.size() - 1 + ""));
-                } else {
-                    holder.getView(R.id.info_detail_comment).setVisibility(View.GONE);
-                }
-            }
-        });
         InfoDetailCommentItem infoDetailCommentItem = new InfoDetailCommentItem(new
                 ItemOnCommentListener());
         multiItemTypeAdapter.addItemViewDelegate(infoDetailCommentItem);
@@ -158,7 +143,37 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         this.mRewardsCountBean = rewardsCountBean;
         this.mRewardsListBeen.clear();
         this.mRewardsListBeen.addAll(datas);
-        refreshData();
+        mInfoDetailHeader.updateReward(mInfoMation.getId(), mRewardsListBeen, mRewardsCountBean, RewardType.INFO);
+    }
+
+    @Override
+    public void updateInfoHeader(InfoListDataBean infoDetailBean) {
+        closeLoadingView();
+        mCoordinatorLayout.setEnabled(true);
+        this.mInfoMation = infoDetailBean;
+        mInfoDetailHeader.setDetail(infoDetailBean);
+        mInfoDetailHeader.updateDigList(infoDetailBean);
+        mInfoDetailHeader.setRelateInfo(infoDetailBean);
+        onNetResponseSuccess(infoDetailBean.getCommentList(), false);
+    }
+
+    @Override
+    public void deleteInfo(boolean deleting, boolean success, String message) {
+        if (deleting) {
+            showSnackLoadingMessage(getString(R.string.info_deleting));
+        } else {
+            if (success) {
+                EventBus.getDefault().post(mInfoMation, EVENT_UPDATE_LIST_DELETE);
+                getActivity().finish();
+            } else {
+                showSnackErrorMessage(message);
+            }
+        }
+    }
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
 
     @Override
@@ -174,18 +189,13 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
 
         mTvToolbarCenter.setVisibility(View.VISIBLE);
         mTvToolbarCenter.setText(getString(R.string.info_details));
-
+        initHeaderView();
         initBottomToolStyle();
         initBottomToolListener();
         initListener();
         mInfoMation.setIs_collection_news(mPresenter.isCollected() ? 1 : 0);
         mInfoMation.setIs_digg_news(mPresenter.isDiged() ? 1 : 0);
         setDigg(mPresenter.isDiged());
-    }
-
-    @Override
-    protected void initData() {
-        super.initData();
     }
 
     @Override
@@ -212,11 +222,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_info_detail;
-    }
-
-    @Override
-    protected Long getMaxId(@NotNull List<InfoCommentListBean> data) {
-        return (long) mListDatas.get(mListDatas.size() - 1).getId();
     }
 
     @Override
@@ -252,18 +257,18 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void setDigg(boolean isDigged) {
         mDdDynamicTool.setItemIsChecked(isDigged, ITEM_POSITION_0);
+        if (mInfoMation.getDigList() != null) {
+            mInfoDetailHeader.updateDigList(mInfoMation);
+        }
     }
 
     @Override
     public void onNetResponseSuccess(@NotNull List<InfoCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
-            InfoCommentListBean position_zero = new InfoCommentListBean();
-            position_zero.setId(mInfoMation.getId());
-            if (data.isEmpty()) {
+            if (data.isEmpty()) { // 空白展位图
                 InfoCommentListBean emptyData = new InfoCommentListBean();
                 data.add(emptyData);
             }
-            data.add(0, position_zero);
         }
         super.onNetResponseSuccess(data, isLoadMore);
         if (!isLoadMore) {
@@ -284,6 +289,24 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mLLBottomMenuContainer.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void refreshData() {
+        super.refreshData();
+        mInfoDetailHeader.updateCommentView(mInfoMation);
+    }
+
+    private void initHeaderView() {
+        mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mAdapter);
+        mInfoDetailHeader = new InfoDetailHeaderView(getContext(), mPresenter.getAdvert());
+//        mDynamicDetailHeader.setOnImageClickLisenter(this);
+        mHeaderAndFooterWrapper.addHeaderView(mInfoDetailHeader.getInfoDetailHeader());
+        View mFooterView = new View(getContext());
+        mFooterView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
+        mHeaderAndFooterWrapper.addFootView(mFooterView);
+        mRvList.setAdapter(mHeaderAndFooterWrapper);
+        mHeaderAndFooterWrapper.notifyDataSetChanged();
+    }
+
     private void initBottomToolStyle() {
         mDdDynamicTool.setButtonText(new int[]{R.string.dynamic_like, R.string.comment,
                 R.string.share, R.string.more});
@@ -298,31 +321,28 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     }
 
     private void initBottomToolListener() {
-        mDdDynamicTool.setItemOnClick(new DynamicDetailMenuView.OnItemClickListener() {
-            @Override
-            public void onItemClick(ViewGroup parent, View v, int postion) {
-                mDdDynamicTool.getTag(R.id.view_data);
-                switch (postion) {
-                    case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
-                        mPresenter.handleLike(mInfoMation.getIs_digg_news() == 0,
-                                mInfoMation.getId() + "");
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
-                        showCommentView();
-                        mReplyUserId = 0;
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
-                        Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
+        mDdDynamicTool.setItemOnClick((parent, v, position) -> {
+            mDdDynamicTool.getTag(R.id.view_data);
+            switch (position) {
+                case DynamicDetailMenuView.ITEM_POSITION_0:// 点赞
+                    mPresenter.handleLike(!mInfoMation.getHas_like(),
+                            mInfoMation.getId() + "");
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
+                    showCommentView();
+                    mReplyUserId = 0;
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
+                    Bitmap bitmap = FileUtils.readImgFromFile(getActivity(), "info_share");
 
-                        mPresenter.shareInfo(bitmap);
-                        break;
-                    case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
-                        initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getIs_collection_news() == 1);
-                        mDealInfoMationPopWindow.show();
-                        break;
-                    default:
-                        break;
-                }
+                    mPresenter.shareInfo(bitmap);
+                    break;
+                case DynamicDetailMenuView.ITEM_POSITION_3:// 更多
+                    initDealInfoMationPopupWindow(mInfoMation, mInfoMation.getHas_collect());
+                    mDealInfoMationPopWindow.show();
+                    break;
+                default:
+                    break;
             }
         });
     }
@@ -375,26 +395,30 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(R.string.dynamic_list_delete_comment))
+                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
+                .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mPresenter.deleteComment(data);
-                        mDeletCommentPopWindow.hide();
-                    }
+                .item1ClickListener(() -> {
+                    // 跳转置顶页面
+                    Bundle bundle = new Bundle();
+                    bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
+                    bundle.putLong(StickTopFragment.PARENT_ID, mInfoMation.getId());// 资源id
+                    bundle.putLong(StickTopFragment.CHILD_ID,data.getId());
+                    Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDeletCommentPopWindow.hide();
-                    }
+                .item2ClickListener(() -> {
+                    mPresenter.deleteComment(data);
+                    mDeletCommentPopWindow.hide();
+
                 })
+                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
                 .build();
     }
 
@@ -404,37 +428,40 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      * @param infoMation curent infoMation
      */
     private void initDealInfoMationPopupWindow(final InfoListDataBean infoMation, boolean isCollected) {
-        boolean isLiked = infoMation.getIs_digg_news() == 1;
+        boolean isMine = infoMation.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
         mDealInfoMationPopWindow = ActionPopupWindow.builder()
-                .item1Str(getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
-//                .item2Str(getString(isLiked ? R.string.info_dig_cancel : R.string.info_dig))
+                .item1Str(isMine ? getString(R.string.info_apply_for_top) : "")
+                .item2Str(isMine ? getString(R.string.info_delete) : getString(isCollected ? R.string.dynamic_list_uncollect_dynamic : R.string.dynamic_list_collect_dynamic))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
-                .item1ClickListener(new ActionPopupWindow.ActionPopupWindowItem1ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 收藏
-                        mPresenter.handleCollect(infoMation.getIs_collection_news() == 0,
+                .item2ClickListener(() -> {// 收藏
+                    // 如果是自己发布的，则不能收藏只能删除
+                    if (isMine) {
+                        mPresenter.deleteInfo();
+                    } else {
+                        mPresenter.handleCollect(!infoMation.getHas_collect(),
                                 mInfoMation.getId() + "");
-                        mDealInfoMationPopWindow.hide();
                     }
+                    mDealInfoMationPopWindow.hide();
                 })
-                .item2ClickListener(new ActionPopupWindow.ActionPopupWindowItem2ClickListener() {
-                    @Override
-                    public void onItemClicked() {// 点赞
-                        mPresenter.handleLike(infoMation.getIs_digg_news() == 0,
-                                mInfoMation.getId() + "");
-                        mDealInfoMationPopWindow.hide();
+                .item1ClickListener(() -> {// 申请置顶
+                    if (infoMation.is_pinned()) {
+                        showSnackErrorMessage(getString(R.string.info_alert_reapply_for_top));
+                    } else {
+                        // 跳转置顶页面
+                        Bundle bundle = new Bundle();
+                        bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
+                        bundle.putLong(StickTopFragment.PARENT_ID, infoMation.getId());// 资源id
+                        Intent intent = new Intent(getActivity(), StickTopActivity.class);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     }
+                    mDealInfoMationPopWindow.hide();
                 })
-                .bottomClickListener(new ActionPopupWindow.ActionPopupWindowBottomClickListener() {
-                    @Override
-                    public void onItemClicked() {
-                        mDealInfoMationPopWindow.hide();
-                    }
-                })
+                .bottomClickListener(() -> mDealInfoMationPopWindow.hide())
                 .build();
     }
 
@@ -469,23 +496,27 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     class ItemOnCommentListener implements InfoDetailCommentItem.OnCommentItemListener {
         @Override
         public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-            if (mListDatas.get(position).getUser_id() == AppApplication.getmCurrentLoginAuth()
-                    .getUser_id()) {// 自己的评论
+            position = position - mHeaderAndFooterWrapper.getHeadersCount();// 减去 header
+            InfoCommentListBean infoCommentListBean = mListDatas.get(position);
+            if (infoCommentListBean != null && !TextUtils.isEmpty(infoCommentListBean.getComment_content())) {
+                if (infoCommentListBean.getUser_id() == AppApplication.getmCurrentLoginAuth()
+                        .getUser_id()) {// 自己的评论
 //                if (mListDatas.get(position).getId() != -1) {
-                initDeleteCommentPopupWindow(mListDatas.get(position));
-                mDeletCommentPopWindow.show();
+                    initDeleteCommentPopupWindow(infoCommentListBean);
+                    mDeletCommentPopWindow.show();
 //                } else {
 //
 //                    return;
 //                }
-            } else {
-                mReplyUserId = (int) mListDatas.get(position).getUser_id();
-                showCommentView();
-                String contentHint = getString(R.string.default_input_hint);
-                if (mListDatas.get(position).getReply_to_user_id() != mInfoMation.getId()) {
-                    contentHint = getString(R.string.reply, mListDatas.get(position).getFromUserInfoBean().getName());
+                } else {
+                    mReplyUserId = (int) infoCommentListBean.getUser_id();
+                    showCommentView();
+                    String contentHint = getString(R.string.default_input_hint);
+                    if (infoCommentListBean.getReply_to_user_id() != mInfoMation.getId()) {
+                        contentHint = getString(R.string.reply, infoCommentListBean.getFromUserInfoBean().getName());
+                    }
+                    mIlvComment.setEtContentHint(contentHint);
                 }
-                mIlvComment.setEtContentHint(contentHint);
             }
         }
 

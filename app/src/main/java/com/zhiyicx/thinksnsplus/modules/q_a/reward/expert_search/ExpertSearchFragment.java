@@ -1,28 +1,36 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
-import org.simple.eventbus.EventBus;
-
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QA$RewardFragment.BUNDLE_RESULT;
+import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardFragment.BUNDLE_RESULT;
+import static com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity.BUNDLE_TOPIC_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity.BUNDLE_TOPIC_IDS;
 
 /**
  * @author Catherine
@@ -34,7 +42,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.reward.QA$RewardFragment.BUND
 public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Presenter, ExpertBean>
         implements ExpertSearchContract.View {
 
-    @BindView(R.id.fragment_info_search_back)
+    @BindView(R.id.fragment_search_back)
     ImageView mFragmentInfoSearchBack;
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
@@ -42,6 +50,15 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     TextView mFragmentInfoSearchCancel;
     @BindView(R.id.tv_recommend_hint)
     TextView mTvRecommendHint;
+    @BindView(R.id.fragment_info_search_container)
+    RelativeLayout mFragmentInfoSearchContainer;
+    @BindView(R.id.toolbar_container)
+    AppBarLayout mToolbarContainer;
+    @BindView(R.id.tv_toolbar_left)
+    TextView mTvToolbarLeft;
+
+    private QATopicBean mQaTopicBean;
+    private String topic_ids = "";
 
     public ExpertSearchFragment instance(Bundle bundle) {
         ExpertSearchFragment fragment = new ExpertSearchFragment();
@@ -52,15 +69,19 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     @Override
     protected void initData() {
         super.initData();
-        hideLoading();
-        initListener();
-        for (int i = 0; i < 8; i++) {
-            ExpertBean expertBean = new ExpertBean();
-            expertBean.setAnswer_count(i);
-            expertBean.setDig_count(i + 5);
-            expertBean.setName("小仙女");
-            mListDatas.add(expertBean);
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_TOPIC_BEAN)) {
+            mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
+            mTvRecommendHint.setVisibility(View.GONE);
+            mFragmentInfoSearchContainer.setVisibility(View.GONE);
+            mToolbarContainer.setVisibility(View.VISIBLE);
         }
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_TOPIC_IDS)){
+            topic_ids = getArguments().getString(BUNDLE_TOPIC_IDS);
+            mTvRecommendHint.setVisibility(View.VISIBLE);
+            mFragmentInfoSearchContainer.setVisibility(View.VISIBLE);
+            mToolbarContainer.setVisibility(View.GONE);
+        }
+        initListener();
     }
 
     private void initListener() {
@@ -68,6 +89,27 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> getActivity().finish());
+        RxView.clicks(mTvToolbarLeft)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> getActivity().finish());
+    }
+
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+        if (mQaTopicBean != null) {
+            requestNetData(maxId, mQaTopicBean.getId().intValue(), isLoadMore);
+        } else if (!TextUtils.isEmpty(topic_ids)){
+            requestNetData(mListDatas.size(), topic_ids, isLoadMore);
+        }
+    }
+
+    private void requestNetData(Long maxId, int topic_id, boolean isLoadMore) {
+        mPresenter.requestNetData(maxId, topic_id, isLoadMore);
+    }
+
+    private void requestNetData(int size, String topic_ids, boolean isLoadMore) {
+        mPresenter.requestNetData(size, topic_ids, isLoadMore);
     }
 
     @Override
@@ -77,17 +119,30 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas);
+        SearchExpertAdapter adapter = new SearchExpertAdapter(getContext(), mListDatas, mPresenter);
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 // 点击直接回到悬赏页面
                 ExpertBean expertBean = mListDatas.get(position);
                 if (expertBean != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(BUNDLE_RESULT, expertBean);
-                    EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_CHANGE_EXPERT);
-                    getActivity().finish();
+                    if (mQaTopicBean != null) {
+                        UserInfoBean userInfoBean = new UserInfoBean();
+                        userInfoBean.setUser_id((long) expertBean.getExtra().getUser_id());
+                        userInfoBean.setFollower(expertBean.isFollower());
+                        userInfoBean.setName(expertBean.getName());
+                        userInfoBean.setVerified(expertBean.getVerified());
+                        boolean isJoined = expertBean.isFollower();
+                        userInfoBean.setFollower(isJoined);
+                        PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+                    } else {
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(BUNDLE_RESULT, expertBean);
+                        Intent intent = new Intent();
+                        intent.putExtras(bundle);
+                        getActivity().setResult(Activity.RESULT_OK, intent);
+                        getActivity().finish();
+                    }
                 }
             }
 
@@ -102,10 +157,5 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     @Override
     protected boolean showToolbar() {
         return false;
-    }
-
-    @Override
-    protected boolean useEventBus() {
-        return true;
     }
 }

@@ -5,11 +5,13 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 
@@ -18,10 +20,24 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RANKS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
 /**
  * @author LiuChao
@@ -58,6 +74,7 @@ public interface UserInfoContract {
 
         /**
          * 更新用户标签
+         *
          * @param datas tags
          */
         void updateTags(List<UserTagBean> datas);
@@ -82,7 +99,7 @@ public interface UserInfoContract {
          * @param user_ids 用户 id 数组
          * @return
          */
-        Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids);
+        Observable<List<UserInfoBean>> getUserInfo(List<Object> user_ids);
 
 
         /**
@@ -128,12 +145,7 @@ public interface UserInfoContract {
          * @param user_id 用户 id
          * @return
          */
-        Observable<BaseJson<UserInfoBean>> getLocalUserInfoBeforeNet(long user_id);
-
-        /**
-         * 获取用户关注状态
-         */
-        Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
+        Observable<UserInfoBean> getLocalUserInfoBeforeNet(long user_id);
 
         /**
          * 关注操作
@@ -208,11 +220,95 @@ public interface UserInfoContract {
          * @return
          */
         Observable<Object> deleteTag(long tag_id);
+
+        /*******************************************  找人  *********************************************/
+
+
+        /**
+         * 热门用户
+         *
+         * @param limit  每页数量
+         * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+         * @return
+         */
+        Observable<List<UserInfoBean>> getHotUsers(Integer limit, Integer offset);
+
+        /**
+         * 最新用户
+         *
+         * @param limit  每页数量
+         * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+         * @return
+         */
+        Observable<List<UserInfoBean>> getNewUsers(Integer limit, Integer offset);
+
+        /**
+         * tag 推荐用户
+         *
+         * @param limit  每页数量
+         * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+         * @return
+         */
+        Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset);
+
+        /**
+         * phone 推荐用户
+         * <p>
+         * { "phones": [ 18877778888, 18999998888, 17700001111 ] }
+         *
+         * @return
+         */
+        Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones);
+
+
+        /**
+         * 更新位置数据
+         *
+         * @param longitude 经度
+         * @param latitude  纬度
+         * @return
+         */
+        Observable<Object> updateUserLocation(double longitude, double latitude);
+
+        /**
+         * 根据经纬度查询周围最多 50KM 内的 TS+ 用户
+         *
+         * @param longitude 当前用户所在位置的纬度
+         * @param latitude  当前用户所在位置的经度
+         * @param radius    搜索范围，米为单位 [0 - 50000], 默认3000
+         * @param limit     默认20， 最大100
+         * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
+         * @return
+         */
+        Observable<List<NearbyBean>> getNearbyData(double longitude, double latitude, Integer radius, Integer limit, Integer page);
+
+
+        /*******************************************  签到  *********************************************/
+
+        /**
+         * 获取签到信息
+         *
+         * @return
+         */
+        Observable<CheckInBean> getCheckInInfo();
+
+        /**
+         * 签到
+         *
+         * @return
+         */
+        Observable<Object> checkIn();
+
+        /**
+         * 连续签到排行榜
+         *
+         * @param offset 数据偏移数，默认为 0。
+         * @return
+         */
+        Observable<List<UserInfoBean>> getCheckInRanks(Integer offset);
     }
 
     interface Presenter extends IBasePresenter {
-        void getAreaData();
-
         /**
          * 上传用户头像
          *

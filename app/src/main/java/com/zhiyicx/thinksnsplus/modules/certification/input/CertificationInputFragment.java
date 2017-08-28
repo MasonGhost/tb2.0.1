@@ -2,8 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.certification.input;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.DigitsKeyListener;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +20,14 @@ import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.baseproject.widget.edittext.InfoInputEditText;
 import com.zhiyicx.baseproject.widget.edittext.SEditText;
+import com.zhiyicx.common.utils.ColorPhrase;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.modules.certification.send.SendCertificationActivity;
+import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 
 import org.simple.eventbus.Subscriber;
 
@@ -31,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 
+import static android.view.View.VISIBLE;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity.BUNDLE_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.certification.send.SendCertificationActivity.BUNDLE_SEND_CERTIFICATION;
@@ -66,14 +72,18 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     @BindView(R.id.ll_company)
     LinearLayout mLlCompany;
     @BindView(R.id.edit_input_description)
-    SEditText mTvDescription;
+    UserInfoInroduceInputView mTvDescription;
     @BindView(R.id.tv_error_tip)
     TextView mTvErrorTip;
     @BindView(R.id.bt_to_send)
     LoadingButton mBtToSend;
 
+
     private int mType; // 申请的类型
     private SendCertificationBean mSendBean;
+    private String mLimitTipStr = "{}/";// 添加格式符号，用户ColorPhrase
+    private int mLimitMaxSize;
+    private int mShowLimitMaxSize;
 
     public CertificationInputFragment instance(Bundle bundle) {
         CertificationInputFragment fragment = new CertificationInputFragment();
@@ -85,21 +95,27 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
     protected void initView(View rootView) {
         mType = getArguments().getInt(BUNDLE_TYPE);
         if (mType == 0) {
-            mLlCompanyPersonage.setVisibility(View.VISIBLE);
+            mLlCompanyPersonage.setVisibility(VISIBLE);
         } else {
-            mLlCompany.setVisibility(View.VISIBLE);
+            mLlCompany.setVisibility(VISIBLE);
         }
         // 限制身份证输入英文和数字
         String digists = "0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         mTvIdCard.getEditInput().setKeyListener(DigitsKeyListener.getInstance(digists));
         mTvCompanyPrincipalIdCard.getEditInput().setKeyListener(DigitsKeyListener.getInstance(digists));
+
+        mTvDescription.getEtContent().setGravity(Gravity.RIGHT);
+        mTvDescription.getEtContent(). setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
     }
 
     @Override
     protected void initData() {
         mSendBean = new SendCertificationBean();
         mSendBean.setType(mType == 0 ? SendCertificationBean.USER : SendCertificationBean.ORG);
+        mLimitMaxSize = getResources().getInteger(R.integer.certification_description_max_length);
+        mShowLimitMaxSize = getResources().getInteger(R.integer.certification_description_show_limit_length);
         initListener();
+        mTvName.getEditInput().requestFocus();
     }
 
     private void initListener() {
@@ -153,8 +169,8 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
                     mSendBean.setPhone(String.valueOf(charSequence));
                     setConfirmEnable();
                 });
-        // 描述 公用
-        RxTextView.textChanges(mTvDescription)
+
+        RxTextView.textChanges(mTvDescription.getEtContent())
                 .compose(this.<CharSequence>bindToLifecycle())
                 .subscribe(charSequence -> {
                     mSendBean.setDesc(String.valueOf(charSequence));
@@ -213,7 +229,7 @@ public class CertificationInputFragment extends TSFragment<CertificationInputCon
         if (TextUtils.isEmpty(error)) {
             mTvErrorTip.setVisibility(View.INVISIBLE);
         } else {
-            mTvErrorTip.setVisibility(View.VISIBLE);
+            mTvErrorTip.setVisibility(VISIBLE);
             mTvErrorTip.setText(error);
         }
     }

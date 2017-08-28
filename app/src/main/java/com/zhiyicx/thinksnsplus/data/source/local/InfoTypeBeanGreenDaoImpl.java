@@ -3,12 +3,11 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMoreCatesBeanDao;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBean;
-import com.zhiyicx.thinksnsplus.data.beans.InfoTypeMyCatesBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoTypeCatesBeanDao;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,20 +20,17 @@ import javax.inject.Inject;
  */
 public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
-    private InfoTypeMyCatesBeanDao mInfoTypeMyCatesBeanDao;
-    private InfoTypeMoreCatesBeanDao mTypeMoreCatesBeanDao;
+    private InfoTypeCatesBeanDao mInfoTypeCatesBeanDao;
 
     @Inject
     public InfoTypeBeanGreenDaoImpl(Application context) {
         super(context);
-        mInfoTypeMyCatesBeanDao = getWDaoSession().getInfoTypeMyCatesBeanDao();
-        mTypeMoreCatesBeanDao = getWDaoSession().getInfoTypeMoreCatesBeanDao();
+        mInfoTypeCatesBeanDao = getWDaoSession().getInfoTypeCatesBeanDao();
     }
 
     @Override
     public long saveSingleData(InfoTypeBean singleData) {
-        mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(singleData.getMy_cates());
-        mTypeMoreCatesBeanDao.insertOrReplaceInTx(singleData.getMore_cates());
+
         return 0;
     }
 
@@ -50,7 +46,7 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public InfoTypeBean getSingleDataFromCache(Long primaryKey) {
-        if (getMyCatesList() == null) {
+        if (getMyCatesList() == null || getMyCatesList().isEmpty()) {
             return null;
         }
         InfoTypeBean infoTypeBean = new InfoTypeBean();
@@ -66,7 +62,7 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
 
     @Override
     public void clearTable() {
-        mInfoTypeMyCatesBeanDao.deleteAll();
+        mInfoTypeCatesBeanDao.deleteAll();
     }
 
     @Override
@@ -82,24 +78,43 @@ public class InfoTypeBeanGreenDaoImpl extends CommonCacheImpl<InfoTypeBean> {
     @Override
     public void updateSingleData(InfoTypeBean newData) {
         clearTable();
-        if (!newData.getMy_cates().isEmpty()){
-            mInfoTypeMyCatesBeanDao.insertOrReplaceInTx(newData.getMy_cates());
+        for (InfoTypeCatesBean myCates : newData.getMy_cates()) {
+            myCates.setIsMyCate(true);
         }
-        mTypeMoreCatesBeanDao.insertOrReplaceInTx(newData.getMore_cates());
+        List<InfoTypeCatesBean> saveDatas = new ArrayList<>();
+        saveDatas.addAll(newData.getMy_cates());
+        saveDatas.addAll(newData.getMore_cates());
+        mInfoTypeCatesBeanDao.insertOrReplaceInTx(saveDatas);
     }
 
     @Override
     public long insertOrReplace(InfoTypeBean newData) {
-        saveSingleData(newData);
         return 0;
     }
 
-    public List<InfoTypeMyCatesBean> getMyCatesList() {
-        return  mInfoTypeMyCatesBeanDao.loadAll();
+    public List<InfoTypeCatesBean> getMyCatesList() {
+        return mInfoTypeCatesBeanDao
+                .queryBuilder()
+                .where(InfoTypeCatesBeanDao.Properties.IsMyCate.eq(true),InfoTypeCatesBeanDao
+                        .Properties.Id.notEq(-1))
+                .build().list();
     }
 
-    public List<InfoTypeMoreCatesBean> getMoreCatesList() {
-        return mTypeMoreCatesBeanDao.loadAll();
+    public List<InfoTypeCatesBean> getMoreCatesList() {
+        return mInfoTypeCatesBeanDao
+                .queryBuilder()
+                .where(InfoTypeCatesBeanDao.Properties.IsMyCate.eq(false))
+                .build().list();
+    }
+
+    public List<InfoTypeCatesBean> getAllCatesList() {
+        List<InfoTypeCatesBean> datas = getMyCatesList();
+        datas.addAll(getMoreCatesList());
+        return datas;
+    }
+
+    public List<InfoTypeCatesBean> getAllCatesLists() {
+        return mInfoTypeCatesBeanDao.loadAll();
     }
 
 }

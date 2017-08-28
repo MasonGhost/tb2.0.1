@@ -86,6 +86,8 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_CACHE_PROGRESS;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_COMPLETE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_MUSIC_LOAD;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERLOOP;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDERSINGLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.ORDER_ACTION;
@@ -395,7 +397,6 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @Override
     public void refreshData(int position) {
         popAdapter.notifyItemChanged(position);
-        EventBus.getDefault().post(getListDatas().get(position), EVENT_MUSIC_LIKE);
     }
 
     @Override
@@ -893,7 +894,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
                 if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
                     initMusicCenterPopWindow(position, item.getStorage().getAmount(),
-                            item.getStorage().getPaid_node(), R.string.buy_pay_music_ablum_desc);
+                            item.getStorage().getPaid_node(), R.string.buy_pay_single_music_desc);
                     return;
                 }
 

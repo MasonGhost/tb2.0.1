@@ -46,7 +46,7 @@
     <!--发布动态标题字数在20时提示-->
     <integer name="dynamic_title_input_size">20</integer>
     <!--发布动态内容最大字数30-->
-    <integer name="dynamic_content_max_size">250</integer>
+    <integer name="dynamic_content_max_size">255</integer>
     <!--发布动态内容字数在200时提示-->
     <integer name="dynamic_content_input_size">200</integer>
     <!--发布动态内容的显示行数-->
@@ -57,6 +57,16 @@
     <!--动态列表标题最大显示字数-->
     <integer name="dynamic_list_content_max_show_size">140</integer>
 
+    <integer name="certification_description_max_length">200</integer>
+    <integer name="certification_description_show_limit_length">170</integer>
+    <!--资讯摘要-->
+    <integer name="info_summary_max_length">200</integer>
+    <integer name="info_summary_show_limit_length">150</integer>
+
+    <!--意见反馈-->
+    <integer name="feed_back_content_max_size">200</integer>
+    <!--意见反馈内容字数在达到数量后提示-->
+    <integer name="feed_back_content_input_size">150</integer>
     <!--#########################################      浏览器相关       ################################-->
     <!-- 浏览器最大长度-->
     <integer name="progressbar_max">100</integer>
@@ -71,6 +81,7 @@
     <integer name="no_line_height">0</integer>
     <!--tab的文字大小，单位sp-->
     <integer name="tab_text_size">16</integer>
+    <integer name="tab_text_size_15">15</integer>
     <!--标签最多的个数-->
     <integer name="tag_max_nums">5</integer>
     <!--用户最多标签数量-->

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="@dimen/ppw_center_width"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_popwindow"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_check_in_bg"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing_normal_large">
+
+            <ImageView
+                android:id="@+id/iv_cancle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal"
+                android:paddingTop="@dimen/spacing_normal"
+                android:src="@mipmap/ico_attend_close"/>
+
+            <TextView
+                android:id="@+id/tv_today_check_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/check_in_today"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_dynamic_day"/>
+
+            <TextView
+                android:id="@+id/tv_total_check_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@drawable/shape_bg_check_in_total_view"
+                android:paddingBottom="@dimen/spacing_small"
+                android:paddingLeft="@dimen/spacing_normal_large"
+                android:paddingRight="@dimen/spacing_normal_large"
+                android:paddingTop="@dimen/spacing_small"
+                android:textColor="@color/check_in_total_text_color"
+                android:textSize="@dimen/size_icon_assist"
+                tools:text="累计好多天了诶"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_totoal_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:includeFontPadding="false"
+            android:textColor="@color/money_gold"
+            android:textSize="@dimen/check_in_total_money"
+            tools:text="300"/>
+
+        <TextView
+            android:id="@+id/tv_check_in_get_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:textColor="@color/normal_for_assist_text"
+            android:textSize="@dimen/size_icon_assist"
+            android:text="@string/check_in_today_get_gold"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_check_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/spacing_normal_large"
+            android:layout_marginRight="@dimen/spacing_normal_large"
+            android:layout_marginTop="@dimen/spacing_normal_large"
+            android:background="@drawable/selector_button_check_in"
+            android:gravity="center"
+            android:padding="@dimen/spacing_normal"
+            android:text="@string/check_in"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_content"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_user_check_in_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_mid"/>
+
+    </LinearLayout>
+</FrameLayout>

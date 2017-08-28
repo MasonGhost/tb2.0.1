@@ -12,11 +12,12 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 
 public class ExpertSearchActivity extends TSActivity<ExpertSearchPresenter, ExpertSearchFragment>{
 
-    public static final String BUNDLE_EXPERT = "bundle_expert";
+    public static final String BUNDLE_TOPIC_BEAN = "bundle_topic_bean";
+    public static final String BUNDLE_TOPIC_IDS = "bundle_topic_ids";
 
     @Override
     protected ExpertSearchFragment getFragment() {
-        return new ExpertSearchFragment().instance(getIntent().getBundleExtra(BUNDLE_EXPERT));
+        return new ExpertSearchFragment().instance(getIntent().getExtras());
     }
 
     @Override

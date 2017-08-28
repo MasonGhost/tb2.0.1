@@ -5,12 +5,9 @@ import android.util.SparseArray;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
@@ -33,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import okhttp3.RequestBody;
-import retrofit2.http.Path;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -68,75 +64,12 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         mChannelClient = serviceManager.getChannelClient();
     }
 
-    @Override
-    public void handleSubscribChannel(ChannelSubscripBean channelSubscripBean) {
-        // 发送订阅后台处理任务
-        BackgroundRequestTaskBean backgroundRequestTaskBean = null;
-        backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-        ChannelInfoBean channelInfoBean = channelSubscripBean.getChannelInfoBean();
-        if (channelSubscripBean.getChannelSubscriped()) {
-            // 已经订阅，变为未订阅
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.DELETE);
-            channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() - 1);// 订阅数-1
-        } else {
-            // 未订阅，变为已订阅
-            backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.POST);
-            channelInfoBean.setFollow_count(channelInfoBean.getFollow_count() + 1);// 订阅数+1
-        }
-        // 设置请求路径
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_HANDLE_SUBSCRIB_CHANNEL_S, channelSubscripBean.getId() + ""));
-        // 启动后台任务
-        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask(backgroundRequestTaskBean);
-        // 更改数据源，切换订阅状态
-        channelSubscripBean.setChannelSubscriped(!channelSubscripBean.getChannelSubscriped());
-        // 更新数据库
-        mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBean);
-    }
 
     @Override
     public Observable<BaseJsonV2<Object>> handleSubscribGroupByFragment(GroupInfoBean channelSubscripBean) {
         return mChannelClient.joinGroup(channelSubscripBean.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    @Override
-    public Observable<BaseJson<List<ChannelSubscripBean>>> getChannelList(@Path("type") final String type, final long userId) {
-        // 将获取到的ChannelInfoBean类型的频道列表，通过map转换成ChannelSubscripBean类型的数据
-        return mChannelClient.getChannelList(type)
-                .map(listBaseJson -> {
-                    BaseJson<List<ChannelSubscripBean>> channelSubscripBeanBaseJson = new BaseJson<>();
-                    channelSubscripBeanBaseJson.setCode(listBaseJson.getCode());
-                    channelSubscripBeanBaseJson.setMessage(listBaseJson.getMessage());
-                    channelSubscripBeanBaseJson.setStatus(listBaseJson.isStatus());
-                    if (listBaseJson.isStatus() || listBaseJson.getCode() == 0) {
-                        List<ChannelInfoBean> channelInfoBeanList = listBaseJson.getData();
-                        List<ChannelSubscripBean> channelSubscripBeanList = new ArrayList<>();
-                        if (channelInfoBeanList != null) {
-                            for (ChannelInfoBean channelInfoBean : channelInfoBeanList) {
-                                ChannelSubscripBean channelSubscripBean = new ChannelSubscripBean();
-                                channelSubscripBean.setId(channelInfoBean.getId());// 设置频道id
-                                channelSubscripBean.setChannelInfoBean(channelInfoBean);// 设置频道信息
-                                // 如果是获取我订阅的频道，设置订阅状态为1
-                                if (type == ApiConfig.CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL) {
-                                    channelInfoBean.setFollow_status(1);
-                                }
-                                channelSubscripBean.setChannelSubscriped(channelInfoBean.getFollow_status() == 0 ? false : true);// 设置订阅状态
-                                channelSubscripBean.setUserId(userId);// 设置请求的用户id
-                                channelSubscripBean.setUserIdAndIdforUnique("");// 添加唯一约束，防止数据重复
-                                channelSubscripBeanList.add(channelSubscripBean);
-                            }
-                        }
-                        channelSubscripBeanBaseJson.setData(channelSubscripBeanList);
-                        mChannelInfoBeanGreenDao.insertOrReplace(channelInfoBeanList);
-                        mChannelSubscripBeanGreenDao.clearTable();
-                        mChannelSubscripBeanGreenDao.insertOrReplace(channelSubscripBeanList);
-
-                    } else {
-                        channelSubscripBeanBaseJson.setData(null);
-                    }
-                    return channelSubscripBeanBaseJson;
-                });
     }
 
     @Override
@@ -177,10 +110,10 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                         return mUserInfoRepository.getUserInfo(user_ids)
                                 .map(listBaseJson -> {
                                     SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                    for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                    for (UserInfoBean userInfoBean : listBaseJson) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
-                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
+                                    mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                     for (int i = 0; i < groupInfoBeen.size(); i++) {
                                         if (groupInfoBeen.get(i).getManagers() != null) {
                                             for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
@@ -226,7 +159,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         HashMap<String, Object> params = new HashMap<>();
         params.put("body", commentContent);
         params.put("group_post_comment_mark", comment_mark);
-        params.put("reply_to_user_id", reply_to_user_id);
+        params.put("reply_user", reply_to_user_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_GROUP_DYNAMIC_COMMENT, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT, group_id, feed_id));
@@ -275,7 +208,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                        for (UserInfoBean userInfoBean : listBaseJson) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         for (int i = 0; i < groupDynamicCommentListBeen.size(); i++) {
@@ -292,7 +225,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                                 groupDynamicCommentListBeen.get(i).setReplyUser(userInfoBean);
                                             }
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                         return groupDynamicCommentListBeen;
                                     });
                         } else {
@@ -322,9 +255,8 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             // 通过用户id列表请求用户信息和用户关注状态
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {
-                                        if (listBaseJson.isStatus()) {
                                             SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                            for (UserInfoBean userInfoBean : listBaseJson) {
                                                 userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                             }
                                             for (DynamicDigListBean dynamicDigListBean : groupDynamicLikeListBeen) {
@@ -335,8 +267,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                                     dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
                                                 }
                                             }
-                                            mUserInfoBeanGreenDao.insertOrReplace(listBaseJson.getData());
-                                        }
+                                            mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                         return groupDynamicLikeListBeen;
                                     });
                         } else {
@@ -360,7 +291,7 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : listBaseJson.getData()) {
+                                        for (UserInfoBean userInfoBean : listBaseJson) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         groupDynamicListBean.setUserInfoBean(

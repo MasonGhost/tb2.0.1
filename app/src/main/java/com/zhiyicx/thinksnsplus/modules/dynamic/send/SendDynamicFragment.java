@@ -59,7 +59,6 @@ import butterknife.BindView;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.DOWNLOAD_TOLL_TYPE;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL;
 import static com.zhiyicx.baseproject.impl.photoselector.Toll.LOOK_TOLL_TYPE;
-import static com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicTypeFragment.GROUP_ID;
 
 
 /**
@@ -356,7 +355,8 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     }
 
     private void addPlaceHolder() {
-        if (selectedPhotos.size() < MAX_PHOTOS && !isToll) {// 这个需求是真的怪，打开收费时隐藏添加图片,头皮发麻
+        // selectedPhotos.size() == 0 这个是为了配合这个奇葩需求
+        if (selectedPhotos.size() == 0 || selectedPhotos.size() < MAX_PHOTOS && !isToll) {// 这个需求是真的怪，打开收费时隐藏添加图片,头皮发麻
             // 占位缺省图
             ImageBean camera = new ImageBean();
             selectedPhotos.add(camera);
@@ -429,7 +429,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye()): null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye()) : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                     storage_task.add(taskBean);
@@ -449,7 +449,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
                     SendDynamicDataBeanV2.StorageTaskBean taskBean = new SendDynamicDataBeanV2.StorageTaskBean();
                     ImageBean imageBean = selectedPhotos.get(i);
                     photos.add(imageBean);
-                    taskBean.setAmount(imageBean.getToll_monye() > 0 ?PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye())  : null);
+                    taskBean.setAmount(imageBean.getToll_monye() > 0 ? PayConfig.realCurrencyYuan2Fen(imageBean.getToll_monye()) : null);
                     taskBean.setType(imageBean.getToll_monye() * imageBean.getToll_type() > 0
                             ? (imageBean.getToll_type() == LOOK_TOLL ? LOOK_TOLL_TYPE : DOWNLOAD_TOLL_TYPE) : null);
                 }
@@ -481,22 +481,35 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
         });
 
         mTvToll.setVisibility(BuildConfig.USE_TOLL ? View.VISIBLE : View.GONE);
+
         mTvToll.setRightImageClickListener(v -> {
             isToll = !isToll;
             if (dynamicType == SendDynamicDataBean.TEXT_ONLY_DYNAMIC) {
                 mLLToll.setVisibility(isToll ? View.VISIBLE : View.GONE);
                 sl_send_dynamic.smoothScrollTo(0, 0);
+                mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
             } else {
 
-                if (isToll){// 这里肯定是要删的
-                    selectedPhotos.remove(selectedPhotos.size()-1);
-                }else{
-                    selectedPhotos.add(new ImageBean());
-                }
+                /*           这里肯定是要删的           真滴很烦             */
+                if (!selectedPhotos.isEmpty() && !TextUtils.isEmpty(selectedPhotos.get(0).getImgUrl())) {
 
-                mCommonAdapter.notifyDataSetChanged();
+                    mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
+
+                    if (selectedPhotos.size() == MAX_PHOTOS && !TextUtils.isEmpty(selectedPhotos.get(MAX_PHOTOS - 1).getImgUrl())) {
+                        return; // 九张
+                    }
+                    if (isToll) {
+                        selectedPhotos.remove(selectedPhotos.size() - 1);
+                    } else {
+                        // addPlaceHolder();
+                        selectedPhotos.add(new ImageBean());
+                    }
+                    mCommonAdapter.notifyDataSetChanged();
+                }
+                /*                                                           */
+
+
             }
-            mTvToll.setRightImage(isToll ? R.mipmap.btn_open : R.mipmap.btn_close);
         });
 
     }
@@ -506,7 +519,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
      */
     private void setSendDynamicState() {
         // 没有内容，并且只有占位图时不能够发送
-        if (!hasContent && (selectedPhotos == null || !isToll&&selectedPhotos.size() <= 1)) {
+        if (!hasContent && (selectedPhotos == null || !isToll && selectedPhotos.size() <= 1)) {
             mToolbarRight.setEnabled(false);
         } else {
             // 有内容或者有图片时都可以发送
@@ -568,7 +581,7 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
 
         groupSendDynamicDataBean.setViews(1);
         groupSendDynamicDataBean.setFeed_mark(feedMark);
-        groupSendDynamicDataBean.setGroup_id((int)getDynamicSendData().getDynamicChannlId());
+        groupSendDynamicDataBean.setGroup_id((int) getDynamicSendData().getDynamicChannlId());
         groupSendDynamicDataBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
         groupSendDynamicDataBean.setContent(mEtDynamicContent.getInputContent());
         groupSendDynamicDataBean.setTitle(mEtDynamicTitle.getInputContent());
@@ -790,7 +803,10 @@ public class SendDynamicFragment extends TSFragment<SendDynamicContract.Presente
     @Override
     public void initInstructionsPop(String title, String des) {
         if (mInstructionsPopupWindow != null) {
-            mInstructionsPopupWindow.newBuilder().item1Str(title).desStr(des);
+            mInstructionsPopupWindow= mInstructionsPopupWindow.newBuilder()
+                    .item1Str(title)
+                    .desStr(des)
+                    .build();
             mInstructionsPopupWindow.show();
             return;
         }

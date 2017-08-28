@@ -110,34 +110,24 @@ public class MessageRepository implements MessageContract.Repository {
                                 baseJson.getData().add(messageItemBean);
                             }
                             return mUserInfoRepository.getUserInfo(integers).
-                                    map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<List<MessageItemBean>>>() {
-                                        @Override
-                                        public BaseJson<List<MessageItemBean>> call(BaseJson<List<UserInfoBean>> userInfoBeanBaseJson) {
-                                            if (userInfoBeanBaseJson.isStatus()) {
-                                                SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                                for (UserInfoBean userInfoBean : userInfoBeanBaseJson.getData()) {
-                                                    userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                                }
-                                                baseJson.setStatus(userInfoBeanBaseJson.isStatus());
-                                                baseJson.setCode(userInfoBeanBaseJson.getCode());
-                                                baseJson.setMessage(userInfoBeanBaseJson.getMessage());
-
-                                                for (int i = 0; i < baseJson.getData().size(); i++) {
-                                                    baseJson.getData().get(i).setUserInfo(userInfoBeanSparseArray.get(baseJson.getData().get(i).getUserInfo().getUser_id().intValue()));
-                                                }
-                                                // 存储用户信息
-                                                mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson.getData());
-
-                                            } else {
-                                                baseJson.setCode(userInfoBeanBaseJson.getCode());
-                                                baseJson.setStatus(userInfoBeanBaseJson.isStatus());
-                                                baseJson.setMessage(userInfoBeanBaseJson.getMessage());
-                                            }
-                                            return baseJson;
+                                    map(userInfoBeanBaseJson -> {
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userInfoBeanBaseJson) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
+                                        for (int i = 0; i < baseJson.getData().size(); i++) {
+                                            baseJson.getData().get(i).setUserInfo(userInfoBeanSparseArray.get(baseJson.getData().get(i).getUserInfo().getUser_id().intValue()));
+                                        }
+                                        // 存储用户信息
+                                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson);
+                                        baseJson.setStatus(true);
+
+                                        return baseJson;
                                     });
 
-                        } else {
+                        } else
+
+                        {
                             baseJson.setCode(listBaseJson.getCode());
                             baseJson.setStatus(listBaseJson.isStatus());
                             baseJson.setMessage(listBaseJson.getMessage());
@@ -146,21 +136,20 @@ public class MessageRepository implements MessageContract.Repository {
                     }
                 })
                 //去除没有聊过天的数据
-                .map(new Func1<BaseJson<List<MessageItemBean>>, BaseJson<List<MessageItemBean>>>() {
-                    @Override
-                    public BaseJson<List<MessageItemBean>> call(BaseJson<List<MessageItemBean>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            int size = listBaseJson.getData().size();
-                            for (int i = 0; i < size; i++) {
-                                if (listBaseJson.getData().get(i).getConversation().getLast_message() != null && TextUtils.isEmpty(listBaseJson.getData().get(i).getConversation().getLast_message().getTxt())) {
-                                    listBaseJson.getData().remove(i);
-                                }
+                .map(listBaseJson -> {
+                    if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
+                        int size = listBaseJson.getData().size();
+                        for (int i = 0; i < size; i++) {
+                            if (listBaseJson.getData().get(i).getConversation().getLast_message() != null && TextUtils.isEmpty(listBaseJson.getData().get(i).getConversation().getLast_message().getTxt())) {
+                                listBaseJson.getData().remove(i);
                             }
                         }
-                        return listBaseJson;
                     }
+                    return listBaseJson;
                 })
-                .observeOn(AndroidSchedulers.mainThread());
+                .
+
+                        observeOn(AndroidSchedulers.mainThread());
 
     }
 
@@ -223,27 +212,17 @@ public class MessageRepository implements MessageContract.Repository {
 
 
                                      return mUserInfoRepository.getUserInfo(integers).
-                                             map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<MessageItemBean>>() {
-                                                 @Override
-                                                 public BaseJson<MessageItemBean> call(BaseJson<List<UserInfoBean>> userInfoBeanBaseJson) {
-                                                     if (userInfoBeanBaseJson.isStatus()) {
-                                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                                         for (UserInfoBean userInfoBean : userInfoBeanBaseJson.getData()) {
-                                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                                         }
-                                                         baseJson.setStatus(userInfoBeanBaseJson.isStatus());
-                                                         baseJson.setCode(userInfoBeanBaseJson.getCode());
-                                                         baseJson.setMessage(userInfoBeanBaseJson.getMessage());
-                                                         baseJson.getData().setUserInfo(userInfoBeanSparseArray.get(baseJson.getData().getUserInfo().getUser_id().intValue()));
-                                                         // 存储用户信息
-                                                         mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson.getData());
-                                                     } else {
-                                                         baseJson.setCode(userInfoBeanBaseJson.getCode());
-                                                         baseJson.setStatus(userInfoBeanBaseJson.isStatus());
-                                                         baseJson.setMessage(userInfoBeanBaseJson.getMessage());
-                                                     }
-                                                     return baseJson;
+                                             map(userInfoBeanBaseJson -> {
+                                                 SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                                 for (UserInfoBean tmpdata : userInfoBeanBaseJson) {
+                                                     userInfoBeanSparseArray.put(tmpdata.getUser_id().intValue(), tmpdata);
                                                  }
+                                                 baseJson.setStatus(true);
+                                                 baseJson.getData().setUserInfo(userInfoBeanSparseArray.get(baseJson.getData().getUserInfo().getUser_id().intValue()));
+                                                 // 存储用户信息
+                                                 mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanBaseJson);
+
+                                                 return baseJson;
                                              });
                                  } else {
                                      baseJson.setStatus(conversationBaseJson.isStatus());
@@ -293,7 +272,9 @@ public class MessageRepository implements MessageContract.Repository {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                     }
                                     for (int i = 0; i < datas.size(); i++) {
-                                        datas.get(i).setUserInfo(userInfoBeanSparseArray.get((int) datas.get(i).getUser_id()));
+                                        if (userInfoBeanSparseArray.get((int) datas.get(i).getUser_id()) != null) {
+                                            datas.get(i).setUserInfo(userInfoBeanSparseArray.get((int) datas.get(i).getUser_id()));
+                                        }
                                     }
                                     mUserInfoBeanGreenDao.insertOrReplace(userInfoBeens);
                                     return datas;

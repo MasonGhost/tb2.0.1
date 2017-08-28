@@ -21,13 +21,14 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.BuildConfig;
-import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.common.widget.NoPullViewPager;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment;
 import com.zhiyicx.thinksnsplus.modules.dynamic.send.SendDynamicActivity;
@@ -36,6 +37,8 @@ import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
+import com.zhiyicx.thinksnsplus.utils.LocationUtils;
+import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.MAX_DEFAULT_COUNT;
 import static com.zhiyicx.thinksnsplus.modules.home.HomeActivity.BUNDLE_JPUSH_MESSAGE;
@@ -106,6 +108,9 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     private int mCurrenPage;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
 
+    private CheckInPopWindow mCheckInPopWindow; // 签到弹窗
+
+    private CheckInBean mCheckInBean; // 签到信息
 
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
@@ -139,6 +144,11 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolBarDivider() {
         return false;
     }
@@ -168,7 +178,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     }
 
     private void supportFlymeSutsusbar() {
-        Observable.timer(1500,TimeUnit.MILLISECONDS)
+        Observable.timer(1500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -267,7 +277,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
     public void getPhotoSuccess(List<ImageBean> photoList) {
         // 跳转到发送动态页面
         SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+        sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
         sendDynamicDataBean.setDynamicPrePhotos(photoList);
         sendDynamicDataBean.setDynamicType(SendDynamicDataBean.PHOTO_TEXT_DYNAMIC);
         SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
@@ -407,7 +417,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 return true;
             }
             SendDynamicDataBean sendDynamicDataBean = new SendDynamicDataBean();
-            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.MORMAL_DYNAMIC);
+            sendDynamicDataBean.setDynamicBelong(SendDynamicDataBean.NORMAL_DYNAMIC);
             sendDynamicDataBean.setDynamicType(SendDynamicDataBean.TEXT_ONLY_DYNAMIC);
             SendDynamicActivity.startToSendDynamicActivity(getContext(), sendDynamicDataBean);
             return true;
@@ -457,6 +467,28 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
                 })
                 .bottomClickListener(() -> mPhotoPopupWindow.hide()).build();
         mPhotoPopupWindow.show();
+    }
+
+    @Override
+    public CheckInBean getCheckInData() {
+        return mCheckInBean;
+    }
+
+    @Override
+    public void showCheckInPop(CheckInBean data) {
+
+        this.mCheckInBean = data;
+        if (mCheckInPopWindow != null) {
+            if (mCheckInPopWindow.isShowing()) {
+                mCheckInPopWindow.setData(mCheckInBean,mPresenter.getWalletRatio());
+            } else {
+                mCheckInPopWindow.setData(mCheckInBean,mPresenter.getWalletRatio());
+                mCheckInPopWindow.show();
+            }
+        } else {
+            mCheckInPopWindow = new CheckInPopWindow(getContentView(), data,mPresenter.getWalletRatio(), () -> mPresenter.checkIn());
+            mCheckInPopWindow.show();
+        }
     }
 
 }

@@ -14,6 +14,7 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.UserCertificationInfoGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.CertificationDetailRepository;
@@ -51,6 +52,9 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
 
     @Inject
     CertificationDetailRepository mCertificationDetailRepository;
+
+    @Inject
+    UserCertificationInfoGreenDaoImpl mUserCertificationInfoGreenDao;
 
     @Inject
     public MinePresenter(MineContract.Repository repository, MineContract.View rootView) {
@@ -146,6 +150,7 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
 
                     @Override
                     protected void onSuccess(UserCertificationInfo data) {
+                        mUserCertificationInfoGreenDao.insertOrReplace(data);
                         mRootView.updateCertification(data);
                     }
                 });

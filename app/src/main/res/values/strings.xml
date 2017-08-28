@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ThinkSNS+</string>
+    <string name="app_name">ThinkSNS加</string>
     <string name="copyright">Powered by ThinkSNS ©2017 ZhishiSoft All Rights Reserced.</string>
     <!-- 主页  -->
     <string name="home">首页</string>
@@ -33,6 +33,7 @@
     <string name="mine_collect">收藏</string>
     <string name="suggetion">意见反馈</string>
     <string name="question_answer">Q&amp;A</string>
+    <string name="draft_box">草稿箱</string>
     <string name="certification">认证</string>
     <string name="setting">设置</string>
     <string name="wallet">钱包</string>
@@ -45,7 +46,7 @@
     <string name="chanel">频道</string>
     <string name="active">活动</string>
     <string name="buy_goods">购物</string>
-    <string name="find_person">找人</string>
+    <string name="find_person">@string/find_someone</string>
     <string name="near_person">附近的人</string>
     <string name="group">圈子</string>
     <string name="quiz">问答</string>
@@ -117,8 +118,37 @@
     <string name="music_lyric">暂无歌词</string>
 
     <!--资讯-->
+    <string name="info_title">完善文章信息</string>
+    <string name="info_cover">上传封面</string>
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
+    <!--资讯的列表的信息汇总，来自-浏览数-时间-->
+    <string name="info_list_count">%1$s  ·  %2$s 浏览  ·  %3$s</string>
+    <string name="info_publish_original">原创</string>
+    <string name="info_top">顶</string>
+    <string name="info_publish_hint">提示</string>
+    <string name="info_publish_hint_certification">只有认证过的用户才可以投稿，是否去认证?</string>
+    <string name="info_publish_go_to_certification">去认证</string>
+    <string name="info_publish_hint_pay">投稿一次需付费1.00元，是否继续投稿？</string>
+    <string name="info_publish_go_to_next">继续投稿</string>
+    <string name="edit_info">编辑文章</string>
+    <string name="info_title_hint">输入标题，20字以内</string>
+    <string name="info_content_hint">编辑文章正文</string>
+    <string name="info_choose_categorys">选择栏目</string>
+    <string name="info_choose_tags">选择标签</string>
+    <string name="info_max_choose_tags_format">最多选择%d个选择</string>
+    <string name="info_from">文章来源</string>
+    <string name="info_from_hint">不填写则默认为原创</string>
+    <string name="info_author">作者</string>
+    <string name="info_author_hint">不填写则默认为本站用户名</string>
+    <string name="info_summary">摘要</string>
+    <string name="info_summary_hint">请输入摘要信息</string>
+    <string name="info_relate">相关资讯</string>
+    <string name="info_apply_for_top">申请文章置顶</string>
+    <string name="info_alert_reapply_for_top">已经置顶，不能重复申请</string>
+    <string name="info_alert_top_auditing">审核中，不能重复申请</string>
+    <string name="info_delete">删除</string>
+    <string name="info_deleting">删除中</string>
 
     <!--动态列表-->
     <string name="dynamic_list_more_comment">查看全部评论</string>
@@ -211,12 +241,16 @@
     <string name="sticktop_instructions_detail">置顶金额必须是整数，不能出现小数</string>
     <string name="dynamic_list_top_dynamic">申请动态置顶</string>
     <string name="dynamic_list_top_dynamic_success">申请动态置顶成功</string>
+    <string name="dynamic_list_top_info_success">申请资讯置顶成功</string>
+    <string name="dynamic_list_top_success">申请置顶成功</string>
+    <string name="comment_top_success">申请评论置顶成功</string>
     <string name="to_top_description">当前平均置顶金额¥%1$.2f / 天，钱包余额¥%2$.2f</string>
 
     <!--设置评论收费-->
     <string name="apply_doing">申请中&#8230;</string>
     <string name="dynamic_comment_toll">设置评论收费</string>
-    <string name="limit_monye">金额必须是整数且大于0元，不能出现小数</string>
+    <string name="limit_monye">金额必须大于0元</string>
+    <string name="limit_monye_death">金额必须是整数且大于0元，不能出现小数</string>
     <string name="monye_instructions">金额说明</string>
     <string name="dynamic_comment_toll_success">设置评论收费成功</string>
     <string name="dynamic_comment_toll_money">设置评论收费金额</string>
@@ -362,11 +396,10 @@
     <string name="company_principal_id_card_hint">输入负责人身份证号码</string>
     <string name="certification_basic_info_company_principal_phone">负责人电话</string>
     <string name="alert_error_id_card">请输入正确的身份证号码</string>
-
     <string name="certification_basic_info_description">认证描述</string>
     <string name="certification_basic_info_data">认证资料</string>
-    <string name="description_hint">认证相关信息</string>
-    
+    <string name="description_hint">该描述会影响审核，请慎重填写</string>
+
     <string name="send_certification_data">上传资料</string>
     <string name="send_certification_id_card">上传身份证正反面</string>
     <string name="send_certification_company">上传企业机构营业执照</string>
@@ -375,13 +408,17 @@
     <string name="send_certification">上传</string>
     <string name="send_certification_ing">上传中</string>
     <string name="certification_state_success">已认证</string>
-    <string name="certification_state_failed">申请失败</string>
+    <string name="certification_state_failed">被驳回</string>
     <string name="certification_state_ing">待审核</string>
     <string name="certification_ing_hint">认证信息审核中，我们会在7个工作日内给您答复</string>
 
 
     <!--问答相关-->
     <string name="qa_publish">发布问题</string>
+    <string name="qa_update_publish">更新问题</string>
+    <string name="qa_publish_answer">添加回答</string>
+    <string name="qa_update_answer">更新回答</string>
+    <string name="qa_update_question">更新问题</string>
     <string name="qa_detail">问题详情</string>
     <string name="qa_publish_next">下一步</string>
     <string name="qa_publish_title_hint">请输入问题并以问号结尾</string>
@@ -391,6 +428,7 @@
     <string name="qa_publish_enable_anonymous">启用匿名</string>
     <string name="qa_topic">话题</string>
     <string name="qa_publish_select_topic_hint">至少添加一个话题</string>
+    <string name="qa_publish_select_topic_repeat">话题不能重复</string>
     <string name="qa_publish_search_topic">搜索话题</string>
     <string name="qa_publish_select_topic_count_hint">添加话题不可以超过%d个</string>
     <string name="qa_publish_reward_enable_skip">悬赏(可跳过)</string>
@@ -413,5 +451,111 @@
     <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
     <string name="qa_show_topic_followed_reward">%1$d 关注  ·  %2$d 回答  ·  ￥%3$.1f 悬赏</string>
     <string name="edit_quit">放弃编辑</string>
+    <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
+    <string-array name="topic_detail_category">
+        <item>最新</item>
+        <item>精选</item>
+        <item>悬赏</item>
+        <item>热门</item>
+        <item>全部</item>
+    </string-array>
+    <string name="qa_topic_expert_count">%d位相关专家</string>
+    <string name="qa_show_topic_detail_feed">%1$s 关注  ·  %2$s 问题</string>
+    <string name="qa_topic_open_all">展开全部</string>
+    <string name="qa_topic_close_all">收起</string>
+    <string name="qa_question_answer_adopt">已采纳</string>
+    <string name="qa_question_answer_invite">邀请回答</string>
+    <string name="qa_question_answer_adopting">采纳答案</string>
+    <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
+    <string name="qa_question_answer_anonymity">匿</string>
+    <string name="qa_reward_public">公开悬赏</string>
+    <string name="qa_reward_invited">已邀请悬赏</string>
+    <string name="qa_reward_setting">已设置悬赏</string>
+    <string name="qa_add_answer">添加回答</string>
+    <string name="qa_reward_amount">￥%1$.1f</string>
+    <string name="qa_watch_amount">￥%1$.1f围观</string>
+    <string name="qa_answer_list_order_default">默认排序</string>
+    <string name="qa_answer_list_order_by_time">按时间排序</string>
+    <string name="qa_answer_count">%d 个回答</string>
+    <string name="qa_title_question_detail">问题详情</string>
+    <string name="qa_question_no_answer">还没有回答~</string>
+    <string name="qa_title_answer_detail">回答详情</string>
+    <string name="qa_apply_for_excellent">申请为精选问答</string>
+    <string name="qa_question_delete">删除问题</string>
+    <string name="qa_question_delete_alert">问题删除后将无法复原，确认删除该问题?</string>
+    <string name="qa_question_delete_success">删除成功</string>
+    <string name="qa_question_develop">敬请期待</string>
+    <string name="qa_question_excellent_reapply">已经是精选问答啦~</string>
+    <string name="qa_question_comment_count">评论(%d)</string>
+    <string name="qa_question_comment_delete_success">删除成功</string>
+    <string name="qa_search">\t\t\t\t\t\t问答\t\t\t\t\t\t\t</string>
+    <string name="qa_search_topic">\t\t\t\t\t\t话题\t\t\t\t\t\t\t</string>
+    <string name="show_all_history">显示全部历史</string>
+    <string name="clear_all_history">清空搜索历史</string>
+    <string name="qa_pay_for_excellent">精选问答支付</string>
+    <string name="qa_pay_for_watch">围观支付</string>
+    <string name="qa_go_to_watch">去围观</string>
+    <string name="qa_go_to_watched">已围观</string>
+    <string name="qa_reset_reward_success">设置悬赏成功</string>
+    <string name="qa_expert_list">专家列表</string>
+
+    <!--签到-->
+    <string name="check_in">签到</string>
+    <string name="checked">已签到</string>
+    <string name="check_in_today">每日签到</string>
+    <string name="check_in_total_day_format">累计签到%d天</string>
+    <string name="check_in_today_get_gold">每日签到得金币</string>
+    <string name="check_in_fail">签到失败</string>
+
+
+    <!--找人-->
+    <string name="contacts">通讯录</string>
+    <string name="invite">邀请</string>
+    <string name="contacts_permission_tip">请打开通讯录权限，否则你将不能使用此功能！</string>
+    <string name="find_someone">找人</string>
+    <string name="neary_by">附近</string>
+    <string name="choose_city">选择城市</string>
+    <string name="current_location">当前定位</string>
+    <string name="unlocation">未定位</string>
+    <string name="hot_location">热门城市</string>
+    <string name="contact_had_add_ts_plust">已加入TS+的好友</string>
+    <string name="contact_not_add_ts_plust">通讯录未加入TS+的好友</string>
+    <string name="not_find_qa_to_publish">未找到相关问题，去提问？</string>
+    <string name="not_find_qa_topic_to_publish">未找到相关话题~</string>
+    <string name="request_to_publish_topic">申请创建话题~</string>
+    <string name="to_publish_qa">去提问</string>
+
+    <!--排行榜相关-->
+    <string name="rank">排行榜</string>
+    <string name="rank_user">用户</string>
+    <string name="rank_qa">问答</string>
+    <string name="rank_dynamic">动态</string>
+    <string name="rank_info">资讯</string>
+    <!--用户-->
+    <string name="rank_user_type_all">全站粉丝排行榜</string>
+    <string name="rank_user_type_riches">财富达人排行榜</string>
+    <string name="rank_user_type_income">收入达人排行榜</string>
+    <string name="rank_user_type_sign_in">社区签到排行榜</string>
+    <string name="rank_user_type_expert">社区专家排行榜</string>
+    <string name="rank_user_type_qa">问答达人排行榜</string>
+    <!--问答-->
+    <string name="rank_qa_type_day">今日解答排行榜</string>
+    <string name="rank_qa_type_week">一周解答排行榜</string>
+    <string name="rank_qa_type_month">本月解答排行榜</string>
+    <!--动态-->
+    <string name="rank_dynamic_type_day">今日动态排行榜</string>
+    <string name="rank_dynamic_type_week">一周动态排行榜</string>
+    <string name="rank_dynamic_type_month">本月动态排行榜</string>
+    <!--资讯-->
+    <string name="rank_info_type_day">今日资讯排行榜</string>
+    <string name="rank_info_type_week">一周资讯排行榜</string>
+    <string name="rank_info_type_month">本月资讯排行榜</string>
+
+    <string name="rank_type_fans">粉丝：%d</string>
+    <string name="rank_type_answer_count">回答量：%d</string>
+    <string name="rank_type_answer_dig_count">问答点赞量：%d</string>
+    <string name="rank_type_like_count">点赞量：%d</string>
+    <string name="rank_type_view_count">浏览量：%d</string>
+    <string name="rank_type_check_in">连续签到：%d</string>
 </resources>

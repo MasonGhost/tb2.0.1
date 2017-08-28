@@ -10,6 +10,7 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -353,7 +354,6 @@ public class SocketService extends BaseService implements ImService.ImListener {
      * @param imConfig
      */
     private boolean login(IMConfig imConfig) {
-        LogUtils.debugInfo(TAG, "------------login------------" + imConfig.toString());
         mIMConfig = imConfig;
         isNeedReConnected = true;
         mService.setParams(imConfig.getWeb_socket_authority(), imConfig.getToken(),
@@ -1550,7 +1550,7 @@ public class SocketService extends BaseService implements ImService.ImListener {
              * 无法连接到服务器（主要是网络太差出现）,或者服务器拒绝
              */
             case WebSocket.ConnectionHandler.CLOSE_CANNOT_CONNECT:
-                new Handler().postDelayed(new Runnable() {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         socketReconnect();

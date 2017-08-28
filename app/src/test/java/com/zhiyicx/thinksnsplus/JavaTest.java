@@ -1,10 +1,20 @@
 package com.zhiyicx.thinksnsplus;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
+import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
@@ -17,6 +27,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import rx.Observable;
@@ -32,7 +44,7 @@ import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.DEFAULT_LO
  * @Date 2017/3/17
  * @Contact master.jungle68@gmail.com
  */
-
+@SuppressLint("LogNotUsed")
 public class JavaTest {
     private static final String TAG = "JavaTest";
 
@@ -78,6 +90,63 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void testTime(){
+        String time="2017-06-15 02:15:25";
+        System.out.println("result::" + TimeUtils.getTimeFriendlyForDetail(time));
+        System.out.println("result1::" + TimeUtils.getTimeFriendlyNormal(time));
+        System.out.println("result2::" + TimeUtils.utc2LocalStr(time));
+        System.out.println("result3::" + TimeUtils.getifferenceDays(TimeUtils.utc2LocalLong(time)));
+    }
+
+    @Test
+    public void matchTest() {
+        String reg = "(@!\\[.*]\\((\\d+)\\))";
+        String test = "xxx@![image](123)ssss@![image](123)";
+        Matcher matcher = Pattern.compile(reg).matcher(test);
+        if (matcher.find()) {
+            System.out.println("result::" + matcher.group(0));
+            System.out.println("result::" + matcher.group(1));
+            System.out.println("result::" + matcher.group(2));
+            System.out.println("result::" + matcher.groupCount());
+
+        }
+    }
+
+    @Test
+    public void replaceTest() {
+        String tag = "@![image](580)哈哈哈哈哈ヽ(ｏ`皿′ｏ)ﾉ((*゜Д゜)ゞ”😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁@![image](581)";
+        Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
+        System.out.print(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, "result:: " + pattern.matcher(tag).replaceAll("")));
+    }
+
+    @Test
+    public void subTest() {
+        String reg = "@!\\[.*]\\((\\d+)\\)";
+        String targetStr = "xxx@![image](123)ssss@![image](456)";
+        Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
+        Matcher matcher1 = pattern.matcher(targetStr);
+        int lastIndex = 0;
+        while (matcher1.find()) {
+            System.out.println("result:: " + matcher1.group(1));
+            if (matcher1.start() > lastIndex) {
+                System.out.println("result 1 :: " + targetStr.substring(lastIndex, matcher1.start()));
+            }
+            String result2 = targetStr.substring(matcher1.start(), matcher1.end());
+            Matcher matcher2 = Pattern.compile(reg).matcher(result2);
+            System.out.println("result 2 :: " + result2);
+            if (matcher2.find()) {
+                System.out.println("matcher 2 :: " + matcher2.group(0));
+                System.out.println("matcher 2 :: " + matcher2.group(1));
+            }
+            lastIndex = matcher1.end();
+        }
+        if (lastIndex != targetStr.length()) {
+            System.out.println("result 3 :: " + targetStr.substring(lastIndex, targetStr.length()));
+        }
+
     }
 
     /**
@@ -145,6 +214,7 @@ public class JavaTest {
         }
     }
 
+    @SuppressLint("LogNotUsed")
     @Test
     public void jsonObject2map() {
 //        String jsonstr = "{\"token\":\"l6NOIWOwcwEzENBQWkb23s57MVmvjNLPHN4D7I5X:rP3G9ZXRk6MjhnXY2vpVKmxWOUM\\u003d:eyJyZXR1cm5Cb2R5Ijoie1wicmVzb3VyY2VcIjogJCh4OnJlc291cmNlKX0iLCJzY29wZSI6InRzcGx1czoyMDE3XC8wNFwvMjhcLzA4MThcLzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZyIsImRlYWRsaW5lIjoxNDkzNDUyOTk4LCJ1cEhvc3RzIjpbImh0dHA6XC9cL3VwLXoyLnFpbml1LmNvbSIsImh0dHA6XC9cL3VwbG9hZC16Mi5xaW5pdS5jb20iLCItSCB1cC16Mi5xaW5pdS5jb20gaHR0cDpcL1wvMTgzLjYwLjIxNC4xOTgiXX0\\u003d\",\"key\":\"2017/04/28/0818/9756FCCF72E47A2FBA935AE9213EB1E8.jpg\",\"x:resource\":\"MjAxNy8wNC8yOC8wODE4Lzk3NTZGQ0NGNzJFNDdBMkZCQTkzNUFFOTIxM0VCMUU4LmpwZw\\u003d\\u003d\"}";
@@ -219,6 +289,7 @@ public class JavaTest {
         ;
     }
 
+
     @Test
     public void rxEmptyTest() {
         Observable.empty()
@@ -278,7 +349,7 @@ public class JavaTest {
             c = a[1].toString();
             d = a[5].toString();
         } catch (Exception e) {
-          e.printStackTrace();
+            e.printStackTrace();
         }
 
         Assert.assertTrue(a[1].equals("4569"));
@@ -287,4 +358,70 @@ public class JavaTest {
         Assert.assertTrue(d == null);
     }
 
+    /**
+     * 地区解析测试
+     */
+    @Test
+    public void locationParseTest() {
+        String data = "[{\"items\":[{\"id\":3,\"name\":\"市辖区\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\"},{\"id\":18,\"name\":\"县\",\"pid\":2,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:49\",\"updated_at\":\"2017-04-28 07:49:49\"}],\"tree\":{\"id\":2,\"name\":\"北京市\",\"pid\":1,\"extends\":\"\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":{\"id\":1,\"name\":\"中国\",\"pid\":0,\"extends\":\"3\",\"created_at\":\"2017-04-28 07:49:48\",\"updated_at\":\"2017-04-28 07:49:48\",\"parent\":null}}}]";
+        List<LocationContainerBean> lodAta = new Gson().fromJson(data, new TypeToken<List<LocationContainerBean>>() {
+        }.getType());
+        List<LocationBean> result = new ArrayList<>();
+
+        for (LocationContainerBean locationContainerBean : lodAta) {
+            if (locationContainerBean.getItems() == null || locationContainerBean.getItems().isEmpty()) {
+                result.add(locationContainerBean.getTree());
+            } else {
+                for (LocationBean locationBean : locationContainerBean.getItems()) {
+                    locationBean.setParent(locationContainerBean.getTree());
+                    result.add(locationBean);
+                }
+            }
+        }
+        Assert.assertTrue(LocationBean.getlocation(result.get(0)).equals("中国，北京市，市辖区"));
+        Assert.assertTrue(LocationBean.getlocation(result.get(1)).equals("中国，北京市，县"));
+
+    }
+
+
+    @Test
+    public void listRemoveDuplicateTest() {
+
+        List<Integer> data = new ArrayList<>();
+        data.add(1);
+        data.add(2);
+        data.add(3);
+        data.add(1);
+        data.add(4);
+        data.add(2);
+        data.add(5);
+        data.add(6);
+        data.add(1);
+        data.add(6);
+
+        ConvertUtils.removeDuplicate(data);
+        Assert.assertTrue(data.size() == 6);
+        System.out.println("data = " + data.subList(0, data.size()));
+
+
+    }
+
+    @Test
+    public void listAddAllTest() {
+//        List<List<AuthBean>> data = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            data.add(new AuthBean(i));
+//        }
+//        List<List<AuthBean>> test1 = new ArrayList<>();
+//        test1.addAll(data);
+//
+//        List<List<AuthBean>> test2 = new ArrayList<>();
+//        test2.addAll(data);
+//
+//        test2.subList(0, 5);
+//
+//        System.out.println("test1 = " + test1.size());
+//        System.out.println("test2 = " + test2.size());
+
+    }
 }

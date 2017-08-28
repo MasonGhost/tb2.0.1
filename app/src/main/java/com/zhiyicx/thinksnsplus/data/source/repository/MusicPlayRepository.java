@@ -40,31 +40,23 @@ public class MusicPlayRepository implements MusicPlayContract.Repository {
     public void handleLike(boolean isLiked, final String music_id) {
         Observable.just(isLiked)
                 .observeOn(Schedulers.io())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        BackgroundRequestTaskBean backgroundRequestTaskBean;
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("music_id", music_id);
-                        // 后台处理
-                        if (aBoolean) {
-                            backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                    (BackgroundTaskRequestMethodConfig.POST, params);
-                        } else {
-                            backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                    (BackgroundTaskRequestMethodConfig.DELETE, params);
-                        }
-                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                                .APP_PATH_MUSIC_DIGG_FORMAT, music_id));
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                                (backgroundRequestTaskBean);
+                .subscribe(aBoolean -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("music_id", music_id);
+                    // 后台处理
+                    if (aBoolean) {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
+                    } else {
+                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                            .APP_PATH_MUSIC_DIGG_FORMAT, music_id));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
+                }, throwable -> throwable.printStackTrace());
     }
 
     @Override

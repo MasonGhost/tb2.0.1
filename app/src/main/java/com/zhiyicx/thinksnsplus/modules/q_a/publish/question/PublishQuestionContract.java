@@ -2,8 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.question;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
+
+import retrofit2.http.Query;
 
 /**
  * @author Catherine
@@ -18,7 +21,10 @@ public interface PublishQuestionContract {
     }
 
     interface Presenter extends ITSListPresenter<QAListInfoBean> {
-
+        void saveQuestion(QAPublishBean qestion);
+        QAPublishBean getDraftQuestion(long qestion_mark);
+        void deleteQuestion(QAPublishBean qestion);
+        void requestNetData(String subject, Long maxId,String type,boolean isLoadMore);
     }
 
     interface Repository extends IBasePublishQuestionRepository {

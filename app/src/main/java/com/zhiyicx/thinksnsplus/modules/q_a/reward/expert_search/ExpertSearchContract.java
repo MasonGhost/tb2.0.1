@@ -3,7 +3,12 @@ package com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
+
+import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author Catherine
@@ -14,15 +19,19 @@ import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepos
 
 public interface ExpertSearchContract {
 
-    interface View extends ITSListView<ExpertBean, Presenter>{
+    interface View extends ITSListView<ExpertBean, Presenter> {
 
     }
 
-    interface Presenter extends ITSListPresenter<ExpertBean>{
+    interface Presenter extends ITSListPresenter<ExpertBean> {
+        void requestNetData(Long maxId, int topic_id, boolean isLoadMore);
 
+        void requestNetData(int size, String topic_ids, boolean isLoadMore);
+
+        void handleFollowUser(UserInfoBean userInfoBean);
     }
 
-    interface Repository extends IBasePublishQuestionRepository{
-
+    interface Repository extends IBasePublishQuestionRepository {
+        Observable<List<ExpertBean>> getExpertList(int size, String topic_ids);
     }
 }

@@ -60,4 +60,10 @@ public class LoginActivity extends TSActivity<LoginPresenter, LoginFragment> {
             ActivityUtils.goHome(this);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mContanierFragment.onActivityResult(requestCode,resultCode,data);
+    }
 }

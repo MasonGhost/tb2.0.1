@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.service.backgroundtask;
 import android.app.Application;
 
 import com.google.gson.Gson;
+
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -17,6 +18,7 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.ErrorCodeConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
@@ -27,16 +29,19 @@ import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.QuestionCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.SendDynamicDataBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.BackgroundRequestTaskBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.GroupDynamicCommentListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoCommentListBeanDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.QuestionCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SendDynamicDataBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
@@ -64,11 +69,15 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_QUESTION_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
 
 /**
@@ -110,6 +119,8 @@ public class BackgroundTaskHandler {
     @Inject
     DynamicCommentBeanGreenDaoImpl mDynamicCommentBeanGreenDao;
     @Inject
+    AnswerCommentListBeanGreenDaoImpl mAnswerCommentListBeanGreenDao;
+    @Inject
     GroupDynamicCommentListBeanGreenDaoImpl mGroupDynamicCommentListBeanGreenDao;
     @Inject
     InfoCommentListBeanDaoImpl mInfoCommentListBeanDao;
@@ -119,6 +130,8 @@ public class BackgroundTaskHandler {
 
     @Inject
     SendDynamicDataBeanV2GreenDaoImpl mSendDynamicDataBeanV2Dao;
+    @Inject
+    QuestionCommentBeanGreenDaoImpl mQuestionCommentBeanGreenDao;
 
     @Inject
     SendCertificationRepository mSendCertificationRepository;
@@ -299,12 +312,6 @@ public class BackgroundTaskHandler {
                 backgroundRequestTaskBean.setMax_retry_count(backgroundRequestTaskBean.getMax_retry_count() - 1);
                 getUserInfo(backgroundRequestTaskBean);
                 break;
-            /**
-             * 发送动态
-             */
-            case SEND_DYNAMIC:
-                sendDynamic(backgroundRequestTaskBean);
-                break;
 
             /**
              * 发送动态 V2 api
@@ -334,11 +341,18 @@ public class BackgroundTaskHandler {
             case SEND_DYNAMIC_COMMENT:
                 sendComment(backgroundRequestTaskBean);
                 break;
+
+            case SEND_ANSWER_COMMENT:
+                sendAnswerComment(backgroundRequestTaskBean);
+                break;
             case SEND_INFO_COMMENT:
-                sendInfoComment(backgroundRequestTaskBean);
+                sendInfoCommentV2(backgroundRequestTaskBean);
                 break;
             case SEND_CERTIFICATION:
                 sendCertification(backgroundRequestTaskBean);
+                break;
+            case SEND_QUESTION_COMMENT:
+                sendQuestionComment(backgroundRequestTaskBean);
                 break;
             default:
         }
@@ -485,9 +499,10 @@ public class BackgroundTaskHandler {
     private void PatchMethod(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
 
         mServiceManager.getCommonClient().handleBackGroundTaskPatch(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
-                .subscribe(new BaseSubscribe<Object>() {
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+
                     @Override
-                    protected void onSuccess(Object data) {
+                    protected void onSuccess(BaseJsonV2<Object> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                     }
 
@@ -626,7 +641,7 @@ public class BackgroundTaskHandler {
             integers.add(Long.valueOf(backgroundRequestTaskBean.getParams().get("user_id") + ""));
         }
         mUserInfoRepository.getUserInfo(integers)
-                .subscribe(new BaseSubscribe<List<UserInfoBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<UserInfoBean>>() {
                     @Override
                     protected void onSuccess(List<UserInfoBean> data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
@@ -681,104 +696,6 @@ public class BackgroundTaskHandler {
     }
 
     /**
-     * 处理动态发送的后台任务
-     */
-    private void sendDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
-        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
-        final Long feedMark = (Long) params.get("params");
-        SendDynamicDataBean sendDynamicDataBean = (SendDynamicDataBean) params.get("sendDynamicDataBean");
-        final int dynamicBelong;
-        final long channel_id;
-        if (sendDynamicDataBean != null) {
-            dynamicBelong = sendDynamicDataBean.getDynamicBelong();
-            channel_id = sendDynamicDataBean.getDynamicChannlId();
-
-        } else {
-            dynamicBelong = SendDynamicDataBean.MORMAL_DYNAMIC;
-            channel_id = 0;
-        }
-        final DynamicBean dynamicBean;
-        if (dynamicBelong == SendDynamicDataBean.GROUP_DYNAMIC) {
-            dynamicBean = (DynamicBean) params.get("dynamicbean");
-        } else {
-            dynamicBean = mDynamicBeanGreenDao.getDynamicByFeedMark(feedMark);
-        }
-        if (dynamicBean == null) {
-            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-            return;
-        }
-        // 发送动态到动态列表：状态为发送中
-        dynamicBean.setState(DynamicBean.SEND_ING);
-
-        // 存入数据库
-        // ....
-        final DynamicDetailBean dynamicDetailBean = dynamicBean.getFeed();
-        List<ImageBean> photos = dynamicDetailBean.getStorages();
-        Observable<BaseJson<Object>> observable = null;
-        // 有图片需要上传时：先处理图片上传任务，成功后，获取任务id，发布动态
-        if (photos != null && !photos.isEmpty()) {
-            // 先处理图片上传，图片上传成功后，在进行动态发布
-            List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
-            for (int i = 0; i < photos.size(); i++) {
-                ImageBean imageBean = photos.get(i);
-                String filePath = imageBean.getImgUrl();
-                int photoWidth = (int) imageBean.getWidth();
-                int photoHeight = (int) imageBean.getHeight();
-                String photoMimeType = imageBean.getImgMimeType();
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFile(filePath, photoMimeType, true, photoWidth, photoHeight));
-            }
-            observable = // 组合多个图片上传任务
-                    Observable.combineLatest(upLoadPics, args -> {
-                        // 得到图片上传的结果
-                        List<Integer> integers = new ArrayList<>();
-                        for (Object obj : args) {
-                            BaseJson<Integer> baseJson = (BaseJson<Integer>) obj;
-                            if (baseJson.isStatus()) {
-                                integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-                            } else {
-                                throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                            }
-                        }
-                        return integers;
-                    }).flatMap(new Func1<List<Integer>, Observable<BaseJson<Object>>>() {
-                        @Override
-                        public Observable<BaseJson<Object>> call(List<Integer> integers) {
-                            dynamicDetailBean.setStorage_task_ids(integers);
-                            return mSendDynamicRepository.sendDynamic(dynamicDetailBean, dynamicBelong, channel_id);// 进行动态发布的请求
-                        }
-                    });
-        } else {
-            // 没有图片上传任务，直接发布动态
-            observable = mSendDynamicRepository.sendDynamic(dynamicDetailBean, dynamicBelong, channel_id);// 进行动态发布的请求
-        }
-        observable.subscribeOn(Schedulers.io())
-                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseSubscribe<Object>() {
-                    @Override
-                    protected void onSuccess(Object data) {
-                        // 发送动态到动态列表：状态为发送成功
-//                        sendDynamicByEventBus(dynamicBelong, dynamicBean, true, backgroundRequestTaskBean, data);
-                    }
-
-                    @Override
-                    protected void onFailure(String message, int code) {
-                        // 发送动态到动态列表：状态为发送失败
-
-//                        sendDynamicByEventBus(dynamicBelong, dynamicBean, false, backgroundRequestTaskBean, null);
-                    }
-
-                    @Override
-                    protected void onException(Throwable throwable) {
-                        throwable.printStackTrace();
-                        // 发送动态到动态列表：状态为发送失败
-//                        sendDynamicByEventBus(dynamicBelong, dynamicBean, false, backgroundRequestTaskBean, null);
-                    }
-                });
-
-    }
-
-    /**
      * 处理动态发送的后台任务 V2
      */
     private void sendDynamicV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
@@ -804,48 +721,54 @@ public class BackgroundTaskHandler {
         if (photos != null && !photos.isEmpty()) {
             // 先处理图片上传，图片上传成功后，在进行动态发布
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
-            for (int i = 0; i < photos.size(); i++) {
-                ImageBean imageBean = photos.get(i);
-                String filePath = imageBean.getImgUrl();
-                int photoWidth = (int) imageBean.getWidth();
-                int photoHeight = (int) imageBean.getHeight();
-                String photoMimeType = imageBean.getImgMimeType();
-                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
-            }
-            observable = // 组合多个图片上传任务
-                    Observable.combineLatest(upLoadPics, args -> {
-                        // 得到图片上传的结果
-                        List<Integer> integers = new ArrayList<>();
-                        for (int i = 0; i < args.length; i++) {
-                            BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
-                            if (baseJson.isStatus()) {
-                                sendDynamicDataBean.getStorage_task().get(i).setId(baseJson.getData());
-                                integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-                            } else {
-                                throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                            }
-                        }
-                        return integers;
-                    }).map(integers -> {
-                        sendDynamicDataBean.setPhotos(null);
-                        return sendDynamicDataBean;
-                    }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
-                        @Override
-                        public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
-                            return mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
-                                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                                        @Override
-                                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                                            BaseJson<Object> baseJson = new BaseJson<>();
-                                            baseJson.setData((double) objectBaseJsonV2.getId());
-                                            String msg = objectBaseJsonV2.getMessage().get(0);
-                                            baseJson.setStatus(msg.equals("发布成功"));
-                                            baseJson.setMessage(msg);
-                                            return Observable.just(baseJson);
-                                        }
-                                    });
-                        }
-                    });
+
+            int[] position = new int[1];
+            recursionUplaodImage(sendDynamicDataBean, photos, position);
+
+            observable=Observable.just(sendDynamicDataBean)
+
+//            for (int i = 0; i < photos.size(); i++) {
+//                ImageBean imageBean = photos.get(i);
+//                String filePath = imageBean.getImgUrl();
+//                int photoWidth = (int) imageBean.getWidth();
+//                int photoHeight = (int) imageBean.getHeight();
+//                String photoMimeType = imageBean.getImgMimeType();
+//                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+//            }
+//
+//            observable = Observable.zip(upLoadPics, (FuncN<Object>) args -> {
+//                List<Integer> integers = new ArrayList<>();
+//                for (int i = 0; i < args.length; i++) {
+//                    BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
+//                    if (baseJson.isStatus()) {
+//                        sendDynamicDataBean.getStorage_task().get(i).setId(baseJson.getData());
+//                        integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+//                    } else {
+//                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+//                    }
+//                }
+//                return integers;
+//            })
+                    .map(integers -> {
+                sendDynamicDataBean.setPhotos(null);
+                return sendDynamicDataBean;
+            }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
+                @Override
+                public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
+                    return mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
+                            .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                                @Override
+                                public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                                    BaseJson<Object> baseJson = new BaseJson<>();
+                                    baseJson.setData((double) objectBaseJsonV2.getId());
+                                    String msg = objectBaseJsonV2.getMessage().get(0);
+                                    baseJson.setStatus(msg.equals("发布成功"));
+                                    baseJson.setMessage(msg);
+                                    return Observable.just(baseJson);
+                                }
+                            });
+                }
+            });
         } else {
             // 没有图片上传任务，直接发布动态
             observable = mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
@@ -868,23 +791,46 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         // 发送动态到动态列表：状态为发送成功
-                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, true, backgroundRequestTaskBean, data);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, true, backgroundRequestTaskBean, data);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         // 发送动态到动态列表：状态为发送失败
-                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
                         throwable.printStackTrace();
                         // 发送动态到动态列表：状态为发送失败
-                        sendDynamicByEventBus(SendDynamicDataBean.MORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
+                        sendDynamicByEventBus(SendDynamicDataBean.NORMAL_DYNAMIC, detailBeanV2, false, backgroundRequestTaskBean, null);
                     }
                 });
 
+    }
+
+    private void recursionUplaodImage(final SendDynamicDataBeanV2 sendDynamicDataBean, List<ImageBean> photos, final int[] position) {
+        if (position[0] == photos.size()) {
+            return;
+        }
+        ImageBean imageBean = photos.get(position[0]);
+        String filePath = imageBean.getImgUrl();
+        int photoWidth = (int) imageBean.getWidth();
+        int photoHeight = (int) imageBean.getHeight();
+        String photoMimeType = imageBean.getImgMimeType();
+        mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight).subscribe(new Action1<BaseJson<Integer>>() {
+            @Override
+            public void call(BaseJson<Integer> integerBaseJson) {
+                if (integerBaseJson.isStatus()) {
+                    sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
+                    position[0]++;// 完成后+1
+                    recursionUplaodImage(sendDynamicDataBean, photos, position);
+                } else {
+                    throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                }
+            }
+        });
     }
 
     private void sendGroupDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
@@ -912,45 +858,43 @@ public class BackgroundTaskHandler {
                 String photoMimeType = imageBean.getImgMimeType();
                 upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
             }
-            observable = // 组合多个图片上传任务
-                    Observable.combineLatest(upLoadPics, args -> {
-                        // 得到图片上传的结果
-                        List<Integer> integers = new ArrayList<>();
-                        List<GroupSendDynamicDataBean.ImagesBean> images = new ArrayList<>();
-                        for (int i = 0; i < args.length; i++) {
-                            BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
-                            if (baseJson.isStatus()) {
-                                GroupSendDynamicDataBean.ImagesBean imagesBean = new GroupSendDynamicDataBean.ImagesBean();
-                                imagesBean.setId(baseJson.getData());
-                                images.add(imagesBean);
-                                integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-                            } else {
-                                images = null;
-                                throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                            }
-                        }
-                        sendDynamicDataBean.setImages(images);
-                        return integers;
-                    }).map(integers -> {
-                        sendDynamicDataBean.setPhotos(null);
-                        return sendDynamicDataBean;
-                    }).flatMap(new Func1<GroupSendDynamicDataBean, Observable<BaseJson<Object>>>() {
-                        @Override
-                        public Observable<BaseJson<Object>> call(GroupSendDynamicDataBean sendDynamicDataBean) {
-                            return mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean)
-                                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                                        @Override
-                                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                                            BaseJson<Object> baseJson = new BaseJson<>();
-                                            baseJson.setData((double) objectBaseJsonV2.getId());
-                                            String msg = objectBaseJsonV2.getMessage().get(0);
-                                            baseJson.setStatus(msg.equals("发布成功"));
-                                            baseJson.setMessage(msg);
-                                            return Observable.just(baseJson);
-                                        }
-                                    });
-                        }
-                    });
+            observable = Observable.zip(upLoadPics, (FuncN<Object>) args -> {
+                List<Integer> integers = new ArrayList<>();
+                List<GroupSendDynamicDataBean.ImagesBean> images = new ArrayList<>();
+                for (int i = 0; i < args.length; i++) {
+                    BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
+                    if (baseJson.isStatus()) {
+                        GroupSendDynamicDataBean.ImagesBean imagesBean = new GroupSendDynamicDataBean.ImagesBean();
+                        imagesBean.setId(baseJson.getData());
+                        images.add(imagesBean);
+                        integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+                    } else {
+                        images = null;
+                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                    }
+                }
+                sendDynamicDataBean.setImages(images);
+                return integers;
+            }).map(integers -> {
+                sendDynamicDataBean.setPhotos(null);
+                return sendDynamicDataBean;
+            }).flatMap(new Func1<GroupSendDynamicDataBean, Observable<BaseJson<Object>>>() {
+                @Override
+                public Observable<BaseJson<Object>> call(GroupSendDynamicDataBean sendDynamicDataBean) {
+                    return mBaseChannelRepository.sendGroupDynamic(sendDynamicDataBean)
+                            .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                                @Override
+                                public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                                    BaseJson<Object> baseJson = new BaseJson<>();
+                                    baseJson.setData((double) objectBaseJsonV2.getId());
+                                    String msg = objectBaseJsonV2.getMessage().get(0);
+                                    baseJson.setStatus(msg.equals("发布成功"));
+                                    baseJson.setMessage(msg);
+                                    return Observable.just(baseJson);
+                                }
+                            });
+                }
+            });
         } else {
             // 没有图片上传任务，直接发布动态
             sendDynamicDataBean.setPhotos(null);
@@ -989,7 +933,7 @@ public class BackgroundTaskHandler {
     private void sendDynamicByEventBus(int dynamicBelong, DynamicDetailBeanV2 dynamicBean, boolean sendSuccess
             , BackgroundRequestTaskBean backgroundRequestTaskBean, Object data) {
         switch (dynamicBelong) {
-            case SendDynamicDataBean.MORMAL_DYNAMIC:
+            case SendDynamicDataBean.NORMAL_DYNAMIC:
                 if (sendSuccess) {
                     // 动态发送成功
                     dynamicBean.setState(DynamicBean.SEND_SUCCESS);
@@ -1061,6 +1005,59 @@ public class BackgroundTaskHandler {
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mDynamicCommentBeanGreenDao.insertOrReplace(dynamicCommentBean);
                         EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                    }
+
+                });
+    }
+
+
+    /**
+     * 处理评论发送的后台任务
+     */
+    private void sendAnswerComment(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long commentMark = (Long) params.get("comment_mark");
+        final AnswerCommentListBean answerCommentBean = mAnswerCommentListBeanGreenDao.getCommentByCommentMark(commentMark);
+        if (answerCommentBean == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        // 发送动态到动态列表：状态为发送中
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            answerCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            answerCommentBean.setState(DynamicBean.SEND_SUCCESS);
+                            mAnswerCommentListBeanGreenDao.insertOrReplace(answerCommentBean);
+                            EventBus.getDefault().post(answerCommentBean, EVENT_SEND_COMMENT_TO_ANSWER_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        answerCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mAnswerCommentListBeanGreenDao.insertOrReplace(answerCommentBean);
+                        EventBus.getDefault().post(answerCommentBean, EVENT_SEND_COMMENT_TO_ANSWER_LIST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        answerCommentBean.setState(DynamicBean.SEND_ERROR);
+                        mAnswerCommentListBeanGreenDao.insertOrReplace(answerCommentBean);
+                        EventBus.getDefault().post(answerCommentBean, EVENT_SEND_COMMENT_TO_ANSWER_LIST);
                     }
 
                 });
@@ -1147,7 +1144,7 @@ public class BackgroundTaskHandler {
                     @Override
                     protected void onSuccess(Object data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
-                        infoCommentListBean.setId(((Double) data).intValue());
+//                        infoCommentListBean.setId(((Double) data).intValue());
                         infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
                         mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
                         EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
@@ -1172,9 +1169,60 @@ public class BackgroundTaskHandler {
     }
 
     /**
+     * 处理资讯评论发送的后台任务
+     */
+    private void sendInfoCommentV2(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
+
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long commentMark = (Long) params.get("comment_mark");
+        final InfoCommentListBean infoCommentListBean = mInfoCommentListBeanDao.getCommentByCommentMark
+                (commentMark);
+        if (infoCommentListBean == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            infoCommentListBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            infoCommentListBean.setState(DynamicBean.SEND_SUCCESS);
+                            mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                            EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        infoCommentListBean.setState(DynamicBean.SEND_ERROR);
+                        mInfoCommentListBeanDao.insertOrReplace(infoCommentListBean);
+                        EventBus.getDefault().post(infoCommentListBean, EVENT_SEND_COMMENT_TO_INFO_LIST);
+                    }
+                });
+
+    }
+
+    /**
      * 处理后台发布申请认证
      */
-    private void sendCertification(final BackgroundRequestTaskBean backgroundRequestTaskBean){
+    private void sendCertification(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
         SendCertificationBean bean = (SendCertificationBean) params.get("sendCertification");
         if (bean == null) {
@@ -1238,9 +1286,59 @@ public class BackgroundTaskHandler {
     }
 
     /**
+     * 发送问题评论
+     */
+    private void sendQuestionComment(BackgroundRequestTaskBean backgroundRequestTaskBean) {
+        final HashMap<String, Object> params = backgroundRequestTaskBean.getParams();
+        final Long commentMark = (Long) params.get("comment_mark");
+        final QuestionCommentBean questionCommentBean = mQuestionCommentBeanGreenDao.getCommentByCommentMark(commentMark);
+        if (questionCommentBean == null) {
+            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+            return;
+        }
+        // 发送动态到动态列表：状态为发送中
+        mServiceManager.getCommonClient()
+                .handleBackGroundTaskPostV2(backgroundRequestTaskBean.getPath(), UpLoadFile.upLoadFileAndParams(null, backgroundRequestTaskBean.getParams()))
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                            questionCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                            questionCommentBean.setState(QuestionCommentBean.SEND_SUCCESS);
+                            mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
+                            EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                            mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
+                        questionCommentBean.setState(QuestionCommentBean.SEND_ERROR);
+                        mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
+                        EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        questionCommentBean.setState(QuestionCommentBean.SEND_ERROR);
+                        mQuestionCommentBeanGreenDao.insertOrReplace(questionCommentBean);
+                        EventBus.getDefault().post(questionCommentBean, EVENT_SEND_COMMENT_TO_QUESTION_LIST);
+                    }
+
+                });
+    }
+
+    /**
      * 检测是否需要重新请求
      *
-     * @param code
      * @return true 需要
      */
     private boolean checkIsNeedReRequest(int code) {

@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
-public class DataImageView extends AppCompatImageView {
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
+
+public class DataImageView extends FilterImageView {
 
     private String absolutePath;
     private Bitmap bitmap;

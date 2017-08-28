@@ -19,17 +19,12 @@ import rx.Observable;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class InfoSearchRepository implements SearchContract.Repository {
+public class InfoSearchRepository extends BaseInfoRepository implements SearchContract.Repository {
 
-    private InfoMainClient mInfoMainClient;
 
     @Inject
     public InfoSearchRepository(ServiceManager serviceManager) {
-        mInfoMainClient = serviceManager.getInfoMainClient();
+        super(serviceManager);
     }
 
-    @Override
-    public Observable<BaseJson<List<InfoListDataBean>>> searchInfoList(String key, long max_id) {
-        return mInfoMainClient.searchInfoList(key,max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
-    }
 }

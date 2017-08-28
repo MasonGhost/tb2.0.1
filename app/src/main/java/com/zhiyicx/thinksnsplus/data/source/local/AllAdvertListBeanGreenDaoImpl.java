@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.data.source.local;
 
 import android.app.Application;
 
+import com.zhiyicx.baseproject.config.AdvertConfig;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBeanDao;
@@ -80,7 +81,7 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
 
     public AllAdverListBean getBootAdvert() {
 
-        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_BOOT_ADVERT)).build().list();
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_BOOT_ADVERT)).build().list();
         if (data != null && !data.isEmpty()) {
             return data.get(0);
         }
@@ -89,7 +90,7 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
 
     public AllAdverListBean getDynamicBannerAdvert() {
 
-        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_DYNAMIC_BANNER_ADVERT)).build().list();
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_DYNAMIC_BANNER_ADVERT)).build().list();
         if (data != null && !data.isEmpty()) {
             return data.get(0);
         }
@@ -98,7 +99,7 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
 
     public AllAdverListBean getDynamicListAdvert() {
 
-        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_DYNAMIC_LIST_ADVERT)).build().list();
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_DYNAMIC_LIST_ADVERT)).build().list();
         if (data != null && !data.isEmpty()) {
             return data.get(0);
         }
@@ -107,10 +108,39 @@ public class AllAdvertListBeanGreenDaoImpl extends CommonCacheImpl<AllAdverListB
 
     public AllAdverListBean getDynamicDetailAdvert() {
 
-        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(ApiConfig.APP_DYNAMIC_DETAILS_ADVERT)).build().list();
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_DYNAMIC_DETAILS_ADVERT)).build().list();
         if (data != null && !data.isEmpty()) {
             return data.get(0);
         }
         return null;
     }
+
+    public AllAdverListBean getInfoBannerAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_INFO_BANNER_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
+
+    public AllAdverListBean getInfoListAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_INFO_LIST_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
+
+    public AllAdverListBean getInfoDetailAdvert() {
+
+        List<AllAdverListBean> data = mAllAdverListBeanDao.queryBuilder().where(AllAdverListBeanDao.Properties.Space.eq(AdvertConfig.APP_INFO_DETAILS_ADVERT)).build().list();
+        if (data != null && !data.isEmpty()) {
+            return data.get(0);
+        }
+        return null;
+    }
+
+
 }

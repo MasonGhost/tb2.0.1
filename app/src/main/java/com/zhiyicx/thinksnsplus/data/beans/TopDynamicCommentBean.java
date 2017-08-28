@@ -132,36 +132,23 @@ public class TopDynamicCommentBean extends BaseListBean {
          * reply_to_user_id : 0
          * created_at : 2017-06-27 08:59:14
          */
-
-        private int id;
-        private String content;
-        private boolean pinned;
+        private Long id;
         private int user_id;
-        private int reply_to_user_id;
+        private Long target_user;
+        private boolean pinned;
+        private Long reply_user;
+        private String body;
+        private int commentable_id;
+        private String commentable_type;
         private String created_at;
+        private String updated_at;
 
-        public int getId() {
+        public Long getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(Long id) {
             this.id = id;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public boolean isPinned() {
-            return pinned;
-        }
-
-        public void setPinned(boolean pinned) {
-            this.pinned = pinned;
         }
 
         public int getUser_id() {
@@ -172,12 +159,52 @@ public class TopDynamicCommentBean extends BaseListBean {
             this.user_id = user_id;
         }
 
-        public int getReply_to_user_id() {
-            return reply_to_user_id;
+        public Long getTarget_user() {
+            return target_user;
         }
 
-        public void setReply_to_user_id(int reply_to_user_id) {
-            this.reply_to_user_id = reply_to_user_id;
+        public void setTarget_user(Long target_user) {
+            this.target_user = target_user;
+        }
+
+        public boolean isPinned() {
+            return pinned;
+        }
+
+        public void setPinned(boolean pinned) {
+            this.pinned = pinned;
+        }
+
+        public Long getReply_user() {
+            return reply_user;
+        }
+
+        public void setReply_user(Long reply_user) {
+            this.reply_user = reply_user;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public void setBody(String body) {
+            this.body = body;
+        }
+
+        public int getCommentable_id() {
+            return commentable_id;
+        }
+
+        public void setCommentable_id(int commentable_id) {
+            this.commentable_id = commentable_id;
+        }
+
+        public String getCommentable_type() {
+            return commentable_type;
+        }
+
+        public void setCommentable_type(String commentable_type) {
+            this.commentable_type = commentable_type;
         }
 
         public String getCreated_at() {
@@ -188,6 +215,14 @@ public class TopDynamicCommentBean extends BaseListBean {
             this.created_at = created_at;
         }
 
+        public String getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
+
 
         @Override
         public int describeContents() {
@@ -196,24 +231,32 @@ public class TopDynamicCommentBean extends BaseListBean {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.id);
-            dest.writeString(this.content);
-            dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
             dest.writeInt(this.user_id);
-            dest.writeInt(this.reply_to_user_id);
+            dest.writeValue(this.target_user);
+            dest.writeValue(this.id);
+            dest.writeByte(this.pinned ? (byte) 1 : (byte) 0);
+            dest.writeValue(this.reply_user);
+            dest.writeString(this.body);
+            dest.writeInt(this.commentable_id);
+            dest.writeString(this.commentable_type);
             dest.writeString(this.created_at);
+            dest.writeString(this.updated_at);
         }
 
         public CommentBean() {
         }
 
         protected CommentBean(Parcel in) {
-            this.id = in.readInt();
-            this.content = in.readString();
-            this.pinned = in.readByte() != 0;
             this.user_id = in.readInt();
-            this.reply_to_user_id = in.readInt();
+            this.target_user = (Long) in.readValue(Long.class.getClassLoader());
+            this.id = (Long) in.readValue(Long.class.getClassLoader());
+            this.pinned = in.readByte() != 0;
+            this.reply_user = (Long) in.readValue(Long.class.getClassLoader());
+            this.body = in.readString();
+            this.commentable_id = in.readInt();
+            this.commentable_type = in.readString();
             this.created_at = in.readString();
+            this.updated_at = in.readString();
         }
 
         public static final Creator<CommentBean> CREATOR = new Creator<CommentBean>() {

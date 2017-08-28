@@ -300,9 +300,6 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                     @Override
                     protected void onFailure(String message, int code) {
                         LogUtils.i(message);
-                        if (message.equalsIgnoreCase("Not Found")) {
-                            code = ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED;
-                        }
                         handleDynamicHasBeDeleted(code, feed_id);
                     }
 
@@ -322,7 +319,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
      * @param feed_id
      */
     private void handleDynamicHasBeDeleted(int code, Long feed_id) {
-        if (code == ErrorCodeConfig.DYNAMIC_HAS_BE_DELETED) {
+        if (code == ErrorCodeConfig.DATA_HAS_BE_DELETED) {
             mDynamicDetailBeanV2GreenDao.deleteDynamicByFeedId(feed_id);
             mRootView.dynamicHasBeDeleted();
         } else {
@@ -596,6 +593,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public List<RealAdvertListBean> getAdvert() {
+        if (!com.zhiyicx.common.BuildConfig.USE_ADVERT||mAllAdvertListBeanGreenDao.getDynamicDetailAdvert()==null) {
+            return new ArrayList<>();
+        }
         return mAllAdvertListBeanGreenDao.getDynamicDetailAdvert().getMRealAdvertListBeen();
     }
 
@@ -621,8 +621,9 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                         .string.transaction_doing)))
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
-                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String>
-                                                                       stringBaseJsonV2) {
+                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
+                        walletBean.setBalance(walletBean.getBalance()-note);
+                        mWalletBeanGreenDao.insertOrReplace(walletBean);
                         if (isImage) {
                             return Observable.just(stringBaseJsonV2);
                         }

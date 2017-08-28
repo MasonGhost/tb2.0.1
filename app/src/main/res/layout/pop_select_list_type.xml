@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="@dimen/question_list_type_width"
+        android:layout_height="@dimen/question_list_type_height"
+        app:cardCornerRadius="@dimen/button_corner_small">
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatCheckedTextView
+                android:id="@+id/tv_default"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/qa_answer_list_order_default"
+                android:checked="true"
+                android:checkMark="@drawable/selector_answer_list_order"
+                android:textColor="@color/normal_for_dynamic_list_content"
+                android:textSize="@dimen/size_icon_assist"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:gravity="center"/>
+
+        <View
+                style="@style/style_divider_horizontal_light"/>
+
+        <android.support.v7.widget.AppCompatCheckedTextView
+                android:id="@+id/tv_time"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/qa_answer_list_order_by_time"
+                android:checkMark="@drawable/selector_answer_list_order"
+                android:textColor="@color/normal_for_dynamic_list_content"
+                android:textSize="@dimen/size_icon_assist"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:gravity="center"/>
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

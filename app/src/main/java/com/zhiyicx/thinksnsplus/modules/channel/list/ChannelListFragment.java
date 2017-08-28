@@ -29,8 +29,10 @@ import static com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListViewPager
 
 public class ChannelListFragment extends TSListFragment<ChannelListContract.Presenter, GroupInfoBean>
         implements ChannelListContract.View {
+
     @Inject
     ChannelListPresenter mChannelListPresenter;
+
     private int pageType = 0;// 上一个Fragment传递过来的页面类型
 
     @Override
@@ -42,6 +44,10 @@ public class ChannelListFragment extends TSListFragment<ChannelListContract.Pres
     @Override
     protected boolean setUseCenterLoading() {
         return true;
+    }
+
+    public boolean handleTouristControl(){
+        return mPresenter.handleTouristControl();
     }
 
     @Override

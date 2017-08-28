@@ -23,7 +23,9 @@ import rx.Subscription;
  */
 
 public class RewardPresenter extends AppBasePresenter<RewardContract.Repository, RewardContract.View> implements RewardContract.Presenter {
+
     public static final int DEFAULT_DELAY_TIME = 2;
+
     @Inject
     WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
@@ -46,11 +48,17 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
             return;
         }
         switch (rewardType) {
-            case INFO:
-                hanldeRewardResult(mRepository.rewardInfo(sourceId, rewardMoney));
+            case INFO: // 咨询打赏
+                hanldeRewardResult(mRepository.rewardInfo(sourceId, rewardMoney),walletBean,rewardMoney);
                 break;
-            case DYNAMIC:
-                hanldeRewardResult(mRepository.rewardDynamic(sourceId, rewardMoney));
+            case DYNAMIC: // 动态打赏
+                hanldeRewardResult(mRepository.rewardDynamic(sourceId, rewardMoney),walletBean,rewardMoney);
+                break;
+            case USER: // 用户打赏
+                hanldeRewardResult(mRepository.rewardUser(sourceId, rewardMoney),walletBean,rewardMoney);
+                break;
+            case QA_ANSWER: // 问答回答打赏
+                hanldeRewardResult(mRepository.rewardQA(sourceId, rewardMoney),walletBean,rewardMoney);
                 break;
 
             default:
@@ -58,15 +66,13 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
         }
     }
 
-    private void hanldeRewardResult(Observable<Object> result) {
+    private void hanldeRewardResult(Observable<Object> result, WalletBean walletBean,double note) {
         Subscription subscription = result.subscribe(new BaseSubscribeForV2<Object>() {
             @Override
             protected void onSuccess(Object data) {
+                walletBean.setBalance(walletBean.getBalance() - note);
+                mWalletBeanGreenDao.insertOrReplace(walletBean);
                 mRootView.showSnackSuccessMessage(mContext.getString(R.string.reward_success));
-                Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.SECONDS)
-                        .subscribe(aLong -> {
-                            mRootView.rewardSuccess();
-                        });
             }
 
             @Override

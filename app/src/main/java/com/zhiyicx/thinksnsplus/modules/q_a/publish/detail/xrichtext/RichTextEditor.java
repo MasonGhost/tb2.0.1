@@ -4,9 +4,12 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -23,9 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 可编辑富文本
+ * @Author Jliuer
+ * @Date 2017/8/7 11:08
+ * @Email Jliuer@aliyun.com
+ * @Description 图文混排编辑
  */
-public class RichTextEditor extends ScrollView {
+public class RichTextEditor extends ScrollView implements TextWatcher {
     private static final int EDIT_PADDING = 10; // edittext常规padding是10dp
 
     private int viewTagIndex = 1; // 新生的view都会打一个tag，对每个view来说，这个tag是唯一的。
@@ -40,12 +46,24 @@ public class RichTextEditor extends ScrollView {
     private int editNormalPadding = 0; //
     private int disappearingImageIndex = 0;
 
+    private OnContentChangeListener mOnContentChangeListener;
+    private boolean hasContent;
+
     public RichTextEditor(Context context) {
         this(context, null);
     }
 
     public RichTextEditor(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (getChildCount() == 1) {
+            lastAddEdit.requestFocus();
+            showKeyBoard();
+        }
+        return super.onTouchEvent(ev);
     }
 
     public RichTextEditor(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -88,9 +106,12 @@ public class RichTextEditor extends ScrollView {
         LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         //editNormalPadding = dip2px(EDIT_PADDING);
-        EditText firstEdit = createEditText("请输入内容", dip2px(context, EDIT_PADDING));
+        EditText firstEdit = createEditText(getResources().getString(R.string.info_content_hint), dip2px(context, EDIT_PADDING));
+        firstEdit.setHintTextColor(getResources().getColor(R.color.general_for_hint));
+        firstEdit.addTextChangedListener(this);
         allLayout.addView(firstEdit, firstEditParam);
         lastFocusEdit = firstEdit;
+        lastAddEdit = firstEdit;
     }
 
     /**
@@ -141,6 +162,7 @@ public class RichTextEditor extends ScrollView {
                 if (preView instanceof RelativeLayout) {
                     // 光标EditText的上一个view对应的是图片
                     onImageCloseClick(preView);
+                    onTextChanged("", 0, 0, 0);
                 } else if (preView instanceof EditText) {
                     // 光标EditText的上一个view对应的还是文本框EditText
                     String str1 = editTxt.getText().toString();
@@ -159,6 +181,10 @@ public class RichTextEditor extends ScrollView {
         }
     }
 
+    public void deleteImage() {
+        onBackspacePress(lastAddEdit);
+    }
+
     /**
      * 处理图片叉掉的点击事件
      *
@@ -172,7 +198,7 @@ public class RichTextEditor extends ScrollView {
         EditData editData = dataList.get(disappearingImageIndex);
         //Log.i("", "editData: "+editData);
         if (editData.imagePath != null) {
-            SDCardUtil.deleteFile(editData.imagePath);
+            //SDCardUtil.deleteFile(editData.imagePath);
         }
         allLayout.removeView(view);
     }
@@ -196,6 +222,7 @@ public class RichTextEditor extends ScrollView {
         editText.setPadding(editNormalPadding, paddingTop, editNormalPadding, paddingTop);
         editText.setHint(hint);
         editText.setOnFocusChangeListener(focusListener);
+        editText.addTextChangedListener(this);
         return editText;
     }
 
@@ -207,7 +234,7 @@ public class RichTextEditor extends ScrollView {
                 R.layout.rich_edit_imageview, null);
         layout.setTag(viewTagIndex++);
         View closeView = layout.findViewById(R.id.image_close);
-        //closeView.setVisibility(GONE);
+        closeView.setVisibility(GONE);
         closeView.setTag(layout.getTag());
         closeView.setOnClickListener(btnListener);
         return layout;
@@ -240,7 +267,7 @@ public class RichTextEditor extends ScrollView {
             lastFocusEdit.setText(editStr1);
             String editStr2 = lastEditStr.substring(cursorIndex).trim();
             if (editStr2.length() == 0) {
-                editStr2 = " ";
+                editStr2 = "";
             }
             if (allLayout.getChildCount() - 1 == lastEditIndex) {
                 addEditTextAtIndex(lastEditIndex + 1, editStr2);
@@ -249,8 +276,6 @@ public class RichTextEditor extends ScrollView {
             addImageViewAtIndex(lastEditIndex + 1, imagePath);
             lastAddEdit.requestFocus();
             lastAddEdit.setSelection(0);
-//            lastFocusEdit.requestFocus();
-//            lastFocusEdit.setSelection(editStr1.length(), editStr1.length());//TODO
         }
         hideKeyBoard();
     }
@@ -264,13 +289,33 @@ public class RichTextEditor extends ScrollView {
         imm.hideSoftInputFromWindow(lastFocusEdit.getWindowToken(), 0);
     }
 
+    public void showKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInputFromInputMethod(lastFocusEdit.getWindowToken(), 0);
+    }
+
     /**
      * 在特定位置插入EditText
      *
      * @param index   位置
      * @param editStr EditText显示的文字
      */
-    public void addEditTextAtIndex(final int index, CharSequence editStr) {
+    private void addEditTextAtIndex(final int index, CharSequence editStr) {
+        lastAddEdit = createEditText("", EDIT_PADDING);
+        lastAddEdit.setText(editStr);
+        lastAddEdit.setOnFocusChangeListener(focusListener);
+
+        allLayout.addView(lastAddEdit, index);
+    }
+
+    /**
+     * 在特定位置插入EditText
+     *
+     * @param index   位置
+     * @param editStr EditText显示的文字
+     */
+    public void updateEditTextAtIndex(final int index, CharSequence editStr) {
         lastAddEdit = createEditText("", EDIT_PADDING);
         lastAddEdit.setText(editStr);
         lastAddEdit.setOnFocusChangeListener(focusListener);
@@ -281,7 +326,7 @@ public class RichTextEditor extends ScrollView {
     /**
      * 在特定位置添加ImageView
      */
-    public void addImageViewAtIndex(final int index, String imagePath) {
+    private void addImageViewAtIndex(final int index, String imagePath) {
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
         Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
@@ -295,16 +340,42 @@ public class RichTextEditor extends ScrollView {
             imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
             bmp.recycle();
         }
-        // TODO: 17/3/1 调整图片高度，这里是否有必要，如果出现微博长图，可能会很难看
+        // TODO: 17/8/1 调整图片高度，这里是否有必要，如果出现微博长图，可能会很难看
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
         lp.bottomMargin = 10;
         imageView.setLayoutParams(lp);
-        imageView.setOnClickListener(v -> {
-            fullScroll(ScrollView.FOCUS_DOWN);
-        });
-
         allLayout.addView(imageLayout, index);
+
+        onTextChanged("", 0, 0, 0);
+    }
+
+    /**
+     * 在特定位置添加ImageView
+     */
+    public void updateImageViewAtIndex(final int index, String imagePath, String markdonw, boolean isLast) {
+        final RelativeLayout imageLayout = createImageLayout();
+        DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
+        Glide.with(getContext()).load(imagePath).crossFade().centerCrop().into(imageView);
+        imageView.setAbsolutePath(markdonw);//保留这句，后面保存数据会用
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);//裁剪剧中
+
+        // 调整imageView的高度，根据宽度来调整高度
+        Bitmap bmp = BitmapFactory.decodeFile(imagePath);
+        int imageHeight = 500;
+        if (bmp != null) {
+            imageHeight = allLayout.getWidth() * bmp.getHeight() / bmp.getWidth();
+            bmp.recycle();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT, imageHeight);//设置图片固定高度
+            lp.bottomMargin = 10;
+            imageView.setLayoutParams(lp);
+        }
+        allLayout.addView(imageLayout, index);
+        if (isLast) {
+            addEditTextAtIndex(getLastIndex(), "");
+        }
+        onTextChanged("", 0, 0, 0);
     }
 
     /**
@@ -345,8 +416,39 @@ public class RichTextEditor extends ScrollView {
         return dataList;
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (mOnContentChangeListener != null) {
+            List<EditData> data = buildEditData();
+            hasContent = data.size() > 1 || data.size() == 1 && !data.get(0).inputStr.isEmpty();
+            mOnContentChangeListener.onContentChange(hasContent);
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    public void setOnContentEmptyListener(OnContentChangeListener onContentChangeListener) {
+        mOnContentChangeListener = onContentChangeListener;
+    }
+
+    public boolean isHasContent() {
+        return hasContent;
+    }
+
     public class EditData {
-        public String inputStr;
-        public String imagePath;
+        public String inputStr = "";
+        public String imagePath = "";
+    }
+
+    public interface OnContentChangeListener {
+        void onContentChange(boolean hasContent);
     }
 }

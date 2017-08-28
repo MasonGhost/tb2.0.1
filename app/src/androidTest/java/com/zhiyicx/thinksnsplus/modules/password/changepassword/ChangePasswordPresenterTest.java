@@ -53,28 +53,6 @@ public class ChangePasswordPresenterTest {
      */
     @Test
     public void changePasswordFailure() throws Exception {
-        mPasswordClient.changePassword("failure", "12344", "dsafdsa")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<CacheBean>>() {
-                    @Override
-                    public void call(BaseJson<CacheBean> integerBaseJson) {
-                        LogUtils.d(integerBaseJson.toString());
-                        if (integerBaseJson.isStatus()) {
-                            // 成功跳转:当前不可能发生
-                            assertFalse(true);
-                        } else {
-                            // 登录失败
-                            assertFalse(false);
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        LogUtils.e(throwable,"error");
-                        assertFalse(false);
-                    }
-                });
 
     }
 
@@ -84,28 +62,7 @@ public class ChangePasswordPresenterTest {
      */
     @Test
     public void changePasswordSuccess() throws Exception {
-        mPasswordClient.changePassword("success", "1244", "dsafdsa")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseJson<CacheBean>>() {
-                    @Override
-                    public void call(BaseJson<CacheBean> integerBaseJson) {
-                        LogUtils.d(integerBaseJson.toString());
-                        if (integerBaseJson.isStatus()) {
-                            // 成功跳转:当前不可能发生
-                            assertTrue(true);
-                        } else {
-                            // 登录失败
-                            assertFalse(false);
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        LogUtils.e(throwable,"error");
-                        assertFalse(false);
-                    }
-                });
+
 
     }
 

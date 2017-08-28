@@ -1,7 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.settings;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
@@ -15,16 +14,13 @@ import com.zhiyicx.thinksnsplus.modules.login.LoginActivity;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.account.AccountManagementActivity;
-import com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagActivity;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.functions.Action1;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.URL_ABOUT_US;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.usertag.EditUserTagFragment.BUNDLE_IS_FROM_REGISTER;
 
 /**
  * @Describe
@@ -124,7 +120,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         RxView.clicks(mBtAboutUs)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala"));
+                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, getString(R.string.about_us)));
         // 退出登录
         RxView.clicks(mBtLoginOut)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

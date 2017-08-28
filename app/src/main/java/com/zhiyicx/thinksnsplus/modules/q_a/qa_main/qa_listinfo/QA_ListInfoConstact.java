@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
 /**
  * @Author Jliuer
@@ -11,9 +12,14 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
  * @Description
  */
 public interface QA_ListInfoConstact {
-    interface View extends ITSListView<QAListInfoBean,Presenter>{}
+    interface View extends ITSListView<QAListInfoBean,Presenter>{
+        String getQAInfoType();
+        void showDeleteSuccess();
+    }
 
-    interface Presenter extends ITSListPresenter<QAListInfoBean>{}
+    interface Presenter extends ITSListPresenter<QAListInfoBean>{
+        void requestNetData(String subject, Long maxId,String type,boolean isLoadMore);
+    }
 
-    interface Repository {}
+    interface Repository extends IBasePublishQuestionRepository {}
 }

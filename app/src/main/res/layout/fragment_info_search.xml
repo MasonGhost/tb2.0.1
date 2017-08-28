@@ -6,13 +6,13 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/fragment_info_search_container"
+        android:id="@+id/fragment_search_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
         android:background="@color/white">
 
         <ImageView
-            android:id="@+id/fragment_info_search_back"
+            android:id="@+id/fragment_search_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/spacing_normal"
@@ -28,10 +28,10 @@
             android:layout_marginLeft="@dimen/spacing_normal"
             android:layout_marginRight="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_small"
-            android:layout_toEndOf="@+id/fragment_info_search_back"
-            android:layout_toLeftOf="@+id/fragment_info_search_cancle"
-            android:layout_toRightOf="@+id/fragment_info_search_back"
-            android:layout_toStartOf="@+id/fragment_info_search_cancle"
+            android:layout_toEndOf="@+id/fragment_search_back"
+            android:layout_toLeftOf="@+id/fragment_search_cancle"
+            android:layout_toRightOf="@+id/fragment_search_back"
+            android:layout_toStartOf="@+id/fragment_search_cancle"
             android:background="@drawable/info_search_bg"
             android:imeOptions="actionSearch"
             android:paddingEnd="@dimen/spacing_mid"
@@ -43,7 +43,7 @@
             android:textSize="@dimen/size_sub_title"/>
 
         <TextView
-            android:id="@+id/fragment_info_search_cancle"
+            android:id="@+id/fragment_search_cancle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"

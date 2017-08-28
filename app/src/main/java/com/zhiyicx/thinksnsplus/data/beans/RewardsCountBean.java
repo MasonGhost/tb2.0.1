@@ -55,6 +55,11 @@ public class RewardsCountBean extends CacheBean implements Parcelable,Serializab
     public RewardsCountBean() {
     }
 
+    public RewardsCountBean(int count, String amount) {
+        this.count = count;
+        this.amount = amount;
+    }
+
     protected RewardsCountBean(Parcel in) {
         this.count = in.readInt();
         this.amount = in.readString();

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infosearch;
 
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoListDataBeanGreenDaoImpl;
 
@@ -34,14 +35,15 @@ public class InfoSearchPresenter extends AppBasePresenter<SearchContract.Reposit
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        Subscription subscription = mRepository.searchInfoList(mRootView.getKeyWords(), maxId)
+        Subscription subscription = mRepository.getInfoListV2("",mRootView.getKeyWords(), maxId, mRootView.getPage(), 0)
                 .compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribe<List<InfoListDataBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<InfoListDataBean>>() {
                     @Override
                     protected void onSuccess(List<InfoListDataBean> data) {
-                        if (!data.isEmpty()){
-                            mInfoListDataBeanGreenDao.saveMultiData(data);
-                        }
+                        // 搜索暂时不存，因为置顶也会搜出来 但是他不是置顶 如果后期要存 取出来再update吧
+//                        if (!data.isEmpty()){
+//                            mInfoListDataBeanGreenDao.saveMultiData(data);
+//                        }
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 

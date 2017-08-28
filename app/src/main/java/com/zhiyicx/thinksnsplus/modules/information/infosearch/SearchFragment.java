@@ -9,20 +9,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.impl.imageloader.glide.GlideImageConfig;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
+import com.zhiyicx.baseproject.config.TouristConfig;
+import com.zhiyicx.common.utils.FileUtils;
+import com.zhiyicx.thinksnsplus.modules.information.adapter.InfoListItem;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
-import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
-import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,13 +38,13 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoLis
 public class SearchFragment extends TSListFragment<SearchContract.Presenter, InfoListDataBean>
         implements SearchContract.View {
 
-    @BindView(R.id.fragment_info_search_back)
+    @BindView(R.id.fragment_search_back)
     ImageView mFragmentInfoSearchBack;
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
-    @BindView(R.id.fragment_info_search_cancle)
+    @BindView(R.id.fragment_search_cancle)
     TextView mFragmentInfoSearchCancle;
-    @BindView(R.id.fragment_info_search_container)
+    @BindView(R.id.fragment_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
 
     @Override
@@ -89,13 +85,13 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
         return false;
     }
 
-    @OnClick({R.id.fragment_info_search_back, R.id.fragment_info_search_cancle})
+    @OnClick({R.id.fragment_search_back, R.id.fragment_search_cancle})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fragment_info_search_back:
+            case R.id.fragment_search_back:
                 getActivity().finish();
                 break;
-            case R.id.fragment_info_search_cancle:
+            case R.id.fragment_search_cancle:
                 getActivity().finish();
                 break;
         }
@@ -103,41 +99,17 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
 
     @Override
     protected MultiItemTypeAdapter getAdapter() {
-        return new CommonAdapter<InfoListDataBean>(getActivity(),
-                R.layout.item_info, mListDatas) {
+        MultiItemTypeAdapter adapter = new MultiItemTypeAdapter(getActivity(), mListDatas);
+        adapter.addItemViewDelegate(new InfoListItem() {
             @Override
-            protected void convert(ViewHolder holder, final InfoListDataBean realData,
-                                   final int position) {
-                final TextView title = holder.getView(R.id.item_info_title);
-                ImageView imageView = holder.getView(R.id.item_info_imag);
-                if (AppApplication.sOverRead.contains(position + "")) {
-                    title.setTextColor(getResources()
-                            .getColor(R.color.normal_for_assist_text));
-                }
-                title.setText(realData.getTitle());
+            public void itemClick(int position, ImageView imageView, TextView title, InfoListDataBean realData) {
 
-                if (realData.getStorage() == null) {
-                    imageView.setVisibility(View.GONE);
-                } else {
-                    imageView.setVisibility(View.VISIBLE);
-                    AppApplication.AppComponentHolder.getAppComponent().imageLoader().loadImage(BaseApplication.getContext(), GlideImageConfig.builder()
-                            .url(ImageUtils.imagePathConvertV2(realData.getStorage().getId()
-                                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                                    ,mContext.getResources().getDimensionPixelOffset(R.dimen.headpic_for_user_center)
-                                    , ImageZipConfig.IMAGE_50_ZIP))
-                            .placeholder(R.drawable.shape_default_image)
-                            .errorPic(R.drawable.shape_default_image)
-                            .imagerView(imageView)
-                            .build());
-                }
-
-                holder.setText(R.id.item_info_timeform, TimeUtils.getTimeFriendlyNormal(realData
-                        .getUpdated_at()));
-
-                holder.itemView.setOnClickListener(v -> {
-                    if (!AppApplication.sOverRead.contains(position + "")) {
-                        AppApplication.sOverRead.add(position + "");
+                if (TouristConfig.INFO_DETAIL_CAN_LOOK || !mPresenter.handleTouristControl()) {
+                    if (!AppApplication.sOverRead.contains(realData.getId())) {
+                        AppApplication.sOverRead.add(realData.getId());
                     }
+                    FileUtils.saveBitmapToFile(getActivity(), ConvertUtils.drawable2BitmapWithWhiteBg(getContext()
+                            , imageView.getDrawable(), R.mipmap.icon_256), "info_share");
                     title.setTextColor(getResources()
                             .getColor(R.color.normal_for_assist_text));
                     Intent intent = new Intent(getActivity(), InfoDetailsActivity.class);
@@ -145,9 +117,10 @@ public class SearchFragment extends TSListFragment<SearchContract.Presenter, Inf
                     bundle.putSerializable(BUNDLE_INFO, realData);
                     intent.putExtra(BUNDLE_INFO, bundle);
                     startActivity(intent);
-                });
+                }
             }
-        };
+        });
+        return adapter;
     }
 
     @Override

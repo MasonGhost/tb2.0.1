@@ -13,13 +13,19 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.imsdk.manage.listener.ImMsgReceveListener;
 import com.zhiyicx.imsdk.manage.listener.ImStatusListener;
 import com.zhiyicx.imsdk.manage.listener.ImTimeoutListener;
+import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.JpushMessageBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
@@ -31,6 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 
@@ -49,6 +56,9 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     UserInfoRepository mUserInfoRepository;
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
+    WalletConfigBeanGreenDaoImpl mWalletConfigBeanGreenDao;
 
     @Inject
     public HomePresenter(HomeContract.Repository repository, HomeContract.View rootView) {
@@ -80,7 +90,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
         EventBus.getDefault().post(message, EventBusTagConfig.EVENT_IM_ONMESSAGERECEIVED);
         if (!BackgroundUtil.getAppIsForegroundStatus()) {   // 应用在后台
             mUserInfoRepository.getLocalUserInfoBeforeNet(message.getUid())
-                    .subscribe(new BaseSubscribe<UserInfoBean>() {
+                    .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                         @Override
                         protected void onSuccess(UserInfoBean data) {
                             JpushMessageBean jpushMessageBean = new JpushMessageBean();
@@ -209,5 +219,63 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
             mRootView.showLoginPop();
             return true;
         }
+    }
+
+
+    /*******************************************  签到  *********************************************/
+
+
+    /**
+     * @param isClick
+     */
+    @Subscriber(tag = EventBusTagConfig.EVENT_CHECK_IN_CLICK)
+    public void checkInClick(boolean isClick) {
+        CheckInBean checkInBean = mRootView.getCheckInData();
+        if (checkInBean != null) {
+            mRootView.showCheckInPop(checkInBean);
+        } else {
+            getCheckInInfo();
+        }
+    }
+
+    @Override
+    public void checkIn() {
+        Subscription subscription = mUserInfoRepository.checkIn()
+                .subscribe(new BaseSubscribeForV2<Object>() {
+                    @Override
+                    protected void onSuccess(Object data) {
+                        getCheckInInfo();
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.check_in_fail));
+                    }
+                });
+        addSubscrebe(subscription);
+    }
+
+    @Override
+    public void getCheckInInfo() {
+
+        Subscription subscription = mUserInfoRepository.getCheckInInfo()
+                .subscribe(new BaseSubscribeForV2<CheckInBean>() {
+                    @Override
+                    protected void onSuccess(CheckInBean data) {
+                        mRootView.showCheckInPop(data);
+                    }
+                });
+        addSubscrebe(subscription);
+
+    }
+
+    @Override
+    public double getWalletRatio() {
+        return mWalletConfigBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault()).getRatio();
     }
 }

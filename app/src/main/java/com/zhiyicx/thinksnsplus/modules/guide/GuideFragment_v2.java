@@ -77,6 +77,9 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         }
         if (com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             mPresenter.getLaunchAdverts();
+        } else {
+            mPresenter.checkLogin();
+            return;
         }
         subscription = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())

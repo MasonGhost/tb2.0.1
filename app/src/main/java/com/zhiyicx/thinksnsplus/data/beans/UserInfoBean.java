@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -16,13 +17,15 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
 
 
 /**
- * @Describe 文档查阅 @see{ https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/show.md }
+ * @Describe 文档查阅 @see{ https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/show.md
+ * }
  * @Author Jungle68
  * @Date 2017/7/18
  * @Contact master.jungle68@gmail.com
@@ -72,6 +75,8 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @SerializedName("id")
     private Long user_id;
     private String name;
+    @Unique
+    @SerializedName("mobi")
     private String phone;
     private String email;
     @SerializedName("bio")
@@ -158,9 +163,9 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     }
 
     public String getIntro() {
-        if(TextUtils.isEmpty(intro)){
+        if (TextUtils.isEmpty(intro)) {
             return AppApplication.getContext().getResources().getString(R.string.intro_default);
-        }else {
+        } else {
             return intro;
         }
     }
@@ -300,8 +305,8 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
 
     @Generated(hash = 1781470643)
     public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-            String location, boolean following, boolean follower, String created_at, String updated_at,
-            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified) {
+                        String location, boolean following, boolean follower, String created_at, String updated_at,
+                        String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified) {
         this.user_id = user_id;
         this.name = name;
         this.phone = phone;
@@ -322,12 +327,18 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     /**
      * {
      * "user_id": 1,
-     * "likes_count": 0, // 被喜欢统计数
-     * "comments_count": 0, // 用户发出的评论统计
-     * "followers_count": 0, // 用户粉丝数
-     * "followings_count": 1, // 用户关注数
-     * "updated_at": "2017-07-16 09:44:25", // 更新时间
-     * "feeds_count": 0 // 发布的动态统计，没有安装 动态应用则不存在
+     * "likes_count": 2,
+     * "comments_count": 9,
+     * "followers_count": 0,
+     * "followings_count": 0,
+     * "updated_at": "2017-08-17 07:05:06",
+     * "feeds_count": 0,
+     * "questions_count": 0,
+     * "answers_count": 19,
+     * "count": 53,
+     * "rank": 1
+     * "checkin_count": 2,
+     * "last_checkin_count": 2
      * }
      */
     public static class UserInfoExtraBean implements Serializable, Parcelable {
@@ -337,49 +348,17 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         private int comments_count;
         private int followers_count;
         private int followings_count;
+        private int questions_count;
+        private int answers_count;
         private int feeds_count;
+        private int count; // 排行数量 如粉丝排行榜即为粉丝数 根据点赞数来排行的 则为点赞的数量
+        private int rank;
+        private int checkin_count;
+        private int last_checkin_count;
         private String updated_at;
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeValue(this.user_id);
-            dest.writeInt(this.likes_count);
-            dest.writeInt(this.comments_count);
-            dest.writeInt(this.followers_count);
-            dest.writeInt(this.followings_count);
-            dest.writeInt(this.feeds_count);
-            dest.writeString(this.updated_at);
-        }
 
         public UserInfoExtraBean() {
         }
-
-        protected UserInfoExtraBean(Parcel in) {
-            this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-            this.likes_count = in.readInt();
-            this.comments_count = in.readInt();
-            this.followers_count = in.readInt();
-            this.followings_count = in.readInt();
-            this.feeds_count = in.readInt();
-            this.updated_at = in.readString();
-        }
-
-        public static final Creator<UserInfoExtraBean> CREATOR = new Creator<UserInfoExtraBean>() {
-            @Override
-            public UserInfoExtraBean createFromParcel(Parcel source) {
-                return new UserInfoExtraBean(source);
-            }
-
-            @Override
-            public UserInfoExtraBean[] newArray(int size) {
-                return new UserInfoExtraBean[size];
-            }
-        };
 
         public Long getUser_id() {
             return user_id;
@@ -437,6 +416,58 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             this.updated_at = updated_at;
         }
 
+        public static long getSerialVersionUID() {
+            return serialVersionUID;
+        }
+
+        public int getQuestions_count() {
+            return questions_count;
+        }
+
+        public void setQuestions_count(int questions_count) {
+            this.questions_count = questions_count;
+        }
+
+        public int getAnswers_count() {
+            return answers_count;
+        }
+
+        public void setAnswers_count(int answers_count) {
+            this.answers_count = answers_count;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public int getRank() {
+            return rank;
+        }
+
+        public void setRank(int rank) {
+            this.rank = rank;
+        }
+
+        public int getCheckin_count() {
+            return checkin_count;
+        }
+
+        public void setCheckin_count(int checkin_count) {
+            this.checkin_count = checkin_count;
+        }
+
+        public int getLast_checkin_count() {
+            return last_checkin_count;
+        }
+
+        public void setLast_checkin_count(int last_checkin_count) {
+            this.last_checkin_count = last_checkin_count;
+        }
+
         @Override
         public String toString() {
             return "UserInfoExtraBean{" +
@@ -445,10 +476,66 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
                     ", comments_count=" + comments_count +
                     ", followers_count=" + followers_count +
                     ", followings_count=" + followings_count +
+                    ", questions_count=" + questions_count +
+                    ", answers_count=" + answers_count +
                     ", feeds_count=" + feeds_count +
+                    ", count=" + count +
+                    ", rank=" + rank +
+                    ", checkin_count=" + checkin_count +
+                    ", last_checkin_count=" + last_checkin_count +
                     ", updated_at='" + updated_at + '\'' +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(this.user_id);
+            dest.writeInt(this.likes_count);
+            dest.writeInt(this.comments_count);
+            dest.writeInt(this.followers_count);
+            dest.writeInt(this.followings_count);
+            dest.writeInt(this.questions_count);
+            dest.writeInt(this.answers_count);
+            dest.writeInt(this.feeds_count);
+            dest.writeInt(this.count);
+            dest.writeInt(this.rank);
+            dest.writeInt(this.checkin_count);
+            dest.writeInt(this.last_checkin_count);
+            dest.writeString(this.updated_at);
+        }
+
+        protected UserInfoExtraBean(Parcel in) {
+            this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+            this.likes_count = in.readInt();
+            this.comments_count = in.readInt();
+            this.followers_count = in.readInt();
+            this.followings_count = in.readInt();
+            this.questions_count = in.readInt();
+            this.answers_count = in.readInt();
+            this.feeds_count = in.readInt();
+            this.count = in.readInt();
+            this.rank = in.readInt();
+            this.checkin_count = in.readInt();
+            this.last_checkin_count = in.readInt();
+            this.updated_at = in.readString();
+        }
+
+        public static final Creator<UserInfoExtraBean> CREATOR = new Creator<UserInfoExtraBean>() {
+            @Override
+            public UserInfoExtraBean createFromParcel(Parcel source) {
+                return new UserInfoExtraBean(source);
+            }
+
+            @Override
+            public UserInfoExtraBean[] newArray(int size) {
+                return new UserInfoExtraBean[size];
+            }
+        };
     }
 
 
@@ -554,4 +641,30 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             return new UserInfoBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", intro='" + intro + '\'' +
+                ", sex=" + sex +
+                ", sexString='" + sexString + '\'' +
+                ", location='" + location + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", area='" + area + '\'' +
+                ", following=" + following +
+                ", follower=" + follower +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", cover='" + cover + '\'' +
+                ", wallet=" + wallet +
+                ", extra=" + extra +
+                ", verified=" + verified +
+                '}';
+    }
 }

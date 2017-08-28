@@ -36,29 +36,15 @@ public class EventBusTagConfig {
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
     // 更新圈子动态列表
     public static final String EVENT_UPDATE_GROUP_DYNAMIC = "event_update_group_dynamic";
+    // 更新圈子收藏
+    public static final String EVENT_UPDATE_GROUP_COLLECTION = "event_update_group_collection";
     // 详情界面删除内容通知
     public static final String DYNAMIC_LIST_DELETE_UPDATE = "dynamic_list_delete_update";
     // 动态列表发送评论
-    public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_to_List";
+    public static final String EVENT_SEND_COMMENT_TO_DYNAMIC_LIST = "event_send_dynamic_comment_to_List";
+
     // 动态图片付费
     public static final String EVENT_DYNAMIC_TOLL_PICTRUE = "event_dynamic_toll_pictrue";
-    // 资讯列表发送评论
-    public static final String EVENT_SEND_COMMENT_TO_INFO_LIST = "event_send_info_to_List";
-
-    // 资讯收藏
-    public static final String EVENT_SEND_INFO_LIST_COLLECT = "event_send__info_list_collect";
-
-    // 资讯详情界面删除内容通知
-    public static final String EVENT_SEND_INFO_LIST_DELETE_UPDATE = "event_send_info_list_delete_update";
-
-    // 音乐播放缓冲进度
-    public static final String EVENT_SEND_MUSIC_CACHE_PROGRESS = "event_send_music_cache_progress";
-    // 音乐加载
-    public static final String EVENT_SEND_MUSIC_LOAD = "event_send_music_load";
-    // 当前音乐播放完成
-    public static final String EVENT_SEND_MUSIC_COMPLETE = "event_send_music_complete";
-    // 音乐改变
-    public static final String EVENT_SEND_MUSIC_CHANGE = "event_send_music_change";
 
     // 对某人进行关注或者取消关注，需要改变个人主页关注数量
     public static final String EVENT_FOLLOW_AND_CANCEL_FOLLOW = "event_follow_and_cancle_follow";
@@ -70,13 +56,39 @@ public class EventBusTagConfig {
     public static final String EVENT_GROUP_JOIN = "event_group_join";
 
     /**
+     * 资讯相关
+     */
+    // 资讯列表发送评论
+    public static final String EVENT_SEND_COMMENT_TO_INFO_LIST = "event_send_info_to_List";
+
+    // 资讯收藏
+    public static final String EVENT_SEND_INFO_LIST_COLLECT = "event_send__info_list_collect";
+
+    // 删除资讯
+    public static final String EVENT_UPDATE_LIST_DELETE = "event_update_list_delete";
+
+    // 资讯详情界面删除内容通知
+    public static final String EVENT_SEND_INFO_LIST_DELETE_UPDATE = "event_send_info_list_delete_update";
+
+    /**
      * 音乐相关
      */
+    // 音乐播放缓冲进度
+    public static final String EVENT_SEND_MUSIC_CACHE_PROGRESS = "event_send_music_cache_progress";
+    // 音乐加载
+    public static final String EVENT_SEND_MUSIC_LOAD = "event_send_music_load";
+    // 当前音乐播放完成
+    public static final String EVENT_SEND_MUSIC_COMPLETE = "event_send_music_complete";
+    // 音乐改变
+    public static final String EVENT_SEND_MUSIC_CHANGE = "event_send_music_change";
     // 音乐专辑收藏
     public static final String EVENT_ABLUM_COLLECT = "event_ablum_collect";
 
     // 音乐单曲喜欢
     public static final String EVENT_MUSIC_LIKE = "event_music_like";
+
+    // 音乐单曲收费信息
+    public static final String EVENT_MUSIC_TOLL = "event_music_toll";
 
     // 音乐单曲评论
     public static final String EVENT_MUSIC_COMMENT_COUNT = "event_music_comment_count";
@@ -120,9 +132,35 @@ public class EventBusTagConfig {
     /**
      * 消息通知
      */
-    public static final String EVENT_UNREAD_NOTIFICATION_LIMIT="unread-notification-limit";
+    public static final String EVENT_UNREAD_NOTIFICATION_LIMIT = "unread-notification-limit";
 
-    /*问答相关*/
+    /**
+     * 问答相关
+     */
     public static final String EVENT_CHANGE_EXPERT = "event_change_expert";
+    // 答案发送评论
+    public static final String EVENT_SEND_COMMENT_TO_ANSWER_LIST = "event_send_answer_comment_to_List";
+    // 问答-话题
+    public static final String EVENT_QA_SUBSCRIB = "event_qatopic_subscrib";
+    // 删除答案
+    public static final String EVENT_UPDATE_ANSWER_LIST_DELETE = "event_update_answer_list_delete";
+    // 删除问题
+    public static final String EVENT_UPDATE_QUESTION_DELETE= "event_update_question_delete";
+    // 评论问题
+    public static final String EVENT_SEND_COMMENT_TO_QUESTION_LIST = "event_send_question_comment_to_List";
+    // 评论点赞
+    public static final String EVENT_UPDATE_ANSWER_LIST_LIKE = "event_update_answer_list_like";
+
+
+    /**
+     * 签到
+     */
+    public static final String EVENT_CHECK_IN_CLICK = "check_in_click";
+
+    /**
+     * 附近的人
+     */
+    public static final String EVENT_NEARBY_LOCATION = "nearby_location";
+    public static final String EVENT_NEARBY_LOCATION_UPDATE = "nearby_location_update";
 
 }

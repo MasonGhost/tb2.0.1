@@ -164,7 +164,8 @@ public class RegexUtils {
         int currentChineseByteLenght = chineseCount * charLength;
         int length = input.toString().getBytes().length;
         if (currentChineseByteLenght > 0) {// 有中文
-            return length >= (currentChineseByteLenght + (minLength - chineseCount)) && (length <= currentChineseByteLenght + (maxLength - chineseCount));
+            return length >= (currentChineseByteLenght + (minLength - chineseCount)) && (length
+                    <= currentChineseByteLenght + (maxLength - chineseCount));
         } else {
             return length >= 4 && length <= maxLength;
         }
@@ -266,5 +267,67 @@ public class RegexUtils {
     public static String getReplaceAll(String input, String regex, String replacement) {
         if (input == null) return null;
         return Pattern.compile(regex).matcher(input).replaceAll(replacement);
+    }
+
+    public static int getImageIdFromMarkDown(String regex, String input) {
+        if (regex == null || input == null) return -1;
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+        if (matcher.find()) {
+            try {
+                return Integer.parseInt(matcher.group(1));
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+        return -1;
+    }
+
+    public static String replaceImageId(String regex, String input) {
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+        try {
+            return matcher.replaceAll("");
+        } catch (Exception e) {
+            return input;
+        }
+    }
+
+    public static List<String> cutStringByImgTag(String targetStr) {
+        List<String> splitTextList = new ArrayList<>();
+        Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
+        Matcher matcher1 = pattern.matcher(targetStr);
+        int lastIndex = 0;
+        while (matcher1.find()) {
+            if (matcher1.start() > lastIndex) {
+                String result1 = targetStr.substring(lastIndex, matcher1.start());// 文字
+                splitTextList.add(result1);
+            }
+            String result2 = targetStr.substring(matcher1.start(), matcher1.end());// 图片
+            splitTextList.add(result2);
+
+            lastIndex = matcher1.end();
+        }
+        if (lastIndex != targetStr.length()) {// 没有匹配
+            splitTextList.add(targetStr.substring(lastIndex, targetStr.length()));
+        }
+        if (splitTextList.size() > 0) {// 最后添加标识符
+            String last = splitTextList.get(splitTextList.size() - 1);
+            splitTextList.set(splitTextList.size() - 1, last + "tym_last");
+        }
+        return splitTextList;
+    }
+
+    public static int getImageId(String input) {
+        String reg = "@!\\[.*]\\((\\d+)\\)";
+        Matcher matcher2 = Pattern.compile(reg).matcher(input);
+        System.out.println("result 2 :: " + input);
+        if (matcher2.find()) {
+            System.out.println("matcher 2 :: " + matcher2.group(0));
+            System.out.println("matcher 2 :: " + matcher2.group(1));
+        }
+        try {
+            return Integer.parseInt(matcher2.group(1));
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 }

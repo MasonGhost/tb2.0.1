@@ -94,10 +94,7 @@ public interface GroupDynamicDetailContract {
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository extends IBaseChannelRepository {
-        /**
-         * 获取用户关注状态
-         */
-        Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids);
+
     }
 
     interface Presenter extends ITSListPresenter<GroupDynamicCommentListBean> {
@@ -108,7 +105,7 @@ public interface GroupDynamicDetailContract {
          * @param group_id   圈子id
          * @param dynamic_id 动态id
          */
-        void getCurrentDynamicDetail(long group_id, long dynamic_id);
+        void getCurrentDynamicDetail(long group_id, long dynamic_id,boolean refreshUI);
 
         /**
          * 获取当前动态的点赞列表

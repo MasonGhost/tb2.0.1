@@ -34,7 +34,11 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -177,6 +181,34 @@ public class ConvertUtils {
         }
 
         return str;
+    }
+
+    /**
+     * list 去重
+     *
+     * @param list
+     */
+    public static void removeDuplicate(List list) {
+        HashSet h = new HashSet(list);
+        list.clear();
+        list.addAll(h);
+    }
+
+    /**
+     * 删除重复元素并保持顺序
+     *
+     * @param list
+     */
+    public static void removeDuplicateWithOrder(List list) {
+        Set set = new HashSet();
+        List newList = new ArrayList();
+        for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+            Object element = iter.next();
+            if (set.add(element))
+                newList.add(element);
+        }
+        list.clear();
+        list.addAll(newList);
     }
 
     /**
@@ -884,5 +916,35 @@ public class ConvertUtils {
         return new Gson().toJson(obj);
     }
 
+    /**
+     * 替换 emoji 长度 =1
+     *
+     * @param str
+     * @return
+     */
+    public static int stringLenghtDealForEmoji(CharSequence str) {
+        int emojiLenght = emojiStrLenght(str);
+        return (str.length() - emojiLenght) + stringEmojiLenght(str);
+    }
+
+    public static int stringEmojiLenght(CharSequence str) {
+        int emojiLenght = emojiStrLenght(str);
+        return emojiLenght / 2;
+    }
+
+    public static int emojiStrLenght(CharSequence str) {
+        int emojiLenght = 0;
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
+            if (isEmojiCharacter(str.charAt(i))) {
+                emojiLenght++;
+            }
+        }
+        return emojiLenght;
+    }
+
+    private static boolean isEmojiCharacter(char codePoint) {
+        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF || codePoint >= 0xE000 && codePoint <= 0xFFFD);
+    }
 
 }

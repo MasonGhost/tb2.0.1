@@ -4,13 +4,10 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AllAdverListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentConfigBean;
-import com.zhiyicx.thinksnsplus.data.beans.ComponentStatusBean;
-import com.zhiyicx.thinksnsplus.data.beans.LaunchAdvertBean;
+import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
-import com.zhiyicx.thinksnsplus.data.beans.StorageTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
@@ -21,9 +18,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
@@ -41,26 +36,22 @@ import rx.Observable;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PAHT_WALLET_RECHARGE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_NOTE;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CREATE_STORAGE_TASK;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DELETE_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_ALL_TAGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_All_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BOOTSTRAPERS_INFO;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_CONFIGS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_COMPONENT_STATUS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NON_MEMBER_VERTIFYCODE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SINGLE_ADVERT_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SYSTEM_CONVERSATIONS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_HANDLE_BACKGROUND_TASK;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_NOTIFY_STORAGE_TASK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REFRESH_TOKEN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARDCH_LOCATION;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SGET_HOT_CITY;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_HASH;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_STORAGE_UPLAOD_FILE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SYSTEM_FEEDBACK;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_TOKEN_EXPIERD;
-import static com.zhiyicx.baseproject.config.ApiConfig.SYSTEM_LAUNCH_ADVERT;
 
 /**
  * @Describe
@@ -106,23 +97,6 @@ public interface CommonClient {
      */
     @PATCH(APP_PATH_REFRESH_TOKEN)
     Observable<AuthBean> refreshToken(@Path("token") String token);
-
-    /**
-     * 查看扩展包安装状态
-     *
-     * @return
-     */
-    @GET(APP_PATH_GET_COMPONENT_STATUS)
-    Observable<BaseJson<ComponentStatusBean>> getComponentStatus();
-
-    /**
-     * 获取扩展包配置信息
-     *
-     * @param component
-     * @return
-     */
-    @GET(APP_PATH_GET_COMPONENT_CONFIGS)
-    Observable<BaseJson<List<ComponentConfigBean>>> getComponentConfigs(@Query("component") String component);
 
     /**
      * 启动信息
@@ -189,14 +163,6 @@ public interface CommonClient {
      * width           图片宽度
      * height          图片高度
      *
-     * @param fieldMap 参数map
-     */
-    @FormUrlEncoded
-    @POST(APP_PATH_CREATE_STORAGE_TASK)
-    Observable<BaseJson<StorageTaskBean>> createStorageTask(@FieldMap HashMap<String, String> fieldMap, @Query("requestState") String requestState);
-
-
-    /**
      * 校验文件hash V2 api
      *
      * @param hash 文件 MD5 值
@@ -240,39 +206,27 @@ public interface CommonClient {
     Observable<BaseJsonV2> upLoadFileByPostV2(@Part List<MultipartBody.Part> params);
 
     /**
-     * 通过Put方法上传文件 V2
-     */
-    @Multipart
-    @PUT
-    Observable<BaseJson> upLoadFileByPutV2(@Part List<MultipartBody.Part> params);
-
-
-    /**
-     * 储存任务通知
-     *
-     * @param storage_task_id 任务ID
-     * @param message         附加上传接口返回的原样数据
-     * @return 返回将以通用message格式返回上传的附件是成功还是失败等状态信息。
-     */
-    @FormUrlEncoded
-    @PATCH(APP_PATH_NOTIFY_STORAGE_TASK)
-    Observable<BaseJson> notifyStorageTask(@Path("storage_task_id") String storage_task_id, @Field("message") String message, @Query("requestState") String requestState);
-
-    /**
-     * 通知服务器，删除当前上传文件
-     *
-     * @param storage_task_id 任务ID
-     */
-    @DELETE(APP_PATH_DELETE_STORAGE_TASK)
-    Observable<BaseJson> deleteStorageTask(@Path("storage_task_id") String storage_task_id, @Query("requestState") String requestState);
-
-
-    /**
      * 获取所有标签
      */
     @GET(APP_PATH_GET_ALL_TAGS)
     Observable<List<TagCategoryBean>> getAllTags();
 
+    /**
+     * 搜索位置
+     *
+     * @param name
+     * @return
+     */
+    @GET(APP_PATH_SEARDCH_LOCATION)
+    Observable<List<LocationContainerBean>> searchLocation(@Query("name") String name);
+
+    /**
+     * 热门城市
+     *
+     * @return
+     */
+    @GET(APP_PATH_SGET_HOT_CITY)
+    Observable<List<String>> getHoCity();
 
     /*******************************************  后台任务处理  *********************************************/
 
@@ -304,5 +258,5 @@ public interface CommonClient {
 
     @Multipart
     @PATCH(APP_PATH_HANDLE_BACKGROUND_TASK)
-    Observable<BaseJson<Object>> handleBackGroundTaskPatch(@Path("path") String path, @Part List<MultipartBody.Part> partList);
+    Observable<BaseJsonV2<Object>> handleBackGroundTaskPatch(@Path("path") String path, @Part List<MultipartBody.Part> partList);
 }

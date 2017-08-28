@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.InfoMainClient;
@@ -37,7 +38,7 @@ public class InfoChannelRepository implements InfoChannelConstract.Reppsitory {
     }
 
     @Override
-    public Observable<BaseJson<Integer>> doSubscribe(String follows) {
+    public Observable<BaseJsonV2<Object>> doSubscribe(String follows) {
         return mInfoMainClient.doSubscribe(follows);
     }
 
@@ -45,20 +46,17 @@ public class InfoChannelRepository implements InfoChannelConstract.Reppsitory {
     public void handleSubscribe(final String follows) {
         Observable.just(follows)
                 .observeOn(Schedulers.io())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        BackgroundRequestTaskBean backgroundRequestTaskBean;
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("follows", follows);
-                        // 后台处理
-                        backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST, params);
-                        backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                                .APP_PATH_INFO_FOLLOW_LIST, follows));
-                        BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
-                                (backgroundRequestTaskBean);
-                    }
+                .subscribe(s -> {
+                    BackgroundRequestTaskBean backgroundRequestTaskBean;
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("follows", follows);
+                    // 后台处理
+                    backgroundRequestTaskBean = new BackgroundRequestTaskBean
+                            (BackgroundTaskRequestMethodConfig.PATCH, params);
+                    backgroundRequestTaskBean.setPath(String.format(ApiConfig
+                            .APP_PATH_INFO_FOLLOW_LIST, follows));
+                    BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
+                            (backgroundRequestTaskBean);
                 });
     }
 }

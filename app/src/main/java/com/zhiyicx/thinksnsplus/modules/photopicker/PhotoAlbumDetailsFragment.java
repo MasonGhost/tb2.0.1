@@ -31,12 +31,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import me.iwf.photopicker.adapter.PhotoGridAdapter;
-import me.iwf.photopicker.entity.Photo;
 import me.iwf.photopicker.entity.PhotoDirectory;
-import me.iwf.photopicker.event.OnItemCheckListener;
-import me.iwf.photopicker.event.OnPhotoClickListener;
 import me.iwf.photopicker.utils.MediaStoreHelper;
 
+import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.CAMERA_PHOTO_CODE;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.ALL_PHOTOS;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.SELECTED_DIRECTORY_NAME;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumListFragment.SELECTED_DIRECTORY_NUMBER;
@@ -140,7 +138,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         // 回到相册列表页面，同时将当前数据传递过去
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(EXTRA_ORIGIN, photoGridAdapter.getSelectedPhotoPaths());
-        bundle.putInt("iamges",getActivity().getTaskId());
+        bundle.putInt("iamges", getActivity().getTaskId());
         Intent intent = new Intent();
         intent.setClass(getActivity(), PhotoAlbumListActivity.class);
         intent.putExtras(bundle);
@@ -205,7 +203,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                         selectedItemCount -= 1;
                     }
                     photos.clear();
-                    photoGridAdapter.notifyDataSetChanged();
+                    //photoGridAdapter.notifyDataSetChanged();
                 }
                 // 设置当前选择的数量
                 mBtComplete.setText(getString(R.string.album_selected_count, selectedItemCount, maxCount));
@@ -249,7 +247,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                 }
             }
             PhotoViewActivity.startToPhotoView(PhotoAlbumDetailsFragment.this, (ArrayList<String>) allPhotos
-                    , selectedPhotos, animationRectBeanArrayList, maxCount, index,false,new ArrayList<ImageBean>());
+                    , selectedPhotos, animationRectBeanArrayList, maxCount, index, false, new ArrayList<ImageBean>());
         });
     }
 
@@ -291,7 +289,7 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
                     animationRectBeanArrayList.add(null);
                 }
                 PhotoViewActivity.startToPhotoView(this, allPhotos, selectedPhoto,
-                        animationRectBeanArrayList, maxCount, 0,false,new ArrayList<>());
+                        animationRectBeanArrayList, maxCount, 0, false, new ArrayList<>());
                 break;
             case R.id.bt_complete:
                 Intent it = new Intent();
@@ -322,6 +320,12 @@ public class PhotoAlbumDetailsFragment extends TSFragment implements PhotoSelect
         // 获取图片选择器返回结果
         if (mPhotoSelector != null) {
             mPhotoSelector.onActivityResult(requestCode, resultCode, data);
+        }
+        if (requestCode == CAMERA_PHOTO_CODE && resultCode == Activity.RESULT_OK) {
+            Intent it = new Intent();
+            it.putStringArrayListExtra("photos", photoGridAdapter.getSelectedPhotoPaths());
+            getActivity().setResult(Activity.RESULT_OK, it);
+            getActivity().finish();
         }
         if (requestCode == COMPLETE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             boolean stayHere = data.getBooleanExtra(EXTRA_BACK_HERE, false);

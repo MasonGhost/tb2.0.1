@@ -74,25 +74,13 @@ public interface PersonalCenterContract {
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Repository extends IDynamicReppsitory {
-        /**
-         * 获取当前个人中心的用户信息
-         *
-         * @return
-         */
-        Observable<BaseJson<UserInfoBean>> getCurrentUserInfo(Long userId);
+
 
         /**
          * 获取某个人的动态列表
          */
         Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id);
 
-        /**
-         * 获取用户关注状态
-         *
-         * @param user_ids
-         * @return
-         */
-        Observable<BaseJson<FollowFansBean>> getUserFollowState(String user_ids);
     }
 
     interface Presenter extends DynamicContract.Presenter {
@@ -117,11 +105,6 @@ public interface PersonalCenterContract {
          * @return
          */
         List<DynamicDetailBeanV2> requestCacheData(Long max_Id, boolean isLoadMore, long user_id);
-
-        /**
-         * 设置进入个人中心是的用户关注状态
-         */
-        void initFollowState(long user_id);
 
         /**
          * 处理关注状态

@@ -11,9 +11,11 @@ import javax.inject.Inject;
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class QATopicListRepository implements QATopicListConstact.Repository {
+public class QATopicListRepository extends BaseQARepository implements QATopicListConstact.Repository {
 
     @Inject
     public QATopicListRepository(ServiceManager serviceManager) {
+        super(serviceManager);
     }
+
 }

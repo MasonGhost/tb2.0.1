@@ -1,0 +1,104 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_search_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/view_top_tip"
+                />
+
+            <com.wcy.overscroll.OverScrollLayout
+                android:id="@+id/overscroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout
+                    android:id="@+id/refreshlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.zhiyicx.baseproject.widget.refresh.RefreshHeaderView
+                        android:id="@id/swipe_refresh_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@id/swipe_target"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:overScrollMode="never">
+                    </android.support.v7.widget.RecyclerView>
+
+
+                    <com.zhiyicx.baseproject.widget.refresh.RefreshFooterView
+                        android:id="@id/swipe_load_more_footer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </com.zhiyicx.baseproject.widget.refresh.CoodinatorLayoutAndRecyclerViewRefreshLayout>
+            </com.wcy.overscroll.OverScrollLayout>
+        </LinearLayout>
+
+        <com.zhiyicx.baseproject.widget.EmptyView
+            android:id="@+id/empty_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/ll_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/not_find_qa_to_publish"
+                android:textColor="@color/normal_for_assist_text"
+                android:textSize="@dimen/qa_search_empty_size"/>
+
+            <Button
+                android:id="@+id/bt_do"
+                android:layout_width="@dimen/qa_search_empty_bt_with"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_huge"
+                android:layout_gravity="center_horizontal"
+                android:paddingRight="@dimen/spacing_huge"
+                android:paddingTop="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:text="to_publish_qa"
+                android:background="@drawable/selector_button_corner_solid_small"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_sub_title"
+
+                />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 
@@ -26,7 +27,7 @@ public interface InfoChannelConstract {
     }
 
     interface Reppsitory{
-        Observable<BaseJson<Integer>> doSubscribe(String follows);
+        Observable<BaseJsonV2<Object>> doSubscribe(String follows);
         void handleSubscribe(String follows);
     }
 }

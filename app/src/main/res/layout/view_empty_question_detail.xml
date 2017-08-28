@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <TextView
+            android:id="@+id/tv_notice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_primary_title"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/qa_question_no_answer"
+            android:layout_margin="@dimen/spacing_huge_100"
+            android:textColor="@color/general_for_hint"/>
+</RelativeLayout>

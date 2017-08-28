@@ -6,12 +6,14 @@ import android.util.SparseArray;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
-import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -27,8 +29,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -56,67 +56,117 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     }
 
     @Override
-    public Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String feed_id,
-                                                                              Long max_id, Long
-                                                                                      limit) {
-        return mInfoMainClient.getInfoCommentList(feed_id, max_id,
-                Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
-                .flatMap(new Func1<BaseJson<List<InfoCommentListBean>>,
-                        Observable<BaseJson<List<InfoCommentListBean>>>>() {
-
+    public Observable<InfoCommentBean> getInfoCommentListV2(String news_id, Long max_id, Long limit) {
+        return mInfoMainClient.getInfoCommentListV2(news_id, max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .flatMap(new Func1<InfoCommentBean, Observable<InfoCommentBean>>() {
                     @Override
-                    public Observable<BaseJson<List<InfoCommentListBean>>> call
-                            (final BaseJson<List<InfoCommentListBean>> listBaseJson) {
-
-                        if (listBaseJson.getData().isEmpty()) {
-                            return Observable.just(listBaseJson);
-                        } else {
-                            final List<Object> user_ids = new ArrayList<>();
-                            for (InfoCommentListBean commentListBean : listBaseJson.getData()) {
+                    public Observable<InfoCommentBean> call(InfoCommentBean infoCommentBean) {
+                        final List<Object> user_ids = new ArrayList<>();
+                        if (infoCommentBean.getPinneds() != null) {
+                            for (InfoCommentListBean commentListBean : infoCommentBean.getPinneds()) {
                                 user_ids.add(commentListBean.getUser_id());
                                 user_ids.add(commentListBean.getReply_to_user_id());
+                                user_ids.add(commentListBean.getTarget_user());
                             }
-
-                            return mUserInfoRepository.getUserInfo(user_ids).map(userinfobeans -> {
-                                if (userinfobeans.isStatus()) { //
-                                    // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                        }
+                        if (infoCommentBean.getComments() != null) {
+                            for (InfoCommentListBean commentListBean : infoCommentBean.getComments()) {
+                                user_ids.add(commentListBean.getUser_id());
+                                user_ids.add(commentListBean.getReply_to_user_id());
+                                user_ids.add(commentListBean.getTarget_user());
+                            }
+                        }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(infoCommentBean);
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(userInfoBeanList -> {
                                     SparseArray<UserInfoBean> userInfoBeanSparseArray = new
                                             SparseArray<>();
-                                    for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                    for (UserInfoBean userInfoBean : userInfoBeanList) {
                                         userInfoBeanSparseArray.put(userInfoBean.getUser_id()
                                                 .intValue(), userInfoBean);
                                     }
-                                    for (InfoCommentListBean commentListBean : listBaseJson
-                                            .getData()) {
-                                        commentListBean.setFromUserInfoBean
-                                                (userInfoBeanSparseArray.get((int) commentListBean
-                                                        .getUser_id()));
-                                        if (commentListBean.getReply_to_user_id() == 0) { // 如果
-                                            // reply_user_id = 0 回复动态
-                                            UserInfoBean userInfoBean = new UserInfoBean();
-                                            userInfoBean.setUser_id(0L);
-                                            commentListBean.setToUserInfoBean(userInfoBean);
-                                        } else {
-                                            commentListBean.setToUserInfoBean
-                                                    (userInfoBeanSparseArray.get(
-                                                            (int) commentListBean
-                                                                    .getReply_to_user_id()));
-                                        }
-
-                                    }
-                                    mUserInfoBeanGreenDao.insertOrReplace(userinfobeans
-                                            .getData());
-                                } else {
-                                    listBaseJson.setStatus(userinfobeans.isStatus());
-                                    listBaseJson.setCode(userinfobeans.getCode());
-                                    listBaseJson.setMessage(userinfobeans.getMessage());
-                                }
-
-                                return listBaseJson;
-                            });
-                        }
+                                    dealCommentData(infoCommentBean.getPinneds(), userInfoBeanSparseArray);
+                                    dealCommentData(infoCommentBean.getComments(), userInfoBeanSparseArray);
+                                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBeanList);
+                                    return infoCommentBean;
+                                });
                     }
                 });
+    }
+
+    @Override
+    public Observable<List<InfoDigListBean>> getInfoDigListV2(String news_id, Long max_id) {
+        return mInfoMainClient.getInfoDigList(news_id, max_id, TSListFragment.DEFAULT_PAGE_SIZE)
+                .flatMap(new Func1<List<InfoDigListBean>, Observable<List<InfoDigListBean>>>() {
+                    @Override
+                    public Observable<List<InfoDigListBean>> call(List<InfoDigListBean> infoDigListBeen) {
+                        List<Object> user_ids = new ArrayList<>();
+                        for (InfoDigListBean digListBean : infoDigListBeen) {
+                            user_ids.add(digListBean.getUser_id());
+                            user_ids.add(digListBean.getTarget_user());
+                        }
+                        if (user_ids.isEmpty()) {
+                            return Observable.just(infoDigListBeen);
+                        }
+                        return mUserInfoRepository.getUserInfo(user_ids)
+                                .map(listBaseJson -> {
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : listBaseJson) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
+                                        for (InfoDigListBean digListBean : infoDigListBeen) {
+                                            digListBean.setDiggUserInfo(userInfoBeanSparseArray.get(digListBean.getUser_id().intValue()));
+                                            digListBean.setTargetUserInfo(userInfoBeanSparseArray.get(digListBean.getTarget_user().intValue()));
+                                        }
+                                    return infoDigListBeen;
+                                });
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<InfoListDataBean>> getRelateInfoList(String news_id) {
+        return mInfoMainClient.getRelateInfoList(news_id);
+    }
+
+    @Override
+    public Observable<InfoListDataBean> getInfoDetail(String news_id) {
+        return mInfoMainClient.getInfoDetail(news_id);
+    }
+
+    private void dealCommentData(List<InfoCommentListBean> list, SparseArray<UserInfoBean> userInfoBeanSparseArray) {
+        if (list != null) {
+            for (InfoCommentListBean commentListBean : list) {
+                commentListBean.setFromUserInfoBean
+                        (userInfoBeanSparseArray.get((int) commentListBean
+                                .getUser_id()));
+                if (commentListBean.getReply_to_user_id() == 0) { // 如果
+                    // reply_user_id = 0 回复动态
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUser_id(0L);
+                    commentListBean.setToUserInfoBean(userInfoBean);
+                } else {
+                    commentListBean.setToUserInfoBean
+                            (userInfoBeanSparseArray.get(
+                                    (int) commentListBean
+                                            .getReply_to_user_id()));
+                }
+                if (commentListBean.getTarget_user() == 0) { // 如果
+                    // reply_user_id = 0 回复动态
+                    UserInfoBean userInfoBean = new UserInfoBean();
+                    userInfoBean.setUser_id(0L);
+                    commentListBean.setPublishUserInfoBean(userInfoBean);
+                } else {
+                    commentListBean.setPublishUserInfoBean
+                            (userInfoBeanSparseArray.get(
+                                    (int) commentListBean
+                                            .getTarget_user()));
+                }
+            }
+        }
     }
 
     @Override
@@ -130,15 +180,15 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                     // 后台处理
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST, params);
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     } else {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE, params);
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     }
                     backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                            .APP_PATH_INFO_COLLECT_FORMAT, news_id));
+                            .APP_PATH_INFO_COLLECTION_S, news_id));
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
@@ -155,15 +205,15 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                     // 后台处理
                     if (aBoolean) {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.POST, params);
+                                (BackgroundTaskRequestMethodConfig.POST_V2, params);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     } else {
                         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                                (BackgroundTaskRequestMethodConfig.DELETE, params);
+                                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
                         LogUtils.d(backgroundRequestTaskBean.getMethodType());
                     }
                     backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                            .APP_PATH_INFO_DIG_FORMAT, news_id));
+                            .APP_PATH_INFO_DIG_V2_S, news_id));
                     BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                             (backgroundRequestTaskBean);
                 }, throwable -> throwable.printStackTrace());
@@ -174,13 +224,13 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
                             Long comment_mark) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("comment_content", comment_content);
-        params.put("reply_to_user_id", reply_to_user_id);
+        params.put("body", comment_content);
+        params.put("reply_user", reply_to_user_id);
         params.put("comment_mark", comment_mark);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
                 (BackgroundTaskRequestMethodConfig.SEND_INFO_COMMENT, params);
-        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_INFO_COMMENT_FORMAT,
+        backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_INFO_COMMENT_V2_S,
                 new_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
@@ -190,20 +240,18 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
     public void deleteComment(int news_id, int comment_id) {
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
-        params.put("news_id", news_id);
-        params.put("comment_id", comment_id);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
-                (BackgroundTaskRequestMethodConfig.DELETE, params);
+                (BackgroundTaskRequestMethodConfig.DELETE_V2, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig
-                .APP_PATH_INFO_DELETE_COMMENT_FORMAT, news_id, comment_id));
+                .APP_PATH_INFO_DELETE_COMMENT_V2_S, news_id, comment_id));
         BackgroundTaskManager.getInstance(mContext).addBackgroundRequestTask
                 (backgroundRequestTaskBean);
     }
 
     @Override
-    public Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id) {
-        return mInfoMainClient.getInfoWebContent(news_id);
+    public Observable<BaseJsonV2<Object>> deleteInfo(String category, String news_id) {
+        return mInfoMainClient.deleteInfo(category, news_id);
     }
 
 

@@ -21,14 +21,13 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListActivity;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.contianer.FindSomeOneContainerActivity;
+import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
 import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_container.QA_InfoContainerActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
-
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QA_RewardActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
+import com.zhiyicx.thinksnsplus.modules.rank.main.container.RankIndexActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
 
 import java.util.List;
@@ -64,6 +63,8 @@ public class FindFragment extends TSFragment {
     CombinationButton mFindNearby;
     @BindView(R.id.find_quiz)
     CombinationButton mFindQuiz;
+    @BindView(R.id.find_rank)
+    CombinationButton mFindRank;
 
     private ActionPopupWindow mActionPopupWindow;
 
@@ -130,18 +131,25 @@ public class FindFragment extends TSFragment {
     }
 
     @OnClick({R.id.find_info, R.id.find_chanel, R.id.find_active, R.id.find_music, R.id.find_buy,
-            R.id.find_person, R.id.find_nearby, R.id.find_quiz,R.id.find_qa})
+            R.id.find_person, R.id.find_nearby, R.id.find_quiz, R.id.find_qa, R.id.find_rank})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_info:
                 if (TouristConfig.INFO_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
                     startActivity(new Intent(getActivity(), InfoActivity.class));
+
                 } else {
                     showLoginPop();
                 }
                 break;
             case R.id.find_chanel:
                 if (TouristConfig.CHENNEL_LIST_CAN_LOOK || !mAuthRepository.isTourist()) {
+
+//                    Intent intent = new Intent(getActivity(), PublishAnswerActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+
                     startActivity(new Intent(getActivity(), ChannelListActivity.class));
                 } else {
                     showLoginPop();
@@ -184,14 +192,28 @@ public class FindFragment extends TSFragment {
                 }
                 break;
             case R.id.find_person:
+                long followUserId = AppApplication.getmCurrentLoginAuth().getUser_id();
+                Bundle bundleFollow = new Bundle();
+                bundleFollow.putInt(FollowFansListFragment.PAGE_TYPE, FollowFansListFragment
+                        .FOLLOW_FRAGMENT_PAGE);
+                bundleFollow.putLong(FollowFansListFragment.PAGE_DATA, followUserId);
+                Intent itFollow = new Intent(getActivity(), FindSomeOneContainerActivity.class);
+                itFollow.putExtras(bundleFollow);
+                startActivity(itFollow);
                 break;
             case R.id.find_nearby:
                 break;
             case R.id.find_qa:
-                startActivity(new Intent(getActivity(), PublishContentActivity.class));
+                Intent intent = new Intent(getActivity(), QA_Activity.class);
+                Bundle bundle = new Bundle();
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.find_quiz:
-                startActivity(new Intent(getActivity(), QA_RewardActivity.class));
+                startActivity(new Intent(getActivity(), QARewardActivity.class));
+                break;
+            case R.id.find_rank:
+                startActivity(new Intent(getActivity(), RankIndexActivity.class));
                 break;
             default:
                 break;
@@ -209,7 +231,8 @@ public class FindFragment extends TSFragment {
                 .with(getActivity())
                 .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
 
-                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string.oppo_setting_windows_permission_hint :
+                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string
+                        .oppo_setting_windows_permission_hint :
                         com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
 
                 .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))

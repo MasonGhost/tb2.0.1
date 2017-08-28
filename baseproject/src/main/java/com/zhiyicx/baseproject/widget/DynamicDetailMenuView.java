@@ -32,29 +32,37 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class DynamicDetailMenuView extends FrameLayout {
     public static final int DEFAULT_RESOURES_ID = -1; // 默认 id ，当子类使用默认 id 时，进行占位判断
     // item 数量
-    private static final int ITEM_NUMS_MAX = 4;
+    private static final int ITEM_NUMS_MAX = 6;
     public static final int ITEM_POSITION_0 = 0;
     public static final int ITEM_POSITION_1 = 1;
     public static final int ITEM_POSITION_2 = 2;
     public static final int ITEM_POSITION_3 = 3;
+    public static final int ITEM_POSITION_4 = 4; // 编辑
+    public static final int ITEM_POSITION_5 = 5; // 收藏
 
     protected View mLlDynamicDetailLike;
     protected View mLlDynamicDetailComment;
     protected View mLlDynamicDetailShare;
     protected View mLlDynamicDetailMore;
+    protected View mLlDynamicDetailEdit;
+    protected View mLlDynamicDetailCollection;
 
     protected ImageView mIvDynamicDetailLike;
     protected ImageView mIvDynamicDetailComment;
     protected ImageView mIvDynamicDetailShare;
     protected ImageView mIvDynamicDetailMore;
+    protected ImageView mIvDynamicDetailEdit;
+    protected ImageView mIvDynamicDetailCollection;
 
     protected TextView mTvDynamicDetailLike;
     protected TextView mTvDynamicDetailComment;
     protected TextView mTvDynamicDetailShare;
     protected TextView mTvDynamicDetailMore;
+    protected TextView mTvDynamicDetailEdit;
+    protected TextView mTvDynamicDetailCollection;
 
     private OnItemClickListener mOnItemListener;
-
+    private boolean mIsQuestion = false;
 
     protected
     @DrawableRes
@@ -62,7 +70,9 @@ public class DynamicDetailMenuView extends FrameLayout {
             R.mipmap.home_ico_good_normal,
             R.mipmap.home_ico_comment_normal,
             R.mipmap.detail_ico_share_normal,
-            R.mipmap.home_ico_more
+            R.mipmap.home_ico_more,
+            R.mipmap.detail_ico_edit_normal,
+            R.mipmap.detail_ico_good_uncollect
     };// 图片 ids 正常状态
     protected
     @DrawableRes
@@ -70,7 +80,9 @@ public class DynamicDetailMenuView extends FrameLayout {
             R.mipmap.home_ico_good_high,
             R.mipmap.home_ico_comment_normal,
             R.mipmap.detail_ico_share_normal,
-            R.mipmap.home_ico_more
+            R.mipmap.home_ico_more,
+            R.mipmap.detail_ico_edit_normal,
+            R.mipmap.detail_ico_collect
     };// 图片 ids 选中状态
     protected
     @StringRes
@@ -78,7 +90,9 @@ public class DynamicDetailMenuView extends FrameLayout {
             R.string.like,
             R.string.comment,
             R.string.share,
-            R.string.more
+            R.string.more,
+            R.string.qa_detail_edit,
+            R.string.collect
     };// 文字 ids
 
     protected
@@ -104,16 +118,22 @@ public class DynamicDetailMenuView extends FrameLayout {
         mLlDynamicDetailComment = findViewById(R.id.ll_dynamic_detail_comment);
         mLlDynamicDetailShare = findViewById(R.id.ll_dynamic_detail_share);
         mLlDynamicDetailMore = findViewById(R.id.ll_dynamic_detail_more);
+        mLlDynamicDetailEdit = findViewById(R.id.ll_question_detail_edit);
+        mLlDynamicDetailCollection = findViewById(R.id.ll_question_detail_collection);
 
         mIvDynamicDetailLike = (ImageView) findViewById(R.id.iv_dynamic_detail_like);
         mIvDynamicDetailComment = (ImageView) findViewById(R.id.iv_dynamic_detail_comment);
         mIvDynamicDetailShare = (ImageView) findViewById(R.id.iv_dynamic_detail_share);
         mIvDynamicDetailMore = (ImageView) findViewById(R.id.iv_dynamic_detail_more);
+        mIvDynamicDetailEdit = (ImageView) findViewById(R.id.iv_question_detail_edit);
+        mIvDynamicDetailCollection = (ImageView) findViewById(R.id.iv_question_detail_collection);
 
         mTvDynamicDetailLike = (TextView) findViewById(R.id.tv_dynamic_detail_like);
         mTvDynamicDetailComment = (TextView) findViewById(R.id.tv_dynamic_detail_comment);
         mTvDynamicDetailShare = (TextView) findViewById(R.id.tv_dynamic_detail_share);
         mTvDynamicDetailMore = (TextView) findViewById(R.id.tv_dynamic_detail_more);
+        mTvDynamicDetailEdit = (TextView) findViewById(R.id.tv_question_detail_edit);
+        mTvDynamicDetailCollection = (TextView) findViewById(R.id.tv_question_detail_collection);
         initListener();
     }
 
@@ -155,6 +175,26 @@ public class DynamicDetailMenuView extends FrameLayout {
                     public void call(Void aVoid) {
                         if (mOnItemListener != null) {
                             mOnItemListener.onItemClick((ViewGroup) mLlDynamicDetailMore, mIvDynamicDetailMore, ITEM_POSITION_3);
+                        }
+                    }
+                });
+        RxView.clicks(mLlDynamicDetailEdit)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnItemListener != null) {
+                            mOnItemListener.onItemClick((ViewGroup) mLlDynamicDetailEdit, mIvDynamicDetailEdit, ITEM_POSITION_4);
+                        }
+                    }
+                });
+        RxView.clicks(mLlDynamicDetailCollection)
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)  // 两秒钟之内只取一个点击事件，防抖操作
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        if (mOnItemListener != null) {
+                            mOnItemListener.onItemClick((ViewGroup) mLlDynamicDetailCollection, mIvDynamicDetailCollection, ITEM_POSITION_5);
                         }
                     }
                 });
@@ -217,6 +257,12 @@ public class DynamicDetailMenuView extends FrameLayout {
             case ITEM_POSITION_3:
                 setItemState(isChecked, mLlDynamicDetailMore, mIvDynamicDetailMore, mTvDynamicDetailMore, postion, isNeedSetText);
                 break;
+            case ITEM_POSITION_4:
+                setItemState(isChecked, mLlDynamicDetailEdit, mIvDynamicDetailEdit, mTvDynamicDetailEdit, postion, isNeedSetText);
+                break;
+            case ITEM_POSITION_5:
+                setItemState(isChecked, mLlDynamicDetailCollection, mIvDynamicDetailCollection, mTvDynamicDetailCollection, postion, isNeedSetText);
+                break;
             default:
         }
 
@@ -275,6 +321,11 @@ public class DynamicDetailMenuView extends FrameLayout {
         mIvDynamicDetailComment.setImageResource(normalResourceIds[1]);
         mIvDynamicDetailShare.setImageResource(normalResourceIds[2]);
         mIvDynamicDetailMore.setImageResource(normalResourceIds[3]);
+        if (mIsQuestion){
+            mIvDynamicDetailEdit.setImageResource(normalResourceIds[4]);
+            mIvDynamicDetailCollection.setImageResource(normalResourceIds[5]);
+        }
+
     }
 
     /**
@@ -294,7 +345,18 @@ public class DynamicDetailMenuView extends FrameLayout {
         mTvDynamicDetailComment.setText(texts[1]);
         mTvDynamicDetailShare.setText(texts[2]);
         mTvDynamicDetailMore.setText(texts[3]);
+        if (mIsQuestion){
+            mTvDynamicDetailEdit.setText(texts[4]);
+            mTvDynamicDetailCollection.setText(texts[5]);
+        }
+
+
     }
 
-
+    public void showQuestionTool(boolean isMine){
+        mIsQuestion = true;
+        mLlDynamicDetailLike.setVisibility(GONE);
+        mLlDynamicDetailEdit.setVisibility(isMine ? VISIBLE : GONE);
+        mLlDynamicDetailCollection.setVisibility(GONE);
+    }
 }

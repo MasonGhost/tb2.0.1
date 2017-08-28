@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/spacing_normal">
+
+    <ImageView
+            android:id="@+id/iv_solid"
+            android:layout_width="@dimen/item_hegiht"
+            android:layout_height="@dimen/item_hegiht"
+            android:src="@mipmap/default_pic_personal"
+            android:visibility="invisible"
+            android:layout_gravity="center"/>
+
+    <LinearLayout
+            android:id="@+id/ll_content_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <!--如果有图片，展示第一张图-->
+        <ImageView
+                android:id="@+id/item_info_imag"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/qa_info_iamge_height"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
+
+        <!--正文内容:有图一排,无图三排,默认三排-->
+        <com.zhiyicx.thinksnsplus.widget.ExpandableTextView
+                android:id="@+id/tv_question_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_content"
+                android:textColor="@color/normal_for_dynamic_list_content"
+                tools:text="xxxxxxxxxxxxxxxxxxxxxxxxxx"/>
+    </LinearLayout>
+
+    <!--展开之后的内容 图文混排-->
+    <br.tiagohm.markdownview.MarkdownView
+            android:id="@+id/mdv_question_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+</FrameLayout>

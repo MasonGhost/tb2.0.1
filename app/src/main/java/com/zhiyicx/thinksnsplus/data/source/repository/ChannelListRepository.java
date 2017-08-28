@@ -1,11 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
-import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.channel.list.ChannelListContract;
@@ -30,15 +24,6 @@ public class ChannelListRepository extends BaseChannelRepository implements Chan
         super(serviceManager);
     }
 
-    @Override
-    public Observable<BaseJson<List<ChannelSubscripBean>>> getMySubscribChannelList() {
-        return getChannelList(ApiConfig.CHANNEL_TYPE_MY_SUBSCRIB_CHANNEL, AppApplication.getMyUserIdWithdefault());
-    }
-
-    @Override
-    public Observable<BaseJson<List<ChannelSubscripBean>>> getAllChannelList() {
-        return getChannelList(ApiConfig.CHANNEL_TYPE_ALL_CHANNEL, AppApplication.getMyUserIdWithdefault());
-    }
 
     @Override
     public Observable<List<GroupInfoBean>> getAllGroupList(long max_id) {

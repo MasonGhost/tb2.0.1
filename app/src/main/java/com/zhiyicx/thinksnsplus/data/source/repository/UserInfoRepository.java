@@ -14,11 +14,13 @@ import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
+import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
+import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -36,14 +38,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -54,6 +60,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class UserInfoRepository implements UserInfoContract.Repository {
+    public static final int DEFAULT_MAX_USER_GET_NUM_ONCE = 50;
+
     private UserInfoClient mUserInfoClient;
 
     @Inject
@@ -109,30 +117,31 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<UserInfoBean>>> getUserInfo(List<Object> user_ids) {
-        //V1
-//        HashMap<String, Object> datas = new HashMap<>();
-//        datas.put("user_ids", user_ids);
-//        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-//        return mUserInfoClient.getUserInfo(body)
-//                .subscribeOn(Schedulers.io()).
-//                        observeOn(AndroidSchedulers.mainThread());
+    public Observable<List<UserInfoBean>> getUserInfo(List<Object> user_ids) {
+        ConvertUtils.removeDuplicate(user_ids); // 去重
+        if (user_ids.size() > DEFAULT_MAX_USER_GET_NUM_ONCE) {
+            return Observable.zip(getUserBaseJsonObservable(user_ids.subList(0, DEFAULT_MAX_USER_GET_NUM_ONCE)), getUserBaseJsonObservable(user_ids.subList(DEFAULT_MAX_USER_GET_NUM_ONCE, user_ids.size())), (listBaseJson, listBaseJson2) -> {
+                listBaseJson.addAll(listBaseJson2);
 
-        // V2
+                return listBaseJson;
+            });
+
+        } else {
+            return getUserBaseJsonObservable(user_ids);
+        }
+    }
+
+    private Observable<List<UserInfoBean>> getUserBaseJsonObservable(List<Object> user_ids) {
+        if (user_ids.isEmpty()) {
+            return Observable.just(new ArrayList<>());
+        }
+
         String userids = user_ids.toString();
         userids = userids.replace("[", "");
         userids = userids.replace("]", "");
-        return getUserInfoByIds(userids)
-                .subscribeOn(Schedulers.io())
-                .map(userInfoBeen -> {
-                    BaseJson<List<UserInfoBean>> baseJson = new BaseJson<>();
-                    baseJson.setStatus(true);
-                    baseJson.setData(userInfoBeen);
-                    return baseJson;
-                })
-                .observeOn(AndroidSchedulers.mainThread());
-
+        return getUserInfoByIds(userids);
     }
+
 
     /**
      * 获取当前登录用户信息 V2
@@ -169,14 +178,14 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids) {
-        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, null, null, null, null)
+        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, null, null, null, DEFAULT_MAX_USER_GET_NUM_ONCE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit) {
-        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, name, since, order, limit)
+        return mUserInfoClient.searchUserinfoWithRecommend(limit,since,name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -188,72 +197,23 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<UserInfoBean>> getLocalUserInfoBeforeNet(long user_id) {
-        final BaseJson<UserInfoBean> beanBaseJson = new BaseJson<>();
+    public Observable<UserInfoBean> getLocalUserInfoBeforeNet(long user_id) {
         UserInfoBean userInfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(user_id);
         if (userInfoBean != null) {
-            beanBaseJson.setStatus(true);
-            beanBaseJson.setData(userInfoBean);
-            return Observable.just(beanBaseJson);
+            return Observable.just(userInfoBean);
         }
         List<Object> user_ids = new ArrayList<>();
         user_ids.add(user_id);
-
-        //V1
-//        HashMap<String, Object> datas = new HashMap<>();
-//        datas.put("user_ids", user_ids);
-//        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(datas));
-//        return mUserInfoClient.getUserInfo(body)
-//                .subscribeOn(Schedulers.io()).
-//                        observeOn(AndroidSchedulers.mainThread())
-//                .map(new Func1<BaseJson<List<UserInfoBean>>, BaseJson<UserInfoBean>>() {
-//                    @Override
-//                    public BaseJson<UserInfoBean> call(BaseJson<List<UserInfoBean>> listBaseJson) {
-//                        beanBaseJson.setCode(listBaseJson.getCode());
-//                        beanBaseJson.setMessage(listBaseJson.getMessage());
-//                        beanBaseJson.setStatus(listBaseJson.isStatus());
-//                        if (listBaseJson.isStatus()) {
-//                            beanBaseJson.setData(listBaseJson.getData().get(0));
-//                        }
-//                        return beanBaseJson;
-//                    }
-//                });
-
-        // V2
-        String userids = user_ids.toString();
-        userids = userids.replace("[", "");
-        userids = userids.replace("]", "");
-
-        return getUserInfoByIds(userids)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(listBaseJson -> {
-                    beanBaseJson.setStatus(true);
-                    beanBaseJson.setData(listBaseJson.get(0));
-                    return beanBaseJson;
-                });
-
-    }
-
-    /**
-     * 获取用户关注状态
-     *
-     * @param user_ids
-     * @return
-     */
-    @Override
-    public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
-        return mUserInfoClient.getUserFollowState(user_ids)
-                .map(listBaseJson -> {
-                    if (listBaseJson.isStatus()) {
-                        for (FollowFansBean followFansBean : listBaseJson.getData()) {
-                            followFansBean.setOriginUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-                            followFansBean.setOrigintargetUser("");
-                        }
+        return getUserInfo(user_ids)
+                .map(datas -> {
+                    if (datas.isEmpty()) {
+                        return null;
                     }
-                    return listBaseJson;
+                    return datas.get(0);
                 });
+
     }
+
 
     /**
      * 关注操作
@@ -319,19 +279,15 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                             }
                             return getUserInfo(userIds)
                                     .map(userinfobeans -> {
-                                        if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                             SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                            for (UserInfoBean userInfoBean : userinfobeans) {
                                                 userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                             }
                                             for (DigRankBean digRankBean : listBaseJson.getData()) {
                                                 digRankBean.setDigUserInfo(userInfoBeanSparseArray.get(digRankBean.getUser_id().intValue()));
                                             }
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                        } else {
-                                            listBaseJson.setStatus(userinfobeans.isStatus());
-                                            listBaseJson.setCode(userinfobeans.getCode());
-                                            listBaseJson.setMessage(userinfobeans.getMessage());
+                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                         }
                                         return listBaseJson;
                                     });
@@ -357,21 +313,22 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     public Observable<List<DigedBean>> call(final List<DigedBean> data) {
                         List<Object> userIds = new ArrayList();
                         for (DigedBean digedBean : data) {
+                            digedBean.initDelet();
                             userIds.add(digedBean.getUser_id());
                             userIds.add(digedBean.getTarget_user());
                         }
                         return getUserInfo(userIds)
                                 .map(userinfobeans -> {
-                                    if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                    if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         for (DigedBean digedBean : data) {
                                             digedBean.setDigUserInfo(userInfoBeanSparseArray.get(digedBean.getUser_id().intValue()));
                                             digedBean.setDigedUserInfo(userInfoBeanSparseArray.get(digedBean.getTarget_user().intValue()));
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                     }
                                     Collections.sort(data, (o1, o2) -> (int) (o2.getId() - o1.getId()));
                                     return data;
@@ -399,15 +356,16 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         }
                         List<Object> userIds = new ArrayList();
                         for (CommentedBean commentedBean : data) {
+                            commentedBean.initDelet();
                             userIds.add(commentedBean.getUser_id());
                             userIds.add(commentedBean.getTarget_user());
                             userIds.add(commentedBean.getReply_user());
                         }
                         return getUserInfo(userIds)
                                 .map(userinfobeans -> {
-                                    if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                    if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
                                         SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                        for (UserInfoBean userInfoBean : userinfobeans.getData()) {
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
                                             userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
                                         }
                                         for (CommentedBean commentedBean : data) {
@@ -421,7 +379,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                                                 commentedBean.setReplyUserInfo(userInfoBeanSparseArray.get((int) commentedBean.getReply_user().intValue()));
                                             }
                                         }
-                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                     }
                                     return data;
                                 });
@@ -453,12 +411,8 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                             }
                             return getUserInfo(userIdstmp)
                                     .map(userinfobeans -> {
-                                        if (userinfobeans.isStatus() && !userinfobeans.getData().isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans.getData());
-                                        } else {
-                                            listBaseJson.setStatus(userinfobeans.isStatus());
-                                            listBaseJson.setCode(userinfobeans.getCode());
-                                            listBaseJson.setMessage(userinfobeans.getMessage());
+                                        if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
                                         }
                                         return listBaseJson;
                                     });
@@ -495,6 +449,175 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     @Override
     public Observable<Object> deleteTag(long tag_id) {
         return mUserInfoClient.deleteTag(tag_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*******************************************  找人  *********************************************/
+    /**
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getHotUsers(Integer limit, Integer offset) {
+        return mUserInfoClient.getHotUsers(limit, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getNewUsers(Integer limit, Integer offset) {
+        return mUserInfoClient.getNewUsers(limit, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset) {
+        return mUserInfoClient.getUsersRecommentByTag(limit, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    /**
+     * @param phones 单次最多 100 条
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getUsersByPhone(ArrayList<String> phones) {
+
+        if (phones.size() > 100) {
+            return Observable.zip(getListObservable(phones.subList(0, 100)), getListObservable(phones.subList(100, phones.size()))
+                    , (userInfoBeen, userInfoBeen2) -> {
+                        userInfoBeen.addAll(userInfoBeen2);
+                        return userInfoBeen;
+                    });
+
+        } else {
+            return getListObservable(phones);
+        }
+    }
+
+    /**
+     * @param phones
+     * @return
+     */
+    private Observable<List<UserInfoBean>> getListObservable(List<String> phones) {
+        Map<String, List<String>> phonesMap = new HashMap<>();
+        phonesMap.put("phones", phones);
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(phonesMap));
+
+        return mUserInfoClient.getUsersByPhone(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param longitude 经度
+     * @param latitude  纬度
+     * @return
+     */
+    @Override
+    public Observable<Object> updateUserLocation(double longitude, double latitude) {
+        return mUserInfoClient.updateUserLocation(longitude, latitude)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param longitude 当前用户所在位置的纬度
+     * @param latitude  当前用户所在位置的经度
+     * @param radius    搜索范围，米为单位 [0 - 50000], 默认3000
+     * @param limit     默认20， 最大100
+     * @param page      分页参数， 默认1，当返回数据小于limit， page达到最大值
+     * @return
+     */
+    @Override
+    public Observable<List<NearbyBean>> getNearbyData(double longitude, double latitude, Integer radius, Integer limit, Integer page) {
+        return mUserInfoClient.getNearbyData(longitude, latitude, radius, limit, page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<NearbyBean>, Observable<List<NearbyBean>>>() {
+                    @Override
+                    public Observable<List<NearbyBean>> call(List<NearbyBean> nearbyBeen) {
+                        List<Object> userIds = new ArrayList();
+                        for (NearbyBean nearbyBean : nearbyBeen) {
+                            userIds.add(nearbyBean.getUser_id());
+                        }
+                        return getUserInfo(userIds)
+                                .map(userinfobeans -> {
+                                    if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : userinfobeans) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (NearbyBean nearbyBean : nearbyBeen) {
+                                            try {
+                                                if (userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())) != null) {
+                                                    nearbyBean.setUser(userInfoBeanSparseArray.get(Integer.parseInt(nearbyBean.getUser_id())));
+                                                }
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
+                                    }
+                                    return nearbyBeen;
+                                });
+                    }
+                }).map(nearbyBeen -> {
+                    List<NearbyBean> result = new ArrayList<>();
+                    for (NearbyBean nearbyBean : nearbyBeen) {
+                        if (nearbyBean.getUser() != null) {
+                            result.add(nearbyBean);
+                        }
+
+                    }
+                    return result;
+                });
+    }
+
+    /*******************************************  签到  *********************************************/
+
+    /**
+     * @return
+     */
+    @Override
+    public Observable<CheckInBean> getCheckInInfo() {
+        return mUserInfoClient.getCheckInInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Observable<Object> checkIn() {
+        return mUserInfoClient.checkIn()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param offset 数据偏移数，默认为 0。
+     * @return
+     */
+    @Override
+    public Observable<List<UserInfoBean>> getCheckInRanks(Integer offset) {
+        return mUserInfoClient.getCheckInRanks(offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

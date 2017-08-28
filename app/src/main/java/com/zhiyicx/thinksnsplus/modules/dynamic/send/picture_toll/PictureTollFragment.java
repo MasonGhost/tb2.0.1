@@ -195,70 +195,59 @@ public class PictureTollFragment extends TSFragment {
         // 确认
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .compose(this.<Void>bindToLifecycle())
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mRechargeMoneyStr.contains(".")) {
-                            initmMoneyInstructionsPop();
-                            return;
-                        }
-                        mToll.setToll_type(mPayType);
-                        back();
+                .compose(this.bindToLifecycle())
+                .subscribe(aVoid -> {
+                    if (mRechargeMoney <= 0) {
+                        initmMoneyInstructionsPop();
+                        return;
                     }
+                    mToll.setToll_type(mPayType);
+                    back();
                 });
 
-        RxTextView.afterTextChangeEvents(mEtInput)
-                .subscribe(new Action1<TextViewAfterTextChangeEvent>() {
-                    @Override
-                    public void call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
-                        mRechargeMoneyStr = textViewAfterTextChangeEvent.editable().toString();
-                        if (TextUtils.isEmpty(mRechargeMoneyStr)) {
-                            return;
-                        }
-                        mRbDaysGroup.clearCheck();
-                        mToll.setToll_money(0);
-                        try {
-                            mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
-                        } catch (NumberFormatException ne) {
-                            mRechargeMoney = 0;
-                        }
-                        mToll.setCustom_money(((Double) mRechargeMoney).floatValue());
-                        setConfirmEnable();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        setCustomMoneyDefault();
-                        mRechargeMoney = 0;
-                    }
-                });
+        RxTextView.textChanges(mEtInput).subscribe(charSequence -> {
+            mRechargeMoneyStr = charSequence.toString();
+            if (TextUtils.isEmpty(mRechargeMoneyStr)) {
+                return;
+            }
+            mRbDaysGroup.clearCheck();
+            mToll.setToll_money(0);
+            try {
+                mRechargeMoney = Double.parseDouble(mRechargeMoneyStr);
+            } catch (NumberFormatException ne) {
+                mRechargeMoney = 0;
+            }
+            mToll.setCustom_money(((Double) mRechargeMoney).floatValue());
+            setConfirmEnable();
+        }, throwable -> {
+            throwable.printStackTrace();
+            setCustomMoneyDefault();
+            mRechargeMoney = 0;
+        });
+
+
         RxRadioGroup.checkedChanges(mRbDaysGroup)
-                .compose(this.<Integer>bindToLifecycle())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer checkedId) {
-                        switch (checkedId) {
-                            case R.id.rb_one:
-                                mRechargeMoney = mSelectDays.get(0);
-                                mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
-                                break;
-                            case R.id.rb_two:
-                                mRechargeMoney = mSelectDays.get(1);
-                                mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
-                                break;
-                            case R.id.rb_three:
-                                mRechargeMoney = mSelectDays.get(2);
-                                mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
-                                break;
-                            case -1:
-                                return;
-                            default:
-                        }
-                        setConfirmEnable();
-                        setCustomMoneyDefault();
+                .compose(this.bindToLifecycle())
+                .subscribe(checkedId -> {
+                    switch (checkedId) {
+                        case R.id.rb_one:
+                            mRechargeMoney = mSelectDays.get(0);
+                            mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
+                            break;
+                        case R.id.rb_two:
+                            mRechargeMoney = mSelectDays.get(1);
+                            mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
+                            break;
+                        case R.id.rb_three:
+                            mRechargeMoney = mSelectDays.get(2);
+                            mToll.setToll_money(Double.valueOf(mRechargeMoney).floatValue());
+                            break;
+                        case -1:
+                            return;
+                        default:
                     }
+                    setConfirmEnable();
+                    setCustomMoneyDefault();
                 });
 
         RxRadioGroup.checkedChanges(mRbDaysGroupTollWays)

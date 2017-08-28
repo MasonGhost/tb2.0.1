@@ -60,7 +60,7 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
     public static final int SHAPE_RCTANGLE = 2;// 长方形，宽度占满
     public static final int SHAPE_RECTANGLE = 3;// 长方形，宽度占满，认证裁剪
     private static final int SQUARE_LEFT_MARGIN = 36;// 裁剪框距离屏幕左边缘的距离；右边也是一样的
-    private static final int CAMERA_PHOTO_CODE = 8888;
+    public static final int CAMERA_PHOTO_CODE = 8888;
 
     public static final String TOLL_TYPE = "toll_type";
     public static final String TOLL = "toll";
@@ -273,7 +273,6 @@ public class PhotoSelectorImpl implements IPhotoSelector<ImageBean> {
                         mTolls.clear();
                         mTolls.addAll(tolls);
                     } catch (Exception e1) {
-                        e1.printStackTrace();
                     }
 
                 }

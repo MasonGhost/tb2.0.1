@@ -11,6 +11,8 @@ import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.DATA_HAS_BE_DELETED;
+
 /**
  * @Describe 处理服务器数据 适用 ＲＥＳＥＴＦＵＬ　ＡＰＩ
  * @Author Jungle68
@@ -43,7 +45,7 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
                             new TypeToken<Map<String, String[]>>() {
                             }.getType());
                     for (String[] value : errorMessageMap.values()) {
-                        onFailure(value[0], 0); //  app 端只需要一个
+                        onFailure(value[0], ((HttpException) e).code()); //  app 端只需要一个
                         return;
                     }
                 } else {

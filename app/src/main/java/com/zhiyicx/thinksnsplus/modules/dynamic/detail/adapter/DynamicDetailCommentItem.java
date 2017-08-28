@@ -69,7 +69,7 @@ public class DynamicDetailCommentItem implements ItemViewDelegate<DynamicComment
             }
         });
         TextView topFlag=holder.getView(R.id.tv_top_flag);
-        topFlag.setVisibility(dynamicCommentBean.getPinned() == 0 ? View.GONE : View.VISIBLE);
+        topFlag.setVisibility(!dynamicCommentBean.getPinned() ? View.GONE : View.VISIBLE);
         topFlag.setText(topFlag.getContext().getString(R.string.dynamic_top_flag));
         List<Link> links = setLiknks(holder, dynamicCommentBean, position);
         if (!links.isEmpty()) {

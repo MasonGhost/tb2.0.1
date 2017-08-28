@@ -1,34 +1,24 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
-import android.widget.TextView;
+import android.view.View;
 
-import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
-import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
+import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import org.simple.eventbus.Subscriber;
 
 import javax.inject.Inject;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.list.DynamicFragment.ITEM_SPACING;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 
 /**
  * @Author Jliuer
@@ -40,7 +30,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         implements QA_ListInfoConstact.View {
 
     public static final String BUNDLE_QA_TYPE = "qa_type";
-    public static final String BUNDLE_QA = "qa";
+
     private String mQAInfoType;
 
     @Inject
@@ -52,6 +42,16 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
         args.putString(BUNDLE_QA_TYPE, params);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public String getQAInfoType() {
+        return mQAInfoType;
+    }
+
+    @Override
+    public void showDeleteSuccess() {
+        showSnackSuccessMessage(getString(R.string.qa_question_delete_success));
     }
 
     @Override
@@ -75,6 +75,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }
@@ -90,25 +95,20 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .qA_listInfoFragmentPresenterModule(new QA_listInfoFragmentPresenterModule(this))
                 .build().inject(this);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-        mListDatas.add(null);
-//        super.initData();
 
-    }
+        mQAInfoType = getArguments().getString(BUNDLE_QA_TYPE);
 
-    @Override
-    protected List requestCacheData(Long maxId, boolean isLoadMore) {
-        return mListDatas;
+        super.initData();
+
     }
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-//        super.requestNetData(maxId, isLoadMore);
+        requestNetData(null, maxId, mQAInfoType, isLoadMore);
+    }
+
+    private void requestNetData(String subject, Long maxId, String type, boolean isLoadMore) {
+        mPresenter.requestNetData(subject, maxId, type, isLoadMore);
     }
 
     @Override
@@ -118,58 +118,46 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return new CommonAdapter<QAListInfoBean>(getActivity(), R.layout.item_qa_content, mListDatas) {
+        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas);
+        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
-            protected void convert(ViewHolder holder, QAListInfoBean o, int position) {
-                holder.setText(R.id.item_info_title, "火星很危险，快回地球去吧");
-                holder.setText(R.id.item_info_time, "一周前");
-                holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed_reward)
-                        , 200, 40, 18f));
-                ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(null));
-                TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
-                String content = "火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
-                        "快回地球去吧火星很危险，" +
-                        "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧火星很危险，" +
-                        "快回地球去吧火星很危险，快回地球去吧火星很危险，快回地球去吧";
-                Bitmap newBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), com.zhiyicx.baseproject.R.mipmap.ico_potoablum),
-                        contentTextView.getLineHeight(), contentTextView.getLineHeight(), true);
-                Drawable headImage = new CircleImageDrawable(newBmp);
-                headImage.setBounds(8, 0, 8 + contentTextView.getLineHeight(), contentTextView.getLineHeight());
-                ImageSpan imgSpan = new CenterImageSpan(headImage, true);
-                SpannableString spannableString = SpannableString.valueOf("T" + content);
-                spannableString.setSpan(imgSpan, 0, 1, Spannable
-                        .SPAN_EXCLUSIVE_EXCLUSIVE);
-                contentTextView.setText(spannableString);
-
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(BUNDLE_QUESTION_BEAN, mListDatas.get(position));
+                intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
+                startActivity(intent);
             }
-        };
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
+        return adapter;
     }
 
-    private List<Link> setLinks(QAListInfoBean listInfoBean) {
-        List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link("200").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(followCountLink);
-
-        Link answerCountLink = new Link("40").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(answerCountLink);
-
-        Link rewardMoneyLink = new Link("￥18.0").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .withdrawals_item_enable))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(rewardMoneyLink);
-        return links;
+    @Override
+    protected boolean useEventBus() {
+        return true;
     }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE)
+    public void updateList(Bundle bundle) {
+        if (bundle != null) {
+            QAListInfoBean qaListInfoBean = (QAListInfoBean) bundle.
+                    getSerializable(EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE);
+            if (qaListInfoBean != null) {
+                for (int i = 0; i < mListDatas.size(); i++) {
+                    if (qaListInfoBean.getId().equals(mListDatas.get(i).getId())){
+                        mListDatas.remove(i);
+                        refreshData();
+                        showDeleteSuccess();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
 }

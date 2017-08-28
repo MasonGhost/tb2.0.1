@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBaseInfoRepository;
 
 import java.util.List;
 
@@ -25,9 +26,8 @@ public interface SearchContract {
 
     }
 
-    interface Repository{
-        Observable<BaseJson<List<InfoListDataBean>>> searchInfoList(String key,
-                                                                    long max_id);
+    interface Repository extends IBaseInfoRepository{
+
     }
 
 

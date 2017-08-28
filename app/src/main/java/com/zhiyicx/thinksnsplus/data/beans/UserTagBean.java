@@ -8,6 +8,9 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Transient;
+
+import java.io.Serializable;
 
 /**
  * @author Catherine
@@ -16,7 +19,10 @@ import org.greenrobot.greendao.annotation.Generated;
  * @contact email:648129313@qq.com
  */
 @Entity
-public class UserTagBean extends BaseListBean {
+public class UserTagBean extends BaseListBean implements Serializable{
+
+    @Transient
+    private static final long serialVersionUID = -7587963206423470086L;
 
     /**
      * {
@@ -119,6 +125,25 @@ public class UserTagBean extends BaseListBean {
                 ", tag_category_id=" + tag_category_id +
                 ", mine_has=" + mine_has +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserTagBean that = (UserTagBean) o;
+
+        if (tag_category_id != that.tag_category_id) return false;
+        return tagName.equals(that.tagName);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tagName.hashCode();
+        result = 31 * result + (int) (tag_category_id ^ (tag_category_id >>> 32));
+        return result;
     }
 
     public boolean getMine_has() {

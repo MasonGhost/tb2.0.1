@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 
+import com.zhiyicx.common.utils.DeviceUtils;
+
 /**
  * @Describe 自定义 popupindow,builder 模式
  * @Author Jungle68
@@ -106,6 +108,15 @@ public class CustomPopupWindow extends PopupWindow {
             showAtLocation(mContentView, Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
         } else {
             showAtLocation(mParentView, Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
+        }
+    }
+
+    public void showParentViewTop() {
+        if (mParentView != null) {
+            int[] location = new int[2];
+            mParentView.getLocationOnScreen(location);
+            showAtLocation(mParentView, Gravity.NO_GRAVITY,
+                    mParentView.getWidth() - mContentView.getWidth(), location[1] - mParentView.getHeight() + DeviceUtils.getStatuBarHeight(mActivity));
         }
     }
 

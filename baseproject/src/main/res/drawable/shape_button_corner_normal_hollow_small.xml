@@ -3,10 +3,10 @@
     android:shape="rectangle" >
 
     <!-- 纯色 -->
-    <stroke android:color="@color/bt_pressed_hollow" />
-    <stroke android:color="@color/bt_normal"/>
+    <stroke android:color="@color/bt_normal"
+            android:width="@dimen/spacing_line"
+        />
     <corners
         android:radius="@dimen/button_corner_small"
-        ></corners>
-
+        />
 </shape>

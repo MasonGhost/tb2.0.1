@@ -25,7 +25,7 @@
             android:layout_gravity="bottom"
             android:orientation="vertical">
 
-            <include layout="@layout/include_horizontal_divider_light"></include>
+            <include layout="@layout/include_horizontal_divider_light"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,6 +33,30 @@
                 android:background="@color/white"
                 android:gravity="center"
                 android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_reward_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+                    <!--打赏-->
+                    <TextView
+                        android:id="@+id/tv_reward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/ico_me_reward"
+                        android:drawablePadding="@dimen/spacing_small_3dp"
+                        android:text="@string/reward"
+                        android:textColor="@color/important_for_content"
+                        android:textSize="@dimen/size_content"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="@dimen/divider_line"
+                    android:layout_height="match_parent"
+                    android:background="@color/general_for_line_light">
+                </View>
 
                 <LinearLayout
                     android:id="@+id/ll_follow_container"
@@ -128,7 +152,7 @@
                 android:src="@mipmap/topbar_share_white"/>
         </RelativeLayout>
 
-        <include layout="@layout/include_horizontal_divider"></include>
+        <include layout="@layout/include_horizontal_divider"/>
 
     </LinearLayout>
 

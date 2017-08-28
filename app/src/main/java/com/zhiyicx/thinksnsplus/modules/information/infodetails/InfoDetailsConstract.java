@@ -2,29 +2,25 @@ package com.zhiyicx.thinksnsplus.modules.information.infodetails;
 
 import android.graphics.Bitmap;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.InfoCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoCommentListBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDetailBean;
+import com.zhiyicx.thinksnsplus.data.beans.InfoDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoListDataBean;
 import com.zhiyicx.thinksnsplus.data.beans.InfoWebBean;
+import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IRewardRepository;
 
 import java.util.List;
 
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 import rx.Observable;
-
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_COUNT;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_REWARDS_USER_LIST;
 
 /**
  * @Author Jliuer
@@ -50,6 +46,10 @@ public interface InfoDetailsConstract {
         void loadAllError();
 
         void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> rewadslist);
+
+        void updateInfoHeader(InfoListDataBean infoDetailBean);
+
+        void deleteInfo(boolean deleting, boolean success, String message);
     }
 
     interface Presenter extends ITSListPresenter<InfoCommentListBean> {
@@ -70,14 +70,26 @@ public interface InfoDetailsConstract {
 
         void reqReWardsData(int id);
 
+        void getInfoDetail(String news_id);
+
+        void deleteInfo();
+
+        List<RealAdvertListBean> getAdvert();
     }
 
     interface Repository extends IRewardRepository {
-        Observable<BaseJson<List<InfoCommentListBean>>> getInfoCommentList(String news_id,
-                                                                           Long max_id,
-                                                                           Long limit);
 
-        Observable<BaseJson<InfoWebBean>> getInfoWebContent(String news_id);
+        Observable<InfoCommentBean> getInfoCommentListV2(String news_id,
+                                                         Long max_id,
+                                                         Long limit);
+
+        Observable<List<InfoDigListBean>> getInfoDigListV2(String news_id,
+                                                           Long max_id);
+
+        Observable<List<InfoListDataBean>> getRelateInfoList(String news_id);
+
+        Observable<InfoListDataBean> getInfoDetail(String news_id);
+
 
         void handleCollect(boolean isCollected, String news_id);
 
@@ -88,6 +100,7 @@ public interface InfoDetailsConstract {
 
         void deleteComment(int news_id, int comment_id);
 
+        Observable<BaseJsonV2<Object>> deleteInfo(String category, String news_id);
 
     }
 }

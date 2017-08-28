@@ -157,12 +157,6 @@ public class ChannelListPresenter extends AppBasePresenter<ChannelListContract.R
         addSubscrebe(subscription);
     }
 
-    @Override
-    public void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean) {
-
-        mRepository.handleSubscribChannel(channelSubscripBean);
-        EventBus.getDefault().post(channelSubscripBean, EventBusTagConfig.EVENT_CHANNEL_SUBSCRIB);
-    }
 
     @Override
     public List<SystemConfigBean.Advert> getAdvert() {

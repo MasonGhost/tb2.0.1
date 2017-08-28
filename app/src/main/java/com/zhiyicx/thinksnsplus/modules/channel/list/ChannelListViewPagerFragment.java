@@ -2,12 +2,16 @@ package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author LiuChao
@@ -25,6 +29,8 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
     public static final int PAGE_ALL_CHANNEL_LIST = 1;
     public static final String PAGE_TYPE = "page_type";
 
+    @Inject
+    ChannelListPresenter mChannelListPresenter;
 
     @Override
     protected List<String> initTitles() {
@@ -39,12 +45,39 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
         Bundle allChannelBundle = new Bundle();
         allChannelBundle.putInt(PAGE_TYPE, PAGE_ALL_CHANNEL_LIST);
         Fragment allChannelFragment = ChannelListFragment.newInstance(allChannelBundle);
-        return Arrays.asList(subscripChannelFragment, allChannelFragment);
+        mFragmentList = Arrays.asList(subscripChannelFragment, allChannelFragment);
+        return mFragmentList;
     }
 
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        mVpFragment.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    ChannelListFragment fragment = (ChannelListFragment) mFragmentList.get(0);
+                    if (fragment.handleTouristControl()) {
+                        setSelectPager(PAGE_ALL_CHANNEL_LIST);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     public static ChannelListViewPagerFragment newInstance(Bundle bundle) {
@@ -59,6 +92,6 @@ public class ChannelListViewPagerFragment extends TSViewPagerFragment<ChannelLis
      * @param page
      */
     public void setSelectPager(int page) {
-        mVpFragment.setCurrentItem(page,false);
+        mVpFragment.setCurrentItem(page, false);
     }
 }

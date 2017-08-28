@@ -227,7 +227,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void goRecharge(Class<?> cls) {
-        startActivity(new Intent(getActivity(),cls));
+        startActivity(new Intent(getActivity(), cls));
     }
 
     @Override
@@ -235,11 +235,16 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     }
 
+    /**
+     * 音乐图标消失
+     */
     @Override
     public void onDismiss() {
-        View view = getLeftViewOfMusicWindow();
+        View view = getRightViewOfMusicWindow();
+        View view_test = getRightViewOfMusicWindowTwo();
         if (view != null && WindowUtils.getIsPause()) {
-            view.setTranslationX(0);
+            int rightX = ConvertUtils.dp2px(view.getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(view.getContext(), 15);
+            view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),view.getPaddingRight()-rightX,view.getPaddingBottom());
         }
         if (WindowUtils.getIsPause()) {
             WindowUtils.removeWindowDismisslistener(this);
@@ -247,7 +252,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     * 关闭加载动画
+     * 关闭中心放大缩小加载动画
      */
     protected void closeLoadingView() {
         if (mCenterLoadingView == null) {
@@ -260,7 +265,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     }
 
     /**
-     * 开启加载动画
+     * 开启中心放大缩小加载动画
      */
     protected void showLoadingView() {
         if (mCenterLoadingView == null) {
@@ -350,16 +355,23 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         return DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelOffset(R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(R.dimen.divider_line);
     }
 
+    /**
+     * 中心菊花
+     * @param msg
+     */
     @Override
     public void showCenterLoading(String msg) {
-        if (mCenterLoadingDialog!=null)
-        mCenterLoadingDialog.showStateIng(msg);
+        if (mCenterLoadingDialog != null)
+            mCenterLoadingDialog.showStateIng(msg);
     }
 
+    /**
+     * 中心菊花
+     */
     @Override
     public void hideCenterLoading() {
-        if (mCenterLoadingDialog!=null)
-        mCenterLoadingDialog.onDestroy();
+        if (mCenterLoadingDialog != null)
+            mCenterLoadingDialog.onDestroy();
     }
 
     /**
@@ -391,10 +403,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return 默认不可用
      */
     protected boolean setUseSatusbar() {
-        if (!this.getActivity().getClass().getSimpleName().contains("HomeActivity")) {
-            mIscUseSatusbar = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-        }
-        return mIscUseSatusbar;
+        return mIscUseSatusbar = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     /**
@@ -403,11 +412,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return
      */
     protected boolean setUseStatusView() {
-        boolean userStatusView = false;
-        if (!this.getActivity().getClass().getSimpleName().contains("HomeActivity")) {
-            userStatusView = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-        }
-        return userStatusView;
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
 
@@ -440,7 +445,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * 音乐悬浮窗是否正在显示
      */
 //    protected void musicWindowsStatus(boolean isShow) {
-//        final View view = getLeftViewOfMusicWindow();
+//        final View view = getRightViewOfMusicWindow();
 //        if (view != null && isShow && !rightViewHadTranslated) {
 //            if (view.getVisibility() == View.VISIBLE) {
 //                // 向左移动一定距离
@@ -455,45 +460,36 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 //    }
     protected void musicWindowsStatus(final boolean isShow) {
         WindowUtils.changeToBlackIcon();
-        final View view = getLeftViewOfMusicWindow();
-        if (getLeftViewOfMusicWindow() != null) {
-            mViewTreeSubscription = RxView.globalLayouts(getLeftViewOfMusicWindow())
+        final View view = getRightViewOfMusicWindow();
+        final View view_test = getRightViewOfMusicWindowTwo();
+        if (getRightViewOfMusicWindow() != null) {
+            mViewTreeSubscription = RxView.globalLayouts(getRightViewOfMusicWindow())
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
-
                             if (view != null && isShow && !rightViewHadTranslated) {
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
                                     int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-                                    view.setTranslationX(-rightX);
+                                    view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),view.getPaddingRight()+rightX,view.getPaddingBottom());
                                     rightViewHadTranslated = true;
                                 } else {
-                                    view.setTranslationX(0);
                                     rightViewHadTranslated = false;
                                 }
                             }
-
-//                            if (view != null && isShow) {
-//                                if (view.getVisibility() == View.VISIBLE) {
-//                                    // 向左移动一定距离
-//                                    int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-//                                    view.setTranslationX(-rightX);
-//                                }
-//                            } else if (view != null) {
-//                                view.setTranslationX(0);
-//                            }
-//                            if (mViewTreeSubscription != null) {
-//                                mViewTreeSubscription.unsubscribe();
-//                            }
                         }
                     });
         }
     }
 
-    protected View getLeftViewOfMusicWindow() {
+    protected View getRightViewOfMusicWindow() {
         return mToolbarRight;
     }
+
+    protected View getRightViewOfMusicWindowTwo() {
+        return null;
+    }
+
 
     protected boolean needCenterLoadingDialog() {
         return false;
