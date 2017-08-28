@@ -123,6 +123,9 @@
 
     <!--资讯-->
     <string name="info_title">完善文章信息</string>
+    <string name="info_published">已发布</string>
+    <string name="info_publishing">投稿中</string>
+    <string name="info_publishfailed">被驳回</string>
     <string name="info_cover">上传封面</string>
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
@@ -505,6 +508,28 @@
     <string name="qa_reset_reward_success">设置悬赏成功</string>
     <string name="qa_expert_list">专家列表</string>
     <string name="qa_mine">我的问答</string>
+    <string name="qa_mine_question">提问</string>
+    <string name="qa_mine_answer">回答</string>
+    <string name="qa_mine_follow">关注</string>
+    <string name="qa_mine_all_common">全部</string>
+    <string name="qa_mine_other_common">其他</string>
+    <string-array name="qa_mine_publish_question_title">
+        <item>@string/qa_mine_all_common</item>
+        <item>邀请</item>
+        <item>悬赏</item>
+        <item>@string/qa_mine_other_common</item>
+    </string-array>
+    <string-array name="qa_mine_answer_title">
+        <item>@string/qa_mine_all_common</item>
+        <item>未阅读</item>
+        <item>被采纳</item>
+        <item>被邀请</item>
+        <item>@string/qa_mine_other_common</item>
+    </string-array>
+    <string-array name="qa_mine_follow_title">
+        <item>问题</item>
+        <item>话题</item>
+    </string-array>
 
     <!--签到-->
     <string name="check_in">签到</string>

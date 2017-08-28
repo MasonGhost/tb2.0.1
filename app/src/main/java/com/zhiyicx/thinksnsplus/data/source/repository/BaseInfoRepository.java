@@ -12,7 +12,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Catherine
@@ -61,6 +63,15 @@ public class BaseInfoRepository implements IBaseInfoRepository{
 
     @Override
     public Observable<List<InfoListDataBean>> getCollectionListV2(long max_id) {
-        return mInfoMainClient.getInfoCollectListV2(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
+        return mInfoMainClient.getInfoCollectListV2(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<InfoListDataBean>> getMyInfoList(String type, long max_id) {
+        return mInfoMainClient.getMyInfoList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE),type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

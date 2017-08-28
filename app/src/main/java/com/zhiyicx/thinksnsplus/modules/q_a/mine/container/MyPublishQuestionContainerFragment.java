@@ -1,4 +1,4 @@
-package com.zhiyicx.thinksnsplus.modules.my_manuscripts;
+package com.zhiyicx.thinksnsplus.modules.q_a.mine.container;
 
 import android.support.v4.app.Fragment;
 
@@ -7,14 +7,17 @@ import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import java.util.List;
 
 /**
- * @Author Jliuer
- * @Date 2017/08/23/11:10
- * @Email Jliuer@aliyun.com
- * @Description
+ * @author Catherine
+ * @describe
+ * @date 2017/8/28
+ * @contact email:648129313@qq.com
  */
-public class ManuscriptContainerFragment extends TSViewPagerFragment {
 
+public class MyPublishQuestionContainerFragment extends TSViewPagerFragment{
+    @Override
+    public void setPresenter(Object presenter) {
 
+    }
 
     @Override
     protected List<String> initTitles() {

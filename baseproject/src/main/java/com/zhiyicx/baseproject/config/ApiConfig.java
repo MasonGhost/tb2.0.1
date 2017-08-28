@@ -294,6 +294,9 @@ public class ApiConfig {
     // 资讯打赏统计
     public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards/sum";
 
+    // 获取用户投稿列表
+    public static final String APP_PATH_GET_MY_INFO = "/api/" + API_VERSION_2 + "/user/news/contributes";
+
 
     /**
      * 音乐相关 升级到V2

@@ -7,8 +7,7 @@ import com.zhiyicx.baseproject.impl.share.ShareModule;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 
 /**
  * @Author Jliuer

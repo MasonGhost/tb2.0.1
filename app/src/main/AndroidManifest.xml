@@ -253,9 +253,9 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-                android:name=".modules.channel.mine.MyGroupActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
+            android:name=".modules.channel.mine.MyGroupActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- 问答相关 -->
         <activity
@@ -291,6 +291,10 @@
             android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+                android:name=".modules.q_a.mine.container.MyQuestionActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
 
         <!-- 认证相关页面 -->
         <activity
@@ -503,13 +507,18 @@
         <activity
             android:name=".modules.findsomeone.contacts.ContactsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"/>
-        <activity android:name=".modules.draftbox.DraftBoxActivity">
-        </activity>
-        <activity android:name=".modules.my_manuscripts.ManuscriptsActivity">
-        </activity>
-        <activity android:name=".modules.music_fm.paided_music.MyMusicActivity">
-        </activity>
+        <activity
+            android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.draftbox.DraftBoxActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.information.my_info.ManuscriptsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.music_fm.paided_music.MyMusicActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
