@@ -576,7 +576,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         onUserInfoClick(userInfoBean);
     }
 
-
     @Override
     public void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
