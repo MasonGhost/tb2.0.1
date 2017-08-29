@@ -158,6 +158,7 @@ public class ChannelDetailPresenter extends AppBasePresenter<ChannelDetailContra
                         @Override
                         protected void onFailure(String message, int code) {
                             super.onFailure(message, code);
+                            mRootView.loadAllError();
                             mRootView.showSnackErrorMessage(message);
                         }
 
