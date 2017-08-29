@@ -74,8 +74,12 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         } else {
             imageView.setVisibility(View.GONE);
         }
+        if (infoBean.getAnswer()==null){
+            contentTextView.setVisibility(View.GONE);
+        }else{
+            ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(), infoBean.getAnswer().getAnonymity() == 1, false);
+        }
 
-        ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(), infoBean.getAnswer().getAnonymity() == 1, false);
     }
 
     private List<Link> setLinks(QAListInfoBean infoBean) {
