@@ -328,6 +328,8 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_1:// 评论
                     showCommentView();
+                    String contentHint = getString(R.string.default_input_hint);
+                    mIlvComment.setEtContentHint(contentHint);
                     mReplyUserId = 0;
                     break;
                 case DynamicDetailMenuView.ITEM_POSITION_2:// 分享
@@ -349,31 +351,20 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
         mCoordinatorLayout.setEnabled(false);
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        getActivity().finish();
-                    }
-                });
+                .subscribe(aVoid -> getActivity().finish());
         RxView.clicks(mTvToolbarRight)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                    }
+                .subscribe(aVoid -> {
                 });
         RxView.clicks(mVShadow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        mIlvComment.setVisibility(View.GONE);
-                        mIlvComment.clearFocus();
-                        DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
-                        mLLBottomMenuContainer.setVisibility(View.VISIBLE);
-                        mVShadow.setVisibility(View.GONE);
+                .subscribe(aVoid -> {
+                    mIlvComment.setVisibility(View.GONE);
+                    mIlvComment.clearFocus();
+                    DeviceUtils.hideSoftKeyboard(getActivity(), mIlvComment.getEtContent());
+                    mLLBottomMenuContainer.setVisibility(View.VISIBLE);
+                    mVShadow.setVisibility(View.GONE);
 
-                    }
                 });
         mIlvComment.setOnSendClickListener(this);
     }
@@ -393,7 +384,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
      */
     private void initDeleteCommentPopupWindow(final InfoCommentListBean data) {
         mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
+                .item1Str(BuildConfig.USE_TOLL && data.getId() != -1L ? getString(R.string.dynamic_list_top_comment) : null)
                 .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))
@@ -406,10 +397,11 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                     Bundle bundle = new Bundle();
                     bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
                     bundle.putLong(StickTopFragment.PARENT_ID, mInfoMation.getId());// 资源id
-                    bundle.putLong(StickTopFragment.CHILD_ID,data.getId());
+                    bundle.putLong(StickTopFragment.CHILD_ID, data.getId());
                     Intent intent = new Intent(getActivity(), StickTopActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    mDeletCommentPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
                     mPresenter.deleteComment(data);
