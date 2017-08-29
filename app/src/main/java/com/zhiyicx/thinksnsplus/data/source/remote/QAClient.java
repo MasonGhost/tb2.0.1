@@ -131,6 +131,13 @@ public interface QAClient {
     Observable<List<QAListInfoBean>> getQAQustionByTopic(@Path("topic") String topic_id, @Query("subject") String subject, @Query
             ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
 
+    /**
+     * 获取话题下专家列表
+     * @param topic_id 话题id
+     * @param after
+     * @param limit
+     * @return
+     */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERTS)
     Observable<List<ExpertBean>> getTopicExperts(@Path("topic_id") int topic_id, @Query("after") Long after, @Query("limit") Long limit);
 
@@ -193,6 +200,12 @@ public interface QAClient {
     @DELETE(ApiConfig.APP_PATH_DELETE_QUESTION_COMMENT)
     Observable<BaseJsonV2<Object>> deleteQuestionComment(@Path("question") String question_id, @Path("answer") String answer_id);
 
+    /**
+     * 批量获取专家列表
+     * @param topic_ids
+     * @param size
+     * @return
+     */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERT_LIST)
     Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("offset") int size);
 

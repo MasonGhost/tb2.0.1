@@ -440,8 +440,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     @NonNull
     private CommonAdapter<MusicDetaisBean> getCommonAdapter() {
         mAdapter = new CommonAdapter<MusicDetaisBean>(getActivity(), R.layout
-                .item_music_detail_list,
-                mAdapterList) {
+                .item_music_detail_list, mAdapterList) {
             @Override
             protected void convert(ViewHolder holder, MusicDetaisBean item, int
                     position) {

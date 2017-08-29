@@ -238,7 +238,7 @@
                 app:leftImage="@mipmap/ico_me_wallet"
                 app:leftText="@string/wallet"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
-                app:showLine="false"/>
+                app:showLine="true"/>
             <!--收藏-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_collect"
