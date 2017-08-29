@@ -919,7 +919,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onDestroyView() {
-        if (!mStatusbar.isUnsubscribed()) {
+        if (mStatusbar!=null&&!mStatusbar.isUnsubscribed()) {
             mStatusbar.unsubscribe();
         }
 
