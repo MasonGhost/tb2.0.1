@@ -72,14 +72,13 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public static final int FEMALE = 2;
     public static final int SECRET = 0;
     @Id
-    @SerializedName("id")
+    @SerializedName(value="user_id", alternate={"id"})
     private Long user_id;
     private String name;
-    @Unique
-    @SerializedName("mobi")
+    @SerializedName(value="phone", alternate={"mobi"})
     private String phone;
     private String email;
-    @SerializedName("bio")
+    @SerializedName(value="intro", alternate={"bio"})
     private String intro;
     private int sex;            // 1 2 3  1男 2女 3其他
     @Transient
@@ -97,7 +96,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     private String created_at;
     private String updated_at;
     private String avatar;      // 头像 地址
-    @SerializedName("bg")
+    @SerializedName(value="cover", alternate={"bg"})
     private String cover;// 封面
     @Transient
     private WalletBean wallet;

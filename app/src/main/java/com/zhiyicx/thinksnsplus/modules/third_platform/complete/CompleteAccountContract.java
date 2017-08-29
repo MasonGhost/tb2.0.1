@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.third_platform.complete;
 
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.IThirdPlatformRepository;
 
 /**
@@ -15,10 +16,17 @@ public interface CompleteAccountContract {
 
     interface View extends IBaseView<Presenter>{
         void showErrorTips(String message);
+
+        void checkNameSuccess(ThridInfoBean thridInfoBean, String name);
+
+        void registerSuccess();
     }
 
     interface Presenter extends IBasePresenter{
 
+        void checkName(ThridInfoBean thridInfoBean,String name);
+
+        void thridRegister(ThridInfoBean thridInfoBean, String name);
     }
 
     interface Repository extends IThirdPlatformRepository{

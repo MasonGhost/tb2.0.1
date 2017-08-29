@@ -132,8 +132,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @BindView(R.id.v_shadow)
     View mVShadow;
 
-    private Subscription mStatusBar;
-
+    private Subscription mStatusbar;
 
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     // 上一个页面传过来的用户信息
@@ -914,7 +913,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void supportFlymeSutsusbar() {
-        mStatusBar = Observable.timer(1500, TimeUnit.MILLISECONDS)
+        mStatusbar = Observable.timer(1500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -925,8 +924,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onDestroyView() {
-        if (!mStatusBar.isUnsubscribed()) {
-            mStatusBar.unsubscribe();
+        if (!mStatusbar.isUnsubscribed()) {
+            mStatusbar.unsubscribe();
         }
 
         super.onDestroyView();

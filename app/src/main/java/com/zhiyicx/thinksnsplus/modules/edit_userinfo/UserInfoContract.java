@@ -5,6 +5,7 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
@@ -14,11 +15,14 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -30,7 +34,13 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_BIND_WITH_INPUT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_BIND_WITH_LOGIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANDEL_BIND;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_BIND_OR_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BIND_THIRDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RANKS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INFO;
@@ -155,14 +165,6 @@ public interface UserInfoContract {
         void handleFollow(UserInfoBean followFansBean);
 
         /**
-         * 获取点赞排行榜
-         *
-         * @param page
-         * @return
-         */
-        Observable<BaseJson<List<DigRankBean>>> getDidRankList(int page);
-
-        /**
          * 获取用户收到的点赞
          *
          * @param max_id
@@ -179,16 +181,35 @@ public interface UserInfoContract {
          */
         Observable<List<CommentedBean>> getMyComments(int max_id);
 
-
         /**
-         * @param time 零时区的秒级时间戳
-         * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+         * 更新认证用户的手机号码和邮箱
+         * @param phone
+         * @param email
+         * @param verifiable_code
          * @return
          */
-        Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key);
+        Observable<Object> updatePhoneOrEmail(String phone, String email, String verifiable_code);
+
+        /**
+         * 解除用户 Phone 绑定:
+         *
+         * @param password
+         * @param verify_code
+         * @return
+         */
+        Observable<Object> deletePhone(String password, String verify_code);
+
+        /**
+         * 解除用户 E-Mail 绑定:
+         *
+         * @param password
+         * @param verify_code
+         * @return
+         */
+        Observable<Object> deleteEmail(String password, String verify_code);
 
 
-/*******************************************  标签  *********************************************/
+        /*******************************************  标签  *********************************************/
 
         /**
          * 获取一个用户的标签
@@ -306,6 +327,68 @@ public interface UserInfoContract {
          * @return
          */
         Observable<List<UserInfoBean>> getCheckInRanks(Integer offset);
+
+
+        /*******************************************  三方登录  *********************************************/
+
+        /**
+         * 获取已经绑定的三方
+         * qq	    腾讯 QQ 。
+         * weibo	新浪 Weibo 。
+         * wechat	腾讯微信 。
+         *
+         * @return 请求成功后，将返回用户已绑定第三方的 provider 名称，不存在列表中的代表用户并为绑定。
+         */
+        Observable<List<String>> getBindThirds();
+
+        /**
+         * 检查绑定并获取用户授权
+         *
+         * @param access_token thrid token
+         * @return 返回的数据参考 「用户／授权」接口，如果返回 404 则表示没有改账号没有注册，进入第三方登录注册流程。
+         */
+        Observable<AuthBean> checkThridIsRegitser(String provider, String access_token);
+
+        /**
+         * 检查注册信息或者注册用户
+         *
+         * @param provider     type qq\weibo\wechat
+         * @param access_token 获取的 Provider Access Token。
+         * @param name         用户名。
+         * @param check        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
+         * @return
+         */
+        Observable<AuthBean> checkUserOrRegisterUser(String provider, String access_token, String name, Boolean check);
+
+        /**
+         * 已登录账号绑定
+         *
+         * @param provider
+         * @param access_token
+         * @return
+         */
+        Observable<Object> bindWithLogin(String provider, String access_token);
+
+        /**
+         * 输入账号密码绑定
+         *
+         * @param provider     type qq\weibo\wechat
+         * @param access_token 获取的 Provider Access Token。
+         * @param login        用户登录名，手机，邮箱
+         * @param password     用户密码。
+         * @return
+         */
+        Observable<AuthBean> bindWithInput(String provider, String access_token, String login, String password);
+
+        /**
+         * 取消绑定
+         *
+         * @param provider type qq\weibo\wechat
+         * @return
+         */
+        Observable<Object> cancelBind(String provider);
+
+
     }
 
     interface Presenter extends IBasePresenter {

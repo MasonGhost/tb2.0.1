@@ -288,7 +288,7 @@ public class SystemRepository implements ISystemRepository {
      * @return
      */
     @Override
-    public Observable<BaseJson<Object>> systemFeedback(String content, long system_mark) {
+    public Observable<Object> systemFeedback(String content, long system_mark) {
         return mCommonClient.systemFeedback(content, system_mark)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
