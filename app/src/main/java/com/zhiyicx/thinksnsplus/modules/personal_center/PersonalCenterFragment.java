@@ -174,6 +174,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
+    protected int getstatusbarAndToolbarHeight() {
+        if (setUseSatusbar()) {
+            return 0;
+        }
+        return super.getstatusbarAndToolbarHeight();
+    }
+
+    @Override
     protected boolean usePermisson() {
         return true;
     }
@@ -228,16 +236,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected boolean setStatusbarGrey() {
-        return true;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         mPresenter.requestNetData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
@@ -277,11 +275,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected boolean showToolbar() {
         return false;
-    }
-
-    @Override
-    protected boolean setUseSatusbar() {
-        return true;
     }
 
     @Override
@@ -585,6 +578,11 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     public void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
@@ -602,10 +600,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void initToolBar() {
-        // toolBar 设置状态栏高度的 marginTop
-        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-        mLlToolbarContainerParent.setLayoutParams(layoutParams);
+        if (setUseSatusbar()) {
+            // toolBar 设置状态栏高度的 marginTop
+            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+            mLlToolbarContainerParent.setLayoutParams(layoutParams);
+        }
     }
 
     /**
