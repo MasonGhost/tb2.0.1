@@ -308,8 +308,8 @@ public class UserInfoFragment extends TSFragment<UserInfoContract.Presenter> imp
     @Override
     protected void setRightClick() {
         if(!introduceChanged){
-
             showSnackErrorMessage(getString(R.string.please_input_intro));
+            return;
         }
         // 点击完成，修改用户信息
         mPresenter.changUserInfo(packageUserInfo(), false);
