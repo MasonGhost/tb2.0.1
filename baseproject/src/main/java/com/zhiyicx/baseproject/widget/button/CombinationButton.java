@@ -2,6 +2,7 @@ package com.zhiyicx.baseproject.widget.button;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -92,6 +93,13 @@ public class CombinationButton extends FrameLayout {
      */
     public void setRightText(String rightText) {
         mCombinedButtonRightText.setText(rightText);
+    }
+
+    /**
+     * 设置右边文字内容颜色
+     */
+    public void setRightTextColor(int color) {
+        mCombinedButtonRightText.setTextColor(color);
     }
 
     public TextView getCombinedButtonRightTextView() {

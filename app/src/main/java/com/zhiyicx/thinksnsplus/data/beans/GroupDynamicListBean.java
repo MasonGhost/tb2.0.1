@@ -63,10 +63,9 @@ public class GroupDynamicListBean extends BaseListBean {
     private boolean has_like;
     private int collections;
     private boolean has_collection;
-    @SerializedName("comments_count")
     private int comments_count;
     private Long user_id;
-    @SerializedName("group_post_mark")
+    @SerializedName(value = "feed_mark",alternate = {"group_post_mark"})
     private Long feed_mark;
     @ToOne(joinProperty = "user_id")
     private UserInfoBean userInfoBean;
@@ -76,7 +75,7 @@ public class GroupDynamicListBean extends BaseListBean {
     @Convert(converter = GroupDynamicImageConvert.class, columnType = String.class)
     private List<ImagesBean> images;
     @Convert(converter = GroupDynamicCommentConvert.class, columnType = String.class)
-    @SerializedName("comments")
+    @SerializedName(value = "commentslist",alternate = {"comments"})
     private List<GroupDynamicCommentListBean> commentslist;
     @Convert(converter = GroupDynamicLikesConvert.class, columnType = String.class)
     private List<DynamicDigListBean> mGroupDynamicLikeListBeanList;

@@ -1,11 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.third_platform.complete;
 
-import android.os.Bundle;
-
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-
-import static com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity.BUNDLE_THIRD_INFO;
 
 /**
  * @author Catherine
@@ -18,7 +14,7 @@ public class CompleteAccountActivity extends TSActivity<CompleteAccountPresenter
 
     @Override
     protected CompleteAccountFragment getFragment() {
-        return new CompleteAccountFragment().instance(getIntent().getBundleExtra(BUNDLE_THIRD_INFO));
+        return new CompleteAccountFragment().instance(getIntent().getExtras());
     }
 
     @Override

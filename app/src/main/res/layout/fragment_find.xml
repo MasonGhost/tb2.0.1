@@ -24,7 +24,7 @@
                 android:layout_height="@dimen/full_button_height"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:leftImage="@mipmap/discover_ico_queansw"
                 app:leftText="@string/quiz"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
@@ -33,7 +33,7 @@
                 android:id="@+id/find_rank"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/discover_ico_rankinglist"
