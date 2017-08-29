@@ -86,15 +86,13 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         mEmptyView.setVisibility(View.GONE);
-        mFragmentInfoSearchEdittext.setOnEditorActionListener(
-                (v, actionId, event) -> {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        mPresenter.searchLocation(mFragmentInfoSearchEdittext.getText().toString());
-                        DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
-                        return true;
-                    }
-                    return false;
-                });
+
+        RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                mPresenter.searchLocation(mFragmentInfoSearchEdittext.getText().toString());
+                DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+            }
+        });
         mRvList.setBackgroundResource(R.color.white);
 //        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
 //                .subscribe(textViewAfterTextChangeEvent -> {
