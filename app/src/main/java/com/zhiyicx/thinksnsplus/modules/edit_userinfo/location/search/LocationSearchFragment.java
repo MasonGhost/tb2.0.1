@@ -96,11 +96,11 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
                     return false;
                 });
         mRvList.setBackgroundResource(R.color.white);
-        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
-                .subscribe(textViewAfterTextChangeEvent -> {
-                    mPresenter.searchLocation(textViewAfterTextChangeEvent.editable().toString());
-
-                });
+//        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
+//                .subscribe(textViewAfterTextChangeEvent -> {
+//                    mPresenter.searchLocation(textViewAfterTextChangeEvent.editable().toString());
+//
+//                });
     }
 
     @Override

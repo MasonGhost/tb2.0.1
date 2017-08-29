@@ -96,10 +96,10 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
                     return false;
                 });
         mRvList.setBackgroundResource(R.color.white);
-        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
-                .subscribe(textViewAfterTextChangeEvent -> {
-                    mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
-                });
+//        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
+//                .subscribe(textViewAfterTextChangeEvent -> {
+//                    mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
+//                });
     }
 
     @Override
