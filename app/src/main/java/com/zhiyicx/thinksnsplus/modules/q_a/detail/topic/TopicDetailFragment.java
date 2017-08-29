@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +13,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,7 +31,6 @@ import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.FileUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -144,7 +139,7 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 ImageView imageView = holder.getImageViwe(R.id.item_info_imag);
                 holder.setText(R.id.item_info_title, infoBean.getSubject());
                 holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyForDetail(infoBean.getCreated_at()));
-                holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed_reward)
+                holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), getString(R.string.qa_show_topic_followed_content)
                         , infoBean.getWatchers_count(), infoBean.getAnswers_count(), infoBean.getAmount()));
                 ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean));
                 TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
