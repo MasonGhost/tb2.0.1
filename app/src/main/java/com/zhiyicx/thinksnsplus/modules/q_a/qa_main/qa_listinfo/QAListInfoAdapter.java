@@ -25,6 +25,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * @Author Jliuer
@@ -47,9 +48,12 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         ImageView imageView = holder.getImageViwe(R.id.item_info_imag);
         holder.setText(R.id.item_info_title, infoBean.getSubject());
         holder.setText(R.id.item_info_time, TimeUtils.getTimeFriendlyForDetail(infoBean.getCreated_at()));
-        holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
-                , infoBean.getWatchers_count(), infoBean.getAnswers_count(), PayConfig.realCurrencyFen2Yuan(infoBean.getAmount())));
-        ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean));
+        holder.setText(R.id.item_info_count, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_content)
+                , infoBean.getWatchers_count(), infoBean.getAnswers_count()));
+        holder.setText(R.id.item_info_reward, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
+                , PayConfig.realCurrencyFen2Yuan(infoBean.getAmount())));
+        ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean), false);
+        ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_reward), setLinks());
         TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
         String content = infoBean.getBody();
         int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
@@ -75,23 +79,19 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
     private List<Link> setLinks(QAListInfoBean infoBean) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(infoBean.getWatchers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
+        Link followCountLink = new Link(Pattern.compile("\\b\\d+\\b")).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(followCountLink);
+        return links;
+    }
 
-        Link answerCountLink = new Link(infoBean.getAnswers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(answerCountLink);
-
-        Link rewardMoneyLink = new Link("￥" + PayConfig.realCurrencyFen2Yuan(infoBean.getAmount())).setTextColor(ContextCompat.getColor(getContext(), R.color
+    private List<Link> setLinks() {
+        List<Link> links = new ArrayList<>();
+        Link rewardMoneyLink = new Link(Pattern.compile("¥\\d+\\.\\d+")).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .withdrawals_item_enable))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
                         .general_for_hint))

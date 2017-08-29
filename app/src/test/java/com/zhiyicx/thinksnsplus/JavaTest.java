@@ -105,6 +105,18 @@ public class JavaTest {
     }
 
     @Test
+    public void matchTest2() {
+        String reg = "¥\\d+\\.\\d+";
+        String test = " 2打赏 · 6 评论 ¥3.5啦啦啦";
+        Matcher matcher = Pattern.compile(reg).matcher(test);
+        if (matcher.find()) {
+            System.out.println("result::" + matcher.group(0));
+            System.out.println("result2::" + matcher.groupCount());
+
+        }
+    }
+
+    @Test
     public void replaceTest() {
         String tag = "@![image](580)哈哈哈哈哈ヽ(ｏ`皿′ｏ)ﾉ((*゜Д゜)ゞ”😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁@![image](581)";
         Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
