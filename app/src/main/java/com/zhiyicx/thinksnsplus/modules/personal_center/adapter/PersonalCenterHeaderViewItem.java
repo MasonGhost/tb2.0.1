@@ -314,7 +314,7 @@ public class PersonalCenterHeaderViewItem {
             tv_addres.setVisibility(View.GONE);
         } else {
             tv_addres.setVisibility(View.VISIBLE);
-            tv_addres.setText(userInfoBean.getLocation());
+            tv_addres.setText(mActivity.getString(R.string.default_location_format,userInfoBean.getLocation()));
         }
         mUserInfoTagsAdapter = new UserInfoTagsAdapter(userInfoBean.getTags(), mActivity, true);
         mFlTags.setAdapter(mUserInfoTagsAdapter);

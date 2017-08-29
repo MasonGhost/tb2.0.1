@@ -600,5 +600,6 @@
     <string name="please_input_intro">请输入简介</string>
     <string name="default_intro_format">简介：%s</string>
     <string name="default_certify_format">认证：%s</string>
+    <string name="default_location_format">地址：%s</string>
     <string name="default_certify">当前用户还没有认证呢</string>
 </resources>
