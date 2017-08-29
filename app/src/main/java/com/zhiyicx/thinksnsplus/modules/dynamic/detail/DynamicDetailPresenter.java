@@ -606,33 +606,39 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
 
     @Override
     public void payNote(final int imagePosition, int note, boolean isImage) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-        double balance = 0;
-        if (walletBean != null) {
-            balance = walletBean.getBalance();
-        }
+
         double amount = mRootView.getCurrentDynamic().getImages().get(imagePosition).getAmount();
-        if (balance < amount) {
-            mRootView.goRecharge(WalletActivity.class);
-            return;
-        }
-        mCommentRepository.paykNote(note)
+
+        mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
+                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<String>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<String>> call(UserInfoBean userInfoBean) {
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        if (userInfoBean.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                            if (userInfoBean.getWallet().getBalance() < amount) {
+                                mRootView.goRecharge(WalletActivity.class);
+                                return Observable.error(new RuntimeException(""));
+                            }
+                        }
+                        return mCommentRepository.paykNote(note);
+                    }
+                }, throwable -> {
+                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    return null;
+                }, () -> null)
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
-                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String>
-                                                                       stringBaseJsonV2) {
+                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
                         if (isImage) {
                             return Observable.just(stringBaseJsonV2);
                         }
-                        return mRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic()
-                                .getId())
-                                .flatMap(new Func1<DynamicDetailBeanV2,
-                                        Observable<BaseJsonV2<String>>>() {
+                        return mRepository.getDynamicDetailBeanV2(mRootView.getCurrentDynamic().getId())
+                                .flatMap(new Func1<DynamicDetailBeanV2, Observable<BaseJsonV2<String>>>() {
                                     @Override
-                                    public Observable<BaseJsonV2<String>> call
-                                            (DynamicDetailBeanV2 detailBeanV2) {
+                                    public Observable<BaseJsonV2<String>> call(DynamicDetailBeanV2 detailBeanV2) {
                                         stringBaseJsonV2.setData(detailBeanV2.getFeed_content());
                                         return Observable.just(stringBaseJsonV2);
                                     }
@@ -684,6 +690,7 @@ public class DynamicDetailPresenter extends AppBasePresenter<DynamicDetailContra
                         mRootView.hideCenterLoading();
                     }
                 });
+
     }
 
     public void setNeedDynamicListRefresh(boolean needDynamicListRefresh) {

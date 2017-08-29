@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.information.publish;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +20,7 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
+import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.InfoPublishBean;
 import com.zhiyicx.thinksnsplus.modules.information.publish.addinfo.AddInfoActivity;
@@ -62,6 +64,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
 
     private PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
+    private ActionPopupWindow mCanclePopupWindow;// 取消提示选择弹框
     private int[] mImageIdArray;// 图片id
     private int mPicTag;
     private int mPicAddTag;
@@ -90,6 +93,16 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     @Override
+    protected void setLeftClick() {
+        handleBack();
+    }
+
+    @Override
+    public void onBackPressed() {
+        handleBack();
+    }
+
+    @Override
     protected String setRightTitle() {
         return getString(R.string.next);
     }
@@ -104,6 +117,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         return 0;
     }
 
+
     @Override
     protected void setRightClick() {
         super.setRightClick();
@@ -112,7 +126,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         infoPublishBean.setContent(getContentString());
         infoPublishBean.setAmout(100);
         infoPublishBean.setCover(mImageIdArray[0]);
-        infoPublishBean.setImage(mImageIdArray[0]);
+        infoPublishBean.setImage(mImageIdArray[0] == 0 ? null : (long) mImageIdArray[0]);
         infoPublishBean.setTitle(mEtInfoTitle.getInputContent());
         Intent intent = new Intent(getActivity(), AddInfoActivity.class);
         Bundle bundle = new Bundle();
@@ -318,4 +332,38 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
                 .build();
         mInstructionsPopupWindow.show();
     }
+
+    /**
+     * 初始化取消选择弹框
+     */
+    private void initCanclePopupWindow() {
+        if (mCanclePopupWindow != null) {
+            mCanclePopupWindow.show();
+            return;
+        }
+        mCanclePopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.dynamic_send_cancel_hint))
+                .item2Str(getString(R.string.sure))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item2ClickListener(() -> {
+                    mCanclePopupWindow.hide();
+                    getActivity().finish();
+                })
+                .bottomClickListener(() -> mCanclePopupWindow.hide()).build();
+        mCanclePopupWindow.show();
+    }
+
+    private void handleBack() {
+        if (!TextUtils.isEmpty(mEtInfoTitle.getEtContent().getText()) || mRicheTest.isHasContent()) {
+            mRicheTest.hideKeyBoard();
+            initCanclePopupWindow();
+        } else {
+            super.setLeftClick();
+        }
+    }
+
 }

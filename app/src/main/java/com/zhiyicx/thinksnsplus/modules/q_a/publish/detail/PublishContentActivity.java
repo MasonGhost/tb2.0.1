@@ -18,4 +18,9 @@ public class PublishContentActivity extends TSActivity<PublishContentPresenter, 
                 .publishContentPresenterModule(new PublishContentPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }

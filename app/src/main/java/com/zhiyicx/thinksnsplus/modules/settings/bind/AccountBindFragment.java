@@ -103,6 +103,11 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
+
+    @Override
     protected int setToolBarBackgroud() {
         return R.color.white;
     }
@@ -135,6 +140,17 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
     @Override
     public void setVerifyCodeBtText(String text) {
         mBtSendVerifyCode.setText(text);
+    }
+
+
+    @Override
+    public void unBindPhoneOrEmailSuccess(boolean isPhone) {
+        getActivity().finish();
+    }
+
+    @Override
+    public void BindPhoneOrEmailSuccess(boolean isPhone) {
+        getActivity().finish();
     }
 
     @Override
@@ -206,10 +222,10 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (mCurrentType == DEAL_TYPE_PHONE){
-//                        mPresenter.getVertifyCode(mEtPhone.getText().toString().trim());
+                    if (mCurrentType == DEAL_TYPE_PHONE) {
+                        mPresenter.getVertifyCode(mEtPhone.getText().toString().trim(),mIsBind);
                     } else {
-//                        mPresenter.getVerifyCodeByEmail(mEtEmail.getText().toString().trim());
+                        mPresenter.getVerifyCodeByEmail(mEtEmail.getText().toString().trim(),mIsBind);
                     }
                 });
         // 点击绑定/解除按钮
@@ -217,15 +233,13 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (mCurrentType == DEAL_TYPE_PHONE){
-//                        mPresenter.findPassword(mEtPhone.getText().toString().trim()
-//                                , mEtVertifyCode.getText().toString().trim()
-//                                , mEtPassword.getText().toString().trim());
-                    } else {
-//                        mPresenter.findPasswordByEmail(mEtEmial.getText().toString().trim()
-//                                , mEtVertifyCode.getText().toString().trim()
-//                                , mEtPassword.getText().toString().trim());
+                    if (mIsBind) {// 解绑
+                        mPresenter.unBindPhoneOrEmail(mEtPassword.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);
+                    } else {// 绑定
+                        mPresenter.bindPhoneOrEmail(mEtPhone.getText().toString(), mEtEmail.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);
                     }
+
+
                 });
     }
 

@@ -15,13 +15,10 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.pingplusplus.android.Pingpp;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
-import com.zhiyicx.common.utils.UIUtils;
-import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +96,19 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     }
 
     @Override
+    protected String setRightTitle() {
+//        mToolbarRight.setTextColor(getColor(R.color.themeColor));
+        return getString(R.string.dynamic_send_toll_reset);
+    }
+
+    @Override
+    protected void setRightClick() {
+        super.setRightClick();
+        mRbDaysGroup.clearCheck();
+        mEtInput.setText("");
+    }
+
+    @Override
     protected void initView(View rootView) {
         mTvChooseTip.setText(R.string.choose_reward_money);
         initListener();
@@ -108,6 +118,17 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     protected void initData() {
         initRechargeLables();
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        if (prompt == Prompt.SUCCESS) {
+            try {
+                rewardSuccess();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -152,7 +173,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
     @Override
     public void showSnackErrorMessage(String message) {
         super.showSnackErrorMessage(message);
-        mBtTop.setEnabled(true);
+        configSureButton();
     }
 
     private void initListener() {
@@ -192,13 +213,13 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
                     }
                     switch (checkedId) {
                         case R.id.rb_one:
-                            mRewardMoney = mRechargeLables.get(0)/PayConfig.MONEY_UNIT;
+                            mRewardMoney = mRechargeLables.get(0) / PayConfig.MONEY_UNIT;
                             break;
                         case R.id.rb_two:
-                            mRewardMoney = mRechargeLables.get(1)/PayConfig.MONEY_UNIT;
+                            mRewardMoney = mRechargeLables.get(1) / PayConfig.MONEY_UNIT;
                             break;
                         case R.id.rb_three:
-                            mRewardMoney = mRechargeLables.get(2)/PayConfig.MONEY_UNIT;
+                            mRewardMoney = mRechargeLables.get(2) / PayConfig.MONEY_UNIT;
                             break;
                     }
                     if (checkedId != -1) {
@@ -217,6 +238,7 @@ public class RewardFragment extends TSFragment<RewardContract.Presenter> impleme
 
     private void configSureButton() {
         mBtTop.setEnabled(mRewardMoney > 0);
+        mToolbarRight.setEnabled(mRewardMoney > 0);
     }
 
 

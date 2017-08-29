@@ -182,6 +182,10 @@ public class DynamicDetailHeader {
         for (int i = 0; i < photoList.size(); i++) {
             showContentImage(mContext, photoList, i, dynamicBean.getUser_id().intValue(), i == photoList.size() - 1, mPhotoContainer);
         }
+        FilterImageView imageView = (FilterImageView) mPhotoContainer.getChildAt(0).findViewById(R.id.dynamic_content_img);
+        sharBitmap = ConvertUtils.drawable2BitmapWithWhiteBg(mContext, imageView
+                .getDrawable(), R.mipmap.icon_256);
+        setImageClickListener(photoList, dynamicBean);
     }
 
     /**
@@ -267,7 +271,7 @@ public class DynamicDetailHeader {
                                     height, part, AppApplication.getTOKEN()))
                             .placeholder(R.drawable.shape_default_image)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .error(R.mipmap.pic_locked);
+                            .error(canLook ? R.drawable.shape_default_image : R.mipmap.pic_locked);
             if (!canLook) {// 切换展位图防止闪屏
                 requestBuilder.placeholder(R.mipmap.pic_locked);
             }

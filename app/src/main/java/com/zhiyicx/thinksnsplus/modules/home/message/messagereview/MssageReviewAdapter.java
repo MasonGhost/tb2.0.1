@@ -13,6 +13,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -81,14 +82,14 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
                     .into(holder.getImageViwe(R.id.iv_detail_image));
         }
 
-        String content = String.format(getString(R.string.review_description), (float) topDynamicCommentBean.getAmount(),
-                commentBean == null ? " " : topDynamicCommentBean.getComment().getContent());
+        String content = String.format(getString(R.string.review_description), PayConfig.realCurrencyFen2Yuan((float) topDynamicCommentBean.getAmount()),
+                commentBean == null ? " " : topDynamicCommentBean.getComment().getBody());
 
         TextView contentView = holder.getView(R.id.tv_content);
         TextView flagView = holder.getView(R.id.tv_review);
         contentView.setText(content);
         List<Link> links = setLiknks(holder, String.format(getString(R.string.dynamic_send_toll_select_money),
-                (float) topDynamicCommentBean.getAmount()), commentBean == null ? " " : topDynamicCommentBean.getComment().getContent());
+                PayConfig.realCurrencyFen2Yuan(topDynamicCommentBean.getAmount())), commentBean == null ? " " : topDynamicCommentBean.getComment().getBody());
         contentView.setLinksClickable(false);// 不能消费了点击事件啊
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(contentView, links);

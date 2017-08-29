@@ -22,14 +22,10 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Email Jliuer@aliyun.com
  * @Description 草稿箱
  */
-public class QuestionDraftItem implements ItemViewDelegate<BaseDraftBean> {
-
-    QuestionDraftItemEvent mQuestionDraftItemEvent;
-    private ChooseBindPopupWindow mPopupWindow;
-    private Activity mActivity;
+public class QuestionDraftItem extends BaseDraftItem {
 
     public QuestionDraftItem(Activity activity) {
-        mActivity = activity;
+        super(activity);
     }
 
     @Override
@@ -53,7 +49,7 @@ public class QuestionDraftItem implements ItemViewDelegate<BaseDraftBean> {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mQuestionDraftItemEvent != null) {
-                        initPopWindow(holder.getImageViwe(R.id.iv_draft_more), realData);
+                        initPopWindow(holder.getImageViwe(R.id.iv_draft_more), draftBean);
                     }
                 });
 
@@ -61,48 +57,10 @@ public class QuestionDraftItem implements ItemViewDelegate<BaseDraftBean> {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mQuestionDraftItemEvent != null) {
-                        mQuestionDraftItemEvent.toEditDraft(realData);
+                        mQuestionDraftItemEvent.toEditDraft(draftBean);
                     }
                 });
 
     }
 
-    private void initPopWindow(View v, QAPublishBean realData) {
-        if (mPopupWindow == null) {
-            mPopupWindow = ChooseBindPopupWindow.Builder()
-                    .with(getActivity())
-                    .alpha(0.8f)
-                    .itemlStr("编辑")
-                    .item2Str("删除")
-                    .isOutsideTouch(true)
-                    .itemListener(position -> {
-                        if (position == 0) {
-                            if (mQuestionDraftItemEvent != null) {
-                                mQuestionDraftItemEvent.toEditDraft(realData);
-                            }
-                        } else if (position == 1) {
-                            if (mQuestionDraftItemEvent != null) {
-                                mQuestionDraftItemEvent.deleteDraft(realData);
-                            }
-                        }
-                        mPopupWindow.hide();
-                    })
-                    .build();
-        }
-        mPopupWindow.showAsDropDown(v, 0, 10);
-    }
-
-    public Activity getActivity() {
-        return mActivity;
-    }
-
-    public void setQuestionDraftItemEvent(QuestionDraftItemEvent questionDraftItemEvent) {
-        mQuestionDraftItemEvent = questionDraftItemEvent;
-    }
-
-    public interface QuestionDraftItemEvent {
-        void toEditDraft(BaseDraftBean draftBean);
-
-        void deleteDraft(BaseDraftBean draftBean);
-    }
 }

@@ -64,11 +64,11 @@ public class CommentedBean extends BaseListBean {
      */
     @Id
     private Long id; // 数据体 id
-    @SerializedName("commentable_type")
+    @SerializedName(value="channel", alternate={"commentable_type"})
     private String channel; // 数据所属扩展包名 目前可能的参数有 feeds musics news
-    @SerializedName("commentable_id")
+    @SerializedName(value="target_id", alternate={"commentable_id"})
     private Long target_id;
-    @SerializedName("body")
+    @SerializedName(value="comment_content", alternate={"body"})
     private String comment_content; // 评论类容
     private String target_title;
     private Long target_image; // 封面 id
@@ -83,6 +83,7 @@ public class CommentedBean extends BaseListBean {
     private UserInfoBean replyUserInfo;
     private String created_at;
     private String updated_at;
+    private boolean isDelete;
     @Transient
     private Object commentable;
     /**
@@ -96,9 +97,9 @@ public class CommentedBean extends BaseListBean {
     @Generated(hash = 143748434)
     private transient CommentedBeanDao myDao;
 
-    @Generated(hash = 278509995)
+    @Generated(hash = 106250567)
     public CommentedBean(Long id, String channel, Long target_id, String comment_content, String target_title, Long target_image, Long user_id, Long target_user,
-                         Long reply_user, String created_at, String updated_at) {
+                         Long reply_user, String created_at, String updated_at, boolean isDelete) {
         this.id = id;
         this.channel = channel;
         this.target_id = target_id;
@@ -110,6 +111,7 @@ public class CommentedBean extends BaseListBean {
         this.reply_user = reply_user;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.isDelete = isDelete;
     }
 
 
@@ -267,6 +269,25 @@ public class CommentedBean extends BaseListBean {
 
     public void setCommentable(Object commentable) {
         this.commentable = commentable;
+    }
+
+
+    public boolean getIsDelete() {
+
+        return this.isDelete;
+    }
+
+    public void initDelet() {
+        if (commentable != null) {
+            isDelete = false;
+        } else {
+            isDelete = true;
+        }
+    }
+
+    public void setIsDelete(boolean isDelete) {
+
+        this.isDelete = isDelete;
     }
 
 

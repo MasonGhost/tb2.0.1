@@ -63,7 +63,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @BindView(R.id.rl_publish_tool)
     RelativeLayout mRlPublishTool;
 
-    private PhotoSelectorImpl mPhotoSelector;
+    protected PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mInstructionsPopupWindow;
     protected int[] mImageIdArray;// 已经添加的图片数量图片数组 id
@@ -133,14 +133,19 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     protected void setLeftClick() {
+        saveQuestion();
         super.setLeftClick();
+    }
+
+    @Override
+    public void onBackPressed() {
+        setLeftClick();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
-        mQAPublishBean = draft;
+        mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
     }
 
     private void saveQuestion() {
@@ -172,6 +177,12 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     protected void initData() {
         mImageIdArray = new int[100];
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
+
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
 
         QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
@@ -182,12 +193,6 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 mPresenter.pareseBody(body);
             }
         }
-
-        mPhotoSelector = DaggerPhotoSelectorImplComponent
-                .builder()
-                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
-                        .NO_CRAFT))
-                .build().photoSelectorImpl();
     }
 
 

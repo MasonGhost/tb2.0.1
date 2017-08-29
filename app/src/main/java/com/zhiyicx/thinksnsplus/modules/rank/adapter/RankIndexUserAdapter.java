@@ -1,8 +1,11 @@
 package com.zhiyicx.thinksnsplus.modules.rank.adapter;
 
 import android.content.Context;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -27,13 +30,17 @@ public class RankIndexUserAdapter extends CommonAdapter<UserInfoBean> {
 
     @Override
     protected void convert(ViewHolder holder, UserInfoBean userInfoBean, int position) {
+        RelativeLayout rlUserContainer = holder.getView(R.id.rl_user_container);
         UserAvatarView userAvatarView = holder.getView(R.id.iv_user_portrait);
-        int width = UIUtils.getWindowWidth(mContext) -
-                2 * mContext.getResources().getDimensionPixelSize(R.dimen.spacing_mid) -
-                4 * mContext.getResources().getDimensionPixelSize(R.dimen.spacing_large);
-        userAvatarView.getLayoutParams().width = width;
-        userAvatarView.getLayoutParams().height = width;
-        ImageUtils.loadUserHead(userInfoBean, userAvatarView, false);
+//        ImageView userAvatarView = holder.getView(R.id.iv_user_portrait);
+        int width = (UIUtils.getWindowWidth(mContext) - ConvertUtils.dp2px(mContext, 2 * 15)) / 5;
+        int portrait = width - ConvertUtils.dp2px(mContext, 2 * 5);
+        rlUserContainer.getLayoutParams().width = width;
+        userAvatarView.getIvAvatar().getLayoutParams().width = portrait;
+        userAvatarView.getIvAvatar().getLayoutParams().height = portrait;
+        userAvatarView.getIvVerify().getLayoutParams().width = (int) (portrait / 3.5);
+        userAvatarView.getIvVerify().getLayoutParams().height = (int) (portrait / 3.5);
+        ImageUtils.loadCircleUserHeadPic(userInfoBean, userAvatarView);
         holder.setText(R.id.tv_user_name, userInfoBean.getName());
     }
 }

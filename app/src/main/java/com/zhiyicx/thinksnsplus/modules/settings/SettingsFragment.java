@@ -120,7 +120,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         RxView.clicks(mBtAboutUs)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
-                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, "lalala"));
+                .subscribe(aVoid -> CustomWEBActivity.startToWEBActivity(getContext(), URL_ABOUT_US, getString(R.string.about_us)));
         // 退出登录
         RxView.clicks(mBtLoginOut)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作

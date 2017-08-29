@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 import com.zhiyicx.baseproject.base.IBaseTouristPresenter;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.mvp.i.IBaseView;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
@@ -41,6 +42,10 @@ public interface PublishContentConstact {
 
         void saveQuestion(QAPublishBean qestion);
         QAPublishBean getDraftQuestion(long qestion_mark);
+
+        void saveAnswer(AnswerDraftBean answer);
+        void deleteAnswer(AnswerDraftBean answer);
+        QAPublishBean getDraftAnswer(long answer_mark);
     }
 
     interface Repository extends IBasePublishQuestionRepository {

@@ -7,10 +7,12 @@ import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.imsdk.core.autobahn.DataDealUitls;
 import com.zhiyicx.imsdk.entity.ChatRoom;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -88,6 +90,15 @@ public class JavaTest {
         String[] testarry = test.split(",");
         userids.addAll(Arrays.asList(testarry));
         LogUtils.d(TAG, "testarry = " + userids.toString());
+    }
+
+    @Test
+    public void testTime(){
+        String time="2017-06-15 02:15:25";
+        System.out.println("result::" + TimeUtils.getTimeFriendlyForDetail(time));
+        System.out.println("result1::" + TimeUtils.getTimeFriendlyNormal(time));
+        System.out.println("result2::" + TimeUtils.utc2LocalStr(time));
+        System.out.println("result3::" + TimeUtils.getifferenceDays(TimeUtils.utc2LocalLong(time)));
     }
 
     @Test
@@ -404,6 +415,25 @@ public class JavaTest {
         Assert.assertTrue(data.size() == 6);
         System.out.println("data = " + data.subList(0, data.size()));
 
+
+    }
+
+    @Test
+    public void listAddAllTest() {
+//        List<List<AuthBean>> data = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            data.add(new AuthBean(i));
+//        }
+//        List<List<AuthBean>> test1 = new ArrayList<>();
+//        test1.addAll(data);
+//
+//        List<List<AuthBean>> test2 = new ArrayList<>();
+//        test2.addAll(data);
+//
+//        test2.subList(0, 5);
+//
+//        System.out.println("test1 = " + test1.size());
+//        System.out.println("test2 = " + test2.size());
 
     }
 

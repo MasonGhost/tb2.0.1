@@ -18,6 +18,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
 import com.zhiyicx.baseproject.widget.TabSelectView;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
@@ -128,6 +129,11 @@ public class MyQuestionFragment extends TSViewPagerFragment {
                 clipPagerTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color.themeColor));
                 clipPagerTitleView.setClipColor(Color.WHITE);
                 clipPagerTitleView.setOnClickListener(v -> mVpFragment.setCurrentItem(index));
+                try {
+                    clipPagerTitleView.getLayoutParams().width = (int) (2 * context.getResources().getDimension(R.dimen.qa_top_select_height));
+                } catch (Exception e){
+                    LogUtils.d("Cathy", e.toString());
+                }
                 return clipPagerTitleView;
             }
 
@@ -138,7 +144,7 @@ public class MyQuestionFragment extends TSViewPagerFragment {
                 float borderWidth = UIUtil.dip2px(context, 0);
                 float lineHeight = navigatorHeight - 2 * borderWidth;
                 indicator.setLineHeight(lineHeight);
-                indicator.setRoundRadius(0);
+                indicator.setRoundRadius(2);
                 indicator.setYOffset(borderWidth);
                 indicator.setColors(ContextCompat.getColor(getContext(), R.color.themeColor));
                 return indicator;

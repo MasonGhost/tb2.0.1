@@ -33,7 +33,7 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
     @Id(autoincrement = true)
     private Long _id;
     @Unique
-    @SerializedName("id")
+    @SerializedName(value="comment_id", alternate={"id"})
     private Long comment_id;// 评论的id
     private Long feed_mark;// 属于哪条动态
     @Unique
@@ -41,16 +41,16 @@ public class DynamicCommentBean extends BaseListBean implements Parcelable,Seria
 
     private String created_at;// 评论创建的时间
     private String updated_at;// 评论更新的时间
-    @SerializedName("body")
+    @SerializedName(value="comment_content", alternate={"body"})
     private String comment_content;// 评论内容
     private String commentable_type;
     private long  commentable_id;
-    @SerializedName("target_user")
+    @SerializedName(value="feed_user_id", alternate={"target_user"})
     private long feed_user_id; // 发动态人的 id
     private long user_id;// 谁发的这条评论
     @ToOne(joinProperty = "user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean commentUser;
-    @SerializedName("reply_user")
+    @SerializedName(value="reply_to_user_id", alternate={"reply_user"})
     private long reply_to_user_id;// 评论要发给谁
     @ToOne(joinProperty = "reply_to_user_id")// DynamicCommentBean 的 user_id 作为外键
     private UserInfoBean replyUser;// 被评论的用户信息

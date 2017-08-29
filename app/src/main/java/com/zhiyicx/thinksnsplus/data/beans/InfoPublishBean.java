@@ -28,7 +28,7 @@ public class InfoPublishBean implements Parcelable {
     private String tags;
     private String from;
     private String author;
-    private int image;
+    private Long image;
     @Expose
     private int cover;
     private int amout;
@@ -83,11 +83,7 @@ public class InfoPublishBean implements Parcelable {
     public void setContent(String content) {
         this.content = content;
         if (TextUtils.isEmpty(subject) && !TextUtils.isEmpty(content)) {
-            if (content.length() > 200) {
-                setSubject(content.substring(0, 200));
-            } else {
-                setSubject(content);
-            }
+            this.subject = "> " + "**" + "[摘要]" + "** ";
         }
     }
 
@@ -129,14 +125,13 @@ public class InfoPublishBean implements Parcelable {
         this.author = author;
     }
 
-    public int getImage() {
+    public Long getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(Long image) {
         this.image = image;
     }
-
 
     @Override
     public String toString() {
@@ -168,7 +163,7 @@ public class InfoPublishBean implements Parcelable {
         dest.writeString(this.tags);
         dest.writeString(this.from);
         dest.writeString(this.author);
-        dest.writeInt(this.image);
+        dest.writeValue(this.image);
         dest.writeInt(this.cover);
         dest.writeInt(this.amout);
     }
@@ -185,7 +180,7 @@ public class InfoPublishBean implements Parcelable {
         this.tags = in.readString();
         this.from = in.readString();
         this.author = in.readString();
-        this.image = in.readInt();
+        this.image = (Long) in.readValue(Long.class.getClassLoader());
         this.cover = in.readInt();
         this.amout = in.readInt();
     }

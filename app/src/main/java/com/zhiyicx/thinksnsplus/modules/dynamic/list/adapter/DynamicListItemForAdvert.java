@@ -14,6 +14,7 @@ import com.zhiyicx.baseproject.widget.DynamicListMenuView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.List;
@@ -108,7 +109,7 @@ public class DynamicListItemForAdvert extends DynamicListBaseItem {
 
         String url;
         if (TextUtils.isEmpty(imageBean.getImgUrl())) {
-            url = String.format(ApiConfig.IMAGE_PATH, imageBean.getFile(), proportion);
+            url = ImageUtils.imagePathConvertV2(imageBean.getFile(), with, with, proportion);
         } else {
             url = imageBean.getImgUrl();
         }

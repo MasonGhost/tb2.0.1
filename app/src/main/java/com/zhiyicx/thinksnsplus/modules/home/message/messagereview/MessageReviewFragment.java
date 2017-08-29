@@ -113,7 +113,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     mPresenter.approvedTopComment((long) topDynamicCommentBean.getFeed().getId(),
-                            topDynamicCommentBean.getComment().getId(), topDynamicCommentBean.getId().intValue());
+                            topDynamicCommentBean.getComment().getId().intValue(), topDynamicCommentBean.getId().intValue());
                     mReviewPopWindow.hide();
                 })
                 .item2ClickListener(() -> {

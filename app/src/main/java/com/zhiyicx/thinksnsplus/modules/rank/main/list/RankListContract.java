@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.modules.rank.main.list;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.IBaseRankRepository;
 
 /**
  * @author Catherine
@@ -14,14 +15,14 @@ import com.zhiyicx.thinksnsplus.data.beans.RankIndexBean;
 public interface RankListContract {
 
     interface View extends ITSListView<RankIndexBean, Presenter>{
-
+        String getCategory();
     }
 
     interface Presenter extends ITSListPresenter<RankIndexBean>{
 
     }
 
-    interface Repository {
+    interface Repository extends IBaseRankRepository{
 
     }
 }

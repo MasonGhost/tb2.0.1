@@ -12,9 +12,10 @@ import javax.inject.Inject;
  * @contact email:648129313@qq.com
  */
 
-public class RankListRepository implements RankListContract.Repository{
+public class RankListRepository extends BaseRankRepository implements RankListContract.Repository{
 
     @Inject
     public RankListRepository(ServiceManager manager) {
+        super(manager);
     }
 }

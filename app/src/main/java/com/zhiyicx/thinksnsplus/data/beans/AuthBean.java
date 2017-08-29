@@ -121,6 +121,10 @@ public class AuthBean extends CacheBean implements Parcelable, Serializable {
     public AuthBean() {
     }
 
+    public AuthBean(long user_id) {
+        this.user_id = user_id;
+    }
+
     @Override
     public String toString() {
         return "AuthBean{" +

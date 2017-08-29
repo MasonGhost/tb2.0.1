@@ -27,8 +27,7 @@ public interface SearchContract {
     }
 
     interface Repository extends IBaseInfoRepository{
-        Observable<BaseJson<List<InfoListDataBean>>> searchInfoList(String key,
-                                                                    long max_id);
+
     }
 
 

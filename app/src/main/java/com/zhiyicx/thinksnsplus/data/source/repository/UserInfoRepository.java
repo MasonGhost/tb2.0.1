@@ -13,6 +13,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AreaBean;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
@@ -21,8 +22,13 @@ import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -152,7 +158,11 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     public Observable<UserInfoBean> getCurrentLoginUserInfo() {
         return mUserInfoClient.getCurrentLoginUserInfo()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(userInfoBean -> {
+                    mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                    return userInfoBean;
+                });
     }
 
     /**
@@ -185,7 +195,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     @Override
     public Observable<List<UserInfoBean>> searchUserInfo(String user_ids, String name, Integer since, String order, Integer limit) {
-        return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, name, since, order, limit)
+        return mUserInfoClient.searchUserinfoWithRecommend(limit, since, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -214,25 +224,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
 
     }
 
-    /**
-     * 获取用户关注状态
-     *
-     * @param user_ids
-     * @return
-     */
-    @Override
-    public Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(String user_ids) {
-        return mUserInfoClient.getUserFollowState(user_ids)
-                .map(listBaseJson -> {
-                    if (listBaseJson.isStatus()) {
-                        for (FollowFansBean followFansBean : listBaseJson.getData()) {
-                            followFansBean.setOriginUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-                            followFansBean.setOrigintargetUser("");
-                        }
-                    }
-                    return listBaseJson;
-                });
-    }
 
     /**
      * 关注操作
@@ -278,45 +269,6 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     /**
-     * 获取点赞排行榜
-     *
-     * @param page
-     * @return
-     */
-    @Override
-    public Observable<BaseJson<List<DigRankBean>>> getDidRankList(int page) {
-        return mUserInfoClient.getDigRankList(page, TSListFragment.DEFAULT_PAGE_SIZE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<DigRankBean>>, Observable<BaseJson<List<DigRankBean>>>>() {
-                    @Override
-                    public Observable<BaseJson<List<DigRankBean>>> call(final BaseJson<List<DigRankBean>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Object> userIds = new ArrayList();
-                            for (DigRankBean digRankBean : listBaseJson.getData()) {
-                                userIds.add(digRankBean.getUser_id());
-                            }
-                            return getUserInfo(userIds)
-                                    .map(userinfobeans -> {
-                                        if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : userinfobeans) {
-                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
-                                            }
-                                            for (DigRankBean digRankBean : listBaseJson.getData()) {
-                                                digRankBean.setDigUserInfo(userInfoBeanSparseArray.get(digRankBean.getUser_id().intValue()));
-                                            }
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                        }
-                                        return listBaseJson;
-                                    });
-                        }
-                        return Observable.just(listBaseJson);
-                    }
-                });
-    }
-
-    /**
      * 获取我收到的赞的列表
      *
      * @param max_id
@@ -332,6 +284,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                     public Observable<List<DigedBean>> call(final List<DigedBean> data) {
                         List<Object> userIds = new ArrayList();
                         for (DigedBean digedBean : data) {
+                            digedBean.initDelet();
                             userIds.add(digedBean.getUser_id());
                             userIds.add(digedBean.getTarget_user());
                         }
@@ -374,6 +327,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                         }
                         List<Object> userIds = new ArrayList();
                         for (CommentedBean commentedBean : data) {
+                            commentedBean.initDelet();
                             userIds.add(commentedBean.getUser_id());
                             userIds.add(commentedBean.getTarget_user());
                             userIds.add(commentedBean.getReply_user());
@@ -405,39 +359,42 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     }
 
     /**
-     * 获取用户收到的最新消息
-     *
-     * @param time 零时区的秒级时间戳
-     * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
+     * @param phone
+     * @param email
+     * @param verifiable_code
      * @return
      */
     @Override
-    public Observable<BaseJson<List<FlushMessages>>> getMyFlushMessage(long time, String key) {
-        return mUserInfoClient.getMyFlushMessages(time, key).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<BaseJson<List<FlushMessages>>, Observable<BaseJson<List<FlushMessages>>>>() {
-                    @Override
-                    public Observable<BaseJson<List<FlushMessages>>> call(final BaseJson<List<FlushMessages>> listBaseJson) {
-                        if (listBaseJson.isStatus() && !listBaseJson.getData().isEmpty()) {
-                            List<Object> userIdstmp = new ArrayList();
-                            for (FlushMessages flushMessages : listBaseJson.getData()) {
-                                userIdstmp.addAll(flushMessages.getUids());
-                            }
-                            if (userIdstmp.isEmpty()) {
-                                return Observable.just(listBaseJson);
-                            }
-                            return getUserInfo(userIdstmp)
-                                    .map(userinfobeans -> {
-                                        if (!userinfobeans.isEmpty()) { // 获取用户信息，并设置动态所有者的用户信息，已以评论和被评论者的用户信息
-                                            mUserInfoBeanGreenDao.insertOrReplace(userinfobeans);
-                                        }
-                                        return listBaseJson;
-                                    });
-                        }
-                        return Observable.just(listBaseJson);
-                    }
-                });
+    public Observable<Object> updatePhoneOrEmail(String phone, String email, String verifiable_code) {
+        return mUserInfoClient.updatePhoneOrEmail(new UpdateUserPhoneOrEmailRequestBean(phone, email, verifiable_code))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
+
+    /**
+     * @param password
+     * @param verify_code
+     * @return
+     */
+    @Override
+    public Observable<Object> deletePhone(String password, String verify_code) {
+        return mUserInfoClient.deletePhone(new DeleteUserPhoneOrEmailRequestBean(password, verify_code))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * @param password
+     * @param verify_code
+     * @return
+     */
+    @Override
+    public Observable<Object> deleteEmail(String password, String verify_code) {
+        return mUserInfoClient.deleteEmail(new DeleteUserPhoneOrEmailRequestBean(password, verify_code))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 
     /*******************************************  标签  *********************************************/
 
@@ -506,6 +463,7 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
 
     /**
      * @param phones 单次最多 100 条
@@ -634,6 +592,92 @@ public class UserInfoRepository implements UserInfoContract.Repository {
     @Override
     public Observable<List<UserInfoBean>> getCheckInRanks(Integer offset) {
         return mUserInfoClient.getCheckInRanks(offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /*******************************************  三方  *********************************************/
+    /**
+     * 获取已经绑定的三方
+     *
+     * @return
+     */
+    @Override
+    public Observable<List<String>> getBindThirds() {
+        return mUserInfoClient.getBindThirds()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 检查绑定并获取用户授权
+     *
+     * @param provider
+     * @param access_token thrid token
+     * @return
+     */
+    @Override
+    public Observable<AuthBean> checkThridIsRegitser(String provider, String access_token) {
+        return mUserInfoClient.checkThridIsRegitser(provider, access_token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 检查注册信息或者注册用户
+     *
+     * @param provider     type qq\weibo\wechat
+     * @param access_token 获取的 Provider Access Token。
+     * @param name         用户名。
+     * @param check        如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
+     * @return
+     */
+    @Override
+    public Observable<AuthBean> checkUserOrRegisterUser(String provider, String access_token, String name, Boolean check) {
+        return mUserInfoClient.checkUserOrRegisterUser(provider, new ThridInfoBean(provider, access_token, name, check))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 已登录账号绑定
+     *
+     * @param provider
+     * @param access_token
+     * @return
+     */
+    @Override
+    public Observable<Object> bindWithLogin(String provider, String access_token) {
+        return mUserInfoClient.bindWithLogin(provider, new ThirdAccountBindRequestBean(access_token))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 输入账号密码绑定
+     *
+     * @param provider     type qq\weibo\wechat
+     * @param access_token 获取的 Provider Access Token。
+     * @param login        用户登录名，手机，邮箱
+     * @param password     用户密码。
+     * @return
+     */
+    @Override
+    public Observable<AuthBean> bindWithInput(String provider, String access_token, String login, String password) {
+        return mUserInfoClient.bindWithInput(provider, new BindAccountRequstBean(access_token, login, password))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 取消绑定
+     *
+     * @param provider type qq\weibo\wechat
+     * @return
+     */
+    @Override
+    public Observable<Object> cancelBind(String provider) {
+        return mUserInfoClient.cancelBind(provider)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

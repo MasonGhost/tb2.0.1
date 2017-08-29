@@ -47,7 +47,6 @@ public class FindSomeOneNearbyListFragment extends TSListFragment<FindSomeOneNea
                 .build().inject(this);
 
         super.initView(rootView);
-        LogUtils.e("    5555555         ");
     }
 
     @Override

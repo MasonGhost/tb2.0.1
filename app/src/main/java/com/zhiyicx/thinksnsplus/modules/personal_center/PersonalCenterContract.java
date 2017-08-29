@@ -82,13 +82,6 @@ public interface PersonalCenterContract {
          */
         Observable<List<DynamicDetailBeanV2>> getDynamicListForSomeone(Long user_id, Long max_id);
 
-        /**
-         * 获取用户关注状态
-         *
-         * @param user_ids
-         * @return
-         */
-        Observable<BaseJson<FollowFansBean>> getUserFollowState(String user_ids);
     }
 
     interface Presenter extends DynamicContract.Presenter {

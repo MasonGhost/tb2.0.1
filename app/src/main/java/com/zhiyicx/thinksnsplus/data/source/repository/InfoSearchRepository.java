@@ -27,8 +27,4 @@ public class InfoSearchRepository extends BaseInfoRepository implements SearchCo
         super(serviceManager);
     }
 
-    @Override
-    public Observable<BaseJson<List<InfoListDataBean>>> searchInfoList(String key, long max_id) {
-        return mInfoMainClient.searchInfoList(key,max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
-    }
 }

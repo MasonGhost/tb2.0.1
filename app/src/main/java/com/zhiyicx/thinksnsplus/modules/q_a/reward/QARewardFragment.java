@@ -144,6 +144,18 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         initDefaultMoney();
         initAlertPopupWindow();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
+
+        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (draft != null && draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
+            List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
+            QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
+            typeIds.setUser(draft.getInvitations().get(0).getUser());
+            typeIdsList.add(typeIds);
+            mBtQaSelectExpert.setRightText(draft.getInvitations().get(0).getName());
+            mWcInvite.setChecked(draft.getAutomaticity() == 1);
+            mWcOnlooker.setChecked(draft.getLook() == 1);
+            configSureButton();
+        }
     }
 
     @Override
@@ -176,6 +188,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
                 QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();
                 typeIds.setUser(expertBean.getId());
+                typeIds.setName(expertBean.getName());
                 typeIdsList.add(typeIds);
 
                 mBtQaSelectExpert.setRightText(expertBean.getName());
@@ -212,6 +225,18 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             getActivity().finish();
             startActivity(new Intent(getActivity(), QA_Activity.class));
         }
+    }
+
+    @Override
+    protected void setLeftClick() {
+        mPresenter.saveQuestion(packgQuestion());
+        super.setLeftClick();
+    }
+
+    @Override
+    public void onBackPressed() {
+        mPresenter.saveQuestion(packgQuestion());
+        super.onBackPressed();
     }
 
     private void initAlertPopupWindow() {
@@ -356,9 +381,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                     // 发布
                     try {
                         if (mQuestionId.equals(0L)) {
-                            mQAPublishBean.setAmount(mRewardMoney);
-                            mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
-                            mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
+                            packgQuestion();
                             mPresenter.publishQuestion(mQAPublishBean);
                         } else {
                             // 已发布的资讯 重新设置悬赏金额
@@ -373,6 +396,13 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> mRulePop.show());
+    }
+
+    private QAPublishBean packgQuestion() {
+        mQAPublishBean.setAmount(mRewardMoney);
+        mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
+        mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
+        return mQAPublishBean;
     }
 
     private void resetValue() {

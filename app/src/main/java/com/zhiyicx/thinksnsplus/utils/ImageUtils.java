@@ -150,7 +150,7 @@ public class ImageUtils {
     }
 
     /**
-     *
+     * 问答那里的图文混排头像处理
      * @param userInfoBean
      * 问答那里的图文混排头像处理
      * @param userInfoBean 回答者的用户信息

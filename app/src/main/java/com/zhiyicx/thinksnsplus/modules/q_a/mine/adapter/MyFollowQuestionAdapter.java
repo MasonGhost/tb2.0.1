@@ -35,7 +35,7 @@ public class MyFollowQuestionAdapter extends CommonAdapter<BaseListBean>{
         holder.setText(R.id.tv_count, String.format(mContext.getString(R.string.qa_show_topic_followed),
                 qaListInfoBean.getWatchers_count(), qaListInfoBean.getAnswers_count()));
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_count), setLinks(qaListInfoBean));
-        holder.setText(R.id.tv_count, qaListInfoBean.getCreated_at());
+        holder.setText(R.id.tv_time, qaListInfoBean.getCreated_at());
     }
 
     private List<Link> setLinks(QAListInfoBean qaListInfoBean) {

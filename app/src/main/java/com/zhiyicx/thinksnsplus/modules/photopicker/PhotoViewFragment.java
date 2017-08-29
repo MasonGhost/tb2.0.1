@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.photopicker;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,7 +38,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL;
-import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_MONEY;
 import static com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl.TOLL_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.photopicker.PhotoAlbumDetailsFragment.EXTRA_BACK_HERE;
 
@@ -90,6 +87,9 @@ public class PhotoViewFragment extends TSFragment {
 
     private ArrayList<ImageBean> tolls = new ArrayList<>();
 
+    private ArrayList<ImageBean> unCheckImage = new ArrayList<>();
+    private ArrayList<String> unCheckImagePath = new ArrayList<>();
+
     private ImageBean mImageBean;
 
     @Override
@@ -116,7 +116,7 @@ public class PhotoViewFragment extends TSFragment {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Toll toll = data.getBundleExtra(TOLL_TYPE).getParcelable(TOLL_TYPE);
             mImageBean.setToll(toll);
-         }
+        }
     }
 
     @Override
@@ -151,7 +151,7 @@ public class PhotoViewFragment extends TSFragment {
 
                 hasAnim = currentItem == position;
                 // 是否包含了已经选中的图片
-                mRbSelectPhoto.setChecked(seletedPaths.contains(allPaths.get(position)));
+                mRbSelectPhoto.setChecked(!unCheckImagePath.contains(allPaths.get(position)));
 
             }
 
@@ -183,18 +183,27 @@ public class PhotoViewFragment extends TSFragment {
                 if (!seletedPaths.contains(path)) {
                     seletedPaths.add(path);
                     tolls.add(mImageBean);
-                }else{
-                    tolls.remove(mImageBean);
+                    unCheckImagePath.remove(path);
+                    unCheckImage.remove(mImageBean);
+                } else {
+                    unCheckImage.remove(mImageBean);
+                    unCheckImagePath.remove(path);
+                    //tolls.remove(mImageBean);
                 }
             } else {
                 // 当前取消选择改图片，直接移除
-                seletedPaths.remove(path);
-                tolls.remove(mImageBean);
+//                seletedPaths.remove(path);
+                if (!unCheckImagePath.contains(path)){
+                    unCheckImage.add(mImageBean);
+                    unCheckImagePath.add(path);
+                }
+
+                //tolls.remove(mImageBean);
             }
             // 没有选择图片时，是否可以点击完成，应该可以点击，所以注释了下面的代码；需求改变，不需要点击了 #337
             mBtComplete.setEnabled(seletedPaths.size() > 0);
             // 重置当前的选择数量
-            mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size(),
+            mBtComplete.setText(getString(R.string.album_selected_count, seletedPaths.size() - unCheckImagePath.size(),
                     maxCount));
             // 通知图片列表进行刷新
             // 在 PhotoAlbumDetailsFragment 的 refreshDataAndUI() 方法中进行订阅
@@ -343,12 +352,7 @@ public class PhotoViewFragment extends TSFragment {
         // (backgroundColor);
         ObjectAnimator bgAnim = ObjectAnimator
                 .ofInt(backgroundColor, "alpha", 0, 255);
-        bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mViewPager.setBackground(backgroundColor);
-            }
-        });
+        bgAnim.addUpdateListener(animation -> mViewPager.setBackground(backgroundColor));
         return bgAnim;
     }
 
@@ -357,13 +361,7 @@ public class PhotoViewFragment extends TSFragment {
                 .canAnimateCloseActivity()) {
             backgroundColor = new ColorDrawable(Color.WHITE);
             ObjectAnimator bgAnim = ObjectAnimator.ofInt(backgroundColor, "alpha", 0);
-            bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mViewPager.setBackground(backgroundColor);
-                }
-            });
+            bgAnim.addUpdateListener(animation -> mViewPager.setBackground(backgroundColor));
             bgAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -386,6 +384,10 @@ public class PhotoViewFragment extends TSFragment {
      */
     private void setResult(boolean backToPhotoAlbum) {
         // 完成图片选择，处理图片返回结果
+        if (!backToPhotoAlbum) {
+            seletedPaths.removeAll(unCheckImagePath);
+            tolls.removeAll(unCheckImage);
+        }
         Intent it = new Intent();
         it.putStringArrayListExtra("photos", seletedPaths);
         Bundle bundle = new Bundle();

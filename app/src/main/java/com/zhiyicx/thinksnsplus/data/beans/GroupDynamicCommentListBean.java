@@ -39,23 +39,23 @@ public class GroupDynamicCommentListBean extends BaseListBean implements Seriali
     @Id
     private Long id;
     @Unique
-    @SerializedName("group_post_comment_mark")
+    @SerializedName(value = "comment_mark",alternate = {"group_post_comment_mark"})
     private Long comment_mark;
     private int group_id;
     private int feed_id;
     private long user_id;// 谁发的这条评论
     @ToOne(joinProperty = "user_id")
     private UserInfoBean commentUser;
-    @SerializedName("body")
+    @SerializedName(value = "content",alternate = {"body"})
     private String content;
     private String commentable_type;
     private long  commentable_id;
-    @SerializedName("reply_user")
+    @SerializedName(value = "reply_to_user_id",alternate = {"reply_user"})
     private long reply_to_user_id;// 评论要发给谁
     @ToOne(joinProperty = "reply_to_user_id")
     private UserInfoBean replyUser;
     private String created_at;
-    @SerializedName("target_user")
+    @SerializedName(value = "to_user_id",alternate = {"target_user"})
     private int to_user_id;// 发动态人的 id
     private int state = SEND_ING;
 

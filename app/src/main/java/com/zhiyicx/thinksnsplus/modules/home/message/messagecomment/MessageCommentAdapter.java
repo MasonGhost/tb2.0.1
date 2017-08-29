@@ -81,7 +81,11 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
             holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
+            if(commentedBean.getIsDelete()){
+                holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
+            }else {
+                holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
+            }
         }
 
         holder.setText(R.id.tv_name, commentedBean.getCommentUserInfo().getName());

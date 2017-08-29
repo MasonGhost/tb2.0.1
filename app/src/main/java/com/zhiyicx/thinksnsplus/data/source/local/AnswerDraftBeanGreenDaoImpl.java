@@ -4,8 +4,11 @@ import android.app.Application;
 
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBeanDao;
+import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,12 +46,21 @@ public class AnswerDraftBeanGreenDaoImpl extends CommonCacheImpl<AnswerDraftBean
 
     @Override
     public AnswerDraftBean getSingleDataFromCache(Long primaryKey) {
-        return mAnswerDraftBeanDao.load(primaryKey);
+        return getRDaoSession().getAnswerDraftBeanDao().load(primaryKey);
     }
 
     @Override
     public List<AnswerDraftBean> getMultiDataFromCache() {
-        return null;
+        return getRDaoSession().getAnswerDraftBeanDao().loadAll();
+    }
+
+    public List<BaseDraftBean> getMultiBasetDraftDataFromCache() {
+        List<AnswerDraftBean> realData = getMultiDataFromCache();
+        List<BaseDraftBean> needData = new ArrayList<>();
+        if (!realData.isEmpty()) {
+            needData.addAll(realData);
+        }
+        return needData;
     }
 
     @Override

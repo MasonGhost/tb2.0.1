@@ -111,8 +111,12 @@ public class MusicListPopupWindow extends PopupWindow {
     }
 
     public void show() {
-        setWindowAlpha(mAlpha);
-        showAtLocation(mParentView == null ? mContentView : mParentView, Gravity.BOTTOM, 0, 0);
+        try {
+            setWindowAlpha(mAlpha);
+            showAtLocation(mParentView == null ? mContentView : mParentView, Gravity.BOTTOM, 0, 0);
+        } catch (Exception e) {
+
+        }
     }
 
     public void hide() {

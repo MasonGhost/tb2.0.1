@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,6 +22,7 @@ import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.baseproject.base.TSFragment;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.widget.button.LoadingButton;
 import com.zhiyicx.common.utils.ActivityHandler;
@@ -30,9 +30,11 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.imsdk.utils.common.DeviceUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AccountBean;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.modules.home.HomeActivity;
 import com.zhiyicx.thinksnsplus.modules.password.findpassword.FindPasswordActivity;
 import com.zhiyicx.thinksnsplus.modules.register.RegisterActivity;
+import com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +48,7 @@ import butterknife.OnClick;
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.login.LoginActivity.BUNDLE_TOURIST_LOGIN;
+import static com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity.BUNDLE_THIRD_INFO;
 
 /**
  * @author LiuChao
@@ -120,7 +123,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         mRxPermissions.setLogging(true); //是否需要日志
         mRxPermissions.request(android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 .subscribe(aBoolean -> {
-                    System.out.println("aBoolean = " + aBoolean);
                 });
         mUmengSharePolicy = new UmengSharePolicyImpl(getContext());
 
@@ -154,7 +156,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         // 点击登录按钮
         RxView.clicks(mBtLoginLogin)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                .compose(this.<Void>bindToLifecycle())
+                .compose(this.bindToLifecycle())
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
@@ -174,83 +176,30 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
-//                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
-//                    startActivity(intent);
-                    login(SHARE_MEDIA.QQ);
+                    thridLogin(SHARE_MEDIA.QQ);
 
                 });
         RxView.clicks(mTvLoginByWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
-//                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
-//                    startActivity(intent);
-                    login(SHARE_MEDIA.SINA);
+
+                    thridLogin(SHARE_MEDIA.SINA);
 
                 });
         RxView.clicks(mTvLoginByWechat)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
-//                    Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
-//                    startActivity(intent);
-                    login(SHARE_MEDIA.WEIXIN);
-
+                    thridLogin(SHARE_MEDIA.WEIXIN);
                 });
     }
 
-    public void login(SHARE_MEDIA type) {
+    public void thridLogin(SHARE_MEDIA type) {
         UMShareAPI mShareAPI = UMShareAPI.get(getActivity());
         mShareAPI.getPlatformInfo(getActivity(), type, authListener);
 
     }
-
-    UMAuthListener authListener = new UMAuthListener() {
-        /**
-         * @desc 授权开始的回调
-         * @param platform 平台名称
-         */
-        @Override
-        public void onStart(SHARE_MEDIA platform) {
-
-        }
-
-        /**
-         * @desc 授权成功的回调
-         * @param platform 平台名称
-         * @param action 行为序号，开发者用不上
-         * @param data 用户资料返回
-         */
-        @Override
-        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            System.out.println("platform = " + data);
-
-            mTvErrorTip.setText(data.toString());
-            mTvErrorTip.setVisibility(View.VISIBLE);
-        }
-
-        /**
-         * @desc 授权失败的回调
-         * @param platform 平台名称
-         * @param action 行为序号，开发者用不上
-         * @param t 错误原因
-         */
-        @Override
-        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-
-            Toast.makeText(getActivity(), "失败：" + t.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        /**
-         * @desc 授权取消的回调
-         * @param platform 平台名称
-         * @param action 行为序号，开发者用不上
-         */
-        @Override
-        public void onCancel(SHARE_MEDIA platform, int action) {
-            Toast.makeText(getActivity(), "取消了", Toast.LENGTH_LONG).show();
-        }
-    };
 
 
     @Override
@@ -419,10 +368,95 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
     }
 
     private void setAccountListPopHeight(int size) {
-        if (size > 3) {
-            mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 140));
-        } else {
-            mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+//        if (size > 3) {
+        mEtCompleteInput.setDropDownHeight((int) DeviceUtils.dpToPixel(getContext(), 140));
+//        } else {
+//            mEtCompleteInput.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+//        }
+    }
+
+
+    private String mThridName;
+
+
+    private String mAccessToken;
+
+    UMAuthListener authListener = new UMAuthListener() {
+        /**
+         * @desc 授权开始的回调
+         * @param platform 平台名称
+         */
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+            showSnackLoadingMessage(getString(R.string.loading_state));
+
         }
+
+        /**
+         * @desc 授权成功的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param data 用户资料返回
+         */
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            System.out.println("platform = " + data);
+            String providerQq = ApiConfig.PROVIDER_QQ;
+            switch (platform) {
+                case QQ:
+                    providerQq = ApiConfig.PROVIDER_QQ;
+                    break;
+                case SINA:
+                    providerQq = ApiConfig.PROVIDER_WEIBO;
+                    break;
+
+                case WEIXIN:
+                    providerQq = ApiConfig.PROVIDER_WECHAT;
+                    break;
+                default:
+
+            }
+            mThridName = data.get("screen_name");
+            mAccessToken = data.get("accessToken");
+            mPresenter.checkBindOrLogin(providerQq, mAccessToken);
+        }
+
+        /**
+         * @desc 授权失败的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         * @param t 错误原因
+         */
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+            dismissSnack();
+            showErrorTips(getString(R.string.login_fail));
+        }
+
+        /**
+         * @desc 授权取消的回调
+         * @param platform 平台名称
+         * @param action 行为序号，开发者用不上
+         */
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            showSnackWarningMessage(getString(R.string.login_cancel));
+            dismissSnack();
+
+        }
+    };
+
+    /**
+     * @param provider
+     * @param access_token
+     */
+    @Override
+    public void registerByThrid(String provider, String access_token) {
+        showSnackWarningMessage(getString(R.string.empty));
+        Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putParcelable(BUNDLE_THIRD_INFO,new ThridInfoBean(provider,access_token,mThridName));
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

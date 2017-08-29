@@ -18,6 +18,7 @@ import java.util.List;
 import static android.R.attr.data;
 import static android.R.id.list;
 import static com.umeng.analytics.pro.x.J;
+import static com.umeng.analytics.pro.x.l;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
@@ -54,27 +55,23 @@ public class DigedBean extends BaseListBean {
     private String updated_at;
     private String likeable_type; // 数据所属扩展包名 目前可能的参数有 feed
     private Long likeable_id; // 关联资源 id
-
+    private boolean isDelete;
     @Transient
     private Object likeable;
 
     private Long source_cover;
 
     private String source_content;
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 2113720789)
     private transient DigedBeanDao myDao;
 
-    @Generated(hash = 798365238)
-    public DigedBean(Long id, Long user_id, Long target_user, String created_at, String updated_at, String likeable_type, Long likeable_id, Long source_cover,
-                     String source_content) {
+    @Generated(hash = 1937545503)
+    public DigedBean(Long id, Long user_id, Long target_user, String created_at, String updated_at, String likeable_type, Long likeable_id, boolean isDelete,
+            Long source_cover, String source_content) {
         this.id = id;
         this.user_id = user_id;
         this.target_user = target_user;
@@ -82,6 +79,7 @@ public class DigedBean extends BaseListBean {
         this.updated_at = updated_at;
         this.likeable_type = likeable_type;
         this.likeable_id = likeable_id;
+        this.isDelete = isDelete;
         this.source_cover = source_cover;
         this.source_content = source_content;
     }
@@ -164,6 +162,7 @@ public class DigedBean extends BaseListBean {
         this.likeable = likeable;
     }
 
+
     public Long getSource_cover() {
         if (source_cover != null || likeable == null) {
             return source_cover;
@@ -231,9 +230,30 @@ public class DigedBean extends BaseListBean {
         }
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    public boolean getIsDelete() {
+
+        return this.isDelete;
+    }
+
+    public void initDelet() {
+        if (likeable != null) {
+            isDelete = false;
+        } else {
+            isDelete = true;
+        }
+    }
+    public void setIsDelete(boolean isDelete) {
+        if(!isDelete){
+            if (likeable != null) {
+                isDelete = false;
+            } else {
+                isDelete = true;
+            }
+        }
+        this.isDelete = isDelete;
+    }
+
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 1880931547)
     public UserInfoBean getDigUserInfo() {
         Long __key = this.user_id;
@@ -252,9 +272,7 @@ public class DigedBean extends BaseListBean {
         return digUserInfo;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 272986475)
     public void setDigUserInfo(UserInfoBean digUserInfo) {
         synchronized (this) {
@@ -264,9 +282,7 @@ public class DigedBean extends BaseListBean {
         }
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 316022512)
     public UserInfoBean getDigedUserInfo() {
         Long __key = this.target_user;
@@ -285,9 +301,7 @@ public class DigedBean extends BaseListBean {
         return digedUserInfo;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 744662438)
     public void setDigedUserInfo(UserInfoBean digedUserInfo) {
         synchronized (this) {
