@@ -65,6 +65,8 @@ import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -155,7 +157,7 @@ public class AppApplication extends TSApplication {
                 } catch (JsonSyntaxException e) {
 //                    LogUtils.e("Invalid Json length:::"+httpResult.length());
                 }
-                if (originalResponse.code() == 401) {
+                if (originalResponse.code() == AUTH_FAIL) {
                     if (mAuthRepository.isNeededRefreshToken()) {
                         handleAuthFail(getString(R.string.auth_fail_relogin));
                     } else {
