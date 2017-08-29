@@ -7,6 +7,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.utils.log.LogUtils;
+import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.Locale;
 
@@ -28,7 +29,7 @@ public class CustomImageSizeModelImp implements CustomImageSizeModel, Parcelable
 
     @Override
     public String requestCustomSizeUrl(int width, int height) {
-        String url = mImageBean.getImgUrl() == null ? String.format(ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), mImageBean.getPart()) : mImageBean.getImgUrl();
+        String url = mImageBean.getImgUrl() == null ? ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), width, height, mImageBean.getPart()) : mImageBean.getImgUrl();
         LogUtils.d(TAG, "requestCustomSizeUrl: " + url);
         return url;
     }
@@ -36,7 +37,7 @@ public class CustomImageSizeModelImp implements CustomImageSizeModel, Parcelable
     @Override
     public String requestCustomSizeUrl() {
         return mImageBean.getImgUrl() == null
-                ? String.format(Locale.getDefault(),ApiConfig.IMAGE_PATH, mImageBean.getStorage_id(), mImageBean.getPart())
+                ? ImageUtils.imagePathConvertV2(mImageBean.getStorage_id(), (int)mImageBean.getWidth(), (int)mImageBean.getHeight(), mImageBean.getPart())
                 : mImageBean.getImgUrl();
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -77,6 +78,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -128,6 +132,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @BindView(R.id.v_shadow)
     View mVShadow;
 
+    private Subscription mStatusbar;
 
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     // 上一个页面传过来的用户信息
@@ -178,7 +183,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected View getLeftViewOfMusicWindow() {
+    protected View getRightViewOfMusicWindow() {
         return mIvMore;
     }
 
@@ -316,6 +321,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             requestData();
         }
         super.initData();
+        // 支持魅族手机首页状太栏文字白色问题
+        supportFlymeSutsusbar();
     }
 
     /**
@@ -330,6 +337,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
+        int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -337,7 +345,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
         DynamicDetailBeanV2.ImagesBean img = dynamicBean.getImages().get(position);
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll.LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean.getImages().get(position).getAmount(),
+            initImageCenterPopWindow(dynamicPosition, position, (float) dynamicBean.getImages().get(position).getAmount(),
                     dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc, true);
             return;
         }
@@ -358,7 +366,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
-            imageBean.setDynamicPosition(holder.getAdapterPosition());
+            imageBean.setDynamicPosition(dynamicPosition);
             imageBean.setFeed_id(dynamicBean.getId());
             imageBean.setWidth(task.getWidth());
             imageBean.setHeight(task.getHeight());
@@ -902,5 +910,24 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 .build();
         mPayImagePopWindow.show();
 
+    }
+
+    private void supportFlymeSutsusbar() {
+        mStatusbar = Observable.timer(1500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    }
+                });
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (!mStatusbar.isUnsubscribed()) {
+            mStatusbar.unsubscribe();
+        }
+
+        super.onDestroyView();
     }
 }

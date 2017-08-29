@@ -34,6 +34,8 @@ public interface InfoMainContract {
     interface InfoContainerPresenter extends IBaseTouristPresenter {
         void getInfoType();
         boolean checkCertification();
+        boolean isNeedPayTip();
+        void savePayTip(boolean isNeed);
     }
 
     /**
@@ -55,13 +57,5 @@ public interface InfoMainContract {
     interface Repository extends IBaseInfoRepository{
         Observable<InfoTypeBean> getInfoType();
 
-        /**
-         * @param cate_id 订阅分类 -1 推荐 -2 热门 其他对应资讯分类id
-         * @param max_id  用来翻页的记录id(对应数据体里的id)
-         * @param page    翻页页码（热门和推荐列表 加载所需传入）
-         * @return
-         */
-        Observable<BaseJson<InfoListBean>> getInfoList(String cate_id, long max_id,
-                                                             long page);
     }
 }

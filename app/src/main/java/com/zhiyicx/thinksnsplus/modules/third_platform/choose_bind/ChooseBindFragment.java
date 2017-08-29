@@ -19,11 +19,11 @@ import com.zhiyicx.thinksnsplus.widget.ChooseBindPopupWindow.OnItemChooseListene
  */
 
 public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
-        implements ChooseBindContract.View, OnItemChooseListener{
+        implements ChooseBindContract.View, OnItemChooseListener {
 
     private ChooseBindPopupWindow mPopupWindow;
 
-    public ChooseBindFragment instance(Bundle bundle){
+    public ChooseBindFragment instance(Bundle bundle) {
         ChooseBindFragment fragment = new ChooseBindFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -49,8 +49,8 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
         return getString(R.string.third_platform_bind_account);
     }
 
-    private void initPopWindow(){
-        if (mPopupWindow == null){
+    private void initPopWindow() {
+        if (mPopupWindow == null) {
             mPopupWindow = ChooseBindPopupWindow.Builder()
                     .with(getActivity())
                     .alpha(0.8f)
@@ -62,13 +62,16 @@ public class ChooseBindFragment extends TSFragment<ChooseBindContract.Presenter>
 
     @Override
     public void onItemChose(int position) {
-        if (position == 0){
+        mPopupWindow.dismiss();
+        if (position == 0) {
             // 跳转完善资料
             Intent intent = new Intent(getActivity(), CompleteAccountActivity.class);
+            intent.putExtras(getArguments());
             startActivity(intent);
-        } else if (position == 1){
+        } else if (position == 1) {
             // 跳转绑定已有的账号
             Intent intent = new Intent(getActivity(), BindOldAccountActivity.class);
+            intent.putExtras(getArguments());
             startActivity(intent);
         }
     }

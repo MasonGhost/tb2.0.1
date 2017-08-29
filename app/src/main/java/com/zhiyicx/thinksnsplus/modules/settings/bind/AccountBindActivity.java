@@ -17,7 +17,7 @@ public class AccountBindActivity extends TSActivity<AccountBindPresenter, Accoun
 
     @Override
     protected AccountBindFragment getFragment() {
-        return new AccountBindFragment().instance(getIntent().getBundleExtra(BUNDLE_BIND_TYPE));
+        return new AccountBindFragment().instance(getIntent().getExtras());
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.zhiyicx.thinksnsplus.modules.wallet.reward.list;
 
-import com.zhiyicx.thinksnsplus.data.source.repository.RankRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.RewardListRepository;
-import com.zhiyicx.thinksnsplus.modules.rank.RankContract;
 
 import dagger.Module;
 import dagger.Provides;

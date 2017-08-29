@@ -19,4 +19,9 @@ public class PublishInfoActivity extends TSActivity<PublishInfoPresenter, Publis
                 .publishInfoPresenterModule(new PublishInfoPresenterModule(mContanierFragment))
                 .build().inject(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }

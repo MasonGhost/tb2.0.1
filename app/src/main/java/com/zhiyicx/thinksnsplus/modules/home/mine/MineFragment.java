@@ -40,7 +40,6 @@ import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyQuestionActivity;
-import com.zhiyicx.thinksnsplus.modules.rank.RankActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
@@ -229,8 +228,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(getContext(), ManuscriptsActivity.class));
                 break;
             case R.id.bt_ranking:
-                Intent toRank = new Intent(getContext(), RankActivity.class);
-                startActivity(toRank);
+
+//                Intent toRank = new Intent(getContext(), RankActivity.class);
+//                startActivity(toRank);
+
                 break;
             case R.id.bt_collect:
                 startActivity(new Intent(getActivity(), CollectListActivity.class));
@@ -261,8 +262,10 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
             case R.id.bt_certification:
-                // 弹窗选择个人或者机构
-                if (mUserCertificationInfo != null && mUserCertificationInfo.getId() != 0) {
+                // 弹窗选择个人或者机构，被驳回也只能重新申请哦 (*^__^*)
+                if (mUserCertificationInfo != null
+                        && mUserCertificationInfo.getId() != 0
+                        && mUserCertificationInfo.getStatus() != 2) {
                     Intent intentToDetail = new Intent(getActivity(), CertificationDetailActivity.class);
                     Bundle bundleData = new Bundle();
                     if (mUserCertificationInfo.getCertification_name().equals(SendCertificationBean.USER)) {
@@ -334,6 +337,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 mBtCertification.setRightText(getString(R.string.certification_state_success));
             } else if (data.getStatus() == 0) {
                 mBtCertification.setRightText(getString(R.string.certification_state_ing));
+            } else if (data.getStatus() == 2){
+                mBtCertification.setRightText(getString(R.string.certification_state_failed));
             }
         } else {
             mBtCertification.setRightText("");
@@ -356,6 +361,7 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
 
     @Override
     public void onTypeSelected(int position) {
+        mCertificationWindow.dismiss();
         Intent intent = new Intent(getActivity(), CertificationInputActivity.class);
         Bundle bundle = new Bundle();
         if (position == 0) {

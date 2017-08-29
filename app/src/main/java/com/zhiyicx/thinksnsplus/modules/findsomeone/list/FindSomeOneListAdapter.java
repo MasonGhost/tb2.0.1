@@ -81,6 +81,8 @@ public class FindSomeOneListAdapter extends CommonAdapter<UserInfoBean> {
         /**
          * 如果关注粉丝列表中出现了自己，需要隐藏关注按钮
          */
+        System.out.println("userInfoBean1 = " + userInfoBean1.toString());
+        System.out.println("AppApplication.getmCurrentLoginAuth().getUser_id()  = " + AppApplication.getmCurrentLoginAuth().getUser_id() );
         holder.getView(R.id.iv_user_follow).setVisibility(
                 userInfoBean1.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id() ? View.GONE : View.VISIBLE);
         // 设置用户名，用户简介

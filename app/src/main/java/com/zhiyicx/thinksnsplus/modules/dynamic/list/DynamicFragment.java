@@ -351,6 +351,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
+        int dynamicPosition=holder.getAdapterPosition()-mHeaderAndFooterWrapper.getHeadersCount();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -362,7 +363,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         Boolean canLook = !(img.isPaid() != null && !img.isPaid() && img.getType().equals(Toll
                 .LOOK_TOLL_TYPE));
         if (!canLook) {
-            initImageCenterPopWindow(holder.getAdapterPosition(), position, (float) dynamicBean
+            initImageCenterPopWindow(dynamicPosition, position, (float) dynamicBean
                             .getImages().get(position).getAmount(),
                     dynamicBean.getImages().get(position).getPaid_node(), R.string.buy_pay_desc,
                     true);
@@ -385,7 +386,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
             toll.setToll_type_string(task.getType());
             toll.setPaid_node(task.getPaid_node());
             imageBean.setToll(toll);
-            imageBean.setDynamicPosition(holder.getAdapterPosition());
+            imageBean.setDynamicPosition(dynamicPosition);
             imageBean.setFeed_id(dynamicBean.getId());
             imageBean.setWidth(task.getWidth());
             imageBean.setHeight(task.getHeight());
@@ -686,8 +687,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(BuildConfig.USE_TOLL && dynamicBean.getState() == DynamicDetailBeanV2
                         .SEND_SUCCESS && !dynamicBean
-                        .getComments().get(commentPosition).getPinned() &&
-                        !getDynamicType().equals(ApiConfig.DYNAMIC_TYPE_FOLLOWS) ? getString(R
+                        .getComments().get(commentPosition).getPinned() ? getString(R
                         .string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
                 .bottomStr(getString(R.string.cancel))

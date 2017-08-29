@@ -30,7 +30,7 @@
     <!--刷新控件header的高度-->
     <dimen name="refresh_header_height">40dp</dimen>
     <!--登录注册编辑框左边的文字宽度-->
-    <dimen name="edit_lefttext_width">45dp</dimen>
+    <dimen name="edit_lefttext_width">50dp</dimen>
     <dimen name="edit_lefttext_width_change_password">75dp</dimen>
     <dimen name="button_send_vertify_code_min_width">75dp</dimen>
     <!--可操作按钮列表高度-->

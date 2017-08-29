@@ -207,10 +207,6 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".modules.rank.RankActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
             android:name=".modules.wallet.WalletActivity"
             android:screenOrientation="portrait">
         </activity>
@@ -300,7 +296,7 @@
         <activity
             android:name=".modules.certification.input.CertificationInputActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".modules.certification.send.SendCertificationActivity"
             android:screenOrientation="portrait"
@@ -314,7 +310,10 @@
             android:name=".modules.rank.main.container.RankIndexActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-
+        <activity
+                android:name=".modules.rank.type_list.RankTypeListActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
         <service
             android:name=".modules.music_fm.music_play.MusicPlayService"
             android:exported="true"
@@ -424,30 +423,40 @@
         <activity
             android:name=".modules.collect.CollectListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".modules.dynamic.topdynamic.DynamicTopActivity">
-        </activity>
-        <activity android:name=".modules.wallet.withdrawals.WithdrawalsActivity">
-        </activity>
-        <activity android:name=".modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity">
-        </activity>
-        <activity android:name=".modules.wallet.bill_detail.BillDetailActivity">
-        </activity>
+        <activity
+            android:name=".modules.dynamic.topdynamic.DynamicTopActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.withdrawals.WithdrawalsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.withdrawals.list_detail.WithdrawalsDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.bill_detail.BillDetailActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.dynamic.send.dynamic_type.SelectDynamicTypeActivity"
-            android:theme="@style/DynamciSelectTheme">
-        </activity>
-        <activity android:name=".modules.dynamic.send.picture_toll.PictureTollActivity">
-        </activity>
-        <activity android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity">
-        </activity>
-        <activity android:name=".modules.dynamic.topdynamic_comment.DynamicCommentTopActivity">
-        </activity>
-        <activity android:name=".modules.wallet.bill.BillActivity">
-        </activity>
-        <activity android:name=".modules.feedback.FeedBackActivity">
-        </activity>
-        <activity android:name=".modules.home.message.messagereview.MessageReviewActivity">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/DynamciSelectTheme"/>
+        <activity
+            android:name=".modules.dynamic.send.picture_toll.PictureTollActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.dynamic.tollcomment.DynamicCommentTollActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.dynamic.topdynamic_comment.DynamicCommentTopActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.bill.BillActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.feedback.FeedBackActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.home.message.messagereview.MessageReviewActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.q_a.QA_Activity"
             android:launchMode="singleTask"
@@ -485,11 +494,16 @@
             android:name=".modules.information.publish.addinfo.AddInfoCategoryActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".modules.information.publish.uploadcover.UploadCoverActivity"/>
-        <activity android:name=".modules.wallet.sticktop.StickTopActivity"/>
+        <activity
+            android:name=".modules.information.publish.uploadcover.UploadCoverActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.wallet.sticktop.StickTopActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.q_a.answer.PublishAnswerActivity"
             android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
         <activity
             android:name=".modules.q_a.detail.answer.AnswerDetailsActivity"
@@ -511,14 +525,16 @@
             android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".modules.draftbox.DraftBoxActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".modules.information.my_info.ManuscriptsActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.music_fm.paided_music.MyMusicActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.draftbox.DraftBoxActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

@@ -37,7 +37,7 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> {
-                    if (mRootView.showUplaoding()){
+                    if (mRootView.showUplaoding()) {
                         mRootView.showSnackLoadingMessage("图片上传中...");
                     }
                 })
@@ -66,23 +66,24 @@ public class PublishInfoPresenter extends AppBasePresenter<PublishInfoContract.R
 
     @Override
     public void publishInfo(InfoPublishBean infoPublishBean) {
-        mRepository.publishInfo(infoPublishBean).subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
-            @Override
-            protected void onSuccess(BaseJsonV2<Object> data) {
-                mRootView.showSnackMessage("发布成功", Prompt.DONE);
-            }
+        mRepository.publishInfo(infoPublishBean)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<Object> data) {
+                        mRootView.showSnackMessage("发布成功", Prompt.DONE);
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-                mRootView.showSnackErrorMessage(message);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.showSnackErrorMessage(throwable.getMessage());
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
     }
 }

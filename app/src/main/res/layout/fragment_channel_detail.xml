@@ -49,8 +49,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/toolbar_center_margin"
-                android:layout_marginRight="@dimen/toolbar_center_margin"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"

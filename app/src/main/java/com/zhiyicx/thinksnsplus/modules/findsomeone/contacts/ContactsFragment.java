@@ -50,7 +50,7 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
 
     private ContactsAdapter mTagClassAdapter;
 
-    private ArrayList<ContactsContainerBean> mBundleData = new ArrayList<>();
+    private ArrayList<ContactsContainerBean> mBundleData ;
 
     private String mTitle;
 
@@ -140,7 +140,7 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
     protected void initData() {
         if (mBundleData == null) {
             mPresenter.getContacts();
-        }else {
+        } else {
             mListData.addAll(mBundleData);
             mTagClassAdapter.notifyAllSectionsDataSetChanged();
             hideLoading();
@@ -186,13 +186,30 @@ public class ContactsFragment extends TSFragment<ContactsContract.Presenter> imp
     public void onMoreClick(int categoryPosition) {
         ArrayList<ContactsContainerBean> data = new ArrayList<>();
         ContactsContainerBean contactsContainerBean = mListData.get(categoryPosition);
-        data.add(contactsContainerBean);
+        for (ContactsContainerBean containerBean : mBundleData) {
+            if (containerBean.getTitle().equals(contactsContainerBean.getTitle())) {
+                data.add(containerBean);
+                break;
+            }
+        }
         startToEditTagActivity(getActivity(), mListData.get(categoryPosition).getTitle(), data);
     }
 
     @Override
     public void updateContacts(ArrayList<ContactsContainerBean> data) {
-        mBundleData = data;
+
+        mBundleData=new ArrayList<>();
+        ContactsContainerBean contactsContainerBean=new ContactsContainerBean();
+        contactsContainerBean.setTitle(data.get(0).getTitle());
+        contactsContainerBean.setContacts(new ArrayList<>());
+        contactsContainerBean.getContacts().addAll(data.get(0).getContacts());
+        mBundleData.add(contactsContainerBean);
+        ContactsContainerBean contactsContainerBean2=new ContactsContainerBean();
+        contactsContainerBean2.setTitle(data.get(1).getTitle());
+        contactsContainerBean2.setContacts(new ArrayList<>());
+        contactsContainerBean2.getContacts().addAll(data.get(1).getContacts());
+        mBundleData.add(contactsContainerBean2);
+
         mListData.clear();
         mListData.addAll(data);
         for (int i = 0; i < mListData.size(); i++) {

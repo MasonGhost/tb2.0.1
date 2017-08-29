@@ -2,7 +2,6 @@ package com.zhiyicx.thinksnsplus.modules.channel.list;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.ChannelSubscripBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -48,10 +47,6 @@ public interface ChannelListContract {
     }
 
     interface Presenter extends ITSListPresenter<GroupInfoBean> {
-        /**
-         * 处理用户订阅状态
-         */
-        void handleChannelSubscrib(int position, ChannelSubscripBean channelSubscripBean);
 
         List<SystemConfigBean.Advert> getAdvert();
 
@@ -59,16 +54,7 @@ public interface ChannelListContract {
     }
 
     interface Repository extends IBaseChannelRepository {
-        /**
-         * 获取我订阅的频道
-         */
-        Observable<BaseJson<List<ChannelSubscripBean>>> getMySubscribChannelList();
 
-
-        /**
-         * 获取所有的频道
-         */
-        Observable<BaseJson<List<ChannelSubscripBean>>> getAllChannelList();
 
 
         /**

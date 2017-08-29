@@ -36,6 +36,8 @@ public class EventBusTagConfig {
     public static final String EVENT_UPDATE_DYNAMIC = "event_update_dynamic";
     // 更新圈子动态列表
     public static final String EVENT_UPDATE_GROUP_DYNAMIC = "event_update_group_dynamic";
+    // 更新圈子收藏
+    public static final String EVENT_UPDATE_GROUP_COLLECTION = "event_update_group_collection";
     // 详情界面删除内容通知
     public static final String DYNAMIC_LIST_DELETE_UPDATE = "dynamic_list_delete_update";
     // 动态列表发送评论

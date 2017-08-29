@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListContract;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListPresenter;
 import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -84,14 +85,15 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
             mRootView.onNetResponseSuccess(new ArrayList<>(), false);
 
         } else {
-            mUserInfoRepository.getNearbyData(mLatLonPoint.getLongitude(), mLatLonPoint.getLatitude()
-                    , DEFAULT_NEARBY_RADIUS, TSListFragment.DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment.DEFAULT_PAGE)
+            Subscription subscribe = mUserInfoRepository.getNearbyData(mLatLonPoint.getLongitude(), mLatLonPoint.getLatitude()
+                    , DEFAULT_NEARBY_RADIUS, FindSomeOneListPresenter.DEFAULT_PAGE_SIZE, isLoadMore ? mRootView.getPage() : TSListFragment.DEFAULT_PAGE)
                     .subscribe(new BaseSubscribeForV2<List<NearbyBean>>() {
                         @Override
                         protected void onSuccess(List<NearbyBean> data) {
                             mRootView.onNetResponseSuccess(data, false);
                         }
                     });
+            addSubscrebe(subscribe);
         }
     }
 
@@ -155,26 +157,29 @@ public class FindSomeOneNearbyListPresenter extends AppBasePresenter<FindSomeOne
 
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
-        mIsConverLocation = false;
-        if (i == 1000) {
-            LatLonPoint latLonPoint;
-            if (geocodeResult != null && geocodeResult.getGeocodeAddressList() != null &&
-                    geocodeResult.getGeocodeAddressList().size() > 0) {
-                GeocodeAddress geocodeAddress = geocodeResult.getGeocodeAddressList().get(0);
-                latLonPoint = geocodeAddress.getLatLonPoint();
-                if (mLatLonPoint == null || !mLatLonPoint.equals(latLonPoint)) {
-                    mLatLonPoint = latLonPoint;
+        try {
+            mIsConverLocation = false;
+            if (i == 1000) {
+                LatLonPoint latLonPoint;
+                if (geocodeResult != null && geocodeResult.getGeocodeAddressList() != null &&
+                        geocodeResult.getGeocodeAddressList().size() > 0) {
+                    GeocodeAddress geocodeAddress = geocodeResult.getGeocodeAddressList().get(0);
+                    latLonPoint = geocodeAddress.getLatLonPoint();
+                    if (mLatLonPoint == null || !mLatLonPoint.equals(latLonPoint)) {
+                        mLatLonPoint = latLonPoint;
 
-                    requestNetData(0L, false);
-                }else {
-                    mRootView.hideLoading();
+                        requestNetData(0L, false);
+                    } else {
+                        mRootView.hideLoading();
+                    }
                 }
+            } else {
+                LogUtils.e("地址名出错");
+                mRootView.onNetResponseSuccess(new ArrayList<>(), false);
             }
-        } else {
-            LogUtils.e("地址名出错");
-            mRootView.onNetResponseSuccess(new ArrayList<>(), false);
-        }
+        } catch (Exception e) {
 
+        }
 
     }
 }

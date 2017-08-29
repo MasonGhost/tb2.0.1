@@ -14,7 +14,6 @@ public enum BackgroundTaskRequestMethodConfig {
     GET_IM_INFO(2),
     GET_USER_INFO(3),
     DELETE(4),
-    SEND_DYNAMIC(5),
     SEND_DYNAMIC_COMMENT(6), // 其他
     SEND_INFO_COMMENT(7),// 资讯
     PATCH(8),

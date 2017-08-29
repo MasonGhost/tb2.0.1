@@ -140,10 +140,25 @@ public class InfoContainerFragment extends TSFragment<InfoMainContract.InfoConta
     protected void setRightClick() {
         // 发布提示 1、首先需要认证 2、需要付费
         if (mPresenter.checkCertification()){
-            mPayAlertPopWindow.show();
+            if (mPresenter.isNeedPayTip()){
+                mPayAlertPopWindow.show();
+                mPresenter.savePayTip(false);
+            } else {
+                startActivity(new Intent(getActivity(), PublishInfoActivity.class));
+            }
         } else {
             mCertificationAlertPopWindow.show();
         }
+    }
+
+    @Override
+    protected void musicWindowsStatus(boolean isShow) {
+        super.musicWindowsStatus(isShow);
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindowTwo() {
+        return mTvRightTwo;
     }
 
     @Override

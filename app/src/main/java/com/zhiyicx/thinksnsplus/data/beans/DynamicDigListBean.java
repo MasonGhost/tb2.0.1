@@ -34,7 +34,7 @@ public class DynamicDigListBean extends BaseListBean implements Parcelable, Seri
      * updated_at : 2017-07-12 08:09:07 // 点赞更新时间
      */
     @Id
-    @SerializedName("feed_digg_id")
+    @SerializedName(value = "id",alternate = {"feed_digg_id"})
     private Long id;
     private Long user_id; // 赞的用户
     @ToOne(joinProperty = "user_id")

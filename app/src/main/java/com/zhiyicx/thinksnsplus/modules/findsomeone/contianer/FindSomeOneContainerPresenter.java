@@ -15,6 +15,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -36,12 +38,13 @@ public class FindSomeOneContainerPresenter extends BasePresenter<FindSomeOneCont
 
     @Override
     public void updateUseLocation(LatLonPoint latLonPoint) {
-        mUserInfoRepository.updateUserLocation(latLonPoint.getLongitude(),latLonPoint.getLatitude())
+        Subscription subscribe = mUserInfoRepository.updateUserLocation(latLonPoint.getLongitude(), latLonPoint.getLatitude())
                 .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
                     protected void onSuccess(Object data) {
 
                     }
                 });
+        addSubscrebe(subscribe);
     }
 }

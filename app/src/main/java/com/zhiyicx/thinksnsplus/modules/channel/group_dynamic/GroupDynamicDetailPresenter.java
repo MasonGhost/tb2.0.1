@@ -174,26 +174,30 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     }
 
     @Override
-    public void getCurrentDynamicDetail(long group_id, long dynamic_id) {
+    public void getCurrentDynamicDetail(long group_id, long dynamic_id,boolean refreshUI) {
         Subscription subscription = mRepository.getGroupDynamicDetail(group_id, dynamic_id)
                 .subscribe(new BaseSubscribeForV2<GroupDynamicListBean>() {
                     @Override
                     protected void onSuccess(GroupDynamicListBean data) {
-//                        data.setTop(topFlag);
-                        mRootView.initDynamicDetail(data);
+                        if (refreshUI){
+                            mRootView.initDynamicDetail(data);
+                        }
                         // 存入数据库
                         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(data);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        LogUtils.e(message);
-                        handleDynamicHasBeDeleted(code, dynamic_id);
+                        if (refreshUI){
+                            handleDynamicHasBeDeleted(code, dynamic_id);
+                        }
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.loadAllError();
+                        if (refreshUI){
+                            mRootView.loadAllError();
+                        }
                     }
                 });
         addSubscrebe(subscription);
@@ -351,9 +355,9 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
         mGroupDynamicListBeanGreenDaoimpl.insertOrReplace(dynamicBean);
         // 通知列表
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DYNAMIC_DETAIL_DATA, dynamicBean);
+        bundle.putParcelable(EventBusTagConfig.EVENT_UPDATE_GROUP_COLLECTION, dynamicBean);
         bundle.putBoolean(DYNAMIC_LIST_NEED_REFRESH, true);
-        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_DYNAMIC);
+        EventBus.getDefault().post(bundle, EventBusTagConfig.EVENT_UPDATE_GROUP_COLLECTION);
         // 通知服务器
         mRepository.handleCollect(is_collection, dynamicBean.getGroup_id(), dynamicBean.getId());
     }

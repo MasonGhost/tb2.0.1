@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -45,6 +46,8 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
 
     @BindView(R.id.fragment_search_container)
     RelativeLayout mFragmentInfoSearchContainer;
+    @BindView(R.id.fragment_search_cancle)
+    TextView mTvSearchCancel;
 
 
     public static SearchSomeOneFragment newInstance(Bundle args) {
@@ -75,12 +78,8 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
     }
 
     @Override
-    protected void musicWindowsStatus(boolean isShow) {
-        super.musicWindowsStatus(isShow);
-        if (isShow) {
-            int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-            mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
-        }
+    protected View getRightViewOfMusicWindow() {
+        return mTvSearchCancel;
     }
 
     @Override
@@ -97,6 +96,10 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
                     return false;
                 });
         mRvList.setBackgroundResource(R.color.white);
+        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
+                .subscribe(textViewAfterTextChangeEvent -> {
+                    mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
+                });
     }
 
     @Override
@@ -132,13 +135,6 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
         return adapter;
 
     }
-
-    @Override
-    public void onDismiss() {
-        super.onDismiss();
-        mFragmentInfoSearchContainer.setPadding(0, 0, 0, 0);
-    }
-
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {

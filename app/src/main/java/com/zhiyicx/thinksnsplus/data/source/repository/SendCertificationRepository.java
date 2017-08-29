@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.FuncN;
 
 /**
  * @author Catherine
@@ -53,7 +54,7 @@ public class SendCertificationRepository implements SendCertificationContract.Re
             String photoMimeType = imageBean.getImgMimeType();
             upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
         }
-        return Observable.combineLatest(upLoadPics, args -> {
+        return Observable.zip(upLoadPics, (FuncN<Object>) args -> {
             List<Integer> integers = new ArrayList<>();
             for (int i = 0; i < args.length; i++) {
                 BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
@@ -68,14 +69,18 @@ public class SendCertificationRepository implements SendCertificationContract.Re
             }
             return integers;
         }).map(integers -> {
-            bean.setPicList(null);
+//            bean.setPicList(null);
             return bean;
         }).flatMap(new Func1<SendCertificationBean, Observable<BaseJsonV2<Object>>>() {
             @Override
             public Observable<BaseJsonV2<Object>> call(SendCertificationBean bean) {
                 RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json;charset=UTF-8"), new Gson().toJson(bean));
                 LogUtils.d("Cathy", new Gson().toJson(bean));
-                return mUserInfoClient.sendUserCertificationInfo(body);
+                if (bean.isUpdate()){
+                    return mUserInfoClient.updateUserCertificationInfo(body);
+                } else {
+                    return mUserInfoClient.sendUserCertificationInfo(body);
+                }
             }
         });
     }

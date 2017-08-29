@@ -37,13 +37,13 @@ public class InfoCommentListBean extends BaseListBean {
      */
     @Id
     private Long id;
-    @SerializedName("commentable_id")
+    @SerializedName(value = "info_id",alternate = {"commentable_id"})
     private int info_id = -1;// 自己创建的，用于记录隶属于哪一条资讯。
     private String created_at;
-    @SerializedName("body")
+    @SerializedName(value = "comment_content",alternate = {"body"})
     private String comment_content;
     private long user_id;
-    @SerializedName("reply_user")
+    @SerializedName(value = "reply_to_user_id",alternate = {"reply_user"})
     private long reply_to_user_id;
     @Unique
     private long comment_mark;

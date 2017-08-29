@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
@@ -12,14 +13,17 @@ import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.BindAccountRequstBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.DeleteUserPhoneOrEmailRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.ThirdAccountBindRequestBean;
+import com.zhiyicx.thinksnsplus.data.beans.request.UpdateUserPhoneOrEmailRequestBean;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -30,6 +34,7 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HEAD;
+import retrofit2.http.HTTP;
 import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -38,10 +43,16 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_BIND_WITH_INPUT;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_BIND_WITH_LOGIN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CANDEL_BIND;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHANGE_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_BIND_OR_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_IN;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BATCH_SPECIFIED_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BIND_THIRDS;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_BY_PHONE_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_CHECK_IN_RANKS;
@@ -52,8 +63,8 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INF
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SEARCH_RECOMMENT_USER;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_UPDATE_USER_LOCATION;
 
 /**
@@ -117,27 +128,6 @@ public interface UserInfoClient {
     Observable<BaseJson<IMBean>> getIMInfo();
 
     /**
-     * 获取用户关注状态
-     *
-     * @param user_ids 多个用户 id 通过“ ，”来隔开
-     */
-    @GET(ApiConfig.APP_PATH_GET_USER_FOLLOW_STATE)
-    Observable<BaseJson<List<FollowFansBean>>> getUserFollowState(@Query("user_ids") String user_ids);
-
-
-    /**
-     * 用户点赞排行
-     *
-     * @param page  页码 默认为 1
-     * @param limit 返回数据条数 默认15条
-     * @return
-     */
-    @GET(ApiConfig.APP_PATH_GET_DIGGS_RANK)
-    Observable<BaseJson<List<DigRankBean>>> getDigRankList(@Query("page") int page,
-                                                           @Query("limit") int limit);
-
-
-    /**
      * 获取用户收到的点赞
      *
      * @param after 用来翻页数据体记录 id
@@ -158,18 +148,6 @@ public interface UserInfoClient {
     @GET(ApiConfig.APP_PATH_GET_MY_COMMENTS)
     Observable<List<CommentedBean>> getMyComments(@Query("after") int after,
                                                   @Query("limit") int limit);
-
-    /**
-     * 获取用户收到的评论
-     *
-     * @param time 零时区的秒级时间戳
-     * @param key  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
-     * @return
-     */
-    @GET(ApiConfig.APP_PATH_GET_MY_FLUSHMESSAGES)
-    Observable<BaseJson<List<FlushMessages>>> getMyFlushMessages(@Query("time") long time,
-                                                                 @Query("key") String key);
-
     /**
      * 未读通知数量检查
      *
@@ -228,6 +206,35 @@ public interface UserInfoClient {
     @POST(ApiConfig.APP_PATH_UPDATE_USER_BG)
     Observable<Object> updateBg(@Body MultipartBody multipartBody);
 
+
+    /**
+     * 更新认证用户的手机号码和邮箱
+     *
+     * @param updateUserPhoneOrEmailRequestBean request data
+     * @return
+     */
+    @PUT(ApiConfig.APP_PATH_UPDATE_USER_PHONE_OR_EMAIL)
+    Observable<Object> updatePhoneOrEmail(@Body UpdateUserPhoneOrEmailRequestBean updateUserPhoneOrEmailRequestBean);
+
+    /**
+     * 解除用户 Phone 绑定:
+     *
+     * @param deleteUserPhoneOrEmailRequestBean
+     * @return
+     */
+    @HTTP(method = "DELETE", path = ApiConfig.APP_PATH_DELETE_USER_PHONE, hasBody = true)
+    Observable<Object> deletePhone(@Body DeleteUserPhoneOrEmailRequestBean deleteUserPhoneOrEmailRequestBean);
+
+    /**
+     * 解除用户 E-Mail 绑定:
+     *
+     * @param deleteUserPhoneOrEmailRequestBean
+     * @return
+     */
+    @HTTP(method = "DELETE", path = ApiConfig.APP_PATH_DELETE_USER_EMAIL, hasBody = true)
+    Observable<Object> deleteEmail(@Body DeleteUserPhoneOrEmailRequestBean deleteUserPhoneOrEmailRequestBean);
+
+
     /*******************************************  标签  *********************************************/
 
 
@@ -284,8 +291,7 @@ public interface UserInfoClient {
      * 更新认证信息
      */
     @PATCH(ApiConfig.APP_PATH_CERTIFICATION)
-    Observable<BaseJsonV2<Object>> updateUserCertificationInfo();
-
+    Observable<BaseJsonV2<Object>> updateUserCertificationInfo(@Body RequestBody requestBody);
 
     /*******************************************  打赏  *********************************************/
 
@@ -331,6 +337,16 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO)
     Observable<List<UserInfoBean>> getUsersRecommentByTag(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     * 搜索用户
+     *
+     * @param limit  每页数量
+     * @param offset 偏移量, 注: 此参数为之前获取数量的总和
+     * @return
+     */
+    @GET(APP_PATH_SEARCH_RECOMMENT_USER)
+    Observable<List<UserInfoBean>> searchUserinfoWithRecommend(@Query("limit") Integer limit, @Query("offset") Integer offset, @Query("keyword") String keyword);
 
     /**
      * phone 推荐用户
@@ -392,5 +408,72 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_GET_CHECK_IN_RANKS)
     Observable<List<UserInfoBean>> getCheckInRanks(@Query("offset") Integer offset);
+
+    /*******************************************  三方登录  *********************************************/
+
+    /**
+     * 获取已经绑定的三方
+     * qq	    腾讯 QQ 。
+     * weibo	新浪 Weibo 。
+     * wechat	腾讯微信 。
+     *
+     * @return 请求成功后，将返回用户已绑定第三方的 provider 名称，不存在列表中的代表用户并为绑定。
+     */
+    @GET(APP_PATH_GET_BIND_THIRDS)
+    Observable<List<String>> getBindThirds();
+
+    /**
+     * 检查绑定并获取用户授权
+     *
+     * @param access_token thrid token
+     * @return 返回的数据参考 「用户／授权」接口，如果返回 404 则表示没有改账号没有注册，进入第三方登录注册流程。
+     */
+    @FormUrlEncoded
+    @POST(APP_PATH_CHECK_BIND_OR_GET_USER_INFO)
+    Observable<AuthBean> checkThridIsRegitser(@Path("provider") String provider, @Field("access_token") String access_token);
+
+    /**
+     * 检查注册信息或者注册用户
+     *
+     * @param provider      type qq\weibo\wechat
+     * @param thridInfoBean 获取的 Provider Access Token。
+     * @param thridInfoBean 用户名。
+     * @param thridInfoBean 如果是 null 、 false 或 0 则不会进入检查，如果 存在任何转为 bool 为 真 的值，则表示检查注册信息。
+     * @return
+     */
+    @PATCH(APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO)
+    Observable<AuthBean> checkUserOrRegisterUser(@Path("provider") String provider, @Body ThridInfoBean thridInfoBean);
+
+    /**
+     * 已登录账号绑定
+     *
+     * @param provider
+     * @param access_token
+     * @return
+     */
+    @PATCH(APP_PATH_BIND_WITH_LOGIN)
+    Observable<Object> bindWithLogin(@Path("provider") String provider, @Body ThirdAccountBindRequestBean access_token);
+
+    /**
+     * 输入账号密码绑定
+     *
+     * @param provider              type qq\weibo\wechat
+     * @param bindAccountRequstBean 获取的 Provider Access Token。
+     * @param bindAccountRequstBean 用户登录名，手机，邮箱
+     * @param bindAccountRequstBean 用户密码。
+     * @return
+     */
+    @PUT(APP_PATH_BIND_WITH_INPUT)
+    Observable<AuthBean> bindWithInput(@Path("provider") String provider,
+                                       @Body BindAccountRequstBean bindAccountRequstBean);
+
+    /**
+     * 取消绑定
+     *
+     * @param provider type qq\weibo\wechat
+     * @return
+     */
+    @DELETE(APP_PATH_CANDEL_BIND)
+    Observable<Object> cancelBind(@Path("provider") String provider);
 
 }

@@ -4,9 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplComponent;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
+import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
@@ -29,6 +38,8 @@ public class PublishAnswerFragment extends PublishContentFragment {
     private PublishType mType;
     private String mBody;
 
+    private ActionPopupWindow mEditWarningPopupWindow;// 退出编辑警告弹框
+
     public static PublishAnswerFragment newInstance(Bundle bundle) {
         if (bundle == null || bundle.getLong(BUNDLE_SOURCE_ID) <= 0) {
             throw new IllegalArgumentException("questin_id can not be null");
@@ -40,16 +51,22 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void initData() {
-        super.initData();
+        mImageIdArray = new int[100];
+        mPhotoSelector = DaggerPhotoSelectorImplComponent
+                .builder()
+                .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
+                        .NO_CRAFT))
+                .build().photoSelectorImpl();
+
         mBody = getArguments().getString(BUNDLE_SOURCE_BODY, "");
         mType = (PublishType) getArguments().getSerializable(BUNDLE_SOURCE_TYPE);
 
         if (mType == PublishType.PUBLISH_ANSWER) {
-            mToolbarCenter.setText(getString( R.string.qa_publish_answer));
+            mToolbarCenter.setText(getString(R.string.qa_publish_answer));
         } else if (mType == PublishType.UPDATE_ANSWER) {
-            mToolbarCenter.setText(getString( R.string.qa_update_answer));
+            mToolbarCenter.setText(getString(R.string.qa_update_answer));
         } else if (mType == PublishType.UPDATE_QUESTION) {
-            mToolbarCenter.setText(getString( R.string.qa_update_publish));
+            mToolbarCenter.setText(getString(R.string.qa_update_publish));
         }
 
         if (!mBody.isEmpty()) {
@@ -83,27 +100,6 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     }
 
-//    @NonNull
-//    @Override
-//    protected String getContentString() {
-//        StringBuilder builder = new StringBuilder();
-//        List<RichTextEditor.EditData> datas = mRicheTest.buildEditData();
-//        for (RichTextEditor.EditData editData : datas) {
-//            builder.append(editData.inputStr);
-//            if (!editData.imagePath.isEmpty()) {
-//                if (editData.imagePath.contains("![image]")) {
-//                    builder.append(editData.imagePath);
-//                } else {
-//                    builder.append(String.format(Locale.getDefault(),
-//                            MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE,
-//                            mImageIdArray[mPicAddTag]));
-//                }
-//                mPicAddTag++;
-//            }
-//        }
-//        return builder.toString();
-//    }
-
     @Override
     public void publishSuccess(QAAnswerBean answerBean) {
         getActivity().finish();
@@ -115,15 +111,28 @@ public class PublishAnswerFragment extends PublishContentFragment {
         getActivity().finish();
     }
 
+    @Override
+    protected void setLeftClick() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mToolbarRight.isEnabled() || mType != PublishType.UPDATE_ANSWER) {
+            super.onBackPressed();
+        } else {
+            initEditWarningPop();
+        }
+    }
+
     /**
-     *
      * @param context
      * @param type
      * @param sourceId
      * @param body
      */
     public static void startQActivity(Context context, PublishType type, long sourceId,
-                                           String body) {
+                                      String body) {
 
         Intent intent = new Intent(context, PublishAnswerActivity.class);
         Bundle bundle = new Bundle();
@@ -133,5 +142,43 @@ public class PublishAnswerFragment extends PublishContentFragment {
         intent.putExtras(bundle);
         context.startActivity(intent);
 
+    }
+
+    /**
+     * 初始化图片选择弹框
+     */
+    private void initEditWarningPop() {
+        mRicheTest.hideKeyBoard();
+        if (mEditWarningPopupWindow != null) {
+            mEditWarningPopupWindow.show();
+            return;
+        }
+        mEditWarningPopupWindow = ActionPopupWindow.builder()
+                .item1Str(getString(R.string.edit_quit))
+                .item2Str(getString(R.string.save_to_draft_box))
+                .bottomStr(getString(R.string.cancel))
+                .isOutsideTouch(true)
+                .isFocus(true)
+                .backgroundAlpha(0.8f)
+                .with(getActivity())
+                .item1ClickListener(() -> {
+                    mEditWarningPopupWindow.hide();
+                    getActivity().finish();
+                })
+                .item2ClickListener(() -> {
+                    AnswerDraftBean answerDraftBean = new AnswerDraftBean();
+                    String mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System
+                            .currentTimeMillis();
+                    answerDraftBean.setMark(Long.parseLong(mark));
+                    answerDraftBean.setId(getArguments().getLong(BUNDLE_SOURCE_ID));
+                    answerDraftBean.setBody(getContentString());
+                    answerDraftBean.setAnonymity(mAnonymity);
+                    answerDraftBean.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
+                    mPresenter.saveAnswer(answerDraftBean);
+                    mEditWarningPopupWindow.hide();
+                    getActivity().finish();
+                })
+                .bottomClickListener(() -> mEditWarningPopupWindow.hide()).build();
+        mEditWarningPopupWindow.show();
     }
 }

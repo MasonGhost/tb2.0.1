@@ -24,8 +24,6 @@ public interface IUploadRepository {
      * @param photoWidth  图片宽度
      * @return
      */
-    Observable<BaseJson<Integer>> upLoadSingleFile(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
-
     Observable<BaseJson<Integer>> upLoadSingleFileV2(String filePath, String mimeType, boolean isPic, int photoWidth, int photoHeight);
 
     /**

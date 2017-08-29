@@ -87,7 +87,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         parent_id = getArguments().getLong(PARENT_ID, -1L);
         child_id = getArguments().getLong(CHILD_ID, -1L);
         mBlance = mPresenter.getBalance();
-        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f,mBlance));
+        mTvDynamicTopDec.setText(String.format(getString(R.string.to_top_description), 200f, mBlance));
     }
 
     @Override
@@ -174,12 +174,19 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> {
                     if (!TextUtils.isEmpty(charSequence)) {
-                        mInputMoney = Float.parseFloat(charSequence.toString());
+                        try {
+                            mInputMoney = Float.parseFloat(charSequence.toString());
+                        } catch (NumberFormatException e) {
+                            mInputMoney = 0f;
+                        }
                     } else {
                         mInputMoney = 0f;
                     }
                     setConfirmEnable();
-                }, throwable -> mInputMoney = 0f);
+                }, throwable -> {
+                    mInputMoney = 0f;
+                    setConfirmEnable();
+                });
 
         RxTextView.textChanges(mEtTopTotal)
                 .compose(this.bindToLifecycle())
@@ -207,8 +214,8 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
     private void setConfirmEnable() {
         boolean enable = mCurrentDays > 0 && mInputMoney > 0;
         mBtTop.setEnabled(enable);
-        if (!enable)
-            return;
+//        if (!enable)
+//            return;
         mEtTopTotal.setText(String.valueOf(mCurrentDays * mInputMoney));
     }
 

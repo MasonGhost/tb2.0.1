@@ -78,6 +78,9 @@ public class AccountBeanGreenDaoImpl extends CommonCacheImpl<AccountBean>{
     }
 
     public void insertOrReplaceByName(AccountBean newData) {
+        if(newData==null||newData.getAccountName()==null){
+            return;
+        }
         List<AccountBean> list = mAccountBeanDao.queryBuilder()
                 .where(AccountBeanDao.Properties.AccountName.eq(newData.getAccountName())).list();
         if (list == null || list.size() == 0){

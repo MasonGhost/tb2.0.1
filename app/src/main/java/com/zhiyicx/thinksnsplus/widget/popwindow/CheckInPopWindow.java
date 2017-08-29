@@ -15,6 +15,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.recycleviewdecoration.LinearDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -60,9 +61,12 @@ public class CheckInPopWindow extends PopupWindow {
     private OnCheckInClickListener mOnCheckInClickListener;
     private CheckInBean mCheckInBean;
 
-    public CheckInPopWindow(View parentView, CheckInBean checkInBean, OnCheckInClickListener l) {
+    private double mWalletRatio = 100;
+
+    public CheckInPopWindow(View parentView, CheckInBean checkInBean, double mWalletRatio, OnCheckInClickListener l) {
         this.mParentView = parentView;
         this.mOnCheckInClickListener = l;
+        this.mWalletRatio = mWalletRatio;
         this.mCheckInBean = checkInBean;
         initLayout();
         initData();
@@ -103,7 +107,7 @@ public class CheckInPopWindow extends PopupWindow {
 
         mRvUserCheckInList = (RecyclerView) mContentView.findViewById(R.id.rv_user_check_in_list);
 
-        mLayoutManager = new LinearLayoutManager(mParentView.getContext(), LinearLayoutManager.HORIZONTAL, true);
+        mLayoutManager = new LinearLayoutManager(mParentView.getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRvUserCheckInList.setLayoutManager(mLayoutManager);
         mRvUserCheckInList.setHasFixedSize(true);
         mRvUserCheckInList.addItemDecoration(new LinearDecoration(0, 0, mParentView.getResources().getDimensionPixelOffset(com.zhiyicx.thinksnsplus.R.dimen.spacing_small), 0));
@@ -122,24 +126,25 @@ public class CheckInPopWindow extends PopupWindow {
             }
         };
         mRvUserCheckInList.setAdapter(mCommonAdapter);
-        setData(mCheckInBean);
+        setData(mCheckInBean, mWalletRatio);
     }
 
     /**
      * 更新数据
      *
      * @param checkInBean
+     * @param walletRatio
      */
-    public void setData(CheckInBean checkInBean) {
+    public void setData(CheckInBean checkInBean, double walletRatio) {
         mTvTotalCheckIn.setText(mParentView.getContext().getString(R.string.check_in_total_day_format, checkInBean.getLast_checkin_count()));
-        mTvTotoalGold.setText("+" + checkInBean.getAttach_balance());
+        mTvTotoalGold.setText("+" + PayConfig.realCurrency2GameCurrency(checkInBean.getAttach_balance(), (int) walletRatio));
         mListData.clear();
         mListData.addAll(checkInBean.getRank_users());
         mCommonAdapter.notifyDataSetChanged();
-        if(checkInBean.isChecked_in()){
+        if (checkInBean.isChecked_in()) {
             mTvCheckIn.setEnabled(false);
             mTvCheckIn.setText(mTvCheckIn.getResources().getString(R.string.checked));
-        }else {
+        } else {
             mTvCheckIn.setEnabled(true);
             mTvCheckIn.setText(mTvCheckIn.getResources().getString(R.string.check_in));
 
@@ -158,7 +163,6 @@ public class CheckInPopWindow extends PopupWindow {
             showAtLocation(mParentView, Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
         }
     }
-
 
 
     private void setWindowAlpha(float alpha) {

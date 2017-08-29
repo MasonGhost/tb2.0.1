@@ -42,7 +42,9 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
                 .build()
                 .inject(this);
         super.initData();
-        mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
+        if (mRankIndexBean == null){
+            mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
+        }
     }
 
     @Override
@@ -65,5 +67,13 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     @Override
     protected boolean showToolbar() {
         return false;
+    }
+
+    @Override
+    public String getCategory() {
+        if (mRankIndexBean == null){
+            mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
+        }
+        return mRankIndexBean == null ? "" : mRankIndexBean.getCategory();
     }
 }

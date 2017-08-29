@@ -78,12 +78,8 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     }
 
     @Override
-    protected void musicWindowsStatus(boolean isShow) {
-        super.musicWindowsStatus(isShow);
-        if (isShow) {
-            int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-            mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
-        }
+    protected View getRightViewOfMusicWindow() {
+        return mFragmentInfoSearchCancle;
     }
 
     @Override
@@ -102,9 +98,7 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
         mRvList.setBackgroundResource(R.color.white);
         RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
                 .subscribe(textViewAfterTextChangeEvent -> {
-                    if (textViewAfterTextChangeEvent.editable() != null && !TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString())) {
-                        mPresenter.searchLocation(textViewAfterTextChangeEvent.editable().toString());
-                    }
+                    mPresenter.searchLocation(textViewAfterTextChangeEvent.editable().toString());
 
                 });
     }

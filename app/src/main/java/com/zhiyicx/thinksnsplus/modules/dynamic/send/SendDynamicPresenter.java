@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.dynamic.send;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
@@ -102,11 +103,13 @@ public class SendDynamicPresenter extends BasePresenter<SendDynamicContract.Repo
                     mContext.getString(R.string.dynamic_send_toll_toll_verify));
             return;
         }
-        if (mRootView.wordsNumLimit() && sendDynamicDataBeanV2.getFeed_content().length() <= 50) {
+        int contentLenght = ConvertUtils.stringLenghtDealForEmoji(sendDynamicDataBeanV2.getFeed_content());
+
+        if (mRootView.wordsNumLimit() && contentLenght <= 50) {
             mRootView.initInstructionsPop(mContext.getString(R.string.instructions), String.format(mContext.getString(R.string.dynamic_send_toll_notes), 50));
             return;
         }
-        if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() == 0d) || mRootView.getTollMoney() != (int) mRootView.getTollMoney()) {// 文字收费金额整数限制
+        if ((mRootView.wordsNumLimit() && mRootView.getTollMoney() <= 0d)/* || mRootView.getTollMoney() != (long) mRootView.getTollMoney()*/) {// 文字收费金额整数限制
             mRootView.initInstructionsPop(mContext.getString(R.string.instructions), mContext.getResources().getString(R.string.limit_monye));
             return;
         }

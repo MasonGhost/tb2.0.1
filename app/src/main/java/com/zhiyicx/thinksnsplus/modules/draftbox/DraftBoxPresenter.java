@@ -1,9 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.draftbox;
 
-import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.data.beans.BaseDraftBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerDraftBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAPublishBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,18 +24,28 @@ public class DraftBoxPresenter extends AppBasePresenter<DraftBoxContract.Reposit
     QAPublishBeanGreenDaoImpl mQAPublishBeanGreenDaoImpl;
 
     @Inject
+    AnswerDraftBeanGreenDaoImpl mAnswerDraftBeanGreenDaoImpl;
+
+    @Inject
     public DraftBoxPresenter(DraftBoxContract.Repository repository, DraftBoxContract.View rootView) {
         super(repository, rootView);
     }
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-
+        mRootView.onNetResponseSuccess(requestCacheData(), false);
     }
 
     @Override
     public List<BaseDraftBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return mQAPublishBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
+        return null;
+    }
+
+    public List<BaseDraftBean> requestCacheData() {
+        List<BaseDraftBean> answers = mAnswerDraftBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
+        List<BaseDraftBean> questions = mQAPublishBeanGreenDaoImpl.getMultiBasetDraftDataFromCache();
+        questions.addAll(answers);
+        return questions;
     }
 
     @Override

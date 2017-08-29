@@ -89,7 +89,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     ViewGroup mLLBottomMenuContainer;
 
     private InfoDetailHeaderView mInfoDetailHeader;
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDealInfoMationPopWindow;
@@ -294,7 +293,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void refreshData() {
         super.refreshData();
-        mAdapter.notifyDataSetChanged();
         mInfoDetailHeader.updateCommentView(mInfoMation);
     }
 

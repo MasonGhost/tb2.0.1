@@ -7,8 +7,12 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.ICommentRepository;
 
 import java.util.HashMap;
@@ -29,6 +33,11 @@ import rx.schedulers.Schedulers;
 public class CommentRepository implements ICommentRepository {
     protected CommonClient mCommonClient;
 
+    @Inject
+    WalletRepository mWalletRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public CommentRepository(ServiceManager serviceManager, Application context) {
@@ -41,7 +50,7 @@ public class CommentRepository implements ICommentRepository {
         HashMap<String, Object> params = new HashMap<>();
         params.put("body", comment_content);
         params.put("reply_user", reply_to_user_id);
-//        params.put("comment_mark", comment_mark);
+        params.put("comment_mark", comment_mark);
         return mCommonClient.handleBackGroundTaskPost(path, UpLoadFile.upLoadFileAndParams(null, params))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -51,7 +60,7 @@ public class CommentRepository implements ICommentRepository {
     public Observable<Object> sendCommentV2(String comment_content, long reply_to_user_id, long comment_mark, String path) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("body", comment_content);
-//        params.put("reply_to_user_id", reply_to_user_id);
+        params.put("reply_user", reply_to_user_id);
         params.put("comment_mark", comment_mark);
         return mCommonClient.handleBackGroundTaskPostV2(path, UpLoadFile.upLoadFileAndParams(null, params))
                 .subscribeOn(Schedulers.io())
@@ -75,7 +84,7 @@ public class CommentRepository implements ICommentRepository {
                 path = String.format(ApiConfig.APP_PATH_MUSIC_ABLUM_COMMENT_FORMAT, source_id);
                 break;
             case ApiConfig.APP_LIKE_NEWS:
-                path = String.format(ApiConfig.APP_PATH_INFO_COMMENT_FORMAT, source_id);
+                path = String.format(ApiConfig.APP_PATH_INFO_COMMENT_V2_S, source_id);
                 break;
             default:
                 break;
@@ -95,5 +104,15 @@ public class CommentRepository implements ICommentRepository {
         return mCommonClient.payNote(note)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<WalletConfigBean> getWalletConfig() {
+        return mWalletRepository.getWalletConfig();
+    }
+
+    @Override
+    public Observable<UserInfoBean> getCurrentLoginUserInfo() {
+        return mUserInfoRepository.getCurrentLoginUserInfo();
     }
 }

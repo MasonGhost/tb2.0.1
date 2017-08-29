@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+
 import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
@@ -24,7 +25,8 @@ import java.util.List;
 
 
 /**
- * @Describe 文档查阅 @see{ https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/show.md }
+ * @Describe 文档查阅 @see{ https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/user/show.md
+ * }
  * @Author Jungle68
  * @Date 2017/7/18
  * @Contact master.jungle68@gmail.com
@@ -71,14 +73,13 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public static final int FEMALE = 2;
     public static final int SECRET = 0;
     @Id
-    @SerializedName("id")
+    @SerializedName(value="user_id", alternate={"id"})
     private Long user_id;
     private String name;
-    @Unique
-    @SerializedName("mobi")
+    @SerializedName(value="phone", alternate={"mobi"})
     private String phone;
     private String email;
-    @SerializedName("bio")
+    @SerializedName(value="intro", alternate={"bio"})
     private String intro;
     private int sex;            // 1 2 3  1男 2女 3其他
     @Transient
@@ -96,7 +97,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     private String created_at;
     private String updated_at;
     private String avatar;      // 头像 地址
-    @SerializedName("bg")
+    @SerializedName(value="cover", alternate={"bg"})
     private String cover;// 封面
     @Transient
     private WalletBean wallet;
@@ -312,27 +313,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public UserInfoBean() {
     }
 
-    @Generated(hash = 1966877277)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex, String location,
-            boolean following, boolean follower, String created_at, String updated_at, String avatar, String cover,
-            UserInfoExtraBean extra, VerifiedBean verified, List<UserTagBean> tags) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.following = following;
-        this.follower = follower;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.extra = extra;
-        this.verified = verified;
-        this.tags = tags;
-    }
+
 
     /**
      * {
@@ -352,49 +333,17 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         private int comments_count;
         private int followers_count;
         private int followings_count;
+        private int questions_count;
+        private int answers_count;
         private int feeds_count;
+        private int count; // 排行数量 如粉丝排行榜即为粉丝数 根据点赞数来排行的 则为点赞的数量
+        private int rank;
+        private int checkin_count;
+        private int last_checkin_count;
         private String updated_at;
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeValue(this.user_id);
-            dest.writeInt(this.likes_count);
-            dest.writeInt(this.comments_count);
-            dest.writeInt(this.followers_count);
-            dest.writeInt(this.followings_count);
-            dest.writeInt(this.feeds_count);
-            dest.writeString(this.updated_at);
-        }
 
         public UserInfoExtraBean() {
         }
-
-        protected UserInfoExtraBean(Parcel in) {
-            this.user_id = (Long) in.readValue(Long.class.getClassLoader());
-            this.likes_count = in.readInt();
-            this.comments_count = in.readInt();
-            this.followers_count = in.readInt();
-            this.followings_count = in.readInt();
-            this.feeds_count = in.readInt();
-            this.updated_at = in.readString();
-        }
-
-        public static final Creator<UserInfoExtraBean> CREATOR = new Creator<UserInfoExtraBean>() {
-            @Override
-            public UserInfoExtraBean createFromParcel(Parcel source) {
-                return new UserInfoExtraBean(source);
-            }
-
-            @Override
-            public UserInfoExtraBean[] newArray(int size) {
-                return new UserInfoExtraBean[size];
-            }
-        };
 
         public Long getUser_id() {
             return user_id;
@@ -452,6 +401,109 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             this.updated_at = updated_at;
         }
 
+        public static long getSerialVersionUID() {
+            return serialVersionUID;
+        }
+
+        public int getQuestions_count() {
+            return questions_count;
+        }
+
+        public void setQuestions_count(int questions_count) {
+            this.questions_count = questions_count;
+        }
+
+        public int getAnswers_count() {
+            return answers_count;
+        }
+
+        public void setAnswers_count(int answers_count) {
+            this.answers_count = answers_count;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public int getRank() {
+            return rank;
+        }
+
+        public void setRank(int rank) {
+            this.rank = rank;
+        }
+
+        public int getCheckin_count() {
+            return checkin_count;
+        }
+
+        public void setCheckin_count(int checkin_count) {
+            this.checkin_count = checkin_count;
+        }
+
+        public int getLast_checkin_count() {
+            return last_checkin_count;
+        }
+
+        public void setLast_checkin_count(int last_checkin_count) {
+            this.last_checkin_count = last_checkin_count;
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(this.user_id);
+            dest.writeInt(this.likes_count);
+            dest.writeInt(this.comments_count);
+            dest.writeInt(this.followers_count);
+            dest.writeInt(this.followings_count);
+            dest.writeInt(this.questions_count);
+            dest.writeInt(this.answers_count);
+            dest.writeInt(this.feeds_count);
+            dest.writeInt(this.count);
+            dest.writeInt(this.rank);
+            dest.writeInt(this.checkin_count);
+            dest.writeInt(this.last_checkin_count);
+            dest.writeString(this.updated_at);
+        }
+
+        protected UserInfoExtraBean(Parcel in) {
+            this.user_id = (Long) in.readValue(Long.class.getClassLoader());
+            this.likes_count = in.readInt();
+            this.comments_count = in.readInt();
+            this.followers_count = in.readInt();
+            this.followings_count = in.readInt();
+            this.questions_count = in.readInt();
+            this.answers_count = in.readInt();
+            this.feeds_count = in.readInt();
+            this.count = in.readInt();
+            this.rank = in.readInt();
+            this.checkin_count = in.readInt();
+            this.last_checkin_count = in.readInt();
+            this.updated_at = in.readString();
+        }
+
+        public static final Creator<UserInfoExtraBean> CREATOR = new Creator<UserInfoExtraBean>() {
+            @Override
+            public UserInfoExtraBean createFromParcel(Parcel source) {
+                return new UserInfoExtraBean(source);
+            }
+
+            @Override
+            public UserInfoExtraBean[] newArray(int size) {
+                return new UserInfoExtraBean[size];
+            }
+        };
+
         @Override
         public String toString() {
             return "UserInfoExtraBean{" +
@@ -460,7 +512,13 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
                     ", comments_count=" + comments_count +
                     ", followers_count=" + followers_count +
                     ", followings_count=" + followings_count +
+                    ", questions_count=" + questions_count +
+                    ", answers_count=" + answers_count +
                     ", feeds_count=" + feeds_count +
+                    ", count=" + count +
+                    ", rank=" + rank +
+                    ", checkin_count=" + checkin_count +
+                    ", last_checkin_count=" + last_checkin_count +
                     ", updated_at='" + updated_at + '\'' +
                     '}';
         }
@@ -565,6 +623,29 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
         this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+    }
+
+    @Generated(hash = 1966877277)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
+            List<UserTagBean> tags) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.sex = sex;
+        this.location = location;
+        this.following = following;
+        this.follower = follower;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar = avatar;
+        this.cover = cover;
+        this.extra = extra;
+        this.verified = verified;
+        this.tags = tags;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {

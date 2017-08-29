@@ -53,6 +53,8 @@
     <string name="upload_sucess">上传成功</string>
     <string name="qa_detail_edit">编辑</string>
     <string name="collect">收藏</string>
+    <string name="loading_state">加载中&#8230;</string>
+
     <!-- 注册 -->
     <string name="regist">注册</string>
     <string name="username_input_hint">输入2&#8211;8位用户名</string>
@@ -81,6 +83,7 @@
     <string name="find_password_by_email">邮箱找回</string>
     <string name="login_by_third_platform">社交账号登陆</string>
     <string name="third_platform_complete_account">完善资料</string>
+    <string name="third_platform_complete_register">注册新用户</string>
     <string name="third_platform_bind_old_account">绑定已有账号</string>
     <string name="third_platform_bind_account">绑定账号</string>
     <string name="third_platform_exist_account">已有账号</string>
@@ -101,6 +104,8 @@
     <string name="setting_permission_hint">请为TS+开放相机权限: 手机设置-授权管理-TS+(打开)</string>
     <!--  登录  -->
     <string name="bt_login">登录</string>
+    <string name="login_fail">登录失败</string>
+    <string name="login_cancel">取消登录</string>
     <string name="no_login">不登录，先随便逛逛</string>
     <string name="permisson_refused">如需使用此功能，请允许权限认证！</string>
     <string name="permisson_refused_nerver_ask">如需使用此功能，请前往应用设置开放权限！</string>
@@ -121,7 +126,7 @@
     <string name="buy_pay">购买支付</string>
     <string name="buy_pay_desc">您只需¥%.2f元就可查看图片</string>
     <string name="buy_pay_words_desc">您只需¥%.2f元就可查看</string>
-    <string name="buy_pay_downlaod_desc">您只需¥%.2f元就可查看图片</string>
+    <string name="buy_pay_downlaod_desc">您只需¥%.2f元就可下载图片</string>
     <string name="buy_pay_music_ablum_desc">该专辑为付费专辑，您只需\n支付¥%.2f元即可收听该专辑</string>
     <string name="buy_pay_single_music_desc">该歌曲为付费歌曲，您只需\n支付¥%.2f元即可收听该歌曲</string>
     <string name="publish_pay_info">本次投稿您需支付¥%.2f元\n是否继续投稿</string>

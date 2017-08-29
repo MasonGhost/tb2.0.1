@@ -22,16 +22,6 @@ import rx.Observable;
 
 public interface IDynamicReppsitory {
     /**
-     * publish dynamic
-     *
-     * @param dynamicDetailBean dynamic content
-     * @param channel_id        如果动态是被发送到频道，需要channel_id
-     * @param dynamicBelong     判断动态是被发送到哪儿
-     * @return basejson, object is null
-     */
-    Observable<BaseJson<Object>> sendDynamic(DynamicDetailBean dynamicDetailBean, int dynamicBelong, long channel_id);
-
-    /**
      * publish dynamic V2
      *
      * @param dynamicDetailBean dynamic content
@@ -72,8 +62,6 @@ public interface IDynamicReppsitory {
      * @param feed_id
      * @param comment_id
      */
-    void deleteComment(final Long feed_id, Long comment_id);
-
     void deleteCommentV2(final Long feed_id, Long comment_id);
 
     /**
@@ -90,28 +78,6 @@ public interface IDynamicReppsitory {
 
     void updateOrInsertDynamicV2(List<DynamicDetailBeanV2> datas, String type);
 
-    /**
-     * 取消动态点赞
-     *
-     * @param feed_id
-     * @return
-     */
-    Observable<BaseJson<String>> cancleLikeDynamic(Long feed_id);
-
-    /**
-     * 动态收藏
-     *
-     * @param feed_id
-     * @return
-     */
-    Observable<BaseJson<Object>> collectDynamic(Long feed_id);
-
-
-    /**
-     * 取消动态收藏
-     */
-    Observable<BaseJson<Object>> cancleCollectDynamic(Long feed_id);
-
 
     Observable<List<DynamicDigListBean>> getDynamicDigListV2(Long feed_id, Long max_id);
 
@@ -125,13 +91,6 @@ public interface IDynamicReppsitory {
      */
     Observable<List<DynamicCommentBean>> getDynamicCommentListV2(Long feed_mark, Long feed_id, Long max_id);
 
-    /**
-     * 根据 id 获取评论列表
-     *
-     * @param comment_ids 评论id 以逗号隔开或者数组形式传入
-     * @return
-     */
-    Observable<BaseJson<List<DynamicCommentBean>>> getDynamicCommentListByCommentIds(String comment_ids);
 
     /**
      * 获取动态详情 V2
@@ -150,11 +109,4 @@ public interface IDynamicReppsitory {
      */
     Observable<DynamicCommentToll> setDynamicCommentToll(Long feed_id, int amout);
 
-    /**
-     * 增加动态浏览量
-     *
-     * @param feed_id 动态的唯一 id
-     * @return
-     */
-    void handleDynamicViewCount(Long feed_id);
 }
