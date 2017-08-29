@@ -89,7 +89,6 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     ViewGroup mLLBottomMenuContainer;
 
     private InfoDetailHeaderView mInfoDetailHeader;
-    private HeaderAndFooterWrapper mHeaderAndFooterWrapper;
 
     private ActionPopupWindow mDeletCommentPopWindow;
     private ActionPopupWindow mDealInfoMationPopWindow;

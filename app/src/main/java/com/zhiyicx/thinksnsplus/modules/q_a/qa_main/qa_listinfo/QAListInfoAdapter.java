@@ -74,9 +74,11 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         } else {
             imageView.setVisibility(View.GONE);
         }
+
         if (infoBean.getAnswer()==null){
             contentTextView.setVisibility(View.GONE);
         }else{
+            contentTextView.setVisibility(View.VISIBLE);
             ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(), infoBean.getAnswer().getAnonymity() == 1, false);
         }
 
