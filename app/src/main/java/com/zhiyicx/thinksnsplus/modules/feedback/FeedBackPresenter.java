@@ -36,9 +36,9 @@ public class FeedBackPresenter extends AppBasePresenter<FeedBackContract.Reposit
         String comment_mark = AppApplication.getmCurrentLoginAuth().getUser_id() + "" + System.currentTimeMillis();
         mSystemRepository.systemFeedback(content, Long.parseLong(comment_mark))
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.feed_back_ing)))
-                .subscribe(new BaseSubscribeForV2<BaseJson<Object>>() {
+                .subscribe(new BaseSubscribeForV2<Object>() {
                     @Override
-                    protected void onSuccess(BaseJson<Object> data) {
+                    protected void onSuccess(Object data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.feed_back_success));
                     }
 
