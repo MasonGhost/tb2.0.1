@@ -63,7 +63,6 @@ public class GroupDynamicListBean extends BaseListBean {
     private boolean has_like;
     private int collections;
     private boolean has_collection;
-    @SerializedName(value = "comments_count",alternate = {"comments_count"})
     private int comments_count;
     private Long user_id;
     @SerializedName(value = "feed_mark",alternate = {"group_post_mark"})
