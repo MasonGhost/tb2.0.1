@@ -51,7 +51,7 @@ public class QuestionTopicAdapter extends CommonAdapter<BaseListBean>{
         holder.setText(R.id.tv_topic_feed_count,
                 String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed),
                         topicBean.getFollows_count(), topicBean.getQuestions_count()));
-        ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_topic_feed_count), setLinks(topicBean));
+        ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_topic_feed_count), setLinks(topicBean), false);
         holder.setText(R.id.tv_topic_name, topicBean.getName());
         holder.setText(R.id.tv_topic_subscrib, mContext.getString(R.string.qa_topic_follow));
         Glide.with(getContext())
