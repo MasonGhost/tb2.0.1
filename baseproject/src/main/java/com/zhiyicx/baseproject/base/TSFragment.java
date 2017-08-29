@@ -59,7 +59,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private View mCenterLoadingView; // 加载
     private ImageView mIvRefresh; // 头部左边的刷新控件
 
-    private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
     private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
@@ -413,7 +412,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return 默认不可用
      */
     protected boolean setUseSatusbar() {
-        return mIscUseSatusbar = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     /**
@@ -422,7 +421,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return
      */
     protected boolean setUseStatusView() {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
 

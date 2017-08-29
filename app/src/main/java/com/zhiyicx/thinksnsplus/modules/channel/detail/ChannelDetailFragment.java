@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -178,18 +179,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
     protected boolean isRefreshEnable() {
         return false;
-    }
-
-    @Override
-    protected boolean setStatusbarGrey() {
-        return true;
     }
 
     @Override
@@ -200,11 +191,6 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     @Override
     protected boolean setUseCenterLoading() {
         return true;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
     }
 
     @Override
@@ -636,12 +622,26 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         startActivity(intent);
     }
 
-    private void initToolBar() {
-        // toolBar 设置状态栏高度的 marginTop
-        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
-        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-        mLlToolbarContainerParent.setLayoutParams(layoutParams);
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
 
+    private void initToolBar() {
+        if (setUseSatusbar()) {
+            // toolBar 设置状态栏高度的 marginTop
+            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+            CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+            mLlToolbarContainerParent.setLayoutParams(layoutParams);
+        }
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        if (setUseSatusbar()) {
+            return 0;
+        }
+        return super.getstatusbarAndToolbarHeight();
     }
 
     private void initListener() {
