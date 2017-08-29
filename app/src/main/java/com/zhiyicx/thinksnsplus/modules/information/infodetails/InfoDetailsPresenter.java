@@ -391,6 +391,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
 
         createComment.setReply_to_user_id(reply_id);
 
+        createComment.setId(-1L);
+
         createComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
         createComment.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());

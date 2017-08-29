@@ -114,7 +114,7 @@ public interface CommonClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_SYSTEM_FEEDBACK)
-    Observable<BaseJson<Object>> systemFeedback(@Field("content") String content, @Field("system_mark") long system_mark);
+    Observable<Object> systemFeedback(@Field("content") String content, @Field("system_mark") long system_mark);
 
     /**
      * 获取系统会话列表

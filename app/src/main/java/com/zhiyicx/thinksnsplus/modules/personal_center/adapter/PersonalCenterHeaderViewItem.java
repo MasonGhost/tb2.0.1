@@ -239,7 +239,7 @@ public class PersonalCenterHeaderViewItem {
         // 标题栏的用户名
         userName.setText(userInfoBean.getName());
         // 设置简介
-        tv_user_intro.setText(mActivity.getString(R.string.default_location_format, userInfoBean.getIntro()));
+        tv_user_intro.setText(mActivity.getString(R.string.default_intro_format, userInfoBean.getIntro()));
 
         // 设置关注人数
         String followContent = "关注 " + "<" + ConvertUtils.numberConvert(userInfoBean.getExtra().getFollowings_count()) + ">";
@@ -304,8 +304,12 @@ public class PersonalCenterHeaderViewItem {
         if (userInfoBean.getTags() == null) {
             userInfoBean.setTags(new ArrayList<>());
         }
-        tv_certify.setText(userInfoBean.getVerified() != null ? mActivity.getString(R.string.default_certify) : userInfoBean.getVerified().getType());
-
+        if (userInfoBean.getVerified() == null || TextUtils.isEmpty(userInfoBean.getVerified().getDescription())) {
+            tv_certify.setVisibility(View.GONE);
+        } else {
+            tv_certify.setVisibility(View.VISIBLE);
+            tv_certify.setText(mActivity.getString(R.string.default_certify_format, userInfoBean.getVerified().getDescription()));
+        }
         if (TextUtils.isEmpty(userInfoBean.getLocation())) {
             tv_addres.setVisibility(View.GONE);
         } else {

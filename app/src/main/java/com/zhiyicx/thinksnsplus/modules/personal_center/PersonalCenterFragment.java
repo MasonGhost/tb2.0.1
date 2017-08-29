@@ -132,7 +132,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @BindView(R.id.v_shadow)
     View mVShadow;
 
-    private Subscription mStatusBar;
+    private Subscription mStatusbar;
 
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     // 上一个页面传过来的用户信息
@@ -170,6 +170,14 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
         mIvMore.setVisibility(View.GONE);
         setOverScroll(false, null);
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        if (setUseSatusbar()) {
+            return 0;
+        }
+        return super.getstatusbarAndToolbarHeight();
     }
 
     @Override
@@ -227,11 +235,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         mPresenter.requestNetData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
@@ -271,11 +274,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @Override
     protected boolean showToolbar() {
         return false;
-    }
-
-    @Override
-    protected boolean setUseSatusbar() {
-        return true;
     }
 
     @Override
@@ -596,10 +594,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void initToolBar() {
-        // toolBar 设置状态栏高度的 marginTop
-        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-        mLlToolbarContainerParent.setLayoutParams(layoutParams);
+        if (setUseSatusbar()) {
+            // toolBar 设置状态栏高度的 marginTop
+            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+            mLlToolbarContainerParent.setLayoutParams(layoutParams);
+        }
     }
 
     /**
@@ -908,7 +908,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void supportFlymeSutsusbar() {
-        mStatusBar = Observable.timer(1500, TimeUnit.MILLISECONDS)
+        mStatusbar = Observable.timer(1500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -919,9 +919,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onDestroyView() {
-        if (mStatusBar!=null&&!mStatusBar.isUnsubscribed()) {
-            mStatusBar.unsubscribe();
+        if (mStatusbar!=null&&!mStatusbar.isUnsubscribed()) {
+            mStatusbar.unsubscribe();
         }
+
         super.onDestroyView();
     }
 }

@@ -485,7 +485,7 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NEW_USER_INFO = "api/" + API_VERSION_2 + "/user/latests";
     // 通过 tag 推荐
     public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
-    public static final String APP_PATH_SEARCH_RECOMMENT_USER= "api/" + API_VERSION_2 + "/user/search";
+    public static final String APP_PATH_SEARCH_RECOMMENT_USER = "api/" + API_VERSION_2 + "/user/search";
     // 通过 phone 推荐
     public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";
     // 更新用户地址
