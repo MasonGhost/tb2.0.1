@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.mine.answer;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
 
 /**
  * @author Catherine
@@ -27,7 +30,20 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.Reposit
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
+        Subscription subscription = mRepository.getUserAnswerList(mRootView.getType(), maxId)
+                .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
+                    @Override
+                    protected void onSuccess(List<AnswerInfoBean> data) {
+                        mRootView.onNetResponseSuccess(data, isLoadMore);
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mRootView.onResponseError(e, isLoadMore);
+                    }
+                });
+        addSubscrebe(subscription);
     }
 
     @Override
@@ -38,5 +54,10 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.Reposit
     @Override
     public boolean insertOrUpdateData(@NotNull List<AnswerInfoBean> data, boolean isLoadMore) {
         return false;
+    }
+
+    @Override
+    public void handleLike(int position, AnswerInfoBean answerInfoBean) {
+
     }
 }

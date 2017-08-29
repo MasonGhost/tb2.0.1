@@ -13,6 +13,7 @@ import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.answer.MyAnswerContract;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -31,8 +32,11 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 
 public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
 
-    public MyAnswerAdapter(Context context, List<AnswerInfoBean> datas) {
-        super(context, R.layout.item_question_answer, datas);
+    private MyAnswerContract.Presenter mPresenter;
+
+    public MyAnswerAdapter(Context context, List<AnswerInfoBean> data, MyAnswerContract.Presenter presenter) {
+        super(context, R.layout.item_question_answer, data);
+        this.mPresenter = presenter;
     }
 
     @Override
@@ -77,7 +81,7 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
                     } else {
                         answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() - 1);
                     }
-//                    mPresenter.handleAnswerLike(!answerInfoBean.getLiked(), answerInfoBean.getId(), answerInfoBean);
+                    mPresenter.handleLike(position, answerInfoBean);
                     // 修改UI
                     dealLikeUI(answerInfoBean, tvLikeCount);
                 });

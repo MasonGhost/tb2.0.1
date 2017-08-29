@@ -58,7 +58,7 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
             .no_line_height;
 
     public static final String TYPE_ALL = "all";
-    public static final String TYPE_NOT_READ = "not_read";
+//    public static final String TYPE_NOT_READ = "not_read";
     public static final String TYPE_INVITE = "invite";
     public static final String TYPE_ADOPTION = "adoption";
     public static final String TYPE_OTHER = "other";
@@ -81,7 +81,7 @@ public class MyAnswerContainerFragment extends TSViewPagerFragment{
             mFragments = new ArrayList<>();
         }
         mFragments.add(new MyAnswerFragment().instance(TYPE_ALL));
-        mFragments.add(new MyAnswerFragment().instance(TYPE_NOT_READ));
+//        mFragments.add(new MyAnswerFragment().instance(TYPE_NOT_READ));
         mFragments.add(new MyAnswerFragment().instance(TYPE_INVITE));
         mFragments.add(new MyAnswerFragment().instance(TYPE_ADOPTION));
         mFragments.add(new MyAnswerFragment().instance(TYPE_OTHER));

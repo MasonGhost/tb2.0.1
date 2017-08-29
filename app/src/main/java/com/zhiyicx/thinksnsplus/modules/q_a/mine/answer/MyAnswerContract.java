@@ -5,6 +5,10 @@ import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
+import java.util.List;
+
+import rx.Observable;
+
 /**
  * @author Catherine
  * @describe
@@ -19,10 +23,10 @@ public interface MyAnswerContract {
     }
 
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{
-
+        void handleLike(int position, AnswerInfoBean answerInfoBean);
     }
 
     interface Repository extends IBasePublishQuestionRepository{
-
+        Observable<List<AnswerInfoBean>> getUserAnswerList(String type, Long maxId);
     }
 }
