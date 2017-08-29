@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -113,6 +114,12 @@ public class JavaTest {
             System.out.println("result::" + matcher.groupCount());
 
         }
+    }
+
+    @Test
+    public void doubleTest() {
+            double d=5.0;
+            System.out.println("result::" + PayConfig.realCurrencyFen2Yuan(d));
     }
 
     @Test

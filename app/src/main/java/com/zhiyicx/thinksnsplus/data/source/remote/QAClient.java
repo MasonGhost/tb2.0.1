@@ -127,6 +127,15 @@ public interface QAClient {
     @GET(ApiConfig.APP_PATH_GET_USER_QUESTIONS)
     Observable<List<QAListInfoBean>> getUserQAQustion(@Query("type") String type, @Query("after") Long after, @Query("limit") Long limit);
 
+    /**
+     * 某话题下的问题
+     * @param topic_id
+     * @param subject
+     * @param after
+     * @param type
+     * @param limit
+     * @return
+     */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_LIST_BY_TOPIC)
     Observable<List<QAListInfoBean>> getQAQustionByTopic(@Path("topic") String topic_id, @Query("subject") String subject, @Query
             ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);

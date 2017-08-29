@@ -13,7 +13,7 @@ import rx.Subscription;
 
 /**
  * @author Catherine
- * @describe
+ * @describe 问题悬赏界面
  * @date 2017/7/25
  * @contact email:648129313@qq.com
  */
