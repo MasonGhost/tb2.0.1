@@ -74,6 +74,7 @@ public class MyPublishQuestionContainerFragment extends TSViewPagerFragment {
     @Override
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
+        mTsvToolbar.setLeftImg(0);
         mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
     }
 

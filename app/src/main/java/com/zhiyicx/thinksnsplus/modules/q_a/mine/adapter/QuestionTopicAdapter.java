@@ -12,8 +12,10 @@ import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.config.TouristConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.follow.MyFollowContract;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_topiclist.QATopicListConstact;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -66,9 +68,11 @@ public class QuestionTopicAdapter extends CommonAdapter<BaseListBean>{
         RxView.clicks(subscrib)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .subscribe(aVoid -> {
-                    if (TouristConfig.CHEENAL_CAN_SUBSCRIB || !mPresenter.handleTouristControl()) {
+                    if (!mPresenter.handleTouristControl()) {
                         if (mPresenter instanceof QATopicListConstact.Presenter){
                             ((QATopicListConstact.Presenter)mPresenter).handleTopicFollowState(position, topicBean.getId() + "", isJoined);
+                        } else if (mPresenter instanceof MyFollowContract.Presenter){
+                            ((MyFollowContract.Presenter)mPresenter).handleTopicFollowState(position, topicBean);
                         }
                     } else {
                         subscrib.setChecked(false);

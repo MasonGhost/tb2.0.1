@@ -355,7 +355,7 @@ public class ApiConfig {
     // 获取全部话题
     public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
     // 获取认证用户关注的话题或者专家话题
-    public static final String APP_PATH_GET_FOLLOEW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
+    public static final String APP_PATH_GET_FOLLOW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
     // 获取话题下专家列表
     public static final String APP_PATH_GET_TOPIC_EXPERTS = "api/" + API_VERSION_2 + "/question-topics/{topic_id}/experts";
     // 话题详情

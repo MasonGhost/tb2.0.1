@@ -26,6 +26,7 @@ import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailContract;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.List;
@@ -110,6 +111,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
         }
         mRootView.updateFollowState();
         mQaTopicBeanGreenDao.updateSingleData(mRootView.getCurrentTopicBean());
+        EventBus.getDefault().post(mRootView.getCurrentTopicBean(), EventBusTagConfig.EVENT_QA_SUBSCRIB);
         mRepository.handleTopicFollowState(topic_id, isFollow);
     }
 
