@@ -58,7 +58,7 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
             .no_line_height;
 
     public static final String TYPE_QUESTION = "type_question";
-    public static final String TYPE_TOPIC = "type_question";
+    public static final String TYPE_TOPIC = "type_topic";
 
     private List<Fragment> mFragments;
 

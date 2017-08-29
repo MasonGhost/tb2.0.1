@@ -76,4 +76,15 @@ public class QATopicBeanGreenDaoImpl extends CommonCacheImpl<QATopicBean> {
     public long insertOrReplace(QATopicBean newData) {
         return mQaTopicBeanDao.insertOrReplace(newData);
     }
+
+    /**
+     * 获取关注的话题列表
+     */
+    public List<QATopicBean> getUserFollowTopic() {
+        try {
+            return mQaTopicBeanDao.queryBuilder().where(QATopicBeanDao.Properties.Has_follow.eq(true)).build().list();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

@@ -124,7 +124,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 .getHeadersCount();
         AnswerInfoBean answerInfoBean =  mListDatas.get(mCurrentPosition);
         // 开启了围观并且不是作者本人点击
-        if (!answerInfoBean.getCould()){
+        if (!answerInfoBean.getCould() && answerInfoBean.getInvited() == 1){
             mPayWatchPopWindow.show();
         } else {
             startToAnswerDetail(answerInfoBean);

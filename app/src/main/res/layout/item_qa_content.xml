@@ -56,12 +56,20 @@
         <TextView
             android:textSize="@dimen/size_content_assist"
             android:id="@+id/item_info_count"
+            android:layout_width="wrap_content"
+            android:textColor="@color/normal_for_assist_text"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            tools:text="ssss"/>
+
+        <TextView
+            android:textSize="@dimen/size_content_assist"
+            android:id="@+id/item_info_reward"
             android:layout_width="0dp"
             android:textColor="@color/normal_for_assist_text"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
-            tools:text="ssss"/>
+            tools:text="ttttt"/>
 
         <TextView
             android:textColor="@color/normal_for_assist_text"

@@ -1,12 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
@@ -30,8 +28,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REWARD;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REWARD_USER_LIST;
 
@@ -111,7 +107,7 @@ public interface QAClient {
     /**
      * @param type 默认值为 follow 代表用户关注的话题列表，如果值为 expert 则获取该用户的专家话题（哪些话题下是专家）。
      */
-    @GET(ApiConfig.APP_PATH_GET_FOLLOEW_TOPIC)
+    @GET(ApiConfig.APP_PATH_GET_FOLLOW_TOPIC)
     Observable<List<QATopicBean>> getQAFollowTopic(@Query("type") String type, @Query
             ("after") Long after, @Query("limit") Long limit);
 

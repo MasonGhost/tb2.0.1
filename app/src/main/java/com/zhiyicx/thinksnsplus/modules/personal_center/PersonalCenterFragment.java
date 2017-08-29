@@ -227,13 +227,8 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected boolean setStatusbarGrey() {
-        return true;
-    }
-
-    @Override
     protected boolean setUseStatusView() {
-        return false;
+        return true;
     }
 
     @Override

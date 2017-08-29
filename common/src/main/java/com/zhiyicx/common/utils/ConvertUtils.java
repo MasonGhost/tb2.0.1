@@ -77,6 +77,16 @@ public class ConvertUtils {
                 .build();
     }
 
+    public static void stringLinkConvert(TextView textView, List<Link> links,boolean onlyFirst) {
+        if (links.isEmpty()) {
+            return;
+        }
+        LinkBuilder.on(textView)
+                .setFindOnlyFirstMatchesForAnyLink(onlyFirst)
+                .addLinks(links)
+                .build();
+    }
+
     /**
      * 数字格式转换，超过 9999 用 “1万”
      * ⦁	数字不展示超过五位数，超过9999则显示1W（W大写），超过11000则显示1.1W、1.2W，超过99999则显示10W、11W
