@@ -20,6 +20,7 @@ public interface MyAnswerContract {
 
     interface View extends ITSListView<AnswerInfoBean, Presenter>{
         String getType();
+        void updateList(int position, AnswerInfoBean answerInfoBean);
     }
 
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{

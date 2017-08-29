@@ -89,6 +89,12 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
     }
 
     @Override
+    public void updateList(int position, AnswerInfoBean answerInfoBean) {
+        mListDatas.set(position, answerInfoBean);
+        refreshData();
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }

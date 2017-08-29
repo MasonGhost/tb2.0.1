@@ -4,6 +4,7 @@ import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +25,9 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.Reposit
         implements MyAnswerContract.Presenter{
 
     @Inject
+    AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
+
+    @Inject
     public MyAnswerPresenter(MyAnswerContract.Repository repository, MyAnswerContract.View rootView) {
         super(repository, rootView);
     }
@@ -34,6 +38,7 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.Reposit
                 .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
                     @Override
                     protected void onSuccess(List<AnswerInfoBean> data) {
+                        mAnswerInfoListBeanGreenDao.saveMultiData(data);
                         mRootView.onNetResponseSuccess(data, isLoadMore);
                     }
 
@@ -58,6 +63,15 @@ public class MyAnswerPresenter extends AppBasePresenter<MyAnswerContract.Reposit
 
     @Override
     public void handleLike(int position, AnswerInfoBean answerInfoBean) {
-
+        boolean isLiked = !answerInfoBean.getLiked();
+        answerInfoBean.setLiked(isLiked);
+        if (isLiked){
+            answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() + 1);
+        } else {
+            answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() - 1);
+        }
+        mRootView.updateList(position, answerInfoBean);
+        mAnswerInfoListBeanGreenDao.insertOrReplace(answerInfoBean);
+        mRepository.handleAnswerLike(isLiked, answerInfoBean.getId());
     }
 }

@@ -55,9 +55,7 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
             // 跳转
             RxView.clicks(holder.getView(R.id.iv_portrait))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> {
-                        PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
-                    });
+                    .subscribe(aVoid -> PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser()));
         }
         // 是否采纳
         holder.setVisible(R.id.tv_adopt_flag, View.GONE);
@@ -71,20 +69,21 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
         holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
         // 点赞数量
         TextView tvLikeCount = holder.getView(R.id.tv_like_count);
-        tvLikeCount.setText(String.valueOf(answerInfoBean.getLikes_count()));
         dealLikeUI(answerInfoBean, tvLikeCount);
         RxView.clicks(tvLikeCount)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (!answerInfoBean.getLiked()) {
-                        answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() + 1);
-                    } else {
-                        answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() - 1);
-                    }
+//                    if (!answerInfoBean.getLiked()) {
+//                        answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() + 1);
+//                    } else {
+//                        answerInfoBean.setLikes_count(answerInfoBean.getLikes_count() - 1);
+//                    }
                     mPresenter.handleLike(position, answerInfoBean);
-                    // 修改UI
-                    dealLikeUI(answerInfoBean, tvLikeCount);
+//                    // 修改UI
+//                    dealLikeUI(answerInfoBean, tvLikeCount);
                 });
+        // 评论数量
+        holder.setText(R.id.tv_comment_count, String.valueOf(answerInfoBean.getComments_count()));
     }
 
     private void dealLikeUI(AnswerInfoBean answerInfoBean, TextView tvLikeCount) {
@@ -93,6 +92,6 @@ public class MyAnswerAdapter extends CommonAdapter<AnswerInfoBean> {
         Drawable liked = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap.home_ico_good_high);
         tvLikeCount.setCompoundDrawables(answerInfoBean.getLiked() ? liked : unLike, null, null, null);
         // 回答数量
-        tvLikeCount.setText(String.valueOf(answerInfoBean.getComments_count()));
+        tvLikeCount.setText(String.valueOf(answerInfoBean.getLikes_count()));
     }
 }
