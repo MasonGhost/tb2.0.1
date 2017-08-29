@@ -94,6 +94,10 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         super(repository, rootView);
     }
 
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {

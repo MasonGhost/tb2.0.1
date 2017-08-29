@@ -405,6 +405,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
                 .with(getActivity())
                 .item1ClickListener(() -> {
                     // 跳转置顶页面
+                    mDeletCommentPopWindow.hide();
                     Bundle bundle = new Bundle();
                     bundle.putString(StickTopFragment.TYPE, StickTopFragment.TYPE_INFO);// 资源类型
                     bundle.putLong(StickTopFragment.PARENT_ID, mInfoMation.getId());// 资源id
