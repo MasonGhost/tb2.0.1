@@ -1,8 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
+import android.app.Activity;
 import android.app.Application;
 
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.IMConfig;
@@ -15,6 +21,7 @@ import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
@@ -33,11 +40,15 @@ import com.zhiyicx.thinksnsplus.data.source.repository.i.IAuthRepository;
 import com.zhiyicx.thinksnsplus.jpush.JpushAlias;
 import com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskManager;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity.BUNDLE_THIRD_INFO;
 
 /**
  * @Describe
@@ -166,6 +177,7 @@ public class AuthRepository implements IAuthRepository {
         mSystemConversationBeanGreenDao.clearTable();
         MessageDao.getInstance(mContext).delDataBase();
         AppApplication.setmCurrentLoginAuth(null);
+
         //处理 Ts 助手
         SystemRepository.resetTSHelper(mContext);
         return SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_AUTHBEAN)
@@ -174,6 +186,55 @@ public class AuthRepository implements IAuthRepository {
                 && SharePreferenceUtils.remove(mContext, SharePreferenceTagConfig.SHAREPREFERENCE_TAG_LAST_FLUSHMESSAGE_TIME);
     }
 
+    @Override
+    public void clearThridAuth() {
+        UMShareAPI mShareAPI = UMShareAPI.get(mContext);
+
+        try {
+            mShareAPI.deleteOauth(ActivityHandler.getInstance()
+                    .currentActivity(), SHARE_MEDIA.QQ, umAuthListener);
+            mShareAPI.deleteOauth(ActivityHandler.getInstance()
+                    .currentActivity(), SHARE_MEDIA.WEIXIN, umAuthListener);
+            mShareAPI.deleteOauth(ActivityHandler.getInstance()
+                    .currentActivity(), SHARE_MEDIA.SINA, umAuthListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void clearThridAuth(SHARE_MEDIA share_media) {
+        UMShareAPI mShareAPI = UMShareAPI.get(mContext);
+
+        try {
+            mShareAPI.deleteOauth(ActivityHandler.getInstance()
+                    .currentActivity(), share_media, umAuthListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    UMAuthListener umAuthListener = new UMAuthListener() {
+        @Override
+        public void onStart(SHARE_MEDIA share_media) {
+
+        }
+
+        @Override
+        public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
+
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
+
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA share_media, int i) {
+
+        }
+    };
+
     /**
      * 是否登录过成功了，Token 并未过期
      *
@@ -181,7 +242,7 @@ public class AuthRepository implements IAuthRepository {
      */
     @Override
     public boolean isLogin() {
-        return  getAuthBean() != null;
+        return getAuthBean() != null;
     }
 
     /**

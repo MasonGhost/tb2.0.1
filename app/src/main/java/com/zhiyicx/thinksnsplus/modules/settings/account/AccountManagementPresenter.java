@@ -1,12 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.settings.account;
 
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
+import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
 
 import java.util.List;
@@ -14,6 +18,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscription;
+
+import static com.zhiyicx.thinksnsplus.modules.third_platform.choose_bind.ChooseBindActivity.BUNDLE_THIRD_INFO;
 
 /**
  * @author Catherine
@@ -30,6 +36,9 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
+    AuthRepository mAuthRepository;
 
     @Inject
     public AccountManagementPresenter(AccountManagementContract.Repository repository,
@@ -127,6 +136,24 @@ public class AccountManagementPresenter extends BasePresenter<AccountManagementC
                     .subscribe(new BaseSubscribeForV2<Object>() {
                         @Override
                         protected void onSuccess(Object data) {
+                            SHARE_MEDIA share_media;
+                            switch (provider) {
+                                case ApiConfig.PROVIDER_QQ:
+                                    share_media = SHARE_MEDIA.QQ;
+                                    break;
+                                case ApiConfig.PROVIDER_WEIBO:
+                                    share_media = SHARE_MEDIA.SINA;
+
+                                    break;
+                                case ApiConfig.PROVIDER_WECHAT:
+                                    share_media = SHARE_MEDIA.WEIXIN;
+
+                                    break;
+                                default:
+                                    share_media = SHARE_MEDIA.QQ;
+
+                            }
+                            mAuthRepository.clearThridAuth(share_media);
                             mRootView.showSnackSuccessMessage(mContext.getString(R.string.unbind_success));
 
                             mRootView.unBindThirdSuccess(provider);

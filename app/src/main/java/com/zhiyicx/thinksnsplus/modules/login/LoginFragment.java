@@ -401,6 +401,7 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             System.out.println("platform = " + data);
+            showSnackSuccessMessage(getString(R.string.loading_state));
             String providerQq = ApiConfig.PROVIDER_QQ;
             switch (platform) {
                 case QQ:
@@ -429,8 +430,8 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
          */
         @Override
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-            dismissSnack();
             showErrorTips(getString(R.string.login_fail));
+            showSnackWarningMessage(getString(R.string.login_fail));
         }
 
         /**
@@ -441,8 +442,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
         @Override
         public void onCancel(SHARE_MEDIA platform, int action) {
             showSnackWarningMessage(getString(R.string.login_cancel));
-            dismissSnack();
-
         }
     };
 
@@ -452,7 +451,6 @@ public class LoginFragment extends TSFragment<LoginContract.Presenter> implement
      */
     @Override
     public void registerByThrid(String provider, String access_token) {
-        showSnackWarningMessage(getString(R.string.empty));
         Intent intent = new Intent(getActivity(), ChooseBindActivity.class);
         Bundle bundle=new Bundle();
         bundle.putParcelable(BUNDLE_THIRD_INFO,new ThridInfoBean(provider,access_token,mThridName));

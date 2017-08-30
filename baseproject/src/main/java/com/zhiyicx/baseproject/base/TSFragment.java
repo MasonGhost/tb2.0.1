@@ -65,7 +65,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private boolean isFirstIn = true;// 是否是第一次进入页面
     private Subscription mViewTreeSubscription = null;// View 树监听订阅器
     private LoadingDialog mCenterLoadingDialog;
-    private TSnackbar mTSnackbar;
 
     @Nullable
     @Override
@@ -182,7 +181,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showSnackMessage(String message, final Prompt prompt) {
-        mTSnackbar = TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
+        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_SHORT)
                 .setPromptThemBackground(prompt)
                 .setCallback(new TSnackbar.Callback() {
                     @Override
@@ -194,16 +193,8 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                 break;
                         }
                     }
-                });
-        mTSnackbar.show();
-
-    }
-
-    @Override
-    public void dismissSnack() {
-        if (mTSnackbar != null) {
-            mTSnackbar.dismiss();
-        }
+                })
+                .show();
     }
 
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
@@ -227,10 +218,10 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     @Override
     public void showSnackLoadingMessage(String message) {
-        mTSnackbar = TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_INDEFINITE)
+        TSnackbar.make(mSnackRootView, message, TSnackbar.LENGTH_INDEFINITE)
                 .setPromptThemBackground(Prompt.SUCCESS)
-                .addIconProgressLoading(0, true, false);
-        mTSnackbar.show();
+                .addIconProgressLoading(0, true, false)
+                .show();
     }
 
     @Override

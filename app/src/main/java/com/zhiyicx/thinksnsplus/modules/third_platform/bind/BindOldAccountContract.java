@@ -1,5 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.third_platform.bind;
 
+import android.app.Activity;
+
 import com.zhiyicx.common.mvp.i.IBasePresenter;
 import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
@@ -20,6 +22,7 @@ public interface BindOldAccountContract {
         void setLoginState(boolean b);
 
         void setLogining();
+
     }
 
     interface Presenter extends IBasePresenter {

@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.third_platform.bind;
 
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
+import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -76,6 +77,7 @@ public class BindOldAccountPresenter extends BasePresenter<BindOldAccountContrac
 
     private void loginSuccess(AuthBean data) {
         mAuthRepository.clearAuthBean();
+        mAuthRepository.clearThridAuth();
         // 登录成功跳转
         mAuthRepository.saveAuthBean(data);// 保存auth信息
         // IM 登录 需要 token ,所以需要先保存登录信息

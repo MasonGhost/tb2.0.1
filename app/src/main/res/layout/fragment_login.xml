@@ -35,6 +35,7 @@
                 android:hint="@string/login_account_hint"
                 android:imeOptions="actionNext"
                 android:singleLine="true"
+                android:background="@color/white"
                 android:visibility="visible"/>
 
             <ImageView

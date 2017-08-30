@@ -27,9 +27,6 @@ public interface IBaseView<VP> {
      */
     void showMessage(String message);
 
-
-    void dismissSnack();
-
     /**
      * 从顶部显示信息
      */

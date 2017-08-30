@@ -247,6 +247,8 @@ public class AppApplication extends TSApplication {
                             .setPositiveButton(R.string.sure, (dialogInterface, i) -> {
                                 // TODO: 2017/2/8  清理登录信息 token 信息
                                 mAuthRepository.clearAuthBean();
+                                mAuthRepository.clearThridAuth();
+
                                 Intent intent = new Intent
                                         (getContext(),
                                                 LoginActivity

@@ -27,4 +27,9 @@ public class ChooseBindActivity extends TSActivity<ChooseBindPresenter, ChooseBi
                 .build()
                 .inject(this);
     }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
+    }
 }
