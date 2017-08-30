@@ -24,6 +24,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECTION_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DELETE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAIL;
@@ -96,6 +97,10 @@ public interface InfoMainClient {
     @GET(APP_PATH_INFO_COLLECTION_LIST)
     Observable<List<InfoListDataBean>> getInfoCollectListV2(@Query("after") Long max_id,
                                                             @Query("limit") Long limit);
+
+    @GET(APP_PATH_GET_MY_INFO)
+    Observable<List<InfoListDataBean>> getMyInfoList(@Query("after") Long max_id,
+                                                            @Query("limit") Long limit,@Query("type") String type);
 
     // 订阅某类资讯
     @FormUrlEncoded

@@ -248,6 +248,10 @@
             android:name=".modules.channel.group_dynamic.dig_list.GroupDigListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".modules.channel.mine.MyGroupActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- 问答相关 -->
         <activity
@@ -283,6 +287,10 @@
             android:name=".modules.q_a.detail.question.comment.QuestionCommentActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+                android:name=".modules.q_a.mine.container.MyQuestionActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
 
         <!-- 认证相关页面 -->
         <activity
@@ -297,11 +305,11 @@
             android:name=".modules.certification.detail.CertificationDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-        <!--排行榜相关页面-->
+        <!-- 排行榜相关页面 -->
         <activity
-                android:name=".modules.rank.main.container.RankIndexActivity"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
+            android:name=".modules.rank.main.container.RankIndexActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
                 android:name=".modules.rank.type_list.RankTypeListActivity"
                 android:screenOrientation="portrait"
@@ -515,6 +523,12 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.q_a.detail.answer.dig_list.AnswerDigListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.information.my_info.ManuscriptsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".modules.music_fm.paided_music.MyMusicActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".modules.draftbox.DraftBoxActivity"

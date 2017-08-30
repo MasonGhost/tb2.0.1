@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/personal_header"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -21,7 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|top"
-            android:layout_marginBottom="@dimen/spacing_large"
             android:scaleType="centerCrop"
             android:src="@mipmap/default_pic_personal"/>
 
@@ -30,61 +29,97 @@
             android:layout_width="@dimen/headpic_for_user_home"
             android:layout_height="@dimen/headpic_for_user_home"
             android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="63dp"
             android:scaleType="centerCrop"
-            app:ts_avatare_size="@dimen/headpic_for_user_home"
-            android:src="@mipmap/pic_default_portrait2"/>
+            android:src="@mipmap/pic_default_portrait2"
+            app:ts_avatare_size="@dimen/headpic_for_user_home"/>
 
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="@dimen/spacing_bigger_large"
+            android:includeFontPadding="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_sub_title"
+            tools:text="阿超的超能力"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_user_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingRight="@dimen/spacing_mid"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="关注 26"/>
+
+            <TextView
+                android:id="@+id/tv_user_fans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing_mid"
+                android:paddingLeft="@dimen/spacing_mid"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="粉丝 26"/>
+
+        </LinearLayout>
     </FrameLayout>
 
     <TextView
-        android:id="@+id/tv_user_name"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_verify"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:includeFontPadding="false"
-        android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_sub_title"
-        tools:text="阿超的超能力"/>
+        android:paddingEnd="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_mid"
+        android:textColor="@color/money_gold"
+        android:textSize="@dimen/size_content_comment"
+        tools:text="认证：三年二班"/>
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_normal"
+        android:textColor="@color/normal_for_assist_text"
+        android:textSize="@dimen/size_content_comment"
+        tools:text="地址：环球中心"/>
 
     <TextView
         android:id="@+id/tv_user_intro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_normal_large"
-        android:layout_marginRight="@dimen/spacing_normal_large"
-        android:layout_marginTop="@dimen/spacing_mid"
-        android:gravity="center"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:textColor="@color/normal_for_assist_text"
         android:textSize="@dimen/size_content_assist"
         tools:text="还有机会能够感觉，爱一个人的纯粹，你是我的小蝴蝶，我是你的小阿飞"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:id="@+id/fl_tags"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/spacing_large"
-        android:layout_marginTop="@dimen/spacing_mid"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_user_follow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_content_assist"
-            tools:text="关注 26"/>
-
-        <TextView
-            android:id="@+id/tv_user_fans"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:textColor="@color/normal_for_assist_text"
-            android:textSize="@dimen/size_content_assist"
-            tools:text="粉丝 26"/>
-
-    </LinearLayout>
+        android:background="@color/white"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        app:max_select="0"
+        />
 
     <include layout="@layout/item_personal_center_dynamic_count"></include>
 </LinearLayout>

@@ -5,8 +5,7 @@ import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
-import static com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragment
-        .BUNDLE_INFO_TYPE;
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
 
 /**
  * @Author Jliuer

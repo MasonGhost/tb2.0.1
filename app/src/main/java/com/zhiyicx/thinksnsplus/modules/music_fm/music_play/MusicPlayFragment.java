@@ -51,6 +51,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicProviderSource;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail.MusicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
@@ -161,7 +162,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     private ImageLoader mImageLoader;
     private CommonAdapter mAdapter;
     private CommonAdapter popAdapter;
-    private List<MusicAlbumDetailsBean.MusicsBean> mMusicList = new ArrayList<>();
+    private List<MusicDetaisBean> mMusicList = new ArrayList<>();
     /**
      * 播放模式
      */
@@ -190,7 +191,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private MediaDescriptionCompat mMediaDescriptionCompat;
     private MusicAlbumDetailsBean mMusicAlbumDetailsBean;
-    private MusicAlbumDetailsBean.MusicsBean mCurrentMusic;
+    private MusicDetaisBean mCurrentMusic;
     private String mCurrentMediaId = "-1";
 
     /**
@@ -390,7 +391,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     @Override
-    public List<MusicAlbumDetailsBean.MusicsBean> getListDatas() {
+    public List<MusicDetaisBean> getListDatas() {
         return popAdapter.getDatas();
     }
 
@@ -405,7 +406,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     }
 
     @Override
-    public MusicAlbumDetailsBean.MusicsBean getCurrentMusic() {
+    public MusicDetaisBean getCurrentMusic() {
         return mCurrentMusic;
     }
 
@@ -853,10 +854,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     // 音乐播放列表适配器
     @NonNull
     private CommonAdapter getPopListAdapter() {
-        popAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity()
+        popAdapter = new CommonAdapter<MusicDetaisBean>(getActivity()
                 , R.layout.item_music_detail_list, mMusicList) {
             @Override
-            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean item, int
+            protected void convert(ViewHolder holder, MusicDetaisBean item, int
                     position) {
                 TextView musicName = holder.getView(R.id.item_music_name);
                 TextView authorName = holder.getView(R.id.item_music_author);
@@ -890,7 +891,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
         popAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                MusicAlbumDetailsBean.MusicsBean item = mMusicList.get(position);
+                MusicDetaisBean item = mMusicList.get(position);
 
                 if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
                     initMusicCenterPopWindow(position, item.getStorage().getAmount(),
@@ -919,10 +920,10 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
     @NonNull
     private CommonAdapter getMediaListAdapter() {
         final int imageSize = getResources().getDimensionPixelSize(R.dimen.music_play_head);
-        mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(),
+        mAdapter = new CommonAdapter<MusicDetaisBean>(getActivity(),
                 R.layout.item_music_play, mMusicList) {
             @Override
-            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean o, final
+            protected void convert(ViewHolder holder, MusicDetaisBean o, final
             int position) {
                 ImageView image = holder.getView(R.id.fragment_music_paly_img);
                 String imageUrl = ImageUtils.imagePathConvertV2(
@@ -995,7 +996,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
                 Bundle musicBundle = new Bundle();
                 MusicCommentHeader.HeaderInfo headerInfo = new MusicCommentHeader.HeaderInfo();
                 headerInfo.setCommentCount(mCurrentMusic.getComment_count());
-                headerInfo.setId(mCurrentMusic.getId());
+                headerInfo.setId(mCurrentMusic.getId().intValue());
                 headerInfo.setTitle(mCurrentMusic.getTitle());
                 headerInfo.setLitenerCount(mCurrentMusic.getTaste_count() + "");
                 headerInfo.setImageUrl(ImageUtils.imagePathConvertV2(mCurrentMusic

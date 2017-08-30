@@ -241,6 +241,9 @@ public class ApiConfig {
     // 资讯打赏统计
     public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards/sum";
 
+    // 获取用户投稿列表
+    public static final String APP_PATH_GET_MY_INFO = "/api/" + API_VERSION_2 + "/user/news/contributes";
+
 
     /**
      * 音乐相关 升级到V2
@@ -250,6 +253,12 @@ public class ApiConfig {
 
     // 歌曲详情
     public static final String APP_PATH_MUSIC_DETAILS = "api/" + API_VERSION_2 + "/music/{music_id}";
+
+    // 购买的单曲
+    public static final String APP_PATH_MUSIC_PAIDS = "api/" + API_VERSION_2 + "/music/paids";
+
+    // 购买的专辑
+    public static final String APP_PATH_MUSIC_ALBUM_PAIDS = "api/" + API_VERSION_2 + "/music-specials/paids";
 
     // 评论歌曲
     public static final String APP_PATH_MUSIC_COMMENT = "api/" + API_VERSION_2 + "/music/{music_id}/comments";
@@ -293,7 +302,7 @@ public class ApiConfig {
     // 获取全部话题
     public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
     // 获取认证用户关注的话题或者专家话题
-    public static final String APP_PATH_GET_FOLLOEW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
+    public static final String APP_PATH_GET_FOLLOW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
     // 获取话题下专家列表
     public static final String APP_PATH_GET_TOPIC_EXPERTS = "api/" + API_VERSION_2 + "/question-topics/{topic_id}/experts";
     // 话题详情
@@ -353,6 +362,10 @@ public class ApiConfig {
     public static final String APP_PATH_DELETE_QA_ANSWER_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/comments/%d";
     // 批量获取专家列表
     public static final String APP_PATH_GET_TOPIC_EXPERT_LIST = "api/" + API_VERSION_2 + "/question-experts";
+    // 获取用户发布的问题列表
+    public static final String APP_PATH_GET_USER_QUESTIONS = "api/" + API_VERSION_2 +  "/user/questions";
+    // 获取用户发布的回答列表
+    public static final String APP_PATH_GET_USER_ANSWER = "api/" + API_VERSION_2 +  "/user/question-answer";
 
 
     /**

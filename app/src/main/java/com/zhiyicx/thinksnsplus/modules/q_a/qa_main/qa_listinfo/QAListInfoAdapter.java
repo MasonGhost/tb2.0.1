@@ -52,6 +52,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                 , infoBean.getWatchers_count(), infoBean.getAnswers_count()));
         holder.setText(R.id.item_info_reward, String.format(Locale.getDefault(), mContext.getString(R.string.qa_show_topic_followed_reward)
                 , PayConfig.realCurrencyFen2Yuan(infoBean.getAmount())));
+        holder.setVisible(R.id.item_info_reward, infoBean.getAmount() > 0 ? View.VISIBLE : View.GONE);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_count), setLinks(infoBean), false);
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_reward), setLinks());
         TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
@@ -74,7 +75,13 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             imageView.setVisibility(View.GONE);
         }
 
-        ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(), infoBean.getAnswer().getAnonymity() == 1, false);
+        if (infoBean.getAnswer()==null){
+            contentTextView.setVisibility(View.GONE);
+        }else{
+            contentTextView.setVisibility(View.VISIBLE);
+            ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(), infoBean.getAnswer().getAnonymity() == 1, false);
+        }
+
     }
 
     private List<Link> setLinks(QAListInfoBean infoBean) {

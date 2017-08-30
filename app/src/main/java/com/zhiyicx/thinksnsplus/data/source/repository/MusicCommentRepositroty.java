@@ -36,21 +36,11 @@ import static com.zhiyicx.thinksnsplus.service.backgroundtask.BackgroundTaskHand
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MusicCommentRepositroty implements MusicCommentContract.Repository {
-
-    MusicClient mMusicClient;
-    @Inject
-    Application mContext;
-    @Inject
-    UserInfoRepository mUserInfoRepository;
-    @Inject
-    MusicDetailRepository mMusicDetailRepository;
-    @Inject
-    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+public class MusicCommentRepositroty extends BaseMusicRepository implements MusicCommentContract.Repository {
 
     @Inject
-    public MusicCommentRepositroty(Application application, ServiceManager serviceManager) {
-        mMusicClient = serviceManager.getMusicClient();
+    public MusicCommentRepositroty(ServiceManager serviceManager) {
+        super(serviceManager);
     }
 
     @Override

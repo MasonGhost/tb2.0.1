@@ -577,11 +577,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
     public void onCommentContentClick(DynamicDetailBeanV2 dynamicBean, int position) {
         mCurrentPostion = mPresenter.getCurrenPosiotnInDataList(dynamicBean.getFeed_mark());
         if (dynamicBean.getComments().get(position).getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id()) {
@@ -924,7 +919,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
     @Override
     public void onDestroyView() {
-        if (!mStatusbar.isUnsubscribed()) {
+        if (mStatusbar!=null&&!mStatusbar.isUnsubscribed()) {
             mStatusbar.unsubscribe();
         }
 

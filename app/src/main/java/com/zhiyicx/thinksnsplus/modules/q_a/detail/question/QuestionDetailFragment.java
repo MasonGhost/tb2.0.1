@@ -47,6 +47,7 @@ import butterknife.BindView;
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_ANSWER;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment
         .BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity
@@ -124,7 +125,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 .getHeadersCount();
         AnswerInfoBean answerInfoBean =  mListDatas.get(mCurrentPosition);
         // 开启了围观并且不是作者本人点击
-        if (!answerInfoBean.getCould()){
+        if (!answerInfoBean.getCould() && answerInfoBean.getInvited() == 1){
             mPayWatchPopWindow.show();
         } else {
             startToAnswerDetail(answerInfoBean);
@@ -233,20 +234,33 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
-        // 跳转设置悬赏
-        Intent intent = new Intent(getActivity(), QARewardActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_QUESTION_ID, mQaListInfoBean.getId());
-        intent.putExtras(bundle);
-        startActivityForResult(intent, REWARD_CODE);
+        // 仅自己发布的可以跳转设置
+        if (mQaListInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())){
+            // 跳转设置悬赏
+            Intent intent = new Intent(getActivity(), QARewardActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putLong(BUNDLE_QUESTION_ID, mQaListInfoBean.getId());
+            intent.putExtras(bundle);
+            startActivityForResult(intent, REWARD_CODE);
+        }
     }
 
     @Override
-    public void onAddAnswerClick() {
-        // 跳转发布回答
-        PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                .PUBLISH_ANSWER, mQaListInfoBean.getId()// 这个 question_id 加上
-                , null);
+    public void onAddAnswerClick(AnswerInfoBean answerInfoBean) {
+        if (answerInfoBean != null){
+            // 点击跳转到 回答详情 查看自己的回答
+            Intent intent = new Intent(getContext(), AnswerDetailsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BUNDLE_ANSWER, answerInfoBean);
+            bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
+            intent.putExtras(bundle);
+            startActivity(intent);
+        } else {
+            // 跳转发布回答
+            PublishAnswerFragment.startQActivity(getActivity(), PublishType
+                            .PUBLISH_ANSWER, mQaListInfoBean.getId()// 这个 question_id 加上
+                    , null);
+        }
     }
 
     @Override

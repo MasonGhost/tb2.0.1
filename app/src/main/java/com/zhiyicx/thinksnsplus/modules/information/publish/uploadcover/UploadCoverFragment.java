@@ -185,6 +185,7 @@ public class UploadCoverFragment extends TSFragment<PublishInfoContract.Presente
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
+                    // 不要封面也可以发布了
 //                    if (mInfoPublishBean.getImage() <= 0 && mInfoPublishBean.getCover() <= 0) {
 //                        initWithdrawalsInstructionsPop();
 //                        return;

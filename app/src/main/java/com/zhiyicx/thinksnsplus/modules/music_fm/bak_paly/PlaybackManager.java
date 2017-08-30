@@ -31,6 +31,7 @@ public class PlaybackManager implements Playback.Callback {
     public static final int ORDERLOOP = 2;
     public static final String ORDER_ACTION = "com.zhiyicx.action.order_action";
     public static final String MUSIC_ACTION = "com.zhiyicx.action.music_action";
+    public static final String MUSIC_ACTION_BUNDLE = "com.zhiyicx.action.music_action_bundle";
     public static final String MUSIC_ID = "com.zhiyicx.action.music_id";
 
     private QueueManager mQueueManager;

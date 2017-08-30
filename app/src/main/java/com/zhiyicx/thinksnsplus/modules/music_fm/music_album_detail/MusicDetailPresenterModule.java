@@ -1,8 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.music_fm.music_album_detail;
 
-import android.app.Application;
-
-import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.data.source.repository.MusicDetailRepository;
 
 import dagger.Module;
@@ -16,7 +13,8 @@ import dagger.Provides;
  */
 @Module
 class MusicDetailPresenterModule {
-    private  MusicDetailContract.View mView;
+
+    private MusicDetailContract.View mView;
 
     public MusicDetailPresenterModule(MusicDetailContract.View view) {
         mView = view;
@@ -28,9 +26,8 @@ class MusicDetailPresenterModule {
     }
 
     @Provides
-    MusicDetailContract.Repository provideMusicRepository(ServiceManager serviceManager,
-                                                          Application application) {
-        return new MusicDetailRepository(serviceManager,application);
+    MusicDetailContract.Repository provideMusicRepository(MusicDetailRepository musicDetailRepository) {
+        return musicDetailRepository;
     }
 
 }

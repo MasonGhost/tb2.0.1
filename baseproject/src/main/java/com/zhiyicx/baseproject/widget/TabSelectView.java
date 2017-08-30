@@ -110,10 +110,17 @@ public class TabSelectView extends FrameLayout {
         initMagicIndicator(customAdapter);
     }
 
+    public void initTabView(ViewPager viewPager, List<String> stringList, int resId, CommonNavigatorAdapter customAdapter) {
+        this.mViewPager = viewPager;
+        this.mStringList = stringList;
+        if (mStringList == null) {
+            mStringList = new ArrayList<>();
+        }
+        initMagicIndicator(resId, customAdapter);
+    }
+
     /**
      * 是否需要展示toolbar分割线
-     *
-     * @param showDivider
      */
     public void showDivider(boolean showDivider) {
         divider.setVisibility(showDivider ? VISIBLE : GONE);
@@ -153,8 +160,7 @@ public class TabSelectView extends FrameLayout {
     /**
      * 设置文字颜色
      *
-     * @param leftColor  文字的颜色值，不是颜色resID
-     * @param rightColor
+     * @param leftColor 文字的颜色值，不是颜色resID
      */
     public void setTextColor(int leftColor, int rightColor) {
         tvToolbarLeft.setTextColor(leftColor);
@@ -163,9 +169,6 @@ public class TabSelectView extends FrameLayout {
 
     /**
      * 设置文字大小
-     *
-     * @param leftSize
-     * @param rightSize
      */
     public void setTextSize(int leftSize, int rightSize) {
         tvToolbarLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, leftSize);
@@ -245,6 +248,17 @@ public class TabSelectView extends FrameLayout {
 
     private void initMagicIndicator(CommonNavigatorAdapter customAdapter) {
         mMagicIndicator.setBackgroundColor(Color.TRANSPARENT);
+        mCommonNavigator = new CommonNavigator(mContext);
+        mCommonNavigator.setAdapter(customAdapter);
+        mMagicIndicator.setNavigator(mCommonNavigator);
+        ViewPagerHelper.bind(mMagicIndicator, mViewPager);
+    }
+
+    /**
+     * 可以设置背景的
+     */
+    private void initMagicIndicator(int resId, CommonNavigatorAdapter customAdapter) {
+        mMagicIndicator.setBackgroundResource(resId);
         mCommonNavigator = new CommonNavigator(mContext);
         mCommonNavigator.setAdapter(customAdapter);
         mMagicIndicator.setNavigator(mCommonNavigator);

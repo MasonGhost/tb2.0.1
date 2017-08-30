@@ -25,6 +25,15 @@ public class VerifiedBean extends CacheBean implements Parcelable, Serializable 
     private String type;
     private String icon;
     private int status;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getType() {
         return type == null ? "" : type;
@@ -54,15 +63,6 @@ public class VerifiedBean extends CacheBean implements Parcelable, Serializable 
     }
 
     @Override
-    public String toString() {
-        return "VerifiedBean{" +
-                "type='" + type + '\'' +
-                ", icon='" + icon + '\'' +
-                ", status=" + status +
-                '}';
-    }
-
-    @Override
     public int describeContents() {
         return 0;
     }
@@ -72,12 +72,14 @@ public class VerifiedBean extends CacheBean implements Parcelable, Serializable 
         dest.writeString(this.type);
         dest.writeString(this.icon);
         dest.writeInt(this.status);
+        dest.writeString(this.description);
     }
 
     protected VerifiedBean(Parcel in) {
         this.type = in.readString();
         this.icon = in.readString();
         this.status = in.readInt();
+        this.description = in.readString();
     }
 
     public static final Creator<VerifiedBean> CREATOR = new Creator<VerifiedBean>() {
@@ -91,4 +93,14 @@ public class VerifiedBean extends CacheBean implements Parcelable, Serializable 
             return new VerifiedBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "VerifiedBean{" +
+                "type='" + type + '\'' +
+                ", icon='" + icon + '\'' +
+                ", status=" + status +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

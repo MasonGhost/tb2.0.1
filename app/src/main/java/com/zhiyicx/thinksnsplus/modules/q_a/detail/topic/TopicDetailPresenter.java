@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.local.QATopicBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.List;
@@ -103,6 +104,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
         }
         mRootView.updateFollowState();
         mQaTopicBeanGreenDao.updateSingleData(mRootView.getCurrentTopicBean());
+        EventBus.getDefault().post(mRootView.getCurrentTopicBean(), EventBusTagConfig.EVENT_QA_SUBSCRIB);
         mRepository.handleTopicFollowState(topic_id, isFollow);
     }
 

@@ -10,6 +10,8 @@ import com.zhiyicx.thinksnsplus.modules.information.infomain.list.InfoListFragme
 import java.util.Collections;
 import java.util.Comparator;
 
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
+
 /**
  * @author LiuChao
  * @describe

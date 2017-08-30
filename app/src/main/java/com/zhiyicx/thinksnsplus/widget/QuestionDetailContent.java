@@ -112,11 +112,12 @@ public class QuestionDetailContent extends FrameLayout {
             AnimationRectBean rect = AnimationRectBean.buildFromImageView(mIvSolid);// 动画矩形
             animationRectBeanArrayList.add(rect);
         }
+        // 不管有没有图哦，反正图文混排先隐藏了
+        mMdvQuestionContent.setVisibility(GONE);
+        dealContent(content, list);
         if (list.size() > 0) {
-            dealContent(content, list);
             // 如果有图片 那么显示封面
             mItemInfoImage.setVisibility(VISIBLE);
-            mMdvQuestionContent.setVisibility(GONE);
             int w = DeviceUtils.getScreenWidth(mContext);
             int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
             String url = ImageUtils.imagePathConvertV2(list.get(0).getStorage_id(), w, h, ImageZipConfig.IMAGE_80_ZIP);
@@ -147,9 +148,11 @@ public class QuestionDetailContent extends FrameLayout {
                 }
             });
         } else {
-            mMdvQuestionContent.setVisibility(VISIBLE);
             mItemInfoImage.setVisibility(GONE);
             mTvQuestionContent.setText(content);
+            // 此时如果正文不超过3排，那么，直接显示markdown内容就行了。
+            mTvQuestionContent.setVisibility(mTvQuestionContent.getLineCount() < 4 ? GONE : VISIBLE);
+            mMdvQuestionContent.setVisibility(mTvQuestionContent.getLineCount() < 4 ? VISIBLE : GONE);
         }
     }
 
@@ -216,10 +219,10 @@ public class QuestionDetailContent extends FrameLayout {
     private void dealPreContent(TextView textView) {
         // 处理一排的情况
         String content = textView.getText() + "";
-        if (!content.contains(mContext.getString(R.string.qa_topic_open_all))){
-            if (TextUtils.isEmpty(content)){
+        if (!content.contains(mContext.getString(R.string.qa_topic_open_all))) {
+            if (TextUtils.isEmpty(content)) {
                 textView.setText(mContext.getString(R.string.qa_topic_open_all));
-            } else if (textView.getLineCount() == 1){
+            } else if (textView.getLineCount() == 1) {
                 textView.append(mContext.getString(R.string.qa_topic_open_all));
             }
             ConvertUtils.stringLinkConvert(textView, setLinks());

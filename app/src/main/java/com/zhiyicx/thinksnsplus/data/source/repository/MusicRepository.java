@@ -1,18 +1,9 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
-import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
-import com.zhiyicx.thinksnsplus.data.source.local.MusicAlbumListBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.remote.MusicClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicContract;
 
-import java.util.List;
-
 import javax.inject.Inject;
-
-import rx.Observable;
 
 /**
  * @Author Jliuer
@@ -21,22 +12,11 @@ import rx.Observable;
  * @Description
  */
 
-public class MusicRepository implements MusicContract.Repository {
-    protected MusicClient mMusicClient;
-    @Inject
-    protected MusicAlbumListBeanGreenDaoImpl mMusicAlbumListDao;
+public class MusicRepository extends BaseMusicRepository implements MusicContract.Repository {
 
     @Inject
     public MusicRepository(ServiceManager serviceManager) {
-        mMusicClient = serviceManager.getMusicClient();
+        super(serviceManager);
     }
 
-    @Override
-    public Observable<List<MusicAlbumListBean>> getMusicAblumList(long max_id) {
-        return mMusicClient.getMusicList(max_id, Long.valueOf(TSListFragment.DEFAULT_PAGE_SIZE));
-    }
-
-    public List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId) {
-        return mMusicAlbumListDao.getMultiDataFromCache();
-    }
 }

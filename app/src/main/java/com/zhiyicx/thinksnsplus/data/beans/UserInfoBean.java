@@ -21,6 +21,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.converter.PropertyConverter;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -106,6 +107,16 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     @Convert(converter = VerifiedBeanConverter.class, columnType = String.class)
     private VerifiedBean verified;
 
+    @Convert(converter = UserTagsBeanConverter.class, columnType = String.class)
+    private List<UserTagBean> tags;
+
+    public List<UserTagBean> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<UserTagBean> tags) {
+        this.tags = tags;
+    }
 
     public String getSexString() {
         switch (getSex()) {
@@ -302,42 +313,17 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
     public UserInfoBean() {
     }
 
-    @Generated(hash = 1781470643)
-    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
-                        String location, boolean following, boolean follower, String created_at, String updated_at,
-                        String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified) {
-        this.user_id = user_id;
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.intro = intro;
-        this.sex = sex;
-        this.location = location;
-        this.following = following;
-        this.follower = follower;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.avatar = avatar;
-        this.cover = cover;
-        this.extra = extra;
-        this.verified = verified;
-    }
+
 
     /**
      * {
      * "user_id": 1,
-     * "likes_count": 2,
-     * "comments_count": 9,
-     * "followers_count": 0,
-     * "followings_count": 0,
-     * "updated_at": "2017-08-17 07:05:06",
-     * "feeds_count": 0,
-     * "questions_count": 0,
-     * "answers_count": 19,
-     * "count": 53,
-     * "rank": 1
-     * "checkin_count": 2,
-     * "last_checkin_count": 2
+     * "likes_count": 0, // 被喜欢统计数
+     * "comments_count": 0, // 用户发出的评论统计
+     * "followers_count": 0, // 用户粉丝数
+     * "followings_count": 1, // 用户关注数
+     * "updated_at": "2017-07-16 09:44:25", // 更新时间
+     * "feeds_count": 0 // 发布的动态统计，没有安装 动态应用则不存在
      * }
      */
     public static class UserInfoExtraBean implements Serializable, Parcelable {
@@ -467,24 +453,6 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
             this.last_checkin_count = last_checkin_count;
         }
 
-        @Override
-        public String toString() {
-            return "UserInfoExtraBean{" +
-                    "user_id=" + user_id +
-                    ", likes_count=" + likes_count +
-                    ", comments_count=" + comments_count +
-                    ", followers_count=" + followers_count +
-                    ", followings_count=" + followings_count +
-                    ", questions_count=" + questions_count +
-                    ", answers_count=" + answers_count +
-                    ", feeds_count=" + feeds_count +
-                    ", count=" + count +
-                    ", rank=" + rank +
-                    ", checkin_count=" + checkin_count +
-                    ", last_checkin_count=" + last_checkin_count +
-                    ", updated_at='" + updated_at + '\'' +
-                    '}';
-        }
 
         @Override
         public int describeContents() {
@@ -535,6 +503,25 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
                 return new UserInfoExtraBean[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "UserInfoExtraBean{" +
+                    "user_id=" + user_id +
+                    ", likes_count=" + likes_count +
+                    ", comments_count=" + comments_count +
+                    ", followers_count=" + followers_count +
+                    ", followings_count=" + followings_count +
+                    ", questions_count=" + questions_count +
+                    ", answers_count=" + answers_count +
+                    ", feeds_count=" + feeds_count +
+                    ", count=" + count +
+                    ", rank=" + rank +
+                    ", checkin_count=" + checkin_count +
+                    ", last_checkin_count=" + last_checkin_count +
+                    ", updated_at='" + updated_at + '\'' +
+                    '}';
+        }
     }
 
 
@@ -549,6 +536,13 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
      * VerifiedBean 转 String 形式存入数据库
      */
     public static class VerifiedBeanConverter extends BaseConvert<VerifiedBean> {
+
+    }
+
+    /**
+     * UsertagBean 转 String 形式存入数据库
+     */
+    public static class UserTagsBeanConverter extends BaseConvert<List<UserTagBean>> {
 
     }
 
@@ -603,6 +597,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         dest.writeParcelable(this.wallet, flags);
         dest.writeParcelable(this.extra, flags);
         dest.writeParcelable(this.verified, flags);
+        dest.writeTypedList(this.tags);
     }
 
     protected UserInfoBean(Parcel in) {
@@ -627,6 +622,30 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
         this.wallet = in.readParcelable(WalletBean.class.getClassLoader());
         this.extra = in.readParcelable(UserInfoExtraBean.class.getClassLoader());
         this.verified = in.readParcelable(VerifiedBean.class.getClassLoader());
+        this.tags = in.createTypedArrayList(UserTagBean.CREATOR);
+    }
+
+    @Generated(hash = 1966877277)
+    public UserInfoBean(Long user_id, String name, String phone, String email, String intro, int sex,
+            String location, boolean following, boolean follower, String created_at, String updated_at,
+            String avatar, String cover, UserInfoExtraBean extra, VerifiedBean verified,
+            List<UserTagBean> tags) {
+        this.user_id = user_id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.intro = intro;
+        this.sex = sex;
+        this.location = location;
+        this.following = following;
+        this.follower = follower;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar = avatar;
+        this.cover = cover;
+        this.extra = extra;
+        this.verified = verified;
+        this.tags = tags;
     }
 
     public static final Creator<UserInfoBean> CREATOR = new Creator<UserInfoBean>() {
@@ -664,6 +683,7 @@ public class UserInfoBean extends BaseListBean implements Parcelable, Serializab
                 ", wallet=" + wallet +
                 ", extra=" + extra +
                 ", verified=" + verified +
+                ", tags=" + tags +
                 '}';
     }
 }

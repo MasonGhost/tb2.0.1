@@ -69,6 +69,13 @@ public class BaseQARepository implements IBasePublishQuestionRepository {
     }
 
     @Override
+    public Observable<List<QAListInfoBean>> getUserQAQustion(String type, Long after) {
+        return mQAClient.getUserQAQustion(type, after, (long) TSListFragment.DEFAULT_PAGE_SIZE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
     public Observable<List<QAListInfoBean>> getQAQuestionByTopic(String topicId, String subject, Long maxId, String type) {
         return mQAClient.getQAQustionByTopic(topicId, subject, maxId, type, (long) TSListFragment.DEFAULT_PAGE_SIZE)
                 .subscribeOn(Schedulers.io())

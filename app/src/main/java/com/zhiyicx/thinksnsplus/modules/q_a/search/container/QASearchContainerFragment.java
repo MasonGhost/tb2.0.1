@@ -1,22 +1,20 @@
 package com.zhiyicx.thinksnsplus.modules.q_a.search.container;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ActivityUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.modules.q_a.search.list.IHistoryCententClickListener;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import rx.functions.Action1;
 
 /**
  * @Describe
@@ -25,7 +23,6 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @Contact master.jungle68@gmail.com
  */
 public class QASearchContainerFragment extends TSFragment<QASearchContainerContract.Presenter> implements QASearchContainerContract.View {
-
 
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
@@ -79,16 +76,12 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
     }
 
     private void initListener() {
-
-        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
-                .compose(this.bindToLifecycle())
-                .subscribe(textViewAfterTextChangeEvent -> {
-                    mFindSomeOneContainerViewPagerFragment.onSearhChanged(textViewAfterTextChangeEvent.editable().toString());
-                });
-
-
+        RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
+            if (textViewEditorActionEvent.actionId()== EditorInfo.IME_ACTION_SEARCH) {
+                mFindSomeOneContainerViewPagerFragment.onSearhChanged(mFragmentInfoSearchEdittext.getText().toString());
+            }
+        });
     }
-
 
     @OnClick({R.id.fragment_search_cancle})
     public void onViewClicked(View view) {

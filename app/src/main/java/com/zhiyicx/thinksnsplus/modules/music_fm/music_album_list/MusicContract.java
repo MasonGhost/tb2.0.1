@@ -4,6 +4,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IMusicRepository;
 
 import java.util.List;
 
@@ -23,12 +24,10 @@ public interface MusicContract {
 
     interface Presenter extends ITSListPresenter<MusicAlbumListBean> {
         void updateOneMusic(MusicAlbumListBean albumListBean);
-        void payNote(int position,int note);
+        void payNote(int position, int note);
     }
 
-    interface Repository {
-        Observable<List<MusicAlbumListBean>> getMusicAblumList(long max_id);
+    interface Repository extends IMusicRepository{
 
-        List<MusicAlbumListBean> getMusicAlbumFromCache(long maxId);
     }
 }
