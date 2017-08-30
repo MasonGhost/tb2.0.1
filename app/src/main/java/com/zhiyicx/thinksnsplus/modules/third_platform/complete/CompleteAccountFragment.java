@@ -91,7 +91,7 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
                 .compose(mRxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE))
                 .subscribe(aBoolean -> {
                     if (aBoolean) {// 获取到了权限
-                        mPresenter.checkName(mThridInfoBean, mEtLoginPhone.getText().toString());
+                        mPresenter.thridRegister(mThridInfoBean, mEtLoginPhone.getText().toString());
                     } else {// 拒绝权限，但是可以再次请求
                         showErrorTips(getString(R.string.permisson_refused));
                     }
@@ -110,6 +110,7 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     @Override
     protected void initData() {
         mEtLoginPhone.setText(mThridInfoBean.getName());
+        mEtLoginPhone.setSelection(mThridInfoBean.getName().length());
         mPresenter.checkName(mThridInfoBean, mThridInfoBean.getName());
         mBtLoginLogin.setEnabled(false);
     }

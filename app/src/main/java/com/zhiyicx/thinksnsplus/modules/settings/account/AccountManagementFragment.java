@@ -167,8 +167,6 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
     }
 
-    private String mThridName;
-
 
     private String mAccessToken;
 
@@ -206,7 +204,6 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                 default:
 
             }
-            mThridName = data.get("screen_name");
             mAccessToken = data.get("accessToken");
             mPresenter.bindOrUnbindThirdAccount(provider, mAccessToken, true);
         }
