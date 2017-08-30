@@ -723,19 +723,30 @@ public class BackgroundTaskHandler {
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
 
             int[] position = new int[1];
-            recursionUplaodImage(sendDynamicDataBean, photos, position);
 
-            observable=Observable.just(sendDynamicDataBean)
 
-//            for (int i = 0; i < photos.size(); i++) {
-//                ImageBean imageBean = photos.get(i);
-//                String filePath = imageBean.getImgUrl();
-//                int photoWidth = (int) imageBean.getWidth();
-//                int photoHeight = (int) imageBean.getHeight();
-//                String photoMimeType = imageBean.getImgMimeType();
-//                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
-//            }
-//
+            for (int i = 0; i < photos.size(); i++) {
+                ImageBean imageBean = photos.get(i);
+                String filePath = imageBean.getImgUrl();
+                int photoWidth = (int) imageBean.getWidth();
+                int photoHeight = (int) imageBean.getHeight();
+                String photoMimeType = imageBean.getImgMimeType();
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+            }
+
+            observable = Observable.concat(upLoadPics)
+                    .map(integerBaseJson -> {
+                        if (integerBaseJson.isStatus()) {
+                            sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
+                            position[0]++;// 完成后+1
+                        } else {
+                            throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                        }
+                        sendDynamicDataBean.setPhotos(null);
+                        return sendDynamicDataBean;
+                    })
+                    .filter(sendDynamicDataBeanV2 -> position[0] == photos.size())
+
 //            observable = Observable.zip(upLoadPics, (FuncN<Object>) args -> {
 //                List<Integer> integers = new ArrayList<>();
 //                for (int i = 0; i < args.length; i++) {
@@ -749,26 +760,27 @@ public class BackgroundTaskHandler {
 //                }
 //                return integers;
 //            })
+
                     .map(integers -> {
-                sendDynamicDataBean.setPhotos(null);
-                return sendDynamicDataBean;
-            }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
-                @Override
-                public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
-                    return mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
-                            .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
-                                @Override
-                                public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
-                                    BaseJson<Object> baseJson = new BaseJson<>();
-                                    baseJson.setData((double) objectBaseJsonV2.getId());
-                                    String msg = objectBaseJsonV2.getMessage().get(0);
-                                    baseJson.setStatus(msg.equals("发布成功"));
-                                    baseJson.setMessage(msg);
-                                    return Observable.just(baseJson);
-                                }
-                            });
-                }
-            });
+                        sendDynamicDataBean.setPhotos(null);
+                        return sendDynamicDataBean;
+                    }).flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
+                        @Override
+                        public Observable<BaseJson<Object>> call(SendDynamicDataBeanV2 sendDynamicDataBeanV2) {
+                            return mSendDynamicRepository.sendDynamicV2(sendDynamicDataBeanV2)
+                                    .flatMap(new Func1<BaseJsonV2<Object>, Observable<BaseJson<Object>>>() {
+                                        @Override
+                                        public Observable<BaseJson<Object>> call(BaseJsonV2<Object> objectBaseJsonV2) {
+                                            BaseJson<Object> baseJson = new BaseJson<>();
+                                            baseJson.setData((double) objectBaseJsonV2.getId());
+                                            String msg = objectBaseJsonV2.getMessage().get(0);
+                                            baseJson.setStatus(msg.equals("发布成功"));
+                                            baseJson.setMessage(msg);
+                                            return Observable.just(baseJson);
+                                        }
+                                    });
+                        }
+                    });
         } else {
             // 没有图片上传任务，直接发布动态
             observable = mSendDynamicRepository.sendDynamicV2(sendDynamicDataBean)
