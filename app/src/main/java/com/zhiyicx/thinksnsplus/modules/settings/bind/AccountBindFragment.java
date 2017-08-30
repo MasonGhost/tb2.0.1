@@ -19,6 +19,7 @@ import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.baseproject.widget.edittext.PasswordEditText;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +27,7 @@ import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.common.config.ConstantConfig.MOBILE_PHONE_NUMBER_LENGHT;
+import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_DATA;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_STATE;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_TYPE;
 
@@ -75,6 +77,7 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
     private boolean mIsVerifyCodeEnable = true;
     private Animatable mVerifyAnimationDrawable;
     private boolean isSureLoading;
+    private UserInfoBean mUserInfoBean;
 
     public AccountBindFragment instance(Bundle bundle) {
         AccountBindFragment fragment = new AccountBindFragment();
@@ -87,9 +90,21 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
         Bundle bundle = getArguments();
         mCurrentType = bundle.getInt(BUNDLE_BIND_TYPE);
         mIsBind = bundle.getBoolean(BUNDLE_BIND_STATE);
+        mUserInfoBean = bundle.getParcelable(BUNDLE_BIND_DATA);
         mVerifyAnimationDrawable = (Animatable) mIvVerifyLoading.getDrawable();
         setBindType();
         setConfirmEnable();
+        if (mUserInfoBean != null) {
+            if (mCurrentType == DEAL_TYPE_PHONE) {
+                mEtPhone.setText(mUserInfoBean.getPhone());
+                mEtPhone.setSelection(mUserInfoBean.getPhone().length());
+            } else {
+
+                mEtEmail.setText(mUserInfoBean.getEmail());
+                mEtEmail.setSelection(mUserInfoBean.getEmail().length());
+            }
+
+        }
     }
 
     @Override
@@ -223,9 +238,9 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                 .compose(this.<Void>bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentType == DEAL_TYPE_PHONE) {
-                        mPresenter.getVertifyCode(mEtPhone.getText().toString().trim(),mIsBind);
+                        mPresenter.getVertifyCode(mEtPhone.getText().toString().trim(), mIsBind);
                     } else {
-                        mPresenter.getVerifyCodeByEmail(mEtEmail.getText().toString().trim(),mIsBind);
+                        mPresenter.getVerifyCodeByEmail(mEtEmail.getText().toString().trim(), mIsBind);
                     }
                 });
         // 点击绑定/解除按钮

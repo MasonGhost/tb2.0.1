@@ -28,6 +28,7 @@ import butterknife.BindView;
 import static com.zhiyicx.baseproject.config.ApiConfig.PROVIDER_WECHAT;
 import static com.zhiyicx.baseproject.config.ApiConfig.PROVIDER_WEIBO;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_DATA;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_STATE;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindActivity.BUNDLE_BIND_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.settings.bind.AccountBindFragment.DEAL_TYPE_EMAIL;
@@ -93,6 +94,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     Bundle bundle = new Bundle();
                     bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_PHONE);
                     bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getPhone()));
+                    bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 });
@@ -105,6 +107,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                     Bundle bundle = new Bundle();
                     bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
                     bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getEmail()));
+                    bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 });
