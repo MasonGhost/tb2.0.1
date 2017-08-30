@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.modules.findsomeone.list;
 
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
@@ -35,7 +34,7 @@ import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListF
 public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListContract.Repository,
         FindSomeOneListContract.View> implements FindSomeOneListContract.Presenter {
 
-    public static final int DEFAULT_PAGE_SIZE = TSListFragment.DEFAULT_PAGE_SIZE;
+    public static final int DEFAULT_PAGE_SIZE = 15;
     @Inject
     FollowFansBeanGreenDaoImpl mFollowFansBeanGreenDao;
 

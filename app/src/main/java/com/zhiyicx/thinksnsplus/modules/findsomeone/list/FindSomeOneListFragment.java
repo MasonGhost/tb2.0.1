@@ -135,6 +135,11 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
      */
     @Override
     protected Long getMaxId(@NotNull List<UserInfoBean> data) {
-        return Long.valueOf(data.size());
+        return Long.valueOf(mListDatas.size());
+    }
+
+    @Override
+    protected int getPagesize() {
+        return FindSomeOneListPresenter.DEFAULT_PAGE_SIZE;
     }
 }
