@@ -150,9 +150,12 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     private void saveQuestion() {
-        mQAPublishBean.setBody(getContentString());
-        mQAPublishBean.setAnonymity(mAnonymity);
-        mPresenter.saveQuestion(mQAPublishBean);
+        if (mQAPublishBean != null) {
+            mQAPublishBean.setBody(getContentString());
+            mQAPublishBean.setAnonymity(mAnonymity);
+            mPresenter.saveQuestion(mQAPublishBean);
+        }
+
     }
 
     @NonNull
