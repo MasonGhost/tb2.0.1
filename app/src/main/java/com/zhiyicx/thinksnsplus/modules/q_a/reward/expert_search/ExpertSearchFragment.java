@@ -108,7 +108,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
         if (mQaTopicBean != null) {
             requestNetData(maxId, mQaTopicBean.getId().intValue(), isLoadMore);
         } else if (!TextUtils.isEmpty(topic_ids)) {
-            requestNetData(mListDatas.size(), topic_ids, isLoadMore);
+            requestNetData(maxId.intValue(), topic_ids, isLoadMore);
         }
     }
 
