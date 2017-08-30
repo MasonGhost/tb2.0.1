@@ -101,6 +101,7 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
         RxTextView.afterTextChangeEvents(mEtLoginPhone)
                 .compose(this.bindToLifecycle())
                 .subscribe(textViewAfterTextChangeEvent -> {
+                    showErrorTips("");
                     setConfirmEnable(!TextUtils.isEmpty(textViewAfterTextChangeEvent.editable().toString().trim()));
                 });
 
@@ -109,6 +110,8 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
     @Override
     protected void initData() {
         mEtLoginPhone.setText(mThridInfoBean.getName());
+        mPresenter.checkName(mThridInfoBean, mThridInfoBean.getName());
+        mBtLoginLogin.setEnabled(false);
     }
 
     @Override
@@ -143,7 +146,9 @@ public class CompleteAccountFragment extends TSFragment<CompleteAccountContract.
 
     @Override
     public void checkNameSuccess(ThridInfoBean thridInfoBean, String name) {
-        showErrorTips("");
+        mIvCheck.setImageResource(R.mipmap.ico_edit_chosen_32);
+        mIvCheck.setVisibility(View.VISIBLE);
+        mBtLoginLogin.setEnabled(true);
     }
 
     @Override

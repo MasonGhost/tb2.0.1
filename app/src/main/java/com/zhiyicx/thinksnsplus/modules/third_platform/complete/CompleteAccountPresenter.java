@@ -43,28 +43,44 @@ public class CompleteAccountPresenter extends BasePresenter<CompleteAccountContr
 
     @Override
     public void checkName(ThridInfoBean thridInfoBean, String name) {
-        checkOrRegister(thridInfoBean, name,true);
+        check(thridInfoBean, name);
     }
 
     @Override
     public void thridRegister(ThridInfoBean thridInfoBean, String name) {
-        checkOrRegister(thridInfoBean, name,false);
+        register(thridInfoBean, name, true);
     }
 
-    private void checkOrRegister(final ThridInfoBean thridInfoBean, final String name,boolean isCheck) {
-        Subscription subscribe = mUserInfoRepository.checkUserOrRegisterUser(thridInfoBean.getProvider(), thridInfoBean.getAccess_token(),name, isCheck)
+    private void check(final ThridInfoBean thridInfoBean, final String name) {
+        Subscription subscribe = mUserInfoRepository.checkUserOrRegisterUser(thridInfoBean.getProvider(), thridInfoBean.getAccess_token(), name, true)
                 .subscribe(new BaseSubscribeForV2<AuthBean>() {
                     @Override
                     protected void onSuccess(AuthBean data) {
-                        if(isCheck) {
-                            mRootView.checkNameSuccess(thridInfoBean, name);
-                            checkOrRegister(thridInfoBean, name,false);
-                        }else { // register success
-//                            UserInfoBean registerUserInfo = new UserInfoBean();
-//                            registerUserInfo.setUser_id(Long.valueOf(data.getUser_id()));
-//                            registerUserInfo.setName(name);
-//                            registerUserInfo.setPhone(phone);
-//                            data.setUser(registerUserInfo);
+                        mRootView.checkNameSuccess(thridInfoBean, name);
+                    }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        // 登录失败
+                        mRootView.showErrorTips(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showErrorTips(mContext.getString(R.string.err_net_not_work));
+                    }
+                });
+        addSubscrebe(subscribe);
+    }
+
+    private void register(final ThridInfoBean thridInfoBean, final String name, boolean isCheck) {
+        Subscription subscribe = mUserInfoRepository.checkUserOrRegisterUser(thridInfoBean.getProvider(), thridInfoBean.getAccess_token(), name, isCheck)
+                .subscribe(new BaseSubscribeForV2<AuthBean>() {
+                    @Override
+                    protected void onSuccess(AuthBean data) {
+                        if (isCheck) {
+                            register(thridInfoBean, name, false);
+                        } else { // register success
                             mAuthRepository.saveAuthBean(data);// 保存登录认证信息
                             mUserInfoBeanGreenDao.insertOrReplace(data.getUser());
                             // IM 登录 需要 token ,所以需要先保存登录信息
