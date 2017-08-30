@@ -41,22 +41,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <LinearLayout
-                    android:id="@+id/ll_flat_container"
+            <RelativeLayout
+                    android:id="@+id/rl_flat_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/spacing_mid_small">
+                    android:gravity="center_vertical">
 
                 <!--回答者名字-->
-                <com.zhiyicx.thinksnsplus.widget.NoDefaultPadingTextView
+                <TextView
                         android:id="@+id/tv_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/important_for_content"
                         android:textSize="@dimen/size_content_comment"
-                        android:layout_gravity="center_vertical"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/spacing_mid_small"
                         tools:text="xxxxxx"/>
 
@@ -68,20 +67,26 @@
                         android:text="@string/qa_question_answer_invite"
                         android:textColor="@color/dyanmic_top_flag"
                         android:textSize="@dimen/size_note_assist"
+                        android:gravity="center"
+                        android:layout_toRightOf="@+id/tv_name"
                         android:background="@drawable/shape_answer_invite_bg"
-                        android:padding="@dimen/spacing_tiny"/>
+                        android:padding="@dimen/spacing_tiny"
+                        android:layout_alignBaseline="@+id/tv_name"
+                        android:layout_marginRight="@dimen/spacing_mid_small"/>
                 <!--采纳的标志-->
                 <TextView
                         android:id="@+id/tv_adopt_flag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing_mid_small"
                         android:text="@string/qa_question_answer_adopt"
+                        android:layout_toRightOf="@+id/tv_invite_flag"
                         android:textColor="@color/themeColor"
                         android:textSize="@dimen/size_note_assist"
+                        android:gravity="center"
                         android:background="@drawable/shape_answer_adopt_bg"
-                        android:padding="@dimen/spacing_tiny"/>
-            </LinearLayout>
+                        android:padding="@dimen/spacing_tiny"
+                        android:layout_alignBaseline="@+id/tv_invite_flag"/>
+            </RelativeLayout>
 
             <TextView
                     android:id="@+id/tv_time"
@@ -89,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/size_icon_assist"
                     android:layout_alignParentRight="true"
-                    android:layout_alignBaseline="@+id/ll_flat_container"
+                    android:layout_alignBaseline="@+id/rl_flat_container"
                     android:textColor="@color/general_for_hint"
                     tools:text="xxxxxx"/>
             <!--回答的内容-->
@@ -114,7 +119,7 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/question_detail_reward_type_height"
-            android:layout_marginLeft="@dimen/spacing_bigger_large"
+            android:layout_marginLeft="@dimen/spacing_bigger_large_48"
             android:paddingTop="@dimen/spacing_normal"
             android:paddingBottom="@dimen/spacing_normal"
             android:paddingRight="@dimen/spacing_normal">
