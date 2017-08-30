@@ -20,6 +20,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
@@ -88,6 +89,8 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
     private UserInfoBean user; // 用户资料，如果是 anonymity 是 1 则该字段不存在。
     @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "question_id")})
     private List<AnswerInfoBean> answerInfoBeanList;
+    @Convert(converter = AnswerInfoBeanConvert.class, columnType = String.class)
+    private AnswerInfoBean my_answer; // 自己的回答，如果为空则表示自己还未回答，如果不为空则表示已经回答了
 
     @Override
     public Long getMaxId() {
@@ -275,6 +278,18 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.answerInfoBeanList = answerInfoBeanList;
     }
 
+    public boolean isWatched() {
+        return watched;
+    }
+
+    public AnswerInfoBean getMy_answer() {
+        return my_answer;
+    }
+
+    public void setMy_answer(AnswerInfoBean my_answer) {
+        this.my_answer = my_answer;
+    }
+
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -429,8 +444,8 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
     @Generated(hash = 1951279767)
     private transient QAListInfoBeanDao myDao;
 
-    @Generated(hash = 250623064)
-    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, AnswerInfoBean answer, List<QATopicBean> topics, List<UserInfoBean> invitations, UserInfoBean user) {
+    @Generated(hash = 1991260694)
+    public QAListInfoBean(Long id, Long user_id, String subject, String body, int anonymity, double amount, int automaticity, int look, int excellent, int status, int comments_count, int answers_count, int watchers_count, int likes_count, int views_count, String created_at, String updated_at, boolean watched, AnswerInfoBean answer, List<QATopicBean> topics, List<UserInfoBean> invitations, UserInfoBean user, AnswerInfoBean my_answer) {
         this.id = id;
         this.user_id = user_id;
         this.subject = subject;
@@ -453,6 +468,7 @@ public class QAListInfoBean extends BaseListBean implements Serializable {
         this.topics = topics;
         this.invitations = invitations;
         this.user = user;
+        this.my_answer = my_answer;
     }
 
     @Generated(hash = 1163254106)

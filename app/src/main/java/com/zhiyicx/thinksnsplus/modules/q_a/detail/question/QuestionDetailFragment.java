@@ -47,6 +47,7 @@ import butterknife.BindView;
 import static android.app.Activity.RESULT_OK;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_ANSWER;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment
         .BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity
@@ -245,11 +246,21 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void onAddAnswerClick() {
-        // 跳转发布回答
-        PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                .PUBLISH_ANSWER, mQaListInfoBean.getId()// 这个 question_id 加上
-                , null);
+    public void onAddAnswerClick(AnswerInfoBean answerInfoBean) {
+        if (answerInfoBean != null){
+            // 点击跳转到 回答详情 查看自己的回答
+            Intent intent = new Intent(getContext(), AnswerDetailsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BUNDLE_ANSWER, answerInfoBean);
+            bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
+            intent.putExtras(bundle);
+            startActivity(intent);
+        } else {
+            // 跳转发布回答
+            PublishAnswerFragment.startQActivity(getActivity(), PublishType
+                            .PUBLISH_ANSWER, mQaListInfoBean.getId()// 这个 question_id 加上
+                    , null);
+        }
     }
 
     @Override
