@@ -39,7 +39,7 @@
                     app:leftImage="@mipmap/discover_ico_channel"
                     app:leftText="@string/group"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"
-                    app:showLine="false"/>
+                    app:showLine="true"/>
 
             <!--问答-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
