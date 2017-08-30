@@ -233,12 +233,15 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType) {
-        // 跳转设置悬赏
-        Intent intent = new Intent(getActivity(), QARewardActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_QUESTION_ID, mQaListInfoBean.getId());
-        intent.putExtras(bundle);
-        startActivityForResult(intent, REWARD_CODE);
+        // 仅自己发布的可以跳转设置
+        if (mQaListInfoBean.getUser_id().equals(AppApplication.getmCurrentLoginAuth().getUser_id())){
+            // 跳转设置悬赏
+            Intent intent = new Intent(getActivity(), QARewardActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putLong(BUNDLE_QUESTION_ID, mQaListInfoBean.getId());
+            intent.putExtras(bundle);
+            startActivityForResult(intent, REWARD_CODE);
+        }
     }
 
     @Override

@@ -526,7 +526,7 @@
     </string-array>
     <string-array name="qa_mine_answer_title">
         <item>@string/qa_mine_all_common</item>
-        <item>未阅读</item>
+        <!--<item>未阅读</item>-->
         <item>被采纳</item>
         <item>被邀请</item>
         <item>@string/qa_mine_other_common</item>

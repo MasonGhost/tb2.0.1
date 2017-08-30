@@ -34,30 +34,16 @@ public class MyFollowQuestionAdapter extends CommonAdapter<BaseListBean>{
         holder.setText(R.id.tv_title, qaListInfoBean.getSubject());
         holder.setText(R.id.tv_count, String.format(mContext.getString(R.string.qa_show_topic_followed),
                 qaListInfoBean.getWatchers_count(), qaListInfoBean.getAnswers_count()));
-        ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_count), setLinks(qaListInfoBean));
+        ConvertUtils.stringLinkConvert(holder.getTextView(R.id.tv_count), setLinks(qaListInfoBean), false);
         holder.setText(R.id.tv_time, qaListInfoBean.getCreated_at());
     }
 
     private List<Link> setLinks(QAListInfoBean qaListInfoBean) {
         List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(qaListInfoBean.getWatchers_count()+"").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(followCountLink);
-        Link answerCountLink = new Link(qaListInfoBean.getAnswers_count()+"").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(answerCountLink);
         Link numberCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
                 .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .normal_for_assist_text))
+                        .general_for_hint))
                 .setHighlightAlpha(.8f)
                 .setUnderlined(false);
         links.add(numberCountLink);

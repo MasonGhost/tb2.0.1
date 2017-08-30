@@ -364,6 +364,8 @@ public class ApiConfig {
     public static final String APP_PATH_GET_TOPIC_EXPERT_LIST = "api/" + API_VERSION_2 + "/question-experts";
     // 获取用户发布的问题列表
     public static final String APP_PATH_GET_USER_QUESTIONS = "api/" + API_VERSION_2 +  "/user/questions";
+    // 获取用户发布的回答列表
+    public static final String APP_PATH_GET_USER_ANSWER = "api/" + API_VERSION_2 +  "/user/question-answer";
 
 
     /**

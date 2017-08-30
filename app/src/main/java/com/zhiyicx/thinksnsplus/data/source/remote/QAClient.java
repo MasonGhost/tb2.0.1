@@ -48,10 +48,8 @@ public interface QAClient {
     Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
-     * @param question_id
-     * @param body        如果 anonymity 不传，则本字段必须存在， 回答详情。
-     * @param anonymity   如果 body 字段不传，则本字段必须存在，是否匿名。
-     * @return
+     * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
      */
     @FormUrlEncoded
     @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
@@ -59,10 +57,8 @@ public interface QAClient {
             String body, @Field("anonymity") int anonymity);
 
     /**
-     * @param answer_id
      * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
      * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
-     * @return
      */
     @FormUrlEncoded
     @PATCH(ApiConfig.APP_PATH_UPDATE_ANSWER)
@@ -171,13 +167,22 @@ public interface QAClient {
      *
      * @param question_id 问题id
      * @param order_type  default/time
-     * @return
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)
     Observable<List<AnswerInfoBean>> getAnswerList(@Path("question") String question_id,
                                                    @Query("limit") Long limit,
                                                    @Query("order_type") String order_type,
                                                    @Query("offset") int size);
+
+    /**
+     * 获取用户发布的回答列表
+     *
+     * @param type all - 全部，adoption - 被采纳的，invitation - 被邀请的，other - 其他， 默认为全部
+     */
+    @GET(ApiConfig.APP_PATH_GET_USER_ANSWER)
+    Observable<List<AnswerInfoBean>> getUserAnswerList(@Query("type") String type,
+                                                       @Query("limit") Long limit,
+                                                       @Query("after") Long maxId);
 
     /**
      * 删除问题

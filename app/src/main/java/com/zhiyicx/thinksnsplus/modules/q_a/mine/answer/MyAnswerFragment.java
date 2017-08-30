@@ -44,7 +44,7 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        MyAnswerAdapter answerAdapter = new MyAnswerAdapter(getContext(), mListDatas);
+        MyAnswerAdapter answerAdapter = new MyAnswerAdapter(getContext(), mListDatas, mAnswerPresenter);
         answerAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -68,7 +68,7 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
     }
 
     @Override
-    protected void initData() {
+    protected void initView(View rootView) {
         DaggerMyAnswerComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .myAnswerPresenterModule(new MyAnswerPresenterModule(this))
@@ -77,7 +77,7 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
         if (TextUtils.isEmpty(mType)){
             mType = getArguments().getString(BUNDLE_MY_QUESTION_TYPE);
         }
-        super.initData();
+        super.initView(rootView);
     }
 
     @Override
@@ -86,6 +86,12 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
             mType = getArguments().getString(BUNDLE_MY_QUESTION_TYPE);
         }
         return mType;
+    }
+
+    @Override
+    public void updateList(int position, AnswerInfoBean answerInfoBean) {
+        mListDatas.set(position, answerInfoBean);
+        refreshData();
     }
 
     @Override
