@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,7 +18,6 @@ import com.zhiyicx.baseproject.impl.photoselector.DaggerPhotoSelectorImplCompone
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
-import com.zhiyicx.baseproject.widget.dragview.OverScrollView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.AnonymityPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
@@ -145,7 +143,10 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     public void onResume() {
         super.onResume();
-        mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        if (mQAPublishBean != null) {
+            mQAPublishBean = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        }
+
     }
 
     private void saveQuestion() {

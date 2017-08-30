@@ -453,7 +453,7 @@
     <string name="qa_topic_followed">已关注</string>
     <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
     <string name="qa_show_topic_followed_content">%1$d 关注  ·  %2$d 回答  </string>
-    <string name="qa_show_topic_followed_reward">  ·  ¥%1$.1f 悬赏</string>
+    <string name="qa_show_topic_followed_reward">  ·  ¥%1$.2f 悬赏</string>
     <string name="edit_quit">放弃编辑</string>
     <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>

@@ -32,7 +32,6 @@
 
     <TextView
         android:layout_marginTop="@dimen/spacing_normal"
-        android:lineSpacingExtra="@dimen/spacing_mid_small_8dp"
         android:maxLines="3"
         android:id="@+id/item_info_hotcomment"
         android:layout_width="match_parent"
@@ -65,17 +64,17 @@
         <TextView
             android:textSize="@dimen/size_content_assist"
             android:id="@+id/item_info_reward"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:textColor="@color/normal_for_assist_text"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             tools:text="ttttt"/>
 
         <TextView
             android:textColor="@color/normal_for_assist_text"
             android:textSize="@dimen/size_content_assist"
+            android:layout_weight="1"
             android:id="@+id/item_info_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="right"
             tools:text="sss"/>
