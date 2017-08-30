@@ -149,6 +149,64 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
 
 
     @Override
+    protected int getstatusbarAndToolbarHeight() {
+        if (setUseSatusbar()) {
+            return 0;
+        }
+        return super.getstatusbarAndToolbarHeight();
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
+    protected boolean needCenterLoadingDialog() {
+        return true;
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mIvMore;
+    }
+
+    @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_personal_center;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         setLoadViewHolderImag(R.mipmap.img_default_internet);
@@ -170,29 +228,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
         mIvMore.setVisibility(View.GONE);
         setOverScroll(false, null);
-    }
-
-    @Override
-    protected int getstatusbarAndToolbarHeight() {
-        if (setUseSatusbar()) {
-            return 0;
-        }
-        return super.getstatusbarAndToolbarHeight();
-    }
-
-    @Override
-    protected boolean usePermisson() {
-        return true;
-    }
-
-    @Override
-    protected boolean needCenterLoadingDialog() {
-        return true;
-    }
-
-    @Override
-    protected View getRightViewOfMusicWindow() {
-        return mIvMore;
     }
 
     private void initListener() {
@@ -245,40 +280,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected float getItemDecorationSpacing() {
-        return 0;
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
-        return false;
-    }
-
-    @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
         if (userInfoBean.getUser_id() != mUserInfoBean.getUser_id()) {// 如果当前页面的主页已经是当前这个人了，不就用跳转了
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
-    }
-
-    @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_personal_center;
-    }
-
-    @Override
-    protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseCenterLoading() {
-        return true;
     }
 
     @Override
