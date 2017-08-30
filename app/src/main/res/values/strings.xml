@@ -486,6 +486,7 @@
     <string name="qa_reward_invited">已邀请悬赏</string>
     <string name="qa_reward_setting">已设置悬赏</string>
     <string name="qa_add_answer">添加回答</string>
+    <string name="qa_go_to_answer">查看回答</string>
     <string name="qa_reward_amount">￥%1$.1f</string>
     <string name="qa_watch_amount">￥%1$.1f围观</string>
     <string name="qa_answer_list_order_default">默认排序</string>

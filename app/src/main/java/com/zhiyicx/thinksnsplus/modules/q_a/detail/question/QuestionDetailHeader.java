@@ -90,6 +90,7 @@ public class QuestionDetailHeader {
         mTvAnswerCount = (TextView) mQuestionHeaderView.findViewById(R.id.tv_answer_count);
         mTvChangeOrder = (TextView) mQuestionHeaderView.findViewById(R.id.tv_change_order);
         mLlAnswerInfo = (LinearLayout) mQuestionHeaderView.findViewById(R.id.ll_answer_info);
+        mIvAddAnswer = (ImageView) mQuestionHeaderView.findViewById(R.id.iv_add_answer);
     }
 
     public void setDetail(QAListInfoBean qaListInfoBean) {
@@ -121,7 +122,8 @@ public class QuestionDetailHeader {
         updateAnswerView(qaListInfoBean);
         // 悬赏信息
         updateRewardType(qaListInfoBean);
-
+        // 是否已经回答了这个问题
+        updateIsAddedAnswerState(qaListInfoBean);
     }
 
     /**
@@ -180,6 +182,19 @@ public class QuestionDetailHeader {
         }
     }
 
+    /**
+     * 更新是否已经回答的状态
+     */
+    protected void updateIsAddedAnswerState(QAListInfoBean qaListInfoBean) {
+        if (qaListInfoBean.getMy_answer() != null){
+            mTvAddAnswer.setText(mContext.getString(R.string.qa_go_to_answer));
+            mIvAddAnswer.setVisibility(View.GONE);
+        } else {
+            mTvAddAnswer.setText(mContext.getString(R.string.qa_add_answer));
+            mIvAddAnswer.setVisibility(View.VISIBLE);
+        }
+    }
+
     public Bitmap getShareBitmap() {
         return mQdContent.getShareBitmap();
     }
@@ -197,7 +212,7 @@ public class QuestionDetailHeader {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mListener != null) {
-                        mListener.onAddAnswerClick();
+                        mListener.onAddAnswerClick(mQaListInfoBean.getMy_answer());
                     }
                 });
         RxView.clicks(mTvChangeOrder)
@@ -252,7 +267,7 @@ public class QuestionDetailHeader {
 
         void onRewardTypeClick(List<UserInfoBean> invitations, int rewardType);
 
-        void onAddAnswerClick();
+        void onAddAnswerClick(AnswerInfoBean answerInfoBean);
 
         void onChangeListOrderClick(String orderType);
     }
