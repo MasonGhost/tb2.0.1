@@ -67,7 +67,6 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
@@ -721,9 +720,6 @@ public class BackgroundTaskHandler {
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
 
             int[] position = new int[1];
-//            recursionUplaodImage(sendDynamicDataBean, photos, position);
-//
-//            observable = Observable.just(sendDynamicDataBean)
 
             for (int i = 0; i < photos.size(); i++) {
                 ImageBean imageBean = photos.get(i);
@@ -734,38 +730,38 @@ public class BackgroundTaskHandler {
                 upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
             }
 
-//            observable = Observable.concat(upLoadPics).map(new Func1<BaseJson<Integer>, SendDynamicDataBeanV2>() {
-//                @Override
-//                public SendDynamicDataBeanV2 call(BaseJson<Integer> integerBaseJson) {
-//                    if (integerBaseJson.isStatus()) {
-//                        sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
-//                        position[0]++;// 完成后+1
-////                        recursionUplaodImage(sendDynamicDataBean, photos, position);
-//                    } else {
-//                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-//                    }
-//                    sendDynamicDataBean.setPhotos(null);
-//                    return sendDynamicDataBean;
-//                }
-////            }) ;
-//
-            observable = Observable.zip(upLoadPics, (FuncN<Object>) args -> {
-                List<Integer> integers = new ArrayList<>();
-                for (int i = 0; i < args.length; i++) {
-                    BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
-                    if (baseJson.isStatus()) {
-                        sendDynamicDataBean.getStorage_task().get(i).setId(baseJson.getData());
-                        integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
-                    } else {
-                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                    }
-                }
-                return integers;
-            })
-                    .map(integers -> {
+            observable = Observable.concat(upLoadPics)
+                    .map(integerBaseJson -> {
+                        if (integerBaseJson.isStatus()) {
+                            sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
+                            position[0]++;// 完成后+1
+                        } else {
+                            throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                        }
                         sendDynamicDataBean.setPhotos(null);
                         return sendDynamicDataBean;
                     })
+                    .filter(sendDynamicDataBeanV2 -> position[0] == photos.size())
+
+
+//            observable = Observable.zip(upLoadPics, (FuncN<Object>) args -> {
+//                List<Integer> integers = new ArrayList<>();
+//                for (int i = 0; i < args.length; i++) {
+//                    BaseJson<Integer> baseJson = (BaseJson<Integer>) args[i];
+//                    if (baseJson.isStatus()) {
+//                        sendDynamicDataBean.getStorage_task().get(i).setId(baseJson.getData());
+//                        integers.add(baseJson.getData());// 将返回的图片上传任务id封装好
+//                    } else {
+//                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+//                    }
+//                }
+//                return integers;
+//            })
+//                    .map(integers -> {
+//                        sendDynamicDataBean.setPhotos(null);
+//                        return sendDynamicDataBean;
+//                    })
+
 
                     .flatMap(new Func1<SendDynamicDataBeanV2, Observable<BaseJson<Object>>>() {
                         @Override
