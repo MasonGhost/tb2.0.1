@@ -94,6 +94,10 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         super(repository, rootView);
     }
 
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
@@ -386,6 +390,8 @@ public class InfoDetailsPresenter extends AppBasePresenter<InfoDetailsConstract.
         createComment.setComment_content(content);
 
         createComment.setReply_to_user_id(reply_id);
+
+        createComment.setId(-1L);
 
         createComment.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
 
