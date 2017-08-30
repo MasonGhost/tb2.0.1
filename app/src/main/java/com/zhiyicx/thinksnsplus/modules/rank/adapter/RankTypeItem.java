@@ -105,7 +105,7 @@ public class RankTypeItem implements ItemViewDelegate<UserInfoBean> {
         // 排名
         int rank = userInfoBean.getExtra().getRank() == 0 ? position + 1 : userInfoBean.getExtra().getRank();
         holder.setText(R.id.tv_rank, String.valueOf(rank));
-        holder.setTextColor(R.id.tv_rank, userInfoBean.getExtra().getRank() > 3 ?
+        holder.setTextColor(R.id.tv_rank, rank > 3 ?
                 ContextCompat.getColor(mContext, R.color.normal_for_assist_text) : ContextCompat.getColor(mContext, R.color.themeColor));
         // 用户信息
         ImageUtils.loadCircleUserHeadPic(userInfoBean, holder.getView(R.id.iv_user_portrait));
