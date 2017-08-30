@@ -22,6 +22,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -94,8 +96,8 @@ public class JavaTest {
     }
 
     @Test
-    public void testTime(){
-        String time="2017-06-15 02:15:25";
+    public void testTime() {
+        String time = "2017-06-15 02:15:25";
         System.out.println("result::" + TimeUtils.getTimeFriendlyForDetail(time));
         System.out.println("result1::" + TimeUtils.getTimeFriendlyNormal(time));
         System.out.println("result2::" + TimeUtils.utc2LocalStr(time));
@@ -118,8 +120,24 @@ public class JavaTest {
 
     @Test
     public void doubleTest() {
-            double d=5.0;
-            System.out.println("result::" + PayConfig.realCurrencyFen2Yuan(d));
+        double d = 5.0;
+        System.out.println("result::" + PayConfig.realCurrencyFen2Yuan(d));
+    }
+
+    @Test
+    public void bigDoubleTest() {
+        double d = 11111111111111111111d;
+        BigDecimal totalAmount = new BigDecimal(d);
+        new BigDecimal(new Double(totalAmount.doubleValue()).toString());
+        NumberFormat format = NumberFormat.getInstance();
+        // 是否以逗号隔开, 默认true以逗号隔开,如[123,456,789.128]
+        format.setGroupingUsed(false);
+
+        format.format(d).toString();
+
+        System.out.println("result1::" + totalAmount);
+        System.out.println("result2::" + totalAmount.toString());
+        System.out.println("result3::" + d);
     }
 
     @Test
