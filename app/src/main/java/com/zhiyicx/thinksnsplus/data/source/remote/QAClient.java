@@ -221,7 +221,7 @@ public interface QAClient {
      * @return
      */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERT_LIST)
-    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("offset") int size);
+    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("keyword") String keyword,@Query("offset") int size);
 
     /*******************************************  打赏  *********************************************/
 

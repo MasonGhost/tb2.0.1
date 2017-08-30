@@ -79,6 +79,11 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected boolean usePermisson() {
         return true;
     }

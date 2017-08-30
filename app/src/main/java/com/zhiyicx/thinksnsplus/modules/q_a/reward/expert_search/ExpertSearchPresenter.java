@@ -61,8 +61,8 @@ public class ExpertSearchPresenter extends AppBasePresenter<ExpertSearchContract
     }
 
     @Override
-    public void requestNetData(int size, String topic_ids, boolean isLoadMore) {
-        Subscription subscription = mRepository.getExpertList(size, topic_ids)
+    public void requestNetData(int size, String topic_ids,String keyword,boolean isLoadMore) {
+        Subscription subscription = mRepository.getExpertList(size, topic_ids,keyword)
                 .compose(mSchedulersTransformer)
                 .subscribe(new BaseSubscribeForV2<List<ExpertBean>>() {
                     @Override
