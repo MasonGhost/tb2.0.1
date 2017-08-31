@@ -44,14 +44,16 @@
         tools:text="我送第几个 "/>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:id="@+id/fl_detial"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/rec_image_for_list"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tv_content"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/spacing_mid"
-        android:background="@color/bgColor">
+        android:layout_marginBottom="@dimen/spacing_mid"
+        android:layout_marginRight="@dimen/spacing_mid_small_8dp"
+        android:layout_toRightOf="@id/iv_headpic"
+        android:background="@color/bgColor"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_small">
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_detail_image"
@@ -64,13 +66,14 @@
         <TextView
             android:id="@+id/tv_deatil"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/spacing_tiny"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:ellipsize="end"
             android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
+            android:maxLines="2"
             android:textSize="@dimen/size_note_assist"
-            tools:text="点点滴滴的撒范德萨范德萨范德萨多少撒 "/>
-
+            tools:text="点点滴滴点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多的撒范德萨范德萨范德萨多少撒\n点滴滴的撒点滴滴的撒范德萨范德萨范德萨多点滴滴的撒范德萨范德萨范德萨多范德萨范德萨范德萨多 "/>
 
     </LinearLayout>
 
@@ -93,9 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:maxLines="1"
-        android:paddingRight="@dimen/spacing_mid"
-        android:paddingBottom="@dimen/spacing_mid"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingRight="@dimen/spacing_mid_small_8dp"
         android:textColor="@color/dyanmic_top_flag"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>
