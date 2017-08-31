@@ -64,7 +64,7 @@ public class ChatRepository implements ChatContract.Repository {
      * @return
      */
     @Override
-    public Observable<BaseJson<Conversation>> createConveration(int type, String name, String pwd, String uids) {
+    public Observable<Conversation> createConveration(int type, String name, String pwd, String uids) {
         return mChatInfoClient.createConversaiton(type, name, pwd, uids)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))

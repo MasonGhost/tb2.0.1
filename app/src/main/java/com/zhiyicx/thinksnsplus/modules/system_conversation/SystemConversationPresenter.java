@@ -2,7 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.system_conversation;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConversationBean;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 
@@ -35,7 +35,7 @@ public class SystemConversationPresenter extends AppBasePresenter<SystemConversa
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
         Subscription systemconversationsSub = mRepository.getSystemConversations(maxId, TSListFragment.DEFAULT_PAGE_SIZE)
-                .subscribe(new BaseSubscribe<List<SystemConversationBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<SystemConversationBean>>() {
                     @Override
                     protected void onSuccess(List<SystemConversationBean> data) {
                         mRootView.onNetResponseSuccess(data, isLoadMore);

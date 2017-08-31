@@ -44,11 +44,8 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  */
 public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
 
-    private ImageLoader mImageLoader;
-
     public MssageReviewAdapter(Context context, int layoutId, List<TopDynamicCommentBean> datas) {
         super(context, layoutId, datas);
-        mImageLoader = AppApplication.AppComponentHolder.getAppComponent().imageLoader();
     }
 
     @Override

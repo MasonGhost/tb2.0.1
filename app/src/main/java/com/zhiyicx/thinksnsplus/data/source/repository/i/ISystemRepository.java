@@ -1,7 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
-import com.zhiyicx.common.base.BaseJson;
-import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -10,12 +8,7 @@ import com.zhiyicx.thinksnsplus.data.beans.TagCategoryBean;
 
 import java.util.List;
 
-import retrofit2.http.Field;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
 import rx.Observable;
-
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SGET_HOT_CITY;
 
 /**
  * @Describe 认证相关接口
@@ -56,7 +49,7 @@ public interface ISystemRepository {
      * @param limit
      * @return
      */
-    Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(long max_id, int limit);
+    Observable<List<SystemConversationBean>> getSystemConversations(long max_id, int limit);
 
     /**
      * 获取支付信息
