@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -23,7 +25,9 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
+import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
@@ -38,6 +42,7 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QAListInfoAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -49,6 +54,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import net.lucode.hackware.magicindicator.FragmentContainerHelper;
 import net.lucode.hackware.magicindicator.MagicIndicator;
+import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
@@ -68,6 +74,7 @@ import butterknife.BindView;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment.BUNDLE_TOPIC_TYPE;
 
 /**
  * @author Catherine
@@ -76,7 +83,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActiv
  * @contact email:648129313@qq.com
  */
 
-public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Presenter, QAListInfoBean>
+public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presenter>
         implements TopicDetailContract.View {
 
     private static final String TYPE_ALL = "all";
@@ -99,13 +106,17 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
     HorizontalStackIconView mExpertList;
     @BindView(R.id.mg_indicator)
     MagicIndicator mMgIndicator;
+    @BindView(R.id.view_diver)
+    View mViewDiver;
+    @BindView(R.id.vp_list)
+    ViewPager mVpList;
 
+    protected TSViewPagerAdapter mTsViewPagerAdapter;
     private CommonNavigator mCommonNavigator;
     private QATopicBean mQaTopicBean;
 
     private String mCurrentType = TYPE_NEW;
     private List<String> mTypeList;
-    private FragmentContainerHelper mFragmentContainerHelper = new FragmentContainerHelper();
 
     public TopicDetailFragment instance(Bundle bundle) {
         TopicDetailFragment fragment = new TopicDetailFragment();
@@ -115,45 +126,21 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
 
     @Override
     protected void initView(View rootView) {
-        super.initView(rootView);
         initMagicIndicator();
         initListener();
     }
 
     @Override
     protected void initData() {
-        super.initData();
         mTypeList = new ArrayList<>();
         mTypeList.add(TYPE_NEW);
         mTypeList.add(TYPE_EXCELLENT);
         mTypeList.add(TYPE_REWARD);
         mTypeList.add(TYPE_HOT);
         mTypeList.add(TYPE_ALL);
-        mFragmentContainerHelper.handlePageSelected(0, false);
         mQaTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
         mPresenter.getTopicDetail(String.valueOf(mQaTopicBean.getId()));
-    }
-
-    @Override
-    protected RecyclerView.Adapter getAdapter() {
-        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas);
-        adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                position = position - mHeaderAndFooterWrapper.getHeadersCount();
-                Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(BUNDLE_QUESTION_BEAN, mListDatas.get(position));
-                intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
-                startActivity(intent);
-            }
-
-            @Override
-            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
-                return false;
-            }
-        });
-        return adapter;
+        initViewPager();
     }
 
     @Override
@@ -174,35 +161,7 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         return R.mipmap.icon_share;
     }
 
-    private List<Link> setLinks(QAListInfoBean infoBean) {
-        List<Link> links = new ArrayList<>();
-        Link followCountLink = new Link(infoBean.getWatchers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(followCountLink);
-
-        Link answerCountLink = new Link(infoBean.getAnswers_count() + "").setTextColor(ContextCompat.getColor(getContext(), R.color
-                .themeColor))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(answerCountLink);
-
-        Link rewardMoneyLink = new Link("￥" + infoBean.getAmount()).setTextColor(ContextCompat.getColor(getContext(), R.color
-                .withdrawals_item_enable))
-                .setTextColorOfHighlightedLink(ContextCompat.getColor(getContext(), R.color
-                        .general_for_hint))
-                .setHighlightAlpha(.8f)
-                .setUnderlined(false);
-        links.add(rewardMoneyLink);
-        return links;
-    }
-
-    private void initMagicIndicator(){
+    private void initMagicIndicator() {
         String[] title = getResources().getStringArray(R.array.topic_detail_category);
         mMgIndicator.setBackgroundColor(Color.WHITE);
         mCommonNavigator = new CommonNavigator(getActivity());
@@ -230,9 +189,8 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 simplePagerTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, context.getResources
                         ().getInteger(R.integer.tab_text_size_15));
                 simplePagerTitleView.setOnClickListener(v -> {
-                    mFragmentContainerHelper.handlePageSelected(index, false);
                     mCurrentType = mTypeList.get(index);
-                    requestNetData(0L, false);
+                    mVpList.setCurrentItem(index);
                 });
                 return simplePagerTitleView;
             }
@@ -247,7 +205,25 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
             }
         });
         mMgIndicator.setNavigator(mCommonNavigator);
-        mFragmentContainerHelper.attachMagicIndicator(mMgIndicator);
+        ViewPagerHelper.bind(mMgIndicator, mVpList);
+    }
+
+    private void initViewPager(){
+        mVpList.setOffscreenPageLimit(4);
+        mTsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
+        mTsViewPagerAdapter.bindData(initFragments());
+        mVpList.setAdapter(mTsViewPagerAdapter);
+    }
+
+    private List<Fragment> initFragments() {
+        List<Fragment> list = new ArrayList<>();
+        for (String type : mTypeList){
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BUNDLE_TOPIC_BEAN, mQaTopicBean);
+            bundle.putString(BUNDLE_TOPIC_TYPE, type);
+            list.add(new TopicDetailListFragment().instance(bundle));
+        }
+        return list;
     }
 
     @Override
@@ -289,13 +265,14 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         showSnackSuccessMessage(getString(R.string.qa_question_delete_success));
     }
 
-    private void setTopicDetailData(){
+    private void setTopicDetailData() {
         setCenterText(mQaTopicBean.getName());
         mTvTopicName.setText(mQaTopicBean.getName());
         updateFollowState();
         mTvTopicDescription.setText(mQaTopicBean.getDescription());
         mExpertList.setExpertCount(mQaTopicBean.getExperts_count());
         mExpertList.setDigUserHeadIcon(mQaTopicBean.getExperts());
+        mViewDiver.setVisibility(mQaTopicBean.getExperts_count() == 0 ? View.GONE : View.VISIBLE);
         Glide.with(BaseApplication.getContext())
                 .load(TextUtils.isEmpty(mQaTopicBean.getAvatar()) ? "" : mQaTopicBean.getAvatar())
                 .placeholder(R.drawable.shape_default_image)
@@ -303,7 +280,7 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 .into(mIvTopicCover);
     }
 
-    private List<Link> dealTopicDetail(QATopicBean topicBean){
+    private List<Link> dealTopicDetail(QATopicBean topicBean) {
         List<Link> links = new ArrayList<>();
         Link numberCountLink = new Link(Pattern.compile("[0-9]+")).setTextColor(ContextCompat.getColor(getContext(), R.color
                 .themeColor))
@@ -332,7 +309,7 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
         return links;
     }
 
-    private void initListener(){
+    private void initListener() {
         RxView.clicks(mTvTopicChangeFollow)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
@@ -344,7 +321,7 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                   // 跳转专家列表
+                    // 跳转专家列表
                     Intent intent = new Intent(getActivity(), ExpertSearchActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(BUNDLE_TOPIC_BEAN, mQaTopicBean);
@@ -353,4 +330,8 @@ public class TopicDetailFragment extends TSListFragment<TopicDetailContract.Pres
                 });
     }
 
+    @Override
+    protected boolean showToolBarDivider() {
+        return true;
+    }
 }
