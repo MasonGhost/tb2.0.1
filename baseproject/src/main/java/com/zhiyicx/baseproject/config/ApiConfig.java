@@ -244,6 +244,15 @@ public class ApiConfig {
     // 获取用户投稿列表
     public static final String APP_PATH_GET_MY_INFO = "/api/" + API_VERSION_2 + "/user/news/contributes";
 
+    // 查看资讯中申请置顶的评论列表
+    public static final String APP_PATH_GET_REVIEW_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/comments/pinneds";
+
+    // 同意资讯评论置顶
+    public static final String APP_PATH_APPROVED_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds/{pinned_id}";
+
+    // 拒绝资讯评论置顶
+    public static final String APP_PATH_REFUSE_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/pinneds/{pinned_id}/reject";
+
 
     /**
      * 音乐相关 升级到V2
