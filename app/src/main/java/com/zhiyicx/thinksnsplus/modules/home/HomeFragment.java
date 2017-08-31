@@ -36,6 +36,7 @@ import com.zhiyicx.thinksnsplus.modules.dynamic.send.dynamic_type.SelectDynamicT
 import com.zhiyicx.thinksnsplus.modules.home.find.FindFragment;
 import com.zhiyicx.thinksnsplus.modules.home.main.MainFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
+import com.zhiyicx.thinksnsplus.modules.home.message.container.MessageContainerFragment;
 import com.zhiyicx.thinksnsplus.modules.home.mine.MineFragment;
 import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 import com.zhiyicx.thinksnsplus.widget.popwindow.CheckInPopWindow;
@@ -322,7 +323,7 @@ public class HomeFragment extends TSFragment<HomeContract.Presenter> implements 
         mFragmentList.add(MainFragment.newInstance(this));
         mFragmentList.add(FindFragment.newInstance());
         if (TouristConfig.MESSAGE_CAN_LOOK || mPresenter.isLogin()) {
-            mFragmentList.add(MessageFragment.newInstance());
+            mFragmentList.add(new MessageContainerFragment().instance());
         }
         if (TouristConfig.MINE_CAN_LOOK || mPresenter.isLogin()) {
             mFragmentList.add(MineFragment.newInstance());

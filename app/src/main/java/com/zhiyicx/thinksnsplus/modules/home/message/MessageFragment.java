@@ -1,11 +1,14 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -87,7 +90,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mToolbarRight.setVisibility(View.GONE);
+//        mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
         rootView.setBackgroundResource(R.color.bgColor);
     }
@@ -108,17 +111,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    protected void initData() {
-        DaggerMessageComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .messagePresenterModule(new MessagePresenterModule(this))
-                .build()
-                .inject(this);
-        super.initData();// 需要在 dagger 注入后
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         // 刷新信息内容
@@ -128,6 +120,12 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        DaggerMessageComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .messagePresenterModule(new MessagePresenterModule(this))
+                .build()
+                .inject(this);
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             mPresenter.checkUnreadNotification();
@@ -390,5 +388,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 }

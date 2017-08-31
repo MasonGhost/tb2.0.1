@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.Gson;
+
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.common.utils.ConvertUtils;
 
 import org.greenrobot.greendao.DaoException;
@@ -32,7 +34,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REP
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class TSPNotificationBean implements Parcelable {
+public class TSPNotificationBean extends BaseListBean {
 
 
     /**
@@ -149,7 +151,31 @@ public class TSPNotificationBean implements Parcelable {
          * content : 我是测试消息
          * extra : null
          */
-
+        /**
+         * 辛辛苦苦复制半天 总不能不要了吧 先写在这儿
+         * 参考 ：https://github.com/zhiyicx/thinksns-plus-document/blob/master/Summary/notifications.md#%E7%94%B3%E8%AF%B7%E8%B5%84%E8%AE%AF%E7%BD%AE%E9%A1%B6
+         * 分类：
+         * 1、user:reward 打赏
+         * 2、paid:xxxxx 付费截点
+         * 3、feed:comment 评论
+         * 4、feed:comment-reply 被回复
+         * 5、feed:pinned-comment 他人在自己发布的内容中申请评论置顶
+         * 6、feed:digg 点赞通知
+         * 7、music:comment-reply 有回复者时，被回复者通知
+         * 8、music:special-comment-reply 专辑 有回复者时，被回复者通知
+         * 9、news:comment 资讯评论
+         * 10、news:comment-reply 资讯被回复
+         * 11、news:pinned-comment 他人在资讯评论申请置顶，通过，驳回
+         * 12、news:pinned-news 申请资讯置顶
+         * 13、news:reward 咨询的打赏 被打赏
+         * 14、question:answer 被邀请者回答时，问题发起者消息 其他回答时，问题发起者消息
+         * 15、question:comment 问题被评论
+         * 16、question:comment-reply 问题的评论被回复
+         * 17、answer:comment 答案被评论
+         * 18、answer:comment-reply 答案被回复
+         * 19、question:answer-adoption 答案被采纳
+         * 20、question 邀请回答
+         * */
         private String channel;
         private int target;
         private String content;
