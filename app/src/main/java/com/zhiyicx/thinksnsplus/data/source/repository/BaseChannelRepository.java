@@ -118,13 +118,13 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                                         if (groupInfoBeen.get(i).getManagers() != null) {
                                             for (int j = 0; j < groupInfoBeen.get(i).getManagers().size(); j++) {
                                                 UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getManagers().get(j).getUser_id());
-                                                if (userInfoBean!=null)
-                                                groupInfoBeen.get(i).getManagers().get(j).setUserInfoBean(userInfoBean);
+                                                if (userInfoBean != null)
+                                                    groupInfoBeen.get(i).getManagers().get(j).setUserInfoBean(userInfoBean);
                                             }
                                             for (int m = 0; m < groupInfoBeen.get(i).getMembers().size(); m++) {
                                                 UserInfoBean userInfoBean = userInfoBeanSparseArray.get((int) groupInfoBeen.get(i).getMembers().get(m).getUser_id());
-                                                if (userInfoBean!=null)
-                                                groupInfoBeen.get(i).getMembers().get(m).setUserInfoBean(userInfoBean);
+                                                if (userInfoBean != null)
+                                                    groupInfoBeen.get(i).getMembers().get(m).setUserInfoBean(userInfoBean);
                                             }
                                         }
                                     }
@@ -159,7 +159,10 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
         HashMap<String, Object> params = new HashMap<>();
         params.put("body", commentContent);
         params.put("group_post_comment_mark", comment_mark);
-        params.put("reply_user", reply_to_user_id);
+        if (reply_to_user_id != 0) {
+            params.put("reply_user", reply_to_user_id);
+        }
+
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean(BackgroundTaskRequestMethodConfig.SEND_GROUP_DYNAMIC_COMMENT, params);
         backgroundRequestTaskBean.setPath(String.format(ApiConfig.APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT, group_id, feed_id));
@@ -255,19 +258,19 @@ public class BaseChannelRepository extends BaseDynamicRepository implements IBas
                             // 通过用户id列表请求用户信息和用户关注状态
                             return mUserInfoRepository.getUserInfo(user_ids)
                                     .map(listBaseJson -> {
-                                            SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
-                                            for (UserInfoBean userInfoBean : listBaseJson) {
-                                                userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        SparseArray<UserInfoBean> userInfoBeanSparseArray = new SparseArray<>();
+                                        for (UserInfoBean userInfoBean : listBaseJson) {
+                                            userInfoBeanSparseArray.put(userInfoBean.getUser_id().intValue(), userInfoBean);
+                                        }
+                                        for (DynamicDigListBean dynamicDigListBean : groupDynamicLikeListBeen) {
+                                            if (dynamicDigListBean.getUser_id() != null && dynamicDigListBean.getUser_id() != 0) {
+                                                dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id().intValue()));
                                             }
-                                            for (DynamicDigListBean dynamicDigListBean : groupDynamicLikeListBeen) {
-                                                if (dynamicDigListBean.getUser_id() != null && dynamicDigListBean.getUser_id() != 0) {
-                                                    dynamicDigListBean.setDiggUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getUser_id().intValue()));
-                                                }
-                                                if (dynamicDigListBean.getTarget_user() != null && dynamicDigListBean.getTarget_user() != 0) {
-                                                    dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
-                                                }
+                                            if (dynamicDigListBean.getTarget_user() != null && dynamicDigListBean.getTarget_user() != 0) {
+                                                dynamicDigListBean.setTargetUserInfo(userInfoBeanSparseArray.get(dynamicDigListBean.getTarget_user().intValue()));
                                             }
-                                            mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
+                                        }
+                                        mUserInfoBeanGreenDao.insertOrReplace(listBaseJson);
                                         return groupDynamicLikeListBeen;
                                     });
                         } else {

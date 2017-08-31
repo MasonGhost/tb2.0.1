@@ -66,6 +66,9 @@ import com.zzhoujay.richtext.RichText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
@@ -75,6 +78,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
+import static com.zhiyicx.baseproject.config.MarkdownConfig.IMAGE_FORMAT;
 import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
 
 /**
@@ -240,20 +244,33 @@ public class InfoDetailHeaderView {
 
     private String dealPic(String markDownContent) {
         // 替换图片id 为地址
-        String tag = "@![image](";
-        while (markDownContent.contains(tag)) {
-            int start = markDownContent.indexOf(tag) + tag.length();
-            int end = markDownContent.indexOf(")", start);
-            String id = "0";
-            try {
-                id = markDownContent.substring(start, end);
-            } catch (Exception e) {
-                LogUtils.d("Cathy", e.toString());
-            }
+        Pattern pattern = Pattern.compile(IMAGE_FORMAT);
+        Matcher matcher = pattern.matcher(markDownContent);
+        while (matcher.find()) {
+            String imageMarkDown = matcher.group(0);
+            String id = matcher.group(1);
+
             String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
-            markDownContent = markDownContent.replace(tag + id + ")", "![image](" + imgPath + ")");
+            String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
+            markDownContent = markDownContent.replace(imageMarkDown, iamgeTag);
             dealImageList(imgPath, id);
         }
+
+//这么丑的写法被我无情废弃了，关键还是错误的过滤... by tym
+//        String tag = "@![image](";
+//        while (markDownContent.contains(tag)) {
+//            int start = markDownContent.indexOf(tag) + tag.length();
+//            int end = markDownContent.indexOf(")", start);
+//            String id = "0";
+//            try {
+//                id = markDownContent.substring(start, end);
+//            } catch (Exception e) {
+//                LogUtils.d("Cathy", e.toString());
+//            }
+//            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+//            markDownContent = markDownContent.replace(tag + id + ")", "![image](" + imgPath + ")");
+//            dealImageList(imgPath, id);
+//        }
         return markDownContent;
     }
 
@@ -382,7 +399,7 @@ public class InfoDetailHeaderView {
                     // 投稿来源，浏览数，时间
                     String from = infoListDataBean.getFrom().equals(title.getContext().getString(R.string.info_publish_original)) ?
                             infoListDataBean.getAuthor() : infoListDataBean.getFrom();
-                    String infoData = String.format(title.getContext().getString(R.string.info_list_count)
+                    String infoData = String.format(Locale.getDefault(), title.getContext().getString(R.string.info_list_count)
                             , from, infoListDataBean.getHits(), TimeUtils.getTimeFriendlyNormal(infoListDataBean
                                     .getUpdated_at()));
                     holder.setText(R.id.item_info_timeform, infoData);

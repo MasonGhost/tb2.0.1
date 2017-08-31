@@ -225,7 +225,9 @@ public class InfoDetailsRepository extends BaseRewardRepository implements InfoD
         BackgroundRequestTaskBean backgroundRequestTaskBean;
         HashMap<String, Object> params = new HashMap<>();
         params.put("body", comment_content);
-        params.put("reply_user", reply_to_user_id);
+        if (reply_to_user_id>0){
+            params.put("reply_user", reply_to_user_id);
+        }
         params.put("comment_mark", comment_mark);
         // 后台处理
         backgroundRequestTaskBean = new BackgroundRequestTaskBean
