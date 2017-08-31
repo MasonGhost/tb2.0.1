@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.login.LoginFragment;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.simple.eventbus.EventBus;
@@ -180,6 +181,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void onDisconnect(int code, String reason) {
         EventBus.getDefault().post(code, EventBusTagConfig.EVENT_IM_ONDISCONNECT);
+
     }
 
     @Override

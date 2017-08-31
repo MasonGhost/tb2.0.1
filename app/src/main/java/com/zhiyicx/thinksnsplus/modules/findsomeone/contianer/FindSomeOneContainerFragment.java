@@ -74,16 +74,6 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
     protected boolean usePermisson() {
         return true;
     }

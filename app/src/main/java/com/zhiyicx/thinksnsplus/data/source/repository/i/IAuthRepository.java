@@ -1,9 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
-import android.app.Activity;
-
 import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
@@ -39,7 +36,7 @@ public interface IAuthRepository {
      *
      * @return
      */
-    Observable<BaseJson<IMBean>> getImInfo();
+    Observable<IMBean> getImInfo();
 
     /**
      * 刷新 Token

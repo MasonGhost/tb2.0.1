@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -40,12 +41,20 @@ public abstract class BaseSubscribeForV2<T> extends Subscriber<T> {
                     String bodyString = ConvertUtils.getResponseBodyString(response);
                     // 打印返回的json结果
                     LogUtils.d(TAG, "------onError-body--------" + bodyString);
-                    // api v2版本的数据， 错误信息带有 n +1 表示  详情查看 ：https://github.com/zhiyicx/thinksns-plus/blob/master/docs/ai/v2/overvie.md
-                    Map<String, String[]> errorMessageMap = new Gson().fromJson(bodyString,
-                            new TypeToken<Map<String, String[]>>() {
+                    // api v2版本的数据， 错误信息带有 n +1 表示  详情查看 ：https://github.com/slimkit/thinksns-plus/blob/master/docs/zh-CN/api-overview.md#messages
+                    Map<String, Object> errorMessageMap = new Gson().fromJson(bodyString,
+                            new TypeToken<Map<String, Object>>() {
                             }.getType());
-                    for (String[] value : errorMessageMap.values()) {
-                        onFailure(value[0], ((HttpException) e).code()); //  app 端只需要一个
+                    for (Object value : errorMessageMap.values()) {
+                        if (value instanceof String) {
+                            onFailure((String) value, ((HttpException) e).code());
+                        } else if (value instanceof String[]) {
+                            onFailure(((String[]) value)[0], ((HttpException) e).code());
+                        } else if (value instanceof List) {
+                            onFailure((String) ((List) value).get(0), ((HttpException) e).code());
+                        } else {
+                            onFailure(bodyString, ((HttpException) e).code());
+                        }
                         return;
                     }
                 } else {

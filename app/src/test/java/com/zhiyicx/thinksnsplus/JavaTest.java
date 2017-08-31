@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -34,6 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
@@ -497,4 +499,96 @@ public class JavaTest {
     private static boolean isEmojiCharacter(char codePoint) {
         return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF || codePoint >= 0xE000 && codePoint <= 0xFFFD);
     }
+
+
+    /**
+     * 测试 String 的 container
+     */
+    @Test
+    public void testStringContainer() {
+        String user_ids = "14,12,9,88,33";
+        String user_ids2 = "12,9,88,33";
+        String user_ids3 = "12";
+        String user_ids4 = "14,12,9,88,12";
+        String user_ids5 = "14,12,9,12,33";
+        String user_ids6 = "12,12,9,12,33";
+        String currentUserId = "12";
+
+
+        checkUser(user_ids, currentUserId);
+        checkUser(user_ids2, currentUserId);
+        checkUser(user_ids3, currentUserId);
+        checkUser(user_ids4, currentUserId);
+        checkUser(user_ids5, currentUserId);
+        checkUser(user_ids6, currentUserId);
+
+
+    }
+
+    private void checkUser(String user_ids, String currentUserId) {
+        String[] users = user_ids.split(ConstantConfig.SPLIT_SMBOL);
+        boolean hasCurrentUser = false;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String user : users) {
+            if (currentUserId.equals(user)) {
+                hasCurrentUser = true;
+            } else {
+                stringBuilder.append(user);
+                stringBuilder.append(ConstantConfig.SPLIT_SMBOL);
+            }
+        }
+        if (stringBuilder.length() > 1) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        user_ids = stringBuilder.toString();
+
+        System.out.println(user_ids);
+
+        Assert.assertTrue(hasCurrentUser);
+    }
+
+    /**
+     * 测试网络错误数据
+     */
+    @Test
+    public void testNetErrorResponseMessage() {
+        String response1 = "{ \"message\": \"this is a message.\" }";
+        String response2 = "{ \"message\": [ \"This is amessage array item.\" ] }";
+        String response3 = "{\n" +
+                "    \"key\": [ \"value\" ],\n" +
+                "    \"key2\": [ \"value\", \"value2\" ]\n" +
+                "}";
+        String response4 = "{\n" +
+                "    \"message\": \"This is a message\",\n" +
+                "    \"errors\": {\n" +
+                "        \"key1\": [ \"value1\" ],\n" +
+                "        \"key2\": [ \"value1\", \"value2\" ]\n" +
+                "    }\n" +
+                "}";
+
+        praseMessage(response1);
+        praseMessage(response2);
+        praseMessage(response3);
+        praseMessage(response4);
+
+
+    }
+
+    private void praseMessage(String response1) {
+        Map<String, Object> errorMessageMap = new Gson().fromJson(response1,
+                new TypeToken<Map<String, Object>>() {
+                }.getType());
+        for (Object value : errorMessageMap.values()) {
+            if (value instanceof String) {
+                System.out.println(response1 + " = " + (String) value);
+            } else if (value instanceof String[]) {
+                System.out.println(response1 + " = " + ((String[]) value)[0]);
+            }else if(value instanceof List){
+                System.out.println(response1 + " = " + ((List) value).get(0));
+
+            }
+            return;
+        }
+    }
+
 }

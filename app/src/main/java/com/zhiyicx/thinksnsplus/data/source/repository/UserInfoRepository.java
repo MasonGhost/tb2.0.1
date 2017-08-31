@@ -1,13 +1,14 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import android.app.Application;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.config.BackgroundTaskRequestMethodConfig;
@@ -17,10 +18,7 @@ import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.CheckInBean;
 import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
-import com.zhiyicx.thinksnsplus.data.beans.DigRankBean;
 import com.zhiyicx.thinksnsplus.data.beans.DigedBean;
-import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
-import com.zhiyicx.thinksnsplus.data.beans.FollowFansBean;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.ThridInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
@@ -44,7 +42,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -55,7 +52,6 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -188,6 +184,46 @@ public class UserInfoRepository implements UserInfoContract.Repository {
      */
     @Override
     public Observable<List<UserInfoBean>> getUserInfoByIds(String user_ids) {
+        String currentUserId = String.valueOf(AppApplication.getMyUserIdWithdefault());
+        UserInfoBean currentUserinfoBean = mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getMyUserIdWithdefault());
+        if (currentUserinfoBean != null) {
+            String[] users = user_ids.split(ConstantConfig.SPLIT_SMBOL);
+            boolean hasCurrentUser = false;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String user : users) {
+                if (currentUserId.equals(user)) {
+                    hasCurrentUser = true;
+                } else {
+                    stringBuilder.append(user);
+                    stringBuilder.append(ConstantConfig.SPLIT_SMBOL);
+                }
+            }
+            if (stringBuilder.length() > 1) {
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            }
+            user_ids = stringBuilder.toString();
+
+            if (hasCurrentUser) {
+                if (TextUtils.isEmpty(user_ids)) {
+                    ArrayList<UserInfoBean> datas = new ArrayList<>();
+                    datas.add(currentUserinfoBean);
+                    return Observable.just(datas);
+
+                }
+                return getBatchSpecifiedUserInfo(user_ids)
+                        .map(userInfoBeen -> {
+                            userInfoBeen.add(currentUserinfoBean);
+                            return userInfoBeen;
+                        });
+            } else {
+                return getBatchSpecifiedUserInfo(user_ids);
+            }
+        } else {
+            return getBatchSpecifiedUserInfo(user_ids);
+        }
+    }
+
+    private Observable<List<UserInfoBean>> getBatchSpecifiedUserInfo(String user_ids) {
         return mUserInfoClient.getBatchSpecifiedUserInfo(user_ids, null, null, null, DEFAULT_MAX_USER_GET_NUM_ONCE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

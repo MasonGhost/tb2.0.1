@@ -594,7 +594,7 @@ public class BackgroundTaskHandler {
      */
     private void getIMInfo(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         mAuthRepository.getImInfo()
-                .subscribe(new BaseSubscribe<IMBean>() {
+                .subscribe(new BaseSubscribeForV2<IMBean>() {
                     @Override
                     protected void onSuccess(IMBean data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);

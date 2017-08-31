@@ -1,6 +1,5 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.imsdk.entity.Conversation;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public interface ChatInfoClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_CREATE_CONVERSAITON)
-    Observable<BaseJson<Conversation>> createConversaiton(@Field("type") int type, @Field("name") String name, @Field("pwd") String pwd, @Field("uids") String uids);
+    Observable<Conversation> createConversaiton(@Field("type") int type, @Field("name") String name, @Field("pwd") String pwd, @Field("uids") String uids);
 
     /**
      * 获取登陆用户的对话列表
@@ -44,7 +43,7 @@ public interface ChatInfoClient {
      * @return
      */
     @GET(APP_PATH_GET_CONVERSAITON_LIST)
-    Observable<BaseJson<List<Conversation>>> getConversaitonList();
+    Observable<List<Conversation>> getConversaitonList();
 
     /**
      * 获取单个对话信息
@@ -53,7 +52,7 @@ public interface ChatInfoClient {
      * @return
      */
     @GET(APP_PATH_GET_SINGLE_CONVERSAITON)
-    Observable<BaseJson<Conversation>> getSingleConversaiton(@Path("cid") int cid);
+    Observable<Conversation> getSingleConversaiton(@Path("cid") int cid);
 
 
 }

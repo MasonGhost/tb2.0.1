@@ -110,7 +110,7 @@ public class AuthRepository implements IAuthRepository {
     }
 
     @Override
-    public Observable<BaseJson<IMBean>> getImInfo() {
+    public Observable<IMBean> getImInfo() {
         return mUserInfoClient.getIMInfo()
                 .retryWhen(new RetryWithDelay(MAX_RETRY_COUNTS, RETRY_DELAY_TIME))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
