@@ -35,6 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
@@ -522,7 +523,7 @@ public class JavaTest {
                 stringBuilder.append(ConstantConfig.SPLIT_SMBOL);
             }
         }
-        if(stringBuilder.length()>1) {
+        if (stringBuilder.length() > 1) {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         }
         user_ids = stringBuilder.toString();
@@ -531,4 +532,49 @@ public class JavaTest {
 
         Assert.assertTrue(hasCurrentUser);
     }
+
+    /**
+     * 测试网络错误数据
+     */
+    @Test
+    public void testNetErrorResponseMessage() {
+        String response1 = "{ \"message\": \"this is a message.\" }";
+        String response2 = "{ \"message\": [ \"This is amessage array item.\" ] }";
+        String response3 = "{\n" +
+                "    \"key\": [ \"value\" ],\n" +
+                "    \"key2\": [ \"value\", \"value2\" ]\n" +
+                "}";
+        String response4 = "{\n" +
+                "    \"message\": \"This is a message\",\n" +
+                "    \"errors\": {\n" +
+                "        \"key1\": [ \"value1\" ],\n" +
+                "        \"key2\": [ \"value1\", \"value2\" ]\n" +
+                "    }\n" +
+                "}";
+
+        praseMessage(response1);
+        praseMessage(response2);
+        praseMessage(response3);
+        praseMessage(response4);
+
+
+    }
+
+    private void praseMessage(String response1) {
+        Map<String, Object> errorMessageMap = new Gson().fromJson(response1,
+                new TypeToken<Map<String, Object>>() {
+                }.getType());
+        for (Object value : errorMessageMap.values()) {
+            if (value instanceof String) {
+                System.out.println(response1 + " = " + (String) value);
+            } else if (value instanceof String[]) {
+                System.out.println(response1 + " = " + ((String[]) value)[0]);
+            }else if(value instanceof List){
+                System.out.println(response1 + " = " + ((List) value).get(0));
+
+            }
+            return;
+        }
+    }
+
 }
