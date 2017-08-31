@@ -14,7 +14,6 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailContract;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailPresenter;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -68,8 +67,9 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
             RxView.clicks(holder.getView(R.id.iv_portrait))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        if (answerInfoBean.getAnonymity() == 1)
-                        PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
+                        if (answerInfoBean.getAnonymity() != 1) {
+                            PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
+                        }
                     });
         } else if (answerInfoBean.getAnonymity() == 1) {
             // 为空 应该就是匿名了

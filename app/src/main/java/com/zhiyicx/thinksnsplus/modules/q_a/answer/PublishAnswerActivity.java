@@ -9,8 +9,14 @@ import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivit
  * @Description
  */
 public class PublishAnswerActivity extends PublishContentActivity {
+
     @Override
     protected PublishAnswerFragment getFragment() {
         return PublishAnswerFragment.newInstance(getIntent().getExtras());
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
