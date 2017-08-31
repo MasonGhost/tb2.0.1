@@ -124,7 +124,7 @@ public interface CommonClient {
      * @return
      */
     @GET(APP_PATH_GET_SYSTEM_CONVERSATIONS)
-    Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(@Query("max_id") long max_id, @Query("limit") int limit);
+    Observable<List<SystemConversationBean>> getSystemConversations(@Query("max_id") long max_id, @Query("limit") int limit);
 
 
     /**

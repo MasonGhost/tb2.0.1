@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.modules.home.message;
 import android.text.TextUtils;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.ActivityHandler;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
@@ -21,7 +20,6 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.config.JpushMessageTypeConfig;
@@ -135,7 +133,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
      * 创建 ts 助手对话
      */
     public void creatTsHelperConversation() {
-        List<Observable<BaseJson<Conversation>>> datas = new ArrayList<>();
+        List<Observable<Conversation>> datas = new ArrayList<>();
         final List<SystemConfigBean.ImHelperBean> tsHlepers = mSystemRepository.getBootstrappersInfoFromLocal().getIm_helper();
         // 新版 ts 助手
         for (final SystemConfigBean.ImHelperBean imHelperBean : tsHlepers) {
@@ -150,7 +148,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         } else {
             Observable.zip(datas, (FuncN<Object>) args -> {
                 for (int i = 0; i < args.length; i++) {  // 为 ts 助手添加提示语
-                    Conversation data = ((BaseJson<Conversation>) args[i]).getData();
+                    Conversation data = ((Conversation) args[i]);
                     // 写入 ts helper 默认提示语句
                     long currentTime = System.currentTimeMillis();
                     Message message = new Message();
@@ -183,7 +181,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     private void getCoversationList() {
         mRepository.getConversationList((int) AppApplication.getmCurrentLoginAuth().getUser_id())
                 .doAfterTerminate(() -> mRootView.hideLoading())
-                .subscribe(new BaseSubscribe<List<MessageItemBean>>() {
+                .subscribe(new BaseSubscribeForV2<List<MessageItemBean>>() {
                     @Override
                     protected void onSuccess(final List<MessageItemBean> data) {
                         mRootView.onNetResponseSuccess(data, false);
@@ -317,7 +315,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     @Override
     public void getSingleConversation(int cid) {
         mRepository.getSingleConversation(cid)
-                .subscribe(new BaseSubscribe<MessageItemBean>() {
+                .subscribe(new BaseSubscribeForV2<MessageItemBean>() {
                     @Override
                     protected void onSuccess(MessageItemBean data) {
                         if (mRootView.getListDatas().size() == 0) {

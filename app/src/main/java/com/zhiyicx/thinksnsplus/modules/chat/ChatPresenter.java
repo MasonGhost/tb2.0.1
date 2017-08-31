@@ -16,6 +16,7 @@ import com.zhiyicx.imsdk.manage.ZBIMClient;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
+import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ChatItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
@@ -128,7 +129,7 @@ public class ChatPresenter extends BasePresenter<ChatContract.Repository, ChatCo
         final String uids = AppApplication.getmCurrentLoginAuth().getUser_id() + "," + userInfoBean.getUser_id();
         final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + userInfoBean.getUser_id();// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
         mRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
-                .subscribe(new BaseSubscribe<Conversation>() {
+                .subscribe(new BaseSubscribeForV2<Conversation>() {
                     @Override
                     protected void onSuccess(Conversation data) {
                         data.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
