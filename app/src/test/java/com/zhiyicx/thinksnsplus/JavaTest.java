@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -482,5 +483,52 @@ public class JavaTest {
 
     private static boolean isEmojiCharacter(char codePoint) {
         return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF || codePoint >= 0xE000 && codePoint <= 0xFFFD);
+    }
+
+
+    /**
+     * 测试 String 的 container
+     */
+    @Test
+    public void testStringContainer() {
+        String user_ids = "14,12,9,88,33";
+        String user_ids2 = "12,9,88,33";
+        String user_ids3 = "12";
+        String user_ids4 = "14,12,9,88,12";
+        String user_ids5 = "14,12,9,12,33";
+        String user_ids6 = "12,12,9,12,33";
+        String currentUserId = "12";
+
+
+        checkUser(user_ids, currentUserId);
+        checkUser(user_ids2, currentUserId);
+        checkUser(user_ids3, currentUserId);
+        checkUser(user_ids4, currentUserId);
+        checkUser(user_ids5, currentUserId);
+        checkUser(user_ids6, currentUserId);
+
+
+    }
+
+    private void checkUser(String user_ids, String currentUserId) {
+        String[] users = user_ids.split(ConstantConfig.SPLIT_SMBOL);
+        boolean hasCurrentUser = false;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String user : users) {
+            if (currentUserId.equals(user)) {
+                hasCurrentUser = true;
+            } else {
+                stringBuilder.append(user);
+                stringBuilder.append(ConstantConfig.SPLIT_SMBOL);
+            }
+        }
+        if(stringBuilder.length()>1) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        user_ids = stringBuilder.toString();
+
+        System.out.println(user_ids);
+
+        Assert.assertTrue(hasCurrentUser);
     }
 }

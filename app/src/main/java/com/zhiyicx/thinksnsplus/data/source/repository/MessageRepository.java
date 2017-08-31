@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.zhiyicx.common.base.BaseJson;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.imsdk.db.dao.ConversationDao;
 import com.zhiyicx.imsdk.db.dao.MessageDao;
 import com.zhiyicx.imsdk.entity.Conversation;
@@ -242,7 +243,7 @@ public class MessageRepository implements MessageContract.Repository {
                         String userIds = "";
                         for (TSPNotificationBean tspNotificationBean : datas) {
                             user_ids.add(tspNotificationBean.getUser_id());
-                            userIds += tspNotificationBean.getUser_id() + ",";
+                            userIds += tspNotificationBean.getUser_id() + ConstantConfig.SPLIT_SMBOL;
                         }
                         if (userIds.length() > 1) {
                             userIds = userIds.substring(0, userIds.length() - 1);
