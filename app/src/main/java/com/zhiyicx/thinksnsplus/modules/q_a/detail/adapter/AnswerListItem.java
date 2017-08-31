@@ -53,8 +53,10 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     public void convert(ViewHolder holder, AnswerInfoBean answerInfoBean, AnswerInfoBean lastT, int position, int itemCounts) {
         // 发布者信息
         if (answerInfoBean.getUser() != null) {
-            ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait));
-            holder.setText(R.id.tv_name, answerInfoBean.getUser().getName());
+            ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), answerInfoBean.getAnonymity() == 1);
+            TextView nameView = holder.getTextView(R.id.tv_name);
+            nameView.setText(answerInfoBean.getAnonymity() == 1 ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user)
+                    : answerInfoBean.getUser().getName());
             // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
             boolean isInvited = answerInfoBean.getInvited() == 1;
             holder.setVisible(R.id.tv_watcher_count, isInvited ? View.VISIBLE : View.GONE);
@@ -66,6 +68,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
             RxView.clicks(holder.getView(R.id.iv_portrait))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
+                        if (answerInfoBean.getAnonymity() == 1)
                         PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
                     });
         } else if (answerInfoBean.getAnonymity() == 1) {
@@ -110,7 +113,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         RxView.clicks(tvToWatch)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mListener != null){
+                    if (mListener != null) {
                         mListener.onToWatchClick(answerInfoBean, position);
                     }
                 });
@@ -127,11 +130,11 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         tvLikeCount.setText(String.valueOf(answerInfoBean.getLikes_count()));
     }
 
-    public void setOnGoToWatchClickListener(OnGoToWatchClickListener listener){
+    public void setOnGoToWatchClickListener(OnGoToWatchClickListener listener) {
         this.mListener = listener;
     }
 
-    public interface OnGoToWatchClickListener{
+    public interface OnGoToWatchClickListener {
         void onToWatchClick(AnswerInfoBean answerInfoBean, int position);
     }
 }
