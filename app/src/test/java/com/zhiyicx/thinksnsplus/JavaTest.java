@@ -41,6 +41,8 @@ import rx.Subscriber;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.DEFAULT_LOADING_SHOW_TIME;
 
 /**
@@ -169,6 +171,16 @@ public class JavaTest {
         Matcher matcher1 = pattern.matcher(targetStr);
         int lastIndex = 0;
         while (matcher1.find()) {
+
+            String imageMarkDown = matcher1.group(0);
+            String id = matcher1.group(1);
+
+            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+            String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
+            targetStr = targetStr.replace(imageMarkDown, iamgeTag);
+
+            System.out.println("targetStr result:: " + targetStr);
+
             System.out.println("result:: " + matcher1.group(1));
             if (matcher1.start() > lastIndex) {
                 System.out.println("result 1 :: " + targetStr.substring(lastIndex, matcher1.start()));
@@ -176,9 +188,11 @@ public class JavaTest {
             String result2 = targetStr.substring(matcher1.start(), matcher1.end());
             Matcher matcher2 = Pattern.compile(reg).matcher(result2);
             System.out.println("result 2 :: " + result2);
+
             if (matcher2.find()) {
                 System.out.println("matcher 2 :: " + matcher2.group(0));
                 System.out.println("matcher 2 :: " + matcher2.group(1));
+                System.out.println("matcher 2 :: " + matcher2.group(0).replaceAll("\\d+","tym").replaceAll("@",""));
             }
             lastIndex = matcher1.end();
         }
