@@ -46,7 +46,7 @@
                             android:layout_toRightOf="@+id/iv_topic_cover"
                             android:textSize="@dimen/size_sub_title"
                             android:textColor="@color/important_for_content"
-                            tools:text="xxxxx"/>
+                            tools:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
 
                     <TextView
                             android:id="@+id/tv_topic_feed_count"
@@ -72,12 +72,13 @@
                             android:drawablePadding="@dimen/spacing_small_3dp"
                             android:paddingLeft="@dimen/spacing_normal"
                             android:text="@string/follow"
+                            android:layout_below="@+id/tv_topic_name"
                             android:textColor="@color/selector_channel_list_subscrib_button_divider"
                             android:textSize="@dimen/size_content_comment"/>
 
                     <View
                             style="@style/style_divider_horizontal"
-                            android:layout_below="@+id/iv_topic_cover"
+                            android:layout_below="@+id/tv_topic_change_follow"
                             android:layout_marginTop="@dimen/spacing_normal"/>
                 </RelativeLayout>
 
@@ -93,6 +94,7 @@
                         tools:text=""/>
 
                 <View
+                        android:id="@+id/view_diver"
                         style="@style/style_divider_horizontal"/>
 
                 <com.zhiyicx.thinksnsplus.widget.HorizontalStackIconView
@@ -124,8 +126,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
-            layout="@layout/fragment_tslist"
+    <android.support.v4.view.ViewPager
+            android:id="@+id/vp_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
