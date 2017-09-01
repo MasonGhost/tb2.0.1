@@ -20,7 +20,9 @@ import com.zhiyicx.baseproject.impl.photoselector.PhotoSelectorImpl;
 import com.zhiyicx.baseproject.impl.photoselector.PhotoSeletorImplModule;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.AnonymityPopWindow;
+import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
@@ -70,6 +72,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     protected int mAnonymity;
 
     private AnonymityPopWindow mAnonymityPopWindow;
+    private CenterAlertPopWindow mAnonymityAlertPopWindow;
 
     private QAPublishBean mQAPublishBean;
 
@@ -137,7 +140,8 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     public void onBackPressed() {
-        setLeftClick();
+        saveQuestion();
+        getActivity().finish();
     }
 
     @Override
@@ -378,11 +382,51 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .buildDescrStr(getString(strRes))
                 .contentView(R.layout.pop_for_anonymity)
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .buildAnonymityPopWindowSwitchClickListener(isChecked ->
-                        mAnonymity = isChecked ? 1 : 0)
+                .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
                 .build();
         mAnonymityPopWindow.showParentViewTop();
 
+    }
+
+    private void initAnonymityAlertPopWindow(boolean isChecked){
+        if (mAnonymityAlertPopWindow == null){
+            mAnonymityAlertPopWindow = CenterAlertPopWindow.builder()
+                    .with(getActivity())
+                    .parentView(getView())
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .animationStyle(R.style.style_actionPopupAnimation)
+                    .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                    .titleStr(getString(R.string.qa_publish_enable_anonymous))
+                    .desStr("当我回忆你过去做过的某些事情的时候，要接受你就变得相当困难，不过最终我仍旧理解了你。我始终在期望你做一些你的选择，期望你做一些你无法做到的事情，这种期望使我对你过于吹毛求疵，当初的你，怎么会像现在的我一样成熟呢！如今我终于接受了你的存在，你绝对值得。")
+                    .buildCenterPopWindowItem1ClickListener(new CenterAlertPopWindow.CenterPopWindowItemClickListener() {
+                        @Override
+                        public void onRightClicked() {
+                            mAnonymityAlertPopWindow.dismiss();
+                            mAnonymity = 1;
+                            if (mAnonymityPopWindow != null){
+                                mAnonymityPopWindow.dismiss();
+                            }
+                        }
+
+                        @Override
+                        public void onLeftClicked() {
+                            mAnonymityAlertPopWindow.dismiss();
+                            mAnonymity = 0;
+                            if (mAnonymityPopWindow != null){
+                                // 设置按钮的状态
+                                mAnonymityPopWindow.setSwitchButton(false);
+                                mAnonymityPopWindow.dismiss();
+                            }
+                        }
+                    })
+                    .build();
+        }
+        if (isChecked){
+            mAnonymityAlertPopWindow.show();
+        } else {
+            mAnonymityAlertPopWindow.dismiss();
+        }
     }
 
 }
