@@ -94,12 +94,11 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
         mVerifyAnimationDrawable = (Animatable) mIvVerifyLoading.getDrawable();
         setBindType();
         setConfirmEnable();
-        if (mUserInfoBean != null) {
+        if (mUserInfoBean != null && mIsBind) {
             if (mCurrentType == DEAL_TYPE_PHONE) {
                 mEtPhone.setText(mUserInfoBean.getPhone());
                 mEtPhone.setSelection(mUserInfoBean.getPhone().length());
             } else {
-
                 mEtEmail.setText(mUserInfoBean.getEmail());
                 mEtEmail.setSelection(mUserInfoBean.getEmail().length());
             }
