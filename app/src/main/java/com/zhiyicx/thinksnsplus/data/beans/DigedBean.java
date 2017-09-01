@@ -20,6 +20,7 @@ import static android.R.id.list;
 import static com.umeng.analytics.pro.x.J;
 import static com.umeng.analytics.pro.x.l;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_GROUP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
 
@@ -62,6 +63,7 @@ public class DigedBean extends BaseListBean {
     private Long source_cover;
 
     private String source_content;
+    private long source_id; // 所属资源的父 id; 圈子动态的评论，那source_id == post_id
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -69,9 +71,10 @@ public class DigedBean extends BaseListBean {
     @Generated(hash = 2113720789)
     private transient DigedBeanDao myDao;
 
-    @Generated(hash = 1937545503)
+
+    @Generated(hash = 1442865455)
     public DigedBean(Long id, Long user_id, Long target_user, String created_at, String updated_at, String likeable_type, Long likeable_id, boolean isDelete,
-            Long source_cover, String source_content) {
+            Long source_cover, String source_content, long source_id) {
         this.id = id;
         this.user_id = user_id;
         this.target_user = target_user;
@@ -82,6 +85,7 @@ public class DigedBean extends BaseListBean {
         this.isDelete = isDelete;
         this.source_cover = source_cover;
         this.source_content = source_content;
+        this.source_id = source_id;
     }
 
     @Generated(hash = 1958494079)
@@ -92,6 +96,7 @@ public class DigedBean extends BaseListBean {
     private transient Long digUserInfo__resolvedKey;
     @Generated(hash = 1719103363)
     private transient Long digedUserInfo__resolvedKey;
+
 
     @Override
     public Long getMaxId() {
@@ -178,6 +183,15 @@ public class DigedBean extends BaseListBean {
                     e.printStackTrace();
                 }
                 break;
+            case APP_LIKE_GROUP_POST:
+                try {
+                    JSONObject jsonObject = new JSONObject(gson.toJson(likeable));
+                    JSONArray jsonArray = jsonObject.getJSONArray("images");
+                    source_cover = (long) jsonArray.getJSONObject(0).getDouble("file_id");
+                } catch (Exception e) {
+                }
+                break;
+
             case APP_LIKE_MUSIC:
 
                 break;
@@ -208,6 +222,13 @@ public class DigedBean extends BaseListBean {
                 DynamicDetailBeanV2 dynamicDetailBeanV2 = new Gson().fromJson(new Gson().toJson(likeable), DynamicDetailBeanV2.class);
                 if (dynamicDetailBeanV2 != null) {
                     source_content = dynamicDetailBeanV2.getFeed_content();
+                }
+                break;
+            case APP_LIKE_GROUP_POST:
+                try {
+                    JSONObject jsonObject = new JSONObject(new Gson().toJson(likeable));
+                    source_content = jsonObject.getString("content");
+                } catch (Exception e) {
                 }
                 break;
             case APP_LIKE_MUSIC:
@@ -242,8 +263,9 @@ public class DigedBean extends BaseListBean {
             isDelete = true;
         }
     }
+
     public void setIsDelete(boolean isDelete) {
-        if(!isDelete){
+        if (!isDelete) {
             if (likeable != null) {
                 isDelete = false;
             } else {
@@ -251,6 +273,42 @@ public class DigedBean extends BaseListBean {
             }
         }
         this.isDelete = isDelete;
+    }
+
+
+    public long getSource_id() {
+        if (source_id != 0) {
+            return this.source_id;
+        }
+
+        Gson gson = new Gson();
+        switch (likeable_type) {
+            case APP_LIKE_FEED:
+
+                break;
+            case APP_LIKE_GROUP_POST:
+                try {
+                    JSONObject jsonObject = new JSONObject(gson.toJson(likeable));
+                    source_id = jsonObject.getLong("group_id");
+                } catch (Exception e) {
+                }
+                break;
+
+            case APP_LIKE_MUSIC:
+
+                break;
+            case APP_LIKE_NEWS:
+
+                break;
+
+        }
+
+
+        return source_id;
+    }
+
+    public void setSource_id(long source_id) {
+        this.source_id = source_id;
     }
 
     /** To-one relationship, resolved on first access. */
@@ -353,6 +411,5 @@ public class DigedBean extends BaseListBean {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDigedBeanDao() : null;
     }
-
 
 }
