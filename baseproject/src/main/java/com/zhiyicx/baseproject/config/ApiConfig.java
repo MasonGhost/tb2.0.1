@@ -488,6 +488,9 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NEW_USER_INFO = "api/" + API_VERSION_2 + "/user/latests";
     // 通过 tag 推荐
     public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
+    // 获取后台推荐用户
+    public static final String APP_PATH_GET_RECOMMENT_USER_INFO = "api/" + API_VERSION_2 + "/user/recommends";
+
     public static final String APP_PATH_SEARCH_RECOMMENT_USER = "api/" + API_VERSION_2 + "/user/search";
     // 通过 phone 推荐
     public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";

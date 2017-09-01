@@ -30,6 +30,8 @@ public interface FindSomeOneListContract {
          * 获取页面类型
          */
         int getPageType();
+
+        void setRecommentUserSize(int size);
     }
 
     interface Presenter extends ITSListPresenter<UserInfoBean> {
