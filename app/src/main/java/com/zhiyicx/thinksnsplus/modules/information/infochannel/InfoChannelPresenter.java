@@ -49,7 +49,8 @@ public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.
 
     @Override
     public void doSubscribe(String follows) {
-        mInfoChannelRepository.doSubscribe(follows).subscribeOn(Schedulers.io())
+        mInfoChannelRepository.doSubscribe(follows)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {

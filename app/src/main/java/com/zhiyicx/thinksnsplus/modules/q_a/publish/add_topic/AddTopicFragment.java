@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -86,7 +87,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void setRightClick() {
         super.setRightClick();
         saveQustion();
-        Intent intent = new Intent(getActivity(), PublishContentActivity.class);
+        Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
         intent.putExtras(bundle);
@@ -171,8 +172,8 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initData() {
         super.initData();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
-        mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean
-                .getSubject()));
+//        mEtQustion.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, mQAPublishBean
+//                .getSubject()));
         mMaxTagNums = getResources().getInteger(R.integer.tag_max_nums);
 
         QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());

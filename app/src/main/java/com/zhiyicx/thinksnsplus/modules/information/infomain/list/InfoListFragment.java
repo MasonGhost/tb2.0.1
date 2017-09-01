@@ -135,7 +135,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
         }
-        if (!mInfoType.equals("-1")) {
+        if (!mInfoType.equals("-1")) {// 只有推荐才加载广告
             return;
         }
         List<String> advertTitle = new ArrayList<>();

@@ -154,6 +154,7 @@ public class DynamicListAdvert implements Serializable, Parcelable {
         InfoListDataBean.InfoCategory category = new InfoListDataBean.InfoCategory();
         category.setName("广告");
         infoListDataBean.setFrom("广告");
+        infoListDataBean.setInfo_type(-1L);
         infoListDataBean.setCategory(category);
         infoListDataBean.setUser_id(-1L);// 广告位标识
         infoListDataBean.setMaxId(max_id);// max_id 转移
