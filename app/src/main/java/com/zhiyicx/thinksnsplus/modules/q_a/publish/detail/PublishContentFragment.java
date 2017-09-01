@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -369,6 +370,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     private void initAnonymityPopWindow(int strRes) {
+        mImSetting.setImageResource(R.mipmap.icon_install_blue);
         if (mAnonymityPopWindow != null) {
             mAnonymityPopWindow.showParentViewTop();
             return;
@@ -385,7 +387,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 .buildAnonymityPopWindowSwitchClickListener(this::initAnonymityAlertPopWindow)
                 .build();
         mAnonymityPopWindow.showParentViewTop();
-
+        mAnonymityPopWindow.setOnDismissListener(() -> mImSetting.setImageResource(R.mipmap.icon_install_grey));
     }
 
     private void initAnonymityAlertPopWindow(boolean isChecked){
