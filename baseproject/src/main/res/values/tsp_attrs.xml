@@ -144,5 +144,9 @@
 
     </declare-styleable>
 
-
+    <!--图文编辑框-->
+    <declare-styleable name="MarkDownEditor">
+        <!--输入框hint-->
+        <attr name="ts_md_hint" format="string"/>
+    </declare-styleable>
 </resources>
