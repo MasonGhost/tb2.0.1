@@ -2,9 +2,11 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -45,6 +47,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     private LayoutTransition mTransitioner; // 只在图片View添加或remove时，触发transition动画
     private int editNormalPadding = 0; //
     private int disappearingImageIndex = 0;
+    private String mHint; // 提示语
 
     private OnContentChangeListener mOnContentChangeListener;
     private boolean hasContent;
@@ -55,6 +58,12 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     public RichTextEditor(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+        TypedArray array = context.obtainStyledAttributes(attrs,
+                R.styleable.MarkDownEditor);
+        mHint = array.getString(R.styleable.MarkDownEditor_ts_md_hint);
+        if (TextUtils.isEmpty(mHint)){
+            mHint = getResources().getString(R.string.info_content_hint);
+        }
     }
 
     @Override
@@ -68,6 +77,12 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     public RichTextEditor(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray array = context.obtainStyledAttributes(attrs,
+                R.styleable.MarkDownEditor);
+        mHint = array.getString(R.styleable.MarkDownEditor_ts_md_hint);
+        if (TextUtils.isEmpty(mHint)){
+            mHint = getResources().getString(R.string.info_content_hint);
+        }
         inflater = LayoutInflater.from(context);
 
         // 1. 初始化allLayout
@@ -106,7 +121,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         //editNormalPadding = dip2px(EDIT_PADDING);
-        EditText firstEdit = createEditText(getResources().getString(R.string.info_content_hint), dip2px(context, EDIT_PADDING));
+        EditText firstEdit = createEditText(mHint, dip2px(context, EDIT_PADDING));
         firstEdit.setHintTextColor(getResources().getColor(R.color.general_for_hint));
         firstEdit.addTextChangedListener(this);
         allLayout.addView(firstEdit, firstEditParam);
@@ -242,8 +257,6 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     /**
      * 根据绝对路径添加view
-     *
-     * @param imagePath
      */
     public void insertImage(String imagePath, int width) {
         Bitmap bmp = getScaledBitmap(imagePath, width);
@@ -450,5 +463,14 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     public interface OnContentChangeListener {
         void onContentChange(boolean hasContent);
+    }
+
+    /**
+     * 对外提供的设置提示语的方法
+     *
+     * @param hint 提示语
+     */
+    public void setHint(String hint) {
+        this.mHint = hint;
     }
 }

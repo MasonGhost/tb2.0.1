@@ -62,6 +62,7 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
                 break;
 
             default:
+                mRootView.showSnackErrorMessage(mContext.getString(R.string.reward_type_error));
 
         }
     }
