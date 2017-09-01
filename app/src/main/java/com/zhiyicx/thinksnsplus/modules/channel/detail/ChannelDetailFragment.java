@@ -194,6 +194,11 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void setLoadingViewHolderClick() {
         super.setLoadingViewHolderClick();
         mPresenter.requestNetData(0L, false);
@@ -622,13 +627,8 @@ public class ChannelDetailFragment extends TSListFragment<ChannelDetailContract.
         startActivity(intent);
     }
 
-    @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
-
     private void initToolBar() {
-        if (setUseSatusbar()) {
+        if (!setUseStatusView()) {
             // toolBar 设置状态栏高度的 marginTop
             int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
             CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);

@@ -1,8 +1,8 @@
 package com.zhiyicx.thinksnsplus.modules.information.infochannel;
 
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.InfoTypeBean;
 import com.zhiyicx.thinksnsplus.data.source.local.InfoTypeBeanGreenDaoImpl;
@@ -12,6 +12,9 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_INTERVAL_TIME;
+import static com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay.RETRY_MAX_COUNT;
 
 /**
  * @Author Jliuer
@@ -46,8 +49,10 @@ public class InfoChannelPresenter extends AppBasePresenter<InfoChannelConstract.
 
     @Override
     public void doSubscribe(String follows) {
-        mInfoChannelRepository.doSubscribe(follows).subscribeOn(Schedulers.io())
+        mInfoChannelRepository.doSubscribe(follows)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retryWhen(new RetryWithInterceptDelay(RETRY_MAX_COUNT, RETRY_INTERVAL_TIME))
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {

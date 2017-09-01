@@ -98,7 +98,7 @@ public abstract class InfoListItem implements ItemViewDelegate<BaseListBean> {
                     .into(imageView);
         }
         // 来自单独分开
-        String category = realData.getCategory() == null || (realData.getCategory()!=null&&realData.getInfo_type() != -1 )? "" : realData.getCategory().getName();
+        String category = realData.getCategory() == null || (realData.getCategory() != null && realData.getInfo_type() != -1) ? "" : realData.getCategory().getName();
         holder.setVisible(R.id.tv_from_channel, category.isEmpty() ? View.GONE : View.VISIBLE);
         holder.setText(R.id.tv_from_channel, category);
         // 是否置顶

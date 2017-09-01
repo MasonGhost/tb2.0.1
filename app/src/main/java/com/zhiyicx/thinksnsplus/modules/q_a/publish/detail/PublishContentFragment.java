@@ -27,6 +27,7 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 
@@ -126,7 +127,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     protected void setRightClick() {
         super.setRightClick();
         saveQuestion();
-        Intent intent = new Intent(getActivity(), QARewardActivity.class);
+        Intent intent = new Intent(getActivity(),AddTopicActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
         intent.putExtras(bundle);

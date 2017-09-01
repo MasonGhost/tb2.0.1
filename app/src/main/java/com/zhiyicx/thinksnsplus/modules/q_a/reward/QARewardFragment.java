@@ -344,7 +344,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             mBtQaSelectExpert.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             mRlOnlooker.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             resetExpert();
-            configSureButton();
+//            configSureButton();
         });
         // 围观开关
         mWcOnlooker.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -380,6 +380,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                     // 发布
                     try {
                         if (mQuestionId.equals(0L)) {
+                            if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
+                                showSnackErrorMessage("邀请的专家呢？");
+                            }
                             packgQuestion();
                             mPresenter.publishQuestion(mQAPublishBean);
                         } else {
