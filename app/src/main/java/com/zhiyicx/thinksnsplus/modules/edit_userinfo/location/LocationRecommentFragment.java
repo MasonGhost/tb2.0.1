@@ -254,26 +254,6 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
 
             }
 
-            @Override
-            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-                RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .compose(bindToLifecycle())
-                        .subscribe(o -> {
-                            if (mOnItemClickListener != null) {
-                                int position = viewHolder.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                            }
-                        });
-
-                viewHolder.itemView.setOnLongClickListener(v -> {
-                    if (mOnItemClickListener != null) {
-                        int position = viewHolder.getAdapterPosition();
-                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                    }
-                    return true;
-                });
-            }
         };
 
         mHotCitysAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
