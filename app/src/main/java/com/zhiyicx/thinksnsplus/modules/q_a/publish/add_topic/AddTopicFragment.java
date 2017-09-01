@@ -6,9 +6,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import rx.functions.Action1;
 
 import static com.zhiyicx.thinksnsplus.modules.q_a.publish.question.PublishQuestionFragment
         .BUNDLE_PUBLISHQA_BEAN;
@@ -99,7 +102,7 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
             typeIdsList.add(typeIds);
         }
         mQAPublishBean.setTopics(typeIdsList);
-        mQAPublishBean.setSubject(mEtQustion.getText().toString());
+//        mQAPublishBean.setSubject(mEtQustion.getText().toString());
         mPresenter.saveQuestion(mQAPublishBean);
     }
 
@@ -132,6 +135,13 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
                 mToolbarRight.setEnabled(false);
             }
         });
+
+        RxTextView.editorActionEvents(mEtQustion).subscribe(textViewEditorActionEvent -> {
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                requestNetData(mEtQustion.getText().toString(), 0L, null, false);
+            }
+        });
+
     }
 
     private void initTopicsView() {

@@ -179,11 +179,6 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    protected boolean isNeedRefreshDataWhenComeIn() {
-        return true;
-    }
-
-    @Override
     protected boolean isNeedRefreshAnimation() {
         return false;
     }
