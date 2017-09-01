@@ -68,21 +68,6 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return true;
-    }
-
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.message);
-    }
-
-    @Override
     protected boolean isNeedRefreshAnimation() {
         return false;
     }
