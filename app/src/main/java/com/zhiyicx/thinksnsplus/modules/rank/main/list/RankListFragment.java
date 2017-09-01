@@ -33,6 +33,15 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
         fragment.setArguments(bundle);
         return fragment;
     }
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
 
     @Override
     protected void initData() {
