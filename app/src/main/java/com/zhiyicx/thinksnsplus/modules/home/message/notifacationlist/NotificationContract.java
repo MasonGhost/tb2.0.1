@@ -1,7 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
+import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+
+import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author Catherine
@@ -12,7 +17,16 @@ import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 
 public interface NotificationContract {
 
+    interface View extends ITSListView<TSPNotificationBean, Presenter>{
+
+    }
+
     interface Presenter extends ITSListPresenter<TSPNotificationBean>{
 
     }
+
+    interface Repository{
+        Observable<List<TSPNotificationBean>> getNotificationList(int size);
+    }
+
 }

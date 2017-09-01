@@ -9,11 +9,15 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhiyicx.baseproject.base.TSViewPagerFragment;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.utils.StatusBarUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.modules.home.message.MessageFragment;
+import com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist.NotificationFragment;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
 
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
@@ -30,6 +34,8 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.badge.
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import butterknife.BindView;
 
 /**
  * @author Catherine
@@ -48,6 +54,9 @@ public class MessageContainerFragment extends TSViewPagerFragment{
     private static final int DEFAULT_TAB_LINE_COLOR = com.zhiyicx.baseproject.R.color.themeColor;// 缺省的tab的线的颜色
     private static final int DEFAULT_TAB_LINE_HEGIHT = com.zhiyicx.baseproject.R.integer.line_height;// 缺省的tab的线的高度
 
+    @BindView(R.id.v_status_bar_placeholder)
+    View mStatusBarPlaceholder;
+
     List<Fragment> mFragments;
 
     public MessageContainerFragment instance(){
@@ -57,6 +66,17 @@ public class MessageContainerFragment extends TSViewPagerFragment{
     @Override
     public void setPresenter(Object presenter) {
 
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_main_viewpager;
+    }
+
+    @Override
+    protected void initView(View rootView) {
+        super.initView(rootView);
+        initToolBar();
     }
 
     @Override
@@ -70,7 +90,7 @@ public class MessageContainerFragment extends TSViewPagerFragment{
             mFragments = new ArrayList<>();
         }
         mFragments.add(MessageFragment.newInstance());
-        mFragments.add(MessageFragment.newInstance());
+        mFragments.add(new NotificationFragment().instance());
         return mFragments;
     }
 
@@ -84,6 +104,25 @@ public class MessageContainerFragment extends TSViewPagerFragment{
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(0);
         mTsvToolbar.initTabView(mVpFragment, initTitles(), getCommonNavigatorAdapter(initTitles()));
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    private void initToolBar() {
+        // toolBar设置状态栏高度的marginTop
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, DeviceUtils.getStatuBarHeight(getContext()));
+        mStatusBarPlaceholder.setLayoutParams(layoutParams);
+        if (StatusBarUtils.intgetType(getActivity().getWindow()) == 0) { // 适配非6.0以上、非魅族系统、非小米系统状态栏
+            mStatusBarPlaceholder.setBackgroundResource(R.color.themeColor);
+        }
     }
 
     @NonNull

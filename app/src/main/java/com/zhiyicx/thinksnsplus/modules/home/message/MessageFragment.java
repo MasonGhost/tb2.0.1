@@ -100,6 +100,17 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
         return false;
     }
 
+    @Override
+    protected void initData() {
+        DaggerMessageComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .messagePresenterModule(new MessagePresenterModule(this))
+                .build()
+                .inject(this);
+        super.initData();
+    }
+
     /**
      * 是否需要上拉加载
      *
@@ -114,23 +125,20 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     public void onResume() {
         super.onResume();
         // 刷新信息内容
-        mPresenter.refreshConversationReadMessage();
-        updateCommnetItemData(mPresenter.updateCommnetItemData());
+        if (mPresenter != null){
+            mPresenter.refreshConversationReadMessage();
+            updateCommnetItemData(mPresenter.updateCommnetItemData());
+        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        DaggerMessageComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .messagePresenterModule(new MessagePresenterModule(this))
-                .build()
-                .inject(this);
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            mPresenter.checkUnreadNotification();
-            mPresenter.handleFlushMessage();
-        }
+        // 通知列表单独抽取出来 不需要在这里请求了
+//        if (isVisibleToUser) {
+//            mPresenter.checkUnreadNotification();
+//            mPresenter.handleFlushMessage();
+//        }
     }
 
     @Override

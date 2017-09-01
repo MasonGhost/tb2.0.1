@@ -1,5 +1,16 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist;
 
+import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+
+import com.zhiyicx.baseproject.base.TSListFragment;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 /**
  * @author Catherine
  * @describe 通知列表页
@@ -7,5 +18,35 @@ package com.zhiyicx.thinksnsplus.modules.home.message.notifacationlist;
  * @contact email:648129313@qq.com
  */
 
-public class NotificationFragment {
+public class NotificationFragment extends TSListFragment<NotificationContract.Presenter, TSPNotificationBean>
+        implements NotificationContract.View{
+
+    @Inject
+    NotificationPresenter mPresenter;
+
+    public NotificationFragment instance(){
+        NotificationFragment fragment = new NotificationFragment();
+        fragment.setArguments(new Bundle());
+        return fragment;
+    }
+
+    @Override
+    protected void initData() {
+        DaggerNotificationComponent.builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .notificationPresenterModule(new NotificationPresenterModule(this))
+                .build()
+                .inject(this);
+        super.initData();
+    }
+
+    @Override
+    protected RecyclerView.Adapter getAdapter() {
+        return new NotificationAdapter(getContext(), mListDatas);
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
 }
