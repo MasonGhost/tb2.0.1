@@ -382,6 +382,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                         if (mQuestionId.equals(0L)) {
                             if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
                                 showSnackErrorMessage("邀请的专家呢？");
+                                return;
                             }
                             packgQuestion();
                             mPresenter.publishQuestion(mQAPublishBean);
