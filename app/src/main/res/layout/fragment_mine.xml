@@ -189,7 +189,7 @@
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_contribute"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:leftText="@string/my_info"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
@@ -200,7 +200,7 @@
                     android:layout_height="@dimen/full_button_height"
                     android:layout_marginTop="@dimen/divider_line"
                     app:dividerLeftMargin="@dimen/spacing_normal"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:dividerRightMargin="@dimen/spacing_normal"
                     app:leftImage="@mipmap/ico_me_question"
                     app:leftText="@string/qa_mine"
@@ -216,7 +216,7 @@
                     app:dividerRightMargin="@dimen/spacing_normal"
                     app:leftImage="@mipmap/ico_me_circle"
                     app:leftText="@string/group_mine"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
             <!--排行榜-->
@@ -264,7 +264,7 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_music"
                 app:leftText="@string/me_music"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>
 
@@ -295,7 +295,7 @@
                 android:id="@+id/bt_draft_box"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_question"

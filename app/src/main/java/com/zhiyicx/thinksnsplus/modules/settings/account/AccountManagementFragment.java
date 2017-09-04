@@ -89,48 +89,62 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    // 跳转绑定/解绑手机号
-                    Intent intent = new Intent(getActivity(), AccountBindActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_PHONE);
-                    bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getPhone()));
-                    bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    if (mCurrentUser != null) {
+                        // 跳转绑定/解绑手机号
+                        Intent intent = new Intent(getActivity(), AccountBindActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_PHONE);
+                        bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getPhone()));
+                        bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 });
         RxView.clicks(mBtBindEmail)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    // 跳转绑定/解绑邮箱
-                    Intent intent = new Intent(getActivity(), AccountBindActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
-                    bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getEmail()));
-                    bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    if (mCurrentUser != null) {
+
+                        // 跳转绑定/解绑邮箱
+                        Intent intent = new Intent(getActivity(), AccountBindActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(BUNDLE_BIND_TYPE, DEAL_TYPE_EMAIL);
+                        bundle.putBoolean(BUNDLE_BIND_STATE, !TextUtils.isEmpty(mCurrentUser.getEmail()));
+                        bundle.putParcelable(BUNDLE_BIND_DATA, mCurrentUser);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 });
         RxView.clicks(mBtBindQq)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    handleThirdAccount(ApiConfig.PROVIDER_QQ);
+                    if (!mBindAccounts.isEmpty()) {
+
+                        handleThirdAccount(ApiConfig.PROVIDER_QQ);
+                    }
 
                 });
         RxView.clicks(mBtBindWechat)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    // 跳转绑定/解绑微信
-                    handleThirdAccount(ApiConfig.PROVIDER_WECHAT);
+                    if (!mBindAccounts.isEmpty()) {
+                        // 跳转绑定/解绑微信
+                        handleThirdAccount(ApiConfig.PROVIDER_WECHAT);
+                    }
+
                 });
         RxView.clicks(mBtBindWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    // 跳转绑定/解绑微博
-                    handleThirdAccount(ApiConfig.PROVIDER_WEIBO);
+                    if (!mBindAccounts.isEmpty()) {
+
+                        // 跳转绑定/解绑微博
+                        handleThirdAccount(ApiConfig.PROVIDER_WEIBO);
+                    }
                 });
     }
 
