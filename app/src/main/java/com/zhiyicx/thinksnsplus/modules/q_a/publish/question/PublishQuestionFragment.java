@@ -21,6 +21,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
+import com.zhiyicx.thinksnsplus.widget.UserInfoInroduceInputView;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
 
     @BindView(R.id.et_qustion)
-    EditText mEtQustion;
+    UserInfoInroduceInputView mEtQustion;
 
     @BindView(R.id.line)
     View mLine;
@@ -209,7 +210,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     private void initListener() {
-        RxTextView.textChanges(mEtQustion)
+        RxTextView.textChanges(mEtQustion.getEtContent())
                 .subscribe(charSequence -> {
                     mQuestionStr = charSequence.toString().trim();
                     if (!TextUtils.isEmpty(mQuestionStr)) {
@@ -221,15 +222,15 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     requestNetData(mQuestionStr, 0L, "all", false);
                 }, throwable -> mToolbarRight.setEnabled(false));
 
-        mEtQustion.setOnEditorActionListener(
-                (v, actionId, event) -> {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        mToolbarRight.performClick();
-                        DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
-                        return true;
-                    }
-                    return false;
-                });
+//        mEtQustion.setOnEditorActionListener(
+//                (v, actionId, event) -> {
+//                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//                        mToolbarRight.performClick();
+//                        DeviceUtils.hideSoftKeyboard(getContext(), mEtQustion);
+//                        return true;
+//                    }
+//                    return false;
+//                });
     }
 
     @Override
