@@ -35,6 +35,17 @@ public class MyMusicAlbumPresenter extends AppBasePresenter<MyMusicAblumListCont
             protected void onSuccess(List<MusicAlbumListBean> data) {
                 mRootView.onNetResponseSuccess(data,isLoadMore);
             }
+            @Override
+            protected void onFailure(String message, int code) {
+                super.onFailure(message, code);
+                mRootView.onResponseError(null,isLoadMore);
+            }
+
+            @Override
+            protected void onException(Throwable throwable) {
+                super.onException(throwable);
+                mRootView.onResponseError(throwable,isLoadMore);
+            }
         });
     }
 
