@@ -56,11 +56,20 @@ import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT_REPLY;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENT_REPLY;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT_REPLY;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_NEWS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT_REPLY;
 
 /**
  * @Describe
@@ -341,13 +350,24 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void readMessageByKey(String key) {
         String notificationIds = "";
         switch (key) {
+            // 所有评论
             case NOTIFICATION_KEY_FEED_COMMENTS:
             case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
+            case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
+            case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
+            case NOTIFICATION_KEY_NEWS_COMMENT:
+            case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
+            case NOTIFICATION_KEY_QUESTION_COMMENT:
+            case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
+            case NOTIFICATION_KEY_ANSWER_COMMENT:
+            case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
                 notificationIds = getNotificationIds(mCommentsNoti, notificationIds);
                 break;
+            // 所有点赞
             case NOTIFICATION_KEY_FEED_DIGGS:
                 notificationIds = getNotificationIds(mDiggNoti, notificationIds);
                 break;
+            // 所有审核
             case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
             case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
                 notificationIds = getNotificationIds(mReviewNoti, notificationIds);
@@ -545,15 +565,27 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mReviewNoti.clear();
                         for (TSPNotificationBean tspNotificationBean : data) {
                             switch (tspNotificationBean.getData().getChannel()) {
+                                // 所有评论
                                 case NOTIFICATION_KEY_FEED_COMMENTS:
                                 case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_NEWS_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_QUESTION_COMMENT:
+                                case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_ANSWER_COMMENT:
+                                case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
                                     mCommentsNoti.add(tspNotificationBean);
                                     break;
+                                // 所有点赞
                                 case NOTIFICATION_KEY_FEED_DIGGS:
                                     mDiggNoti.add(tspNotificationBean);
                                     break;
+                                // 所有审核
                                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
                                 case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_PINNED_NEWS:
                                     mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
@@ -624,8 +656,19 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         return mReviewNoti;
     }
 
+    @Override
+    public List<TSPNotificationBean> getCommentsNoti() {
+        return mCommentsNoti;
+    }
+
+    @Override
+    public List<TSPNotificationBean> getDiggNoti() {
+        return mDiggNoti;
+    }
+
     /**
      * 没有阅读时间说明没有阅读
+     *
      * @param datas
      * @return
      */
@@ -649,7 +692,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     } else {
                         tip += commentsNoti.get(i).getUserInfo().getName() + "、";
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

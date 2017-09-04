@@ -26,7 +26,7 @@ public class MessageCommentActivity extends TSActivity<MessageCommentPresenter, 
 
     @Override
     protected MessageCommentFragment getFragment() {
-        return MessageCommentFragment.newInstance();
+        return MessageCommentFragment.newInstance(getIntent().getExtras());
     }
 
 }

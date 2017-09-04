@@ -22,6 +22,7 @@ import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -274,6 +275,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
     private void toCommentList() {
         Intent to = new Intent(getActivity(), MessageCommentActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MessageCommentFragment.BUNDLE_COMMENTS_LIST_DATA, new ArrayList<>(mPresenter.getCommentsNoti()));
+        to.putExtras(bundle);
         startActivity(to);
     }
 
@@ -282,12 +286,14 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
     private void toLikeList() {
         Intent to = new Intent(getActivity(), MessageLikeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MessageCommentFragment.BUNDLE_COMMENTS_LIST_DATA, new ArrayList<>(mPresenter.getDiggNoti()));
         startActivity(to);
     }
 
     private void toReviewList() {
-        Bundle bundle =new Bundle();
-        bundle.putSerializable(REVIEW_LIST,new ArrayList<>(mPresenter.getReviewListData()));
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(REVIEW_LIST, new ArrayList<>(mPresenter.getReviewListData()));
         Intent to = new Intent(getActivity(), MessageReviewActivity.class);
         to.putExtras(bundle);
         startActivity(to);
