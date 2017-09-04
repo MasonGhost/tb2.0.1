@@ -1,12 +1,15 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagereview;
 
+import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicCommentBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +19,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.functions.Func1;
+
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
 
 /**
  * @Author Jliuer
@@ -27,13 +37,23 @@ import rx.Subscription;
 public class MessageReviewPresenter extends AppBasePresenter<MessageReviewContract.Repository,
         MessageReviewContract.View> implements MessageReviewContract.Presenter {
 
+    public static final int DEFAULT_MAX_REQUEST_UNREAD_NUM = 100;
+
     @Inject
     TopDynamicCommentBeanGreenDaoImpl mTopDynamicCommentBeanGreenDao;
+    @Inject
+    MessageRepository mMessageRepository;
 
     @Inject
     public MessageReviewPresenter(MessageReviewContract.Repository repository,
                                   MessageReviewContract.View rootView) {
         super(repository, rootView);
+    }
+
+    public void test() {
+        mMessageRepository.getNotificationList(null, ApiConfig.NOTIFICATION_TYPE_ALL, DEFAULT_MAX_REQUEST_UNREAD_NUM, 0);
+
+
     }
 
 

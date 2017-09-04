@@ -27,11 +27,13 @@ import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReview
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewFragment.REVIEW_LIST;
 
 /**
  * @Describe 消息页面
@@ -108,7 +110,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     public void onResume() {
         super.onResume();
         // 刷新信息内容
-        if (mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.refreshConversationReadMessage();
             updateCommnetItemData(mPresenter.updateCommnetItemData());
         }
@@ -284,7 +286,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     private void toReviewList() {
+        Bundle bundle =new Bundle();
+        bundle.putSerializable(REVIEW_LIST,new ArrayList<>(mPresenter.getReviewListData()));
         Intent to = new Intent(getActivity(), MessageReviewActivity.class);
+        to.putExtras(bundle);
         startActivity(to);
     }
 
@@ -353,7 +358,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      * @param positon         当前点击位置
      */
     private void toChat(MessageItemBean messageItemBean, int positon) {
-        if (messageItemBean == null || messageItemBean.getUserInfo() == null||messageItemBean.getUserInfo().getUser_id()==null) {
+        if (messageItemBean == null || messageItemBean.getUserInfo() == null || messageItemBean.getUserInfo().getUser_id() == null) {
             return;
         }
         Intent to = new Intent(getActivity(), ChatActivity.class);

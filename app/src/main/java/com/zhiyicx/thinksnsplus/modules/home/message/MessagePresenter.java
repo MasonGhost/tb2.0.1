@@ -55,11 +55,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
-import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
 
 /**
  * @Describe
@@ -348,6 +349,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 notificationIds = getNotificationIds(mDiggNoti, notificationIds);
                 break;
             case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
                 notificationIds = getNotificationIds(mReviewNoti, notificationIds);
                 break;
             default:
@@ -551,6 +553,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                     mDiggNoti.add(tspNotificationBean);
                                     break;
                                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
                                     mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
@@ -615,6 +618,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     }
 
+
+    @Override
+    public List<TSPNotificationBean> getReviewListData() {
+        return mReviewNoti;
+    }
+
     /**
      * 没有阅读时间说明没有阅读
      * @param datas
@@ -642,7 +651,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 }catch (Exception e){
                     e.printStackTrace();
-                    LogUtils.d(commentsNoti.get(i));
                 }
 
             } else {
