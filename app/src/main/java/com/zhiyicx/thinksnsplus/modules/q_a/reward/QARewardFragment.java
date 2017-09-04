@@ -143,8 +143,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         initDefaultMoney();
         initAlertPopupWindow();
         mQAPublishBean = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
-
-        QAPublishBean draft = mPresenter.getDraftQuestion(mQAPublishBean.getMark());
+        QAPublishBean draft = mQAPublishBean == null ? null : mPresenter.getDraftQuestion(mQAPublishBean.getMark());
         if (draft != null && draft.getInvitations() != null && !draft.getInvitations().isEmpty()) {
             List<QAPublishBean.Invitations> typeIdsList = new ArrayList<>();
             QAPublishBean.Invitations typeIds = new QAPublishBean.Invitations();

@@ -137,7 +137,7 @@ public class QuestionDetailHeader {
         // 悬赏金额
         if (qaListInfoBean.getAmount() != 0) {
             mTvRewardAmount.setVisibility(View.VISIBLE);
-            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_reward_amount), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
+            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_show_topic_followed_reward), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
         } else {
             mTvRewardAmount.setVisibility(View.GONE);
         }
