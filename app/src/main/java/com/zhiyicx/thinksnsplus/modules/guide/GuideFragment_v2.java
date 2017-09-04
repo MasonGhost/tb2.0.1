@@ -230,4 +230,12 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         mGuideBanner.start();
         mTimer.start();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+    }
 }

@@ -48,7 +48,7 @@
                     android:layout_height="@dimen/full_button_height"
                     app:dividerLeftMargin="@dimen/spacing_normal"
                     app:dividerRightMargin="@dimen/spacing_normal"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:leftImage="@mipmap/discover_ico_queansw"
                     app:leftText="@string/quiz"
                     app:rightImage="@mipmap/ic_arrow_smallgrey"/>
