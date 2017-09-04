@@ -94,6 +94,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                 .build()
                 .inject(this);
         super.initData();
+        mPresenter.handleFlushMessage();
     }
 
     /**
