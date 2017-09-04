@@ -86,6 +86,9 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void setRightClick() {
         super.setRightClick();
+        if (mQATopicBeanList.isEmpty()){
+            showSnackErrorMessage(getString(R.string.qa_publish_select_topic_hint));
+        }
         saveQustion();
         Intent intent = new Intent(getActivity(), QARewardActivity.class);
         Bundle bundle = new Bundle();
@@ -127,15 +130,6 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     protected void initView(View rootView) {
         super.initView(rootView);
         initTopicsView();
-        RxTextView.textChanges(mEtQustion).subscribe(charSequence -> {
-            mQuestionStr = charSequence.toString().trim();
-            if (!TextUtils.isEmpty(mQuestionStr)) {
-                mToolbarRight.setEnabled(true);
-                // TODO: 20177/25  搜索相同的問題
-            } else {
-                mToolbarRight.setEnabled(false);
-            }
-        });
 
         RxTextView.editorActionEvents(mEtQustion).subscribe(textViewEditorActionEvent -> {
             if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
