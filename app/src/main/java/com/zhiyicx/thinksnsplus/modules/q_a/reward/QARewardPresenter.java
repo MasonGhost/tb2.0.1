@@ -6,10 +6,17 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 /**
  * @author Catherine
@@ -20,6 +27,13 @@ import rx.Subscription;
 @FragmentScoped
 public class QARewardPresenter extends AppBasePresenter<QARewardContract.RepositoryPublish, QARewardContract.View>
         implements QARewardContract.Presenter {
+
+    @Inject
+    CommentRepository mCommentRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+    @Inject
+    WalletBeanGreenDaoImpl mWalletBeanGreenDao;
 
     @Inject
     public QARewardPresenter(QARewardContract.RepositoryPublish repository, QARewardContract.View rootView) {
@@ -51,8 +65,26 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
     @Override
     public void resetReward(Long question_id, double amount) {
         mRootView.showSnackLoadingMessage(mContext.getString(R.string.bill_doing));
-        Subscription subscription = mRepository.resetReward(question_id, amount)
-                .compose(mSchedulersTransformer)
+        Subscription subscription =mCommentRepository.getCurrentLoginUserInfo()
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<Object>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<Object>> call(UserInfoBean userInfoBean) {
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        if (userInfoBean.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                            if (userInfoBean.getWallet().getBalance() < amount) {
+                                mRootView.goRecharge(WalletActivity.class);
+                                return Observable.error(new RuntimeException(""));
+                            }
+                        }
+                        return mRepository.resetReward(question_id, amount);
+                    }
+                }, throwable -> {
+                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    return null;
+                }, () -> null)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
 
                     @Override

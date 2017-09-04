@@ -11,6 +11,7 @@ public class DataImageView extends FilterImageView {
 
     private String absolutePath;
     private Bitmap bitmap;
+    private int id;
 
     public DataImageView(Context context) {
         this(context, null);
@@ -34,6 +35,16 @@ public class DataImageView extends FilterImageView {
 
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setBitmap(Bitmap bitmap) {
