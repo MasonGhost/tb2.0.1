@@ -88,7 +88,6 @@ public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLay
                 if (Math.abs(dY) / Math.abs(dX) >= 1 && dY > 0) {
                     int[] location = new int[2];
                     getLocationOnScreen(location);
-                    LogUtils.i("locationY ::" + location[1]);
                     if (location[1] < startY) {
                         LogUtils.i("onInterceptTouchEvent ::" + "不触发刷新");
                         return false;

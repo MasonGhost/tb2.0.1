@@ -51,7 +51,6 @@ public class PublishAnswerFragment extends PublishContentFragment {
 
     @Override
     protected void initData() {
-        mImageIdArray = new int[100];
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl

@@ -229,6 +229,11 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
     }
 
     @Override
+    public void onImageDelete() {
+
+    }
+
+    @Override
     public void onContentChange(boolean hasContent) {
         mToolbarRight.setEnabled(hasContent);
     }
