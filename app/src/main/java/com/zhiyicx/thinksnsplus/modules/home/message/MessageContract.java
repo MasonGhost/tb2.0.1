@@ -118,6 +118,8 @@ public interface MessageContract {
 
         MessageItemBean updateReviewItemData();
 
+        List<TSPNotificationBean> getReviewListData();
+
         /**
          * 刷新是否显示底部红点
          * 刷新当条item 的未读数

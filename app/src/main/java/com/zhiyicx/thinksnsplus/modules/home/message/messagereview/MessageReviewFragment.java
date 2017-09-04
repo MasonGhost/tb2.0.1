@@ -14,6 +14,9 @@ import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
@@ -25,6 +28,8 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
 public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
         TopDynamicCommentBean> implements MessageReviewContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
+    public static final String REVIEW_LIST = "review_list";
+
     private ActionPopupWindow mReviewPopWindow;
     private ActionPopupWindow mInstructionsPopupWindow;
 
@@ -33,11 +38,20 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     public MessageReviewFragment() {
     }
 
-    public static MessageReviewFragment newInstance() {
+    public static MessageReviewFragment newInstance(Bundle args) {
         MessageReviewFragment fragment = new MessageReviewFragment();
-        Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
     }
 
     @Override
@@ -71,6 +85,16 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 (getContext(), R.layout.item_message_review_list, mListDatas);
         adapter.setOnItemClickListener(this);
         return adapter;
+    }
+
+    @Override
+    protected void requestNetData(Long maxId, boolean isLoadMore) {
+        onNetResponseSuccess((ArrayList<TopDynamicCommentBean>) getArguments().getSerializable(REVIEW_LIST), isLoadMore);
+    }
+
+    @Override
+    protected List<TopDynamicCommentBean> requestCacheData(Long maxId, boolean isLoadMore) {
+        return null;
     }
 
     @Override

@@ -104,6 +104,7 @@ public class ApiConfig {
     public static final String NOTIFICATION_KEY_FEED_COMMENTS = "feed:comment";
     public static final String NOTIFICATION_KEY_FEED_REPLY_COMMENTS = "feed:reply-comment";
     public static final String NOTIFICATION_KEY_FEED_PINNED_COMMENT = "feed:pinned-comment";
+    public static final String NOTIFICATION_KEY_NEWS_PINNED_COMMENT = "news:pinned-comment";
     public static final String NOTIFICATION_KEY_FOLLOWS = "follows";
     public static final String NOTIFICATION_KEY_NOTICES = "notices";
 

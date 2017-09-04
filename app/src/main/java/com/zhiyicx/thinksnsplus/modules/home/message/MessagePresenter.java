@@ -60,6 +60,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COM
 import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
 import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
 import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
@@ -350,6 +351,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 notificationIds = getNotificationIds(mDiggNoti, notificationIds);
                 break;
             case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
                 notificationIds = getNotificationIds(mReviewNoti, notificationIds);
                 break;
             default:
@@ -553,6 +555,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                                     mDiggNoti.add(tspNotificationBean);
                                     break;
                                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
                                     mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
@@ -615,6 +618,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                 });
         mUnreadNotificationTotalNums = 0;
 
+    }
+
+    @Override
+    public List<TSPNotificationBean> getReviewListData() {
+        return mReviewNoti;
     }
 
     private int getUnreadNums(List<TSPNotificationBean> datas) {
