@@ -86,8 +86,9 @@ public class AddTopicFragment extends TSListFragment<AddTopicContract.Presenter,
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        if (mQATopicBeanList.isEmpty()){
+        if (mQATopicBeanList.isEmpty()) {
             showSnackErrorMessage(getString(R.string.qa_publish_select_topic_hint));
+            return;
         }
         saveQustion();
         Intent intent = new Intent(getActivity(), QARewardActivity.class);

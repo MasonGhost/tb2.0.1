@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
+import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         setupLayoutTransitions();
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
-        allLayout.setPadding(50, 15, 50, 15);//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
+        allLayout.setPadding(dip2px(getContext(),20), dip2px(getContext(),15), dip2px(getContext(),20), 0);//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
         addView(allLayout, layoutParams);
 
         // 2. 初始化键盘退格监听
@@ -121,10 +122,10 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         //editNormalPadding = dip2px(EDIT_PADDING);
-        EditText firstEdit = createEditText(mHint, dip2px(context, EDIT_PADDING));
+        EditText firstEdit = createEditText(mHint, dip2px(context, 0));
         firstEdit.setHintTextColor(getResources().getColor(R.color.general_for_hint));
         firstEdit.addTextChangedListener(this);
-        allLayout.addView(firstEdit, firstEditParam);
+        allLayout.addView(firstEdit);
         lastFocusEdit = firstEdit;
         lastAddEdit = firstEdit;
     }
