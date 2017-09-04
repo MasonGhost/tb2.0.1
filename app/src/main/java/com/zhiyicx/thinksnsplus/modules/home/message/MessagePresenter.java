@@ -30,7 +30,6 @@ import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -83,9 +82,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-
-    @Inject
-    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -286,7 +282,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void deletConversation(int position) {
         final MessageItemBean messageItemBean = mRootView.getListDatas().get(position);
         // ts 助手标记为已删除
-        Observable.empty()
+        Subscription subscribe = Observable.empty()
                 .observeOn(Schedulers.newThread())
                 .subscribe(new rx.Subscriber<Object>() {
                     @Override
@@ -307,10 +303,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
                     }
                 });
+
         // 删除对话信息
         ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType());
         mRootView.getListDatas().remove(position);
         checkBottomMessageTip();
+        addSubscrebe(subscribe);
     }
 
     @Override

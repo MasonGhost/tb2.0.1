@@ -30,8 +30,7 @@ public class NotificationPresenter extends AppBasePresenter<NotificationContract
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        int size = maxId == 0 ? 0 : mRootView.getListDatas().size();
-        Subscription subscription = mRepository.getNotificationList(size)
+        Subscription subscription = mRepository.getNotificationList(maxId.intValue())
                 .subscribe(new BaseSubscribeForV2<List<TSPNotificationBean>>() {
                     @Override
                     protected void onSuccess(List<TSPNotificationBean> data) {

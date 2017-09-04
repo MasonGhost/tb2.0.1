@@ -16,11 +16,9 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
-import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListContract;
 import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListPresenter;
 import com.zhiyicx.thinksnsplus.utils.LocationUtils;
 
@@ -32,13 +30,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
-
-import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_HOT;
-import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_NEARBY;
-import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_NEW;
-import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_RECOMMENT;
 
 /**
  * @author LiuChao

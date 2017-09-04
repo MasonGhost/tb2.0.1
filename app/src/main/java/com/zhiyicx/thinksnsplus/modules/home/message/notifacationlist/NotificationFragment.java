@@ -7,6 +7,8 @@ import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,5 +50,10 @@ public class NotificationFragment extends TSListFragment<NotificationContract.Pr
     @Override
     protected boolean showToolbar() {
         return false;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<TSPNotificationBean> data) {
+        return Long.valueOf(mListDatas.size());
     }
 }

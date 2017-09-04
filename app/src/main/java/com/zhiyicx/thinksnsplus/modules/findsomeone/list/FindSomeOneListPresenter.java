@@ -5,7 +5,6 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
-import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
@@ -18,7 +17,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func2;
 
 import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_HOT;
 import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_NEARBY;
@@ -44,10 +42,6 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-
-    @Inject
-    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
-
 
     @Inject
     public FindSomeOneListPresenter(FindSomeOneListContract.Repository repository,
