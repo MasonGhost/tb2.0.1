@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.google.gson.Gson;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.config.ImageZipConfig;
@@ -20,6 +21,11 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.imageloader.core.ImageLoader;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.PinnedBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSNotifyExtraBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
@@ -30,6 +36,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
@@ -42,30 +49,35 @@ import static com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.Messa
  * @Email Jliuer@aliyun.com
  * @Description
  */
-public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
+public class MssageReviewAdapter extends CommonAdapter<TSPNotificationBean> {
 
-    public MssageReviewAdapter(Context context, int layoutId, List<TopDynamicCommentBean> datas) {
+    private Gson mGson;
+    
+    public MssageReviewAdapter(Context context, int layoutId, List<TSPNotificationBean> datas) {
         super(context, layoutId, datas);
+        mGson=new Gson();
     }
 
     @Override
-    protected void convert(ViewHolder holder, TopDynamicCommentBean
-            topDynamicCommentBean, int position) {
-
+    protected void convert(ViewHolder holder, TSPNotificationBean
+            tspNotificationBean, int position) {
+        String jsonString = mGson.toJson(tspNotificationBean.getData().getExtra(), Map.class);
+        TSNotifyExtraBean extraBean =mGson.fromJson(jsonString,TSNotifyExtraBean.class);
         if (position == getItemCount() - 1) {
             holder.setVisible(R.id.v_bottom_line, View.GONE);
         } else {
             holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
         }
-        ImageUtils.loadCircleUserHeadPic(topDynamicCommentBean.getUserInfoBean(), holder.getView(R.id.iv_headpic));
-        TopDynamicCommentBean.FeedBean feedBean = topDynamicCommentBean.getFeed();
-        TopDynamicCommentBean.CommentBean commentBean = topDynamicCommentBean.getComment();
+        ImageUtils.loadCircleUserHeadPic(extraBean.getUser(), holder.getView(R.id.iv_headpic));
+        DynamicDetailBeanV2 feedBean = extraBean.getFeed();
+        CommentedBean commentBean = extraBean.getComment();
+        PinnedBean pinnedBean=extraBean.getPinned();
         boolean hasImage = feedBean != null && !feedBean.getImages().isEmpty();
 
         holder.setVisible(R.id.iv_detail_image, hasImage ? View.VISIBLE : View.GONE);
         holder.setVisible(R.id.tv_deatil, !hasImage ? View.VISIBLE : View.GONE);
 
-        holder.setText(R.id.tv_deatil, feedBean == null ? getString(R.string.review_dynamic_deleted) : topDynamicCommentBean.getFeed().getContent());
+        holder.setText(R.id.tv_deatil, feedBean == null ? getString(R.string.review_dynamic_deleted) : feedBean.getFeed_content());
         if (hasImage) {
             int w = mContext.getResources().getDimensionPixelOffset(R.dimen.rec_image_for_list);
             GlideUrl url = ImageUtils.imagePathConvertV2(true, feedBean.getImages().get(0).getFile(),
@@ -79,39 +91,39 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
                     .into(holder.getImageViwe(R.id.iv_detail_image));
         }
 
-        String content = String.format(getString(R.string.review_description), PayConfig.realCurrencyFen2Yuan((float) topDynamicCommentBean.getAmount()),
-                commentBean == null ? " " : topDynamicCommentBean.getComment().getBody());
+        String content = String.format(getString(R.string.review_description), PayConfig.realCurrencyFen2Yuan((float) pinnedBean.getAmount()),
+                commentBean == null ? " " : commentBean.getComment_content());
 
         TextView contentView = holder.getView(R.id.tv_content);
         TextView flagView = holder.getView(R.id.tv_review);
         contentView.setText(content);
         List<Link> links = setLiknks(holder, String.format(getString(R.string.dynamic_send_toll_select_money),
-                PayConfig.realCurrencyFen2Yuan(topDynamicCommentBean.getAmount())), commentBean == null ? " " : topDynamicCommentBean.getComment().getBody());
+                PayConfig.realCurrencyFen2Yuan(pinnedBean.getAmount())), commentBean == null ? " " : commentBean.getComment_content());
         contentView.setLinksClickable(false);// 不能消费了点击事件啊
         if (!links.isEmpty()) {
             ConvertUtils.stringLinkConvert(contentView, links);
         }
 
         flagView.setTextColor(SkinUtils.getColor((commentBean == null || feedBean == null)
-                ? R.color.important_for_note : (topDynamicCommentBean.getExpires_at() != null ? R.color.general_for_hint : R.color.dyanmic_top_flag)));
+                ? R.color.important_for_note : (pinnedBean.getExpires_at() != null ? R.color.general_for_hint : R.color.dyanmic_top_flag)));
 
 
         flagView.setText(getString((commentBean == null) ? R.string.review_comment_deleted :
-                (commentBean.isPinned() ? R.string.review_approved : ((topDynamicCommentBean.getExpires_at() == null &&
-                        topDynamicCommentBean.getState() == TOP_REVIEWING) ? R.string.review_ing : R.string.review_refuse))));
+                (pinnedBean.getState()==PinnedBean.TOP_SUCCESS ? R.string.review_approved : ((pinnedBean.getExpires_at() == null &&
+                        pinnedBean.getState() == TOP_REVIEWING) ? R.string.review_ing : R.string.review_refuse))));
         if (feedBean == null) {
             flagView.setText("");
         }
 
-        holder.setText(R.id.tv_name, topDynamicCommentBean.getUserInfoBean().getName());
-        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(topDynamicCommentBean.getCreated_at()));
+        holder.setText(R.id.tv_name, extraBean.getUser().getName());
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(tspNotificationBean.getCreated_at()));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> toUserCenter(topDynamicCommentBean.getUserInfoBean()));
+                .subscribe(aVoid -> toUserCenter(extraBean.getUser()));
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(aVoid -> toUserCenter(topDynamicCommentBean.getUserInfoBean()));
+                .subscribe(aVoid -> toUserCenter(extraBean.getUser()));
 
         RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
@@ -120,7 +132,7 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
                         holder.getConvertView().performClick();
                         return;
                     }
-                    toDetail(topDynamicCommentBean);
+                    toDetail(feedBean.getId());
                 });
     }
 
@@ -154,10 +166,10 @@ public class MssageReviewAdapter extends CommonAdapter<TopDynamicCommentBean> {
         PersonalCenterFragment.startToPersonalCenter(mContext, userInfoBean);
     }
 
-    private void toDetail(TopDynamicCommentBean topDynamicCommentBean) {
+    private void toDetail(Long id) {
         Intent intent;
         Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_SOURCE_ID, topDynamicCommentBean.getFeed().getId());
+        bundle.putLong(BUNDLE_SOURCE_ID, id);
         intent = new Intent(mContext, DynamicDetailActivity.class);
         intent.putExtras(bundle);
 //        switch (commentedBean.getComponent()) {

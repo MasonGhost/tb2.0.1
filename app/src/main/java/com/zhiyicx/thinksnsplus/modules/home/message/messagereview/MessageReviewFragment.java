@@ -5,18 +5,26 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.google.gson.Gson;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.common.utils.recycleviewdecoration.CustomLinearDecoration;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
+import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
+import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.PinnedBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSNotifyExtraBean;
+import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
+import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
 
 /**
@@ -26,14 +34,14 @@ import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWI
  * @Description
  */
 public class MessageReviewFragment extends TSListFragment<MessageReviewContract.Presenter,
-        TopDynamicCommentBean> implements MessageReviewContract.View, MultiItemTypeAdapter.OnItemClickListener {
+        TSPNotificationBean> implements MessageReviewContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String REVIEW_LIST = "review_list";
 
     private ActionPopupWindow mReviewPopWindow;
     private ActionPopupWindow mInstructionsPopupWindow;
 
-    private TopDynamicCommentBean mTopDynamicCommentBean;
+    private TSPNotificationBean mTspNotificationBean;
 
     public MessageReviewFragment() {
     }
@@ -80,8 +88,8 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     }
 
     @Override
-    protected CommonAdapter<TopDynamicCommentBean> getAdapter() {
-        CommonAdapter<TopDynamicCommentBean> adapter = new MssageReviewAdapter
+    protected CommonAdapter<TSPNotificationBean> getAdapter() {
+        CommonAdapter<TSPNotificationBean> adapter = new MssageReviewAdapter
                 (getContext(), R.layout.item_message_review_list, mListDatas);
         adapter.setOnItemClickListener(this);
         return adapter;
@@ -89,11 +97,12 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
-        onNetResponseSuccess((ArrayList<TopDynamicCommentBean>) getArguments().getSerializable(REVIEW_LIST), isLoadMore);
+        onNetResponseSuccess((ArrayList<TSPNotificationBean>) getArguments().getSerializable(REVIEW_LIST), isLoadMore);
     }
 
+
     @Override
-    protected List<TopDynamicCommentBean> requestCacheData(Long maxId, boolean isLoadMore) {
+    protected List<TSPNotificationBean> requestCacheData(Long maxId, boolean isLoadMore) {
         return null;
     }
 
@@ -104,21 +113,28 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        mTopDynamicCommentBean = mListDatas.get(position);
-        if (mTopDynamicCommentBean.getComment() == null || mTopDynamicCommentBean.getFeed() == null) {
-            if (mTopDynamicCommentBean.getComment() == null) {
+        mTspNotificationBean = mListDatas.get(position);
+
+        String jsonString = new Gson().toJson(mTspNotificationBean.getData().getExtra(), Map.class);
+        TSNotifyExtraBean extraBean =new Gson().fromJson(jsonString,TSNotifyExtraBean.class);
+
+        DynamicDetailBeanV2 feedBean = extraBean.getFeed();
+        CommentedBean commentBean = extraBean.getComment();
+        PinnedBean pinnedBean = extraBean.getPinned();
+        if (commentBean == null || feedBean == null) {
+            if (commentBean == null) {
                 initInstructionsPop(R.string.review_comment_deleted);
             } else {
                 initInstructionsPop(R.string.review_dynamic_deleted);
             }
             return;
         }
-        initReviewPopWindow(mTopDynamicCommentBean);
+        initReviewPopWindow(mTspNotificationBean.getData());
     }
 
     @Override
-    public TopDynamicCommentBean getCurrentComment() {
-        return mTopDynamicCommentBean;
+    public TSPNotificationBean getCurrentComment() {
+        return mTspNotificationBean;
     }
 
     @Override
@@ -126,7 +142,23 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
         return false;
     }
 
-    private void initReviewPopWindow(TopDynamicCommentBean topDynamicCommentBean) {
+    private void initReviewPopWindow(TSPNotificationBean.DataBean dataBean) {
+        Long source_id;
+
+        String jsonString = new Gson().toJson(dataBean.getExtra(), Map.class);
+        TSNotifyExtraBean extraBean =new Gson().fromJson(jsonString,TSNotifyExtraBean.class);
+
+        switch (dataBean.getChannel()) {
+            case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                source_id = extraBean.getFeed().getId();
+                break;
+            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
+                source_id = (long) extraBean.getNews().getId();
+                break;
+            default:
+                source_id = null;
+                break;
+        }
         mReviewPopWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.review_approved))
                 .item2Str(getString(R.string.review_refuse))
@@ -136,12 +168,12 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
                 .backgroundAlpha(POPUPWINDOW_ALPHA)
                 .with(getActivity())
                 .item1ClickListener(() -> {
-                    mPresenter.approvedTopComment((long) topDynamicCommentBean.getFeed().getId(),
-                            topDynamicCommentBean.getComment().getId().intValue(), topDynamicCommentBean.getId().intValue());
+                    mPresenter.approvedTopComment(dataBean.getChannel(), source_id,
+                            extraBean.getComment().getId().intValue(), extraBean.getPinned().getId());
                     mReviewPopWindow.hide();
                 })
                 .item2ClickListener(() -> {
-                    mPresenter.refuseTopComment(topDynamicCommentBean.getId().intValue());
+                    mPresenter.refuseTopComment(dataBean.getChannel(), extraBean.getPinned().getId());
                     mReviewPopWindow.hide();
                 })
                 .bottomClickListener(() -> mReviewPopWindow.hide())
