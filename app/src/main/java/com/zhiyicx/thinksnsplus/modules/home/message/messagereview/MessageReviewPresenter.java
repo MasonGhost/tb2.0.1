@@ -9,7 +9,6 @@ import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.data.beans.PinnedBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSNotifyExtraBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
-import com.zhiyicx.thinksnsplus.data.beans.TopDynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.source.local.TopDynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.MessageRepository;
 
@@ -21,13 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscription;
-import rx.functions.Func1;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
 
 /**
  * @Author Jliuer

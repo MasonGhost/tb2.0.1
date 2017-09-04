@@ -57,9 +57,9 @@ import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENT_REPLY;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
 import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
 
 /**
@@ -342,7 +342,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
         String notificationIds = "";
         switch (key) {
             case NOTIFICATION_KEY_FEED_COMMENTS:
-            case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+            case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
                 notificationIds = getNotificationIds(mCommentsNoti, notificationIds);
                 break;
             case NOTIFICATION_KEY_FEED_DIGGS:
@@ -546,7 +546,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         for (TSPNotificationBean tspNotificationBean : data) {
                             switch (tspNotificationBean.getData().getChannel()) {
                                 case NOTIFICATION_KEY_FEED_COMMENTS:
-                                case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+                                case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
                                     mCommentsNoti.add(tspNotificationBean);
                                     break;
                                 case NOTIFICATION_KEY_FEED_DIGGS:
