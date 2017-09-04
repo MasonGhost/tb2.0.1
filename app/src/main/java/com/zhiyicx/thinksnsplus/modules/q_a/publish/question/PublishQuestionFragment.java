@@ -98,7 +98,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     protected void setRightClick() {
         super.setRightClick();
-        if (mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) {
+        if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() > 1) {
             addTopic();
         } else {
             showSnackErrorMessage(getString(R.string.qa_publish_title_toast));
@@ -122,8 +122,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
             mDraftQuestion.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
             mDraftQuestion.setMark(Long.parseLong(mark));
             mDraftQuestion.setSubject(mQuestionStr);
-            mPresenter.saveQuestion(mDraftQuestion);
         }
+        mPresenter.saveQuestion(mDraftQuestion);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
         super.initData();
         try {
             mDraftQuestion = getArguments().getParcelable(BUNDLE_PUBLISHQA_BEAN);
-            mEtQustion.setText(mDraftQuestion.getSubject() );
+            mEtQustion.setText(mDraftQuestion.getSubject());
         } catch (Exception e) {
         }
     }
@@ -171,7 +171,16 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        QAListInfoBean data = mListDatas.get(position);
         mEtQustion.setText(mListDatas.get(position).getSubject() + "?");
+        if (mDraftQuestion == null) {
+            mDraftQuestion = new QAPublishBean();
+        }
+        mDraftQuestion.setAnonymity(data.getAnonymity());
+        mDraftQuestion.setCreated_at(data.getCreated_at());
+        mDraftQuestion.setBody(data.getBody());
+        mDraftQuestion.setSubject(data.getSubject());
+        mDraftQuestion.setAutomaticity(data.getAutomaticity());
         addTopic();
     }
 

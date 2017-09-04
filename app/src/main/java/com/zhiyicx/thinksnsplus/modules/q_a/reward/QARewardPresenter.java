@@ -42,30 +42,49 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
 
     @Override
     public void publishQuestion(QAPublishBean qaPublishBean) {
-        mRepository.publishQuestion(qaPublishBean).subscribe(new BaseSubscribeForV2<BaseJsonV2<QAPublishBean>>() {
-            @Override
-            protected void onSuccess(BaseJsonV2<QAPublishBean> data) {
-                mRootView.showSnackSuccessMessage(data.getMessage().get(0));
-            }
+        mCommentRepository.getCurrentLoginUserInfo()
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<QAPublishBean>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<QAPublishBean>> call(UserInfoBean userInfoBean) {
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        if (userInfoBean.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                            if (userInfoBean.getWallet().getBalance() < qaPublishBean.getAmount()) {
+                                mRootView.goRecharge(WalletActivity.class);
+                                return Observable.error(new RuntimeException(""));
+                            }
+                        }
+                        return mRepository.publishQuestion(qaPublishBean);
+                    }
+                }, throwable -> {
+                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    return null;
+                }, () -> null)
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<QAPublishBean>>() {
+                    @Override
+                    protected void onSuccess(BaseJsonV2<QAPublishBean> data) {
+                        mRootView.showSnackSuccessMessage(data.getMessage().get(0));
+                    }
 
-            @Override
-            protected void onFailure(String message, int code) {
-                super.onFailure(message, code);
-                mRootView.showSnackErrorMessage(message);
-            }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        mRootView.showSnackErrorMessage(message);
+                    }
 
-            @Override
-            protected void onException(Throwable throwable) {
-                super.onException(throwable);
-                mRootView.showSnackErrorMessage(throwable.getMessage());
-            }
-        });
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.showSnackErrorMessage(throwable.getMessage());
+                    }
+                });
     }
 
     @Override
     public void resetReward(Long question_id, double amount) {
-        mRootView.showSnackLoadingMessage(mContext.getString(R.string.bill_doing));
-        Subscription subscription =mCommentRepository.getCurrentLoginUserInfo()
+        Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.transaction_doing)))
                 .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<Object>>>() {
@@ -86,7 +105,6 @@ public class QARewardPresenter extends AppBasePresenter<QARewardContract.Reposit
                     return null;
                 }, () -> null)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
-
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
                         mRootView.showSnackSuccessMessage(mContext.getString(R.string.qa_reset_reward_success));

@@ -25,8 +25,6 @@ import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
-import com.zhiyicx.thinksnsplus.modules.information.infomain.InfoActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.QA_Activity;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
 import com.zhiyicx.thinksnsplus.modules.usertag.TagFrom;
@@ -136,6 +134,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         mTvInviteHint.setText(getString(R.string.qa_publish_reward));
         mTvInviteHint.append(getString(R.string.qa_publish_reward_invite));
         initListener();
+        mToolbarCenter.setFocusable(true);
+        mToolbarCenter.requestFocus();
     }
 
     @Override
@@ -377,6 +377,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     // 发布
+                    mBtPublish.setEnabled(false);
                     try {
                         if (mQuestionId.equals(0L)) {
                             if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
@@ -390,6 +391,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                             mPresenter.resetReward(mQuestionId, mRewardMoney);
                         }
                     } catch (Exception e) {
+                        mBtPublish.setEnabled(true);
                         e.printStackTrace();
                     }
 
