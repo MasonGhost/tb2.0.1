@@ -85,7 +85,6 @@ public class FindPasswordPresenter extends BasePresenter<FindPasswordContract.Re
                 .subscribe(new BaseSubscribeForV2<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
-                        mRootView.showMessage(mContext.getString(R.string.find_password_success));
                         mRootView.finsh();
                         mRootView.setSureBtEnabled(true);
                     }

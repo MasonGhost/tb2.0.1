@@ -85,15 +85,20 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     protected int getBodyLayoutId() {
         return R.layout.fragment_list_with_input_and_toolbar;
     }
+//
+//    @Override
+//    protected boolean isRefreshEnable() {
+//        return false;
+//    }
+//
+//    @Override
+//    protected boolean isLoadingMoreEnable() {
+//        return false;
+//    }
 
     @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
-    protected boolean isLoadingMoreEnable() {
-        return false;
+    protected boolean isNeedRefreshDataWhenComeIn() {
+        return true;
     }
 
     @Override

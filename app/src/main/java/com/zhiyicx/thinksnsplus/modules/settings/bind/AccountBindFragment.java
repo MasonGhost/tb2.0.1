@@ -94,6 +94,8 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
         mVerifyAnimationDrawable = (Animatable) mIvVerifyLoading.getDrawable();
         setBindType();
         setConfirmEnable();
+        initListener();
+
         if (mUserInfoBean != null && mIsBind) {
             if (mCurrentType == DEAL_TYPE_PHONE) {
                 mEtPhone.setText(mUserInfoBean.getPhone());
@@ -108,7 +110,6 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
 
     @Override
     protected void initData() {
-        initListener();
     }
 
     @Override

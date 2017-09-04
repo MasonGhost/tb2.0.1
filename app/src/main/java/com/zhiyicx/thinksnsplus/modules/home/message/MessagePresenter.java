@@ -694,6 +694,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+
                 }
 
             } else {

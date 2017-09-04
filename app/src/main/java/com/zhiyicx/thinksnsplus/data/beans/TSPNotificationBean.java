@@ -95,7 +95,7 @@ public class TSPNotificationBean extends BaseListBean {
                 JSONObject jsonObject = new JSONObject(gson.toJson(data.getExtra()));
                 if(jsonObject.has("user")) {
                     JSONObject userStr = jsonObject.getJSONObject("user");
-                    userInfo = gson.fromJson(gson.toJson(userStr), UserInfoBean.class);
+                    userInfo = gson.fromJson(userStr.toString(), UserInfoBean.class);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
