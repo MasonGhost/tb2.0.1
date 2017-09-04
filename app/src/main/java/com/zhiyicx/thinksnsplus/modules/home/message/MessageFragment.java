@@ -1,24 +1,21 @@
 package com.zhiyicx.thinksnsplus.modules.home.message;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
@@ -182,7 +179,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
                         toCommentList();
-                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS);
+                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS);
                         mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateCommnetItemData());
 
@@ -193,7 +190,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
                         toLikeList();
-                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_DIGGS);
+                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS);
                         mPresenter.updateLikeItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateLikeItemData());
                     });
@@ -203,7 +200,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
                         toReviewList();
-                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
+                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
                         mPresenter.updateReviewItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateReviewItemData());
                     });

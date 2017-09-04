@@ -96,7 +96,7 @@ public class RechargePresenter extends AppBasePresenter<RechargeContract.Reposit
     @Override
     public void rechargeSuccessCallBack(String charge) {
         BackgroundRequestTaskBean backgroundRequestTaskBean = new BackgroundRequestTaskBean();
-        backgroundRequestTaskBean.setUser_id((long) AppApplication.getmCurrentLoginAuth().getUser_id());
+        backgroundRequestTaskBean.setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
         backgroundRequestTaskBean.setMethodType(BackgroundTaskRequestMethodConfig.GET);
         backgroundRequestTaskBean.setPath(ApiConfig.APP_DOMAIN + String.format(ApiConfig.APP_PAHT_WALLET_RECHARGE_SUCCESS_CALLBACK_FORMAT, charge));
         mBackgroundRequestTaskBeanGreenDao.insertOrReplace(backgroundRequestTaskBean);

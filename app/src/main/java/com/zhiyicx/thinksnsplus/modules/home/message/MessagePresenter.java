@@ -55,10 +55,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
 
 /**
@@ -615,6 +615,11 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     }
 
+    /**
+     * 没有阅读时间说明没有阅读
+     * @param datas
+     * @return
+     */
     private int getUnreadNums(List<TSPNotificationBean> datas) {
         int nums = 0;
         for (TSPNotificationBean tspNotificationBean : datas) {
@@ -637,6 +642,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     }
                 }catch (Exception e){
                     e.printStackTrace();
+                    LogUtils.d(commentsNoti.get(i));
                 }
 
             } else {
