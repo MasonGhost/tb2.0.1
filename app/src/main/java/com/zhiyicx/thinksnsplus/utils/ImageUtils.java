@@ -151,10 +151,10 @@ public class ImageUtils {
 
     /**
      * 问答那里的图文混排头像处理
-     * @param userInfoBean
+     * @param userInfoBean 回答者的用户信息
      * @param contentTextView
-     * @param content
-     * @param isAnonymity
+     * @param content 回答的内容
+     * @param isAnonymity 是否匿名回答
      * @param withBorder
      * @description 单纯的一个丑字根本描述不了这段代码 by tym
      */
@@ -164,7 +164,6 @@ public class ImageUtils {
 
     /**
      * 加载用户圆形图像
-     *
      * @param userInfoBean 用户信息
      * @param imageView    显示头像的控件
      * @param withBorder   是否需要边框
@@ -249,7 +248,7 @@ public class ImageUtils {
 
                         headImage.setBounds(0, 0, contentTextView.getLineHeight(), contentTextView.getLineHeight());
                         ImageSpan imgSpan = new CenterImageSpan(headImage, isAnonymity);
-                        SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                        SpannableString spannableString = SpannableString.valueOf("T" +userInfoBean.getName()+"："+ RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                         spannableString.setSpan(imgSpan, 0, 1, Spannable
                                 .SPAN_EXCLUSIVE_EXCLUSIVE);
                         contentTextView.setText(spannableString);
@@ -273,7 +272,7 @@ public class ImageUtils {
                                         @Override
                                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                                             ImageSpan imgSpan = new CenterImageSpan(headImage, resource, isAnonymity);
-                                            SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                                            SpannableString spannableString = SpannableString.valueOf("T" +userInfoBean.getName()+"："+ RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                                             spannableString.setSpan(imgSpan, 0, 1, Spannable
                                                     .SPAN_EXCLUSIVE_EXCLUSIVE);
                                             contentTextView.setText(spannableString);
@@ -284,7 +283,7 @@ public class ImageUtils {
                                             super.onLoadFailed(e, errorDrawable);
                                             errorDrawable.setBounds(0, 0, w, w);
                                             ImageSpan imgSpan = new CenterImageSpan(headImage, errorDrawable, isAnonymity);
-                                            SpannableString spannableString = SpannableString.valueOf("T" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                                            SpannableString spannableString = SpannableString.valueOf("T" +userInfoBean.getName()+"："+ RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                                             spannableString.setSpan(imgSpan, 0, 1, Spannable
                                                     .SPAN_EXCLUSIVE_EXCLUSIVE);
                                             contentTextView.setText(spannableString);

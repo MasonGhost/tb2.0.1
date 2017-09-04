@@ -14,10 +14,11 @@ public class AccountBindActivity extends TSActivity<AccountBindPresenter, Accoun
 
     public static final String BUNDLE_BIND_TYPE = "bundle_bind_type";
     public static final String BUNDLE_BIND_STATE = "bundle_bind_state";
+    public static final String BUNDLE_BIND_DATA= "bundle_bind_data";
 
     @Override
     protected AccountBindFragment getFragment() {
-        return new AccountBindFragment().instance(getIntent().getBundleExtra(BUNDLE_BIND_TYPE));
+        return new AccountBindFragment().instance(getIntent().getExtras());
     }
 
     @Override

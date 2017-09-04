@@ -69,6 +69,14 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                 });
 
         addSubscrebe(subscription);
+
+        mRepository.getInfoType().subscribe(data -> {
+            for (InfoTypeCatesBean myCates : data.getMy_cates()) {
+                myCates.setIsMyCate(true);
+            }
+            mInfoTypeBeanGreenDao.updateSingleData(data);
+            mRootView.setInfoType(data);
+        });
     }
 
     @Override

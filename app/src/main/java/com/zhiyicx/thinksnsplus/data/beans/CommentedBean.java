@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_GROUP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
 
@@ -64,11 +65,11 @@ public class CommentedBean extends BaseListBean {
      */
     @Id
     private Long id; // 数据体 id
-    @SerializedName("commentable_type")
+    @SerializedName(value = "channel", alternate = {"commentable_type"})
     private String channel; // 数据所属扩展包名 目前可能的参数有 feeds musics news
-    @SerializedName("commentable_id")
+    @SerializedName(value = "target_id", alternate = {"commentable_id"})
     private Long target_id;
-    @SerializedName("body")
+    @SerializedName(value = "comment_content", alternate = {"body"})
     private String comment_content; // 评论类容
     private String target_title;
     private Long target_image; // 封面 id
@@ -86,20 +87,18 @@ public class CommentedBean extends BaseListBean {
     private boolean isDelete;
     @Transient
     private Object commentable;
-    /**
-     * Used to resolve relations
-     */
+
+    private long source_id; // 所属资源的父 id; 圈子动态的评论，那source_id == post_id
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 143748434)
     private transient CommentedBeanDao myDao;
 
-    @Generated(hash = 106250567)
+    @Generated(hash = 8688308)
     public CommentedBean(Long id, String channel, Long target_id, String comment_content, String target_title, Long target_image, Long user_id, Long target_user,
-                         Long reply_user, String created_at, String updated_at, boolean isDelete) {
+            Long reply_user, String created_at, String updated_at, boolean isDelete, long source_id) {
         this.id = id;
         this.channel = channel;
         this.target_id = target_id;
@@ -112,6 +111,7 @@ public class CommentedBean extends BaseListBean {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.isDelete = isDelete;
+        this.source_id = source_id;
     }
 
 
@@ -211,6 +211,14 @@ public class CommentedBean extends BaseListBean {
                 } catch (Exception e) {
                 }
                 break;
+            case APP_LIKE_GROUP_POST:
+                try {
+                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
+                    JSONArray jsonArray = jsonObject.getJSONArray("images");
+                    target_image = (long) jsonArray.getJSONObject(0).getDouble("file_id");
+                } catch (Exception e) {
+                }
+                break;
             case APP_LIKE_MUSIC:
 
                 break;
@@ -248,6 +256,14 @@ public class CommentedBean extends BaseListBean {
                 } catch (Exception e) {
                 }
                 break;
+            case APP_LIKE_GROUP_POST:
+                try {
+                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
+                    target_title = jsonObject.getString("content");
+                } catch (Exception e) {
+                }
+                break;
+
             case APP_LIKE_MUSIC:
 
                 break;
@@ -290,10 +306,43 @@ public class CommentedBean extends BaseListBean {
         this.isDelete = isDelete;
     }
 
+    public long getSource_id() {
+        if (source_id != 0) {
+            return this.source_id;
+        }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+        Gson gson = new Gson();
+        switch (channel) {
+            case APP_LIKE_FEED:
+
+                break;
+            case APP_LIKE_GROUP_POST:
+                try {
+                    JSONObject jsonObject = new JSONObject(gson.toJson(commentable));
+                    source_id = jsonObject.getLong("group_id");
+                } catch (Exception e) {
+                }
+                break;
+
+            case APP_LIKE_MUSIC:
+
+                break;
+            case APP_LIKE_NEWS:
+
+                break;
+
+        }
+
+
+        return source_id;
+    }
+
+    public void setSource_id(long source_id) {
+        this.source_id = source_id;
+    }
+
+
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 418864499)
     public UserInfoBean getCommentUserInfo() {
         Long __key = this.user_id;
@@ -313,9 +362,7 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 28373690)
     public void setCommentUserInfo(UserInfoBean commentUserInfo) {
         synchronized (this) {
@@ -326,9 +373,7 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 1491152852)
     public UserInfoBean getSourceUserInfo() {
         Long __key = this.target_user;
@@ -348,9 +393,7 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 672311628)
     public void setSourceUserInfo(UserInfoBean sourceUserInfo) {
         synchronized (this) {
@@ -361,9 +404,7 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 1858190697)
     public UserInfoBean getReplyUserInfo() {
         Long __key = this.reply_user;
@@ -383,9 +424,7 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1797342590)
     public void setReplyUserInfo(UserInfoBean replyUserInfo) {
         synchronized (this) {
@@ -441,6 +480,4 @@ public class CommentedBean extends BaseListBean {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getCommentedBeanDao() : null;
     }
-
-
 }

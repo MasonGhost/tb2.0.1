@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
+import com.zhiyicx.common.config.ConstantConfig;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
@@ -21,6 +23,8 @@ import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,11 +35,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.API_VERSION_2;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_DOMAIN;
 import static com.zhiyicx.thinksnsplus.modules.wallet.WalletPresenter.DEFAULT_LOADING_SHOW_TIME;
 
 /**
@@ -93,8 +100,8 @@ public class JavaTest {
     }
 
     @Test
-    public void testTime(){
-        String time="2017-06-15 02:15:25";
+    public void testTime() {
+        String time = "2017-06-15 02:15:25";
         System.out.println("result::" + TimeUtils.getTimeFriendlyForDetail(time));
         System.out.println("result1::" + TimeUtils.getTimeFriendlyNormal(time));
         System.out.println("result2::" + TimeUtils.utc2LocalStr(time));
@@ -116,6 +123,40 @@ public class JavaTest {
     }
 
     @Test
+    public void doubleTest() {
+        double d = 5.0;
+        System.out.println("result::" + PayConfig.realCurrencyFen2Yuan(d));
+    }
+
+    @Test
+    public void bigDoubleTest() {
+        double d = 11111111111111111111d;
+        BigDecimal totalAmount = new BigDecimal(d);
+        new BigDecimal(new Double(totalAmount.doubleValue()).toString());
+        NumberFormat format = NumberFormat.getInstance();
+        // 是否以逗号隔开, 默认true以逗号隔开,如[123,456,789.128]
+        format.setGroupingUsed(false);
+
+        format.format(d).toString();
+
+        System.out.println("result1::" + totalAmount);
+        System.out.println("result2::" + totalAmount.toString());
+        System.out.println("result3::" + d);
+    }
+
+    @Test
+    public void matchTest2() {
+        String reg = "¥\\d+\\.\\d+";
+        String test = " 2打赏 · 6 评论 ¥3.5啦啦啦";
+        Matcher matcher = Pattern.compile(reg).matcher(test);
+        if (matcher.find()) {
+            System.out.println("result::" + matcher.group(0));
+            System.out.println("result2::" + matcher.groupCount());
+
+        }
+    }
+
+    @Test
     public void replaceTest() {
         String tag = "@![image](580)哈哈哈哈哈ヽ(ｏ`皿′ｏ)ﾉ((*゜Д゜)ゞ”😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁@![image](581)";
         Pattern pattern = Pattern.compile("@!\\[.*?]\\((\\d+)\\)");
@@ -130,6 +171,16 @@ public class JavaTest {
         Matcher matcher1 = pattern.matcher(targetStr);
         int lastIndex = 0;
         while (matcher1.find()) {
+
+            String imageMarkDown = matcher1.group(0);
+            String id = matcher1.group(1);
+
+            String imgPath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+            String iamgeTag = imageMarkDown.replaceAll("\\d+", imgPath).replace("@", "");
+            targetStr = targetStr.replace(imageMarkDown, iamgeTag);
+
+            System.out.println("targetStr result:: " + targetStr);
+
             System.out.println("result:: " + matcher1.group(1));
             if (matcher1.start() > lastIndex) {
                 System.out.println("result 1 :: " + targetStr.substring(lastIndex, matcher1.start()));
@@ -137,9 +188,11 @@ public class JavaTest {
             String result2 = targetStr.substring(matcher1.start(), matcher1.end());
             Matcher matcher2 = Pattern.compile(reg).matcher(result2);
             System.out.println("result 2 :: " + result2);
+
             if (matcher2.find()) {
                 System.out.println("matcher 2 :: " + matcher2.group(0));
                 System.out.println("matcher 2 :: " + matcher2.group(1));
+                System.out.println("matcher 2 :: " + matcher2.group(0).replaceAll("\\d+","tym").replaceAll("@",""));
             }
             lastIndex = matcher1.end();
         }
@@ -424,4 +477,118 @@ public class JavaTest {
 //        System.out.println("test2 = " + test2.size());
 
     }
+
+    @Test
+    public void testEmoji() {
+        containsEmoji("😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁😁22");
+    }
+
+    private static boolean containsEmoji(String str) {
+        int test = 0;
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
+            if (isEmojiCharacter(str.charAt(i))) {
+                test++;
+            }
+        }
+        System.out.println("result::" + test);
+        System.out.println("len::" + len);
+        return false;
+    }
+
+    private static boolean isEmojiCharacter(char codePoint) {
+        return !(codePoint == 0x0 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD || codePoint >= 0x20 && codePoint <= 0xD7FF || codePoint >= 0xE000 && codePoint <= 0xFFFD);
+    }
+
+
+    /**
+     * 测试 String 的 container
+     */
+    @Test
+    public void testStringContainer() {
+        String user_ids = "14,12,9,88,33";
+        String user_ids2 = "12,9,88,33";
+        String user_ids3 = "12";
+        String user_ids4 = "14,12,9,88,12";
+        String user_ids5 = "14,12,9,12,33";
+        String user_ids6 = "12,12,9,12,33";
+        String currentUserId = "12";
+
+
+        checkUser(user_ids, currentUserId);
+        checkUser(user_ids2, currentUserId);
+        checkUser(user_ids3, currentUserId);
+        checkUser(user_ids4, currentUserId);
+        checkUser(user_ids5, currentUserId);
+        checkUser(user_ids6, currentUserId);
+
+
+    }
+
+    private void checkUser(String user_ids, String currentUserId) {
+        String[] users = user_ids.split(ConstantConfig.SPLIT_SMBOL);
+        boolean hasCurrentUser = false;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String user : users) {
+            if (currentUserId.equals(user)) {
+                hasCurrentUser = true;
+            } else {
+                stringBuilder.append(user);
+                stringBuilder.append(ConstantConfig.SPLIT_SMBOL);
+            }
+        }
+        if (stringBuilder.length() > 1) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        user_ids = stringBuilder.toString();
+
+        System.out.println(user_ids);
+
+        Assert.assertTrue(hasCurrentUser);
+    }
+
+    /**
+     * 测试网络错误数据
+     */
+    @Test
+    public void testNetErrorResponseMessage() {
+        String response1 = "{ \"message\": \"this is a message.\" }";
+        String response2 = "{ \"message\": [ \"This is amessage array item.\" ] }";
+        String response3 = "{\n" +
+                "    \"key\": [ \"value\" ],\n" +
+                "    \"key2\": [ \"value\", \"value2\" ]\n" +
+                "}";
+        String response4 = "{\n" +
+                "    \"message\": \"This is a message\",\n" +
+                "    \"errors\": {\n" +
+                "        \"key1\": [ \"value1\" ],\n" +
+                "        \"key2\": [ \"value1\", \"value2\" ]\n" +
+                "    }\n" +
+                "}";
+
+        praseMessage(response1);
+        praseMessage(response2);
+        praseMessage(response3);
+        praseMessage(response4);
+
+
+    }
+
+    private void praseMessage(String response1) {
+        Map<String, Object> errorMessageMap = new Gson().fromJson(response1,
+                new TypeToken<Map<String, Object>>() {
+                }.getType());
+        for (Object value : errorMessageMap.values()) {
+            if (value instanceof String) {
+                System.out.println(response1 + " = " + (String) value);
+            } else if (value instanceof String[]) {
+                System.out.println(response1 + " = " + ((String[]) value)[0]);
+            }else if(value instanceof List){
+                System.out.println(response1 + " = " + ((List) value).get(0));
+
+            }
+            return;
+        }
+    }
+
 }

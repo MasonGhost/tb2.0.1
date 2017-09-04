@@ -10,7 +10,7 @@
               app:cardPreventCornerOverlap="true"
               app:cardCornerRadius="@dimen/button_corner_small"
               app:cardElevation="2dp"
-              android:background="@color/white">
+              android:background="@drawable/shape_raduse_bg_white">
 
     <!--选择完善资料-->
     <TextView
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/pop_choose_third_type_height"
             android:gravity="center"
-            android:text="@string/third_platform_complete_account"
+            android:text="@string/third_platform_complete_register"
             android:textColor="@color/important_for_content"
             android:textSize="@dimen/size_sub_title"/>
 

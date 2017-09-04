@@ -78,14 +78,6 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     }
 
     @Override
-    protected void musicWindowsStatus(boolean isShow) {
-        super.musicWindowsStatus(isShow);
-        if (isShow) {
-            int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-            mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
-        }
-    }
-    @Override
     protected View getRightViewOfMusicWindow() {
         return mFragmentInfoSearchCancle;
     }
@@ -94,21 +86,19 @@ public class LocationSearchFragment extends TSListFragment<LocationSearchContrac
     protected void initView(View rootView) {
         super.initView(rootView);
         mEmptyView.setVisibility(View.GONE);
-        mFragmentInfoSearchEdittext.setOnEditorActionListener(
-                (v, actionId, event) -> {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        mPresenter.searchLocation(mFragmentInfoSearchEdittext.getText().toString());
-                        DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
-                        return true;
-                    }
-                    return false;
-                });
-        mRvList.setBackgroundResource(R.color.white);
-        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
-                .subscribe(textViewAfterTextChangeEvent -> {
-                    mPresenter.searchLocation(textViewAfterTextChangeEvent.editable().toString());
 
-                });
+        RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                mPresenter.searchLocation(mFragmentInfoSearchEdittext.getText().toString());
+                DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+            }
+        });
+        mRvList.setBackgroundResource(R.color.white);
+//        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
+//                .subscribe(textViewAfterTextChangeEvent -> {
+//                    mPresenter.searchLocation(textViewAfterTextChangeEvent.editable().toString());
+//
+//                });
     }
 
     @Override

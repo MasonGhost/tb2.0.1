@@ -3,6 +3,7 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zhiyicx.baseproject.base.BaseListBean;
 import com.zhiyicx.thinksnsplus.data.source.local.data_convert.BaseConvert;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -16,7 +17,8 @@ import java.io.Serializable;
  * @Email Jliuer@aliyun.com
  * @Description 音乐详情
  */
-public class MusicDetaisBean implements Parcelable {
+public class MusicDetaisBean extends BaseListBean implements Serializable,Parcelable{
+    private static final long serialVersionUID = 5177124821653334394L;
     /**
      * id : 1
      * created_at : 2017-03-16 17:11:26
@@ -48,6 +50,11 @@ public class MusicDetaisBean implements Parcelable {
     private int share_count;
     private int comment_count;
     private boolean has_like;
+
+    @Override
+    public Long getMaxId() {
+        return id;
+    }
 
     public Long getId() {
         return id;

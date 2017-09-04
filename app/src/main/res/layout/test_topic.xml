@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <!--悬浮-->
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <net.lucode.hackware.magicindicator.MagicIndicator
+            android:id="@+id/mg_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/topic_category_height"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        style="@style/style_divider_horizontal"/>
+
+    <include
+        layout="@layout/fragment_tslist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

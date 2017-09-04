@@ -17,7 +17,7 @@ import rx.Observable;
  * @contact email:648129313@qq.com
  */
 
-public class ExpertSearchRepository extends BaseQARepository implements ExpertSearchContract.Repository{
+public class ExpertSearchRepository extends BaseQARepository implements ExpertSearchContract.Repository {
 
     @Inject
     public ExpertSearchRepository(ServiceManager manager) {
@@ -26,7 +26,7 @@ public class ExpertSearchRepository extends BaseQARepository implements ExpertSe
 
 
     @Override
-    public Observable<List<ExpertBean>> getExpertList(int size, String topic_ids) {
-        return mQAClient.getExpertListByTopicIds(topic_ids, size);
+    public Observable<List<ExpertBean>> getExpertList(int size, String topic_ids, String keyword) {
+        return mQAClient.getExpertListByTopicIds(topic_ids, keyword, size);
     }
 }

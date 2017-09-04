@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -26,6 +27,8 @@ import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -83,33 +86,21 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
     }
 
     @Override
-    protected void musicWindowsStatus(boolean isShow) {
-        super.musicWindowsStatus(isShow);
-        if (isShow) {
-            int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-            mFragmentInfoSearchContainer.setPadding(0, 0, rightX, 0);
-        }
-    }
-
-    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mEmptyView.setVisibility(View.GONE);
-        mFragmentInfoSearchEdittext.setOnEditorActionListener(
-                (v, actionId, event) -> {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        mPresenter.searchUser(mFragmentInfoSearchEdittext.getText().toString());
-                        DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
-                        return true;
-                    }
-                    return false;
-                });
-        mRvList.setBackgroundResource(R.color.white);
-        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
-                .subscribe(textViewAfterTextChangeEvent -> {
-                    mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
 
-                });
+        RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                mPresenter.searchUser(mFragmentInfoSearchEdittext.getText().toString());
+                DeviceUtils.hideSoftKeyboard(getContext(), mFragmentInfoSearchEdittext);
+            }
+        });
+        mRvList.setBackgroundResource(R.color.white);
+//        RxTextView.afterTextChangeEvents(mFragmentInfoSearchEdittext)
+//                .subscribe(textViewAfterTextChangeEvent -> {
+//                    mPresenter.searchUser(textViewAfterTextChangeEvent.editable().toString());
+//                });
     }
 
     @Override
@@ -140,7 +131,7 @@ public class SearchSomeOneFragment extends TSListFragment<SearchSomeOneContract.
 
     @Override
     protected CommonAdapter getAdapter() {
-        CommonAdapter adapter = new FindSomeOneListAdapter(getActivity(), R.layout.item_find_some_list, mListDatas,mPresenter);
+        CommonAdapter adapter = new FindSomeOneListAdapter(getActivity(), R.layout.item_find_some_list, mListDatas, mPresenter);
         adapter.setOnItemClickListener(this);
         return adapter;
 

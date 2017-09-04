@@ -15,7 +15,7 @@ import java.util.List;
  * @contact email:648129313@qq.com
  */
 
-public class ExpertBean extends BaseListBean{
+public class ExpertBean extends BaseListBean {
 
 
     /**
@@ -49,6 +49,11 @@ public class ExpertBean extends BaseListBean{
     private VerifiedBean verified;
     private ExtraBean extra;
     private List<UserTagBean> tags;
+
+    @Override
+    public Long getMaxId() {
+        return (long) id;
+    }
 
     public int getId() {
         return id;
@@ -162,7 +167,7 @@ public class ExpertBean extends BaseListBean{
         this.tags = tags;
     }
 
-    public static class ExtraBean implements Parcelable,Serializable{
+    public static class ExtraBean implements Parcelable, Serializable {
         private static final long serialVersionUID = -7614931495429263456L;
         /**
          * user_id : 1
@@ -301,7 +306,7 @@ public class ExpertBean extends BaseListBean{
         }
     }
 
-    public static class TagsBean implements Parcelable,Serializable{
+    public static class TagsBean implements Parcelable, Serializable {
         private static final long serialVersionUID = 4814188227142987987L;
         /**
          * id : 1

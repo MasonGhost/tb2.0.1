@@ -35,22 +35,14 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
         Subscription getCacheDirSizeSub = mRepository.getDirCacheSize()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String size) {
-                        if (TextUtils.isEmpty(size)) {
-                            mRootView.setCacheDirSize(mContext.getString(R.string.cache_zero_size));//将缓存大小改为 0b
-                        } else {
-                            mRootView.setCacheDirSize(size);
-                        }
+                .subscribe(size -> {
+                    if (TextUtils.isEmpty(size)) {
+                        mRootView.setCacheDirSize(mContext.getString(R.string.cache_zero_size));//将缓存大小改为 0b
+                    } else {
+                        mRootView.setCacheDirSize(size);
+                    }
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                }, throwable -> throwable.printStackTrace());
         addSubscrebe(getCacheDirSizeSub);
     }
 
@@ -59,22 +51,16 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
         Subscription cleanCacheSub = mRepository.cleanCache()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean isDelete) {
-                        if (isDelete) {
-                            mRootView.showSnackSuccessMessage(mContext.getString(R.string.clean_success));// 删除成功
-                            mRootView.setCacheDirSize(mContext.getString(R.string.cache_zero_size));//将缓存大小改为 0b
-                        } else {
-                            mRootView.showSnackErrorMessage(mContext.getString(R.string.clean_failure));
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
+                .subscribe(isDelete -> {
+                    if (isDelete) {
+                        mRootView.showSnackSuccessMessage(mContext.getString(R.string.clean_success));// 删除成功
+                        mRootView.setCacheDirSize(mContext.getString(R.string.cache_zero_size));//将缓存大小改为 0b
+                    } else {
                         mRootView.showSnackErrorMessage(mContext.getString(R.string.clean_failure));
                     }
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    mRootView.showSnackErrorMessage(mContext.getString(R.string.clean_failure));
                 });
         addSubscrebe(cleanCacheSub);
     }
@@ -82,6 +68,7 @@ public class SettingsPresenter extends BasePresenter<SettingsContract.Repository
     @Override
     public boolean loginOut() {
         mIAuthRepository.clearAuthBean();
+        mIAuthRepository.clearThridAuth();
         return true;
     }
 

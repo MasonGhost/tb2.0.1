@@ -28,7 +28,7 @@ public class LocationBean extends BaseListBean {
     private int id;
     private String name;
     private int pid;
-    @SerializedName("extends")
+    @SerializedName(value = "extendsX",alternate = {"extends"})
     private String extendsX;
     private String created_at;
     private String updated_at;

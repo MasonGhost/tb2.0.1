@@ -111,7 +111,8 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                     if (aBoolean) {
                         initLocation();
                     } else {
-                        mTvCurrentLocation.setText(getString(R.string.empty));
+                        mTvCurrentLocation.setText(getString(R.string.wu));
+                        handleAnimation(false);
                     }
                 });
     }
@@ -201,6 +202,9 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
                 startLocation();
                 break;
             case R.id.tv_current_location:
+                if(mTvCurrentLocation.getText().toString().trim().equals(getString(R.string.wu))){
+                    return;
+                }
                 LocationBean bean = new LocationBean();
                 bean.setName(mCurrentLocation);
                 Intent intenttmp = new Intent();
@@ -250,26 +254,6 @@ public class LocationRecommentFragment extends TSFragment<LocationRecommentContr
 
             }
 
-            @Override
-            protected void setListener(ViewGroup parent, final ViewHolder viewHolder, int viewType) {
-                RxView.clicks(viewHolder.itemView)
-                        .throttleFirst(ConstantConfig.JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                        .compose(bindToLifecycle())
-                        .subscribe(o -> {
-                            if (mOnItemClickListener != null) {
-                                int position = viewHolder.getAdapterPosition();
-                                mOnItemClickListener.onItemClick(viewHolder.itemView, viewHolder, position);
-                            }
-                        });
-
-                viewHolder.itemView.setOnLongClickListener(v -> {
-                    if (mOnItemClickListener != null) {
-                        int position = viewHolder.getAdapterPosition();
-                        return mOnItemClickListener.onItemLongClick(v, viewHolder, position);
-                    }
-                    return true;
-                });
-            }
         };
 
         mHotCitysAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

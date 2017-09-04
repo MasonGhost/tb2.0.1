@@ -24,6 +24,7 @@ import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.guide.GuideFragment.DEFAULT_DELAY_TIME;
@@ -52,7 +53,7 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
     public void onNewIntent(Intent intent) {
         isClick = false;
         isFirst = false;
-        if (isFinish) {
+        if (isFinish || mPosition != 0) {
             mPresenter.checkLogin();
         }
     }
@@ -94,6 +95,8 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
                     } else {
                         mPresenter.checkLogin();
                     }
+                }, throwable -> {
+
                 });
     }
 
@@ -127,7 +130,10 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         mGuideBanner.setOnPageChangeListener(null);
         mGuideBanner.stopAutoPlay();
         mTimer.replease();
-        subscription.unsubscribe();
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+
     }
 
     @Override
@@ -178,11 +184,12 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
 
     @Override
     public void OnBannerClick(int position) {
+
         isClick = true;
         if (isFinish) {
             return;
         }
-        // mGuideBanner.stopAutoPlay();
+//        mGuideBanner.stopAutoPlay();
         CustomWEBActivity.startToWEBActivity(getActivity(), mBootAdverts.get(position)
                         .getAdvertFormat().getImage().getLink(),
                 mBootAdverts.get(position).getTitle(), ADVERT);
@@ -222,5 +229,13 @@ public class GuideFragment_v2 extends TSFragment<GuideContract.Presenter> implem
         mGuideBanner.setOnPageChangeListener(this);
         mGuideBanner.start();
         mTimer.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
     }
 }

@@ -7,11 +7,16 @@ import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.net.UpLoadFile;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletConfigBean;
+import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.remote.CommonClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
+import com.zhiyicx.thinksnsplus.data.source.remote.WalletClient;
 import com.zhiyicx.thinksnsplus.data.source.repository.i.ICommentRepository;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -29,6 +34,11 @@ import rx.schedulers.Schedulers;
 public class CommentRepository implements ICommentRepository {
     protected CommonClient mCommonClient;
 
+    @Inject
+    WalletRepository mWalletRepository;
+
+    @Inject
+    UserInfoRepository mUserInfoRepository;
 
     @Inject
     public CommentRepository(ServiceManager serviceManager, Application context) {
@@ -40,7 +50,9 @@ public class CommentRepository implements ICommentRepository {
     public Observable<BaseJson<Object>> sendComment(String comment_content, long reply_to_user_id, long comment_mark, String path) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("body", comment_content);
-        params.put("reply_user", reply_to_user_id);
+        if (reply_to_user_id > 0) {
+            params.put("reply_user", reply_to_user_id);
+        }
         params.put("comment_mark", comment_mark);
         return mCommonClient.handleBackGroundTaskPost(path, UpLoadFile.upLoadFileAndParams(null, params))
                 .subscribeOn(Schedulers.io())
@@ -51,14 +63,16 @@ public class CommentRepository implements ICommentRepository {
     public Observable<Object> sendCommentV2(String comment_content, long reply_to_user_id, long comment_mark, String path) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("body", comment_content);
-        params.put("reply_user", reply_to_user_id);
+        if (reply_to_user_id > 0) {
+            params.put("reply_user", reply_to_user_id);
+        }
         params.put("comment_mark", comment_mark);
         return mCommonClient.handleBackGroundTaskPostV2(path, UpLoadFile.upLoadFileAndParams(null, params))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public static String getCommentPath(long source_id, String component_type) {
+    public static String getCommentPath(long source_id, String component_type,long source_parent_id) {
         String path = null;
         if (component_type == null) {
             return path;
@@ -66,6 +80,10 @@ public class CommentRepository implements ICommentRepository {
         switch (component_type) {
             case ApiConfig.APP_LIKE_FEED:
                 path = String.format(ApiConfig.APP_PATH_DYNAMIC_SEND_COMMENT_V2, source_id);
+
+                break;
+            case ApiConfig.APP_LIKE_GROUP_POST:
+                path = String.format(Locale.getDefault(),ApiConfig.APP_PATH_COMMENT_GROUP_DYNAMIC_FORMAT,(int)source_parent_id, (int)source_id);
 
                 break;
             case ApiConfig.APP_LIKE_MUSIC:
@@ -95,5 +113,15 @@ public class CommentRepository implements ICommentRepository {
         return mCommonClient.payNote(note)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<WalletConfigBean> getWalletConfig() {
+        return mWalletRepository.getWalletConfig();
+    }
+
+    @Override
+    public Observable<UserInfoBean> getCurrentLoginUserInfo() {
+        return mUserInfoRepository.getCurrentLoginUserInfo();
     }
 }

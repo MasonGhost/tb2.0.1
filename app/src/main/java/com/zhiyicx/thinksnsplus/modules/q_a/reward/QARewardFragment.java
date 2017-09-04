@@ -49,7 +49,6 @@ import static com.zhiyicx.thinksnsplus.modules.usertag.TagFrom.QA_PUBLISH;
  * @date 2017/7/25
  * @contact email:648129313@qq.com
  */
-
 public class QARewardFragment extends TSFragment<QARewardContract.Presenter> implements QARewardContract.View,
         CenterInfoPopWindow.CenterPopWindowItem1ClickListener {
 
@@ -345,7 +344,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             mBtQaSelectExpert.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             mRlOnlooker.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             resetExpert();
-            configSureButton();
+//            configSureButton();
         });
         // 围观开关
         mWcOnlooker.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -381,6 +380,9 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                     // 发布
                     try {
                         if (mQuestionId.equals(0L)) {
+                            if (mWcInvite.isChecked() && (mRewardMoney <= 0 || TextUtils.isEmpty(mBtQaSelectExpert.getRightText()))) {
+                                showSnackErrorMessage("邀请的专家呢？");
+                            }
                             packgQuestion();
                             mPresenter.publishQuestion(mQAPublishBean);
                         } else {
@@ -399,7 +401,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     }
 
     private QAPublishBean packgQuestion() {
-        mQAPublishBean.setAmount(mRewardMoney);
+        mQAPublishBean.setAmount(PayConfig.realCurrencyYuan2Fen(mRewardMoney));
         mQAPublishBean.setAutomaticity(mWcInvite.isChecked() ? 1 : 0);
         mQAPublishBean.setLook(mWcOnlooker.isChecked() ? 1 : 0);
         return mQAPublishBean;

@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,7 +16,11 @@ import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
 import com.zhiyicx.baseproject.widget.button.CombinationButton;
+import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
+import com.zhiyicx.baseproject.widget.popwindow.PermissionPopupWindow;
 import com.zhiyicx.common.utils.ConvertUtils;
+import com.zhiyicx.common.utils.DeviceUtils;
+import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.SendCertificationBean;
@@ -22,14 +28,18 @@ import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.certification.detail.CertificationDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.certification.input.CertificationInputActivity;
+import com.zhiyicx.thinksnsplus.modules.channel.mine.MyGroupActivity;
 import com.zhiyicx.thinksnsplus.modules.collect.CollectListActivity;
 import com.zhiyicx.thinksnsplus.modules.draftbox.DraftBoxActivity;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoActivity;
 import com.zhiyicx.thinksnsplus.modules.feedback.FeedBackActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListActivity;
 import com.zhiyicx.thinksnsplus.modules.follow_fans.FollowFansListFragment;
+import com.zhiyicx.thinksnsplus.modules.information.my_info.ManuscriptsActivity;
+import com.zhiyicx.thinksnsplus.modules.music_fm.paided_music.MyMusicActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
+import com.zhiyicx.thinksnsplus.modules.q_a.mine.container.MyQuestionActivity;
 import com.zhiyicx.thinksnsplus.modules.settings.SettingsActivity;
 import com.zhiyicx.thinksnsplus.modules.system_conversation.SystemConversationActivity;
 import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
@@ -99,6 +109,8 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
     private UserInfoBean mUserInfoBean;
     private UserCertificationInfo mUserCertificationInfo;
 
+    private ActionPopupWindow mActionPopupWindow;// 请求音乐权限弹窗
+
     public MineFragment() {
     }
 
@@ -147,11 +159,6 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         return 0;
     }
 
-//    @Override
-//    protected int setRightImg() {
-//        return ico_me_message_normal;
-//    }
-
     @Override
     protected boolean showToolBarDivider() {
         return true;
@@ -184,9 +191,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
     }
 
-    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container,
-            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet,
-            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification})
+    @OnClick({R.id.rl_userinfo_container, R.id.ll_fans_container, R.id.ll_follow_container, R.id.bt_my_info,
+            R.id.bt_personal_page, R.id.bt_ranking, R.id.bt_collect, R.id.bt_wallet, R.id.bt_music,
+            R.id.bt_suggestion, R.id.bt_draft_box, R.id.bt_setting, R.id.bt_certification, R.id.bt_my_qa, R.id.bt_my_group})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_userinfo_container:
@@ -217,6 +224,9 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
+            case R.id.bt_my_info:
+                startActivity(new Intent(getContext(), ManuscriptsActivity.class));
+                break;
             case R.id.bt_ranking:
 
 //                Intent toRank = new Intent(getContext(), RankActivity.class);
@@ -228,6 +238,18 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 break;
             case R.id.bt_wallet:
                 startActivity(new Intent(getActivity(), WalletActivity.class));
+                break;
+            case R.id.bt_music:
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (Settings.canDrawOverlays(getContext())) {
+                        startActivity(new Intent(getActivity(), MyMusicActivity.class));
+                    } else {
+                        initPermissionPopUpWindow();
+                        mActionPopupWindow.show();
+                    }
+                } else {
+                    startActivity(new Intent(getActivity(), MyMusicActivity.class));
+                }
                 break;
             case R.id.bt_suggestion:
                 startActivity(new Intent(getActivity(), FeedBackActivity.class));
@@ -259,6 +281,14 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
                 } else {
                     initCertificationTypePop();
                 }
+                break;
+            case R.id.bt_my_qa:
+                // 我的问答
+                startActivity(new Intent(getActivity(), MyQuestionActivity.class));
+                break;
+            case R.id.bt_my_group:
+                // 我的圈子
+                startActivity(new Intent(getActivity(), MyGroupActivity.class));
                 break;
             default:
         }
@@ -343,5 +373,36 @@ public class MineFragment extends TSFragment<MineContract.Presenter> implements 
         }
         intent.putExtra(BUNDLE_CERTIFICATION_TYPE, bundle);
         startActivity(intent);
+    }
+
+    private void initPermissionPopUpWindow() {
+        if (mActionPopupWindow != null) {
+            return;
+        }
+        String model = android.os.Build.MODEL;
+        final boolean isOppoR9s = model.equalsIgnoreCase("oppo r9s");
+        mActionPopupWindow = PermissionPopupWindow.builder()
+                .permissionName(getString(com.zhiyicx.baseproject.R.string.windows_permission))
+                .with(getActivity())
+                .bottomStr(getString(com.zhiyicx.baseproject.R.string.cancel))
+
+                .item1Str(getString(isOppoR9s ? com.zhiyicx.baseproject.R.string
+                        .oppo_setting_windows_permission_hint :
+                        com.zhiyicx.baseproject.R.string.setting_windows_permission_hint))
+
+                .item2Str(getString(com.zhiyicx.baseproject.R.string.setting_permission))
+                .item2ClickListener(() -> {
+                    mActionPopupWindow.hide();
+                    if (isOppoR9s) {
+                        DeviceUtils.startAppByPackageName(getActivity(), "com.coloros.safecenter");
+                    } else {
+                        DeviceUtils.openAppDetail(getActivity());
+                    }
+                })
+                .bottomClickListener(() -> mActionPopupWindow.hide())
+                .isFocus(true)
+                .isOutsideTouch(true)
+                .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
+                .build();
     }
 }

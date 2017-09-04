@@ -21,7 +21,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trycatch.mysnackbar.Prompt;
 import com.trycatch.mysnackbar.TSnackbar;
+import com.umeng.socialize.UMShareAPI;
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.baseproject.impl.share.UmengSharePolicyImpl;
 import com.zhiyicx.baseproject.utils.WindowUtils;
 import com.zhiyicx.baseproject.widget.dialog.LoadingDialog;
 import com.zhiyicx.common.base.BaseFragment;
@@ -59,7 +61,6 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
     private View mCenterLoadingView; // 加载
     private ImageView mIvRefresh; // 头部左边的刷新控件
 
-    private boolean mIscUseSatusbar = false;// 内容是否需要占用状态栏
     protected ViewGroup mSnackRootView;
     private boolean mIsNeedClick = true;// 缺省图是否需要点击
     private boolean rightViewHadTranslated = false;// 右上角的按钮因为音乐播放悬浮显示，是否已经偏左移动
@@ -244,7 +245,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
         View view_test = getRightViewOfMusicWindowTwo();
         if (view != null && WindowUtils.getIsPause()) {
             int rightX = ConvertUtils.dp2px(view.getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(view.getContext(), 15);
-            view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),view.getPaddingRight()-rightX,view.getPaddingBottom());
+            view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() - rightX, view.getPaddingBottom());
         }
         if (WindowUtils.getIsPause()) {
             WindowUtils.removeWindowDismisslistener(this);
@@ -357,6 +358,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
 
     /**
      * 中心菊花
+     *
      * @param msg
      */
     @Override
@@ -403,7 +405,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return 默认不可用
      */
     protected boolean setUseSatusbar() {
-        return mIscUseSatusbar = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     /**
@@ -412,7 +414,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
      * @return
      */
     protected boolean setUseStatusView() {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
 
@@ -471,7 +473,7 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                                 if (view.getVisibility() == View.VISIBLE) {
                                     // 向左移动一定距离
                                     int rightX = ConvertUtils.dp2px(getContext(), 44) * 3 / 4 + ConvertUtils.dp2px(getContext(), 15);
-                                    view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),view.getPaddingRight()+rightX,view.getPaddingBottom());
+                                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight() + rightX, view.getPaddingBottom());
                                     rightViewHadTranslated = true;
                                 } else {
                                     rightViewHadTranslated = false;

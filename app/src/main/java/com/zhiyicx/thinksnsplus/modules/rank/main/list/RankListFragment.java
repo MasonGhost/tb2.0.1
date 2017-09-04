@@ -35,6 +35,16 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
         DaggerRankListComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())
@@ -75,5 +85,10 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
             mRankIndexBean = (RankIndexBean) getArguments().getSerializable(BUNDLE_RANK_TYPE);
         }
         return mRankIndexBean == null ? "" : mRankIndexBean.getCategory();
+    }
+
+    @Override
+    protected boolean isLoadingMoreEnable() {
+        return false;
     }
 }

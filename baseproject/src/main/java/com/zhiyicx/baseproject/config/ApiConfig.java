@@ -30,7 +30,7 @@ public class ApiConfig {
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
-    //    public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
+    //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
 //    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
 
 //    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
@@ -38,7 +38,7 @@ public class ApiConfig {
     public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
 
-    public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION + "/system/about";// 关于我们网站
+    public static final String URL_ABOUT_US = APP_DOMAIN + "api/" + API_VERSION_2 + "/aboutus";// 关于我们网站
     public static final String URL_JIPU_SHOP = "http://demo.jipukeji.com";// 极铺购物地址
 
     // 图片地址 V2
@@ -69,12 +69,13 @@ public class ApiConfig {
      * 用户 UserInfoClient
      */
     public static final String APP_PATH_CHANGE_USER_INFO = "api/" + API_VERSION_2 + "/user";// 修改用户信息
-    public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION + "/im/users";// 获取 IM 帐号信息
     public static final String APP_PATH_GET_MY_DIGGS = "api/" + API_VERSION_2 + "/user/likes"; // 获取用户收到的点赞
     public static final String APP_PATH_GET_MY_COMMENTS = "api/" + API_VERSION_2 + "/user/comments"; // 获取用户收到的评论
-    public static final String APP_PATH_GET_MY_FLUSHMESSAGES = "api/" + API_VERSION + "/users/flushmessages"; // 获取用户收到的最新消息  查询关键字 默认查询全部 多个以逗号隔开 可选参数有 diggs comments follows
     public static final String APP_PATH_UPDATE_USER_AVATAR = "api/" + API_VERSION_2 + "/user/avatar";// 修改用户头像
     public static final String APP_PATH_UPDATE_USER_BG = "api/" + API_VERSION_2 + "/user/bg";// 修改用户背景
+    public static final String APP_PATH_UPDATE_USER_PHONE_OR_EMAIL = "api/" + API_VERSION_2 + "/user";// 更新认证用户的手机号码和邮箱
+    public static final String APP_PATH_DELETE_USER_PHONE = "api/" + API_VERSION_2 + "/user/phone";// 解除用户 Phone 绑定
+    public static final String APP_PATH_DELETE_USER_EMAIL = "api/" + API_VERSION_2 + "/user/email";// 解除用户 E-Mail 绑定
 
 
     // 用户标签
@@ -127,9 +128,10 @@ public class ApiConfig {
     /**
      * 聊天相关
      */
-    public static final String APP_PATH_CREATE_CONVERSAITON = "api/" + API_VERSION + "/im/conversations";// 创建对话
-    public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/" + API_VERSION + "/im/conversations/list/all";// 获取登陆用户的对话列表
-    public static final String APP_PATH_GET_SINGLE_CONVERSAITON = "api/" + API_VERSION + "/im/conversations/{cid}";// 获取单个对话信息
+    public static final String APP_PATH_GET_IM_INFO = "api/" + API_VERSION_2 + "/im/users";// 获取 IM 帐号信息
+    public static final String APP_PATH_CREATE_CONVERSAITON = "api/" + API_VERSION_2 + "/im/conversations";// 创建对话
+    public static final String APP_PATH_GET_CONVERSAITON_LIST = "api/" + API_VERSION_2 + "/im/conversations/list/all";// 获取登陆用户的对话列表
+    public static final String APP_PATH_GET_SINGLE_CONVERSAITON = "api/" + API_VERSION_2 + "/im/conversations/{cid}";// 获取单个对话信息
 
     /**
      * 关注粉丝 FollowFansClient
@@ -140,9 +142,6 @@ public class ApiConfig {
     public static final String APP_PATH_FOLLOW_USER_FORMART = "api/" + API_VERSION_2 + "/user/followings/%d";// 关注用户
     public static final String APP_PATH_CANCEL_FOLLOW_USER = "api/" + API_VERSION_2 + "/user/followings/{user_id}";// 取消用户关注
     public static final String APP_PATH_CANCEL_FOLLOW_USER_FORMART = "api/" + API_VERSION_2 + "/user/followings/%d";// 取消用户关注
-
-
-    public static final String APP_PATH_GET_DIGGS_RANK = "api/" + API_VERSION + "/diggsrank";//  用户点赞排行
 
     /**
      * 动态相关
@@ -242,6 +241,9 @@ public class ApiConfig {
     // 资讯打赏统计
     public static final String APP_PATH_INFO_REWARDS_COUNT = "/api/" + API_VERSION_2 + "/news/{news_id}/rewards/sum";
 
+    // 获取用户投稿列表
+    public static final String APP_PATH_GET_MY_INFO = "/api/" + API_VERSION_2 + "/user/news/contributes";
+
 
     /**
      * 音乐相关 升级到V2
@@ -251,6 +253,12 @@ public class ApiConfig {
 
     // 歌曲详情
     public static final String APP_PATH_MUSIC_DETAILS = "api/" + API_VERSION_2 + "/music/{music_id}";
+
+    // 购买的单曲
+    public static final String APP_PATH_MUSIC_PAIDS = "api/" + API_VERSION_2 + "/music/paids";
+
+    // 购买的专辑
+    public static final String APP_PATH_MUSIC_ALBUM_PAIDS = "api/" + API_VERSION_2 + "/music-specials/paids";
 
     // 评论歌曲
     public static final String APP_PATH_MUSIC_COMMENT = "api/" + API_VERSION_2 + "/music/{music_id}/comments";
@@ -279,10 +287,10 @@ public class ApiConfig {
     public static final String APP_PATH_MUSIC_ABLUM_DETAILS = "api/" + API_VERSION_2 + "/music/specials/{special_id}";
 
     // 分享歌曲
-    public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION + "/music/%s/share";
+    public static final String APP_PATH_MUSIC_SHARE = "api/" + API_VERSION_2 + "/music/%s/share";
 
     // 分享专辑
-    public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION + "/music/special/%s/share";
+    public static final String APP_PATH_MUSIC_ABLUM_SHARE = "api/" + API_VERSION_2 + "/music/specials/%s/share";
 
     /**
      * 问答相关
@@ -294,7 +302,7 @@ public class ApiConfig {
     // 获取全部话题
     public static final String APP_PATH_GET_ALL_TOPIC = "api/" + API_VERSION_2 + "/question-topics";
     // 获取认证用户关注的话题或者专家话题
-    public static final String APP_PATH_GET_FOLLOEW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
+    public static final String APP_PATH_GET_FOLLOW_TOPIC = "api/" + API_VERSION_2 + "/user/question-topics";
     // 获取话题下专家列表
     public static final String APP_PATH_GET_TOPIC_EXPERTS = "api/" + API_VERSION_2 + "/question-topics/{topic_id}/experts";
     // 话题详情
@@ -354,6 +362,10 @@ public class ApiConfig {
     public static final String APP_PATH_DELETE_QA_ANSWER_COMMENT_FORMAT = "api/" + API_VERSION_2 + "/question-answers/%d/comments/%d";
     // 批量获取专家列表
     public static final String APP_PATH_GET_TOPIC_EXPERT_LIST = "api/" + API_VERSION_2 + "/question-experts";
+    // 获取用户发布的问题列表
+    public static final String APP_PATH_GET_USER_QUESTIONS = "api/" + API_VERSION_2 + "/user/questions";
+    // 获取用户发布的回答列表
+    public static final String APP_PATH_GET_USER_ANSWER = "api/" + API_VERSION_2 + "/user/question-answer";
 
 
     /**
@@ -362,8 +374,8 @@ public class ApiConfig {
     public static final String APP_PATH_REFRESH_TOKEN = "api/" + API_VERSION_2 + "/tokens/{token}";// 刷新 token
     public static final String APP_PATH_HANDLE_BACKGROUND_TASK = "{path}";// 处理后台任务
 
-    public static final String APP_PATH_SYSTEM_FEEDBACK = "api/" + API_VERSION + "/system/feedback";// 意见反馈
-    public static final String APP_PATH_GET_SYSTEM_CONVERSATIONS = "api/" + API_VERSION + "/system/conversations";// 获取系统会话列表
+    public static final String APP_PATH_SYSTEM_FEEDBACK = "api/" + API_VERSION_2 + "/user/feedback";// 意见反馈
+    public static final String APP_PATH_GET_SYSTEM_CONVERSATIONS = "api/" + API_VERSION_2 + "/conversations";// 获取系统会话列表
 
     ////////////////////////////////////////// 以下是通用 V2 接口
     public static final String APP_PATH_STORAGE_HASH = "api/" + API_VERSION_2 + "/files/uploaded/{hash}";// 校检文件hash V2
@@ -437,6 +449,7 @@ public class ApiConfig {
     public static final String APP_LIKE_FEED = "feeds";
     public static final String APP_LIKE_MUSIC = "musics";
     public static final String APP_LIKE_NEWS = "news";
+    public static final String APP_LIKE_GROUP_POST = "group-posts";
 
     /*******************************************  API V2  *********************************************/
 
@@ -475,7 +488,10 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NEW_USER_INFO = "api/" + API_VERSION_2 + "/user/latests";
     // 通过 tag 推荐
     public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
-    public static final String APP_PATH_SEARCH_RECOMMENT_USER= "api/" + API_VERSION_2 + "/user/search";
+    // 获取后台推荐用户
+    public static final String APP_PATH_GET_RECOMMENT_USER_INFO = "api/" + API_VERSION_2 + "/user/recommends";
+
+    public static final String APP_PATH_SEARCH_RECOMMENT_USER = "api/" + API_VERSION_2 + "/user/search";
     // 通过 phone 推荐
     public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";
     // 更新用户地址
@@ -483,14 +499,36 @@ public class ApiConfig {
     // 根据经纬度查询周围最多50KM内的 TS+ 用户
     public static final String APP_PATH_GET_USER_AROUND = "api/" + API_VERSION_2 + "/around-amap";
 
-
-    // 签到
+    /**
+     * 签到
+     */
     // 获取签到信息
     public static final String APP_PATH_GET_CHECK_IN_INFO = "api/" + API_VERSION_2 + "/user/checkin";
     // 签到
     public static final String APP_PATH_CHECK_IN = "api/" + API_VERSION_2 + "/user/checkin";
     // 连续签到排行榜
     public static final String APP_PATH_GET_CHECK_IN_RANKS = "api/" + API_VERSION_2 + "/checkin-ranks";
+
+    /**
+     * 三方登录绑定
+     */
+    public static final String PROVIDER_QQ = "qq";
+    public static final String PROVIDER_WEIBO = "weibo";
+    public static final String PROVIDER_WECHAT = "wechat";
+
+    // 获取已绑定的第三方
+    public static final String APP_PATH_GET_BIND_THIRDS = "api/" + API_VERSION_2 + "/user/socialite";
+    // 检查绑定并获取用户授权
+    public static final String APP_PATH_CHECK_BIND_OR_GET_USER_INFO = "api/" + API_VERSION_2 + "/socialite/{provider}";
+    // 检查注册信息或者注册用户
+    public static final String APP_PATH_CHECK_REGISTER_OR_GET_USER_INFO = "api/" + API_VERSION_2 + "/socialite/{provider}";
+    // 已登录账号绑定
+    public static final String APP_PATH_BIND_WITH_LOGIN = "api/" + API_VERSION_2 + "/user/socialite/{provider}";
+    // 输入账号密码绑定
+    public static final String APP_PATH_BIND_WITH_INPUT = "api/" + API_VERSION_2 + "/socialite/{provider}";
+    // 输取消绑定
+    public static final String APP_PATH_CANDEL_BIND = "api/" + API_VERSION_2 + "/user/socialite/{provider}";
+
 
     /**
      * 资讯

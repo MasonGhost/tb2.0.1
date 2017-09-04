@@ -32,6 +32,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO;
+import static com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsFragment.BUNDLE_INFO_TYPE;
 import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.InfoContainerFragment.RECOMMEND_INFO;
 
 /**
@@ -41,9 +43,8 @@ import static com.zhiyicx.thinksnsplus.modules.information.infomain.container.In
  * @Description
  */
 public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPresenter,
-        BaseListBean> implements InfoMainContract.InfoListView,InfoBannerHeader.InfoBannerHeadlerClickEvent {
-    public static final String BUNDLE_INFO_TYPE = "info_type";
-    public static final String BUNDLE_INFO = "info";
+        BaseListBean> implements InfoMainContract.InfoListView, InfoBannerHeader.InfoBannerHeadlerClickEvent {
+
     private String mInfoType = RECOMMEND_INFO;
 
     private List<RealAdvertListBean> mListAdvert;
@@ -134,7 +135,7 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
         if (!com.zhiyicx.common.BuildConfig.USE_ADVERT) {
             return;
         }
-        if (!mInfoType.equals("-1")) {
+        if (!mInfoType.equals("-1")) {// 只有推荐才加载广告
             return;
         }
         List<String> advertTitle = new ArrayList<>();
@@ -168,18 +169,13 @@ public class InfoListFragment extends TSListFragment<InfoMainContract.InfoListPr
     }
 
     @Override
-    public void headClick(String link,String title) {
+    public void headClick(String link, String title) {
         CustomWEBActivity.startToWEBActivity(getActivity(), link, title);
     }
 
     @Override
     protected void onEmptyViewClick() {
         mRefreshlayout.setRefreshing(true);
-    }
-
-    @Override
-    protected boolean isNeedRefreshDataWhenComeIn() {
-        return true;
     }
 
     @Override

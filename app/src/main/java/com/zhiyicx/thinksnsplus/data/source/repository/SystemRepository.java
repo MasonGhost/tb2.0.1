@@ -6,7 +6,6 @@ import android.content.Context;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.zhiyicx.baseproject.config.SystemConfig;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.SharePreferenceUtils;
 import com.zhiyicx.imsdk.core.ChatType;
@@ -18,11 +17,9 @@ import com.zhiyicx.imsdk.entity.MessageType;
 import com.zhiyicx.rxerrorhandler.functions.RetryWithInterceptDelay;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
-import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.SharePreferenceTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.ImageAdvert;
-import com.zhiyicx.thinksnsplus.data.beans.LocationBean;
 import com.zhiyicx.thinksnsplus.data.beans.LocationContainerBean;
 import com.zhiyicx.thinksnsplus.data.beans.PayStrBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
@@ -288,7 +285,7 @@ public class SystemRepository implements ISystemRepository {
      * @return
      */
     @Override
-    public Observable<BaseJson<Object>> systemFeedback(String content, long system_mark) {
+    public Observable<Object> systemFeedback(String content, long system_mark) {
         return mCommonClient.systemFeedback(content, system_mark)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -302,16 +299,14 @@ public class SystemRepository implements ISystemRepository {
      * @return
      */
     @Override
-    public Observable<BaseJson<List<SystemConversationBean>>> getSystemConversations(long max_id, int limit) {
+    public Observable<List<SystemConversationBean>> getSystemConversations(long max_id, int limit) {
         return mCommonClient.getSystemConversations(max_id, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(listBaseJson -> {
-                    if (listBaseJson.isStatus()) {
 //                            descNetSystemConversation(listBaseJson.getData());
-                        mSystemConversationBeanGreenDao.saveMultiData(listBaseJson.getData());
-                        handleTsHelperUserInfo(listBaseJson.getData());
-                    }
+                    mSystemConversationBeanGreenDao.saveMultiData(listBaseJson);
+                    handleTsHelperUserInfo(listBaseJson);
                     return listBaseJson;
                 });
     }
@@ -349,7 +344,7 @@ public class SystemRepository implements ISystemRepository {
             final String uids = AppApplication.getMyUserIdWithdefault() + "," + imHelperBean.getUid();
             final String pair = AppApplication.getmCurrentLoginAuth().getUser_id() + "&" + imHelperBean.getUid();// "pair":null,   // type=0时此项为两个uid：min_uid&max_uid
             mChatRepository.createConveration(ChatType.CHAT_TYPE_PRIVATE, "", "", uids)
-                    .subscribe(new BaseSubscribe<Conversation>() {
+                    .subscribe(new BaseSubscribeForV2<Conversation>() {
                         @Override
                         protected void onSuccess(Conversation data) {
                             data.setIm_uid((int) AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -397,6 +392,7 @@ public class SystemRepository implements ISystemRepository {
 
     /**
      * 热门城市
+     *
      * @return
      */
     @Override

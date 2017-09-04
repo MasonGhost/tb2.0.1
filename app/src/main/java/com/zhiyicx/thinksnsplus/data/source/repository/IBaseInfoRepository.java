@@ -20,4 +20,6 @@ public interface IBaseInfoRepository {
                                                      long page, int isRecommend);
 
     Observable<List<InfoListDataBean>> getCollectionListV2(long max_id);
+
+    Observable<List<InfoListDataBean>> getMyInfoList(String type,long max_id);
 }

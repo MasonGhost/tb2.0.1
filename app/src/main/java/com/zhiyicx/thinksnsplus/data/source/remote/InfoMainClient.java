@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
@@ -24,6 +25,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_MY_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_COLLECTION_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DELETE;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_INFO_DETAIL;
@@ -97,10 +99,13 @@ public interface InfoMainClient {
     Observable<List<InfoListDataBean>> getInfoCollectListV2(@Query("after") Long max_id,
                                                             @Query("limit") Long limit);
 
+    @GET(APP_PATH_GET_MY_INFO)
+    Observable<List<InfoListDataBean>> getMyInfoList(@Query("after") Long max_id,
+                                                            @Query("limit") Long limit,@Query("type") String type);
+
     // 订阅某类资讯
-    @FormUrlEncoded
     @PATCH(APP_PATH_INFO_FOLLOW_LIST)
-    Observable<BaseJsonV2<Object>> doSubscribe(@Field("follows") String follows);
+    Observable<BaseJsonV2<Object>> doSubscribe(@Body Map follows);
 
 
     @GET(APP_PATH_INFO_GET_COMMENT)

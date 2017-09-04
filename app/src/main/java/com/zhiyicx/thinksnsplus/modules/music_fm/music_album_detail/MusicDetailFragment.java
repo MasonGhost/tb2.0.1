@@ -44,6 +44,7 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentHeader;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_helper.MediaIDHelper;
@@ -71,6 +72,7 @@ import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_COMM
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_LIKE;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_MUSIC_TOLL;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION;
+import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ACTION_BUNDLE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.bak_paly.PlaybackManager.MUSIC_ID;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.media_data.MusicDataConvert.METADATA_KEY_GENRE;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_album_list.MusicListFragment.BUNDLE_MUSIC_ABLUM;
@@ -123,7 +125,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     FrameLayout fragmentAlbumDetail;
 
     private CommonAdapter mAdapter;
-    private List<MusicAlbumDetailsBean.MusicsBean> mAdapterList = new ArrayList<>();
+    private List<MusicDetaisBean> mAdapterList = new ArrayList<>();
 
     public static final String ARG_MEDIA_ID = "media_id";
     public static final String MUSIC_INFO = "music_info";
@@ -158,7 +160,6 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                     mCurrentMediaId = metadata.getDescription().getMediaId();
                     LogUtils.d("onMetadataChanged::detail:" + mCurrentMediaId);
                     mAdapter.notifyDataSetChanged();
-
                     mPresenter.getMusicDetails(mCurrentMediaId);
                 }
 
@@ -315,7 +316,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Override
-    public List<MusicAlbumDetailsBean.MusicsBean> getListDatas() {
+    public List<MusicDetaisBean> getListDatas() {
         return mAdapter.getDatas();
     }
 
@@ -424,7 +425,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             controller.registerCallback(mMediaControllerCallback);
             if (mAlbumDetailsBean != null) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(MUSIC_ACTION, mAlbumDetailsBean);
+                bundle.putSerializable(MUSIC_ACTION_BUNDLE, mAlbumDetailsBean);
                 controller.getTransportControls().sendCustomAction(MUSIC_ACTION, bundle);
                 LogUtils.d("sendCustomAction:::onConnected");
 
@@ -437,12 +438,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @NonNull
-    private CommonAdapter<MusicAlbumDetailsBean.MusicsBean> getCommonAdapter() {
-        mAdapter = new CommonAdapter<MusicAlbumDetailsBean.MusicsBean>(getActivity(), R.layout
-                .item_music_detail_list,
-                mAdapterList) {
+    private CommonAdapter<MusicDetaisBean> getCommonAdapter() {
+        mAdapter = new CommonAdapter<MusicDetaisBean>(getActivity(), R.layout
+                .item_music_detail_list, mAdapterList) {
             @Override
-            protected void convert(ViewHolder holder, MusicAlbumDetailsBean.MusicsBean item, int
+            protected void convert(ViewHolder holder, MusicDetaisBean item, int
                     position) {
                 TextView musicName = holder.getView(R.id.item_music_name);
                 TextView authorName = holder.getView(R.id.item_music_author);
@@ -479,7 +479,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 if (TouristConfig.MUSIC_CAN_PLAY || !mPresenter.handleTouristControl()) {
 
-                    MusicAlbumDetailsBean.MusicsBean item = mAdapterList.get(position);
+                    MusicDetaisBean item = mAdapterList.get(position);
 
                     if (item.getStorage().getAmount() != 0 && !item.getStorage().isPaid()) {
                         initMusicCenterPopWindow(position, item.getStorage().getAmount(),
@@ -506,12 +506,11 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
                         mMediaId = mCurrentMusic.getDescription().getMediaId();
                     }
 
-                    MediaControllerCompat controllerCompat = getActivity()
-                            .getSupportMediaController();
+
                     String id = MediaIDHelper.createMediaID("" + item.getId(),
                             MEDIA_ID_MUSICS_BY_GENRE, METADATA_KEY_GENRE);
-                    mMediaId_test=id;
-                    controllerCompat.getTransportControls()
+                    mMediaId_test = id;
+                    controller.getTransportControls()
                             .playFromMediaId(id, null);
 
                 }
@@ -683,7 +682,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Subscriber(tag = EVENT_MUSIC_LIKE, mode = ThreadMode.MAIN)
-    public void onLikeCountUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
+    public void onLikeCountUpdate(final MusicDetaisBean e_albumListBean) {
         if (mAlbumDetailsBean != null) {
             Observable.from(mAlbumDetailsBean.getMusics())
                     .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())
@@ -698,7 +697,7 @@ public class MusicDetailFragment extends TSFragment<MusicDetailContract.Presente
     }
 
     @Subscriber(tag = EVENT_MUSIC_TOLL, mode = ThreadMode.MAIN)
-    public void onTollUpdate(final MusicAlbumDetailsBean.MusicsBean e_albumListBean) {
+    public void onTollUpdate(final MusicDetaisBean e_albumListBean) {
         if (mAlbumDetailsBean != null) {
             Observable.from(mAlbumDetailsBean.getMusics())
                     .filter(musicsBean -> e_albumListBean.getId() == musicsBean.getId())

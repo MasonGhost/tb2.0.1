@@ -8,11 +8,13 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.thinksnsplus.R;
@@ -75,7 +77,7 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
             mFragmentInfoSearchContainer.setVisibility(View.GONE);
             mToolbarContainer.setVisibility(View.VISIBLE);
         }
-        if (getArguments() != null && getArguments().containsKey(BUNDLE_TOPIC_IDS)){
+        if (getArguments() != null && getArguments().containsKey(BUNDLE_TOPIC_IDS)) {
             topic_ids = getArguments().getString(BUNDLE_TOPIC_IDS);
             mTvRecommendHint.setVisibility(View.VISIBLE);
             mFragmentInfoSearchContainer.setVisibility(View.VISIBLE);
@@ -93,14 +95,20 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> getActivity().finish());
+
+        RxTextView.editorActionEvents(mFragmentInfoSearchEdittext).subscribe(textViewEditorActionEvent -> {
+            if (textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH) {
+                mPresenter.requestNetData(0, topic_ids, mFragmentInfoSearchEdittext.getText().toString(), false);
+            }
+        });
     }
 
     @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         if (mQaTopicBean != null) {
             requestNetData(maxId, mQaTopicBean.getId().intValue(), isLoadMore);
-        } else if (!TextUtils.isEmpty(topic_ids)){
-            requestNetData(mListDatas.size(), topic_ids, isLoadMore);
+        } else if (!TextUtils.isEmpty(topic_ids)) {
+            requestNetData(maxId.intValue(), topic_ids, isLoadMore);
         }
     }
 
@@ -109,7 +117,8 @@ public class ExpertSearchFragment extends TSListFragment<ExpertSearchContract.Pr
     }
 
     private void requestNetData(int size, String topic_ids, boolean isLoadMore) {
-        mPresenter.requestNetData(size, topic_ids, isLoadMore);
+        mPresenter.requestNetData(size, topic_ids, TextUtils.isEmpty(mFragmentInfoSearchEdittext.getText().toString())
+                ? null : mFragmentInfoSearchEdittext.getText().toString(), isLoadMore);
     }
 
     @Override

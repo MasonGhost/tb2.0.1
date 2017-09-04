@@ -16,7 +16,7 @@ public class ChooseBindActivity extends TSActivity<ChooseBindPresenter, ChooseBi
 
     @Override
     protected ChooseBindFragment getFragment() {
-        return new ChooseBindFragment().instance(getIntent().getBundleExtra(BUNDLE_THIRD_INFO));
+        return new ChooseBindFragment().instance(getIntent().getExtras());
     }
 
     @Override
@@ -26,5 +26,10 @@ public class ChooseBindActivity extends TSActivity<ChooseBindPresenter, ChooseBi
                 .chooseBindPresenterModule(new ChooseBindPresenterModule(mContanierFragment))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        mContanierFragment.onBackPressed();
     }
 }

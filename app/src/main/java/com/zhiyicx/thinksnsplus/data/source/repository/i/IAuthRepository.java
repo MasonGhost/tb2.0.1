@@ -1,6 +1,6 @@
 package com.zhiyicx.thinksnsplus.data.source.repository.i;
 
-import com.zhiyicx.common.base.BaseJson;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhiyicx.imsdk.entity.IMConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.IMBean;
@@ -36,7 +36,7 @@ public interface IAuthRepository {
      *
      * @return
      */
-    Observable<BaseJson<IMBean>> getImInfo();
+    Observable<IMBean> getImInfo();
 
     /**
      * 刷新 Token
@@ -51,9 +51,15 @@ public interface IAuthRepository {
     boolean clearAuthBean();
 
     /**
+     * 清除三方认证信息
+     */
+    void clearThridAuth();
+    void clearThridAuth(SHARE_MEDIA share_media);
+
+    /**
      * 是否登录过成功了，Token 并未过期
      *
-     * @return  true  ,  is logined
+     * @return true  ,  is logined
      */
     boolean isLogin();
 
@@ -83,7 +89,8 @@ public interface IAuthRepository {
 
     /**
      * token 是否过期
+     *
      * @return
      */
-     boolean isNeededRefreshToken();
+    boolean isNeededRefreshToken();
 }

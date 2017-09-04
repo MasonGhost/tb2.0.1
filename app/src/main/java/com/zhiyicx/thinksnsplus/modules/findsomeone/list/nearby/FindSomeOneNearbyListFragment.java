@@ -7,6 +7,7 @@ import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.NearbyBean;
+import com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListPresenter;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 
 import javax.inject.Inject;
@@ -95,4 +96,8 @@ public class FindSomeOneNearbyListFragment extends TSListFragment<FindSomeOneNea
         refreshData();
     }
 
+    @Override
+    protected int getPagesize() {
+        return FindSomeOneListPresenter.DEFAULT_PAGE_SIZE;
+    }
 }

@@ -39,6 +39,8 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
     FindSomeOneListPresenter mFollowFansListPresenter;
     private int pageType;// 页面类型，由上一个页面决定
 
+    private int mRecommentUserSize = 0;// 后台推荐用户数量
+
     @Override
     protected CommonAdapter<UserInfoBean> getAdapter() {
         return new FindSomeOneListAdapter(getContext(), R.layout.item_find_some_list, mListDatas, mPresenter);
@@ -135,6 +137,16 @@ public class FindSomeOneListFragment extends TSListFragment<FindSomeOneListContr
      */
     @Override
     protected Long getMaxId(@NotNull List<UserInfoBean> data) {
-        return Long.valueOf(data.size());
+        return Long.valueOf(mListDatas.size()-mRecommentUserSize);
+    }
+
+    @Override
+    public void setRecommentUserSize(int recommentUserSize) {
+        this.mRecommentUserSize = recommentUserSize;
+    }
+
+    @Override
+    protected int getPagesize() {
+        return FindSomeOneListPresenter.DEFAULT_PAGE_SIZE;
     }
 }

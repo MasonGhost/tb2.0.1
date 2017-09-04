@@ -159,6 +159,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
         mAnswerInfoBean = answerInfoBean;
         mCoordinatorLayout.setEnabled(true);
         mAnswerDetailHeaderView.setDetail(answerInfoBean);
+        setDigg(answerInfoBean.getLiked());
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
         onNetResponseSuccess(answerInfoBean.getCommentList(), false);
     }

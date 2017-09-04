@@ -79,6 +79,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow.POPUPWINDOW_ALPHA;
@@ -131,6 +132,7 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     @BindView(R.id.v_shadow)
     View mVShadow;
 
+    private Subscription mStatusbar;
 
     private PersonalCenterHeaderViewItem mPersonalCenterHeaderViewItem;
     // 上一个页面传过来的用户信息
@@ -145,6 +147,64 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     private int mCurrentPostion;// 当前评论的动态位置
     private long mReplyToUserId;// 被评论者的 id
 
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        if (setUseSatusbar()) {
+            return 0;
+        }
+        return super.getstatusbarAndToolbarHeight();
+    }
+
+    @Override
+    protected float getItemDecorationSpacing() {
+        return 0;
+    }
+
+    @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected boolean usePermisson() {
+        return true;
+    }
+
+    @Override
+    protected boolean needCenterLoadingDialog() {
+        return true;
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mIvMore;
+    }
+
+    @Override
+    protected boolean isRefreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected int getBodyLayoutId() {
+        return R.layout.fragment_personal_center;
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseCenterLoading() {
+        return true;
+    }
 
     @Override
     protected void initView(View rootView) {
@@ -168,21 +228,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
                 TOOLBAR_BLACK_ICON[1], TOOLBAR_BLACK_ICON[2]));
         mIvMore.setVisibility(View.GONE);
         setOverScroll(false, null);
-    }
-
-    @Override
-    protected boolean usePermisson() {
-        return true;
-    }
-
-    @Override
-    protected boolean needCenterLoadingDialog() {
-        return true;
-    }
-
-    @Override
-    protected View getRightViewOfMusicWindow() {
-        return mIvMore;
     }
 
     private void initListener() {
@@ -225,16 +270,6 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected boolean setStatusbarGrey() {
-        return true;
-    }
-
-    @Override
-    protected boolean setUseStatusView() {
-        return false;
-    }
-
-    @Override
     protected void requestNetData(Long maxId, boolean isLoadMore) {
         mPresenter.requestNetData(maxId, isLoadMore, mUserInfoBean.getUser_id());
     }
@@ -245,45 +280,10 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     @Override
-    protected float getItemDecorationSpacing() {
-        return 0;
-    }
-
-    @Override
-    protected boolean showToolBarDivider() {
-        return false;
-    }
-
-    @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
         if (userInfoBean.getUser_id() != mUserInfoBean.getUser_id()) {// 如果当前页面的主页已经是当前这个人了，不就用跳转了
             PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
         }
-    }
-
-    @Override
-    protected boolean isRefreshEnable() {
-        return false;
-    }
-
-    @Override
-    protected int getBodyLayoutId() {
-        return R.layout.fragment_personal_center;
-    }
-
-    @Override
-    protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseSatusbar() {
-        return true;
-    }
-
-    @Override
-    protected boolean setUseCenterLoading() {
-        return true;
     }
 
     @Override
@@ -599,10 +599,12 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void initToolBar() {
-        // toolBar 设置状态栏高度的 marginTop
-        int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-        mLlToolbarContainerParent.setLayoutParams(layoutParams);
+        if (!setUseStatusView()) {
+            // toolBar 设置状态栏高度的 marginTop
+            int height = getResources().getDimensionPixelSize(R.dimen.toolbar_height) + DeviceUtils.getStatuBarHeight(getContext()) + getResources().getDimensionPixelSize(R.dimen.divider_line);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+            mLlToolbarContainerParent.setLayoutParams(layoutParams);
+        }
     }
 
     /**
@@ -911,12 +913,21 @@ public class PersonalCenterFragment extends TSListFragment<PersonalCenterContrac
     }
 
     private void supportFlymeSutsusbar() {
-        Observable.timer(1500, TimeUnit.MILLISECONDS)
+        mStatusbar = Observable.timer(1500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                     }
                 });
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mStatusbar!=null&&!mStatusbar.isUnsubscribed()) {
+            mStatusbar.unsubscribe();
+        }
+
+        super.onDestroyView();
     }
 }

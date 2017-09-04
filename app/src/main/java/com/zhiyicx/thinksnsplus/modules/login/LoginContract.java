@@ -39,6 +39,12 @@ public interface LoginContract {
 
         AccountBean getAccountBean();
 
+        /**
+         * 三方注册
+         * @param provider
+         * @param access_token
+         */
+        void registerByThrid(String provider, String access_token);
     }
 
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
@@ -49,6 +55,15 @@ public interface LoginContract {
 
     interface Presenter extends IBaseTouristPresenter {
         void login(String phone, String password);
+
         List<AccountBean> getAllAccountList();
+
+        /**
+         * 三方登录或者注册
+         *
+         * @param provider
+         * @param access_token
+         */
+        void checkBindOrLogin(String provider, String access_token);
     }
 }

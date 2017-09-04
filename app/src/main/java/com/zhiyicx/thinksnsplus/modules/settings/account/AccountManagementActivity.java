@@ -1,7 +1,9 @@
 package com.zhiyicx.thinksnsplus.modules.settings.account;
 
 import android.app.Application;
+import android.content.Intent;
 
+import com.umeng.socialize.UMShareAPI;
 import com.zhiyicx.baseproject.base.TSActivity;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 
@@ -26,4 +28,10 @@ public class AccountManagementActivity extends TSActivity<AccountManagementPrese
                 .build()
                 .inject(this);
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
+
 }

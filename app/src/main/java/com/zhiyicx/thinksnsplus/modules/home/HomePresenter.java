@@ -27,6 +27,7 @@ import com.zhiyicx.thinksnsplus.data.source.local.WalletConfigBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.login.LoginFragment;
 import com.zhiyicx.thinksnsplus.utils.NotificationUtil;
 
 import org.simple.eventbus.EventBus;
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 
@@ -179,6 +181,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     @Override
     public void onDisconnect(int code, String reason) {
         EventBus.getDefault().post(code, EventBusTagConfig.EVENT_IM_ONDISCONNECT);
+
     }
 
     @Override
@@ -234,6 +237,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
         if (checkInBean != null) {
             mRootView.showCheckInPop(checkInBean);
         } else {
+            mRootView.showCenterLoading(mContext.getString(R.string.loading));
             getCheckInInfo();
         }
     }
@@ -254,7 +258,7 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        mRootView.showSnackErrorMessage(mContext.getString(R.string.check_in_fail));
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
         addSubscrebe(subscription);
@@ -264,10 +268,25 @@ class HomePresenter extends BasePresenter<HomeContract.Repository, HomeContract.
     public void getCheckInInfo() {
 
         Subscription subscription = mUserInfoRepository.getCheckInInfo()
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        mRootView.hideCenterLoading();
+                    }
+                })
                 .subscribe(new BaseSubscribeForV2<CheckInBean>() {
                     @Override
                     protected void onSuccess(CheckInBean data) {
                         mRootView.showCheckInPop(data);
+                    }
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        mRootView.showSnackErrorMessage(message);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        mRootView.showSnackErrorMessage(mContext.getString(R.string.err_net_not_work));
                     }
                 });
         addSubscrebe(subscription);

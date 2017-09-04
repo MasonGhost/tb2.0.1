@@ -1,12 +1,10 @@
 package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.config.ApiConfig;
-import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDigListBean;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.ExpertBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
@@ -30,8 +28,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS;
-import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_DYNAMIC_REWARDS_USER_LIST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REWARD;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_QA_ANSWER_REWARD_USER_LIST;
 
@@ -52,11 +48,8 @@ public interface QAClient {
     Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
-     *
-     * @param question_id
-     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
      * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
-     * @return
      */
     @FormUrlEncoded
     @PATCH(ApiConfig.APP_PATH_GET_QUESTION_DETAIL)
@@ -64,11 +57,8 @@ public interface QAClient {
             String body, @Field("anonymity") int anonymity);
 
     /**
-     *
-     * @param answer_id
-     * @param body 如果 anonymity 不传，则本字段必须存在， 回答详情。
+     * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
      * @param anonymity 如果 body 字段不传，则本字段必须存在，是否匿名。
-     * @return
      */
     @FormUrlEncoded
     @PATCH(ApiConfig.APP_PATH_UPDATE_ANSWER)
@@ -113,7 +103,7 @@ public interface QAClient {
     /**
      * @param type 默认值为 follow 代表用户关注的话题列表，如果值为 expert 则获取该用户的专家话题（哪些话题下是专家）。
      */
-    @GET(ApiConfig.APP_PATH_GET_FOLLOEW_TOPIC)
+    @GET(ApiConfig.APP_PATH_GET_FOLLOW_TOPIC)
     Observable<List<QATopicBean>> getQAFollowTopic(@Query("type") String type, @Query
             ("after") Long after, @Query("limit") Long limit);
 
@@ -126,10 +116,33 @@ public interface QAClient {
     Observable<List<QAListInfoBean>> getQAQustion(@Query("subject") String subject, @Query
             ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
 
+    /**
+     * @param type  数据筛选类型 all-全部 invitation-邀请 reward-悬赏 other-其他 默认全部
+     * @param after 获取 id 之后的数据，要获取某条问题之后的数据，传递该问题 ID。
+     */
+    @GET(ApiConfig.APP_PATH_GET_USER_QUESTIONS)
+    Observable<List<QAListInfoBean>> getUserQAQustion(@Query("type") String type, @Query("after") Long after, @Query("limit") Long limit);
+
+    /**
+     * 某话题下的问题
+     * @param topic_id
+     * @param subject
+     * @param after
+     * @param type
+     * @param limit
+     * @return
+     */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_LIST_BY_TOPIC)
     Observable<List<QAListInfoBean>> getQAQustionByTopic(@Path("topic") String topic_id, @Query("subject") String subject, @Query
             ("offset") Long after, @Query("type") String type, @Query("limit") Long limit);
 
+    /**
+     * 获取话题下专家列表
+     * @param topic_id 话题id
+     * @param after
+     * @param limit
+     * @return
+     */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERTS)
     Observable<List<ExpertBean>> getTopicExperts(@Path("topic_id") int topic_id, @Query("after") Long after, @Query("limit") Long limit);
 
@@ -153,14 +166,23 @@ public interface QAClient {
      * 获取一个问题的回答列表
      *
      * @param question_id 问题id
-     * @param order_type default/time
-     * @return
+     * @param order_type  default/time
      */
     @GET(ApiConfig.APP_PATH_GET_QUESTION_ANSWER_LIST)
     Observable<List<AnswerInfoBean>> getAnswerList(@Path("question") String question_id,
                                                    @Query("limit") Long limit,
                                                    @Query("order_type") String order_type,
                                                    @Query("offset") int size);
+
+    /**
+     * 获取用户发布的回答列表
+     *
+     * @param type all - 全部，adoption - 被采纳的，invitation - 被邀请的，other - 其他， 默认为全部
+     */
+    @GET(ApiConfig.APP_PATH_GET_USER_ANSWER)
+    Observable<List<AnswerInfoBean>> getUserAnswerList(@Query("type") String type,
+                                                       @Query("limit") Long limit,
+                                                       @Query("after") Long maxId);
 
     /**
      * 删除问题
@@ -192,8 +214,14 @@ public interface QAClient {
     @DELETE(ApiConfig.APP_PATH_DELETE_QUESTION_COMMENT)
     Observable<BaseJsonV2<Object>> deleteQuestionComment(@Path("question") String question_id, @Path("answer") String answer_id);
 
+    /**
+     * 批量获取专家列表
+     * @param topic_ids
+     * @param size
+     * @return
+     */
     @GET(ApiConfig.APP_PATH_GET_TOPIC_EXPERT_LIST)
-    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("offset") int size);
+    Observable<List<ExpertBean>> getExpertListByTopicIds(@Query("topics") String topic_ids, @Query("keyword") String keyword,@Query("offset") int size);
 
     /*******************************************  打赏  *********************************************/
 

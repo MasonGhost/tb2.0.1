@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/qa_item_my_question_height"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_mid">
+
+    <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/important_for_content"
+            android:textSize="@dimen/size_sub_title"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="xxxxxxxx"/>
+
+    <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textSize="@dimen/size_content_assist"
+            android:textColor="@color/normal_for_assist_text"
+            android:layout_toLeftOf="@+id/tv_time"
+            android:layout_alignParentLeft="true"
+            tools:text="xxxxxxxx"/>
+
+    <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/size_content_assist"
+            android:textColor="@color/general_for_hint"
+            tools:text="xxxxxxxx"/>
+</RelativeLayout>

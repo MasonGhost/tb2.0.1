@@ -33,6 +33,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.UserTagBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
@@ -63,6 +64,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
@@ -265,8 +267,12 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
         if (AppApplication.getmCurrentLoginAuth() == null) {
             return;
         }
-        Subscription subscription = mUserInfoRepository.getUserInfoByIds(String.valueOf(userId))
-                .map(userInfoBeen -> userInfoBeen.get(0))
+
+        Subscription subscription = Observable.zip(mUserInfoRepository.getUserTags(userId), mUserInfoRepository.getUserInfoByIds(String.valueOf(userId))
+                .map(userInfoBeen -> userInfoBeen.get(0)), (userTagBeanList, userInfoBean) -> {
+                    userInfoBean.setTags(userTagBeanList);
+                    return userInfoBean;
+                })
                 .subscribe(new BaseSubscribeForV2<UserInfoBean>() {
                     @Override
                     protected void onSuccess(UserInfoBean data) {
@@ -487,11 +493,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
 
     @Override
     public void payNote(int dynamicPosition, int imagePosition, int note, boolean isImage) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-        double balance = 0;
-        if (walletBean != null) {
-            balance = walletBean.getBalance();
-        }
+
         double amount;
         if (isImage) {
             amount = mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).getAmount();
@@ -499,18 +501,29 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
             amount = mRootView.getListDatas().get(dynamicPosition).getPaid_node().getAmount();
         }
 
-        if (balance < amount) {
-            mRootView.goRecharge(WalletActivity.class);
-            return;
-        }
-        Subscription subscribe = mCommentRepository.paykNote(note)
-                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R.string.transaction_doing)))
+        mCommentRepository.getCurrentLoginUserInfo()
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<String>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<String>> call(UserInfoBean userInfoBean) {
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        if (userInfoBean.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                            if (userInfoBean.getWallet().getBalance() < amount) {
+                                mRootView.goRecharge(WalletActivity.class);
+                                return Observable.error(new RuntimeException(""));
+                            }
+                        }
+                        return mCommentRepository.paykNote(note);
+                    }
+                }, throwable -> {
+                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    return null;
+                }, () -> null)
                 .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
                     @Override
                     public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
-                        walletBean.setBalance(walletBean.getBalance() - note);
-                        mWalletBeanGreenDao.insertOrReplace(walletBean);
-
                         if (isImage) {
                             return Observable.just(stringBaseJsonV2);
                         }
@@ -557,7 +570,7 @@ public class PersonalCenterPresenter extends AppBasePresenter<PersonalCenterCont
                         mRootView.hideCenterLoading();
                     }
                 });
-        addSubscrebe(subscribe);
+
     }
 
     /**

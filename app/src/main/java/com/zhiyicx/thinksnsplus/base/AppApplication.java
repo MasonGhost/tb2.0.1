@@ -65,6 +65,8 @@ import okhttp3.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.zhiyicx.thinksnsplus.config.ErrorCodeConfig.AUTH_FAIL;
+
 /**
  * @Describe
  * @Author Jungle68
@@ -155,7 +157,7 @@ public class AppApplication extends TSApplication {
                 } catch (JsonSyntaxException e) {
 //                    LogUtils.e("Invalid Json length:::"+httpResult.length());
                 }
-                if (originalResponse.code() == 401) {
+                if (originalResponse.code() == AUTH_FAIL) {
                     if (mAuthRepository.isNeededRefreshToken()) {
                         handleAuthFail(getString(R.string.auth_fail_relogin));
                     } else {
@@ -245,6 +247,8 @@ public class AppApplication extends TSApplication {
                             .setPositiveButton(R.string.sure, (dialogInterface, i) -> {
                                 // TODO: 2017/2/8  清理登录信息 token 信息
                                 mAuthRepository.clearAuthBean();
+                                mAuthRepository.clearThridAuth();
+
                                 Intent intent = new Intent
                                         (getContext(),
                                                 LoginActivity

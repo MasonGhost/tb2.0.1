@@ -186,7 +186,7 @@ public class ContactsAdapter extends StickyHeaderGridAdapter {
             RxView.clicks(holder.mTvInvite)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
-                        DeviceUtils.openSMS(holder.mTvInvite.getContext(), holder.mTvInvite.getResources().getString(R.string.find_someone), userTagBean.getPhone());
+                        DeviceUtils.openSMS(holder.mTvInvite.getContext(), holder.mTvInvite.getResources().getString(R.string.invite_friend), userTagBean.getPhone());
                     });
 
         }

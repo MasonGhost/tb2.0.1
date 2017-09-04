@@ -8,6 +8,7 @@ import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumListBean;
 import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
+import com.zhiyicx.thinksnsplus.data.source.repository.i.IMusicRepository;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public interface MusicDetailContract {
 
         MusicAlbumListBean getmMusicAlbumListBean();
 
-        List<MusicAlbumDetailsBean.MusicsBean> getListDatas();
+        List<MusicDetaisBean> getListDatas();
 
         void refreshData(int position);
     }
@@ -50,18 +51,11 @@ public interface MusicDetailContract {
 
         MusicAlbumDetailsBean getCacheAblumDetail(int id);
 
-        void payNote(int position,int note);
+        void payNote(int position, int note);
 
     }
 
-    interface Repository {
-        Observable<MusicAlbumDetailsBean> getMusicAblum(String id);
-
-        Observable<MusicDetaisBean> getMusicDetails(String music_id);
-
-        void handleCollect(boolean isCollected, String special_id);
-
-        void shareAblum(String special_id);
+    interface Repository extends IMusicRepository {
 
     }
 }

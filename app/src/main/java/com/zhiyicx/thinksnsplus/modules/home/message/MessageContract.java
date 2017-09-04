@@ -66,7 +66,7 @@ public interface MessageContract {
          * @param user_id 用户 id
          * @return
          */
-        Observable<BaseJson<List<MessageItemBean>>> getConversationList(int user_id);
+        Observable<List<MessageItemBean>> getConversationList(int user_id);
 
         /**
          * 通过 对话 id 获取对话信息
@@ -74,7 +74,7 @@ public interface MessageContract {
          * @param cid 对话 id
          * @return
          */
-        Observable<BaseJson<MessageItemBean>> getSingleConversation(int cid);
+        Observable<MessageItemBean> getSingleConversation(int cid);
 
         /**
          * 未读通知数量检查

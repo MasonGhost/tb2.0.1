@@ -3,7 +3,6 @@ package com.zhiyicx.thinksnsplus.service.backgroundtask;
 import android.app.Application;
 
 import com.google.gson.Gson;
-
 import com.zhiyicx.baseproject.impl.photoselector.ImageBean;
 import com.zhiyicx.common.base.BaseJson;
 import com.zhiyicx.common.base.BaseJsonV2;
@@ -23,7 +22,6 @@ import com.zhiyicx.thinksnsplus.data.beans.BackgroundRequestTaskBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicCommentToll;
-import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBean;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicCommentListBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupSendDynamicDataBean;
@@ -69,7 +67,6 @@ import javax.inject.Inject;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
@@ -597,7 +594,7 @@ public class BackgroundTaskHandler {
      */
     private void getIMInfo(final BackgroundRequestTaskBean backgroundRequestTaskBean) {
         mAuthRepository.getImInfo()
-                .subscribe(new BaseSubscribe<IMBean>() {
+                .subscribe(new BaseSubscribeForV2<IMBean>() {
                     @Override
                     protected void onSuccess(IMBean data) {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
@@ -723,19 +720,29 @@ public class BackgroundTaskHandler {
             List<Observable<BaseJson<Integer>>> upLoadPics = new ArrayList<>();
 
             int[] position = new int[1];
-            recursionUplaodImage(sendDynamicDataBean, photos, position);
 
-            observable=Observable.just(sendDynamicDataBean)
+            for (int i = 0; i < photos.size(); i++) {
+                ImageBean imageBean = photos.get(i);
+                String filePath = imageBean.getImgUrl();
+                int photoWidth = (int) imageBean.getWidth();
+                int photoHeight = (int) imageBean.getHeight();
+                String photoMimeType = imageBean.getImgMimeType();
+                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
+            }
 
-//            for (int i = 0; i < photos.size(); i++) {
-//                ImageBean imageBean = photos.get(i);
-//                String filePath = imageBean.getImgUrl();
-//                int photoWidth = (int) imageBean.getWidth();
-//                int photoHeight = (int) imageBean.getHeight();
-//                String photoMimeType = imageBean.getImgMimeType();
-//                upLoadPics.add(mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight));
-//            }
-//
+            observable = Observable.concat(upLoadPics)
+                    .map(integerBaseJson -> {
+                        if (integerBaseJson.isStatus()) {
+                            sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
+                            position[0]++;// 完成后+1
+                        } else {
+                            throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                        }
+                        sendDynamicDataBean.setPhotos(null);
+                        return sendDynamicDataBean;
+                    })
+                    .filter(sendDynamicDataBeanV2 -> position[0] == photos.size())
+
 //            observable = Observable.zip(upLoadPics, (FuncN<Object>) args -> {
 //                List<Integer> integers = new ArrayList<>();
 //                for (int i = 0; i < args.length; i++) {
@@ -810,27 +817,28 @@ public class BackgroundTaskHandler {
 
     }
 
-    private void recursionUplaodImage(final SendDynamicDataBeanV2 sendDynamicDataBean, List<ImageBean> photos, final int[] position) {
+    private SendDynamicDataBeanV2 recursionUplaodImage(final SendDynamicDataBeanV2 sendDynamicDataBean, List<ImageBean> photos, final int[] position) {
         if (position[0] == photos.size()) {
-            return;
+            return sendDynamicDataBean;
         }
         ImageBean imageBean = photos.get(position[0]);
         String filePath = imageBean.getImgUrl();
         int photoWidth = (int) imageBean.getWidth();
         int photoHeight = (int) imageBean.getHeight();
         String photoMimeType = imageBean.getImgMimeType();
-        mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight).subscribe(new Action1<BaseJson<Integer>>() {
-            @Override
-            public void call(BaseJson<Integer> integerBaseJson) {
-                if (integerBaseJson.isStatus()) {
-                    sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
-                    position[0]++;// 完成后+1
-                    recursionUplaodImage(sendDynamicDataBean, photos, position);
-                } else {
-                    throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
-                }
-            }
-        });
+        mUpLoadRepository.upLoadSingleFileV2(filePath, photoMimeType, true, photoWidth, photoHeight)
+                .subscribe(integerBaseJson -> {
+                    if (integerBaseJson.isStatus()) {
+                        sendDynamicDataBean.getStorage_task().get(position[0]).setId(integerBaseJson.getData());
+                        position[0]++;// 完成后+1
+                        recursionUplaodImage(sendDynamicDataBean, photos, position);
+                    } else {
+                        throw new NullPointerException();// 某一次失败就抛出异常，重传，因为有秒传功能所以不会浪费多少流量
+                    }
+                }, throwable -> {
+
+                });
+        return null;
     }
 
     private void sendGroupDynamic(final BackgroundRequestTaskBean backgroundRequestTaskBean) {

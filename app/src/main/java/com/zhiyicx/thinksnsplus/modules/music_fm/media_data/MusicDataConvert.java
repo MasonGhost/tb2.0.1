@@ -5,6 +5,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.data.beans.MusicAlbumDetailsBean;
+import com.zhiyicx.thinksnsplus.data.beans.MusicDetaisBean;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class MusicDataConvert implements MusicProviderSource {
         if (mAlbumDetailsBean == null) {
             return tracks.iterator();
         }
-        for (MusicAlbumDetailsBean.MusicsBean data : mAlbumDetailsBean.getMusics()) {
+        for (MusicDetaisBean data : mAlbumDetailsBean.getMusics()) {
             LogUtils.d("Iterator<MediaMetadataCompat> :::" + data.getTitle());
             if (data.getStorage().getAmount() == 0 || data.getStorage().isPaid())// 跳过收费
                 tracks.add(buildMusic(data));
@@ -42,8 +43,7 @@ public class MusicDataConvert implements MusicProviderSource {
         return tracks.iterator();
     }
 
-    private MediaMetadataCompat buildMusic(MusicAlbumDetailsBean.MusicsBean data) {
-        MusicAlbumDetailsBean.MusicsBean needData = data;
+    private MediaMetadataCompat buildMusic(MusicDetaisBean needData) {
         String musicUrl = String.format(ApiConfig.MUSIC_PATH,
                 needData.getStorage().getId());
 

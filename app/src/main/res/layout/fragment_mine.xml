@@ -181,6 +181,44 @@
                 app:leftText="@string/personal_page"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"/>
 
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_my_info"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                android:layout_marginTop="@dimen/divider_line"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/ico_me_contribute"
+                android:visibility="gone"
+                app:leftText="@string/my_info"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+            <!--我的问答-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                    android:id="@+id/bt_my_qa"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/full_button_height"
+                    android:layout_marginTop="@dimen/divider_line"
+                    app:dividerLeftMargin="@dimen/spacing_normal"
+                    android:visibility="gone"
+                    app:dividerRightMargin="@dimen/spacing_normal"
+                    app:leftImage="@mipmap/ico_me_question"
+                    app:leftText="@string/qa_mine"
+                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
+            <!--我的圈子-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                    android:id="@+id/bt_my_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/full_button_height"
+                    android:layout_marginTop="@dimen/divider_line"
+                    app:dividerLeftMargin="@dimen/spacing_normal"
+                    app:dividerRightMargin="@dimen/spacing_normal"
+                    app:leftImage="@mipmap/ico_me_circle"
+                    app:leftText="@string/group_mine"
+                    android:visibility="gone"
+                    app:rightImage="@mipmap/ic_arrow_smallgrey"/>
+
             <!--排行榜-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_ranking"
@@ -190,6 +228,19 @@
                 app:dividerRightMargin="@dimen/spacing_normal"
                 app:leftImage="@mipmap/ico_me_ranklist"
                 app:leftText="@string/ranking"
+                android:visibility="gone"
+                app:rightImage="@mipmap/ic_arrow_smallgrey"
+                app:showLine="true"/>
+            <!--钱包-->
+            <com.zhiyicx.baseproject.widget.button.CombinationButton
+                android:id="@+id/bt_wallet"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/full_button_height"
+                app:dividerLeftMargin="@dimen/spacing_normal"
+                app:dividerRightMargin="@dimen/spacing_normal"
+                app:leftImage="@mipmap/ico_me_wallet"
+                app:leftText="@string/wallet"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="true"/>
             <!--收藏-->
@@ -204,17 +255,19 @@
                 app:leftText="@string/mine_collect"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="true"/>
-            <!--钱包-->
+            <!--购买的音乐-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
-                android:id="@+id/bt_wallet"
+                android:id="@+id/bt_music"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/full_button_height"
                 app:dividerLeftMargin="@dimen/spacing_normal"
                 app:dividerRightMargin="@dimen/spacing_normal"
-                app:leftImage="@mipmap/ico_me_wallet"
-                app:leftText="@string/wallet"
+                app:leftImage="@mipmap/ico_me_music"
+                app:leftText="@string/me_music"
+                android:visibility="gone"
                 app:rightImage="@mipmap/ic_arrow_smallgrey"
                 app:showLine="false"/>
+
             <!--意见反馈-->
             <com.zhiyicx.baseproject.widget.button.CombinationButton
                 android:id="@+id/bt_suggestion"

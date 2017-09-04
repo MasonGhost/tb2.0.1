@@ -27,6 +27,7 @@
     <string name="ts_helper_default_tip">小助手在线，点击告诉我们你的需求，即时快速反应。</string>
     <!--我的-->
     <string name="personal_page">个人主页</string>
+    <string name="my_info">我的投稿</string>
     <string name="ranking">排行榜</string>
     <string name="dig_ranking">点赞排行榜</string>
     <string name="gold">金币</string>
@@ -37,6 +38,7 @@
     <string name="certification">认证</string>
     <string name="setting">设置</string>
     <string name="wallet">钱包</string>
+    <string name="me_music">购买的音乐</string>
     <string name="follow">关注</string>
     <string name="fans">粉丝</string>
     <string name="system_info">系统消息</string>
@@ -93,6 +95,8 @@
     <string name="account_bind_weibo">绑定微博</string>
     <string name="binding">确定绑定</string>
     <string name="remove_binding">解除绑定</string>
+    <string name="had_binding">已绑定</string>
+    <string name="not_binding">未绑定</string>
 
     <!--裁剪-->
     <string name="crop_head_icon">更换头像</string>
@@ -115,10 +119,15 @@
 
     <!--音乐FM-->
     <string name="music_fm">音乐FM</string>
+    <string name="single_music">单曲</string>
+    <string name="music_album">专辑</string>
     <string name="music_lyric">暂无歌词</string>
 
     <!--资讯-->
     <string name="info_title">完善文章信息</string>
+    <string name="info_published">已发布</string>
+    <string name="info_publishing">投稿中</string>
+    <string name="info_publishfailed">被驳回</string>
     <string name="info_cover">上传封面</string>
     <string name="info_dig">点赞</string>
     <string name="info_dig_cancel">取消点赞</string>
@@ -217,6 +226,8 @@
     <string name="all_group">全部圈子</string>
     <string name="join_group">加入</string>
     <string name="quit_group">退出</string>
+    <string name="group_joined">已加入</string>
+    <string name="group_mine">我的圈子</string>
 
     <!--收藏-->
     <string name="collect">收藏</string>
@@ -306,6 +317,7 @@
     <string name="choose_withdrawals_style_formart">%s提现</string>
 
     <string name="wallet_config_info_get_loading_tip">钱包配置信息获取中&#8230;</string>
+    <string name="wallet_config_info_get_load_failed_tip">钱包配置信息获取失败</string>
     <string name="get_success">获取成功</string>
     <string name="pay_fail">支付失败</string>
     <string name="pay_success">支付成功</string>
@@ -449,7 +461,8 @@
     <string name="qa_topic_follow">关注</string>
     <string name="qa_topic_followed">已关注</string>
     <string name="qa_show_topic_followed">%1$d 关注  ·  %2$d 回答</string>
-    <string name="qa_show_topic_followed_reward">%1$d 关注  ·  %2$d 回答  ·  ￥%3$.1f 悬赏</string>
+    <string name="qa_show_topic_followed_content">%1$d 关注  ·  %2$d 回答  </string>
+    <string name="qa_show_topic_followed_reward">  ·  ¥%1$.2f 悬赏</string>
     <string name="edit_quit">放弃编辑</string>
     <string name="edit">编辑</string>
     <string name="save_to_draft_box">保存至草稿箱</string>
@@ -473,6 +486,7 @@
     <string name="qa_reward_invited">已邀请悬赏</string>
     <string name="qa_reward_setting">已设置悬赏</string>
     <string name="qa_add_answer">添加回答</string>
+    <string name="qa_go_to_answer">查看回答</string>
     <string name="qa_reward_amount">￥%1$.1f</string>
     <string name="qa_watch_amount">￥%1$.1f围观</string>
     <string name="qa_answer_list_order_default">默认排序</string>
@@ -499,6 +513,29 @@
     <string name="qa_go_to_watched">已围观</string>
     <string name="qa_reset_reward_success">设置悬赏成功</string>
     <string name="qa_expert_list">专家列表</string>
+    <string name="qa_mine">我的问答</string>
+    <string name="qa_mine_question">提问</string>
+    <string name="qa_mine_answer">回答</string>
+    <string name="qa_mine_follow">关注</string>
+    <string name="qa_mine_all_common">全部</string>
+    <string name="qa_mine_other_common">其他</string>
+    <string-array name="qa_mine_publish_question_title">
+        <item>@string/qa_mine_all_common</item>
+        <item>邀请</item>
+        <item>悬赏</item>
+        <item>@string/qa_mine_other_common</item>
+    </string-array>
+    <string-array name="qa_mine_answer_title">
+        <item>@string/qa_mine_all_common</item>
+        <!--<item>未阅读</item>-->
+        <item>被采纳</item>
+        <item>被邀请</item>
+        <item>@string/qa_mine_other_common</item>
+    </string-array>
+    <string-array name="qa_mine_follow_title">
+        <item>问题</item>
+        <item>话题</item>
+    </string-array>
 
     <!--签到-->
     <string name="check_in">签到</string>
@@ -525,6 +562,9 @@
     <string name="not_find_qa_topic_to_publish">未找到相关话题~</string>
     <string name="request_to_publish_topic">申请创建话题~</string>
     <string name="to_publish_qa">去提问</string>
+    <string name="you_must_bind_phone">你必须绑定手机才能解绑三方哦</string>
+    <string name="bind_success">账号绑定成功</string>
+    <string name="unbind_success">账号解绑成功</string>
 
     <!--排行榜相关-->
     <string name="rank">排行榜</string>
@@ -558,4 +598,11 @@
     <string name="rank_type_like_count">点赞量：%d</string>
     <string name="rank_type_view_count">浏览量：%d</string>
     <string name="rank_type_check_in">连续签到：%d</string>
+    <string name="please_input_intro">请输入简介</string>
+    <string name="default_intro_format">简介：%s</string>
+    <string name="default_certify_format">认证：%s</string>
+    <string name="default_location_format">地址：%s</string>
+    <string name="default_certify">当前用户还没有认证呢</string>
+    <string name="invite_friend">邀请您的好友使用TS+吧！http://www.thinksns.com/</string>
+    <string name="reward_type_error">打赏类型错误</string>
 </resources>

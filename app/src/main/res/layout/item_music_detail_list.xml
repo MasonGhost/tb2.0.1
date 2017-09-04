@@ -3,8 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:paddingTop="@dimen/spacing_normal"
     android:paddingBottom="@dimen/spacing_normal"
+    android:paddingRight="@dimen/spacing_mid"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 

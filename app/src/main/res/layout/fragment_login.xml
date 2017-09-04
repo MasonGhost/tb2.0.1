@@ -35,6 +35,7 @@
                 android:hint="@string/login_account_hint"
                 android:imeOptions="actionNext"
                 android:singleLine="true"
+                android:background="@color/white"
                 android:visibility="visible"/>
 
             <ImageView
@@ -121,7 +122,6 @@
             android:layout_marginRight="@dimen/third_margin"
             android:layout_weight="1"
             android:gravity="bottom"
-            android:visibility="gone"
             android:orientation="vertical"
             >
 

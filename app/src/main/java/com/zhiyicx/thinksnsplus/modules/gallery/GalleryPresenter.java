@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
+import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
@@ -20,6 +21,9 @@ import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
@@ -58,25 +62,40 @@ public class GalleryPresenter extends BasePresenter<ICommentRepository, GalleryC
 
     @Override
     public void payNote(final Long feed_id, final int imagePosition, int note) {
-        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-        double balance = 0;
-        if (walletBean != null) {
-            balance = walletBean.getBalance();
-        }
+
         DynamicDetailBeanV2 dynamicDetail = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
         double amount = dynamicDetail.getImages().get(imagePosition).getAmount();
-        if (balance < amount) {
-            mRootView.goRecharge(WalletActivity.class);
-            return;
-        }
-        mCommentRepository.paykNote(note)
-                .doOnSubscribe(() -> mRootView.showCenterLoading(mContext.getString(R.string.transaction_doing)))
-                .subscribe(new BaseSubscribeForV2<BaseJsonV2>() {
+
+        mCommentRepository.getCurrentLoginUserInfo()
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.transaction_doing)))
+                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<String>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<String>> call(UserInfoBean userInfoBean) {
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        if (userInfoBean.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                            if (userInfoBean.getWallet().getBalance() < amount) {
+                                mRootView.goRecharge(WalletActivity.class);
+                                return Observable.error(new RuntimeException(""));
+                            }
+                        }
+                        return mCommentRepository.paykNote(note);
+                    }
+                }, throwable -> {
+                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    return null;
+                }, () -> null)
+                .flatMap(new Func1<BaseJsonV2<String>, Observable<BaseJsonV2<String>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<String>> call(BaseJsonV2<String> stringBaseJsonV2) {
+                            return Observable.just(stringBaseJsonV2);
+
+                    }
+                })
+                .subscribe(new BaseSubscribeForV2<BaseJsonV2<String>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2 data) {
-                        walletBean.setBalance(walletBean.getBalance() - note);
-                        mWalletBeanGreenDao.insertOrReplace(walletBean);
-                        
                         mRootView.hideCenterLoading();
                         DynamicDetailBeanV2 dynamicDetailBeanV2 = mDynamicDetailBeanV2GreenDao.getDynamicByFeedId(feed_id);
                         dynamicDetailBeanV2.getImages().get(imagePosition).setPaid(true);

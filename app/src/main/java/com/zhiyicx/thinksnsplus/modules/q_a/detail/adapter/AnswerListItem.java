@@ -114,6 +114,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                         mListener.onToWatchClick(answerInfoBean, position);
                     }
                 });
+        // 评论数量
+        holder.setText(R.id.tv_comment_count, String.valueOf(answerInfoBean.getComments_count()));
     }
 
     private void dealLikeUI(AnswerInfoBean answerInfoBean, TextView tvLikeCount) {
@@ -122,7 +124,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         Drawable liked = UIUtils.getCompoundDrawables(tvLikeCount.getContext(), R.mipmap.home_ico_good_high);
         tvLikeCount.setCompoundDrawables(answerInfoBean.getLiked() ? liked : unLike, null, null, null);
         // 回答数量
-        tvLikeCount.setText(String.valueOf(answerInfoBean.getComments_count()));
+        tvLikeCount.setText(String.valueOf(answerInfoBean.getLikes_count()));
     }
 
     public void setOnGoToWatchClickListener(OnGoToWatchClickListener listener){
