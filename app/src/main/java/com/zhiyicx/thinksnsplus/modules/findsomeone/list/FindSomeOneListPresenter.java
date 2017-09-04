@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func2;
 
 import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_HOT;
 import static com.zhiyicx.thinksnsplus.modules.findsomeone.list.FindSomeOneListFragment.TYPE_NEARBY;
@@ -86,8 +87,18 @@ public class FindSomeOneListPresenter extends AppBasePresenter<FindSomeOneListCo
             case TYPE_NEW:
                 observable = mUserInfoRepository.getNewUsers(DEFAULT_PAGE_SIZE, maxId.intValue());
                 break;
-            case TYPE_RECOMMENT:
-                observable = mUserInfoRepository.getUsersRecommentByTag(DEFAULT_PAGE_SIZE, maxId.intValue());
+            case TYPE_RECOMMENT: // 后台推荐 + 用户 tag 推荐 ，
+                if (!isLoadMore) {
+                    observable = Observable.zip(mUserInfoRepository.getRecommendUserInfo(), mUserInfoRepository.getUsersRecommentByTag(DEFAULT_PAGE_SIZE, maxId.intValue()), (userInfoBeen, userInfoBeen2) -> {
+                        mRootView.setRecommentUserSize(userInfoBeen.size());
+                        userInfoBeen.addAll(userInfoBeen2);
+                        return userInfoBeen;
+                    });
+
+                } else {
+                    observable = mUserInfoRepository.getUsersRecommentByTag(DEFAULT_PAGE_SIZE, maxId.intValue());
+                }
+
                 break;
             case TYPE_NEARBY:
                 observable = mUserInfoRepository.getHotUsers(DEFAULT_PAGE_SIZE, maxId.intValue());

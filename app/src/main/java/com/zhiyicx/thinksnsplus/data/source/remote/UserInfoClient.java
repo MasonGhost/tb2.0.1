@@ -56,6 +56,7 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_HOT_USER_INF
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_IM_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_NEW_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_RECOMMENT_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_SPECIFIED_USER_INFO;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_GET_USER_AROUND;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_REWARD_USER;
@@ -332,6 +333,13 @@ public interface UserInfoClient {
      */
     @GET(APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO)
     Observable<List<UserInfoBean>> getUsersRecommentByTag(@Query("limit") Integer limit, @Query("offset") Integer offset);
+
+    /**
+     *
+     * @return 后台推荐用户 最多200
+     */
+    @GET(APP_PATH_GET_RECOMMENT_USER_INFO)
+    Observable<List<UserInfoBean>> getRecommendUserInfo();
 
     /**
      * 搜索用户

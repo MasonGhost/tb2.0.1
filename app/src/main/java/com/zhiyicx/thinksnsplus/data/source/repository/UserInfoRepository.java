@@ -500,6 +500,12 @@ public class UserInfoRepository implements UserInfoContract.Repository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    @Override
+    public Observable<List<UserInfoBean>> getRecommendUserInfo() {
+        return mUserInfoClient.getRecommendUserInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
     /**
      * @param phones 单次最多 100 条

@@ -72,6 +72,16 @@ public class RankIndexFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return true;
+    }
+
+    @Override
     protected List<String> initTitles() {
         return Arrays.asList(getString(R.string.rank_user)
                 , getString(R.string.rank_qa)

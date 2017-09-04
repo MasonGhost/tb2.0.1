@@ -30,7 +30,7 @@ public class ApiConfig {
     //public static final String APP_DOMAIN = "http://192.168.2.222:8080/mockjs/2/";// rap 测试服务器
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
-//        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
+    //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
     public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
 
 //    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
@@ -363,9 +363,9 @@ public class ApiConfig {
     // 批量获取专家列表
     public static final String APP_PATH_GET_TOPIC_EXPERT_LIST = "api/" + API_VERSION_2 + "/question-experts";
     // 获取用户发布的问题列表
-    public static final String APP_PATH_GET_USER_QUESTIONS = "api/" + API_VERSION_2 +  "/user/questions";
+    public static final String APP_PATH_GET_USER_QUESTIONS = "api/" + API_VERSION_2 + "/user/questions";
     // 获取用户发布的回答列表
-    public static final String APP_PATH_GET_USER_ANSWER = "api/" + API_VERSION_2 +  "/user/question-answer";
+    public static final String APP_PATH_GET_USER_ANSWER = "api/" + API_VERSION_2 + "/user/question-answer";
 
 
     /**
@@ -488,6 +488,9 @@ public class ApiConfig {
     public static final String APP_PATH_GET_NEW_USER_INFO = "api/" + API_VERSION_2 + "/user/latests";
     // 通过 tag 推荐
     public static final String APP_PATH_GET_RECOMMENT_BY_TAG_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-tags";
+    // 获取后台推荐用户
+    public static final String APP_PATH_GET_RECOMMENT_USER_INFO = "api/" + API_VERSION_2 + "/user/recommends";
+
     public static final String APP_PATH_SEARCH_RECOMMENT_USER = "api/" + API_VERSION_2 + "/user/search";
     // 通过 phone 推荐
     public static final String APP_PATH_GET_BY_PHONE_USER_INFO = "api/" + API_VERSION_2 + "/user/find-by-phone";
