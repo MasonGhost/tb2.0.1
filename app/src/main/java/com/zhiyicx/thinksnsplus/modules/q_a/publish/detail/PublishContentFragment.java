@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -28,8 +27,8 @@ import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.DataImageView;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
-import com.zhiyicx.thinksnsplus.modules.q_a.reward.QARewardActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -68,15 +67,14 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     protected PhotoSelectorImpl mPhotoSelector;
     private ActionPopupWindow mPhotoPopupWindow;// 图片选择弹框
     private ActionPopupWindow mInstructionsPopupWindow;
-    protected int[] mImageIdArray;// 已经添加的图片数量图片数组 id
     private int mPicTag;// 已经添加的图片数量
-    protected int mPicAddTag;// 封装数据时 当前 图片 下标
     protected int mAnonymity;
 
     private AnonymityPopWindow mAnonymityPopWindow;
     private CenterAlertPopWindow mAnonymityAlertPopWindow;
 
     private QAPublishBean mQAPublishBean;
+    private DataImageView test;
 
     public static PublishContentFragment newInstance(Bundle bundle) {
         PublishContentFragment publishContentFragment = new PublishContentFragment();
@@ -127,7 +125,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     protected void setRightClick() {
         super.setRightClick();
         saveQuestion();
-        Intent intent = new Intent(getActivity(),AddTopicActivity.class);
+        Intent intent = new Intent(getActivity(), AddTopicActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mQAPublishBean);
         intent.putExtras(bundle);
@@ -176,9 +174,8 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                 } else {
                     builder.append(String.format(Locale.getDefault(),
                             MarkdownConfig.IMAGE_TAG, MarkdownConfig.IMAGE_TITLE,
-                            mImageIdArray[mPicAddTag]));
+                            editData.imageId));
                 }
-                mPicAddTag++;
             }
         }
         return builder.toString();
@@ -186,7 +183,6 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
 
     @Override
     protected void initData() {
-        mImageIdArray = new int[100];
         mPhotoSelector = DaggerPhotoSelectorImplComponent
                 .builder()
                 .photoSeletorImplModule(new PhotoSeletorImplModule(this, this, PhotoSelectorImpl
@@ -218,17 +214,15 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
             return;
         }
         mPbImageUpload.setVisibility(View.VISIBLE);
-        mImageIdArray[mPicTag] = mPicTag;
         String path = photoList.get(0).getImgUrl();
         mPresenter.uploadPic(path, "", true, 0, 0);
-        mRicheTest.insertImage(path, mRicheTest.getWidth());
+        test = mRicheTest.insertImage(path, mRicheTest.getWidth());
     }
 
     @Override
     public void addImageViewAtIndex(String iamge, int iamge_id, String markdonw, boolean isLast) {
-        mImageIdArray[mPicTag] = iamge_id;
         mPicTag++;
-        mRicheTest.updateImageViewAtIndex(mRicheTest.getLastIndex(), iamge, markdonw, isLast);
+        mRicheTest.updateImageViewAtIndex(mRicheTest.getLastIndex(), iamge_id, iamge, markdonw, isLast);
     }
 
     @Override
@@ -239,22 +233,26 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     @Override
     public void uploadPicSuccess(int id) {
         mPbImageUpload.setVisibility(View.GONE);
-        mImageIdArray[mPicTag] = id;
+        test.setId(id);
         mPicTag++;
     }
 
     @Override
     public void uploadPicFailed() {
         mPbImageUpload.setVisibility(View.GONE);
-        if (mPicTag > 0) {
-            mPicTag--;
-        }
     }
 
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         if (prompt == Prompt.ERROR) {
             mRicheTest.deleteImage();
+        }
+    }
+
+    @Override
+    public void onImageDelete() {
+        if (mPicTag > 0) {
+            mPicTag--;
         }
     }
 
@@ -391,8 +389,8 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
         mAnonymityPopWindow.setOnDismissListener(() -> mImSetting.setImageResource(R.mipmap.icon_install_grey));
     }
 
-    private void initAnonymityAlertPopWindow(boolean isChecked){
-        if (mAnonymityAlertPopWindow == null){
+    private void initAnonymityAlertPopWindow(boolean isChecked) {
+        if (mAnonymityAlertPopWindow == null) {
             mAnonymityAlertPopWindow = CenterAlertPopWindow.builder()
                     .with(getActivity())
                     .parentView(getView())
@@ -401,13 +399,15 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     .animationStyle(R.style.style_actionPopupAnimation)
                     .backgroundAlpha(CustomPopupWindow.POPUPWINDOW_ALPHA)
                     .titleStr(getString(R.string.qa_publish_enable_anonymous))
-                    .desStr("当我回忆你过去做过的某些事情的时候，要接受你就变得相当困难，不过最终我仍旧理解了你。我始终在期望你做一些你的选择，期望你做一些你无法做到的事情，这种期望使我对你过于吹毛求疵，当初的你，怎么会像现在的我一样成熟呢！如今我终于接受了你的存在，你绝对值得。")
+                    .desStr("当我回忆你过去做过的某些事情的时候，要接受你就变得相当困难，不过最终我仍旧理解了你。" +
+                            "我始终在期望你做一些你的选择，期望你做一些你无法做到的事情，这种期望使我对你过于吹毛求疵，" +
+                            "当初的你，怎么会像现在的我一样成熟呢！如今我终于接受了你的存在，你绝对值得。")
                     .buildCenterPopWindowItem1ClickListener(new CenterAlertPopWindow.CenterPopWindowItemClickListener() {
                         @Override
                         public void onRightClicked() {
                             mAnonymityAlertPopWindow.dismiss();
                             mAnonymity = 1;
-                            if (mAnonymityPopWindow != null){
+                            if (mAnonymityPopWindow != null) {
                                 mAnonymityPopWindow.dismiss();
                             }
                         }
@@ -416,7 +416,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                         public void onLeftClicked() {
                             mAnonymityAlertPopWindow.dismiss();
                             mAnonymity = 0;
-                            if (mAnonymityPopWindow != null){
+                            if (mAnonymityPopWindow != null) {
                                 // 设置按钮的状态
                                 mAnonymityPopWindow.setSwitchButton(false);
                                 mAnonymityPopWindow.dismiss();
@@ -425,7 +425,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
                     })
                     .build();
         }
-        if (isChecked){
+        if (isChecked) {
             mAnonymityAlertPopWindow.show();
         } else {
             mAnonymityAlertPopWindow.dismiss();

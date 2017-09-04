@@ -9,6 +9,7 @@ import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.source.local.db.CommonCacheImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,6 +61,7 @@ public class AnswerDraftBeanGreenDaoImpl extends CommonCacheImpl<AnswerDraftBean
         if (!realData.isEmpty()) {
             needData.addAll(realData);
         }
+        Collections.reverse(needData);
         return needData;
     }
 
