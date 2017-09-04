@@ -90,7 +90,7 @@ public class WebSocketConnection implements WebSocket {
                 mTransportChannel.socket().setTcpNoDelay(
                         mOptions.getTcpNoDelay());
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 onClose(WebSocketConnectionHandler.CLOSE_CANNOT_CONNECT,
                         e.getMessage());
                 return;

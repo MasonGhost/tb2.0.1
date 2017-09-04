@@ -20,6 +20,7 @@ import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
+import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
 import java.util.List;
@@ -104,7 +105,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     }
 
     private void addTopic() {
-        Intent intent = new Intent(getActivity(), AddTopicActivity.class);
+        Intent intent = new Intent(getActivity(), PublishContentActivity.class);
         Bundle bundle = new Bundle();
         saveQuestion();
         bundle.putParcelable(BUNDLE_PUBLISHQA_BEAN, mDraftQuestion);

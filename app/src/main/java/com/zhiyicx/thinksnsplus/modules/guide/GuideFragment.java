@@ -9,11 +9,14 @@ import com.zhiyicx.thinksnsplus.R;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class GuideFragment extends TSFragment<GuideContract.Presenter> implements GuideContract.View {
     public static final int DEFAULT_DELAY_TIME = 1000;
+
+    Subscription subscribe;
 
     @Override
     protected int getBodyLayoutId() {
@@ -48,14 +51,9 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
     @Override
     public void onResume() {
         super.onResume();
-        Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
+        subscribe = Observable.timer(DEFAULT_DELAY_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        mPresenter.checkLogin();
-                    }
-                });
+                .subscribe(aLong -> mPresenter.checkLogin());
     }
 
     @Override
@@ -65,4 +63,11 @@ public class GuideFragment extends TSFragment<GuideContract.Presenter> implement
         getActivity().overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (subscribe != null && !subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+        }
+    }
 }

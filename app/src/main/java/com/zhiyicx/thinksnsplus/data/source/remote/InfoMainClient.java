@@ -10,6 +10,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
@@ -103,9 +104,8 @@ public interface InfoMainClient {
                                                             @Query("limit") Long limit,@Query("type") String type);
 
     // 订阅某类资讯
-    @FormUrlEncoded
     @PATCH(APP_PATH_INFO_FOLLOW_LIST)
-    Observable<BaseJsonV2<Object>> doSubscribe(@Field("follows") String follows);
+    Observable<BaseJsonV2<Object>> doSubscribe(@Body Map follows);
 
 
     @GET(APP_PATH_INFO_GET_COMMENT)

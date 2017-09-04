@@ -59,6 +59,10 @@ public class AnonymityPopWindow extends CustomPopupWindow {
         });
     }
 
+    public void setSwitchButton(boolean isChecked){
+        ((SwitchCompat) mContentView.findViewById(R.id.ppw_switch)).setChecked(isChecked);
+    }
+
     public static final class CBuilder extends Builder {
 
         private AnonymityPopWindowSwitchClickListener anonymityPopWindowSwitchClickListener;

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.config.MarkdownConfig;
+import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
@@ -136,7 +137,7 @@ public class QuestionDetailHeader {
         // 悬赏金额
         if (qaListInfoBean.getAmount() != 0) {
             mTvRewardAmount.setVisibility(View.VISIBLE);
-            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_reward_amount), qaListInfoBean.getAmount()));
+            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_reward_amount), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
         } else {
             mTvRewardAmount.setVisibility(View.GONE);
         }

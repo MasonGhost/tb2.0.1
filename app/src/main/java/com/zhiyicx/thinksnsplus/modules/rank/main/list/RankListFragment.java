@@ -35,6 +35,16 @@ public class RankListFragment extends TSListFragment<RankListContract.Presenter,
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
         DaggerRankListComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())

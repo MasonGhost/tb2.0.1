@@ -273,6 +273,11 @@ public interface UserInfoContract {
         Observable<List<UserInfoBean>> getUsersRecommentByTag(Integer limit, Integer offset);
 
         /**
+         *
+         * @return 后台推荐用户
+         */
+        Observable<List<UserInfoBean>> getRecommendUserInfo();
+        /**
          * phone 推荐用户
          * <p>
          * { "phones": [ 18877778888, 18999998888, 17700001111 ] }

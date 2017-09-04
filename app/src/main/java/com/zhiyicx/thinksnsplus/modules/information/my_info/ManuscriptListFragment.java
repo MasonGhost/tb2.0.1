@@ -84,4 +84,9 @@ public class ManuscriptListFragment extends TSListFragment<ManuscriptListContrac
         });
         return adapter;
     }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
 }
