@@ -50,6 +50,16 @@ public class MyFollowFragment extends TSListFragment<MyFollowContract.Presenter,
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return false;
+    }
+
+    @Override
     protected void initView(View rootView) {
         DaggerMyFollowComponent.builder()
                 .appComponent(AppApplication.AppComponentHolder.getAppComponent())

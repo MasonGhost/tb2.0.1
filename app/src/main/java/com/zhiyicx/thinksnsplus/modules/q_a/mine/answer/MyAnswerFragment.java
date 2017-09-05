@@ -43,6 +43,16 @@ public class MyAnswerFragment extends TSListFragment<MyAnswerContract.Presenter,
     }
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return false;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         MyAnswerAdapter answerAdapter = new MyAnswerAdapter(getContext(), mListDatas, mAnswerPresenter);
         answerAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
