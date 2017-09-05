@@ -11,8 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/full_button_height"
-        android:textColor="@color/important_for_content"
-        android:textSize="@dimen/size_sub_title"
         app:ts_md_hint="@string/qa_publish_content_hint"/>
 
     <include layout="@layout/view_publish"/>

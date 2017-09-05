@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@null"
-    android:cursorVisible="true"
+    android:gravity="top"
     android:lineSpacingExtra="8dp"
-    android:textSize="@dimen/size_sub_title"
-    android:textColor="@color/important_for_content" />
+    android:textColor="@color/important_for_content"
+    android:textSize="@dimen/size_sub_title"/>

@@ -96,7 +96,6 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
 
     @Override
     protected void setRightClick() {
-        super.setRightClick();
         if ((mQuestionStr.endsWith("?") || mQuestionStr.endsWith("？")) && mQuestionStr.length() > 1) {
             addTopic();
         } else {
