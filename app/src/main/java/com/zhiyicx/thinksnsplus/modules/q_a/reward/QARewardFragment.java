@@ -220,8 +220,8 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         if (prompt == Prompt.SUCCESS) {
-            getActivity().finish();
             startActivity(new Intent(getActivity(), QA_Activity.class));
+            getActivity().finish();
         }
     }
 

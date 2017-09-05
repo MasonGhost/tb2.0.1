@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
-    protected static final int DEFAULT_OFFSET_PAGE = 3;
+    private static final int DEFAULT_OFFSET_PAGE = 5;
 
     // 定义默认样式值
     private static final int DEFAULT_TAB_UNSELECTED_TEXTCOLOR = com.zhiyicx.baseproject.R.color
@@ -61,9 +61,7 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     public String[] QA_TYPES;
 
-    private List<String> mTitle;
     private List<Fragment> mFragments;
-    private CommonNavigator mCommonNavigator;
 
     @Override
     protected boolean setUseSatusbar() {
@@ -77,6 +75,11 @@ public class QA_InfoContainerFragment extends TSViewPagerFragment {
 
     public static QA_InfoContainerFragment getInstance() {
         return new QA_InfoContainerFragment();
+    }
+
+    @Override
+    protected int getOffsetPage() {
+        return DEFAULT_OFFSET_PAGE;
     }
 
     @Override
