@@ -191,7 +191,11 @@ public abstract class TSFragment<P extends IBasePresenter> extends BaseFragment<
                         super.onDismissed(TSnackbar, event);
                         switch (event) {
                             case DISMISS_EVENT_TIMEOUT:
-                                snackViewDismissWhenTimeOut(prompt);
+                                try {
+                                    snackViewDismissWhenTimeOut(prompt);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                                 break;
                         }
                     }
