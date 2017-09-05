@@ -23,6 +23,7 @@ import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -36,7 +37,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_PATH_SHARE_DEFAULT;
@@ -56,6 +56,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     public SharePolicy mSharePolicy;
     @Inject
     public AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
+    @Inject
+    QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
     @Inject
     public QuestionDetailPresenter(QuestionDetailContract.Repository repository, QuestionDetailContract.View rootView) {
@@ -64,7 +66,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
     @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (mRootView.getCurrentQuestion().getTopics() == null || mRootView.getCurrentQuestion().getTopics().size() == 0){
+        if (mRootView.getCurrentQuestion().getTopics() == null || mRootView.getCurrentQuestion().getTopics().size() == 0) {
             getQuestionDetail(mRootView.getCurrentQuestion().getId() + "");
         } else {
             Subscription subscription = mRepository.getAnswerList(mRootView.getCurrentQuestion().getId() + "",
@@ -74,7 +76,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
 
                         @Override
                         protected void onSuccess(List<AnswerInfoBean> data) {
-                            if (maxId == 0){
+                            mRootView.getCurrentQuestion().setAnswerInfoBeanList(data);
+                            mQAListInfoBeanGreenDao.insertOrReplace(mRootView.getCurrentQuestion());
+                            if (maxId == 0) {
                                 mRootView.onNetResponseSuccess(dealAnswerList(mRootView.getCurrentQuestion(), data), isLoadMore);
                             } else {
                                 mRootView.onNetResponseSuccess(data, isLoadMore);
@@ -119,12 +123,12 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
         addSubscrebe(subscription);
     }
 
-    private List<AnswerInfoBean> dealAnswerList(QAListInfoBean qaListInfoBean, List<AnswerInfoBean> list){
+    private List<AnswerInfoBean> dealAnswerList(QAListInfoBean qaListInfoBean, List<AnswerInfoBean> list) {
         List<AnswerInfoBean> totalList = new ArrayList<>();
-        if (qaListInfoBean.getInvitation_answers() != null){
+        if (qaListInfoBean.getInvitation_answers() != null) {
             totalList.addAll(qaListInfoBean.getInvitation_answers());
         }
-        if (qaListInfoBean.getAdoption_answers() != null){
+        if (qaListInfoBean.getAdoption_answers() != null) {
             totalList.addAll(qaListInfoBean.getAdoption_answers());
         }
         totalList.addAll(list);
@@ -235,13 +239,13 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE)
-    public void updateLike(Bundle bundle){
-        if (bundle != null){
+    public void updateLike(Bundle bundle) {
+        if (bundle != null) {
             AnswerInfoBean answerInfoBean = (AnswerInfoBean) bundle.
                     getSerializable(EventBusTagConfig.EVENT_UPDATE_ANSWER_LIST_LIKE);
-            if (answerInfoBean != null){
-                for (AnswerInfoBean answerInfoBean1 : mRootView.getListDatas()){
-                    if (answerInfoBean.getId().equals(answerInfoBean1.getId())){
+            if (answerInfoBean != null) {
+                for (AnswerInfoBean answerInfoBean1 : mRootView.getListDatas()) {
+                    if (answerInfoBean.getId().equals(answerInfoBean1.getId())) {
                         mRootView.getListDatas().set(mRootView.getListDatas().indexOf(answerInfoBean1), answerInfoBean);
                         mRootView.refreshData();
                         break;

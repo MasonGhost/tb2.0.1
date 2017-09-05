@@ -378,6 +378,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                         }
                         mMorePop.hide();
                     })
+                    .bottomClickListener(() -> mMorePop.hide())
                     .build();
         }
 
@@ -486,6 +487,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
                         }
                     })
+
                     .build();
         }
 
