@@ -18,6 +18,7 @@ import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -96,7 +97,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
-
     }
 
     @Override
