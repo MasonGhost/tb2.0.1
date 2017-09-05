@@ -63,8 +63,13 @@ public class MyFollowContainerFragment extends TSViewPagerFragment{
     private List<Fragment> mFragments;
 
     @Override
-    public void setPresenter(Object presenter) {
+    protected boolean setUseSatusbar() {
+        return true;
+    }
 
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
     }
 
     @Override

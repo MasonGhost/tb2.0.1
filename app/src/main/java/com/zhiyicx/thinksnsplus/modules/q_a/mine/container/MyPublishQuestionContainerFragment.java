@@ -72,6 +72,16 @@ public class MyPublishQuestionContainerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
     protected void initViewPager(View rootView) {
         super.initViewPager(rootView);
         mTsvToolbar.setLeftImg(setLeftImg());
