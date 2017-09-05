@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
@@ -129,8 +130,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mCurrentPosition = position - mHeaderAndFooterWrapper
                 .getHeadersCount();
         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
+
+        boolean isOnlook = mQaListInfoBean.getLook() == 1;
+        boolean isNeedOnlook = isOnlook && (mQaListInfoBean.getUser().getExtra().getUser_id()
+                != AppApplication.getmCurrentLoginAuth().getUser_id() || answerInfoBean.getUser_id()
+                != AppApplication.getmCurrentLoginAuth().getUser_id());
+
         // 开启了围观并且不是作者本人点击
-        if (!answerInfoBean.getCould() && answerInfoBean.getInvited() == 1) {
+        if (isNeedOnlook) {
             mPayWatchPopWindow.show();
         } else {
             startToAnswerDetail(answerInfoBean);
@@ -455,15 +462,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .buildItem2Str(getString(R.string.buy_pay_out))
                     .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(10)))
                     .buildCenterPopWindowItem1ClickListener(() -> {
-                        // 跳转查看 围观肯定是第一个
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-                        if (answerInfoBean != null) {
-                            answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
-                            mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
-                            mQuestionDetailHeader.updateOutLook(mQaListInfoBean);
-                            refreshData();
-                            startToAnswerDetail(answerInfoBean);
-                        }
+                        mPresenter.payForOnlook(answerInfoBean.getId());
                         mPayWatchPopWindow.hide();
                     })
                     .buildCenterPopWindowItem2ClickListener(() -> mPayWatchPopWindow.hide())
@@ -512,6 +512,26 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.DONE) {
+            onLookToAnswerDetail(true);
+        }
+    }
+
+    private void onLookToAnswerDetail(boolean isNeedOnlook) {
+        // 跳转查看 围观肯定是第一个
+        AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
+        if (answerInfoBean != null && isNeedOnlook) {
+            answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
+            mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
+            mQuestionDetailHeader.updateOutLook(mQaListInfoBean);
+            refreshData();
+        }
+        startToAnswerDetail(answerInfoBean);
+    }
+
+    @Override
     public void onOrderTypeSelected(int type) {
         mQuestionDetailHeader.setCurrentOrderType(type);
         mCurrentOrderType = type == 0 ? QuestionDetailHeader.ORDER_DEFAULT : QuestionDetailHeader
@@ -533,9 +553,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position) {
+    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position, boolean isNeedOnlook) {
         mCurrentPosition = position - mHeaderAndFooterWrapper
                 .getHeadersCount();
-        mPayWatchPopWindow.show();
+        if (isNeedOnlook) {
+            mPayWatchPopWindow.show();
+        } else {
+            onLookToAnswerDetail(false);
+        }
+
     }
 }

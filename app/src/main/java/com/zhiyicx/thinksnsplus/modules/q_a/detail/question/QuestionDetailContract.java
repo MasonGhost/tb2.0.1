@@ -38,7 +38,7 @@ public interface QuestionDetailContract {
         void deleteQuestion(Long question_id);
         void applyForExcellent(Long question_id);
         void handleAnswerLike(boolean isLiked, final long answer_id, AnswerInfoBean answerInfoBean);
-        void payForExcellent();
+        void payForOnlook(long answer_id);
     }
 
     interface Repository extends IBasePublishQuestionRepository{
@@ -46,5 +46,6 @@ public interface QuestionDetailContract {
         Observable<List<AnswerInfoBean>> getAnswerList(String questionId, String order_type, int size);
         Observable<BaseJsonV2<Object>> deleteQuestion(Long question_id);
         Observable<BaseJsonV2<Object>> applyForExcellent(Long question_id);
+        Observable<BaseJsonV2<Object>> payForOnlook(Long answer_id);
     }
 }
