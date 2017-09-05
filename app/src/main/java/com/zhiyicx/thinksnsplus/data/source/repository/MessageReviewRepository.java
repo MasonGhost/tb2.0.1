@@ -48,7 +48,7 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     }
 
     @Override
-    public Observable<BaseJsonV2> approvedTopComment(Long feed_id, int comment_id, int pinned_id) {
+    public Observable<BaseJsonV2> approvedTopComment(String type,Long feed_id, int comment_id, int pinned_id) {
         return mDynamicClient.approvedTopComment(feed_id,comment_id,pinned_id)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -56,7 +56,7 @@ public class MessageReviewRepository implements MessageReviewContract.Repository
     }
 
     @Override
-    public Observable<BaseJsonV2> refuseTopComment(int pinned_id) {
+    public Observable<BaseJsonV2> refuseTopComment(String type,int pinned_id) {
         return mDynamicClient.refuseTopComment(pinned_id).subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

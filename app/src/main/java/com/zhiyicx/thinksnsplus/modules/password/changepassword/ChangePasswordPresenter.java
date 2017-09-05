@@ -51,7 +51,6 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
                 .subscribe(new BaseSubscribeForV2<CacheBean>() {
                     @Override
                     protected void onSuccess(CacheBean data) {
-                        mRootView.showMessage(mContext.getString(R.string.change_password_success));
                         mRootView.finsh();
                     }
 

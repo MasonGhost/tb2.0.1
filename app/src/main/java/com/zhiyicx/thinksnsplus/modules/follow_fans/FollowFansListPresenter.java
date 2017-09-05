@@ -1,12 +1,12 @@
 package com.zhiyicx.thinksnsplus.modules.follow_fans;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.FollowFansBeanGreenDaoImpl;
@@ -135,7 +135,7 @@ public class FollowFansListPresenter extends AppBasePresenter<FollowFansListCont
 
     @Override
     public void cleanNewFans() {
-        mFlushMessageBeanGreenDao.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FOLLOWS);
+        mFlushMessageBeanGreenDao.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FOLLOWS);
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_FOLLOW_AND_CANCEL_FOLLOW)

@@ -10,6 +10,7 @@
     <string name="hot">热门</string>
     <string name="the_last">最新</string>
     <!-- 消息 -->
+    <string name="notification">通知</string>
     <string name="critical">评论的</string>
     <string name="comment">评论</string>
     <string name="like">赞</string>
@@ -482,6 +483,7 @@
     <string name="qa_question_answer_adopting">采纳答案</string>
     <string name="qa_question_answer_show_watcher_count">%d人正在围观</string>
     <string name="qa_question_answer_anonymity">匿</string>
+    <string name="qa_question_answer_anonymity_user">匿名用户</string>
     <string name="qa_reward_public">公开悬赏</string>
     <string name="qa_reward_invited">已邀请悬赏</string>
     <string name="qa_reward_setting">已设置悬赏</string>

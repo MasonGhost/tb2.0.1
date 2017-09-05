@@ -67,7 +67,6 @@ public class InfoContainerPresenter extends AppBasePresenter<InfoMainContract.Re
                         mRootView.setInfoType(data);
                     }
                 });
-
         addSubscrebe(subscription);
 
         mRepository.getInfoType().subscribe(data -> {

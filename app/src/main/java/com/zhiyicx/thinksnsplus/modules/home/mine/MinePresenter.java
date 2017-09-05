@@ -2,12 +2,12 @@ package com.zhiyicx.thinksnsplus.modules.home.mine;
 
 import android.os.Bundle;
 
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.common.dagger.scope.FragmentScoped;
 import com.zhiyicx.common.mvp.BasePresenter;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
+import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AuthBean;
 import com.zhiyicx.thinksnsplus.data.beans.FlushMessages;
 import com.zhiyicx.thinksnsplus.data.beans.UserCertificationInfo;
@@ -108,10 +108,10 @@ public class MinePresenter extends BasePresenter<MineContract.Repository, MineCo
     @Subscriber(tag = EventBusTagConfig.EVENT_IM_SET_MINE_FANS_TIP_VISABLE)
     public void setMineTipVisable(boolean isVisiable) {
         // 关注消息
-        FlushMessages followFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.NOTIFICATION_KEY_FOLLOWS);
+        FlushMessages followFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(NotificationConfig.NOTIFICATION_KEY_FOLLOWS);
         mRootView.setNewFollowTip(followFlushMessages != null ? followFlushMessages.getCount() : 0);
         // 系统消息
-        FlushMessages systemInfoFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(ApiConfig.NOTIFICATION_KEY_NOTICES);
+        FlushMessages systemInfoFlushMessages = mFlushMessageBeanGreenDao.getFlushMessgaeByKey(NotificationConfig.NOTIFICATION_KEY_NOTICES);
         mRootView.setNewSystemInfo(systemInfoFlushMessages != null && systemInfoFlushMessages.getCount() > 0);
         // 更新底部红点
         EventBus.getDefault().post((followFlushMessages != null && followFlushMessages.getCount() > 0) || (systemInfoFlushMessages != null && systemInfoFlushMessages.getCount() > 0), EventBusTagConfig.EVENT_IM_SET_MINE_TIP_VISABLE);

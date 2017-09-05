@@ -22,6 +22,8 @@
     <color name="check_in_total_text_color">#d46c28</color>
     <color name="check_in_bg_start_color">#efb946</color>
     <color name="check_in_bg_end_color">#ef8a46</color>
+    <!--消息红点颜色-->
+    <color name="message_badge_bg">#e34f4b</color>
 
 
 </resources>

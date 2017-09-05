@@ -31,9 +31,9 @@ public class ApiConfig {
 
     public static final boolean APP_IS_NEED_SSH_CERTIFICATE = true;// 在线测试服务器 2
     //        public static final String APP_DOMAIN = "https://plus.medz.cn/";// 在线测试服务器 2
-    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
-
-//    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
+//    public static final String APP_DOMAIN = "http://dev.zhibocloud.cn/";// 模拟在线正式服务器
+//
+    public static final String APP_DOMAIN = "http://test-plus.zhibocloud.cn/";// 在线测试服务器
 
 //    public static final String APP_DOMAIN = "http://tsplus.zhibocloud.cn/";// 正式服务器
 
@@ -91,23 +91,6 @@ public class ApiConfig {
     public static final String APP_PATH_REWARD_USER = "api/" + API_VERSION_2 + "/user/{user_id}/rewards"; // 打赏一个用户
 
     /**
-     * 通知来源频道，客户端需要根据 data.channel 值进行独立解析。已知频道:
-     *
-     * @see {https://github.com/slimkit/thinksns-plus/blob/master/docs/api/v2/notifications.md}
-     * <p>
-     * feed:comment 动态被评论
-     * feed:reply-comment 动态评论被回复
-     * feed:pinned-comment 动态评论申请置顶
-     * feed:digg 动态被点赞
-     */
-    public static final String NOTIFICATION_KEY_FEED_DIGGS = "feed:digg";
-    public static final String NOTIFICATION_KEY_FEED_COMMENTS = "feed:comment";
-    public static final String NOTIFICATION_KEY_FEED_REPLY_COMMENTS = "feed:reply-comment";
-    public static final String NOTIFICATION_KEY_FEED_PINNED_COMMENT = "feed:pinned-comment";
-    public static final String NOTIFICATION_KEY_FOLLOWS = "follows";
-    public static final String NOTIFICATION_KEY_NOTICES = "notices";
-
-    /**
      * 消息通知
      */
     // 未读通知数量检查
@@ -123,7 +106,6 @@ public class ApiConfig {
     public static final String NOTIFICATION_TYPE_ALL = "all";
     public static final String NOTIFICATION_TYPE_READ = "read";
     public static final String NOTIFICATION_TYPE_UNREAD = "unread ";
-
 
     /**
      * 聊天相关
@@ -243,6 +225,15 @@ public class ApiConfig {
 
     // 获取用户投稿列表
     public static final String APP_PATH_GET_MY_INFO = "/api/" + API_VERSION_2 + "/user/news/contributes";
+
+    // 查看资讯中申请置顶的评论列表
+    public static final String APP_PATH_GET_REVIEW_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/comments/pinneds";
+
+    // 同意资讯评论置顶
+    public static final String APP_PATH_APPROVED_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/{news_id}/comments/{comment_id}/pinneds/{pinned_id}";
+
+    // 拒绝资讯评论置顶
+    public static final String APP_PATH_REFUSE_INFO_COMMENT = "/api/" + API_VERSION_2 + "/news/pinneds/{pinned_id}/reject";
 
 
     /**

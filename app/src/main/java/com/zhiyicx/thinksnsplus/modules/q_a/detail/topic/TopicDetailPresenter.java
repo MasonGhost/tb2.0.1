@@ -55,31 +55,6 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
     }
 
     @Override
-    public void requestNetData(Long maxId, boolean isLoadMore) {
-        Subscription subscription = mRepository.getQAQuestionByTopic(String.valueOf(mRootView.getTopicId()),
-                "", maxId, mRootView.getCurrentType())
-                .compose(mSchedulersTransformer)
-                .subscribe(new BaseSubscribeForV2<List<QAListInfoBean>>() {
-
-                    @Override
-                    protected void onSuccess(List<QAListInfoBean> data) {
-                        mRootView.onNetResponseSuccess(data, isLoadMore);
-                    }
-                });
-        addSubscrebe(subscription);
-    }
-
-    @Override
-    public List<QAListInfoBean> requestCacheData(Long max_Id, boolean isLoadMore) {
-        return null;
-    }
-
-    @Override
-    public boolean insertOrUpdateData(@NotNull List<QAListInfoBean> data, boolean isLoadMore) {
-        return false;
-    }
-
-    @Override
     public void getTopicDetail(String topic_id) {
         Subscription subscription = mRepository.getTopicDetail(topic_id)
                 .compose(mSchedulersTransformer)
@@ -157,20 +132,7 @@ public class TopicDetailPresenter extends AppBasePresenter<TopicDetailContract.R
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE)
-    public void updateList(Bundle bundle) {
-        if (bundle != null) {
-            QAListInfoBean qaListInfoBean = (QAListInfoBean) bundle.
-                    getSerializable(EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE);
-            if (qaListInfoBean != null) {
-                for (int i = 0; i < mRootView.getListDatas().size(); i++) {
-                    if (qaListInfoBean.getId().equals(mRootView.getListDatas().get(i).getId())){
-                        mRootView.getListDatas().remove(i);
-                        mRootView.refreshData();
-                        mRootView.showDeleteSuccess();
-                        break;
-                    }
-                }
-            }
-        }
+    public void updateList(String message) {
+        mRootView.showDeleteSuccess();
     }
 }
