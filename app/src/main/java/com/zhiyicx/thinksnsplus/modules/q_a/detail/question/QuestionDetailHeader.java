@@ -137,7 +137,8 @@ public class QuestionDetailHeader {
         // 悬赏金额
         if (qaListInfoBean.getAmount() != 0) {
             mTvRewardAmount.setVisibility(View.VISIBLE);
-            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_show_topic_followed_reward), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
+            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_show_topic_followed_reward_),
+                    PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
         } else {
             mTvRewardAmount.setVisibility(View.GONE);
         }
@@ -187,7 +188,7 @@ public class QuestionDetailHeader {
      * 更新是否已经回答的状态
      */
     protected void updateIsAddedAnswerState(QAListInfoBean qaListInfoBean) {
-        if (qaListInfoBean.getMy_answer() != null){
+        if (qaListInfoBean.getMy_answer() != null) {
             mTvAddAnswer.setText(mContext.getString(R.string.qa_go_to_answer));
             mIvAddAnswer.setVisibility(View.GONE);
         } else {

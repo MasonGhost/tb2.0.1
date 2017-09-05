@@ -537,4 +537,8 @@ public class ExpandableTextView extends AppCompatTextView {
             return touchedSpan;
         }
     }
+
+    public int getTextLineCount() {
+        return mTextLineCount;
+    }
 }

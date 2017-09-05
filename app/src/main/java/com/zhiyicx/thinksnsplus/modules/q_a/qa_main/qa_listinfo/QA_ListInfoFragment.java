@@ -124,7 +124,8 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                 Intent intent = new Intent(getActivity(), QuestionDetailActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(BUNDLE_QUESTION_BEAN, mListDatas.get(position));
+                QAListInfoBean listInfoBean = mListDatas.get(position);
+                bundle.putSerializable(BUNDLE_QUESTION_BEAN, listInfoBean);
                 intent.putExtra(BUNDLE_QUESTION_BEAN, bundle);
                 startActivity(intent);
             }
@@ -149,7 +150,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                     getSerializable(EventBusTagConfig.EVENT_UPDATE_QUESTION_DELETE);
             if (qaListInfoBean != null) {
                 for (int i = 0; i < mListDatas.size(); i++) {
-                    if (qaListInfoBean.getId().equals(mListDatas.get(i).getId())){
+                    if (qaListInfoBean.getId().equals(mListDatas.get(i).getId())) {
                         mListDatas.remove(i);
                         refreshData();
                         showDeleteSuccess();
