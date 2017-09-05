@@ -199,6 +199,12 @@ public interface QAClient {
     Observable<BaseJsonV2<Object>> applyForExcellent(@Path("question") String question_id);
 
     /**
+     * 申请围观
+     */
+    @POST(ApiConfig.APP_PATH_QA_ANSWER_LOOK)
+    Observable<BaseJsonV2<Object>> payForOnlook(@Path("answer_id") Long answer_id);
+
+    /**
      * 获取问题的评论列表
      *
      * @param question_id id

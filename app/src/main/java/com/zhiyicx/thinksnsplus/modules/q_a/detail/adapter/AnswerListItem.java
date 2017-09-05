@@ -56,14 +56,14 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
     @Override
     public void convert(ViewHolder holder, AnswerInfoBean answerInfoBean, AnswerInfoBean lastT, int position, int itemCounts) {
+        boolean isOnlook = mQaListInfoBean.getLook() == 1;
         // 发布者信息
         if (answerInfoBean.getUser() != null) {
             ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait));
             holder.setText(R.id.tv_name, answerInfoBean.getUser().getName());
             // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
-            boolean isInvited = mQaListInfoBean.getLook() == 1;
-            holder.setVisible(R.id.tv_watcher_count, isInvited ? View.VISIBLE : View.GONE);
-            if (isInvited) {
+            holder.setVisible(R.id.tv_watcher_count, isOnlook ? View.VISIBLE : View.GONE);
+            if (isOnlook) {
                 holder.setText(R.id.tv_watcher_count, String.format(holder.getConvertView().getContext()
                         .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean.getOnlookers_count()));
             }
@@ -105,7 +105,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否围观
         TextView tvToWatch = holder.getTextView(R.id.tv_to_watch);
         // 邀请的人回答才会有围观
-        tvToWatch.setVisibility(answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
+        tvToWatch.setVisibility(isOnlook ? View.VISIBLE : View.GONE);
         // 是否已经围观了
         tvToWatch.setEnabled(!answerInfoBean.getCould());
         tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string.qa_go_to_watched)

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.trycatch.mysnackbar.Prompt;
 import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.config.PayConfig;
 import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
@@ -93,8 +94,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     protected void initView(View rootView) {
-        super.initView(rootView);
         mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
+        super.initView(rootView);
         Long userId = mQaListInfoBean.getUser_id();
         mIsMine = userId.equals(AppApplication.getmCurrentLoginAuth().getUser_id());
         initHeaderView();
@@ -435,15 +436,8 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .buildItem2Str(getString(R.string.buy_pay_out))
                     .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(10)))
                     .buildCenterPopWindowItem1ClickListener(() -> {
-                        // 跳转查看 围观肯定是第一个
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-                        if (answerInfoBean != null) {
-                            answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
-                            mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
-                            mQuestionDetailHeader.updateOutLook(mQaListInfoBean);
-                            refreshData();
-                            startToAnswerDetail(answerInfoBean);
-                        }
+                        mPresenter.payForOnlook(answerInfoBean.getId());
                         mPayWatchPopWindow.hide();
                     })
                     .buildCenterPopWindowItem2ClickListener(() -> mPayWatchPopWindow.hide())
@@ -489,6 +483,26 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .build();
         }
 
+    }
+
+    @Override
+    protected void snackViewDismissWhenTimeOut(Prompt prompt) {
+        super.snackViewDismissWhenTimeOut(prompt);
+        if (prompt == Prompt.DONE) {
+            onLookToAnswerDetail();
+        }
+    }
+
+    private void onLookToAnswerDetail() {
+        // 跳转查看 围观肯定是第一个
+        AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
+        if (answerInfoBean != null) {
+            answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
+            mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
+            mQuestionDetailHeader.updateOutLook(mQaListInfoBean);
+            refreshData();
+            startToAnswerDetail(answerInfoBean);
+        }
     }
 
     @Override

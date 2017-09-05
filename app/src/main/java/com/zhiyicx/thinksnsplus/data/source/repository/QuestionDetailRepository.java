@@ -28,7 +28,7 @@ import rx.schedulers.Schedulers;
  * @contact email:648129313@qq.com
  */
 
-public class QuestionDetailRepository extends BaseQARepository implements QuestionDetailContract.Repository{
+public class QuestionDetailRepository extends BaseQARepository implements QuestionDetailContract.Repository {
 
     @Inject
     public QuestionDetailRepository(ServiceManager manager) {
@@ -57,5 +57,11 @@ public class QuestionDetailRepository extends BaseQARepository implements Questi
     @Override
     public Observable<BaseJsonV2<Object>> applyForExcellent(Long question_id) {
         return mQAClient.applyForExcellent(String.valueOf(question_id));
+    }
+
+    public Observable<BaseJsonV2<Object>> payForOnlook(Long answer_id) {
+        return mQAClient.payForOnlook(answer_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }
