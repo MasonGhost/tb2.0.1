@@ -263,7 +263,6 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
         };
     }
 
-    
 
     public static class TopicConvert extends BaseConvert<List<Topic>> {
     }
@@ -314,8 +313,8 @@ public class QAPublishBean extends BaseDraftBean implements Parcelable {
 
     @Generated(hash = 1977474578)
     public QAPublishBean(String subject, List<Topic> topics, List<Invitations> invitations,
-            String body, int anonymity, int automaticity, int look, double amount, Long id,
-            Long mark, Long user_id, String updated_at, String created_at) {
+                         String body, int anonymity, int automaticity, int look, double amount, Long id,
+                         Long mark, Long user_id, String updated_at, String created_at) {
         this.subject = subject;
         this.topics = topics;
         this.invitations = invitations;

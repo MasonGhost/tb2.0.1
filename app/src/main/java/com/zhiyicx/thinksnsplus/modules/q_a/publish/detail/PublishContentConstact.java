@@ -29,6 +29,8 @@ public interface PublishContentConstact {
         void addImageViewAtIndex(String iamge,int iamge_id,String markdonw,boolean isLast);
 
         void addEditTextAtIndex(String text);
+
+        void onPareseBodyEnd(boolean hasContent);
     }
 
     interface Presenter extends IBaseTouristPresenter {

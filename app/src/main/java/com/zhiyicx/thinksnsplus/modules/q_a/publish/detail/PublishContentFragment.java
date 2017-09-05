@@ -262,6 +262,11 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Override
+    public void onPareseBodyEnd(boolean hasContent) {
+        mToolbarRight.setEnabled(hasContent);
+    }
+
+    @Override
     public void getPhotoFailure(String errorMsg) {
 
     }

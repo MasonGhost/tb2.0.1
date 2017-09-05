@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -138,10 +139,11 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(() -> mRootView.onPareseBodyEnd(true))
                 .subscribe(text -> {
                     boolean isLast = text.contains("tym_last");
                     text = text.replaceAll("tym_last", "");
-                    if (text.contains("![image]")) {
+                    if (text.matches("[\\s\\S]*@!\\[\\S*][\\s\\S]*")) {
                         int id = RegexUtils.getImageId(text);
                         String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
                         if (id > 0) {

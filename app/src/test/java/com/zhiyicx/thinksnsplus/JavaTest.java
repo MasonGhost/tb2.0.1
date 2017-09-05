@@ -100,6 +100,24 @@ public class JavaTest {
     }
 
     @Test
+    public void testContain() {
+
+        String str = "1号线@![image]号漕宝路";
+        String reg = "[\\s\\S]*@!\\[\\S*][\\s\\S]*";
+        if (str.matches(reg)) {
+            System.out.println("result1::" + str);
+        }
+
+        String text="ggfdd@![image](2537)dddd@![image](2538)";
+        if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
+            int id = RegexUtils.getImageId(text);
+            String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
+            System.out.println("result1:id:" + id);
+            System.out.println("result2:imagePath:" + imagePath);
+        }
+    }
+
+    @Test
     public void testTime() {
         String time = "2017-06-15 02:15:25";
         System.out.println("result::" + TimeUtils.getTimeFriendlyForDetail(time));
