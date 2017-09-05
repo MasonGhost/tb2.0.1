@@ -78,6 +78,10 @@
     <style name="style_change_password_text" parent="style_small_text">
         <item name="android:layout_width">@dimen/edit_lefttext_width_change_password</item>
     </style>
+    <!-- 修改密码页面的文字 -->
+    <style name="style_bind_account_text" parent="style_small_text">
+        <item name="android:layout_width">@dimen/edit_lefttext_width_bind_account</item>
+    </style>
 
     <!--###################### 按钮 ################################-->
 

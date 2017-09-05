@@ -2,6 +2,9 @@ package com.zhiyicx.thinksnsplus.data.source.remote;
 
 import com.zhiyicx.baseproject.cache.CacheBean;
 
+import java.util.Map;
+
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.PUT;
@@ -24,10 +27,9 @@ public interface PasswordClient {
     public static final String REGITER_TYPE_EMAIL = "mail";
     public static final String REGITER_TYPE_SMS = "sms";
 
-    @FormUrlEncoded
     @PUT(APP_PATH_CHANGE_PASSWORD_V2)
-    Observable<CacheBean> changePasswordV2(@Query("old_password") String oldPassword, @Field("password") String password
-            , @Field("password_confirmation") String passwordConfirmation);
+    Observable<Object> changePasswordV2(@Body Map<String,String> data);
+
 
     /**
      * 找回密码

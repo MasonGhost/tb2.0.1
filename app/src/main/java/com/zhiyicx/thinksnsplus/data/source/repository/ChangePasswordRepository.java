@@ -5,8 +5,13 @@ import com.zhiyicx.thinksnsplus.data.source.remote.PasswordClient;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.password.changepassword.ChangePasswordContract;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
+import retrofit2.http.Field;
+import retrofit2.http.Query;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -20,6 +25,7 @@ import rx.schedulers.Schedulers;
 
 public class ChangePasswordRepository implements ChangePasswordContract.Repository {
     private PasswordClient mPasswordClient;
+
     @Inject
     public ChangePasswordRepository(ServiceManager serviceManager) {
         mPasswordClient = serviceManager.getPasswordClient();
@@ -27,8 +33,13 @@ public class ChangePasswordRepository implements ChangePasswordContract.Reposito
 
 
     @Override
-    public Observable<CacheBean> changePasswordV2(String oldPassword, String newPassword) {
-        return mPasswordClient.changePasswordV2(oldPassword, newPassword, newPassword)
+    public Observable<Object> changePasswordV2(String oldPassword, String newPassword) {
+        Map<String, String> data = new HashMap<>();
+        data.put("old_password", oldPassword);
+        data.put("password", newPassword);
+        data.put("password_confirmation", newPassword);
+
+        return mPasswordClient.changePasswordV2(data)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 

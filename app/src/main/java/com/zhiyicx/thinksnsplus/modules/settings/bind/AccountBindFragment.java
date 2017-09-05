@@ -66,6 +66,14 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
     ImageView mIvVerifyLoading;
     @BindView(R.id.rl_send_verify_code_container)
     RelativeLayout mRlSendVerifyCodeContainer;
+    @BindView(R.id.tv_pasword_tip)
+    TextView mTvPaswordTip;
+    @BindView(R.id.ll_container_password)
+    LinearLayout mLlContainerPassword;
+    @BindView(R.id.et_sure_password)
+    PasswordEditText mEtSurePassword;
+    @BindView(R.id.ll_container_sure_password)
+    LinearLayout mLlContainerSurePassword;
 
     private int mCurrentType = DEAL_TYPE_PHONE;
     private boolean mIsBind = false; // 是否已经绑定
@@ -74,7 +82,9 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
     private boolean isEmailEdited;
     private boolean isCodeEdited;
     private boolean isPassEdited;
+    private boolean isSurePassEdited;
     private boolean mIsVerifyCodeEnable = true;
+    private boolean mIsNeedSetPasswordWithBindAccount = true; // 是否需要设置密码
     private Animatable mVerifyAnimationDrawable;
     private boolean isSureLoading;
     private UserInfoBean mUserInfoBean;
@@ -92,11 +102,18 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
         mIsBind = bundle.getBoolean(BUNDLE_BIND_STATE);
         mUserInfoBean = bundle.getParcelable(BUNDLE_BIND_DATA);
         mVerifyAnimationDrawable = (Animatable) mIvVerifyLoading.getDrawable();
+        initListener();
         setBindType();
         setConfirmEnable();
-        initListener();
 
-        if (mUserInfoBean != null && mIsBind) {
+    }
+
+    @Override
+    protected void initData() {
+        if (mUserInfoBean == null) {
+            return;
+        }
+        if (mIsBind) { // 解绑
             if (mCurrentType == DEAL_TYPE_PHONE) {
                 mEtPhone.setText(mUserInfoBean.getPhone());
                 mEtPhone.setSelection(mUserInfoBean.getPhone().length());
@@ -104,12 +121,24 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                 mEtEmail.setText(mUserInfoBean.getEmail());
                 mEtEmail.setSelection(mUserInfoBean.getEmail().length());
             }
+            mLlContainerSurePassword.setVisibility(View.GONE);
+
+        } else { // 绑定
+            if (mUserInfoBean.getPhone() == null && mUserInfoBean.getEmail() == null) { // 需要设置密码
+                mIsNeedSetPasswordWithBindAccount = true;
+                mLlContainerPassword.setVisibility(View.VISIBLE);
+                mLlContainerSurePassword.setVisibility(View.VISIBLE);
+                mTvPaswordTip.setText(getString(R.string.set_password));
+
+            } else {
+                mIsNeedSetPasswordWithBindAccount = false;
+                mLlContainerPassword.setVisibility(View.GONE);
+                mLlContainerSurePassword.setVisibility(View.GONE);
+                mTvPaswordTip.setText(getString(R.string.password));
+            }
 
         }
-    }
 
-    @Override
-    protected void initData() {
     }
 
     @Override
@@ -231,6 +260,31 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                         Selection.setSelection(editable, selEndIndex);
 
                     }
+                });    // 密码观察
+        RxTextView.textChanges(mEtSurePassword)
+                .compose(this.<CharSequence>bindToLifecycle())
+                .subscribe(charSequence -> {
+                    isSurePassEdited = !TextUtils.isEmpty(charSequence.toString());
+                    setConfirmEnable();
+                    Editable editable = mEtSurePassword.getText();
+                    int len = editable.length();
+                    if (len > getResources().getInteger(R.integer.password_maxlenght)) {
+                        int selEndIndex = Selection.getSelectionEnd(editable);
+                        String str = editable.toString();
+                        //截取新字符串
+                        String newStr = str.substring(0, getResources().getInteger(R.integer.password_maxlenght));
+                        mEtSurePassword.setText(newStr);
+                        editable = mEtSurePassword.getText();
+                        //新字符串的长度
+                        int newLen = editable.length();
+                        //旧光标位置超过字符串长度
+                        if (selEndIndex > newLen) {
+                            selEndIndex = editable.length();
+                        }
+                        //设置新光标所在的位置
+                        Selection.setSelection(editable, selEndIndex);
+
+                    }
                 });
         // 点击发送验证码
         RxView.clicks(mBtSendVerifyCode)
@@ -251,7 +305,7 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
                     if (mIsBind) {// 解绑
                         mPresenter.unBindPhoneOrEmail(mEtPassword.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);
                     } else {// 绑定
-                        mPresenter.bindPhoneOrEmail(mEtPhone.getText().toString(), mEtEmail.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);
+                        mPresenter.bindPhoneOrEmail(mEtPassword.getText().toString(),mEtSurePassword.getText().toString(),mEtPhone.getText().toString(), mEtEmail.getText().toString(), mEtVerifyCode.getText().toString(), mCurrentType == DEAL_TYPE_PHONE);
                     }
 
 
@@ -281,7 +335,7 @@ public class AccountBindFragment extends TSFragment<AccountBindContract.Presente
      * 设置绑定按钮是否可点击
      */
     private void setConfirmEnable() {
-        if (isCodeEdited && isPassEdited && !isSureLoading) {
+        if (isCodeEdited && !isSureLoading && isPassEdited && (mIsBind || isSurePassEdited)) {
             if ((mCurrentType == DEAL_TYPE_PHONE && isPhoneEdited)
                     || (mCurrentType == DEAL_TYPE_EMAIL && isEmailEdited)) {
                 mBtSure.setEnabled(true);

@@ -33,7 +33,7 @@ public interface AccountBindContract {
 
         void getVerifyCodeByEmail(String trim, boolean isBind);
 
-        void bindPhoneOrEmail(String phone, String email, String verifyCode, boolean isphone);
+        void bindPhoneOrEmail(String pasword, String surepassword, String phone, String email, String verifyCode, boolean isphone);
 
         void unBindPhoneOrEmail(String password, String verifyCode, boolean isPhone);
     }
