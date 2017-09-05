@@ -190,8 +190,10 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Override
     public void applyForExcellent(Long question_id) {
         Subscription subscription = mRepository.applyForExcellent(question_id)
+                .subscribeOn(Schedulers.io())
                 .doOnSubscribe(() -> mRootView.handleLoading(true, false, mContext.getString(R.string.bill_doing)))
-                .compose(mSchedulersTransformer)
+                .subscribeOn(AndroidSchedulers.mainThread())// subscribeOn & doOnSubscribe 的特殊性质
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
@@ -203,7 +205,15 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                         super.onFailure(message, code);
                         mRootView.handleLoading(false, false, message);
                     }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.handleLoading(false, false, throwable.getMessage());
+                    }
                 });
+
+
         addSubscrebe(subscription);
     }
 
