@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -92,9 +93,15 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
+
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
         Long userId = mQaListInfoBean.getUser_id();
         mIsMine = userId.equals(AppApplication.getmCurrentLoginAuth().getUser_id());
         initHeaderView();
@@ -132,6 +139,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     private void startToAnswerDetail(AnswerInfoBean answerInfoBean) {
+        if (answerInfoBean.getId() == null) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
@@ -150,13 +160,23 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.divider_line);
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }
 
     @Override
     protected boolean setUseCenterLoading() {
-        return false;
+        return true;
     }
 
     @Override
