@@ -74,6 +74,7 @@ public class MusicListPopupWindow extends PopupWindow {
         setHeight((int) (DeviceUtils.getScreenHeight(mActivity) * 0.6));
         setFocusable(mIsFocus);
         setOutsideTouchable(mIsOutsideTouch);
+        setBackgroundDrawable(mBackgroundDrawable);
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
     }

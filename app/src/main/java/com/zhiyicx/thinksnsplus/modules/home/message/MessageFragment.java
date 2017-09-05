@@ -10,28 +10,31 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.zhiyicx.baseproject.base.TSListFragment;
-import com.zhiyicx.baseproject.config.ApiConfig;
 import com.zhiyicx.baseproject.widget.BadgeView;
 import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
+import com.zhiyicx.thinksnsplus.config.NotificationConfig;
 import com.zhiyicx.thinksnsplus.data.beans.MessageItemBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.i.OnUserInfoClickListener;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatActivity;
 import com.zhiyicx.thinksnsplus.modules.chat.ChatFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentActivity;
+import com.zhiyicx.thinksnsplus.modules.home.message.messagecomment.MessageCommentFragment;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagelike.MessageLikeActivity;
 import com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.home.message.messagereview.MessageReviewFragment.REVIEW_LIST;
 
 /**
  * @Describe 消息页面
@@ -65,29 +68,19 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    protected boolean setUseSatusbar() {
-        return true;
+    protected boolean isNeedRefreshAnimation() {
+        return false;
     }
 
     @Override
     protected boolean setUseStatusView() {
-        return true;
-    }
-
-    @Override
-    protected String setCenterTitle() {
-        return getString(R.string.message);
-    }
-
-    @Override
-    protected boolean isNeedRefreshAnimation() {
         return false;
     }
 
     @Override
     protected void initView(View rootView) {
         super.initView(rootView);
-        mToolbarRight.setVisibility(View.GONE);
+//        mToolbarRight.setVisibility(View.GONE);
         initHeaderView();
         rootView.setBackgroundResource(R.color.bgColor);
     }
@@ -95,6 +88,18 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     protected boolean isRefreshEnable() {
         return false;
+    }
+
+    @Override
+    protected void initData() {
+        DaggerMessageComponent
+                .builder()
+                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
+                .messagePresenterModule(new MessagePresenterModule(this))
+                .build()
+                .inject(this);
+        super.initData();
+        mPresenter.handleFlushMessage();
     }
 
     /**
@@ -108,31 +113,23 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     }
 
     @Override
-    protected void initData() {
-        DaggerMessageComponent
-                .builder()
-                .appComponent(AppApplication.AppComponentHolder.getAppComponent())
-                .messagePresenterModule(new MessagePresenterModule(this))
-                .build()
-                .inject(this);
-        super.initData();// 需要在 dagger 注入后
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         // 刷新信息内容
-        mPresenter.refreshConversationReadMessage();
-        updateCommnetItemData(mPresenter.updateCommnetItemData());
+        if (mPresenter != null) {
+            mPresenter.refreshConversationReadMessage();
+            updateCommnetItemData(mPresenter.updateCommnetItemData());
+        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            mPresenter.checkUnreadNotification();
-            mPresenter.handleFlushMessage();
-        }
+        // 通知列表单独抽取出来 不需要在这里请求了
+//        if (isVisibleToUser) {
+//            mPresenter.checkUnreadNotification();
+//            mPresenter.handleFlushMessage();
+//        }
     }
 
     @Override
@@ -190,7 +187,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
                         toCommentList();
-                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS);
+                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS);
                         mPresenter.updateCommnetItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateCommnetItemData());
 
@@ -201,7 +198,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
                     .subscribe(aVoid -> {
                         toLikeList();
-                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_DIGGS);
+                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS);
                         mPresenter.updateLikeItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateLikeItemData());
                     });
@@ -211,7 +208,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
                         toReviewList();
-                        mPresenter.readMessageByKey(ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
+                        mPresenter.readMessageByKey(NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT);
                         mPresenter.updateReviewItemData().setUnReadMessageNums(0);
                         updateCommnetItemData(mPresenter.updateReviewItemData());
                     });
@@ -283,6 +280,9 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
     private void toCommentList() {
         Intent to = new Intent(getActivity(), MessageCommentActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MessageCommentFragment.BUNDLE_COMMENTS_LIST_DATA, new ArrayList<>(mPresenter.getCommentsNoti()));
+        to.putExtras(bundle);
         startActivity(to);
     }
 
@@ -291,11 +291,16 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      */
     private void toLikeList() {
         Intent to = new Intent(getActivity(), MessageLikeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MessageCommentFragment.BUNDLE_COMMENTS_LIST_DATA, new ArrayList<>(mPresenter.getDiggNoti()));
         startActivity(to);
     }
 
     private void toReviewList() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(REVIEW_LIST, new ArrayList<>(mPresenter.getReviewListData()));
         Intent to = new Intent(getActivity(), MessageReviewActivity.class);
+        to.putExtras(bundle);
         startActivity(to);
     }
 
@@ -364,7 +369,7 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
      * @param positon         当前点击位置
      */
     private void toChat(MessageItemBean messageItemBean, int positon) {
-        if (messageItemBean == null || messageItemBean.getUserInfo() == null||messageItemBean.getUserInfo().getUser_id()==null) {
+        if (messageItemBean == null || messageItemBean.getUserInfo() == null || messageItemBean.getUserInfo().getUser_id() == null) {
             return;
         }
         Intent to = new Intent(getActivity(), ChatActivity.class);
@@ -390,5 +395,10 @@ public class MessageFragment extends TSListFragment<MessageContract.Presenter, M
     @Override
     public void onUserInfoClick(UserInfoBean userInfoBean) {
         PersonalCenterFragment.startToPersonalCenter(getContext(), userInfoBean);
+    }
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
     }
 }

@@ -166,7 +166,7 @@ public class DynamicCommentTopFragment extends TSFragment<DynamicCommentTopContr
         RxTextView.textChanges(mEtTopTotal)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> mBtTop.setText(getString(mPresenter.getBalance() < mCurrentDays * mInputMoney
-                        ? R.string.to_recharge : R.string.sure)));
+                        ? R.string.to_recharge : R.string.determine)));
 
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

@@ -30,10 +30,7 @@ import com.zhiyicx.thinksnsplus.data.beans.RewardsCountBean;
 import com.zhiyicx.thinksnsplus.data.beans.RewardsListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailAdvertHeader;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListActivity;
-import com.zhiyicx.thinksnsplus.modules.dynamic.detail.dig_list.DigListFragment;
 import com.zhiyicx.thinksnsplus.modules.gallery.GalleryActivity;
-import com.zhiyicx.thinksnsplus.modules.information.dig.InfoDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.dig_list.AnswerDigListFragment;
 import com.zhiyicx.thinksnsplus.modules.settings.aboutus.CustomWEBActivity;
@@ -51,7 +48,6 @@ import java.util.concurrent.TimeUnit;
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.InternalStyleSheet;
 import br.tiagohm.markdownview.css.styles.Github;
-import rx.functions.Action1;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -192,7 +188,7 @@ public class AnswerDetailHeaderView {
             RxView.clicks(mUserInfoContainer)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        if (mAnswerHeaderEventListener != null) {
+                        if (mAnswerHeaderEventListener != null && answerInfoBean.getAnonymity() != 1) {
                             mAnswerHeaderEventListener.clickUserInfo(answerInfoBean.getUser());
                         }
                     });
@@ -204,7 +200,7 @@ public class AnswerDetailHeaderView {
             // 评论信息
             updateCommentView(answerInfoBean);
 
-            ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false);
+            ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false, answerInfoBean.getAnonymity() == 1);
 
         }
     }

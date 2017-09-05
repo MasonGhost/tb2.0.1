@@ -85,7 +85,7 @@
                     android:layout_weight="1"
                     android:textColor="@color/themeColor"
                     android:textSize="@dimen/size_content"
-                    android:text="@string/sure"/>
+                    android:text="@string/determine"/>
         </LinearLayout>
 
 

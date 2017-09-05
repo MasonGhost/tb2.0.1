@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -45,8 +46,9 @@ public class QuestionInviteUserPopWindow extends PopupWindow{
         initLayout();
         setWidth(mContentView.getResources().getDimensionPixelOffset(R.dimen.question_invite_width));
         setHeight(mContentView.getResources().getDimensionPixelOffset(R.dimen.question_invite_height));
-        setFocusable(true);
+        setFocusable(false);
         setOutsideTouchable(true);
+        setBackgroundDrawable(new ColorDrawable(0x00000000));
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
     }

@@ -221,7 +221,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void reqReWardsData(int id) {
-
+        getAnswerDetail(id);
     }
 
     @Override

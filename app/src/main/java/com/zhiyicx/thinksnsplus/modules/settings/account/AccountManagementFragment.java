@@ -70,12 +70,18 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
     @Override
     protected void initView(View rootView) {
+        mBtBindQq.setEnabled(false);
+        mBtBindWechat.setEnabled(false);
+        mBtBindWeibo.setEnabled(false);
+        mBtBindPhone.setEnabled(false);
+        mBtBindEmail.setEnabled(false);
 
+        initUserListener();
+        initThirdListener();
     }
 
     @Override
     protected void initData() {
-        initListener();
         mPresenter.getBindSocialAcounts();
     }
 
@@ -84,7 +90,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
         return getString(R.string.account_manager);
     }
 
-    private void initListener() {
+    private void initUserListener() {
         RxView.clicks(mBtBindPhone)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
@@ -105,7 +111,6 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
                     if (mCurrentUser != null) {
-
                         // 跳转绑定/解绑邮箱
                         Intent intent = new Intent(getActivity(), AccountBindActivity.class);
                         Bundle bundle = new Bundle();
@@ -116,35 +121,32 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
                         startActivity(intent);
                     }
                 });
+
+    }
+
+    private void initThirdListener() {
+
         RxView.clicks(mBtBindQq)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (!mBindAccounts.isEmpty()) {
-
-                        handleThirdAccount(ApiConfig.PROVIDER_QQ);
-                    }
+                    handleThirdAccount(ApiConfig.PROVIDER_QQ);
 
                 });
         RxView.clicks(mBtBindWechat)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (!mBindAccounts.isEmpty()) {
-                        // 跳转绑定/解绑微信
-                        handleThirdAccount(ApiConfig.PROVIDER_WECHAT);
-                    }
+                    // 跳转绑定/解绑微信
+                    handleThirdAccount(ApiConfig.PROVIDER_WECHAT);
 
                 });
         RxView.clicks(mBtBindWeibo)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .compose(this.bindToLifecycle())
                 .subscribe(aVoid -> {
-                    if (!mBindAccounts.isEmpty()) {
-
-                        // 跳转绑定/解绑微博
-                        handleThirdAccount(ApiConfig.PROVIDER_WEIBO);
-                    }
+                    // 跳转绑定/解绑微博
+                    handleThirdAccount(ApiConfig.PROVIDER_WEIBO);
                 });
     }
 
@@ -203,6 +205,7 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            showSnackSuccessMessage(getString(R.string.loading_state));
             String provider = ApiConfig.PROVIDER_QQ;
             switch (platform) {
                 case QQ:
@@ -281,6 +284,10 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
         setColor(mBtBindQq, data.contains(ApiConfig.PROVIDER_QQ));
         setColor(mBtBindWechat, data.contains(PROVIDER_WECHAT));
         setColor(mBtBindWeibo, data.contains(PROVIDER_WEIBO));
+        mBtBindQq.setEnabled(true);
+        mBtBindWechat.setEnabled(true);
+        mBtBindWeibo.setEnabled(true);
+
     }
 
     private void setColor(CombinationButton combinationButton, boolean b) {
@@ -307,6 +314,8 @@ public class AccountManagementFragment extends TSFragment<AccountManagementContr
 
             setColor(mBtBindPhone, !TextUtils.isEmpty(userInfoBean.getPhone()));
             setColor(mBtBindEmail, !TextUtils.isEmpty(userInfoBean.getEmail()));
+            mBtBindPhone.setEnabled(true);
+            mBtBindEmail.setEnabled(true);
         }
     }
 }

@@ -30,6 +30,7 @@ import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleBorderTransform;
 import com.zhiyicx.baseproject.impl.imageloader.glide.transformation.GlideCircleTransform;
 import com.zhiyicx.baseproject.widget.UserAvatarView;
+import com.zhiyicx.baseproject.widget.imageview.FilterImageView;
 import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
 import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
 import com.zhiyicx.common.utils.ConvertUtils;
@@ -110,6 +111,17 @@ public class ImageUtils {
         loadUserHead(userInfoBean, imageView, false);
     }
 
+    /**
+     * 加载用户头像
+     *
+     * @param userInfoBean 用户信息
+     * @param imageView    展示的控件
+     * @param anonymity    是否匿名展示
+     */
+    public static void loadCircleUserHeadPic(UserInfoBean userInfoBean, UserAvatarView imageView, boolean anonymity) {
+        loadUserHead(userInfoBean, imageView, false, anonymity);
+    }
+
 
     /**
      * 加载用户头像带有白色边框
@@ -150,11 +162,46 @@ public class ImageUtils {
     }
 
     /**
+     * 加载用户圆形图像
+     *
+     * @param userInfoBean 用户信息
+     * @param imageView    显示头像的控件
+     * @param withBorder   是否需要边框
+     * @param anonymity    是否匿名展示
+     */
+    public static void loadUserHead(UserInfoBean userInfoBean, UserAvatarView imageView, boolean withBorder, boolean anonymity) {
+        FilterImageView imageView1 = imageView.getIvAvatar();
+        imageView1.setIsText(anonymity);
+        loadUserAvatar(userInfoBean, imageView1, withBorder);
+        if (anonymity){
+            userInfoBean.setVerified(null);// 匿名用户不要认证图标
+        }
+        if (userInfoBean != null && userInfoBean.getVerified() != null && !TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
+            if (TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
+                userInfoBean.getVerified().setIcon("");
+            }
+            Glide.with(imageView.getContext())
+                    .load(userInfoBean.getVerified().getIcon())
+                    .signature(new StringSignature(String.valueOf(mHeadPicSigture)))
+                    .placeholder(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap.pic_identi_individual)
+                    .error(userInfoBean.getVerified().getType().equals(SendCertificationBean.ORG) ? R.mipmap.pic_identi_company : R.mipmap.pic_identi_individual)
+                    .transform(withBorder ?
+                            new GlideCircleBorderTransform(imageView.getContext().getApplicationContext(), imageView.getResources().getDimensionPixelSize(R.dimen.spacing_tiny), ContextCompat.getColor(imageView.getContext(), R.color.white))
+                            : new GlideCircleTransform(imageView.getContext().getApplicationContext()))
+                    .into(imageView.getIvVerify());
+            imageView.getIvVerify().setVisibility(View.VISIBLE);
+        } else {
+            imageView.getIvVerify().setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
      * 问答那里的图文混排头像处理
-     * @param userInfoBean 回答者的用户信息
+     *
+     * @param userInfoBean    回答者的用户信息
      * @param contentTextView
-     * @param content 回答的内容
-     * @param isAnonymity 是否匿名回答
+     * @param content         回答的内容
+     * @param isAnonymity     是否匿名回答
      * @param withBorder
      * @description 单纯的一个丑字根本描述不了这段代码 by tym
      */
@@ -164,6 +211,7 @@ public class ImageUtils {
 
     /**
      * 加载用户圆形图像
+     *
      * @param userInfoBean 用户信息
      * @param imageView    显示头像的控件
      * @param withBorder   是否需要边框
@@ -205,6 +253,7 @@ public class ImageUtils {
 
     /**
      * 问答那里的图文混排头像处理
+     *
      * @param userInfoBean
      * @param withBorder
      */
@@ -248,7 +297,7 @@ public class ImageUtils {
 
                         headImage.setBounds(0, 0, contentTextView.getLineHeight(), contentTextView.getLineHeight());
                         ImageSpan imgSpan = new CenterImageSpan(headImage, isAnonymity);
-                        SpannableString spannableString = SpannableString.valueOf("T" +userInfoBean.getName()+"："+ RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                        SpannableString spannableString = SpannableString.valueOf("T" + userInfoBean.getName() + "：" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                         spannableString.setSpan(imgSpan, 0, 1, Spannable
                                 .SPAN_EXCLUSIVE_EXCLUSIVE);
                         contentTextView.setText(spannableString);
@@ -272,7 +321,7 @@ public class ImageUtils {
                                         @Override
                                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                                             ImageSpan imgSpan = new CenterImageSpan(headImage, resource, isAnonymity);
-                                            SpannableString spannableString = SpannableString.valueOf("T" +userInfoBean.getName()+"："+ RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                                            SpannableString spannableString = SpannableString.valueOf("T" + userInfoBean.getName() + "：" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                                             spannableString.setSpan(imgSpan, 0, 1, Spannable
                                                     .SPAN_EXCLUSIVE_EXCLUSIVE);
                                             contentTextView.setText(spannableString);
@@ -283,7 +332,7 @@ public class ImageUtils {
                                             super.onLoadFailed(e, errorDrawable);
                                             errorDrawable.setBounds(0, 0, w, w);
                                             ImageSpan imgSpan = new CenterImageSpan(headImage, errorDrawable, isAnonymity);
-                                            SpannableString spannableString = SpannableString.valueOf("T" +userInfoBean.getName()+"："+ RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
+                                            SpannableString spannableString = SpannableString.valueOf("T" + userInfoBean.getName() + "：" + RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, content));
                                             spannableString.setSpan(imgSpan, 0, 1, Spannable
                                                     .SPAN_EXCLUSIVE_EXCLUSIVE);
                                             contentTextView.setText(spannableString);

@@ -3,12 +3,15 @@ package com.zhiyicx.baseproject.widget.imageview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.zhiyicx.baseproject.R;
+import com.zhiyicx.common.utils.SkinUtils;
 
 
 /**
@@ -25,6 +28,7 @@ public class FilterImageView extends ImageView {
     private int mPressedColor = DEFAULT_PRESSED_COLOR;// pressed color
     private int mShape = SHAPE_SQUARE;
     private Paint mPaint;
+    private boolean isText;
     private Rect mRect;
 
     public FilterImageView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -48,7 +52,7 @@ public class FilterImageView extends ImageView {
         mPressedColor = array.getInteger(R.styleable.FilterImageView_pressColor, DEFAULT_PRESSED_COLOR);
         mShape = array.getInteger(R.styleable.FilterImageView_pressShape, SHAPE_SQUARE);
         array.recycle();
-        mPaint = new Paint();
+        mPaint = new TextPaint();
         mPaint.setColor(mPressedColor);
         mRect = new Rect();
     }
@@ -68,6 +72,13 @@ public class FilterImageView extends ImageView {
 
             }
         }
+        if (isText) {
+            mPaint.setColor(SkinUtils.getColor(R.color.general_for_hint));
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2,getWidth() / 2, mPaint);
+            mPaint.setTextSize(getWidth() / 2);
+            mPaint.setColor(Color.WHITE);
+            canvas.drawText("匿", getWidth() / 2 - mPaint.measureText("匿") / 2, getHeight() / 2 - (mPaint.descent() + mPaint.ascent()) / 2, mPaint);
+        }
     }
 
     @Override
@@ -76,4 +87,8 @@ public class FilterImageView extends ImageView {
         invalidate();
     }
 
+    public void setIsText(boolean isText) {
+        this.isText = isText;
+        postInvalidate();
+    }
 }

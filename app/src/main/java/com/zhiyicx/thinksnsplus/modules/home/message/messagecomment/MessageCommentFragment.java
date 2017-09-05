@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.modules.home.message.messagecomment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +35,8 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 public class MessageCommentFragment extends TSListFragment<MessageCommentContract.Presenter,
         CommentedBean> implements MessageCommentContract.View, InputLimitView
         .OnSendClickListener, MultiItemTypeAdapter.OnItemClickListener {
+    public static final String BUNDLE_COMMENTS_LIST_DATA="comment_list_data";
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_toolbar_center)
@@ -49,14 +52,18 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     private long mReplyUserId;// 被评论者的 id ,评论动态 id = 0
     private int mCurrentPostion;// 当前点击的 item 位置
 
-    public MessageCommentFragment() {
+    public static MessageCommentFragment newInstance(Bundle bundle) {
+        MessageCommentFragment fragment = new MessageCommentFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    public static MessageCommentFragment newInstance() {
-        MessageCommentFragment fragment = new MessageCommentFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments()!=null){
+
+        }
     }
 
     @Override
@@ -78,6 +85,16 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     protected int getBodyLayoutId() {
         return R.layout.fragment_list_with_input_and_toolbar;
     }
+//
+//    @Override
+//    protected boolean isRefreshEnable() {
+//        return false;
+//    }
+//
+//    @Override
+//    protected boolean isLoadingMoreEnable() {
+//        return false;
+//    }
 
     @Override
     protected boolean isNeedRefreshDataWhenComeIn() {

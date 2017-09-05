@@ -16,7 +16,6 @@ import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailContract;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailPresenter;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -63,8 +62,10 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 != AppApplication.getmCurrentLoginAuth().getUser_id());
         // 发布者信息
         if (answerInfoBean.getUser() != null) {
-            ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait));
-            holder.setText(R.id.tv_name, answerInfoBean.getUser().getName());
+            ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), answerInfoBean.getAnonymity() == 1);
+            TextView nameView = holder.getTextView(R.id.tv_name);
+            nameView.setText(answerInfoBean.getAnonymity() == 1 ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user)
+                    : answerInfoBean.getUser().getName());
             // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
             holder.setVisible(R.id.tv_watcher_count, isOnlook ? View.VISIBLE : View.GONE);
             if (isOnlook) {
@@ -75,7 +76,9 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
             RxView.clicks(holder.getView(R.id.iv_portrait))
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
-                        PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
+                        if (answerInfoBean.getAnonymity() != 1) {
+                            PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
+                        }
                     });
         } else if (answerInfoBean.getAnonymity() == 1) {
             // 为空 应该就是匿名了

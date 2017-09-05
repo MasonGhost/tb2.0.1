@@ -15,6 +15,8 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_GROUP_POST;
 import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
@@ -27,8 +29,9 @@ import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
  * @Contact master.jungle68@gmail.com
  */
 @Entity
-public class CommentedBean extends BaseListBean {
+public class CommentedBean extends BaseListBean implements Serializable {
 
+    private static final long serialVersionUID = -1702831133869286746L;
     /**
      * {
      * "id": 3,
@@ -89,16 +92,20 @@ public class CommentedBean extends BaseListBean {
     private Object commentable;
 
     private long source_id; // 所属资源的父 id; 圈子动态的评论，那source_id == post_id
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 143748434)
     private transient CommentedBeanDao myDao;
 
     @Generated(hash = 8688308)
     public CommentedBean(Long id, String channel, Long target_id, String comment_content, String target_title, Long target_image, Long user_id, Long target_user,
-            Long reply_user, String created_at, String updated_at, boolean isDelete, long source_id) {
+                         Long reply_user, String created_at, String updated_at, boolean isDelete, long source_id) {
         this.id = id;
         this.channel = channel;
         this.target_id = target_id;
@@ -342,7 +349,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 418864499)
     public UserInfoBean getCommentUserInfo() {
         Long __key = this.user_id;
@@ -362,7 +371,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 28373690)
     public void setCommentUserInfo(UserInfoBean commentUserInfo) {
         synchronized (this) {
@@ -373,7 +384,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1491152852)
     public UserInfoBean getSourceUserInfo() {
         Long __key = this.target_user;
@@ -393,7 +406,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 672311628)
     public void setSourceUserInfo(UserInfoBean sourceUserInfo) {
         synchronized (this) {
@@ -404,7 +419,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1858190697)
     public UserInfoBean getReplyUserInfo() {
         Long __key = this.reply_user;
@@ -424,7 +441,9 @@ public class CommentedBean extends BaseListBean {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1797342590)
     public void setReplyUserInfo(UserInfoBean replyUserInfo) {
         synchronized (this) {
@@ -480,4 +499,6 @@ public class CommentedBean extends BaseListBean {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getCommentedBeanDao() : null;
     }
+
+
 }

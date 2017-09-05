@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -93,8 +95,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    protected void initView(View rootView) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mQaListInfoBean = (QAListInfoBean) getArguments().getSerializable(BUNDLE_QUESTION_BEAN);
+    }
+
+    @Override
+    protected void initView(View rootView) {
         super.initView(rootView);
         Long userId = mQaListInfoBean.getUser_id();
         mIsMine = userId.equals(AppApplication.getmCurrentLoginAuth().getUser_id());
@@ -139,6 +146,9 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     private void startToAnswerDetail(AnswerInfoBean answerInfoBean) {
+        if (answerInfoBean.getId() == null) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), AnswerDetailsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putLong(BUNDLE_SOURCE_ID, answerInfoBean.getId());
@@ -157,13 +167,23 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
+    protected boolean showToolBarDivider() {
+        return false;
+    }
+
+    @Override
+    protected int getstatusbarAndToolbarHeight() {
+        return getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.toolbar_height) + getResources().getDimensionPixelOffset(com.zhiyicx.baseproject.R.dimen.divider_line);
+    }
+
+    @Override
     protected boolean showToolbar() {
         return false;
     }
 
     @Override
     protected boolean setUseCenterLoading() {
-        return false;
+        return true;
     }
 
     @Override

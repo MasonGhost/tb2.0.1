@@ -244,7 +244,7 @@ public class AppApplication extends TSApplication {
                                 }
                                 return false;
                             })
-                            .setPositiveButton(R.string.sure, (dialogInterface, i) -> {
+                            .setPositiveButton(R.string.determine, (dialogInterface, i) -> {
                                 // TODO: 2017/2/8  清理登录信息 token 信息
                                 mAuthRepository.clearAuthBean();
                                 mAuthRepository.clearThridAuth();

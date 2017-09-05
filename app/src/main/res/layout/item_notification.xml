@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_mid"
+        android:paddingBottom="@dimen/spacing_mid"
+        android:background="@color/white">
+
+    <TextView
+            android:id="@+id/tv_notification_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_content"
+            android:textColor="@color/important_for_content"
+            tools:text="xxxxxxxxxxxxxxxxxxxxxxxx"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"/>
+
+    <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal"
+            tools:text="xxxxxxxxxxxxxxxxxxxxxxxx"
+            android:textSize="@dimen/size_icon_assist"
+            android:textColor="@color/general_for_hint"/>
+
+</LinearLayout>

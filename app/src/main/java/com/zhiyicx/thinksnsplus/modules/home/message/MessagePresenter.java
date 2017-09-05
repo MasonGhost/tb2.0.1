@@ -30,7 +30,6 @@ import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.TSPNotificationBean;
 import com.zhiyicx.thinksnsplus.data.source.local.CommentedBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DigedBeanGreenDaoImpl;
-import com.zhiyicx.thinksnsplus.data.source.local.FlushMessageBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.SystemConversationBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.AuthRepository;
@@ -56,11 +55,21 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_COMMENTS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_DIGGS;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
-import static com.zhiyicx.baseproject.config.ApiConfig.NOTIFICATION_KEY_FEED_REPLY_COMMENTS;
 import static com.zhiyicx.imsdk.db.base.BaseDao.TIME_DEFAULT_ADD;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_ANSWER_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENTS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_DIGGS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_FEED_PINNED_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_COMMENT_REPLY;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_NEWS_PINNED_NEWS;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT;
+import static com.zhiyicx.thinksnsplus.config.NotificationConfig.NOTIFICATION_KEY_QUESTION_COMMENT_REPLY;
 
 /**
  * @Describe
@@ -82,9 +91,6 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     @Inject
     UserInfoRepository mUserInfoRepository;
-
-    @Inject
-    FlushMessageBeanGreenDaoImpl mFlushMessageBeanGreenDao;
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
@@ -285,7 +291,7 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void deletConversation(int position) {
         final MessageItemBean messageItemBean = mRootView.getListDatas().get(position);
         // ts 助手标记为已删除
-        Observable.empty()
+        Subscription subscribe = Observable.empty()
                 .observeOn(Schedulers.newThread())
                 .subscribe(new rx.Subscriber<Object>() {
                     @Override
@@ -306,10 +312,12 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
                     }
                 });
+
         // 删除对话信息
         ConversationDao.getInstance(mContext).delConversation(messageItemBean.getConversation().getCid(), messageItemBean.getConversation().getType());
         mRootView.getListDatas().remove(position);
         checkBottomMessageTip();
+        addSubscrebe(subscribe);
     }
 
     @Override
@@ -342,14 +350,26 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
     public void readMessageByKey(String key) {
         String notificationIds = "";
         switch (key) {
+            // 所有评论
             case NOTIFICATION_KEY_FEED_COMMENTS:
-            case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+            case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
+            case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
+            case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
+            case NOTIFICATION_KEY_NEWS_COMMENT:
+            case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
+            case NOTIFICATION_KEY_QUESTION_COMMENT:
+            case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
+            case NOTIFICATION_KEY_ANSWER_COMMENT:
+            case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
                 notificationIds = getNotificationIds(mCommentsNoti, notificationIds);
                 break;
+            // 所有点赞
             case NOTIFICATION_KEY_FEED_DIGGS:
                 notificationIds = getNotificationIds(mDiggNoti, notificationIds);
                 break;
+            // 所有审核
             case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+            case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
                 notificationIds = getNotificationIds(mReviewNoti, notificationIds);
                 break;
             default:
@@ -545,14 +565,27 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                         mReviewNoti.clear();
                         for (TSPNotificationBean tspNotificationBean : data) {
                             switch (tspNotificationBean.getData().getChannel()) {
+                                // 所有评论
                                 case NOTIFICATION_KEY_FEED_COMMENTS:
-                                case NOTIFICATION_KEY_FEED_REPLY_COMMENTS:
+                                case NOTIFICATION_KEY_FEED_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_MUSIC_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_MUSIC_SPECIAL_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_NEWS_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_QUESTION_COMMENT:
+                                case NOTIFICATION_KEY_QUESTION_COMMENT_REPLY:
+                                case NOTIFICATION_KEY_ANSWER_COMMENT:
+                                case NOTIFICATION_KEY_ANSWER_COMMENT_REPLY:
                                     mCommentsNoti.add(tspNotificationBean);
                                     break;
+                                // 所有点赞
                                 case NOTIFICATION_KEY_FEED_DIGGS:
                                     mDiggNoti.add(tspNotificationBean);
                                     break;
+                                // 所有审核
                                 case NOTIFICATION_KEY_FEED_PINNED_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_PINNED_COMMENT:
+                                case NOTIFICATION_KEY_NEWS_PINNED_NEWS:
                                     mReviewNoti.add(tspNotificationBean);
                                     break;
                                 default:
@@ -617,6 +650,28 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
 
     }
 
+
+    @Override
+    public List<TSPNotificationBean> getReviewListData() {
+        return mReviewNoti;
+    }
+
+    @Override
+    public List<TSPNotificationBean> getCommentsNoti() {
+        return mCommentsNoti;
+    }
+
+    @Override
+    public List<TSPNotificationBean> getDiggNoti() {
+        return mDiggNoti;
+    }
+
+    /**
+     * 没有阅读时间说明没有阅读
+     *
+     * @param datas
+     * @return
+     */
     private int getUnreadNums(List<TSPNotificationBean> datas) {
         int nums = 0;
         for (TSPNotificationBean tspNotificationBean : datas) {
@@ -637,8 +692,9 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
                     } else {
                         tip += commentsNoti.get(i).getUserInfo().getName() + "、";
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
+
                 }
 
             } else {

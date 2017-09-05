@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 
 import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
+import com.zhiyicx.common.mvp.i.IBasePresenter;
+import com.zhiyicx.common.mvp.i.IBaseView;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
@@ -19,7 +21,7 @@ import rx.Observable;
 
 public interface TopicDetailContract {
 
-    interface View extends ITSListView<QAListInfoBean, Presenter>{
+    interface View extends IBaseView< Presenter> {
         void setTopicDetail(QATopicBean qaTopicBean);
         Long getTopicId();
         String getCurrentType();
@@ -28,7 +30,7 @@ public interface TopicDetailContract {
         void showDeleteSuccess();
     }
 
-    interface Presenter extends ITSListPresenter<QAListInfoBean>{
+    interface Presenter extends IBasePresenter{
         void getTopicDetail(String topic_id);
         void handleTopicFollowState(String topic_id, boolean isFollow);
         void shareTopic(Bitmap bitmap);

@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.widget;
 
 import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.AppCompatCheckedTextView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,8 +44,10 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         initLayout();
         setWidth(mContentView.getResources().getDimensionPixelOffset(R.dimen.question_list_type_width));
         setHeight(mContentView.getResources().getDimensionPixelOffset(R.dimen.question_list_type_height));
-        setFocusable(true);
+        setFocusable(false);
         setOutsideTouchable(true);
+        setBackgroundDrawable(new ColorDrawable(0x00000000));
+
         setAnimationStyle(R.style.style_actionPopupAnimation);
         setContentView(mContentView);
     }

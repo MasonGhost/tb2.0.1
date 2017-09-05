@@ -15,4 +15,5 @@ public class QA_Activity extends TSActivity {
     protected void componentInject() {
 
     }
+
 }
