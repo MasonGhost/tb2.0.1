@@ -127,7 +127,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             mQuestionId = getArguments().getLong(BUNDLE_QUESTION_ID);
         }
         if (!mQuestionId.equals(0L)) {
-            mBtPublish.setText(getString(R.string.sure));
+            mBtPublish.setText(getString(R.string.determine));
             mRlInviteContainer.setVisibility(View.GONE);
         }
         mTvChooseTip.setText(R.string.qa_publish_reward_set_money);

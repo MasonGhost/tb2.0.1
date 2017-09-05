@@ -141,7 +141,7 @@ public class SettingsFragment extends TSFragment<SettingsContract.Presenter> imp
         }
         mCleanCachePopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.is_sure_clean_cache))
-                .item2Str(getString(R.string.sure))
+                .item2Str(getString(R.string.determine))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

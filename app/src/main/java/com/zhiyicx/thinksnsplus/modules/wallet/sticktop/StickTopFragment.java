@@ -191,7 +191,7 @@ public class StickTopFragment extends TSFragment<StickTopContract.Presenter> imp
         RxTextView.textChanges(mEtTopTotal)
                 .compose(this.bindToLifecycle())
                 .subscribe(charSequence -> mBtTop.setText(getString(mBlance < mCurrentDays * mInputMoney
-                        ? R.string.to_recharge : R.string.sure)));
+                        ? R.string.to_recharge : R.string.determine)));
 
         RxView.clicks(mBtTop)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)

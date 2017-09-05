@@ -105,8 +105,8 @@
                 android:layout_marginTop="@dimen/button_login_margin_top"
                 style="@style/style_login_button"
                 android:enabled="false"
-                android:text="@string/sure"
-                tools:text="@string/sure"/>
+                android:text="@string/determine"
+                tools:text="@string/determine"/>
         </LinearLayout>
     </LinearLayout>
 

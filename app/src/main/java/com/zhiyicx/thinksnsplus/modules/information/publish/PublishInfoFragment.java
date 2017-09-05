@@ -348,7 +348,7 @@ public class PublishInfoFragment extends TSFragment<PublishInfoContract.Presente
         }
         mCanclePopupWindow = ActionPopupWindow.builder()
                 .item1Str(getString(R.string.dynamic_send_cancel_hint))
-                .item2Str(getString(R.string.sure))
+                .item2Str(getString(R.string.determine))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)
