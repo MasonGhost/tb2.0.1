@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
@@ -39,7 +40,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     private OnGoToWatchClickListener mListener;
     private QAListInfoBean mQaListInfoBean;
 
-    public AnswerListItem(@NotNull QuestionDetailContract.Presenter mPresenter,@NotNull QAListInfoBean qaListInfoBean) {
+    public AnswerListItem(@NotNull QuestionDetailContract.Presenter mPresenter, @NotNull QAListInfoBean qaListInfoBean) {
         mQaListInfoBean = qaListInfoBean;
         this.mPresenter = mPresenter;
     }
@@ -57,6 +58,9 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     @Override
     public void convert(ViewHolder holder, AnswerInfoBean answerInfoBean, AnswerInfoBean lastT, int position, int itemCounts) {
         boolean isOnlook = mQaListInfoBean.getLook() == 1;
+        boolean isNeedOnlook = isOnlook && (mQaListInfoBean.getUser().getExtra().getUser_id()
+                != AppApplication.getmCurrentLoginAuth().getUser_id() || answerInfoBean.getUser_id()
+                != AppApplication.getmCurrentLoginAuth().getUser_id());
         // 发布者信息
         if (answerInfoBean.getUser() != null) {
             ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait));
@@ -105,7 +109,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否围观
         TextView tvToWatch = holder.getTextView(R.id.tv_to_watch);
         // 邀请的人回答才会有围观
-        tvToWatch.setVisibility(isOnlook ? View.VISIBLE : View.GONE);
+        tvToWatch.setVisibility(isNeedOnlook ? View.VISIBLE : View.GONE);
         // 是否已经围观了
         tvToWatch.setEnabled(!answerInfoBean.getCould());
         tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string.qa_go_to_watched)
@@ -116,7 +120,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
                     if (mListener != null) {
-                        mListener.onToWatchClick(answerInfoBean, position);
+                        mListener.onToWatchClick(answerInfoBean, position,isNeedOnlook);
                     }
                 });
         // 评论数量
@@ -137,6 +141,6 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
     }
 
     public interface OnGoToWatchClickListener {
-        void onToWatchClick(AnswerInfoBean answerInfoBean, int position);
+        void onToWatchClick(AnswerInfoBean answerInfoBean, int position,boolean isNeedOnlook);
     }
 }

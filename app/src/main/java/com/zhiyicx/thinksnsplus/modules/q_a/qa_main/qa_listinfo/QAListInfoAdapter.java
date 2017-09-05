@@ -57,7 +57,13 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         ConvertUtils.stringLinkConvert(holder.getTextView(R.id.item_info_reward), setLinks());
         TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
         String content = infoBean.getBody();
-        int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, content);
+
+        int id = 0;
+        try {
+            id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, infoBean.getAnswer().getBody());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (id > 0) {
             imageView.setVisibility(View.VISIBLE);
@@ -75,9 +81,9 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
             imageView.setVisibility(View.GONE);
         }
 
-        if (infoBean.getAnswer()==null){
+        if (infoBean.getAnswer() == null) {
             contentTextView.setVisibility(View.GONE);
-        }else{
+        } else {
             contentTextView.setVisibility(View.VISIBLE);
             ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(), infoBean.getAnswer().getAnonymity() == 1, false);
         }

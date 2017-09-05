@@ -123,8 +123,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         mCurrentPosition = position - mHeaderAndFooterWrapper
                 .getHeadersCount();
         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
+
+        boolean isOnlook = mQaListInfoBean.getLook() == 1;
+        boolean isNeedOnlook = isOnlook && (mQaListInfoBean.getUser().getExtra().getUser_id()
+                != AppApplication.getmCurrentLoginAuth().getUser_id() || answerInfoBean.getUser_id()
+                != AppApplication.getmCurrentLoginAuth().getUser_id());
+
         // 开启了围观并且不是作者本人点击
-        if (!answerInfoBean.getCould() && answerInfoBean.getInvited() == 1) {
+        if (isNeedOnlook) {
             mPayWatchPopWindow.show();
         } else {
             startToAnswerDetail(answerInfoBean);
@@ -489,20 +495,20 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     protected void snackViewDismissWhenTimeOut(Prompt prompt) {
         super.snackViewDismissWhenTimeOut(prompt);
         if (prompt == Prompt.DONE) {
-            onLookToAnswerDetail();
+            onLookToAnswerDetail(true);
         }
     }
 
-    private void onLookToAnswerDetail() {
+    private void onLookToAnswerDetail(boolean isNeedOnlook) {
         // 跳转查看 围观肯定是第一个
         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
-        if (answerInfoBean != null) {
+        if (answerInfoBean != null && isNeedOnlook) {
             answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
             mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
             mQuestionDetailHeader.updateOutLook(mQaListInfoBean);
             refreshData();
-            startToAnswerDetail(answerInfoBean);
         }
+        startToAnswerDetail(answerInfoBean);
     }
 
     @Override
@@ -527,9 +533,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position) {
+    public void onToWatchClick(AnswerInfoBean answerInfoBean, int position, boolean isNeedOnlook) {
         mCurrentPosition = position - mHeaderAndFooterWrapper
                 .getHeadersCount();
-        mPayWatchPopWindow.show();
+        if (isNeedOnlook) {
+            mPayWatchPopWindow.show();
+        } else {
+            onLookToAnswerDetail(false);
+        }
+
     }
 }
