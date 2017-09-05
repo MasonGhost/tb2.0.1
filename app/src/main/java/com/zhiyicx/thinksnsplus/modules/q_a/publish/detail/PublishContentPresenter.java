@@ -2,6 +2,7 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -138,10 +140,16 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        LogUtils.d("doAfterTerminate");
+                    }
+                })
                 .subscribe(text -> {
                     boolean isLast = text.contains("tym_last");
                     text = text.replaceAll("tym_last", "");
-                    if (text.contains("![image]")) {
+                    if (text.matches("![\\S+]")) {
                         int id = RegexUtils.getImageId(text);
                         String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
                         if (id > 0) {

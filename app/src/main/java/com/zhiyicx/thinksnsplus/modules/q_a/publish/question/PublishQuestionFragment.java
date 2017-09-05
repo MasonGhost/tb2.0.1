@@ -35,8 +35,7 @@ import butterknife.BindView;
  * @Date 2017/7/25
  * @Contact master.jungle68@gmail.com
  */
-public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter,
-        QAListInfoBean>
+public class PublishQuestionFragment extends TSListFragment<PublishQuestionContract.Presenter, QAListInfoBean>
         implements PublishQuestionContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     public static final String BUNDLE_PUBLISHQA_BEAN = "publish_bean";
@@ -121,8 +120,8 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
                     .currentTimeMillis();
             mDraftQuestion.setCreated_at(TimeUtils.getCurrenZeroTimeStr());
             mDraftQuestion.setMark(Long.parseLong(mark));
-            mDraftQuestion.setSubject(mQuestionStr);
         }
+        mDraftQuestion.setSubject(mQuestionStr);
         mPresenter.saveQuestion(mDraftQuestion);
     }
 
@@ -172,7 +171,7 @@ public class PublishQuestionFragment extends TSListFragment<PublishQuestionContr
     @Override
     public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
         QAListInfoBean data = mListDatas.get(position);
-        mEtQustion.setText(mListDatas.get(position).getSubject() + "?");
+        mEtQustion.setText(mListDatas.get(position).getSubject());
         if (mDraftQuestion == null) {
             mDraftQuestion = new QAPublishBean();
         }
