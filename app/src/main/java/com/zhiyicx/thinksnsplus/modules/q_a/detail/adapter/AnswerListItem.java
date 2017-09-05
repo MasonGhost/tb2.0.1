@@ -12,12 +12,15 @@ import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailContract;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailPresenter;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,8 +37,10 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
     private QuestionDetailContract.Presenter mPresenter;
     private OnGoToWatchClickListener mListener;
+    private QAListInfoBean mQaListInfoBean;
 
-    public AnswerListItem(QuestionDetailContract.Presenter mPresenter) {
+    public AnswerListItem(@NotNull QuestionDetailContract.Presenter mPresenter,@NotNull QAListInfoBean qaListInfoBean) {
+        mQaListInfoBean = qaListInfoBean;
         this.mPresenter = mPresenter;
     }
 
@@ -56,7 +61,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
             ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait));
             holder.setText(R.id.tv_name, answerInfoBean.getUser().getName());
             // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
-            boolean isInvited = answerInfoBean.getInvited() == 1;
+            boolean isInvited = mQaListInfoBean.getLook() == 1;
             holder.setVisible(R.id.tv_watcher_count, isInvited ? View.VISIBLE : View.GONE);
             if (isInvited) {
                 holder.setText(R.id.tv_watcher_count, String.format(holder.getConvertView().getContext()
@@ -110,7 +115,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         RxView.clicks(tvToWatch)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                 .subscribe(aVoid -> {
-                    if (mListener != null){
+                    if (mListener != null) {
                         mListener.onToWatchClick(answerInfoBean, position);
                     }
                 });
@@ -127,11 +132,11 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         tvLikeCount.setText(String.valueOf(answerInfoBean.getLikes_count()));
     }
 
-    public void setOnGoToWatchClickListener(OnGoToWatchClickListener listener){
+    public void setOnGoToWatchClickListener(OnGoToWatchClickListener listener) {
         this.mListener = listener;
     }
 
-    public interface OnGoToWatchClickListener{
+    public interface OnGoToWatchClickListener {
         void onToWatchClick(AnswerInfoBean answerInfoBean, int position);
     }
 }
