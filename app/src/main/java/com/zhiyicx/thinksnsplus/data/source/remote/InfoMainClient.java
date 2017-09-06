@@ -131,7 +131,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_INFO)
-    Observable<BaseJsonV2<Integer>> stickTopInfo(@Path("news_id") Long news_id, @Field("amount") int amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopInfo(@Path("news_id") Long news_id, @Field("amount") long amount, @Field("day") int day);
 
     /**
      * 置顶资讯评论
@@ -143,7 +143,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_INFO_COMMENT)
-    Observable<BaseJsonV2<Integer>>  stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") int amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>>  stickTopInfoComment(@Path("news_id") Long news_id, @Path("comment_id") Long comment_id, @Field("amount") long amount, @Field("day") int day);
 
     /*******************************************  打赏  *********************************************/
 
@@ -156,7 +156,7 @@ public interface InfoMainClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_INFO_REWARDS)
-    Observable<Object> rewardInfo(@Path("news_id") long news_id, @Field("amount") Integer amount);
+    Observable<Object> rewardInfo(@Path("news_id") long news_id, @Field("amount") long amount);
 
 
     /**
