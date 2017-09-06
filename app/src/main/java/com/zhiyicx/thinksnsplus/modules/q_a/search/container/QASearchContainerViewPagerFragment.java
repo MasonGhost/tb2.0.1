@@ -29,6 +29,16 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
     private String mCurrentSearchContent = "";
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mTsvToolbar.setLeftImg(0);
