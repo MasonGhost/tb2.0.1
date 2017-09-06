@@ -333,10 +333,10 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                     } else {
                         mOnLookerMoney = 0;
                     }
-                    configSureButton();
+//                    configSureButton();
                 }, throwable -> {
                     mOnLookerMoney = 0;
-                    configSureButton();
+//                    configSureButton();
                 });
         // 邀请开关
         mWcInvite.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -353,7 +353,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
             if (!isChecked) {
                 resetOnLookerMoney();
             }
-            configSureButton();
+//            configSureButton();
         });
         RxView.clicks(mBtQaSelectExpert)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
