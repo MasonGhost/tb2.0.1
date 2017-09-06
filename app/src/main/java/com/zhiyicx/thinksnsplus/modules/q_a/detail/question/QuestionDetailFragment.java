@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -211,14 +212,14 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public int getRealSize() {
-        int size = mListDatas.size();
+    protected Long getMaxId(@NotNull List<AnswerInfoBean> data) {
+        long size = mListDatas.size();
         if (mQaListInfoBean != null) {
-            if (mQaListInfoBean.getAnswerInfoBeanList() != null) {
-                size = size - mQaListInfoBean.getAnswerInfoBeanList().size();
+            if (mQaListInfoBean.getInvitations() != null) {
+                size += mQaListInfoBean.getInvitations().size();
             }
             if (mQaListInfoBean.getAdoption_answers() != null) {
-                size = size - mQaListInfoBean.getAdoption_answers().size();
+                size -= mQaListInfoBean.getAdoption_answers().size();
             }
         }
         return size;
@@ -569,5 +570,22 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
             onLookToAnswerDetail(false);
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        cancelPop(mOrderTypeSelectPop);
+        cancelPop(mDeleteQuestionPopWindow);
+        cancelPop(mMorePop);
+        cancelPop(mPayImagePopWindow);
+        cancelPop(mPayWatchPopWindow);
+    }
+
+    private void cancelPop(PopupWindow popupWindow) {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
     }
 }

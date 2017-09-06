@@ -171,9 +171,9 @@
         <!--修改排序-->
         <TextView
                 android:id="@+id/tv_change_order"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:paddingLeft="@dimen/spacing_large"
                 android:gravity="right|center_vertical"
                 android:textSize="@dimen/size_content_assist"
                 android:textColor="@color/normal_for_assist_text"

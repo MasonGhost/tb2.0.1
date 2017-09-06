@@ -26,7 +26,7 @@ public interface QuestionDetailContract {
         void setQuestionDetail(QAListInfoBean questionDetail);
         QAListInfoBean getCurrentQuestion();
         String getCurrentOrderType();
-        int getRealSize();
+//        int getRealSize();
         void updateFollowState();
         void handleLoading(boolean isLoading, boolean success, String message);
     }

@@ -145,7 +145,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
     }
 
     /**
-     * 更新悬赏状态 amount == 0 表示公开开悬赏 点击可以设置悬赏
+     * 更新悬赏状态 amount == 0 表示还没有设置悬赏 点击可以设置悬赏
      * amount != 0 && anonymity == 0 表示已设置但是没有邀请
      *
      * @param qaListInfoBean bean
@@ -161,7 +161,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         }
         // 悬赏状态
         if (qaListInfoBean.getAmount() == 0) {
-            mTvRewardType.setText(mContext.getString(R.string.qa_reward_public));
+            mTvRewardType.setText(mContext.getString(R.string.qa_not_set_reward));
         } else if (qaListInfoBean.getInvitations() != null
                 && qaListInfoBean.getInvitations().size() > 0) {
             mIvRewardType.setImageResource(R.mipmap.ico_question_invited);
@@ -247,7 +247,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
                     if (mQaListInfoBean.getInvitations() != null
                             && mQaListInfoBean.getInvitations().size() > 0) {
                         initPop();
-                    } else if (mQaListInfoBean.getAmount() == 0) {
+                    } else if (mQaListInfoBean.getAmount() == 0 || mQaListInfoBean.getAdoption_answers() == null || mQaListInfoBean.getAdoption_answers().size() == 0) {
                         if (mListener != null) {
                             mListener.onRewardTypeClick(null, 1);
                         }

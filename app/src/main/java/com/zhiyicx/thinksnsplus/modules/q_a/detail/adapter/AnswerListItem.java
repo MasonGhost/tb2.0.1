@@ -87,6 +87,12 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         } else if (answerInfoBean.getAnonymity() == 1) {
             // 为空 应该就是匿名了
             holder.setVisible(R.id.iv_anonymity_flag, View.VISIBLE);
+            // 跳转
+            RxView.clicks(holder.getView(R.id.iv_anonymity_flag))
+                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                    .subscribe(aVoid -> {
+
+                    });
             holder.setVisible(R.id.iv_portrait, View.GONE);
         }
         // 是否采纳
