@@ -3,17 +3,12 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.topic;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.CheckBox;
@@ -21,38 +16,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.jakewharton.rxbinding.view.RxView;
 import com.klinker.android.link_builder.Link;
 import com.zhiyicx.baseproject.base.TSFragment;
-import com.zhiyicx.baseproject.base.TSListFragment;
 import com.zhiyicx.baseproject.base.TSViewPagerAdapter;
-import com.zhiyicx.baseproject.config.ImageZipConfig;
-import com.zhiyicx.baseproject.config.MarkdownConfig;
-import com.zhiyicx.baseproject.widget.textview.CenterImageSpan;
-import com.zhiyicx.baseproject.widget.textview.CircleImageDrawable;
 import com.zhiyicx.common.base.BaseApplication;
 import com.zhiyicx.common.utils.ConvertUtils;
-import com.zhiyicx.common.utils.DeviceUtils;
-import com.zhiyicx.common.utils.RegexUtils;
-import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.information.adapter.ScaleTransitionPagerTitleView;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment;
-import com.zhiyicx.thinksnsplus.modules.q_a.qa_main.qa_listinfo.QAListInfoAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.reward.expert_search.ExpertSearchActivity;
-import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhiyicx.thinksnsplus.widget.ExpandableTextView;
 import com.zhiyicx.thinksnsplus.widget.HorizontalStackIconView;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
-import com.zhy.adapter.recyclerview.base.ViewHolder;
 
-import net.lucode.hackware.magicindicator.FragmentContainerHelper;
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
@@ -72,7 +49,6 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.list.TopicDetailListFragment.BUNDLE_TOPIC_TYPE;
 
@@ -208,7 +184,7 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
         ViewPagerHelper.bind(mMgIndicator, mVpList);
     }
 
-    private void initViewPager(){
+    private void initViewPager() {
         mVpList.setOffscreenPageLimit(4);
         mTsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         mTsViewPagerAdapter.bindData(initFragments());
@@ -217,7 +193,7 @@ public class TopicDetailFragment extends TSFragment<TopicDetailContract.Presente
 
     private List<Fragment> initFragments() {
         List<Fragment> list = new ArrayList<>();
-        for (String type : mTypeList){
+        for (String type : mTypeList) {
             Bundle bundle = new Bundle();
             bundle.putSerializable(BUNDLE_TOPIC_BEAN, mQaTopicBean);
             bundle.putString(BUNDLE_TOPIC_TYPE, type);

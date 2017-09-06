@@ -109,6 +109,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         if (tagBeanList != null && tagBeanList.size() > 0) {
             QuestionTopicsAdapter mUserInfoTagsAdapter = new QuestionTopicsAdapter(tagBeanList, mContext);
             mTflQuestion.setAdapter(mUserInfoTagsAdapter);
+            mTflQuestion.setOnTagClickListener(this);
         }
         // 标题信息
         mTvQuestionTitle.setText(RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, qaListInfoBean.getSubject()));
@@ -153,7 +154,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         // 悬赏金额
         if (qaListInfoBean.getAmount() != 0) {
             mTvRewardAmount.setVisibility(View.VISIBLE);
-            mTvRewardAmount.setText(String.format(mContext.getString(R.string.qa_show_topic_followed_reward_),
+            mTvRewardAmount.setText(String.format(mContext.getString(R.string.dynamic_send_toll_select_money),
                     PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
         } else {
             mTvRewardAmount.setVisibility(View.GONE);

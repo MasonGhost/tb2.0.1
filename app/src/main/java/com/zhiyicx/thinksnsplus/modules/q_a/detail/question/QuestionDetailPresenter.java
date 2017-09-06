@@ -131,6 +131,13 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mRootView.onResponseError(null, false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(null, false);
                     }
                 });
         addSubscrebe(subscription);

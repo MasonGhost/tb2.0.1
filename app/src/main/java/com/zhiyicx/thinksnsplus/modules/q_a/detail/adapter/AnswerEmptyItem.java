@@ -26,7 +26,7 @@ public class AnswerEmptyItem extends EmptyItem<AnswerInfoBean> {
 
     @Override
     public boolean isForViewType(AnswerInfoBean item, int position) {
-        return TextUtils.isEmpty(item.getBody());
+        return TextUtils.isEmpty(item.getBody()) && item.getInvited() != 1;
     }
 
     @Override

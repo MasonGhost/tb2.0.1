@@ -4,15 +4,18 @@ import android.os.Parcel;
 
 import com.zhiyicx.baseproject.base.BaseListBean;
 
+import java.io.Serializable;
+
 /**
  * @Describe 打赏列表数据
  * @Author Jungle68
  * @Date 2017/8/1
  * @Contact master.jungle68@gmail.com
  */
-public class RewardsListBean extends BaseListBean{
+public class RewardsListBean extends BaseListBean implements Serializable{
 
 
+    private static final long serialVersionUID = 1028072730844897321L;
     /**
      * id : 1
      * user_id : 1

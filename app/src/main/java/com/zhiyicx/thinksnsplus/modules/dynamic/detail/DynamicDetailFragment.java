@@ -594,7 +594,6 @@ public class DynamicDetailFragment extends TSListFragment<DynamicDetailContract.
         mDeletCommentPopWindow = ActionPopupWindow.builder()
                 .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
                 .item2Str(getString(R.string.dynamic_list_delete_comment))
-                .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_theme))
                 .bottomStr(getString(R.string.cancel))
                 .isOutsideTouch(true)
                 .isFocus(true)

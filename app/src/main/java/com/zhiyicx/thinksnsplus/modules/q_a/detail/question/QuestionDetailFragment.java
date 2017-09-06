@@ -66,7 +66,7 @@ import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.On
 
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
         AnswerInfoBean> implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
-        OnOrderTypeSelectListener, OnItemClickListener, OnGoToWatchClickListener,TextViewUtils.OnSpanTextClickListener {
+        OnOrderTypeSelectListener, OnItemClickListener, OnGoToWatchClickListener, TextViewUtils.OnSpanTextClickListener {
 
     public static final int REWARD_CODE = 1;
 
@@ -299,6 +299,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onChangeListOrderClick(String orderType) {
         // 弹出排序选择框
         mOrderTypeSelectPop.show();
+
     }
 
     private void initHeaderView() {
@@ -561,8 +562,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onToWatchClick(AnswerInfoBean answerInfoBean, int position, boolean isNeedOnlook) {
-        mCurrentPosition = position - mHeaderAndFooterWrapper
-                .getHeadersCount();
+        mCurrentPosition = position - mHeaderAndFooterWrapper.getHeadersCount();
         if (isNeedOnlook) {
             mPayWatchPopWindow.show();
         } else {

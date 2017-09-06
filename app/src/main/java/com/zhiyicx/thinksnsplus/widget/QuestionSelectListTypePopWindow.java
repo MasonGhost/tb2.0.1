@@ -21,7 +21,7 @@ import com.zhiyicx.thinksnsplus.R;
  * @contact email:648129313@qq.com
  */
 
-public class QuestionSelectListTypePopWindow extends PopupWindow{
+public class QuestionSelectListTypePopWindow extends PopupWindow {
 
     private Activity mActivity;
     private View mParentView;
@@ -59,8 +59,8 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         mTvDefault.setOnClickListener(v -> {
             mTvDefault.toggle();
             mTvTime.toggle();
-            if (mTvDefault.isChecked()){
-                if (mListener != null){
+            if (mTvDefault.isChecked()) {
+                if (mListener != null) {
                     mListener.onOrderTypeSelected(0);
                 }
             }
@@ -68,8 +68,8 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         mTvTime.setOnClickListener(v -> {
             mTvTime.toggle();
             mTvDefault.toggle();
-            if (mTvTime.isChecked()){
-                if (mListener != null){
+            if (mTvTime.isChecked()) {
+                if (mListener != null) {
                     mListener.onOrderTypeSelected(1);
                 }
             }
@@ -86,6 +86,10 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
     }
 
     public void show() {
+        if (isShowing()) {
+            dismiss();
+            return;
+        }
         setWindowAlpha(mAlpha);
         int width = UIUtils.getWindowWidth(mActivity) - mContentView.getResources().getDimensionPixelOffset(R.dimen.qa_top_select_width);
         showAsDropDown(mParentView == null ? mContentView : mParentView, width, 10);
@@ -119,7 +123,7 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
             return this;
         }
 
-        public QuestionSelectListTypePopWindow.Builder setListener(OnOrderTypeSelectListener listener){
+        public QuestionSelectListTypePopWindow.Builder setListener(OnOrderTypeSelectListener listener) {
             this.mListener = listener;
             return this;
         }
@@ -133,7 +137,7 @@ public class QuestionSelectListTypePopWindow extends PopupWindow{
         return new QuestionSelectListTypePopWindow.Builder();
     }
 
-    public interface OnOrderTypeSelectListener{
+    public interface OnOrderTypeSelectListener {
         void onOrderTypeSelected(int type);
     }
 }

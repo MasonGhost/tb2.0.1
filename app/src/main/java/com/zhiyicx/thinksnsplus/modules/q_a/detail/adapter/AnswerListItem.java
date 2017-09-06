@@ -54,15 +54,16 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
     @Override
     public boolean isForViewType(AnswerInfoBean item, int position) {
-        return !TextUtils.isEmpty(item.getBody());
+        return !(TextUtils.isEmpty(item.getBody()) && item.getInvited() != 1);
     }
 
     @Override
     public void convert(ViewHolder holder, AnswerInfoBean answerInfoBean, AnswerInfoBean lastT, int position, int itemCounts) {
-        boolean isOnlook = mQaListInfoBean.getLook() == 1;
+        boolean isInvited = answerInfoBean.getInvited() == 1;// 是否是被邀请的回答
+        boolean isOnlook = mQaListInfoBean.getLook() == 1; // 是否开启了围观
         boolean isNeedOnlook = isOnlook && (mQaListInfoBean.getUser().getExtra().getUser_id()
                 != AppApplication.getmCurrentLoginAuth().getUser_id() || answerInfoBean.getUser_id()
-                != AppApplication.getmCurrentLoginAuth().getUser_id());
+                != AppApplication.getmCurrentLoginAuth().getUser_id());// 是否要付费才能查看
         // 发布者信息
         if (answerInfoBean.getUser() != null) {
             ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), answerInfoBean.getAnonymity() == 1);
@@ -112,6 +113,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                     .disPlayText(true)
                     .build();
         } else {
+            content += contentView.getContext().getString(R.string.words_holder);
             TextViewUtils.newInstance(contentView, content)
                     .spanTextColor(SkinUtils.getColor(R
                             .color.normal_for_assist_text))
@@ -146,7 +148,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否围观
         TextView tvToWatch = holder.getTextView(R.id.tv_to_watch);
         // 邀请的人回答才会有围观
-        tvToWatch.setVisibility(answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
+        tvToWatch.setVisibility(isOnlook ? View.VISIBLE : View.GONE);
         // 是否已经围观了
         tvToWatch.setEnabled(!answerInfoBean.getCould());
         tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string.qa_go_to_watched)
