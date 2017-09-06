@@ -254,13 +254,6 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
             }
         }
         super.onNetResponseSuccess(data, isLoadMore);
-        if (!isLoadMore) {
-            Observable.timer(500, TimeUnit.MILLISECONDS)
-                    .subscribe(aLong -> {
-                        mPresenter.reqReWardsData(mAnswerInfoBean.getId().intValue());// 刷新打赏
-                    });
-
-        }
     }
 
     @Override

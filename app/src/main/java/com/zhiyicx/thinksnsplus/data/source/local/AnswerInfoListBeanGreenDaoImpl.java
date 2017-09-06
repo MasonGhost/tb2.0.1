@@ -24,12 +24,12 @@ public class AnswerInfoListBeanGreenDaoImpl extends CommonCacheImpl<AnswerInfoBe
 
     @Override
     public long saveSingleData(AnswerInfoBean singleData) {
-        return 0;
+        return getWDaoSession().getAnswerInfoBeanDao().insertOrReplace(singleData);
     }
 
     @Override
     public void saveMultiData(List<AnswerInfoBean> multiData) {
-
+        getWDaoSession().getAnswerInfoBeanDao().insertOrReplaceInTx(multiData);
     }
 
     @Override
@@ -39,36 +39,36 @@ public class AnswerInfoListBeanGreenDaoImpl extends CommonCacheImpl<AnswerInfoBe
 
     @Override
     public AnswerInfoBean getSingleDataFromCache(Long primaryKey) {
-        return null;
+        return getRDaoSession().getAnswerInfoBeanDao().load(primaryKey);
     }
 
     @Override
     public List<AnswerInfoBean> getMultiDataFromCache() {
-        return null;
+        return getRDaoSession().getAnswerInfoBeanDao().loadAll();
     }
 
     @Override
     public void clearTable() {
-
+        getWDaoSession().getAnswerInfoBeanDao().deleteAll();
     }
 
     @Override
     public void deleteSingleCache(Long primaryKey) {
-
+        getWDaoSession().getAnswerInfoBeanDao().deleteByKey(primaryKey);
     }
 
     @Override
     public void deleteSingleCache(AnswerInfoBean dta) {
-
+        getRDaoSession().getAnswerInfoBeanDao().delete(dta);
     }
 
     @Override
     public void updateSingleData(AnswerInfoBean newData) {
-
+        saveSingleData(newData);
     }
 
     @Override
     public long insertOrReplace(AnswerInfoBean newData) {
-        return 0;
+        return saveSingleData(newData);
     }
 }

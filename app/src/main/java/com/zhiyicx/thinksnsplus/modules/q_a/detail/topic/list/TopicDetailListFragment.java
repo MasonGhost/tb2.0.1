@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.*;
 import android.view.View;
 
 import com.zhiyicx.baseproject.base.TSListFragment;
@@ -28,7 +27,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetai
  */
 
 public class TopicDetailListFragment extends TSListFragment<TopicDetailListContract.Presenter, QAListInfoBean>
-        implements TopicDetailListContract.View{
+        implements TopicDetailListContract.View {
 
     @Inject
     TopicDetailListPresenter mPresenter;
@@ -39,10 +38,22 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
     private String mType;
     private QATopicBean mTopicBean;
 
-    public TopicDetailListFragment instance(Bundle bundle){
+    public String[] QA_TYPES;
+
+    public TopicDetailListFragment instance(Bundle bundle) {
         TopicDetailListFragment fragment = new TopicDetailListFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean setUseStatusView() {
+        return false;
     }
 
     @Override
@@ -53,17 +64,23 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
                 .build()
                 .inject(this);
         super.initData();
-        if (TextUtils.isEmpty(mType)){
+        QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
+        if (TextUtils.isEmpty(mType)) {
             mType = getArguments().getString(BUNDLE_TOPIC_TYPE);
         }
-        if (mTopicBean == null){
+        if (mTopicBean == null) {
             mTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
         }
     }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas);
+        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas) {
+            @Override
+            protected int getExcellentTag() {
+                return (getCurrentType().equals(QA_TYPES[0]) || getCurrentType().equals(QA_TYPES[1]) ? 0 : R.mipmap.icon_choice);
+            }
+        };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
@@ -85,7 +102,7 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
 
     @Override
     public String getCurrentType() {
-        if (TextUtils.isEmpty(mType)){
+        if (TextUtils.isEmpty(mType)) {
             mType = getArguments().getString(BUNDLE_TOPIC_TYPE);
         }
         return mType;
@@ -93,7 +110,7 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
 
     @Override
     public Long getTopicId() {
-        if (mTopicBean == null){
+        if (mTopicBean == null) {
             mTopicBean = (QATopicBean) getArguments().getSerializable(BUNDLE_TOPIC_BEAN);
         }
         return mTopicBean.getId();

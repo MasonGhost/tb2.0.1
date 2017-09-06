@@ -205,7 +205,7 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
                             .position(contentLenght, content.length())
-                            .dynamicPosition(position)
+                            .dataPosition(position)
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
@@ -216,12 +216,12 @@ public class DynamicListBaseItem implements ItemViewDelegate<DynamicDetailBeanV2
                             .spanTextColor(SkinUtils.getColor(R
                                     .color.normal_for_assist_text))
                             .position(contentLenght, content.length())
-                            .dynamicPosition(position)
+                            .dataPosition(position)
                             .maxLines(contentView.getResources().getInteger(R.integer
                                     .dynamic_list_content_show_lines))
                             .onSpanTextClickListener(mOnSpanTextClickListener)
                             .note(dynamicBean.getPaid_node().getNode())
-                            .dynamicPosition(position)
+                            .dataPosition(position)
                             .amount(dynamicBean.getPaid_node().getAmount())
                             .disPlayText(false)
                             .build();

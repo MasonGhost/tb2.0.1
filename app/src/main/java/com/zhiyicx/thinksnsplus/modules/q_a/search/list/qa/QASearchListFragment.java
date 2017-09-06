@@ -49,7 +49,8 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.search.list.qa.QASearchListPr
  * @Date 2017/8/10
  * @Contact master.jungle68@gmail.com
  */
-public class QASearchListFragment extends TSListFragment<QASearchListContract.Presenter, QAListInfoBean> implements QASearchListContract.View, ISearchListener {
+public class QASearchListFragment extends TSListFragment<QASearchListContract.Presenter, QAListInfoBean>
+        implements QASearchListContract.View, ISearchListener {
 
     @BindView(R.id.rv_search_history)
     RecyclerView mRvSearchHistory;

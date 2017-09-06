@@ -293,6 +293,7 @@ public class InfoDetailsFragment extends TSListFragment<InfoDetailsConstract.Pre
     @Override
     public void refreshData() {
         super.refreshData();
+        mInfoMation.setComment_count(mListDatas.get(0).getComment_content().isEmpty() ? 0 : mListDatas.size());
         mInfoDetailHeader.updateCommentView(mInfoMation);
     }
 

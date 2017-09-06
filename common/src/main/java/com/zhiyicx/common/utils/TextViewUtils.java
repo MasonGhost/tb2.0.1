@@ -91,7 +91,7 @@ public class TextViewUtils {
         return this;
     }
 
-    public TextViewUtils dynamicPosition(int dynamicPosition) {
+    public TextViewUtils dataPosition(int dynamicPosition) {
         mDynamicPosition = dynamicPosition;
         return this;
     }

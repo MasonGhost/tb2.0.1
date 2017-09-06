@@ -57,7 +57,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Inject
     public SharePolicy mSharePolicy;
     @Inject
-    public AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
+    AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
     @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
@@ -138,6 +138,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                         super.onException(throwable);
                         mRootView.onResponseError(throwable,false);
                     }
+
+
                 });
         addSubscrebe(subscription);
     }

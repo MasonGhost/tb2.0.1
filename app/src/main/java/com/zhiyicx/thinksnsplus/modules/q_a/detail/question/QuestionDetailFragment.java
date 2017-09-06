@@ -20,6 +20,7 @@ import com.zhiyicx.baseproject.widget.DynamicDetailMenuView;
 import com.zhiyicx.baseproject.widget.popwindow.ActionPopupWindow;
 import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.baseproject.widget.popwindow.PayPopWindow;
+import com.zhiyicx.common.utils.TextViewUtils;
 import com.zhiyicx.common.utils.log.LogUtils;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
@@ -66,7 +67,7 @@ import static com.zhiyicx.thinksnsplus.widget.QuestionSelectListTypePopWindow.On
 
 public class QuestionDetailFragment extends TSListFragment<QuestionDetailContract.Presenter,
         AnswerInfoBean> implements QuestionDetailContract.View, QuestionDetailHeader.OnActionClickListener,
-        OnOrderTypeSelectListener, OnItemClickListener, OnGoToWatchClickListener {
+        OnOrderTypeSelectListener, OnItemClickListener, OnGoToWatchClickListener, TextViewUtils.OnSpanTextClickListener {
 
     public static final int REWARD_CODE = 1;
 
@@ -120,6 +121,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                 mListDatas);
         AnswerListItem answerListItem = new AnswerListItem(mPresenter, mQaListInfoBean);
         answerListItem.setOnGoToWatchClickListener(this);
+        answerListItem.setOnSpanTextClickListener(this);
         multiItemTypeAdapter.addItemViewDelegate(answerListItem);
         multiItemTypeAdapter.addItemViewDelegate(new AnswerEmptyItem());
         multiItemTypeAdapter.setOnItemClickListener(this);
@@ -143,6 +145,11 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         } else {
             startToAnswerDetail(answerInfoBean);
         }
+
+    }
+
+    @Override
+    public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
 
     }
 
@@ -293,6 +300,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onChangeListOrderClick(String orderType) {
         // 弹出排序选择框
         mOrderTypeSelectPop.show();
+
     }
 
     private void initHeaderView() {
@@ -555,8 +563,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void onToWatchClick(AnswerInfoBean answerInfoBean, int position, boolean isNeedOnlook) {
-        mCurrentPosition = position - mHeaderAndFooterWrapper
-                .getHeadersCount();
+        mCurrentPosition = position - mHeaderAndFooterWrapper.getHeadersCount();
         if (isNeedOnlook) {
             mPayWatchPopWindow.show();
         } else {

@@ -25,9 +25,11 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -100,6 +102,38 @@ public class JavaTest {
     }
 
     @Test
+    public void timeTest() {
+        String time = "2017-08-04 09:16:19";
+
+        long timeMillisSpace = System.currentTimeMillis() - TimeUtils.utc2LocalLong(time);
+
+        double daySpace = (timeMillisSpace / (double) (1000 * 60 * 60 * 24));
+
+        long test = TimeUnit.DAYS.convert(timeMillisSpace, TimeUnit.MILLISECONDS);
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+
+        Date today = new Date(System.currentTimeMillis());
+
+        Date otherDay = new Date(TimeUtils.utc2LocalLong(time));
+
+        int now = Integer.parseInt(sdf.format(today));
+        int other = Integer.parseInt(sdf.format(otherDay));
+
+        int day = TimeUtils.getifferenceDays(System.currentTimeMillis() - TimeUtils.utc2LocalLong(time));
+        String str = TimeUtils.getTimeFriendlyForDetail(time);
+
+        if (daySpace > test && daySpace < 9) {
+            System.out.println("result:daySpace:" + (now - other));
+        } else {
+            System.out.println("result:daySpace:" + daySpace);
+        }
+
+
+    }
+
+    @Test
     public void testContain() {
 
         String str = "1号线@![image]号漕宝路";
@@ -108,7 +142,7 @@ public class JavaTest {
             System.out.println("result1::" + str);
         }
 
-        String text="ggfdd@![image](2537)dddd@![image](2538)";
+        String text = "ggfdd@![image](2537)dddd@![image](2538)";
         if (text.matches("\\.*@!\\[.*?]\\((\\d+)\\)\\.*")) {
             int id = RegexUtils.getImageId(text);
             String imagePath = APP_DOMAIN + "api/" + API_VERSION_2 + "/files/" + id + "?q=80";
@@ -210,7 +244,7 @@ public class JavaTest {
             if (matcher2.find()) {
                 System.out.println("matcher 2 :: " + matcher2.group(0));
                 System.out.println("matcher 2 :: " + matcher2.group(1));
-                System.out.println("matcher 2 :: " + matcher2.group(0).replaceAll("\\d+","tym").replaceAll("@",""));
+                System.out.println("matcher 2 :: " + matcher2.group(0).replaceAll("\\d+", "tym").replaceAll("@", ""));
             }
             lastIndex = matcher1.end();
         }
@@ -601,7 +635,7 @@ public class JavaTest {
                 System.out.println(response1 + " = " + (String) value);
             } else if (value instanceof String[]) {
                 System.out.println(response1 + " = " + ((String[]) value)[0]);
-            }else if(value instanceof List){
+            } else if (value instanceof List) {
                 System.out.println(response1 + " = " + ((List) value).get(0));
 
             }

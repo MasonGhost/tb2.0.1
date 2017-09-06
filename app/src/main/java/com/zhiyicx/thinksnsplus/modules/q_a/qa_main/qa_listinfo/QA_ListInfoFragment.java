@@ -33,6 +33,8 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     private String mQAInfoType;
 
+    public String[] QA_TYPES;
+
     @Inject
     QA_ListInfoFragmentPresenter mQA_listInfoFragmentPresenter;
 
@@ -95,7 +97,7 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
                 .builder().appComponent(AppApplication.AppComponentHolder.getAppComponent())
                 .qA_listInfoFragmentPresenterModule(new QA_listInfoFragmentPresenterModule(this))
                 .build().inject(this);
-
+        QA_TYPES = getResources().getStringArray(R.array.qa_net_type);
         mQAInfoType = getArguments().getString(BUNDLE_QA_TYPE);
 
         super.initData();
@@ -118,7 +120,12 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas);
+        QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas) {
+            @Override
+            protected int getExcellentTag() {
+                return (getQAInfoType().equals(QA_TYPES[0]) || getQAInfoType().equals(QA_TYPES[1]) ? 0 : R.mipmap.icon_choice);
+            }
+        };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {

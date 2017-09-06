@@ -283,8 +283,8 @@ public class RegexUtils {
     }
 
     public static String replaceImageId(String regex, String input) {
-        Matcher matcher = Pattern.compile(regex).matcher(input);
         try {
+            Matcher matcher = Pattern.compile(regex).matcher(input);
             return matcher.replaceAll("");
         } catch (Exception e) {
             return input;
