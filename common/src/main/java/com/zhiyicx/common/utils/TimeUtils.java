@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Describe 时间格式化工具类 ,api接口里 的时间返回 统一用时间空间字符串格式 UTC+ 0 时区 例如; 2017-03-01 01:28:33
@@ -296,16 +297,20 @@ public class TimeUtils {
 
         long timeMillisSpace = System.currentTimeMillis() - timesamp;
 
-        int daySpace = (int) (timeMillisSpace / (1000 * 60 * 60 * 24));
+        double daySpaceDouble = (timeMillisSpace / (double) (1000 * 60 * 60 * 24));
 
-        if (daySpace == 0) {
+        long daySpace = TimeUnit.DAYS.convert(timeMillisSpace, TimeUnit.MILLISECONDS);
+
+        if (daySpaceDouble > daySpace && daySpaceDouble < 9) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd");
             Date today = new Date(System.currentTimeMillis());
             Date otherDay = new Date(timesamp);
-            return Integer.parseInt(sdf.format(today))
-                    - Integer.parseInt(sdf.format(otherDay));
+            int now = Integer.parseInt(sdf.format(today));
+            int other = Integer.parseInt(sdf.format(otherDay));
+            return now - other;
+        } else {
+            return (int) daySpace;
         }
-        return daySpace;
     }
 
 

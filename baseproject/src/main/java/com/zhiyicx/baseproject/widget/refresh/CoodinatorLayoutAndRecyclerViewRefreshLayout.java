@@ -42,7 +42,6 @@ public class CoodinatorLayoutAndRecyclerViewRefreshLayout extends SwipeToLoadLay
             int[] location = new int[2];
             getLocationOnScreen(location);
             startY = location[1];
-            LogUtils.i("startY :: " + startY);
         }
     }
 

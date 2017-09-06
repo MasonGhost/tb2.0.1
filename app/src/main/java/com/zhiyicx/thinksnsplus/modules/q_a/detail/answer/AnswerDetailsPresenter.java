@@ -103,29 +103,32 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void requestNetData(Long maxId, final boolean isLoadMore) {
-        if (mRootView.getAnswerInfo().getCommentList() == null) {
-            getAnswerDetail(mRootView.getAnswerInfo().getId());
-        } else {
-            mRepository.getAnswerCommentList(mRootView.getAnswerId(), maxId)
-                    .subscribe(new BaseSubscribeForV2<List<AnswerCommentListBean>>() {
-                        @Override
-                        protected void onSuccess(List<AnswerCommentListBean> data) {
-                            mRootView.onNetResponseSuccess(data, isLoadMore);
-                        }
 
-                        @Override
-                        protected void onFailure(String message, int code) {
-                            super.onFailure(message, code);
-                            handleInfoHasBeDeleted(code);
-                        }
+        getAnswerDetail(mRootView.getAnswerInfo().getId(), maxId, isLoadMore);
 
-                        @Override
-                        protected void onException(Throwable throwable) {
-                            super.onException(throwable);
-                            mRootView.onResponseError(throwable, isLoadMore);
-                        }
-                    });
-        }
+//        if (mRootView.getAnswerInfo().getCommentList() == null) {
+//
+//        } else {
+//            mRepository.getAnswerCommentList(mRootView.getAnswerId(), maxId)
+//                    .subscribe(new BaseSubscribeForV2<List<AnswerCommentListBean>>() {
+//                        @Override
+//                        protected void onSuccess(List<AnswerCommentListBean> data) {
+//                            mRootView.onNetResponseSuccess(data, isLoadMore);
+//                        }
+//
+//                        @Override
+//                        protected void onFailure(String message, int code) {
+//                            super.onFailure(message, code);
+//                            handleInfoHasBeDeleted(code);
+//                        }
+//
+//                        @Override
+//                        protected void onException(Throwable throwable) {
+//                            super.onException(throwable);
+//                            mRootView.onResponseError(throwable, isLoadMore);
+//                        }
+//                    });
+//        }
     }
 
     private void handleInfoHasBeDeleted(int code) {
@@ -154,7 +157,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
         }
         int id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, mRootView.getAnswerInfo().getBody());
 
-        String shareUrl="";
+        String shareUrl = "";
         if (id > 0) {
             int w = DeviceUtils.getScreenWidth(mContext);
             int h = mContext.getResources().getDimensionPixelOffset(R.dimen.qa_info_iamge_height);
@@ -221,7 +224,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
 
     @Override
     public void reqReWardsData(int id) {
-        getAnswerDetail(id);
+        getAnswerDetail(id, 0, false);
     }
 
     @Override
@@ -231,7 +234,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
     }
 
     @Override
-    public void getAnswerDetail(long answer_id) {
+    public void getAnswerDetail(long answer_id, long max_id, boolean isLoadMore) {
         Subscription subscription = Observable.zip(mRepository.getAnswerDetail(answer_id),
                 mRepository.getAnswerCommentList(answer_id, 0L), (answerInfoBean, answerCommentListBeen) -> {
                     answerInfoBean.setCommentList(answerCommentListBeen);
@@ -242,10 +245,24 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                 .subscribe(new BaseSubscribeForV2<AnswerInfoBean>() {
                     @Override
                     protected void onSuccess(AnswerInfoBean data) {
+                        mAnswerInfoListBeanGreenDao.saveSingleData(data);
                         mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + data.getRewards_amount()),
                                 data.getRewarders());
                         mRootView.updateAnswerHeader(data);
                     }
+
+                    @Override
+                    protected void onFailure(String message, int code) {
+                        super.onFailure(message, code);
+                        handleInfoHasBeDeleted(code);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(throwable, isLoadMore);
+                    }
+
                 });
         addSubscrebe(subscription);
     }

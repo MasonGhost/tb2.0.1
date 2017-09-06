@@ -57,7 +57,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     @Inject
     public SharePolicy mSharePolicy;
     @Inject
-    public AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
+    AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
     @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
 
@@ -117,6 +117,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), 0),
                 (qaListInfoBean, answerInfoBeanList) -> {
                     qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(qaListInfoBean, answerInfoBeanList));
+                    mAnswerInfoListBeanGreenDao.saveMultiData(qaListInfoBean.getAnswerInfoBeanList());
                     mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
                     return qaListInfoBean;
                 }).subscribeOn(Schedulers.io())
