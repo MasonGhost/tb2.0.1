@@ -2,7 +2,9 @@ package com.zhiyicx.thinksnsplus.modules.q_a.detail.question;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -24,8 +26,10 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.edit_userinfo.UserInfoTagsAdapter;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.adapter.QuestionTopicsAdapter;
+import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity;
 import com.zhiyicx.thinksnsplus.widget.QuestionDetailContent;
 import com.zhiyicx.thinksnsplus.widget.QuestionInviteUserPopWindow;
+import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.List;
@@ -34,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
+import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 
 /**
  * @author Catherine
@@ -42,7 +47,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  * @contact email:648129313@qq.com
  */
 
-public class QuestionDetailHeader {
+public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
 
     public static final String ORDER_DEFAULT = "default";
     public static final String ORDER_BY_TIME = "time";
@@ -125,6 +130,17 @@ public class QuestionDetailHeader {
         updateRewardType(qaListInfoBean);
         // 是否已经回答了这个问题
         updateIsAddedAnswerState(qaListInfoBean);
+    }
+
+    @Override
+    public boolean onTagClick(View view, int position, FlowLayout parent) {
+        QATopicBean qaTopicBean = mQaListInfoBean.getTopics().get(position);
+        Intent intent = new Intent(mContext, TopicDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_TOPIC_BEAN, qaTopicBean);
+        intent.putExtra(BUNDLE_TOPIC_BEAN, bundle);
+        mContext.startActivity(intent);
+        return true;
     }
 
     /**

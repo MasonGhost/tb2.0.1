@@ -75,16 +75,25 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     mRootView.getCurrentOrderType(), mRootView.getRealSize())
                     .compose(mSchedulersTransformer)
                     .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
-
                         @Override
                         protected void onSuccess(List<AnswerInfoBean> data) {
-                            mRootView.getCurrentQuestion().setAnswerInfoBeanList(data);
-                            mQAListInfoBeanGreenDao.insertOrReplace(mRootView.getCurrentQuestion());
                             if (maxId == 0) {
                                 mRootView.onNetResponseSuccess(dealAnswerList(mRootView.getCurrentQuestion(), data), isLoadMore);
                             } else {
                                 mRootView.onNetResponseSuccess(data, isLoadMore);
                             }
+                        }
+
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                            mRootView.onResponseError(null, isLoadMore);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.onResponseError(throwable, isLoadMore);
                         }
                     });
             addSubscrebe(subscription);
@@ -108,6 +117,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), 0),
                 (qaListInfoBean, answerInfoBeanList) -> {
                     qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(qaListInfoBean, answerInfoBeanList));
+                    mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
                     return qaListInfoBean;
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
