@@ -24,7 +24,8 @@
     <integer name="animation_default_duration">300</integer>
 
     <!--#########################################      输入限制相关       ################################-->
-
+    <!-- 自定义金额最多 8 位数 -->
+    <integer name="money_input_max_size">8</integer>
     <!-- 最多输入 255 个评论字符 -->
     <integer name="comment_input_max_size">255</integer>
     <!-- 输入到 200 字符的时候显示提示 -->

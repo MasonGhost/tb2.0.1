@@ -44,7 +44,7 @@ public class BaseRewardRepository implements IRewardRepository {
 
     @Override
     public Observable<Object> rewardUser(long user_id, double amount) {
-        return mUserInfoClient.rewardUser(user_id, (int) amount)
+        return mUserInfoClient.rewardUser(user_id, (long) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -58,7 +58,7 @@ public class BaseRewardRepository implements IRewardRepository {
      */
     @Override
     public Observable<Object> rewardInfo(long news_id, double amount) {
-        return mInfoMainClient.rewardInfo(news_id, (int) amount)
+        return mInfoMainClient.rewardInfo(news_id, (long) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -98,7 +98,7 @@ public class BaseRewardRepository implements IRewardRepository {
      */
     @Override
     public Observable<Object> rewardDynamic(long feed_id, double amount) {
-        return mDynamicClient.rewardDynamic(feed_id, (int) amount)
+        return mDynamicClient.rewardDynamic(feed_id, (long) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -127,7 +127,7 @@ public class BaseRewardRepository implements IRewardRepository {
      */
     @Override
     public Observable<Object> rewardQA(long answer_id, double amount) {
-        return mQAClient.rewardQA(answer_id, (int) amount)
+        return mQAClient.rewardQA(answer_id, (long) amount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

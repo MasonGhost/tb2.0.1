@@ -37,12 +37,12 @@ public class StickTopRepsotory implements StickTopContract.Repository {
     @Override
     public Observable<BaseJsonV2<Integer>> stickTop(String type, long parent_id, double amount, int day) {
         if (type.equals(TYPE_DYNAMIC)) {
-            return mDynamicClient.stickTopDynamic(parent_id, (int) amount, day)
+            return mDynamicClient.stickTopDynamic(parent_id, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         } else if (type.equals(TYPE_INFO)) {
-            return mInfoMainClient.stickTopInfo(parent_id, (int) amount, day)
+            return mInfoMainClient.stickTopInfo(parent_id, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
@@ -55,12 +55,12 @@ public class StickTopRepsotory implements StickTopContract.Repository {
     @Override
     public Observable<BaseJsonV2<Integer>> stickTop(String type, long parent_id, long child_id, double amount, int day) {
         if (type.equals(TYPE_DYNAMIC)) {
-            return mDynamicClient.stickTopDynamicComment(parent_id, child_id, (int) amount, day)
+            return mDynamicClient.stickTopDynamicComment(parent_id, child_id, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         } else if (type.equals(TYPE_INFO)) {
-            return mInfoMainClient.stickTopInfoComment(parent_id, child_id, (int) amount, day)
+            return mInfoMainClient.stickTopInfoComment(parent_id, child_id, (long) amount, day)
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());

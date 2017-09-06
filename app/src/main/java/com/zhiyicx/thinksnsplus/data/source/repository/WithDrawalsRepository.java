@@ -26,6 +26,6 @@ public class WithDrawalsRepository implements WithDrawalsConstract.Repository {
 
     @Override
     public Observable<WithdrawResultBean> withdraw(double value, String type, String account) {
-        return mWalletClient.withdraw(value, type, account);
+        return mWalletClient.withdraw((long) value, type, account);
     }
 }

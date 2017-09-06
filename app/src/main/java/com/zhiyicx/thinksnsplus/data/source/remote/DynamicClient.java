@@ -107,7 +107,7 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_DYNAMIC)
-    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id, @Field("amount") int amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopDynamic(@Path("feed_id") Long feed_id, @Field("amount") long amount, @Field("day") int day);
 
 
     /**
@@ -118,7 +118,7 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_TOP_DYNAMIC_COMMENT)
-    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id, @Path("comment_id") Long comment_id, @Field("amount") int amount, @Field("day") int day);
+    Observable<BaseJsonV2<Integer>> stickTopDynamicComment(@Path("feed_id") Long feed_id, @Path("comment_id") Long comment_id, @Field("amount") long amount, @Field("day") int day);
 
     /**
      * 获取动态评论置顶审核列表 V2
@@ -168,7 +168,7 @@ public interface DynamicClient {
      */
     @FormUrlEncoded
     @POST(APP_PATH_DYNAMIC_REWARDS)
-    Observable<Object> rewardDynamic(@Path("feed_id") long news_id, @Field("amount") Integer amount);
+    Observable<Object> rewardDynamic(@Path("feed_id") long news_id, @Field("amount") long amount);
 
 
     /**
