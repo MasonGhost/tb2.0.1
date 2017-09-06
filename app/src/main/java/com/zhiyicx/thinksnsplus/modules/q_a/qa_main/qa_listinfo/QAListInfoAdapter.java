@@ -62,7 +62,6 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         try {
             id = RegexUtils.getImageIdFromMarkDown(MarkdownConfig.IMAGE_FORMAT, infoBean.getAnswer().getBody());
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         if (id > 0) {

@@ -72,7 +72,8 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
             getQuestionDetail(mRootView.getCurrentQuestion().getId() + "");
         } else {
             Subscription subscription = mRepository.getAnswerList(mRootView.getCurrentQuestion().getId() + "",
-                    mRootView.getCurrentOrderType(), mRootView.getRealSize())
+//                    mRootView.getCurrentOrderType(), mRootView.getRealSize())
+                    mRootView.getCurrentOrderType(), maxId.intValue())
                     .compose(mSchedulersTransformer)
                     .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
 
@@ -85,6 +86,17 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                             } else {
                                 mRootView.onNetResponseSuccess(data, isLoadMore);
                             }
+                        }
+                        @Override
+                        protected void onFailure(String message, int code) {
+                            super.onFailure(message, code);
+                            mRootView.onResponseError(null,false);
+                        }
+
+                        @Override
+                        protected void onException(Throwable throwable) {
+                            super.onException(throwable);
+                            mRootView.onResponseError(throwable,false);
                         }
                     });
             addSubscrebe(subscription);
@@ -120,6 +132,13 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
+                        mRootView.onResponseError(null,false);
+                    }
+
+                    @Override
+                    protected void onException(Throwable throwable) {
+                        super.onException(throwable);
+                        mRootView.onResponseError(throwable,false);
                     }
                 });
         addSubscrebe(subscription);
