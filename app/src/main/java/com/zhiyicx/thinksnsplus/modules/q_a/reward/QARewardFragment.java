@@ -388,7 +388,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
                             mPresenter.publishQuestion(mQAPublishBean);
                         } else {
                             // 已发布的资讯 重新设置悬赏金额
-                            mPresenter.resetReward(mQuestionId, mRewardMoney);
+                            mPresenter.resetReward(mQuestionId, PayConfig.realCurrencyYuan2Fen(mRewardMoney));
                         }
                     } catch (Exception e) {
                         mBtPublish.setEnabled(true);
@@ -494,7 +494,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void resetRewardSuccess() {
         Bundle bundle = new Bundle();
-        bundle.putDouble(BUNDLE_QUESTION_ID, mRewardMoney);
+        bundle.putDouble(BUNDLE_QUESTION_ID,PayConfig.realCurrencyYuan2Fen( mRewardMoney));
         Intent intent = new Intent();
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
