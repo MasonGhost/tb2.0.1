@@ -293,7 +293,19 @@ public class TimeUtils {
      * @return 输入时间和当前时间间隔的天数
      */
     public static int getifferenceDays(long timesamp) {
-        return (int) ((System.currentTimeMillis() - timesamp)/(1000 * 60 * 60 * 24));
+
+        long timeMillisSpace = System.currentTimeMillis() - timesamp;
+
+        int daySpace = (int) (timeMillisSpace / (1000 * 60 * 60 * 24));
+
+        if (daySpace == 0) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd");
+            Date today = new Date(System.currentTimeMillis());
+            Date otherDay = new Date(timesamp);
+            return Integer.parseInt(sdf.format(today))
+                    - Integer.parseInt(sdf.format(otherDay));
+        }
+        return daySpace;
     }
 
 

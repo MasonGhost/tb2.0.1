@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
-import com.zhiyicx.common.utils.ConvertUtils;
 import com.zhiyicx.thinksnsplus.R;
 
 import java.util.ArrayList;
@@ -52,6 +51,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     private OnContentChangeListener mOnContentChangeListener;
     private boolean hasContent;
+    private boolean isFirstHasContent = true;
 
     public RichTextEditor(Context context) {
         this(context, null);
@@ -62,7 +62,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         TypedArray array = context.obtainStyledAttributes(attrs,
                 R.styleable.MarkDownEditor);
         mHint = array.getString(R.styleable.MarkDownEditor_ts_md_hint);
-        if (TextUtils.isEmpty(mHint)){
+        if (TextUtils.isEmpty(mHint)) {
             mHint = getResources().getString(R.string.info_content_hint);
         }
     }
@@ -81,7 +81,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         TypedArray array = context.obtainStyledAttributes(attrs,
                 R.styleable.MarkDownEditor);
         mHint = array.getString(R.styleable.MarkDownEditor_ts_md_hint);
-        if (TextUtils.isEmpty(mHint)){
+        if (TextUtils.isEmpty(mHint)) {
             mHint = getResources().getString(R.string.info_content_hint);
         }
         inflater = LayoutInflater.from(context);
@@ -93,7 +93,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         setupLayoutTransitions();
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
-        allLayout.setPadding(dip2px(getContext(),20), dip2px(getContext(),15), dip2px(getContext(),20), 0);//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
+        allLayout.setPadding(dip2px(getContext(), 20), dip2px(getContext(), 15), dip2px(getContext(), 20), 0);//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
         addView(allLayout, layoutParams);
 
         // 2. 初始化键盘退格监听
@@ -120,11 +120,12 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
         };
 
         LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         //editNormalPadding = dip2px(EDIT_PADDING);
         EditText firstEdit = createEditText(mHint, dip2px(context, 0));
         firstEdit.setHintTextColor(getResources().getColor(R.color.general_for_hint));
         firstEdit.addTextChangedListener(this);
+        firstEdit.setLayoutParams(firstEditParam);
         allLayout.addView(firstEdit);
         lastFocusEdit = firstEdit;
         lastAddEdit = firstEdit;
@@ -150,7 +151,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
                 if (!transition.isRunning()
                         && transitionType == LayoutTransition.CHANGE_DISAPPEARING) {
                     // transition动画结束，合并EditText
-                    // mergeEditText();
+//                     mergeEditText();
                 }
             }
         });
@@ -372,7 +373,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
     /**
      * 在特定位置添加ImageView
      */
-    public void updateImageViewAtIndex(final int index,int id ,String imagePath, String markdonw, boolean isLast) {
+    public void updateImageViewAtIndex(final int index, int id, String imagePath, String markdonw, boolean isLast) {
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
         imageView.setId(id);
@@ -429,7 +430,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
             } else if (itemView instanceof RelativeLayout) {
                 DataImageView item = (DataImageView) itemView.findViewById(R.id.edit_imageView);
                 itemData.imagePath = item.getAbsolutePath();
-                itemData.imageId=item.getId();
+                itemData.imageId = item.getId();
             }
             dataList.add(itemData);
         }
@@ -453,6 +454,23 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
+        View view = allLayout.getChildAt(0);
+        if (view != null && view instanceof EditText) {
+            int tag = (int) view.getTag();
+
+            EditText firstEditText = (EditText) view;
+
+            if (tag == 1 && isFirstHasContent) {
+                isFirstHasContent = false;
+                firstEditText.setHint("");
+            }
+            if (tag == 1 && s.toString().isEmpty()) {
+                isFirstHasContent = true;
+                firstEditText.setHint(mHint);
+            }
+
+        }
+
 
     }
 
@@ -472,6 +490,7 @@ public class RichTextEditor extends ScrollView implements TextWatcher {
 
     public interface OnContentChangeListener {
         void onContentChange(boolean hasContent);
+
         void onImageDelete();
     }
 
