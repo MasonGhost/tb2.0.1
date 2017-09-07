@@ -6,6 +6,7 @@ import com.zhiyicx.baseproject.base.ITSListPresenter;
 import com.zhiyicx.baseproject.base.ITSListView;
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.repository.IBasePublishQuestionRepository;
 
@@ -23,7 +24,7 @@ import rx.Observable;
 public interface QuestionDetailContract {
 
     interface View extends ITSListView<AnswerInfoBean, Presenter>{
-        void setQuestionDetail(QAListInfoBean questionDetail);
+        void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore);
         QAListInfoBean getCurrentQuestion();
         String getCurrentOrderType();
 //        int getRealSize();
@@ -32,13 +33,14 @@ public interface QuestionDetailContract {
     }
 
     interface Presenter extends ITSListPresenter<AnswerInfoBean>{
-        void getQuestionDetail(String questionId);
+        void getQuestionDetail(String questionId,Long maxId, boolean isLoadMore);
         void handleFollowState(String questionId, boolean isFollowed);
         void shareQuestion(Bitmap bitmap);
         void deleteQuestion(Long question_id);
         void applyForExcellent(Long question_id);
         void handleAnswerLike(boolean isLiked, final long answer_id, AnswerInfoBean answerInfoBean);
         void payForOnlook(long answer_id);
+        SystemConfigBean getSystemConfig();
     }
 
     interface Repository extends IBasePublishQuestionRepository{

@@ -13,6 +13,7 @@ import android.webkit.WebViewClient;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -125,7 +126,6 @@ public class AnswerDetailHeaderView {
             }
         });
 
-        mUserFollow.setOnCheckedChangeListener((buttonView, isChecked) -> mAnswerHeaderEventListener.userFollowClick(isChecked));
         if (adverts != null) {
             initAdvert(context, adverts);
         }
@@ -192,14 +192,17 @@ public class AnswerDetailHeaderView {
                             mAnswerHeaderEventListener.clickUserInfo(answerInfoBean.getUser());
                         }
                     });
-            mName.setText(answerInfoBean.getUser().getName());
+
             mDescription.setText(answerInfoBean.getUser().getIntro());
             boolean isSelf = answerInfoBean.getUser().getExtra().getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
             mUserFollow.setVisibility(isSelf ? GONE : VISIBLE);
+            mName.setText(answerInfoBean.getAnonymity() == 1 &&
+                    !isSelf ? mContext.getResources().getString(R.string.qa_question_answer_anonymity_user)
+                    : answerInfoBean.getUser().getName());
             mUserFollow.setChecked(answerInfoBean.getUser().isFollower());
             // 评论信息
             updateCommentView(answerInfoBean);
-
+            mUserFollow.setOnCheckedChangeListener((buttonView, isChecked) -> mAnswerHeaderEventListener.userFollowClick(isChecked));
             ImageUtils.loadUserHead(answerInfoBean.getUser(), mUserAvatarView, false, answerInfoBean.getAnonymity() == 1);
 
         }

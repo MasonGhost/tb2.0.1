@@ -20,6 +20,7 @@ import com.zhiyicx.common.utils.DeviceUtils;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
@@ -81,6 +82,10 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
 
         if (id > 0) {
             imageView.setVisibility(View.VISIBLE);
+            contentTextView.setVisibility(View.VISIBLE);
+            ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(),
+                    infoBean.getAnswer().getAnonymity() == 1
+                            && infoBean.getAnswer().getUser_id() != AppApplication.getmCurrentLoginAuth().getUser_id(), false);
             RxView.clicks(contentTextView)
                     .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
                     .subscribe(aVoid -> {
@@ -106,15 +111,10 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
                     .error(R.drawable.shape_default_image)
                     .into(imageView);
 
+
         } else {
             imageView.setVisibility(View.GONE);
-        }
-
-        if (infoBean.getAnswer() == null) {
             contentTextView.setVisibility(View.GONE);
-        } else {
-            contentTextView.setVisibility(View.VISIBLE);
-            ImageUtils.loadQAUserHead(infoBean.getAnswer().getUser(), contentTextView, infoBean.getAnswer().getBody(), infoBean.getAnswer().getAnonymity() == 1, false);
         }
 
     }

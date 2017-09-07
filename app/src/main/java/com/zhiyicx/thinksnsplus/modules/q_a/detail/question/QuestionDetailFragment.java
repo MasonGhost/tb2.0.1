@@ -150,7 +150,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
 
     @Override
     public void setSpanText(int position, int note, int amount, TextView view, boolean canNotRead) {
-
+        onToWatchClick(null,position,canNotRead);
     }
 
     private void startToAnswerDetail(AnswerInfoBean answerInfoBean) {
@@ -195,10 +195,10 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     }
 
     @Override
-    public void setQuestionDetail(QAListInfoBean questionDetail) {
+    public void setQuestionDetail(QAListInfoBean questionDetail, boolean isLoadMore) {
         this.mQaListInfoBean = questionDetail;
-        onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), false);
-        mQuestionDetailHeader.setDetail(questionDetail);
+        onNetResponseSuccess(mQaListInfoBean.getAnswerInfoBeanList(), isLoadMore);
+        mQuestionDetailHeader.setDetail(questionDetail,mPresenter.getSystemConfig().getOnlookQuestion());
     }
 
     @Override
@@ -291,7 +291,7 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         } else {
             // 跳转发布回答
             PublishAnswerFragment.startQActivity(getActivity(), PublishType
-                            .PUBLISH_ANSWER, mQaListInfoBean.getId()// 这个 question_id 加上
+                            .PUBLISH_ANSWER, mQaListInfoBean.getId()
                     , null);
         }
     }
@@ -427,12 +427,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .contentView(R.layout.ppw_for_center)
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_excellent_hint) + getString(R
-                            .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(1000)))
+                            .string.buy_pay_member),
+                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())))
                     .buildLinksStr(getString(R.string.qa_pay_for_excellent))
                     .buildTitleStr(getString(R.string.qa_pay_for_excellent))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(1000)))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getExcellentQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         mPresenter.applyForExcellent(mQaListInfoBean.getId());
                         mPayImagePopWindow.hide();
@@ -464,12 +465,13 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
                     .contentView(R.layout.ppw_for_center)
                     .backgroundAlpha(POPUPWINDOW_ALPHA)
                     .buildDescrStr(String.format(getString(R.string.qa_pay_for_watch_answer_hint) + getString(R
-                            .string.buy_pay_member), PayConfig.realCurrencyFen2Yuan(10)))
+                            .string.buy_pay_member),
+                            PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
                     .buildLinksStr(getString(R.string.qa_pay_for_watch))
                     .buildTitleStr(getString(R.string.qa_pay_for_watch))
                     .buildItem1Str(getString(R.string.buy_pay_in_payment))
                     .buildItem2Str(getString(R.string.buy_pay_out))
-                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(10)))
+                    .buildMoneyStr(String.format(getString(R.string.buy_pay_money), PayConfig.realCurrencyFen2Yuan(mPresenter.getSystemConfig().getOnlookQuestion())))
                     .buildCenterPopWindowItem1ClickListener(() -> {
                         AnswerInfoBean answerInfoBean = mListDatas.get(mCurrentPosition);
                         mPresenter.payForOnlook(answerInfoBean.getId());
@@ -534,7 +536,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
         if (answerInfoBean != null && isNeedOnlook) {
             answerInfoBean.setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
             mQaListInfoBean.getInvitation_answers().get(0).setOnlookers_count(answerInfoBean.getOnlookers_count() + 1);
-            mQuestionDetailHeader.updateOutLook(mQaListInfoBean);
             refreshData();
         }
         startToAnswerDetail(answerInfoBean);

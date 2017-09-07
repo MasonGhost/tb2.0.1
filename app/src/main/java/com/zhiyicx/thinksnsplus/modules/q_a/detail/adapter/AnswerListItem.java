@@ -66,10 +66,10 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                 != AppApplication.getmCurrentLoginAuth().getUser_id());// 是否要付费才能查看
         // 发布者信息
         if (answerInfoBean.getUser() != null) {
-            ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), answerInfoBean.getAnonymity() == 1);
+            boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+            ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), !isMine && answerInfoBean.getAnonymity() == 1);
             TextView nameView = holder.getTextView(R.id.tv_name);
-            nameView.setText(answerInfoBean.getAnonymity() == 1 ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user)
-                    : answerInfoBean.getUser().getName());
+            nameView.setText(answerInfoBean.getAnonymity() == 1 &&!isMine ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user) : answerInfoBean.getUser().getName());
             // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
             holder.setVisible(R.id.tv_watcher_count, isOnlook ? View.VISIBLE : View.GONE);
             if (isOnlook) {
@@ -84,17 +84,8 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
                             PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
                         }
                     });
-        } else if (answerInfoBean.getAnonymity() == 1) {
-            // 为空 应该就是匿名了
-            holder.setVisible(R.id.iv_anonymity_flag, View.VISIBLE);
-            // 跳转
-            RxView.clicks(holder.getView(R.id.iv_anonymity_flag))
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> {
-
-                    });
-            holder.setVisible(R.id.iv_portrait, View.GONE);
         }
+
         // 是否采纳
         holder.setVisible(R.id.tv_adopt_flag, answerInfoBean.getAdoption() == 1 ? View.VISIBLE : View.GONE);
         // 是否邀请
