@@ -32,6 +32,7 @@ import com.zhiyicx.thinksnsplus.data.beans.DynamicDetailBeanV2;
 import com.zhiyicx.thinksnsplus.data.beans.PurChasesBean;
 import com.zhiyicx.thinksnsplus.data.beans.RealAdvertListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.WalletBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AllAdvertListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicCommentBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanGreenDaoImpl;
@@ -521,6 +522,9 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     protected void onSuccess(BaseJsonV2<String> data) {
                         mRootView.hideCenterLoading();
                         mRootView.paySuccess();
+                        WalletBean walletBean = mWalletBeanGreenDao.getSingleDataFromCacheByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
+                        walletBean.setBalance(walletBean.getBalance() - amount);
+                        mWalletBeanGreenDao.insertOrReplace(walletBean);
                         if (isImage) {
                             mRootView.getListDatas().get(dynamicPosition).getImages().get(imagePosition).setPaid(true);
                         } else {
