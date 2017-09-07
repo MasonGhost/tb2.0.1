@@ -1,181 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/white">
+              android:background="@color/white"
+              android:orientation="vertical">
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="@dimen/spacing_normal">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_normal"
+        android:orientation="horizontal">
 
         <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/spacing_normal">
-            <TextView
-                    android:id="@+id/iv_anonymity_flag"
-                    android:layout_width="@dimen/answer_list_portrait_width"
-                    android:layout_height="@dimen/answer_list_portrait_width"
-                    android:text="@string/qa_question_answer_anonymity"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/size_content_assist"
-                    android:background="@drawable/shape_answer_anonymity_bg"
-                    android:visibility="gone"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_normal">
+
             <com.zhiyicx.baseproject.widget.UserAvatarView
-                    android:id="@+id/iv_portrait"
-                    android:layout_width="@dimen/answer_list_portrait_width"
-                    android:layout_height="@dimen/answer_list_portrait_width"
-                    android:scaleType="centerCrop"
-                    android:src="@mipmap/pic_default_portrait2"
-                    android:layout_marginTop="@dimen/spacing_tiny"/>
+                android:id="@+id/iv_portrait"
+                android:layout_width="@dimen/answer_list_portrait_width"
+                android:layout_height="@dimen/answer_list_portrait_width"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/pic_default_portrait2"/>
         </FrameLayout>
 
 
-
         <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <RelativeLayout
-                    android:id="@+id/rl_flat_container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                android:id="@+id/rl_flat_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <!--回答者名字-->
                 <TextView
-                        android:id="@+id/tv_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/important_for_content"
-                        android:textSize="@dimen/size_content_comment"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/spacing_mid_small"
-                        tools:text="xxxxxx"/>
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/spacing_mid_small"
+                    android:textColor="@color/important_for_content"
+                    android:textSize="@dimen/size_content_comment"
+                    tools:text="xxxxxx"/>
 
                 <!--邀请人的标志-->
                 <TextView
-                        android:id="@+id/tv_invite_flag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/qa_question_answer_invite"
-                        android:textColor="@color/dyanmic_top_flag"
-                        android:textSize="@dimen/size_note_assist"
-                        android:gravity="center"
-                        android:layout_toRightOf="@+id/tv_name"
-                        android:background="@drawable/shape_answer_invite_bg"
-                        android:padding="@dimen/spacing_tiny"
-                        android:layout_alignBaseline="@+id/tv_name"
-                        android:layout_marginRight="@dimen/spacing_mid_small"/>
+                    android:id="@+id/tv_invite_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/tv_name"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/spacing_mid_small"
+                    android:layout_toRightOf="@+id/tv_name"
+                    android:background="@drawable/shape_answer_invite_bg"
+                    android:text="@string/qa_question_answer_invite"
+                    android:textColor="@color/dyanmic_top_flag"
+                    android:textSize="@dimen/size_note_assist"/>
                 <!--采纳的标志-->
                 <TextView
-                        android:id="@+id/tv_adopt_flag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/qa_question_answer_adopt"
-                        android:layout_toRightOf="@+id/tv_invite_flag"
-                        android:textColor="@color/themeColor"
-                        android:textSize="@dimen/size_note_assist"
-                        android:gravity="center"
-                        android:background="@drawable/shape_answer_adopt_bg"
-                        android:padding="@dimen/spacing_tiny"
-                        android:layout_alignBaseline="@+id/tv_invite_flag"/>
+                    android:id="@+id/tv_adopt_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/tv_invite_flag"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_invite_flag"
+                    android:background="@drawable/shape_answer_adopt_bg"
+                    android:text="@string/qa_question_answer_adopt"
+                    android:textColor="@color/themeColor"
+                    android:textSize="@dimen/size_note_assist"/>
             </RelativeLayout>
 
             <TextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_icon_assist"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignBaseline="@+id/rl_flat_container"
-                    android:textColor="@color/general_for_hint"
-                    tools:text="xxxxxx"/>
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/rl_flat_container"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/general_for_hint"
+                android:textSize="@dimen/size_icon_assist"
+                tools:text="xxxxxx"/>
             <!--回答的内容-->
             <TextView
-                    android:id="@+id/tv_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_time"
-                    android:layout_marginTop="@dimen/spacing_normal"
-                    android:textSize="@dimen/size_content_assist"
-                    android:textColor="@color/normal_for_dynamic_list_content"
-                    android:maxLines="3"
-                    android:ellipsize="end"
-                    tools:text="xxxxxx"/>
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_time"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textColor="@color/normal_for_dynamic_list_content"
+                android:textSize="@dimen/size_content_assist"
+                tools:text="xxxxxx"/>
         </RelativeLayout>
     </LinearLayout>
 
     <View
-            style="@style/style_divider_horizontal"/>
+        style="@style/style_divider_horizontal"/>
 
     <!--工具栏-->
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/question_detail_reward_type_height"
-            android:layout_marginLeft="@dimen/spacing_bigger_large_48"
-            android:paddingTop="@dimen/spacing_normal"
-            android:paddingBottom="@dimen/spacing_normal"
-            android:paddingRight="@dimen/spacing_normal">
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/question_detail_reward_type_height"
+        android:layout_marginLeft="@dimen/spacing_bigger_large_48"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_normal">
 
         <TextView
             android:id="@+id/tv_like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/size_icon_assist"
-            android:textColor="@color/general_for_loading_more"
+            android:layout_centerVertical="true"
             android:drawableLeft="@mipmap/home_ico_good_normal"
             android:drawablePadding="@dimen/spacing_small_3dp"
             android:gravity="center"
-            android:layout_centerVertical="true"
+            android:textColor="@color/general_for_loading_more"
+            android:textSize="@dimen/size_icon_assist"
             tools:text="123"/>
 
         <TextView
-                android:id="@+id/tv_comment_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_icon_assist"
-                android:textColor="@color/general_for_loading_more"
-                android:layout_toRightOf="@+id/tv_like_count"
-                android:drawableLeft="@mipmap/home_ico_comment_normal"
-                android:layout_centerVertical="true"
-                android:drawablePadding="@dimen/spacing_small_3dp"
-                android:layout_marginLeft="@dimen/spacing_large"
-                android:gravity="center_vertical"
-                android:layout_weight="1"
-                tools:text="123"/>
+            android:id="@+id/tv_comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_toRightOf="@+id/tv_like_count"
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/home_ico_comment_normal"
+            android:drawablePadding="@dimen/spacing_small_3dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/general_for_loading_more"
+            android:textSize="@dimen/size_icon_assist"
+            tools:text="123"/>
 
         <TextView
-                android:id="@+id/tv_watcher_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/tv_to_watch"
-                android:textSize="@dimen/size_icon_assist"
-                android:layout_centerVertical="true"
-                android:textColor="@color/normal_for_disable_button_text"
-                android:visibility="visible"
-                tools:text="xxxxxxx"/>
+            android:id="@+id/tv_watcher_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tv_to_watch"
+            android:textColor="@color/normal_for_disable_button_text"
+            android:textSize="@dimen/size_icon_assist"
+            android:visibility="visible"
+            tools:text="xxxxxxx"/>
         <!--去围观-->
         <TextView
-                android:id="@+id/tv_to_watch"
-                android:layout_width="@dimen/qa_watch_button_width"
-                android:layout_height="@dimen/qa_watch_button_height"
-                android:text="@string/qa_go_to_watch"
-                android:textColor="@color/white"
-                android:gravity="center"
-                android:visibility="gone"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:background="@drawable/selector_button_corner_solid_big"/>
+            android:id="@+id/tv_to_watch"
+            android:layout_width="@dimen/qa_watch_button_width"
+            android:layout_height="@dimen/qa_watch_button_height"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:background="@drawable/selector_button_corner_solid_big"
+            android:gravity="center"
+            android:text="@string/qa_go_to_watch"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <View
-            style="@style/style_divider_horizontal"
-            android:layout_height="@dimen/spacing_small"
-            android:background="@color/general_for_bg_light"/>
+        style="@style/style_divider_horizontal"
+        android:layout_height="@dimen/spacing_small"
+        android:background="@color/general_for_bg_light"/>
 </LinearLayout>

@@ -22,9 +22,11 @@ import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
 import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
+import com.zhiyicx.thinksnsplus.data.beans.SystemConfigBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.data.source.local.AnswerInfoListBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.QAListInfoBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 
 import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.EventBus;
@@ -60,6 +62,10 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     AnswerInfoListBeanGreenDaoImpl mAnswerInfoListBeanGreenDao;
     @Inject
     QAListInfoBeanGreenDaoImpl mQAListInfoBeanGreenDao;
+    @Inject
+    SystemRepository mSystemRepository;
+
+    private SystemConfigBean mSystemConfigBean;
 
     @Inject
     public QuestionDetailPresenter(QuestionDetailContract.Repository repository, QuestionDetailContract.View rootView) {
@@ -67,37 +73,49 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
-    public void requestNetData(Long maxId, boolean isLoadMore) {
-        if (mRootView.getCurrentQuestion().getTopics() == null || mRootView.getCurrentQuestion().getTopics().size() == 0) {
-            getQuestionDetail(mRootView.getCurrentQuestion().getId() + "");
-        } else {
-            Subscription subscription = mRepository.getAnswerList(mRootView.getCurrentQuestion().getId() + "",
-//                    mRootView.getCurrentOrderType(), mRootView.getRealSize())
-                    mRootView.getCurrentOrderType(), maxId.intValue())
-                    .compose(mSchedulersTransformer)
-                    .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
-                        @Override
-                        protected void onSuccess(List<AnswerInfoBean> data) {
-                            if (maxId == 0) {
-                                mRootView.onNetResponseSuccess(dealAnswerList(mRootView.getCurrentQuestion(), data), isLoadMore);
-                            } else {
-                                mRootView.onNetResponseSuccess(data, isLoadMore);
-                            }
-                        }
-                        @Override
-                        protected void onFailure(String message, int code) {
-                            super.onFailure(message, code);
-                            mRootView.showMessage(message);
-                        }
-
-                        @Override
-                        protected void onException(Throwable throwable) {
-                            super.onException(throwable);
-                            mRootView.onResponseError(throwable,false);
-                        }
-                    });
-            addSubscrebe(subscription);
+    public SystemConfigBean getSystemConfig() {
+        if (mSystemConfigBean == null) {
+            mSystemConfigBean = mSystemRepository.getBootstrappersInfoFromLocal();
         }
+        return mSystemConfigBean;
+    }
+
+    @Override
+    public void requestNetData(Long maxId, boolean isLoadMore) {
+
+        getQuestionDetail(mRootView.getCurrentQuestion().getId() + "", maxId, isLoadMore);
+
+//        if (mRootView.getCurrentQuestion().getTopics() == null || mRootView.getCurrentQuestion().getTopics().size() == 0) {
+//
+//        } else {
+//            Subscription subscription = mRepository.getAnswerList(mRootView.getCurrentQuestion().getId() + "",
+////                    mRootView.getCurrentOrderType(), mRootView.getRealSize())
+//                    mRootView.getCurrentOrderType(), maxId.intValue())
+//                    .compose(mSchedulersTransformer)
+//                    .subscribe(new BaseSubscribeForV2<List<AnswerInfoBean>>() {
+//                        @Override
+//                        protected void onSuccess(List<AnswerInfoBean> data) {
+//                            if (maxId == 0) {
+//                                mRootView.onNetResponseSuccess(dealAnswerList(mRootView.getCurrentQuestion(), data), isLoadMore);
+//                            } else {
+//                                mRootView.onNetResponseSuccess(data, isLoadMore);
+//                            }
+//                        }
+//
+//                        @Override
+//                        protected void onFailure(String message, int code) {
+//                            super.onFailure(message, code);
+//                            mRootView.onResponseError(null, false);
+//                        }
+//
+//                        @Override
+//                        protected void onException(Throwable throwable) {
+//                            super.onException(throwable);
+//                            mRootView.onResponseError(throwable, false);
+//                        }
+//                    });
+//            addSubscrebe(subscription);
+//        }
 
     }
 
@@ -112,9 +130,9 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
-    public void getQuestionDetail(String questionId) {
+    public void getQuestionDetail(String questionId, Long maxId, boolean isLoadMore) {
         Subscription subscription = Observable.zip(mRepository.getQuestionDetail(questionId),
-                mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), 0),
+                mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), maxId.intValue()),
                 (qaListInfoBean, answerInfoBeanList) -> {
                     qaListInfoBean.setAnswerInfoBeanList(dealAnswerList(qaListInfoBean, answerInfoBeanList));
                     mQAListInfoBeanGreenDao.insertOrReplace(qaListInfoBean);
@@ -124,7 +142,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 .subscribe(new BaseSubscribeForV2<QAListInfoBean>() {
                     @Override
                     protected void onSuccess(QAListInfoBean data) {
-                        mRootView.setQuestionDetail(data);
+                        mRootView.setQuestionDetail(data, isLoadMore);
                     }
 
                     @Override
@@ -136,7 +154,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onException(Throwable throwable) {
                         super.onException(throwable);
-                        mRootView.onResponseError(throwable,false);
+                        mRootView.onResponseError(throwable, false);
                     }
 
 
