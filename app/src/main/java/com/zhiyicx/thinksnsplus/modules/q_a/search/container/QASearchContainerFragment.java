@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewEditorActionEvent;
 import com.zhiyicx.baseproject.base.TSFragment;
 import com.zhiyicx.baseproject.widget.edittext.DeleteEditText;
 import com.zhiyicx.common.utils.ActivityUtils;
@@ -14,7 +12,6 @@ import com.zhiyicx.thinksnsplus.R;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.functions.Action1;
 
 /**
  * @Describe
@@ -26,6 +23,8 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
 
     @BindView(R.id.fragment_info_search_edittext)
     DeleteEditText mFragmentInfoSearchEdittext;
+    @BindView(R.id.fragment_search_cancle)
+    View mFragmentSearchCancle;
 
     private QASearchContainerViewPagerFragment mFindSomeOneContainerViewPagerFragment;
 
@@ -43,6 +42,11 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
     @Override
     protected boolean showToolbar() {
         return false;
+    }
+
+    @Override
+    protected View getRightViewOfMusicWindow() {
+        return mFragmentSearchCancle;
     }
 
     @Override

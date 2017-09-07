@@ -179,8 +179,8 @@ public class FindSomeOneContainerFragment extends TSFragment<FindSomeOneContaine
                 break;
             case R.id.tv_toolbar_right:
                 Intent intent = new Intent(getActivity(), LocationRecommentActivity.class);
-                startActivityForResult(intent, REQUST_CODE_LOCATION);
-                mFindSomeOneContainerViewPagerFragment.setCurrentItem(PAGE_POSITION_NEARBY);
+                getActivity().startActivityForResult(intent, REQUST_CODE_LOCATION);
+                mFindSomeOneContainerViewPagerFragment.setCurrentItem(PAGE_POSITION_NEARBY,false);
                 break;
         }
     }

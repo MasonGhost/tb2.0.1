@@ -86,9 +86,9 @@ public class FindSomeOneContainerViewPagerFragment extends TSViewPagerFragment {
      *
      * @param position
      */
-    public void setCurrentItem(int position) {
+    public void setCurrentItem(int position,boolean smoothScroll) {
 
-        mVpFragment.setCurrentItem(position);// 设置进入页面时，切换到关注还是粉丝列表
+        mVpFragment.setCurrentItem(position,smoothScroll);// 设置进入页面时，切换到关注还是粉丝列表
 
     }
 

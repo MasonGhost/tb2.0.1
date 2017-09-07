@@ -3,6 +3,8 @@ package com.zhiyicx.thinksnsplus.data.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
@@ -19,11 +21,10 @@ public class JpushMessageBean implements Parcelable {
     private long creat_time; // 消息创建时间
     private long user_id; // 操作用户
     private String message;  // 基本消息
+    @SerializedName("channel")
     private String type; //  type 推送模块类型
-    private String action; // action 推送操作类型
     private boolean isNofity; // 是通知还是透传消息，true 代表通知
     private String extras;  //　额外数据
-    private boolean isRead;  // 标记是否已读
 
     public long getUser_id() {
         return user_id;
@@ -41,13 +42,6 @@ public class JpushMessageBean implements Parcelable {
         this.creat_time = creat_time;
     }
 
-    public boolean isRead() {
-        return isRead;
-    }
-
-    public void setRead(boolean read) {
-        isRead = read;
-    }
 
     public String getExtras() {
         return extras;
@@ -73,14 +67,6 @@ public class JpushMessageBean implements Parcelable {
         this.type = type;
     }
 
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
     public boolean isNofity() {
         return isNofity;
     }
@@ -94,11 +80,9 @@ public class JpushMessageBean implements Parcelable {
         return "JpushMessageBean{" +
                 "message='" + message + '\'' +
                 ", type='" + type + '\'' +
-                ", action='" + action + '\'' +
                 ", isNofity=" + isNofity +
                 ", extras='" + extras + '\'' +
                 ", creat_time=" + creat_time +
-                ", isRead=" + isRead +
                 '}';
     }
 
@@ -110,17 +94,8 @@ public class JpushMessageBean implements Parcelable {
         this.isNofity = isNofity;
     }
 
-    public boolean getIsRead() {
-        return this.isRead;
-    }
-
-    public void setIsRead(boolean isRead) {
-        this.isRead = isRead;
-    }
-
     public JpushMessageBean() {
     }
-
 
     @Override
     public int describeContents() {
@@ -133,10 +108,8 @@ public class JpushMessageBean implements Parcelable {
         dest.writeLong(this.user_id);
         dest.writeString(this.message);
         dest.writeString(this.type);
-        dest.writeString(this.action);
         dest.writeByte(this.isNofity ? (byte) 1 : (byte) 0);
         dest.writeString(this.extras);
-        dest.writeByte(this.isRead ? (byte) 1 : (byte) 0);
     }
 
     protected JpushMessageBean(Parcel in) {
@@ -144,23 +117,19 @@ public class JpushMessageBean implements Parcelable {
         this.user_id = in.readLong();
         this.message = in.readString();
         this.type = in.readString();
-        this.action = in.readString();
         this.isNofity = in.readByte() != 0;
         this.extras = in.readString();
-        this.isRead = in.readByte() != 0;
     }
 
-    @Generated(hash = 332466957)
+    @Generated(hash = 1004059289)
     public JpushMessageBean(long creat_time, long user_id, String message, String type,
-            String action, boolean isNofity, String extras, boolean isRead) {
+            boolean isNofity, String extras) {
         this.creat_time = creat_time;
         this.user_id = user_id;
         this.message = message;
         this.type = type;
-        this.action = action;
         this.isNofity = isNofity;
         this.extras = extras;
-        this.isRead = isRead;
     }
 
     public static final Creator<JpushMessageBean> CREATOR = new Creator<JpushMessageBean>() {

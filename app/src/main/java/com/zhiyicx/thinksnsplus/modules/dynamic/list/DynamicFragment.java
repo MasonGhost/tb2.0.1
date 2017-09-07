@@ -309,7 +309,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
     @Override
     protected Long getMaxId(@NotNull List<DynamicDetailBeanV2> data) {
         if (mListDatas.size() > 0) {
-            return mListDatas.get(mListDatas.size() - 1).getId();
+                return mListDatas.get(mListDatas.size() - 1).getId();
         } else {
             return DEFAULT_PAGE_MAX_ID;
         }
@@ -347,7 +347,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
      */
     @Override
     public void onImageClick(ViewHolder holder, DynamicDetailBeanV2 dynamicBean, int position) {
-        int dynamicPosition = holder.getAdapterPosition() - mHeaderAndFooterWrapper.getHeadersCount();
+        int dynamicPosition=holder.getAdapterPosition()-mHeaderAndFooterWrapper.getHeadersCount();
         if (!TouristConfig.DYNAMIC_BIG_PHOTO_CAN_LOOK && mPresenter.handleTouristControl()) {
             return;
         }
@@ -541,7 +541,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
                 break;
 
             case 2: // 浏览
-                onItemClick(null, null, dataPosition + mHeaderAndFooterWrapper.getHeadersCount());
+                onItemClick(null, null, dataPosition+ mHeaderAndFooterWrapper.getHeadersCount());
                 break;
 
             case 3: // 更多
@@ -570,7 +570,7 @@ public class DynamicFragment extends TSListFragment<DynamicContract.Presenter, D
 
                 break;
             default:
-                onItemClick(null, null, dataPosition + mHeaderAndFooterWrapper.getHeadersCount());
+                onItemClick(null, null, dataPosition+ mHeaderAndFooterWrapper.getHeadersCount());
 
         }
     }
