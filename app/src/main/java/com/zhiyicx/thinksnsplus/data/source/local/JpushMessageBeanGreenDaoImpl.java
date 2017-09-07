@@ -58,34 +58,6 @@ public class JpushMessageBeanGreenDaoImpl extends CommonCacheImpl<JpushMessageBe
                 .list();
     }
 
-    /**
-     * 获取最新的 3 条 评论的数据
-     *
-     * @return
-     */
-    public List<JpushMessageBean> getCommentJpushMessage() {
-        JpushMessageBeanDao jpushMessageDao = getRDaoSession().getJpushMessageBeanDao();
-        return jpushMessageDao.queryBuilder()
-                .where(JpushMessageBeanDao.Properties.Action.eq(JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_COMMENT))
-                .orderDesc(JpushMessageBeanDao.Properties.Creat_time)
-                .limit(3)
-                .list();
-    }
-
-    /**
-     * 获取最新的 3 条 点赞的的数据
-     *
-     * @return
-     */
-    public List<JpushMessageBean> getDigJpushMessage() {
-        JpushMessageBeanDao jpushMessageDao = getRDaoSession().getJpushMessageBeanDao();
-        return jpushMessageDao.queryBuilder()
-                .where(JpushMessageBeanDao.Properties.Action.eq(JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG))
-                .orderDesc(JpushMessageBeanDao.Properties.Creat_time)
-                .limit(3)
-                .list();
-    }
-
     @Override
     public void clearTable() {
         JpushMessageBeanDao jpushMessageDao = getWDaoSession().getJpushMessageBeanDao();

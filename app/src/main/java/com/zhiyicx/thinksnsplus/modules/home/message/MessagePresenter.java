@@ -488,24 +488,13 @@ public class MessagePresenter extends AppBasePresenter<MessageContract.Repositor
             case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_IM: // 推送携带的消息  {"seq":36,"msg_type":0,"cid":1,"mid":338248648800337924,"type":"im","uid":20} IM 消息通过IM接口 同步，故不需要对 推送消息做处理
                 handleIMPush(jpushMessageBean);
                 break;
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_CHANNEL:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_MUSIC:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_NEWS:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_USER:
-            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_SYSTEM:
+            case JpushMessageTypeConfig.JPUSH_MESSAGE_TYPE_FEED_CONTENT:
+
             default:
-                switch (jpushMessageBean.getAction()) {
-                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_COMMENT:
-                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_DIGG:
-                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_FOLLOW:
-                    case JpushMessageTypeConfig.JPUSH_MESSAGE_ACTION_NOTICE:
-                        // 服务器同步未读评论和点赞消息
-                        handleFlushMessage();
-                        break;
-                    default:
-                }
+                // 服务器同步未读评论和点赞消息
+                handleFlushMessage();
                 break;
+
 
         }
     }

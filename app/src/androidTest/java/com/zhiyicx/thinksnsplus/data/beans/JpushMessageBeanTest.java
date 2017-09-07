@@ -15,7 +15,6 @@ public class JpushMessageBeanTest extends AbstractDaoTestLongPk<JpushMessageBean
         entity.setCreat_time(2414324);
         entity.setUser_id(3);
         entity.setIsNofity(false);
-        entity.setIsRead(true);
         return entity;
     }
 

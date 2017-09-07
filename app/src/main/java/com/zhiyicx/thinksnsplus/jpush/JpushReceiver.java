@@ -105,7 +105,7 @@ public class JpushReceiver extends BroadcastReceiver {
 
     @NonNull
     private JpushMessageBean packgeJpushMessage(Bundle bundle, boolean isNofiy) {
-        String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+        String extras = bundle.getString(JPushInterface.EXTRA_EXTRA); // {"channel":"feed:comment"}
         JpushMessageBean jpushMessageBean = new Gson().fromJson(extras, JpushMessageBean.class);
         jpushMessageBean.setCreat_time(System.currentTimeMillis());
         jpushMessageBean.setNofity(isNofiy);
