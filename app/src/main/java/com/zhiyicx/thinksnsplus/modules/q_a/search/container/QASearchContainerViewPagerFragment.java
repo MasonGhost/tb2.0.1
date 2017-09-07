@@ -75,6 +75,11 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
     }
 
     @Override
+    protected boolean isAdjustMode() {
+        return true;
+    }
+
+    @Override
     protected List<Fragment> initFragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(QASearchListFragment.newInstance(getArguments()));

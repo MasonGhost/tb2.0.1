@@ -507,8 +507,10 @@
     <string name="qa_question_excellent_reapply">已经是精选问答啦~</string>
     <string name="qa_question_comment_count">评论(%d)</string>
     <string name="qa_question_comment_delete_success">删除成功</string>
-    <string name="qa_search">\t\t\t\t\t\t问答\t\t\t\t\t\t\t</string>
-    <string name="qa_search_topic">\t\t\t\t\t\t话题\t\t\t\t\t\t\t</string>
+    <!--<string name="qa_search">\t\t\t\t\t\t问答\t\t\t\t\t\t\t</string>-->
+    <!--<string name="qa_search_topic">\t\t\t\t\t\t话题\t\t\t\t\t\t\t</string>-->
+    <string name="qa_search">问答</string>
+    <string name="qa_search_topic">话题</string>
     <string name="show_all_history">显示全部历史</string>
     <string name="clear_all_history">清空搜索历史</string>
     <string name="qa_pay_for_excellent">精选问答支付</string>
