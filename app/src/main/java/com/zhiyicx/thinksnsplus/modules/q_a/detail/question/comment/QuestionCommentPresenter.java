@@ -90,7 +90,7 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
                 + "" + System.currentTimeMillis();
         createComment.setComment_mark(Long.parseLong(comment_mark));
 
-        if (reply_id == 0) {// 回复资讯
+        if (reply_id == 0) {// 回复
             UserInfoBean userInfoBean = new UserInfoBean();
             userInfoBean.setUser_id(0L);
             createComment.setToUserInfoBean(userInfoBean);
@@ -107,6 +107,7 @@ public class QuestionCommentPresenter extends AppBasePresenter<QuestionCommentCo
         mRootView.getListDatas().add(0, createComment);
         mRootView.getCurrentQuestion().setComments_count(mRootView.getCurrentQuestion().getComments_count() + 1);
         mRootView.updateCommentCount();
+        mRootView.refreshData();
         mRepository.sendComment(content, mRootView.getCurrentQuestion().getId(), reply_id,
                 createComment.getComment_mark());
     }
