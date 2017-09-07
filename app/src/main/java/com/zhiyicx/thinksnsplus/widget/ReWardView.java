@@ -43,7 +43,7 @@ import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
  */
 
 public class ReWardView extends FrameLayout {
-
+    private static final int DEFAULT_SHOW_IMAGE_SZIE = 10;
     protected TextView mBtRewards;
     protected TextView mTvRewardsTip;
     protected RecyclerView mRVUsers;
@@ -161,12 +161,17 @@ public class ReWardView extends FrameLayout {
             return;
         }
         mListData.clear();
-        if (data.size() > 10) {
+        if (data.size() > DEFAULT_SHOW_IMAGE_SZIE) {
             mIvRightArrow.setVisibility(VISIBLE);
-            mListData.addAll(data.subList(0, 9));
+            mListData.addAll(data.subList(0, DEFAULT_SHOW_IMAGE_SZIE - 1));
         } else {
-            mIvRightArrow.setVisibility(INVISIBLE);
+
             mListData.addAll(data);
+            if (mListData.isEmpty()) {
+                mIvRightArrow.setVisibility(GONE);
+            } else {
+                mIvRightArrow.setVisibility(VISIBLE);
+            }
         }
         mCommonAdapter.notifyDataSetChanged();
 

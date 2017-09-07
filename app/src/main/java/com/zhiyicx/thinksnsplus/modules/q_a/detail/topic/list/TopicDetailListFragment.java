@@ -77,8 +77,9 @@ public class TopicDetailListFragment extends TSListFragment<TopicDetailListContr
     protected RecyclerView.Adapter getAdapter() {
         QAListInfoAdapter adapter = new QAListInfoAdapter(getActivity(), R.layout.item_qa_content, mListDatas) {
             @Override
-            protected int getExcellentTag() {
-                return (getCurrentType().equals(QA_TYPES[0]) || getCurrentType().equals(QA_TYPES[1]) ? 0 : R.mipmap.icon_choice);
+            protected int getExcellentTag(boolean isExcellent) {
+                boolean isNewOrExcellent = getCurrentType().equals(QA_TYPES[0]) || getCurrentType().equals(QA_TYPES[1]);
+                return isNewOrExcellent && !isExcellent ? 0 : R.mipmap.icon_choice;
             }
         };
         adapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

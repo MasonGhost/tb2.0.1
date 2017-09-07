@@ -223,7 +223,9 @@ public class AccountBindPresenter extends BasePresenter<AccountBindContract.Repo
             mRootView.showMessage(mContext.getString(R.string.password_diffrent));
             return;
         }
-
+        if (checkPasswordLength(pasword)) {
+            return;
+        }
         if (isPhone && checkPhone(phone)) {
             return;
         }

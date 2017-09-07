@@ -71,7 +71,8 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         TextView contentTextView = holder.getView(R.id.item_info_hotcomment);
         String content = infoBean.getBody();
 
-        titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getExcellentTag(), 0);
+        boolean isExcellent = infoBean.getExcellent() == 1;
+        titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getExcellentTag(isExcellent), 0);
 
         int id = 0;
         try {
@@ -143,7 +144,7 @@ public class QAListInfoAdapter extends CommonAdapter<QAListInfoBean> {
         return links;
     }
 
-    protected int getExcellentTag() {
+    protected int getExcellentTag(boolean isExcellent) {
         return 0;
     }
 }

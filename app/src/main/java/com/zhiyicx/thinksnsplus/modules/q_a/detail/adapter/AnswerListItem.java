@@ -64,27 +64,26 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         boolean isNeedOnlook = isOnlook && (mQaListInfoBean.getUser().getExtra().getUser_id()
                 != AppApplication.getmCurrentLoginAuth().getUser_id() || answerInfoBean.getUser_id()
                 != AppApplication.getmCurrentLoginAuth().getUser_id());// 是否要付费才能查看
+
         // 发布者信息
-        if (answerInfoBean.getUser() != null) {
-            boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
-            ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), !isMine && answerInfoBean.getAnonymity() == 1);
-            TextView nameView = holder.getTextView(R.id.tv_name);
-            nameView.setText(answerInfoBean.getAnonymity() == 1 &&!isMine ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user) : answerInfoBean.getUser().getName());
-            // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
-            holder.setVisible(R.id.tv_watcher_count, isOnlook ? View.VISIBLE : View.GONE);
-            if (isOnlook) {
-                holder.setText(R.id.tv_watcher_count, String.format(holder.getConvertView().getContext()
-                        .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean.getOnlookers_count()));
-            }
-            // 跳转
-            RxView.clicks(holder.getView(R.id.iv_portrait))
-                    .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
-                    .subscribe(aVoid -> {
-                        if (answerInfoBean.getAnonymity() != 1) {
-                            PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
-                        }
-                    });
+        boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
+        ImageUtils.loadCircleUserHeadPic(answerInfoBean.getUser(), holder.getView(R.id.iv_portrait), !isMine && answerInfoBean.getAnonymity() == 1);
+        TextView nameView = holder.getTextView(R.id.tv_name);
+        nameView.setText(answerInfoBean.getAnonymity() == 1 && !isMine ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user) : answerInfoBean.getUser().getName());
+        // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
+        holder.setVisible(R.id.tv_watcher_count, isOnlook ? View.VISIBLE : View.GONE);
+        if (isOnlook) {
+            holder.setText(R.id.tv_watcher_count, String.format(holder.getConvertView().getContext()
+                    .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean.getOnlookers_count()));
         }
+        // 跳转
+        RxView.clicks(holder.getView(R.id.iv_portrait))
+                .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
+                .subscribe(aVoid -> {
+                    if (answerInfoBean.getAnonymity() != 1) {
+                        PersonalCenterFragment.startToPersonalCenter(holder.getConvertView().getContext(), answerInfoBean.getUser());
+                    }
+                });
 
         // 是否采纳
         holder.setVisible(R.id.tv_adopt_flag, answerInfoBean.getAdoption() == 1 ? View.VISIBLE : View.GONE);

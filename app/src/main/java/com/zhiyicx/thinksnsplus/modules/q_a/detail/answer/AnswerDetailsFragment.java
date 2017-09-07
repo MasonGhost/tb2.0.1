@@ -417,7 +417,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
             isCollected) {
         boolean questionIsMine = answerInfoBean.getQuestion().getUser().getExtra().getUser_id() ==
                 AppApplication.getmCurrentLoginAuth().getUser_id();
-        boolean answerIsMine = answerInfoBean.getUser().getExtra().getUser_id() ==
+        boolean answerIsMine = answerInfoBean.getUser_id() ==
                 AppApplication.getmCurrentLoginAuth().getUser_id();
         boolean isMineAdopted = answerInfoBean.getAdoption() == 1;
         boolean isAdopted = !answerInfoBean.getQuestion().getAdoption_answers().isEmpty();

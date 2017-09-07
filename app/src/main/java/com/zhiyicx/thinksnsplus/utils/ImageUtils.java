@@ -173,9 +173,10 @@ public class ImageUtils {
         FilterImageView imageView1 = imageView.getIvAvatar();
         imageView1.setIsText(anonymity);
         loadUserAvatar(userInfoBean, imageView1, withBorder);
-        if (anonymity){
-            userInfoBean.setVerified(null);// 匿名用户不要认证图标
-        }
+//        if (anonymity){
+//            // 匿名用户不要认证图标
+//            userInfoBean.setVerified(null);
+//        }
         if (userInfoBean != null && userInfoBean.getVerified() != null && !TextUtils.isEmpty(userInfoBean.getVerified().getType())) {
             if (TextUtils.isEmpty(userInfoBean.getVerified().getIcon())) {
                 userInfoBean.getVerified().setIcon("");

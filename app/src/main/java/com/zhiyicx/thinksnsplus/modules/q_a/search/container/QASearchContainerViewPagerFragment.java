@@ -29,6 +29,16 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
     private String mCurrentSearchContent = "";
 
     @Override
+    protected boolean setUseStatusView() {
+        return false;
+    }
+
+    @Override
+    protected boolean setUseSatusbar() {
+        return true;
+    }
+
+    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         mTsvToolbar.setLeftImg(0);
@@ -62,6 +72,11 @@ public class QASearchContainerViewPagerFragment extends TSViewPagerFragment {
         titles.add(getString(R.string.qa_search));
         titles.add(getString(R.string.qa_search_topic));
         return titles;
+    }
+
+    @Override
+    protected boolean isAdjustMode() {
+        return true;
     }
 
     @Override

@@ -33,7 +33,6 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
         QASearchContainerFragment findSomeOneContainerFragment = new QASearchContainerFragment();
         findSomeOneContainerFragment.setArguments(bundle);
         return findSomeOneContainerFragment;
-
     }
 
     @Override
@@ -43,11 +42,6 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
 
     @Override
     protected boolean showToolbar() {
-        return false;
-    }
-
-    @Override
-    protected boolean setUseSatusbar() {
         return false;
     }
 
@@ -65,8 +59,6 @@ public class QASearchContainerFragment extends TSFragment<QASearchContainerContr
                 , R.id.fragment_container);
 
         initListener();
-
-
     }
 
     @Override

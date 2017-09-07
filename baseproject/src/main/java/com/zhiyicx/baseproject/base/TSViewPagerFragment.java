@@ -50,6 +50,7 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         tsViewPagerAdapter = new TSViewPagerAdapter(getChildFragmentManager());
         tsViewPagerAdapter.bindData(initFragments());
         mVpFragment.setAdapter(tsViewPagerAdapter);
+        mTsvToolbar.setAdjustMode(isAdjustMode());
         mTsvToolbar.initTabView(mVpFragment, initTitles());
         mTsvToolbar.setLeftClickListener(this, new TabSelectView.TabLeftRightClickListener() {
             @Override
@@ -59,12 +60,16 @@ public abstract class TSViewPagerFragment<P extends IBasePresenter> extends TSFr
         });
     }
 
+    protected boolean isAdjustMode() {
+        return false;
+    }
+
     @Override
     protected void setLeftClick() {
         super.setLeftClick();
     }
 
-    protected int getOffsetPage(){
+    protected int getOffsetPage() {
         return DEFAULT_OFFSET_PAGE;
     }
 

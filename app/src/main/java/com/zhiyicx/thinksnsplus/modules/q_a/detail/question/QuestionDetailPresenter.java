@@ -73,9 +73,17 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
+    public SystemConfigBean getSystemConfig() {
+        if (mSystemConfigBean == null) {
+            mSystemConfigBean = mSystemRepository.getBootstrappersInfoFromLocal();
+        }
+        return mSystemConfigBean;
+    }
+
+    @Override
     public void requestNetData(Long maxId, boolean isLoadMore) {
 
-        getQuestionDetail(mRootView.getCurrentQuestion().getId() + "",maxId,isLoadMore);
+        getQuestionDetail(mRootView.getCurrentQuestion().getId() + "", maxId, isLoadMore);
 
 //        if (mRootView.getCurrentQuestion().getTopics() == null || mRootView.getCurrentQuestion().getTopics().size() == 0) {
 //
@@ -122,7 +130,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
     }
 
     @Override
-    public void getQuestionDetail(String questionId,Long maxId, boolean isLoadMore) {
+    public void getQuestionDetail(String questionId, Long maxId, boolean isLoadMore) {
         Subscription subscription = Observable.zip(mRepository.getQuestionDetail(questionId),
                 mRepository.getAnswerList(questionId, mRootView.getCurrentOrderType(), maxId.intValue()),
                 (qaListInfoBean, answerInfoBeanList) -> {
@@ -134,13 +142,13 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 .subscribe(new BaseSubscribeForV2<QAListInfoBean>() {
                     @Override
                     protected void onSuccess(QAListInfoBean data) {
-                        mRootView.setQuestionDetail(data,isLoadMore);
+                        mRootView.setQuestionDetail(data, isLoadMore);
                     }
 
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.onResponseError(null, false);
+                        mRootView.showMessage(message);
                     }
 
                     @Override
@@ -277,11 +285,6 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 });
         addSubscrebe(subscription);
 
-    }
-
-    @Override
-    public SystemConfigBean getSystemConfig() {
-        return mSystemConfigBean == null ? mSystemRepository.getBootstrappersInfoFromLocal() : mSystemConfigBean;
     }
 
     @Override

@@ -47,7 +47,7 @@ import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.comment.Quest
 
 public class QuestionCommentFragment extends TSListFragment<QuestionCommentContract.Presenter, QuestionCommentBean>
         implements QuestionCommentContract.View, QuestionCommentItem.OnCommentItemListener, InputLimitView
-        .OnSendClickListener{
+        .OnSendClickListener {
 
     @BindView(R.id.tv_toolbar_center)
     TextView mTvToolbarCenter;
@@ -76,6 +76,22 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         return mQaListInfoBean;
     }
 
+//    @Override
+//    protected boolean showToolBarDivider() {
+//        return true;
+//    }
+
+//    @Override
+//    protected String setCenterTitle() {
+//        return getString(R.string.comment);
+//    }
+
+
+    @Override
+    protected boolean showToolbar() {
+        return false;
+    }
+
     @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_question_comment;
@@ -90,10 +106,6 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         showCommentView();
     }
 
-    @Override
-    protected boolean showToolbar() {
-        return false;
-    }
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
@@ -108,11 +120,15 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
     @Override
     public void onNetResponseSuccess(@NotNull List<QuestionCommentBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
+            if (mQaListInfoBean.getComments_count() == 0) {// 根据内容更新一下评论数量，这个数量是不准确的
+                mQaListInfoBean.setComments_count(data.size());
+            }
             if (data.isEmpty()) { // 空白展位图
                 QuestionCommentBean emptyData = new QuestionCommentBean();
                 data.add(emptyData);
             }
         }
+        updateCommentCount();
         super.onNetResponseSuccess(data, isLoadMore);
     }
 
@@ -149,7 +165,7 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         mPresenter.sendComment(mReplyUserId.intValue(), text);
     }
 
-    private void initListener(){
+    private void initListener() {
         mCoordinatorLayout.setEnabled(false);
         RxView.clicks(mTvToolbarLeft)
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)
@@ -167,16 +183,16 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
     }
 
     @Override
-    public void updateCommentCount(){
-        mTvToolbarCenter.setText(String .format(getString(R.string.qa_question_comment_count), mQaListInfoBean.getComments_count()));
+    public void updateCommentCount() {
+        mTvToolbarCenter.setText(String.format(getString(R.string.qa_question_comment_count), mQaListInfoBean.getComments_count()));
     }
 
     @Override
     public void setLoading(boolean isLoading, boolean isSuccess, String message) {
-        if (isLoading){
+        if (isLoading) {
             showSnackLoadingMessage(message);
         } else {
-            if (isSuccess){
+            if (isSuccess) {
                 showSnackSuccessMessage(message);
             } else {
                 showSnackErrorMessage(message);
@@ -184,7 +200,7 @@ public class QuestionCommentFragment extends TSListFragment<QuestionCommentContr
         }
     }
 
-    private void initPop(QuestionCommentBean questionCommentBean, int position){
+    private void initPop(QuestionCommentBean questionCommentBean, int position) {
         mDeleteCommentPopWindow = ActionPopupWindow.builder()
 //                .item1Str(BuildConfig.USE_TOLL ? getString(R.string.dynamic_list_top_comment) : null)
 //                .item1Color(ContextCompat.getColor(getContext(), R.color.themeColor))

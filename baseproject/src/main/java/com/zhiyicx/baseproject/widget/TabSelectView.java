@@ -65,6 +65,7 @@ public class TabSelectView extends FrameLayout {
     private List<String> mStringList;// tab列表的文字
     private Context mContext;
     private CommonNavigator mCommonNavigator;
+    private boolean mIsAdjustMode=false;
 
     public TabSelectView(Context context) {
         super(context);
@@ -206,6 +207,9 @@ public class TabSelectView extends FrameLayout {
     private void initMagicIndicator() {
         mMagicIndicator.setBackgroundColor(Color.TRANSPARENT);
         mCommonNavigator = new CommonNavigator(mContext);
+        if (mIsAdjustMode) {
+            mCommonNavigator.setAdjustMode(true);
+        }
         mCommonNavigator.setAdapter(new CommonNavigatorAdapter() {
 
             @Override
@@ -263,6 +267,10 @@ public class TabSelectView extends FrameLayout {
         mCommonNavigator.setAdapter(customAdapter);
         mMagicIndicator.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
+    }
+
+    public void setAdjustMode(boolean adjustMode) {
+        mIsAdjustMode = adjustMode;
     }
 
     public interface TabLeftRightClickListener {
