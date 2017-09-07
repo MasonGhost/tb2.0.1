@@ -165,9 +165,13 @@ public class ReWardView extends FrameLayout {
             mIvRightArrow.setVisibility(VISIBLE);
             mListData.addAll(data.subList(0, DEFAULT_SHOW_IMAGE_SZIE - 1));
         } else {
-//            mIvRightArrow.setVisibility(INVISIBLE);
-            mIvRightArrow.setVisibility(VISIBLE);
+
             mListData.addAll(data);
+            if (mListData.isEmpty()) {
+                mIvRightArrow.setVisibility(GONE);
+            } else {
+                mIvRightArrow.setVisibility(VISIBLE);
+            }
         }
         mCommonAdapter.notifyDataSetChanged();
 

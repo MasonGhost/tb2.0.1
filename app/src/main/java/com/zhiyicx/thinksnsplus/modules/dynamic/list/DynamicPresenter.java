@@ -585,7 +585,7 @@ public class DynamicPresenter extends AppBasePresenter<DynamicContract.Repositor
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
                     for (int i = 0; i < size; i++) {
-                        if (mRootView.getListDatas().get(i).getFeed_mark().equals(dynamicCommentBean1.getFeed_mark())) {
+                        if (dynamicCommentBean1.getFeed_mark().equals(mRootView.getListDatas().get(i).getFeed_mark())) {
                             dynamicPosition = i;
                             break;
                         }
