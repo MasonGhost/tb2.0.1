@@ -44,7 +44,7 @@ public class QuestionSelectListTypePopWindow extends PopupWindow {
         initLayout();
         setWidth(mContentView.getResources().getDimensionPixelOffset(R.dimen.question_list_type_width));
         setHeight(mContentView.getResources().getDimensionPixelOffset(R.dimen.question_list_type_height));
-        setFocusable(false);
+        setFocusable(true);
         setOutsideTouchable(true);
         setBackgroundDrawable(new ColorDrawable(0x00000000));
 
@@ -74,7 +74,9 @@ public class QuestionSelectListTypePopWindow extends PopupWindow {
                 }
             }
         });
-        setOnDismissListener(() -> setWindowAlpha(1.0f));
+        setOnDismissListener(() ->
+                setWindowAlpha(1.0f)
+        );
     }
 
 
@@ -84,6 +86,7 @@ public class QuestionSelectListTypePopWindow extends PopupWindow {
         params.verticalMargin = 100;
         mActivity.getWindow().setAttributes(params);
     }
+
 
     public void show() {
         if (isShowing()) {

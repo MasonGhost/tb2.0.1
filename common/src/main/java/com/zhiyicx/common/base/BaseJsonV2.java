@@ -1,5 +1,7 @@
 package com.zhiyicx.common.base;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,8 @@ public class BaseJsonV2<T> {
     protected boolean status;
     protected int code;
     protected int id = -1;
+    // 数据类型
+    @SerializedName(value = "data",alternate = {"answer","comment"})
     private T data;
     private Object message;
 

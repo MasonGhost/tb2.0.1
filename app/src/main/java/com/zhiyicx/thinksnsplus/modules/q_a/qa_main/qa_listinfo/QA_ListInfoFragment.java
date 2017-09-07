@@ -13,7 +13,10 @@ import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
 import org.simple.eventbus.Subscriber;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -144,6 +147,11 @@ public class QA_ListInfoFragment extends TSListFragment<QA_ListInfoConstact.Pres
             }
         });
         return adapter;
+    }
+
+    @Override
+    protected Long getMaxId(@NotNull List<QAListInfoBean> data) {
+        return (long) mListDatas.size();
     }
 
     @Override

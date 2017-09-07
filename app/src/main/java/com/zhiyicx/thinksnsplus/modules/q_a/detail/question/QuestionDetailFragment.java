@@ -300,7 +300,6 @@ public class QuestionDetailFragment extends TSListFragment<QuestionDetailContrac
     public void onChangeListOrderClick(String orderType) {
         // 弹出排序选择框
         mOrderTypeSelectPop.show();
-
     }
 
     private void initHeaderView() {

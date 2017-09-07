@@ -16,6 +16,7 @@ import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.xrichtext.RichTextEditor;
@@ -100,7 +101,8 @@ public class PublishAnswerFragment extends PublishContentFragment {
     }
 
     @Override
-    public void publishSuccess(QAAnswerBean answerBean) {
+    public void publishSuccess(AnswerInfoBean answerBean) {
+        super.publishSuccess(answerBean);
         getActivity().finish();
     }
 

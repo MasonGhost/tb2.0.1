@@ -150,6 +150,10 @@ public class EventBusTagConfig {
     public static final String EVENT_SEND_COMMENT_TO_QUESTION_LIST = "event_send_question_comment_to_List";
     // 评论点赞
     public static final String EVENT_UPDATE_ANSWER_LIST_LIKE = "event_update_answer_list_like";
+    // 更新答案或者问题
+    public static final String EVENT_UPDATE_ANSWER_OR_QUESTION = "event_update_answer_or_question";
+    // 发布答案
+    public static final String EVENT_PUBLISH_ANSWER = "event_publish_answer";
 
 
     /**

@@ -10,6 +10,7 @@
 
     <declare-styleable name="ExpandableTextView">
         <attr name="etv_MaxLinesOnShrink" format="reference|integer" />
+        <attr name="etv_IsNeedShrink" format="boolean" />
         <attr name="etv_EllipsisHint" format="reference|string" /><!--default is ..-->
         <attr name="etv_ToExpandHint" format="reference|string" /><!--"to expand" hint string, default is "Expand"-->
         <attr name="etv_ToShrinkHint" format="reference|string" /><!--"to shrink" hint string, default is "Shrink"-->

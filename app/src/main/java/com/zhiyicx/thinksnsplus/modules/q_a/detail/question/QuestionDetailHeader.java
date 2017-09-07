@@ -62,7 +62,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
     private TextView mTvAddAnswer;
     private TextView mTvAnswerCount;
     private TextView mTvChangeOrder;
-    private LinearLayout mLlAnswerInfo,rewardType,addAnswer;
+    private LinearLayout mLlAnswerInfo, rewardType, addAnswer;
 
     private QAListInfoBean mQaListInfoBean;
     private OnActionClickListener mListener;
@@ -114,7 +114,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         // 关注&&悬赏金额
         if (qaListInfoBean.getAmount() > 0) {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
-                    qaListInfoBean.getWatchers_count(), qaListInfoBean.getAnswers_count()));
+                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
         } else {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
                     qaListInfoBean.getWatchers_count()));
@@ -154,7 +154,7 @@ public class QuestionDetailHeader implements TagFlowLayout.OnTagClickListener {
         // 关注&&悬赏金额
         if (qaListInfoBean.getAmount() > 0) {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed),
-                    qaListInfoBean.getWatchers_count(), qaListInfoBean.getAnswers_count()));
+                    qaListInfoBean.getWatchers_count(), PayConfig.realCurrencyFen2Yuan(qaListInfoBean.getAmount())));
         } else {
             mTvQuestionFeedCount.setText(String.format(mContext.getString(R.string.qa_show_question_followed_),
                     qaListInfoBean.getWatchers_count()));

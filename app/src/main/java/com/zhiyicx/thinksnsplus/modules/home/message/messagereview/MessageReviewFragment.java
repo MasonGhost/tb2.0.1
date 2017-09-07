@@ -90,7 +90,7 @@ public class MessageReviewFragment extends TSListFragment<MessageReviewContract.
     @Override
     protected CommonAdapter<TSPNotificationBean> getAdapter() {
         CommonAdapter<TSPNotificationBean> adapter = new MssageReviewAdapter
-                (getContext(), R.layout.item_message_review_list, mListDatas);
+                (getContext(), R.layout.item_message_review_list_v2, mListDatas);
         adapter.setOnItemClickListener(this);
         return adapter;
     }

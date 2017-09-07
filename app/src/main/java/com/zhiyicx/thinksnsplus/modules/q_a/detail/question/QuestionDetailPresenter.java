@@ -148,7 +148,7 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                     @Override
                     protected void onFailure(String message, int code) {
                         super.onFailure(message, code);
-                        mRootView.showMessage(message);
+                        mRootView.onResponseError(null, false);
                     }
 
                     @Override
@@ -322,6 +322,19 @@ public class QuestionDetailPresenter extends AppBasePresenter<QuestionDetailCont
                 }
             }
         }
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_PUBLISH_ANSWER)
+    public void updateLike(AnswerInfoBean data) {
+        if (data != null) {
+            mRootView.getListDatas().add(data);
+            mRootView.refreshData();
+        }
+    }
+
+    @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION)
+    public void updateData(long tag) {
+        requestNetData(tag, false);
     }
 
     @Override

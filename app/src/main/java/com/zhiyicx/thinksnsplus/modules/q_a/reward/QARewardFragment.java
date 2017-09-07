@@ -134,8 +134,10 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
         mTvInviteHint.setText(getString(R.string.qa_publish_reward));
         mTvInviteHint.append(getString(R.string.qa_publish_reward_invite));
         initListener();
-        mToolbarCenter.setFocusable(true);
-        mToolbarCenter.requestFocus();
+
+        mEtInput.clearFocus();
+        mWcOnlooker.setFocusable(true);
+        mWcOnlooker.requestFocus();
     }
 
     @Override
@@ -494,7 +496,7 @@ public class QARewardFragment extends TSFragment<QARewardContract.Presenter> imp
     @Override
     public void resetRewardSuccess() {
         Bundle bundle = new Bundle();
-        bundle.putDouble(BUNDLE_QUESTION_ID,PayConfig.realCurrencyYuan2Fen( mRewardMoney));
+        bundle.putDouble(BUNDLE_QUESTION_ID, PayConfig.realCurrencyYuan2Fen(mRewardMoney));
         Intent intent = new Intent();
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);

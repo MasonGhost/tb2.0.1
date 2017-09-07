@@ -1,6 +1,7 @@
 package com.zhiyicx.thinksnsplus.data.source.repository;
 
 import com.zhiyicx.common.base.BaseJsonV2;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.source.remote.ServiceManager;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.detail.PublishContentConstact;
@@ -25,7 +26,7 @@ public class PublicshContentRepository extends BaseQARepository implements Publi
     }
 
     @Override
-    public Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(Long question_id,String body, int anonymity) {
+    public Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(Long question_id, String body, int anonymity) {
         return mQAClient.publishAnswer(question_id,body,anonymity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

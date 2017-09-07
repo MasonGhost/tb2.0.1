@@ -2,13 +2,19 @@ package com.zhiyicx.thinksnsplus.modules.q_a.publish.detail;
 
 import com.zhiyicx.common.base.BaseJsonV2;
 import com.zhiyicx.common.utils.RegexUtils;
+import com.zhiyicx.thinksnsplus.base.AppApplication;
 import com.zhiyicx.thinksnsplus.base.AppBasePresenter;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribe;
 import com.zhiyicx.thinksnsplus.base.BaseSubscribeForV2;
+import com.zhiyicx.thinksnsplus.config.EventBusTagConfig;
 import com.zhiyicx.thinksnsplus.data.beans.AnswerDraftBean;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
+import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.repository.UpLoadRepository;
+
+import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -32,6 +38,13 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Inject
     UpLoadRepository mUpLoadRepository;
+    @Inject
+    UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Override
+    protected boolean useEventBus() {
+        return true;
+    }
 
     @Inject
     public PublishContentPresenter(PublishContentConstact.Repository repository, PublishContentConstact.View rootView) {
@@ -67,9 +80,12 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
 
     @Override
     public void publishAnswer(Long question_id, String body, int anonymity) {
-        mRepository.publishAnswer(question_id, body, anonymity).subscribe(new BaseSubscribeForV2<BaseJsonV2<QAAnswerBean>>() {
+        mRepository.publishAnswer(question_id, body, anonymity).subscribe(new BaseSubscribeForV2<BaseJsonV2<AnswerInfoBean>>() {
             @Override
-            protected void onSuccess(BaseJsonV2<QAAnswerBean> data) {
+            protected void onSuccess(BaseJsonV2<AnswerInfoBean> data) {
+                data.getData().setUser_id(AppApplication.getmCurrentLoginAuth().getUser_id());
+                data.getData().setUser(mUserInfoBeanGreenDao.getSingleDataFromCache(AppApplication.getmCurrentLoginAuth().getUser_id()));
+//                EventBus.getDefault().post(data.getData(), EventBusTagConfig.EVENT_PUBLISH_ANSWER);
                 mRootView.publishSuccess(data.getData());
             }
 
@@ -90,6 +106,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
         mRepository.updateAnswer(answer_id, body, anonymity).subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
             @Override
             protected void onSuccess(BaseJsonV2<Object> data) {
+                EventBus.getDefault().post(0L, EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION);
                 mRootView.updateSuccess();
             }
 
@@ -111,6 +128,7 @@ public class PublishContentPresenter extends AppBasePresenter<PublishContentCons
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Object>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Object> data) {
+                        EventBus.getDefault().post(0L, EventBusTagConfig.EVENT_UPDATE_ANSWER_OR_QUESTION);
                         mRootView.updateSuccess();
                     }
 

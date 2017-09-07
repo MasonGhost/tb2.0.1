@@ -510,7 +510,7 @@ public class MusicPlayFragment extends TSFragment<MusicPlayContract.Presenter> i
 
     private void initLyricsAnimation() {
         LayoutTransition transition = new LayoutTransition();
-        transition.setDuration(1000);
+        transition.setDuration(500);
         transition.setAnimator(LayoutTransition.APPEARING, AnimatorInflater.loadAnimator
                 (getActivity(), R.animator.view_visible_alpha));
         transition.setAnimator(LayoutTransition.DISAPPEARING, AnimatorInflater.loadAnimator

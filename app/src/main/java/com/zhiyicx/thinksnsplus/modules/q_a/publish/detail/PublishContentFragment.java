@@ -24,6 +24,7 @@ import com.zhiyicx.baseproject.widget.popwindow.CenterAlertPopWindow;
 import com.zhiyicx.common.utils.AndroidBug5497Workaround;
 import com.zhiyicx.common.widget.popwindow.CustomPopupWindow;
 import com.zhiyicx.thinksnsplus.R;
+import com.zhiyicx.thinksnsplus.data.beans.AnswerInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAAnswerBean;
 import com.zhiyicx.thinksnsplus.data.beans.QAPublishBean;
 import com.zhiyicx.thinksnsplus.modules.q_a.publish.add_topic.AddTopicActivity;
@@ -83,7 +84,7 @@ public class PublishContentFragment extends TSFragment<PublishContentConstact.Pr
     }
 
     @Override
-    public void publishSuccess(QAAnswerBean answerBean) {
+    public void publishSuccess(AnswerInfoBean answerBean) {
 
     }
 

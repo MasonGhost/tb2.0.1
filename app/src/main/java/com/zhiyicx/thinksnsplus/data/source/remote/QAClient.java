@@ -45,7 +45,7 @@ public interface QAClient {
 
     @FormUrlEncoded
     @POST(ApiConfig.APP_PATH_PUBLISH_ANSWER)
-    Observable<BaseJsonV2<QAAnswerBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
+    Observable<BaseJsonV2<AnswerInfoBean>> publishAnswer(@Path("question") Long question_id, @Field("body") String body, @Field("anonymity") int anonymity);
 
     /**
      * @param body      如果 anonymity 不传，则本字段必须存在， 回答详情。
