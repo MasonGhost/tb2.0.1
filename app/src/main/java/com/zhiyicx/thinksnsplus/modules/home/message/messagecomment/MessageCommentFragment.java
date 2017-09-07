@@ -102,14 +102,6 @@ public class MessageCommentFragment extends TSListFragment<MessageCommentContrac
     }
 
     @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new CustomLinearDecoration(0, getResources().getDimensionPixelSize(R.dimen
-                .divider_line), 0, 0, ContextCompat.getDrawable(getContext(), R.drawable
-                .shape_recyclerview_divider));
-
-    }
-
-    @Override
     protected void initView(View rootView) {
         super.initView(rootView);
         initToolbar();

@@ -35,10 +35,10 @@
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:includeFontPadding="false"
         android:layout_below="@id/tv_time"
         android:layout_toRightOf="@id/iv_headpic"
-        android:paddingBottom="@dimen/spacing_small"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_assist"
         tools:text="我送第几个 "/>
@@ -57,9 +57,10 @@
 
         <com.zhiyicx.baseproject.widget.imageview.FilterImageView
             android:id="@+id/iv_detail_image"
-            android:layout_width="@dimen/headpic_for_notification_27dp"
-            android:layout_height="@dimen/headpic_for_notification_27dp"
+            android:layout_width="@dimen/headpic_for_notification"
+            android:layout_height="@dimen/headpic_for_notification"
             android:scaleType="centerCrop"
+            android:layout_marginRight="@dimen/spacing_small"
             tools:src="@mipmap/ic_launcher">
         </com.zhiyicx.baseproject.widget.imageview.FilterImageView>
 
@@ -68,8 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/spacing_small"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             android:lineSpacingMultiplier="@dimen/line_spacing_Multiplier_normal"
             android:maxLines="2"
             android:textSize="@dimen/size_note_assist"
@@ -84,8 +85,8 @@
         android:layout_below="@id/tv_name"
         android:layout_toRightOf="@id/iv_headpic"
         android:maxLines="1"
-        android:paddingBottom="@dimen/spacing_small"
-        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_mid_small_8dp"
+        android:paddingTop="@dimen/spacing_small_3dp"
         android:textColor="@color/general_for_hint"
         android:textSize="@dimen/size_icon_assist"
         tools:text="6分钟前"/>

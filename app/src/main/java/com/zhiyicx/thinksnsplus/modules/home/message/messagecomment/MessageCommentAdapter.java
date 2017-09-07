@@ -60,16 +60,9 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
     @Override
     protected void convert(final ViewHolder holder, final CommentedBean commentedBean, final int position) {
 
-
-        if (position == getItemCount() - 1) {
-            holder.setVisible(R.id.v_bottom_line, View.GONE);
-        } else {
-            holder.setVisible(R.id.v_bottom_line, View.VISIBLE);
-        }
         ImageUtils.loadCircleUserHeadPic(commentedBean.getCommentUserInfo(), holder.getView(R.id.iv_headpic));
 
         if (commentedBean.getTarget_image() != null) {
-            holder.setVisible(R.id.tv_deatil, View.GONE);
             holder.setVisible(R.id.iv_detail_image, View.VISIBLE);
             mImageLoader.loadImage(getContext(), GlideImageConfig.builder()
                     .url(ImageUtils.imagePathConvertV2(commentedBean.getTarget_image().intValue()
@@ -80,20 +73,18 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                     .build());
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
-            holder.setVisible(R.id.tv_deatil, View.VISIBLE);
-            if(commentedBean.getIsDelete()){
-                holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
-            }else {
-                holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
-            }
         }
-
+        if(commentedBean.getIsDelete()){
+            holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
+        }else {
+            holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
+        }
         holder.setText(R.id.tv_name, commentedBean.getCommentUserInfo().getName());
 
         holder.setText(R.id.tv_content, setShowText(commentedBean, position));
         List<Link> links = setLiknks(holder, commentedBean, position);
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert((TextView) holder.getView(R.id.tv_content), links);
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
         }
 
 
@@ -101,38 +92,20 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter(commentedBean.getCommentUserInfo());
-                    }
-                });
+                .subscribe(aVoid -> toUserCenter(commentedBean.getCommentUserInfo()));
         RxView.clicks(holder.getView(R.id.iv_headpic))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toUserCenter(commentedBean.getCommentUserInfo());
-                    }
-                });
+                .subscribe(aVoid -> toUserCenter(commentedBean.getCommentUserInfo()));
 
         RxView.clicks(holder.getView(R.id.fl_detial))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        toDetail(commentedBean);
-                    }
-                });
+                .subscribe(aVoid -> toDetail(commentedBean));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_content))
                 .throttleFirst(JITTER_SPACING_TIME, TimeUnit.SECONDS)   //两秒钟之内只取一个点击事件，防抖操作
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        if (mOnItemClickListener != null)
-                            mOnItemClickListener.onItemClick(holder.getConvertView(), holder, position);
-                    }
+                .subscribe(aVoid -> {
+                    if (mOnItemClickListener != null)
+                        mOnItemClickListener.onItemClick(holder.getConvertView(), holder, position);
                 });
     }
 
@@ -144,12 +117,9 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
                     .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
                     .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
                     .setUnderlined(false)                                       // optional, defaults to true
-                    .setOnClickListener(new Link.OnClickListener() {
-                        @Override
-                        public void onClick(String clickedText) {
-                            // single clicked
-                            toUserCenter(commentedBean.getReplyUserInfo());
-                        }
+                    .setOnClickListener(clickedText -> {
+                        // single clicked
+                        toUserCenter(commentedBean.getReplyUserInfo());
                     });
             links.add(replyNameLink);
         }
