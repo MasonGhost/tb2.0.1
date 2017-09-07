@@ -18,14 +18,18 @@ import com.zhiyicx.thinksnsplus.data.source.local.DynamicBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.DynamicDetailBeanV2GreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.UserInfoBeanGreenDaoImpl;
 import com.zhiyicx.thinksnsplus.data.source.local.WalletBeanGreenDaoImpl;
+import com.zhiyicx.thinksnsplus.data.source.repository.CommentRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.SystemRepository;
 import com.zhiyicx.thinksnsplus.data.source.repository.UserInfoRepository;
+import com.zhiyicx.thinksnsplus.modules.wallet.WalletActivity;
 
 import org.simple.eventbus.EventBus;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_LIST_NEED_REFRESH;
@@ -52,6 +56,9 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
 
     @Inject
     UserInfoBeanGreenDaoImpl mUserInfoBeanGreenDao;
+
+    @Inject
+    CommentRepository mCommentRepository;
 
     @Override
     protected boolean useEventBus() {
@@ -83,10 +90,27 @@ public class StickTopPresenter extends AppBasePresenter<StickTopContract.Reposit
         }
 
         double amount=PayConfig.realCurrencyYuan2Fen(mRootView.getInputMoney() * mRootView.getTopDyas());
-        Subscription subscription = mRepository.stickTop(mRootView.getType(), parent_id, amount, mRootView.getTopDyas())
-                .doOnSubscribe(() ->
-                        mRootView.showSnackLoadingMessage(mContext.getString(R.string.apply_doing))
-                )
+
+        Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
+                .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
+                        .string.apply_doing)))
+                .flatMap(new Func1<UserInfoBean, Observable<BaseJsonV2<Integer>>>() {
+                    @Override
+                    public Observable<BaseJsonV2<Integer>> call(UserInfoBean userInfoBean) {
+                        mUserInfoBeanGreenDao.insertOrReplace(userInfoBean);
+                        if (userInfoBean.getWallet() != null) {
+                            mWalletBeanGreenDao.insertOrReplace(userInfoBean.getWallet());
+                            if (userInfoBean.getWallet().getBalance() < amount) {
+                                mRootView.goRecharge(WalletActivity.class);
+                                return Observable.error(new RuntimeException(""));
+                            }
+                        }
+                        return mRepository.stickTop(mRootView.getType(), parent_id, amount, mRootView.getTopDyas());
+                    }
+                }, throwable -> {
+                    mRootView.showSnackErrorMessage(mContext.getString(R.string.transaction_fail));
+                    return null;
+                }, () -> null)
                 .subscribe(new BaseSubscribeForV2<BaseJsonV2<Integer>>() {
                     @Override
                     protected void onSuccess(BaseJsonV2<Integer> data) {
