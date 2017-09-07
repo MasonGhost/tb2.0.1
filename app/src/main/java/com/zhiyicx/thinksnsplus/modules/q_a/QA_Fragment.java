@@ -76,6 +76,11 @@ public class QA_Fragment extends TSFragment {
     }
 
     @Override
+    protected View getRightViewOfMusicWindow() {
+        return mIvSerach;
+    }
+
+    @Override
     protected int getBodyLayoutId() {
         return R.layout.fragment_qa;
     }
