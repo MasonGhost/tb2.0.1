@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Func1;
 
 /**
@@ -49,15 +50,6 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
     public void reward(double rewardMoney, RewardType rewardType, long sourceId) {
 
         WalletBean walletBean = mWalletBeanGreenDao.getSingleDataByUserId(AppApplication.getmCurrentLoginAuth().getUser_id());
-        double balance = 0;
-        if (walletBean != null) {
-            balance = walletBean.getBalance();
-        }
-
-        if (balance < rewardMoney) {
-            mRootView.goRecharge(WalletActivity.class);
-            return;
-        }
         switch (rewardType) {
             case INFO: // 咨询打赏
                 hanldeRewardResult(mRepository.rewardInfo(sourceId, rewardMoney), walletBean, rewardMoney);
@@ -83,6 +75,7 @@ public class RewardPresenter extends AppBasePresenter<RewardContract.Repository,
         Subscription subscription = mCommentRepository.getCurrentLoginUserInfo()
                 .doOnSubscribe(() -> mRootView.showSnackLoadingMessage(mContext.getString(R
                         .string.apply_doing)))
+                .doAfterTerminate(() -> mRootView.setSureBtEnable(true))
                 .flatMap(new Func1<UserInfoBean, Observable<Object>>() {
                     @Override
                     public Observable<Object> call(UserInfoBean userInfoBean) {

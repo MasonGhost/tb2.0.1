@@ -499,7 +499,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == RewardType.INFO.id) {
+            if (requestCode == RewardType.QA_ANSWER.id) {
                 mPresenter.reqReWardsData(mAnswerInfoBean.getId().intValue());
             }
         }
