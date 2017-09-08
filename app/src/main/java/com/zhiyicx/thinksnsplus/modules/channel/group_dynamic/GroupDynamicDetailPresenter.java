@@ -163,7 +163,7 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     }
 
     @Override
-    public boolean insertOrUpdateData( List<GroupDynamicCommentListBean> data, boolean isLoadMore) {
+    public boolean insertOrUpdateData(List<GroupDynamicCommentListBean> data, boolean isLoadMore) {
         if (data == null) {
             return false;
         }
@@ -174,12 +174,12 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     }
 
     @Override
-    public void getCurrentDynamicDetail(long group_id, long dynamic_id,boolean refreshUI) {
+    public void getCurrentDynamicDetail(long group_id, long dynamic_id, boolean refreshUI) {
         Subscription subscription = mRepository.getGroupDynamicDetail(group_id, dynamic_id)
                 .subscribe(new BaseSubscribeForV2<GroupDynamicListBean>() {
                     @Override
                     protected void onSuccess(GroupDynamicListBean data) {
-                        if (refreshUI){
+                        if (refreshUI) {
                             mRootView.initDynamicDetail(data);
                         }
                         // 存入数据库
@@ -188,14 +188,14 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
 
                     @Override
                     protected void onFailure(String message, int code) {
-                        if (refreshUI){
+                        if (refreshUI) {
                             handleDynamicHasBeDeleted(code, dynamic_id);
                         }
                     }
 
                     @Override
                     protected void onException(Throwable throwable) {
-                        if (refreshUI){
+                        if (refreshUI) {
                             mRootView.loadAllError();
                         }
                     }
@@ -467,29 +467,27 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     /**
      * 处理发送动态数据,动态发布成功回调
      */
-    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST)
-    public void handleSendComment(GroupDynamicListBean dynamicCommentBean) {
-        LogUtils.d(TAG, "dynamic send success dynamicCommentBean = " + dynamicCommentBean
-                .toString());
+    @Subscriber(tag = EventBusTagConfig.EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC)
+    public void handleSendComment(GroupDynamicCommentListBean dynamicCommentBean) {
         Observable.just(dynamicCommentBean)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(dynamicCommentBean1 -> {
                     int size = mRootView.getListDatas().size();
                     int dynamicPosition = -1;
-//                    for (int i = 0; i < size; i++) {
-//                        if (mRootView.getListDatas().get(i).getFeed_mark().equals
-//                                (dynamicCommentBean1.getFeed_mark())) {
-//                            dynamicPosition = i;
-//                            mRootView.getListDatas().get(i).setState(dynamicCommentBean1.getState
-//                                    ());
-//                            mRootView.getListDatas().get(i).setComment_id
-//                                    (dynamicCommentBean1.getComment_id());
-//                            mRootView.getListDatas().get(i).setComment_mark
-//                                    (dynamicCommentBean1.getComment_mark());
-//                            break;
-//                        }
-//                    }
+                    for (int i = 0; i < size; i++) {
+                        if (mRootView.getListDatas().get(i).getComment_mark().equals
+                                (dynamicCommentBean1.getComment_mark())) {
+                            dynamicPosition = i;
+                            mRootView.getListDatas().get(i).setState(dynamicCommentBean1.getState
+                                    ());
+                            mRootView.getListDatas().get(i).setId(
+                                    (dynamicCommentBean1.getId()));
+                            mRootView.getListDatas().get(i).setComment_mark
+                                    (dynamicCommentBean1.getComment_mark());
+                            break;
+                        }
+                    }
                     return dynamicPosition;
                 })
                 .subscribe(integer -> {
@@ -498,7 +496,6 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
                     }
 
                 }, throwable -> throwable.printStackTrace());
-
     }
 
     @Subscriber(tag = EventBusTagConfig.EVENT_UPDATE_DYNAMIC)
@@ -510,7 +507,6 @@ public class GroupDynamicDetailPresenter extends AppBasePresenter<GroupDynamicDe
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         // 清除占位图数据
         if (mRootView.getListDatas() != null && mRootView.getListDatas().size() == 1 && TextUtils
                 .isEmpty(mRootView.getListDatas().get(0).getContent())) {
