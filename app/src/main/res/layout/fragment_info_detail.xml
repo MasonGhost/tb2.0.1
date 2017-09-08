@@ -27,6 +27,9 @@
                 <TextView
                     android:id="@+id/tv_toolbar_center"
                     android:layout_width="wrap_content"
+                    android:singleLine="true"
+                    android:layout_marginLeft="@dimen/toolbar_center_margin"
+                    android:layout_marginRight="@dimen/toolbar_center_margin"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center_horizontal"

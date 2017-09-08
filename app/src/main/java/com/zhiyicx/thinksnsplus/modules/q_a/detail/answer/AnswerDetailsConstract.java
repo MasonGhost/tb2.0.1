@@ -49,7 +49,7 @@ public interface AnswerDetailsConstract {
 
         void updateReWardsView(RewardsCountBean rewardsCountBean, List<RewardsListBean> rewadslist);
 
-        void updateAnswerHeader(AnswerInfoBean infoDetailBean);
+        void updateAnswerHeader(AnswerInfoBean infoDetailBean,boolean isLoadMore);
 
         void deleteAnswer();
 

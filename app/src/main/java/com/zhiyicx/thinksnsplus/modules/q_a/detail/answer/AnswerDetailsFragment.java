@@ -155,14 +155,15 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
-    public void updateAnswerHeader(AnswerInfoBean answerInfoBean) {
+    public void updateAnswerHeader(AnswerInfoBean answerInfoBean, boolean isLoadMore) {
         mTvToolbarCenter.setText(answerInfoBean.getQuestion().getSubject());
         mAnswerInfoBean = answerInfoBean;
         mCoordinatorLayout.setEnabled(true);
         mAnswerDetailHeaderView.setDetail(answerInfoBean);
         setDigg(answerInfoBean.getLiked());
         mAnswerDetailHeaderView.updateDigList(answerInfoBean);
-        onNetResponseSuccess(answerInfoBean.getCommentList(), false);
+        onNetResponseSuccess(answerInfoBean.getCommentList(), isLoadMore);
+        closeLoadingView();
     }
 
     @Override
@@ -246,8 +247,7 @@ public class AnswerDetailsFragment extends TSListFragment<AnswerDetailsConstract
     }
 
     @Override
-    public void onNetResponseSuccess(@NotNull List<AnswerCommentListBean> data, boolean
-            isLoadMore) {
+    public void onNetResponseSuccess(@NotNull List<AnswerCommentListBean> data, boolean isLoadMore) {
         if (!isLoadMore) {
             if (data.isEmpty()) { // 空白展位图
                 AnswerCommentListBean emptyData = new AnswerCommentListBean();

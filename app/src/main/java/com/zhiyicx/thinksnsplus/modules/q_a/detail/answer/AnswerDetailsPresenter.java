@@ -249,7 +249,7 @@ public class AnswerDetailsPresenter extends AppBasePresenter<AnswerDetailsConstr
                         mAnswerInfoListBeanGreenDao.saveSingleData(data);
                         mRootView.updateReWardsView(new RewardsCountBean(data.getRewarder_count(), "" + data.getRewards_amount()),
                                 data.getRewarders());
-                        mRootView.updateAnswerHeader(data);
+                        mRootView.updateAnswerHeader(data,isLoadMore);
                     }
 
                     @Override

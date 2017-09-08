@@ -59,9 +59,12 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
 
     @Override
     public void convert(ViewHolder holder, AnswerInfoBean answerInfoBean, AnswerInfoBean lastT, int position, int itemCounts) {
+
         boolean isOnlook = mQaListInfoBean.getLook() == 1; // 是否开启了围观
 
-        boolean canNotLook = answerInfoBean.getBody().isEmpty();// 是否要付费才能查看
+        boolean isInvited = answerInfoBean.getInvited() == 1;// 是否被邀请回答
+
+        boolean canNotLook = TextUtils.isEmpty(answerInfoBean.getBody());// 是否要付费才能查看
 
         // 发布者信息
         boolean isMine = answerInfoBean.getUser_id() == AppApplication.getmCurrentLoginAuth().getUser_id();
@@ -69,7 +72,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         TextView nameView = holder.getTextView(R.id.tv_name);
         nameView.setText(answerInfoBean.getAnonymity() == 1 && !isMine ? nameView.getResources().getString(R.string.qa_question_answer_anonymity_user) : answerInfoBean.getUser().getName());
         // 围观数量 PS：围观是只有邀请了专家来回答的才有哦
-        holder.setVisible(R.id.tv_watcher_count, isOnlook ? View.VISIBLE : View.GONE);
+        holder.setVisible(R.id.tv_watcher_count, isOnlook && isInvited ? View.VISIBLE : View.GONE);
         if (isOnlook) {
             holder.setText(R.id.tv_watcher_count, String.format(holder.getConvertView().getContext()
                     .getString(R.string.qa_question_answer_show_watcher_count), answerInfoBean.getOnlookers_count()));
@@ -142,7 +145,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否围观
         TextView tvToWatch = holder.getTextView(R.id.tv_to_watch);
         // 邀请的人回答才会有围观
-        tvToWatch.setVisibility(isOnlook && canNotLook ? View.VISIBLE : View.GONE);
+        tvToWatch.setVisibility(canNotLook ? View.VISIBLE : View.GONE);
         // 是否已经围观了
         tvToWatch.setEnabled(!answerInfoBean.getCould());
         tvToWatch.setText(answerInfoBean.getCould() ? tvToWatch.getContext().getString(R.string.qa_go_to_watched)
