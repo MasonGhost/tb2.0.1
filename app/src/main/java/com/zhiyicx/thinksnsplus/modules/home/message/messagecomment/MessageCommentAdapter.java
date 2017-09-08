@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.jakewharton.rxbinding.view.RxView;
@@ -23,16 +22,13 @@ import com.zhiyicx.thinksnsplus.data.beans.CommentedBean;
 import com.zhiyicx.thinksnsplus.data.beans.GroupDynamicListBean;
 import com.zhiyicx.thinksnsplus.data.beans.UserInfoBean;
 import com.zhiyicx.thinksnsplus.data.beans.qa.QAListInfoBean;
-import com.zhiyicx.thinksnsplus.data.beans.qa.QATopicBean;
 import com.zhiyicx.thinksnsplus.modules.channel.group_dynamic.GroupDynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailActivity;
 import com.zhiyicx.thinksnsplus.modules.information.infodetails.InfoDetailsActivity;
 import com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentActivity;
 import com.zhiyicx.thinksnsplus.modules.personal_center.PersonalCenterFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment;
 import com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity;
-import com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity;
 import com.zhiyicx.thinksnsplus.utils.ImageUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -41,8 +37,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.functions.Action1;
-
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_FEED;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_GROUP_POST;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_MUSIC_SPECIALS;
+import static com.zhiyicx.baseproject.config.ApiConfig.APP_LIKE_NEWS;
 import static com.zhiyicx.common.config.ConstantConfig.JITTER_SPACING_TIME;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.DYNAMIC_DETAIL_DATA;
 import static com.zhiyicx.thinksnsplus.modules.dynamic.detail.DynamicDetailFragment.LOOK_COMMENT_MORE;
@@ -52,9 +51,7 @@ import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicComme
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_ABLUM;
 import static com.zhiyicx.thinksnsplus.modules.music_fm.music_comment.MusicCommentFragment.CURRENT_COMMENT_TYPE_MUSIC;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_ANSWER;
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.answer.AnswerDetailsFragment.BUNDLE_SOURCE_ID;
 import static com.zhiyicx.thinksnsplus.modules.q_a.detail.question.QuestionDetailActivity.BUNDLE_QUESTION_BEAN;
-import static com.zhiyicx.thinksnsplus.modules.q_a.detail.topic.TopicDetailActivity.BUNDLE_TOPIC_BEAN;
 
 /**
  * @Describe
@@ -91,20 +88,19 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         } else {
             holder.setVisible(R.id.iv_detail_image, View.GONE);
         }
-        if(commentedBean.getIsDelete()){
+        if (commentedBean.getIsDelete()) {
             holder.setText(R.id.tv_deatil, holder.getConvertView().getResources().getString(R.string.review_content_deleted));
-        }else {
+        } else {
             holder.setText(R.id.tv_deatil, commentedBean.getTarget_title());
         }
-        holder.setText(R.id.tv_name, commentedBean.getCommentUserInfo().getName());
-
-        holder.setText(R.id.tv_content, setShowText(commentedBean));
+        holder.setTextColorRes(R.id.tv_name, R.color.normal_for_assist_text);
+        holder.setText(R.id.tv_name, handleName(commentedBean));
         List<Link> links = setLiknks(holder, commentedBean);
         if (!links.isEmpty()) {
-            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_content), links);
+            ConvertUtils.stringLinkConvert(holder.getView(R.id.tv_name), links);
         }
 
-
+        holder.setText(R.id.tv_content, commentedBean.getComment_content());
         holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyNormal(commentedBean.getUpdated_at()));
         // 响应事件
         RxView.clicks(holder.getView(R.id.tv_name))
@@ -128,6 +124,16 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
 
     private List<Link> setLiknks(ViewHolder holder, final CommentedBean commentedBean) {
         List<Link> links = new ArrayList<>();
+        Link nameLink = new Link(commentedBean.getCommentUserInfo().getName())
+                .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
+                .setTextColorOfHighlightedLink(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.general_for_hint)) // optional, defaults to holo blue
+                .setHighlightAlpha(.5f)                                     // optional, defaults to .15f
+                .setUnderlined(false)                                       // optional, defaults to true
+                .setOnClickListener(clickedText -> {
+                    // single clicked
+                    toUserCenter(commentedBean.getCommentUserInfo());
+                });
+        links.add(nameLink);
         if (commentedBean.getReplyUserInfo() != null && commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0 && commentedBean.getReplyUserInfo().getName() != null) {
             Link replyNameLink = new Link(commentedBean.getReplyUserInfo().getName())
                     .setTextColor(ContextCompat.getColor(holder.getConvertView().getContext(), R.color.important_for_content))                  // optional, defaults to holo blue
@@ -145,18 +151,48 @@ public class MessageCommentAdapter extends CommonAdapter<CommentedBean> {
         return links;
     }
 
-    private String setShowText(CommentedBean commentedBean) {
-        return handleName(commentedBean);
-    }
-
     private String handleName(CommentedBean commentedBean) {
-        String content = "";
-        if (commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0) { // 当没有回复者时，就是回复评论
-            content += "回复 " + commentedBean.getReplyUserInfo().getName() + ": " + commentedBean.getComment_content();
-        } else {
-            content = commentedBean.getComment_content();
+        String result;
+        if (commentedBean.getReply_user() != null && commentedBean.getReply_user() != 0) { // 回复
+            if (AppApplication.getMyUserIdWithdefault() == commentedBean.getReply_user()) {
+                result = getContext().getResources().getString(R.string.comment_format_reply_you, commentedBean.getCommentUserInfo().getName());
+
+            } else {
+                result = getContext().getResources().getString(R.string.comment_format_reply, commentedBean.getCommentUserInfo().getName(), commentedBean.getReplyUserInfo().getName());
+
+            }
+            return result;
         }
-        return content;
+        // 评论
+        switch (commentedBean.getChannel()) {
+            case APP_LIKE_FEED:
+                result = getContext().getResources().getString(R.string.comment_format_feed, commentedBean.getCommentUserInfo().getName());
+                break;
+            case APP_LIKE_GROUP_POST:
+                result = getContext().getResources().getString(R.string.comment_format_group_feed, commentedBean.getCommentUserInfo().getName());
+                break;
+            case APP_LIKE_MUSIC:
+            case APP_LIKE_MUSIC_SPECIALS:
+                result = getContext().getResources().getString(R.string.comment_format_music, commentedBean.getCommentUserInfo().getName());
+
+                break;
+            case APP_LIKE_NEWS:
+                result = getContext().getResources().getString(R.string.comment_format_news, commentedBean.getCommentUserInfo().getName());
+
+                break;
+            case ApiConfig.APP_QUESTIONS:
+                result = getContext().getResources().getString(R.string.comment_format_questions, commentedBean.getCommentUserInfo().getName());
+
+                break;
+            case ApiConfig.APP_QUESTIONS_ANSWER:
+                result = getContext().getResources().getString(R.string.comment_format_questions_answer, commentedBean.getCommentUserInfo().getName());
+
+                break;
+            default:
+                result = "";
+        }
+
+        return result;
     }
 
     /**

@@ -41,7 +41,7 @@
         android:paddingBottom="@dimen/spacing_mid_small_8dp"
         android:textColor="@color/important_for_content"
         android:textSize="@dimen/size_content_assist"
-        tools:text="我送第几个 "/>
+        tools:text="我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个我送第几个 "/>
 
     <LinearLayout
         android:id="@+id/fl_detial"
