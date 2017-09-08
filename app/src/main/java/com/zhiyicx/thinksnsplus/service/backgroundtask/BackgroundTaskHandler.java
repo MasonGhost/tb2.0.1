@@ -73,6 +73,7 @@ import rx.schedulers.Schedulers;
 
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_ANSWER_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_DYNAMIC_LIST;
+import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_INFO_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_COMMENT_TO_QUESTION_LIST;
 import static com.zhiyicx.thinksnsplus.config.EventBusTagConfig.EVENT_SEND_DYNAMIC_TO_LIST;
@@ -1101,10 +1102,11 @@ public class BackgroundTaskHandler {
                                 dynamicCommentBean.setId(jsonObject.getJSONObject("data").getLong("id"));
                             } catch (JSONException e) {// 。。。
                                 dynamicCommentBean.setId(jsonObject.getJSONObject("comment").getLong("id"));
+                                dynamicCommentBean.setComment_mark(jsonObject.getLong("group_post_comment_mark"));
                             }
                             dynamicCommentBean.setState(DynamicBean.SEND_SUCCESS);
                             mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                            EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                            EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
                             mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1118,7 +1120,7 @@ public class BackgroundTaskHandler {
                         mBackgroundRequestTaskBeanGreenDao.deleteSingleCache(backgroundRequestTaskBean);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
                     }
 
                     @Override
@@ -1126,7 +1128,7 @@ public class BackgroundTaskHandler {
                         super.onException(throwable);
                         dynamicCommentBean.setState(DynamicBean.SEND_ERROR);
                         mGroupDynamicCommentListBeanGreenDao.insertOrReplace(dynamicCommentBean);
-                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_DYNAMIC_LIST);
+                        EventBus.getDefault().post(dynamicCommentBean, EVENT_SEND_COMMENT_TO_GROUOP_DYNAMIC);
                     }
                 });
 

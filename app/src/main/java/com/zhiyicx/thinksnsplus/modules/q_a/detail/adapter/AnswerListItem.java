@@ -11,6 +11,7 @@ import com.zhiyicx.baseproject.config.MarkdownConfig;
 import com.zhiyicx.common.utils.RegexUtils;
 import com.zhiyicx.common.utils.SkinUtils;
 import com.zhiyicx.common.utils.TextViewUtils;
+import com.zhiyicx.common.utils.TimeUtils;
 import com.zhiyicx.common.utils.UIUtils;
 import com.zhiyicx.thinksnsplus.R;
 import com.zhiyicx.thinksnsplus.base.AppApplication;
@@ -91,7 +92,7 @@ public class AnswerListItem implements ItemViewDelegate<AnswerInfoBean> {
         // 是否邀请
         holder.setVisible(R.id.tv_invite_flag, answerInfoBean.getInvited() == 1 ? View.VISIBLE : View.GONE);
         // 时间
-        holder.setText(R.id.tv_time, answerInfoBean.getCreated_at());
+        holder.setText(R.id.tv_time, TimeUtils.getTimeFriendlyForDetail( answerInfoBean.getCreated_at()));
         // 正文
         holder.setText(R.id.tv_content, RegexUtils.replaceImageId(MarkdownConfig.IMAGE_FORMAT, answerInfoBean.getBody()));
 
