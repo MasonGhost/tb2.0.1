@@ -574,28 +574,32 @@ public class GroupDynamicDetailFragment extends TSListFragment<GroupDynamicDetai
      * @param commentPosition current comment position
      */
     private void initDeleteComentPopupWindow(final long comment_id, final int commentPosition) {
-        mDeletCommentPopWindow = ActionPopupWindow.builder()
-                .item1Str(false ? getString(R.string.dynamic_list_top_comment) : null)
-                .item2Str(getString(R.string.dynamic_list_delete_comment))
-                .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_theme))
-                .bottomStr(getString(R.string.cancel))
-                .isOutsideTouch(true)
-                .isFocus(true)
-                .backgroundAlpha(POPUPWINDOW_ALPHA)
-                .with(getActivity())
-                .item1ClickListener(() -> {
-                    Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
-                    intent.putExtra(TOP_DYNAMIC_COMMENT_ID, comment_id);
-                    intent.putExtra(TOP_DYNAMIC_ID, getCurrentDynamic().getId());
-                    mDeletCommentPopWindow.hide();
-                    startActivity(intent);
-                })
-                .item2ClickListener(() -> {
-                    mDeletCommentPopWindow.hide();
-                    mPresenter.deleteCommentV2(comment_id, commentPosition);
-                })
-                .bottomClickListener(() -> mDeletCommentPopWindow.hide())
-                .build();
+        if (mDeletCommentPopWindow != null && mDeletCommentPopWindow.isShowing()) {
+            mDeletCommentPopWindow.dismiss();
+        } else {
+            mDeletCommentPopWindow = ActionPopupWindow.builder()
+                    .item1Str(false ? getString(R.string.dynamic_list_top_comment) : null)
+                    .item2Str(getString(R.string.dynamic_list_delete_comment))
+                    .item1Color(ContextCompat.getColor(getContext(), R.color.important_for_theme))
+                    .bottomStr(getString(R.string.cancel))
+                    .isOutsideTouch(true)
+                    .isFocus(true)
+                    .backgroundAlpha(POPUPWINDOW_ALPHA)
+                    .with(getActivity())
+                    .item1ClickListener(() -> {
+                        Intent intent = new Intent(getActivity(), DynamicCommentTopActivity.class);
+                        intent.putExtra(TOP_DYNAMIC_COMMENT_ID, comment_id);
+                        intent.putExtra(TOP_DYNAMIC_ID, getCurrentDynamic().getId());
+                        mDeletCommentPopWindow.hide();
+                        startActivity(intent);
+                    })
+                    .item2ClickListener(() -> {
+                        mDeletCommentPopWindow.hide();
+                        mPresenter.deleteCommentV2(comment_id, commentPosition);
+                    })
+                    .bottomClickListener(() -> mDeletCommentPopWindow.hide())
+                    .build();
+        }
     }
 
     /**
